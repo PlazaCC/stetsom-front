@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: "Barlow Condensed"; src: url("../fonts/BarlowCondensed-Black.ttf"); font-weight: 900; }
+@font-face { font-family: "Barlow Condensed"; src: url("../fonts/BarlowCondensed-Bold.ttf"); font-weight: 700; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #fff; font-family: sans-serif; padding: 20px; }
+.row { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 20px; }
+.label { font-size: 10px; color: #aaa; margin-top: 6px; text-align: center; }
+
+/* Spacing */
+.sp { display: flex; align-items: center; gap: 8px; }
+.sp-box { height: 20px; background: rgb(232,19,42); opacity: 0.7; }
+.sp-label { font-size: 11px; color: #555; min-width: 80px; }
+
+/* Radii */
+.radius-demo { width: 60px; height: 40px; background: rgb(18,18,18); }
+</style>
+</head>
+<body>
+  <div style="font-size:10px;color:#aaa;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Spacing Scale</div>
+  <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:20px">
+    <div class="sp"><div class="sp-box" style="width:4px"></div><div class="sp-label">4px — space-1</div></div>
+    <div class="sp"><div class="sp-box" style="width:8px"></div><div class="sp-label">8px — space-2</div></div>
+    <div class="sp"><div class="sp-box" style="width:16px"></div><div class="sp-label">16px — space-4</div></div>
+    <div class="sp"><div class="sp-box" style="width:24px"></div><div class="sp-label">24px — space-6 (gap std)</div></div>
+    <div class="sp"><div class="sp-box" style="width:48px"></div><div class="sp-label">48px — space-12 (section pad)</div></div>
+    <div class="sp"><div class="sp-box" style="width:96px"></div><div class="sp-label">170px — container pad</div></div>
+  </div>
+
+  <div style="font-size:10px;color:#aaa;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Corner Radii</div>
+  <div class="row">
+    <div><div class="radius-demo" style="border-radius:0"></div><div class="label">0 — None<br>Buttons, hero</div></div>
+    <div><div class="radius-demo" style="border-radius:4px"></div><div class="label">4px — sm<br>Tags</div></div>
+    <div><div class="radius-demo" style="border-radius:8px"></div><div class="label">8px — md<br>Cards, tabs</div></div>
+    <div><div class="radius-demo" style="border-radius:20px"></div><div class="label">20px — lg<br>Product gallery</div></div>
+    <div><div class="radius-demo" style="border-radius:9999px;width:40px;height:40px"></div><div class="label">Full — pill<br>Dot indicators</div></div>
+  </div>
+
+  <div style="font-size:10px;color:#aaa;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Shadows</div>
+  <div class="row">
+    <div><div style="width:80px;height:40px;background:#fff;box-shadow:0px 0px 4.8px rgba(0,0,0,0.25);border-radius:4px"></div><div class="label">Text shadow<br>dark sections</div></div>
+    <div><div style="width:80px;height:40px;background:#fff;box-shadow:0px 8.5px 14.4px rgba(0,0,0,0.5);border-radius:4px"></div><div class="label">Card shadow<br>product imgs</div></div>
+    <div><div style="width:80px;height:40px;background:#fff;box-shadow:0px 0px 6.2px rgba(0,0,0,0.5);border-radius:4px"></div><div class="label">Component<br>shadow</div></div>
+  </div>
+</body>
+</html>
