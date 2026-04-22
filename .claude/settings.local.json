@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude_ai_Figma__whoami",
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(curl -sI \"https://api.anthropic.com/v1/design/h/7tzWo6vIpwpHJ_D-ejMCjw\")",
+      "Read(//c/Users/tiago/OneDrive/Documents/GitHub/**)",
+      "Read(//c/Users/tiago/OneDrive/Documents//**)"
+    ]
+  }
+}

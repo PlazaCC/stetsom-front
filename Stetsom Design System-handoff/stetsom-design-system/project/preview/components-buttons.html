@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: "Barlow Condensed"; src: url("../fonts/BarlowCondensed-Bold.ttf"); font-weight: 700; }
+@font-face { font-family: "Barlow"; src: url("../fonts/Barlow-Medium.ttf"); font-weight: 500; }
+@font-face { font-family: "Barlow"; src: url("../fonts/Barlow-SemiBold.ttf"); font-weight: 600; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #fff; font-family: sans-serif; padding: 24px; display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
+.meta { font-size: 9px; color: #aaa; text-align: center; margin-top: 6px; }
+.btn-primary {
+  background: rgb(232,19,42); color: #fff; border: none; cursor: pointer;
+  font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 14px;
+  text-transform: uppercase; letter-spacing: 0.3px;
+  padding: 0 20px; height: 40px; display: flex; align-items: center; gap: 6px;
+}
+.btn-primary-sm {
+  background: rgb(232,19,42); color: #fff; border: none; cursor: pointer;
+  font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 13px;
+  text-transform: uppercase;
+  padding: 0 16px; height: 36px; display: flex; align-items: center; gap: 6px;
+}
+.btn-dark {
+  background: rgb(18,18,18); color: #fff; border: none; cursor: pointer;
+  font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 14px;
+  text-transform: uppercase;
+  padding: 0 20px; height: 40px; display: flex; align-items: center;
+}
+.btn-outline {
+  background: transparent; color: rgb(18,18,18);
+  border: 1.5px solid rgb(18,18,18); cursor: pointer;
+  font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 14px;
+  text-transform: uppercase;
+  padding: 0 20px; height: 40px; display: flex; align-items: center;
+}
+.link-btn {
+  display: flex; align-items: center; gap: 6px;
+  font-family: "Barlow Condensed", sans-serif; font-weight: 500; font-size: 16px;
+  color: rgb(232,19,42); cursor: pointer; background: none; border: none;
+  text-transform: none;
+}
+.col { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+</style>
+</head>
+<body>
+  <div class="col">
+    <button class="btn-primary">Garantia</button>
+    <div class="meta">Primary · md</div>
+  </div>
+  <div class="col">
+    <button class="btn-primary-sm">Conheça mais →</button>
+    <div class="meta">Primary · sm</div>
+  </div>
+  <div class="col">
+    <button class="btn-dark">Garantia</button>
+    <div class="meta">Dark · md</div>
+  </div>
+  <div class="col">
+    <button class="btn-outline">Filtros</button>
+    <div class="meta">Outline · md</div>
+  </div>
+  <div class="col">
+    <button class="link-btn">Ver todos <span style="font-size:12px">›</span></button>
+    <div class="meta">Link CTA</div>
+  </div>
+  <div class="col">
+    <button class="link-btn">Seguir no instagram <span style="font-size:12px">›</span></button>
+    <div class="meta">Link CTA</div>
+  </div>
+</body>
+</html>
