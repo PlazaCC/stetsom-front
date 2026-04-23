@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { Accordion as AccordionPrimitive } from "@base-ui/react/accordion"
+import { Accordion, AccordionContent, AccordionItem } from "@/components/ui/accordion"
 
 interface FAQItem {
   q: string
@@ -8,26 +9,26 @@ interface FAQItem {
 }
 
 export default function FaqAccordion({ items }: { items: FAQItem[] }) {
-  const [open, setOpen] = useState<number | null>(null)
-
   return (
-    <div>
+    <Accordion>
       {items.map(({ q, a }, i) => (
-        <div key={i} className="border-b border-zinc-200 py-4">
-          <button
-            onClick={() => setOpen(open === i ? null : i)}
-            className="flex w-full justify-between items-center text-left gap-4"
-          >
-            <span className="font-medium text-[15px] text-brand-dark">{q}</span>
-            <span className="text-brand text-lg font-light shrink-0">
-              {open === i ? "−" : "+"}
-            </span>
-          </button>
-          {open === i && (
-            <p className="text-sm text-[rgb(102,102,102)] mt-2.5 leading-relaxed">{a}</p>
-          )}
-        </div>
+        <AccordionItem key={i} value={String(i)} className="border-zinc-200">
+          <AccordionPrimitive.Header className="flex">
+            <AccordionPrimitive.Trigger className="group/faq flex w-full cursor-pointer items-center justify-between gap-4 py-4 text-left outline-none">
+              <span className="font-medium text-[15px] text-brand-dark">{q}</span>
+              <span className="shrink-0 text-lg leading-none text-brand group-aria-expanded/faq:hidden">
+                +
+              </span>
+              <span className="hidden shrink-0 text-lg leading-none text-brand group-aria-expanded/faq:inline">
+                −
+              </span>
+            </AccordionPrimitive.Trigger>
+          </AccordionPrimitive.Header>
+          <AccordionContent>
+            <p className="text-sm leading-relaxed text-[rgb(102,102,102)]">{a}</p>
+          </AccordionContent>
+        </AccordionItem>
       ))}
-    </div>
+    </Accordion>
   )
 }
