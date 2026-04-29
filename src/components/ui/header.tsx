@@ -83,6 +83,7 @@ export default function Header() {
             <NavigationMenuList>
               <NavigationMenuItem className="hidden md:flex h-6 flex items-center ">
                 <NavigationMenuTrigger
+                  nativeButton={false}
                   render={
                     <div className="p-0! h-6! flex items-center">
                       <MenuLink href="/produtos" label="Produtos" />
