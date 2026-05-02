@@ -12,9 +12,18 @@ const COMPANY_METRICS = [
 
 export default function NossaHistoria() {
   return (
-    <section className="bg-brand-dark flex justify-center min-h-132">
-      <Container className="flex w-full items-stretch">
-        <div className="relative hidden lg:block shrink-0 flex-1">
+    <section className="flex justify-center bg-brand-dark py-0 lg:min-h-132">
+      <Container className="flex w-full flex-col items-stretch lg:flex-row">
+        <div className="relative aspect-16/11 w-full shrink-0 overflow-hidden lg:hidden">
+          <Image
+            src="/about-bg.png"
+            alt="Placeholder da nossa história"
+            fill
+            className="object-cover"
+          />
+        </div>
+
+        <div className="relative hidden flex-1 shrink-0 overflow-hidden lg:block">
           <Image
             src="/about-bg.png"
             alt="Nossa história"
@@ -23,8 +32,8 @@ export default function NossaHistoria() {
           />
         </div>
 
-        <div className="flex-1 flex items-center justify-center px-8 py-12 lg:px-18 lg:py-0">
-          <div className="max-w-122 w-full">
+        <div className="flex flex-1 items-center justify-center px-6 py-10 sm:px-8 sm:py-12 lg:px-18 lg:py-0">
+          <div className="w-full max-w-122">
             <SectionLabel
               label="Nossa História"
               title={"CONSTRUINDO\nCOM PROPÓSITO"}
@@ -32,18 +41,18 @@ export default function NossaHistoria() {
               dark
             />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6 lg:mt-7">
+            <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-5 lg:mt-7">
               {COMPANY_METRICS.map((metric) => (
                 <div key={metric.label} className="px-0 py-0">
                   <div className="flex items-start gap-1 leading-none">
-                    <div className="font-sans-condensed font-black text-[48px] lg:text-[52px] text-white leading-none">
+                    <div className="font-sans-condensed text-[42px] font-black leading-none text-white lg:text-[52px]">
                       {metric.value.replace("+", "")}
                     </div>
-                    <span className="font-sans-condensed font-black text-[48px] lg:text-[52px] text-brand leading-none">
+                    <span className="font-sans-condensed text-[42px] font-black leading-none text-brand lg:text-[52px]">
                       +
                     </span>
                   </div>
-                  <div className="font-medium text-[12px] lg:text-[13px] uppercase text-[rgb(184,184,184)] mt-0.5">
+                  <div className="mt-0.5 text-[12px] font-medium uppercase text-[rgb(184,184,184)] lg:text-[13px]">
                     {metric.label}
                   </div>
                 </div>
@@ -52,7 +61,7 @@ export default function NossaHistoria() {
 
             <Link
               href="/sobre"
-              className="inline-flex items-center justify-center h-9 px-6 bg-brand text-white font-sans-condensed font-bold text-sm uppercase tracking-wide hover:bg-brand/90 transition-colors mt-8"
+              className="mt-8 inline-flex h-10 items-center justify-center bg-brand px-6 text-sm font-sans-condensed font-bold uppercase tracking-wide text-white transition-colors hover:bg-brand/90"
             >
               Conheça mais →
             </Link>
