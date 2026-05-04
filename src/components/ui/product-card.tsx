@@ -1,13 +1,13 @@
-import Link from "next/link"
-import Image from "next/image"
+import Link from "next/link";
+import Image from "next/image";
 
 interface ProductCardProps {
-  name: string
-  category: string
-  spec?: string | null
-  badge?: string | null
-  img?: string
-  href?: string
+  name: string;
+  category: string;
+  spec?: string | null;
+  badge?: string | null;
+  img?: string;
+  href?: string;
 }
 
 export default function ProductCard({
@@ -23,7 +23,7 @@ export default function ProductCard({
       href={href}
       className="group flex flex-col bg-white border border-zinc-200 hover:border-brand rounded-lg overflow-hidden transition-colors"
     >
-      <div className="bg-[rgb(248,248,248)] h-40 flex items-center justify-center p-4">
+      <div className="bg-[rgb(248,248,248)] h-32 md:h-36 lg:h-40 flex items-center justify-center p-4">
         {img ? (
           <Image
             src={img}
@@ -56,5 +56,5 @@ export default function ProductCard({
         </span>
       </div>
     </Link>
-  )
+  );
 }
