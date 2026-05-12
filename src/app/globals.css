@@ -206,4 +206,8 @@
   .animate-marquee {
     animation: marquee 20s linear infinite;
   }
+
+  .bg-gradient-dark-overlay {
+    background: linear-gradient(to bottom, rgba(27, 26, 44, 0.5), rgba(22, 16, 16, 0.5));
+  }
 }

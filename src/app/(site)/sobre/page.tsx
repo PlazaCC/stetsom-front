@@ -24,7 +24,7 @@ export default async function SobrePage() {
           className='object-cover opacity-35'
           priority
         />
-        <div className='absolute inset-0 bg-gradient-to-b from-[rgba(27,26,44,0.5)] to-[rgba(22,16,16,0.5)]' />
+        <div className='absolute inset-0 bg-gradient-dark-overlay' />
         <Container className='z-10'>
           <SectionLabel label={aboutPayload.hero.label} />
           <h1 className='font-sans-condensed font-black text-7xl leading-none uppercase text-white mt-1'>
