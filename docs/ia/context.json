@@ -291,8 +291,8 @@
       ],
       "rationale": "User requested token system to follow shadcn pattern: remap existing semantic tokens (--muted-foreground, --card, --muted) to Stetsom values; move inline @theme tokens to :root → var() pattern; add typography/spacing utilities. No new arbitrary color tokens created.",
       "outcome": "Zero hardcoded color classes remain in src/. shadcn tokens remapped: --muted-foreground=#565656, --card=#F8F8F8, --muted=#F0F0F0. Custom tokens follow :root→@theme pattern. Typography tokens text-2xs/text-button-md/text-display-* and spacing gap-logo-nav available. pnpm tsc passes."
-    }
-    ,{
+    },
+    {
       "ts": "2026-05-12T16:00:00Z",
       "agent": "claude-sonnet-4-6",
       "type": "chore",
@@ -326,6 +326,15 @@
       ],
       "rationale": "tailwind-canonical.md incorrectly listed non-multiples-of-4 as exceptions; Tailwind v4 supports any decimal so ALL px dimensions are canonical. New styling-practices.md codifies the full decision tree for colors, dimensions, font sizes, and token creation.",
       "outcome": "Agents now have a master styling checklist. tailwind-canonical.md corrected with decimal examples (h-11.25, px-42.5, h-0.75). tailwind-v4.md Container note updated to current values."
+    },
+    {
+      "ts": "2026-05-12T16:40:00Z",
+      "agent": "gemini-3.1-pro",
+      "type": "chore",
+      "summary": "Add CI workflow configured with pnpm for GitHub Actions",
+      "files": [".github/workflows/ci.yml"],
+      "rationale": "User requested creation of CI workflow file based on template but adapted for pnpm and Next.js.",
+      "outcome": "A workflow file `.github/workflows/ci.yml` has been added. It provisions node 20, uses pnpm v9 via setup-pnpm, typechecks, lints, and builds the project on push and PRs."
     }
   ]
 }
