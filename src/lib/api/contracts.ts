@@ -73,6 +73,7 @@ export type ProductDetailPayload = {
   files: ProductFile[]
   category: Category
   subcategory?: Subcategory
+  relatedProducts: ProductCardItem[]
 }
 
 export type ProductCardItem = {

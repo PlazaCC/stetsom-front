@@ -474,6 +474,22 @@
       ],
       "rationale": "Task-06 required Figma-aligned products hero treatment and verification of existing filters/search/thumb data without regressing responsive grid behavior.",
       "outcome": "Products page hero now uses the required radial and fade gradients with desktop height at 336px and watermark alignment, criteria were checked, and task moved to REVIEW."
+    },
+    {
+      "ts": "2026-05-12T20:54:10Z",
+      "agent": "gpt-5.3-codex",
+      "type": "feat",
+      "summary": "Implement task-07 product detail page with breadcrumb blocks and related products",
+      "files": [
+        "src/components/ui/breadcrumb.tsx",
+        "src/lib/api/contracts.ts",
+        "src/lib/api/providers/mock-provider.ts",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "docs/ia/tasks/task-07-produto-detalhe-implementacao-completa.md",
+        "docs/ia/context.json"
+      ],
+      "rationale": "The next-task workflow selected task-07, which required replacing the debug product detail page with a Figma-aligned implementation and mocked related products support.",
+      "outcome": "The product detail route now renders navigable breadcrumb, radial hero with centered product image, styled TEXT/IMAGE blocks, placeholders for out-of-scope block types, and a 4-card related products grid; task-07 moved to REVIEW with all criteria checked."
     }
   ]
 }

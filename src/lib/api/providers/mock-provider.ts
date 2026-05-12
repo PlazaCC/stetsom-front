@@ -128,6 +128,31 @@ function getSpotlightProduct() {
   return toProductCardItem(CATALOG_PRODUCTS[0], categoryLookup)
 }
 
+function getRelatedProducts(product: Product) {
+  const categoryLookup = createCategoryLookup(CATALOG_CATEGORIES)
+  const sameCategory = CATALOG_PRODUCTS.filter(
+    (item) => item.id !== product.id && item.category_id === product.category_id && item.status === 'ACTIVE',
+  )
+  const fallback = CATALOG_PRODUCTS.filter((item) => item.id !== product.id && item.status === 'ACTIVE')
+  const selectedProducts: Product[] = []
+  const selectedIds = new Set<string>()
+
+  for (const candidate of [...sameCategory, ...fallback]) {
+    if (selectedIds.has(candidate.id)) {
+      continue
+    }
+
+    selectedProducts.push(candidate)
+    selectedIds.add(candidate.id)
+
+    if (selectedProducts.length === 4) {
+      break
+    }
+  }
+
+  return selectedProducts.map((candidate) => toProductCardItem(candidate, categoryLookup))
+}
+
 function toProductDetailPayload(slug: string): ProductDetailPayload | null {
   const product = CATALOG_PRODUCTS.find((item) => item.slug === slug)
 
@@ -148,6 +173,7 @@ function toProductDetailPayload(slug: string): ProductDetailPayload | null {
     files: CATALOG_PRODUCT_FILES.filter((item) => item.product_id === product.id),
     category,
     subcategory,
+    relatedProducts: getRelatedProducts(product),
   }
 }
 
