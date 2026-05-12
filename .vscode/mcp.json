@@ -1,0 +1,26 @@
+{
+  "servers": {
+    "Framelink_Figma_MCP": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "figma-developer-mcp", "--figma-api-key=your_figma_api", "--stdio"]
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "plaza.mcp": {
+      "type": "http",
+      "url": "https://plaza-mcp.plaza.workers.dev/mcp"
+    },
+    "io.github.upstash/context7": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@upstash/context7-mcp@1.0.31"],
+      "env": {
+        "CONTEXT7_API_KEY": "your-context-api-key"
+      }
+    }
+  }
+}

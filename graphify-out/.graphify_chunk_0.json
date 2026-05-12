@@ -1,0 +1,166 @@
+﻿{
+    "hyperedges":  [
+
+                   ],
+    "output_tokens":  0,
+    "input_tokens":  96338,
+    "edges":  [
+
+              ],
+    "nodes":  [
+                  {
+                      "file_type":  "code",
+                      "id":  "eslint_config",
+                      "label":  "ESLint Configuration",
+                      "captured_at":  null,
+                      "source_file":  "eslint.config.mjs",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  },
+                  {
+                      "file_type":  "code",
+                      "id":  "next_config",
+                      "label":  "Next.js Configuration",
+                      "captured_at":  null,
+                      "source_file":  "next.config.ts",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  },
+                  {
+                      "file_type":  "code",
+                      "id":  "postcss_config",
+                      "label":  "PostCSS Configuration",
+                      "captured_at":  null,
+                      "source_file":  "postcss.config.mjs",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  },
+                  {
+                      "file_type":  "code",
+                      "id":  "pnpm_workspace",
+                      "label":  "pnpm Workspace Configuration",
+                      "captured_at":  null,
+                      "source_file":  "pnpm-workspace.yaml",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  },
+                  {
+                      "file_type":  "document",
+                      "id":  "readme_md",
+                      "label":  "Project README",
+                      "captured_at":  null,
+                      "source_file":  "README.md",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  },
+                  {
+                      "file_type":  "document",
+                      "id":  "claude_md",
+                      "label":  "Claude Code Project Instructions",
+                      "captured_at":  null,
+                      "source_file":  "CLAUDE.md",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  },
+                  {
+                      "file_type":  "document",
+                      "id":  "agents_md",
+                      "label":  "Agent Guide and Stack Documentation",
+                      "captured_at":  null,
+                      "source_file":  "AGENTS.md",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  },
+                  {
+                      "file_type":  "document",
+                      "id":  "design_system_reference",
+                      "label":  "Figma Design System Reference",
+                      "captured_at":  null,
+                      "source_file":  "docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  },
+                  {
+                      "file_type":  "document",
+                      "id":  "stetsom_rfc_1",
+                      "label":  "Stetsom Architecture RFC-001",
+                      "captured_at":  null,
+                      "source_file":  "docs/rfcs/stetsom-rfc-1.md",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  },
+                  {
+                      "file_type":  "code",
+                      "id":  "cache_life_types",
+                      "label":  "Cache Life Type Definitions",
+                      "captured_at":  null,
+                      "source_file":  "types/cache-life.d.ts",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  },
+                  {
+                      "file_type":  "code",
+                      "id":  "routes_types",
+                      "label":  "Routes Type Definitions",
+                      "captured_at":  null,
+                      "source_file":  "types/routes.d.ts",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  },
+                  {
+                      "file_type":  "code",
+                      "id":  "validator_types",
+                      "label":  "Validator Type Definitions",
+                      "captured_at":  null,
+                      "source_file":  "types/validator.ts",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  },
+                  {
+                      "file_type":  "code",
+                      "id":  "lib_utils",
+                      "label":  "Utility Functions Library",
+                      "captured_at":  null,
+                      "source_file":  "src/lib/utils.ts",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  },
+                  {
+                      "file_type":  "code",
+                      "id":  "package_json",
+                      "label":  "NPM Package Configuration",
+                      "captured_at":  null,
+                      "source_file":  "package.json",
+                      "source_location":  null,
+                      "contributor":  null,
+                      "source_url":  null,
+                      "author":  null
+                  }
+              ]
+}

@@ -1,0 +1,8 @@
+{
+  "description": "Figma context",
+  "files": {
+    "context.json": "Full raw figma context",
+    "components.json": "UI components extracted from Figma",
+    "design-system.json": "Figma styles and document metadata"
+  }
+}

@@ -1,11 +1,37 @@
 {
   "permissions": {
+    "defaultMode": "bypassPermissions",
     "allow": [
-      "mcp__claude_ai_Figma__whoami",
-      "WebFetch(domain:api.anthropic.com)",
-      "Bash(curl -sI \"https://api.anthropic.com/v1/design/h/7tzWo6vIpwpHJ_D-ejMCjw\")",
-      "Read(//c/Users/tiago/OneDrive/Documents/GitHub/**)",
-      "Read(//c/Users/tiago/OneDrive/Documents//**)"
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "mcp__Framelink_Figma_MCP__get_figma_data",
+      "Bash(python *)"
     ]
+  },
+  "mcpServers": {
+    "Framelink_Figma_MCP": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "figma-developer-mcp", "--figma-api-key=${FIGMA_API_KEY}", "--stdio"],
+      "env": {}
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "env": {}
+    },
+    "plaza.mcp": {
+      "type": "http",
+      "url": "https://plaza-mcp.plaza.workers.dev/mcp"
+    },
+    "io.github.upstash/context7": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@upstash/context7-mcp@1.0.31"],
+      "env": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      }
+    }
   }
 }

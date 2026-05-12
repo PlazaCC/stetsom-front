@@ -24,7 +24,7 @@ No test runner is configured yet.
 
 ## Path aliases
 
-`@/*` maps to the project root (not `./src`). To import from `src/`, write `@/src/...`.
+`@/*` maps to `src/` (confirmed in `tsconfig.json`: `"@/*": ["./src/*"]`). Write `@/lib/utils`, `@/components/ui/button`, etc. Do **not** write `@/src/...` — that resolves to `src/src/...`.
 
 ## Generated files
 
