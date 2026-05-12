@@ -5,10 +5,16 @@ applyTo: '**/*.tsx, **/*.ts, **/*.css'
 
 # Local Design System Guidelines (Stetsom Front)
 
-You should read `docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md` whenever you start building UI for this project.
+Leia **sempre** estes dois arquivos ao iniciar qualquer trabalho de UI:
 
-1. **Local Oracle**: Do NOT fallback to invoking Figma MCP tools unless specifically requested by the user or when introducing a completely new, unmapped component. The core layouts, typographies, and color systems are documented abstractly in `docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md`.
-2. **Icons**: Always import from `lucide-react`. Known icons mapping includes `arrow-right`, `chevron-down`, `search`, etc.
-3. **Typography Tokens**: Always defer to `font-sans` (`var(--font-barlow)`) and `font-sans-condensed` (`var(--font-barlow-condensed)`). Apply `font-sans-condensed` specifically for technical spec numbers (like "3000W RMS") and big impact headings.
-4. **Consistency check**: Stetsom uses a dark/red themed system (`bg-brand-dark` and `text-brand` / `bg-brand`). Do not invent standard gray palettes if `off-white` is the indicated contrast color.
-5. **Component Libraries**: Try matching Figma structures with Shadcn/Base-UI (e.g. Accordion, Buttons) available in `src/components/ui`. Replicate variants from the Figma abstractions correctly (e.g., Size=sm -> `h-8 px-3 text-xs`).
+- `docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md` — cores, tipografia, layout tokens, componentes
+- `docs/ia/figma/PAGES_REFERENCE.md` — node IDs de cada seção por página (desktop + mobile)
+
+1. **Local Oracle**: NÃO invoque o Figma MCP a menos que explicitamente solicitado pelo usuário ou para um componente totalmente novo não mapeado. Toda a estrutura de layouts, tipografia e cores está documentada localmente.
+2. **Node IDs de Página**: Para inspecionar uma seção específica via `get_figma_data`, use os node IDs de `docs/ia/figma/PAGES_REFERENCE.md` em vez de buscar o arquivo inteiro.
+3. **Icons**: Sempre importe de `lucide-react`. Mapeamento conhecido: `arrow-right`, `chevron-down`, `search`, `menu`, `plus`, `sliders-horizontal`.
+4. **Typography Tokens**: Use `font-sans` (Barlow) e `font-sans-condensed` (Barlow Condensed). Aplique `font-sans-condensed font-black uppercase` para headings de impacto, specs técnicas ("3000W RMS") e watermarks de background.
+5. **Consistência de cor**: Sistema dark/red — `bg-brand-dark` e `text-brand`/`bg-brand`. Nunca invente paletas de cinza; use `bg-off-white` para seções claras alternadas.
+6. **Component Libraries**: Combine estruturas Figma com shadcn/Base-UI em `src/components/ui` (ex: Accordion, Buttons). `Size=sm` → `h-8 px-3 text-xs`; `Size=md` → padding `8px 12px`.
+7. **Asset Mapping**: Use `docs/ia/figma/assets-manifest.json` para resolver imagens por `styleRef` ou `nodeId` e obter o `relativePath` local sob `/figma-assets/raw`.
+8. **MCP Trigger Rule**: Só acione Figma MCP download quando o asset não estiver no manifesto ou o usuário pedir explicitamente nova extração.

@@ -1,0 +1,496 @@
+{
+    "generatedAt":  "2026-05-12T07:07:55Z",
+    "figmaFileKey":  "huD41oTL0FAa7xsNEK8tAM",
+    "totalAssets":  23,
+    "resolvedAssets":  23,
+    "missingAssets":  0,
+    "assets":  [
+                   {
+                       "nodeId":  "1200:4310",
+                       "imageRef":  "e95c6db48356b62dbb7aefdd2d4cfb3624c95d59",
+                       "styleRef":  "fill_YKBFZV",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 0.4327511191368103,
+                                                 0,
+                                                 0.4862608015537262
+                                             ],
+                                             [
+                                                 0,
+                                                 0.8303952813148499,
+                                                 0.10214966535568237
+                                             ]
+                                         ],
+                       "fileName":  "fill_YKBFZV_e95c6db4.png",
+                       "relativePath":  "/figma-assets/raw/fill_YKBFZV_e95c6db4.png",
+                       "dimensions":  {
+                                          "height":  1063,
+                                          "width":  1116
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:4369",
+                       "imageRef":  "3d86cd17d5231f54689724ead1925a2af0f93763",
+                       "styleRef":  "fill_EPTO4T",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 0.8974359631538391,
+                                                 0,
+                                                 0.05128205940127373
+                                             ],
+                                             [
+                                                 0,
+                                                 0.6474359035491943,
+                                                 0.17680014669895172
+                                             ]
+                                         ],
+                       "fileName":  "fill_EPTO4T_3d86cd17.png",
+                       "relativePath":  "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+                       "dimensions":  {
+                                          "height":  466,
+                                          "width":  646
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:4382",
+                       "imageRef":  "1e666bebfc76b507b044be7a3474f40316254750",
+                       "styleRef":  "fill_THI4RN",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 0.8720433115959167,
+                                                 0,
+                                                 0.06555221974849701
+                                             ],
+                                             [
+                                                 0,
+                                                 0.838822603225708,
+                                                 0.046825796365737915
+                                             ]
+                                         ],
+                       "fileName":  "fill_THI4RN_1e666beb.png",
+                       "relativePath":  "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+                       "dimensions":  {
+                                          "height":  604,
+                                          "width":  837
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:4408",
+                       "imageRef":  "64a33e192164b540a9a2389c66df16761828f39c",
+                       "styleRef":  "fill_3FJG3P",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 0.7094594836235046,
+                                                 0,
+                                                 0.12837837636470795
+                                             ],
+                                             [
+                                                 0,
+                                                 0.6824324131011963,
+                                                 0.15878379344940186
+                                             ]
+                                         ],
+                       "fileName":  "fill_3FJG3P_64a33e19.png",
+                       "relativePath":  "/figma-assets/raw/fill_3FJG3P_64a33e19.png",
+                       "dimensions":  {
+                                          "height":  491,
+                                          "width":  681
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:4421",
+                       "imageRef":  "c8a0de372b80193a7ee2be3d4b5b4115657ad6c4",
+                       "styleRef":  "fill_VKSC1W",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 0.945031464099884,
+                                                 0,
+                                                 0.027484260499477386
+                                             ],
+                                             [
+                                                 0,
+                                                 0.7266187071800232,
+                                                 0.1366906464099884
+                                             ]
+                                         ],
+                       "fileName":  "fill_VKSC1W_c8a0de37.png",
+                       "relativePath":  "/figma-assets/raw/fill_VKSC1W_c8a0de37.png",
+                       "dimensions":  {
+                                          "height":  873,
+                                          "width":  1210
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:4434",
+                       "imageRef":  "ffc7fd09864237c71443423a35eee57c8873a76f",
+                       "styleRef":  "fill_RHRVZZ",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 1.0526316165924072,
+                                                 0,
+                                                 -0.026315787807106972
+                                             ],
+                                             [
+                                                 0,
+                                                 0.7593985199928284,
+                                                 0.12030075490474701
+                                             ]
+                                         ],
+                       "fileName":  "fill_RHRVZZ_ffc7fd09.png",
+                       "relativePath":  "/figma-assets/raw/fill_RHRVZZ_ffc7fd09.png",
+                       "dimensions":  {
+                                          "height":  820,
+                                          "width":  1080
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:4489",
+                       "imageRef":  "79e9d64e8a9f96968db9b4778d864e149b8cd9e1",
+                       "styleRef":  "fill_VC6PCG",
+                       "needsCropping":  false,
+                       "cropTransform":  null,
+                       "fileName":  "fill_VC6PCG_79e9d64e.png",
+                       "relativePath":  "/figma-assets/raw/fill_VC6PCG_79e9d64e.png",
+                       "dimensions":  {
+                                          "height":  744,
+                                          "width":  694
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:4529",
+                       "imageRef":  "f271b7668a176e41778aab52a2b20ed65cf5fd9c",
+                       "styleRef":  "fill_TZ5X2T",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 0.9979357123374939,
+                                                 0,
+                                                 0.0024029428604990244
+                                             ],
+                                             [
+                                                 0,
+                                                 1,
+                                                 0
+                                             ]
+                                         ],
+                       "fileName":  "fill_TZ5X2T_f271b766.png",
+                       "relativePath":  "/figma-assets/raw/fill_TZ5X2T_f271b766.png",
+                       "dimensions":  {
+                                          "height":  591,
+                                          "width":  2946
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:4592",
+                       "imageRef":  "e95c6db48356b62dbb7aefdd2d4cfb3624c95d59",
+                       "styleRef":  "fill_5JQEZY",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 0.847650945186615,
+                                                 0,
+                                                 0.14428777992725372
+                                             ],
+                                             [
+                                                 0,
+                                                 0.8305433392524719,
+                                                 0.0925462618470192
+                                             ]
+                                         ],
+                       "fileName":  "fill_5JQEZY_e95c6db4.png",
+                       "relativePath":  "/figma-assets/raw/fill_5JQEZY_e95c6db4.png",
+                       "dimensions":  {
+                                          "height":  1063,
+                                          "width":  2187
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:4794",
+                       "imageRef":  "1e666bebfc76b507b044be7a3474f40316254750",
+                       "styleRef":  "fill_C4OUE1",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 0.9818181991577148,
+                                                 0,
+                                                 0.00909090880304575
+                                             ],
+                                             [
+                                                 0,
+                                                 1.3090908527374268,
+                                                 -0.15454545617103577
+                                             ]
+                                         ],
+                       "fileName":  "fill_C4OUE1_1e666beb.png",
+                       "relativePath":  "/figma-assets/raw/fill_C4OUE1_1e666beb.png",
+                       "dimensions":  {
+                                          "height":  720,
+                                          "width":  943
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:4800",
+                       "imageRef":  "bf27a8789f7565099620eca26f7fa003decfec8b",
+                       "styleRef":  "fill_4ZTOB5",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 1.0384615659713745,
+                                                 0,
+                                                 -0.019230788573622704
+                                             ],
+                                             [
+                                                 0,
+                                                 1.2793269157409668,
+                                                 -0.1396634876728058
+                                             ]
+                                         ],
+                       "fileName":  "fill_4ZTOB5_bf27a878.png",
+                       "relativePath":  "/figma-assets/raw/fill_4ZTOB5_bf27a878.png",
+                       "dimensions":  {
+                                          "height":  720,
+                                          "width":  887
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:4803",
+                       "imageRef":  "a4b5ab279d7c7a1e24b1fc35e52aee5a3600c4e1",
+                       "styleRef":  "fill_DMAWF3",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 0.8571428656578064,
+                                                 0,
+                                                 0.07142853736877441
+                                             ],
+                                             [
+                                                 0,
+                                                 1.1654763221740723,
+                                                 -0.08273813128471375
+                                             ]
+                                         ],
+                       "fileName":  "fill_DMAWF3_a4b5ab27.png",
+                       "relativePath":  "/figma-assets/raw/fill_DMAWF3_a4b5ab27.png",
+                       "dimensions":  {
+                                          "height":  720,
+                                          "width":  839
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:4806",
+                       "imageRef":  "8b0b41895372ea913fb600e8216ffb49b60ba7e3",
+                       "styleRef":  "fill_RA4PPD",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 1.0384615659713745,
+                                                 0,
+                                                 -0.01923074945807457
+                                             ],
+                                             [
+                                                 0,
+                                                 1.274999976158142,
+                                                 -0.13749997317790985
+                                             ]
+                                         ],
+                       "fileName":  "fill_RA4PPD_8b0b4189.png",
+                       "relativePath":  "/figma-assets/raw/fill_RA4PPD_8b0b4189.png",
+                       "dimensions":  {
+                                          "height":  720,
+                                          "width":  884
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:4990",
+                       "imageRef":  "6a0a1876e7a45ba7189675a049ad45fe670394d2",
+                       "styleRef":  "fill_CGM3WO",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 1,
+                                                 0,
+                                                 0
+                                             ],
+                                             [
+                                                 0,
+                                                 0.34999996423721313,
+                                                 0.3765625059604645
+                                             ]
+                                         ],
+                       "fileName":  "fill_CGM3WO_6a0a1876.png",
+                       "relativePath":  "/figma-assets/raw/fill_CGM3WO_6a0a1876.png",
+                       "dimensions":  {
+                                          "height":  273,
+                                          "width":  1170
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:5455",
+                       "imageRef":  "813a9a321e847421b2b061548a143fa50ba90421",
+                       "styleRef":  "fill_3MZVXN",
+                       "needsCropping":  false,
+                       "cropTransform":  null,
+                       "fileName":  "fill_3MZVXN_813a9a32.png",
+                       "relativePath":  "/figma-assets/raw/fill_3MZVXN_813a9a32.png",
+                       "dimensions":  {
+                                          "height":  268,
+                                          "width":  465
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:5457",
+                       "imageRef":  "76d259b6bf620843f9aba29becc497be54c3d7b8",
+                       "styleRef":  "fill_DNYKPI",
+                       "needsCropping":  false,
+                       "cropTransform":  null,
+                       "fileName":  "fill_DNYKPI_76d259b6.png",
+                       "relativePath":  "/figma-assets/raw/fill_DNYKPI_76d259b6.png",
+                       "dimensions":  {
+                                          "height":  720,
+                                          "width":  720
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:5458",
+                       "imageRef":  "c5edb8222ab75b18dd520de6cbf112661956c1aa",
+                       "styleRef":  "fill_3OI1TK",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 0.9810404181480408,
+                                                 0,
+                                                 0.009479771368205547
+                                             ],
+                                             [
+                                                 0,
+                                                 0.9810404181480408,
+                                                 0.0006089704693295062
+                                             ]
+                                         ],
+                       "fileName":  "fill_3OI1TK_c5edb822.png",
+                       "relativePath":  "/figma-assets/raw/fill_3OI1TK_c5edb822.png",
+                       "dimensions":  {
+                                          "height":  961,
+                                          "width":  961
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:5737",
+                       "imageRef":  "7ad629bcfd2a1d43272e8f6f7e15925e9d0acb88",
+                       "styleRef":  "fill_8T5TD1",
+                       "needsCropping":  true,
+                       "cropTransform":  [
+                                             [
+                                                 3.9344263076782227,
+                                                 0,
+                                                 -1.4672131538391113
+                                             ],
+                                             [
+                                                 0,
+                                                 0.8979963660240173,
+                                                 0.05100184679031372
+                                             ]
+                                         ],
+                       "fileName":  "fill_8T5TD1_7ad629bc.png",
+                       "relativePath":  "/figma-assets/raw/fill_8T5TD1_7ad629bc.png",
+                       "dimensions":  {
+                                          "height":  1379,
+                                          "width":  1024
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:6047",
+                       "imageRef":  "7136cc160e8dc8a4c19eee3193c09ce756f3ed45",
+                       "styleRef":  "fill_6OC3H9",
+                       "needsCropping":  false,
+                       "cropTransform":  null,
+                       "fileName":  "fill_6OC3H9_7136cc16.png",
+                       "relativePath":  "/figma-assets/raw/fill_6OC3H9_7136cc16.png",
+                       "dimensions":  {
+                                          "height":  277,
+                                          "width":  499
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:6112",
+                       "imageRef":  "b3596ec5433f770d4d9fd82c2a7c2631bbf56674",
+                       "styleRef":  "fill_XD4G8T",
+                       "needsCropping":  false,
+                       "cropTransform":  null,
+                       "fileName":  "fill_XD4G8T_b3596ec5.png",
+                       "relativePath":  "/figma-assets/raw/fill_XD4G8T_b3596ec5.png",
+                       "dimensions":  {
+                                          "height":  980,
+                                          "width":  1470
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:6390",
+                       "imageRef":  "b3596ec5433f770d4d9fd82c2a7c2631bbf56674",
+                       "styleRef":  "fill_OJJ5Q1",
+                       "needsCropping":  false,
+                       "cropTransform":  null,
+                       "fileName":  "fill_OJJ5Q1_b3596ec5.png",
+                       "relativePath":  "/figma-assets/raw/fill_OJJ5Q1_b3596ec5.png",
+                       "dimensions":  {
+                                          "height":  980,
+                                          "width":  1470
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:6400",
+                       "imageRef":  "74ec6dcf1ea3659e16db874969c936bf88ca3553",
+                       "styleRef":  "fill_KULSWW",
+                       "needsCropping":  false,
+                       "cropTransform":  null,
+                       "fileName":  "fill_KULSWW_74ec6dcf.png",
+                       "relativePath":  "/figma-assets/raw/fill_KULSWW_74ec6dcf.png",
+                       "dimensions":  {
+                                          "height":  722,
+                                          "width":  800
+                                      },
+                       "exists":  true
+                   },
+                   {
+                       "nodeId":  "1200:6645",
+                       "imageRef":  "51d05531c4ee35d6d05caebc0726956432d1aa4c",
+                       "styleRef":  "fill_SXY62B",
+                       "needsCropping":  false,
+                       "cropTransform":  null,
+                       "fileName":  "fill_SXY62B_51d05531.png",
+                       "relativePath":  "/figma-assets/raw/fill_SXY62B_51d05531.png",
+                       "dimensions":  {
+                                          "height":  759,
+                                          "width":  730
+                                      },
+                       "exists":  true
+                   }
+               ]
+}

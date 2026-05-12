@@ -1,8 +1,92 @@
 {
-  "description": "Figma context",
-  "files": {
-    "context.json": "Full raw figma context",
-    "components.json": "UI components extracted from Figma",
-    "design-system.json": "Figma styles and document metadata"
-  }
+    "description":  "Figma context — Stetsom | CMS (fileKey: huD41oTL0FAa7xsNEK8tAM)",
+    "figmaFileKey":  "huD41oTL0FAa7xsNEK8tAM",
+    "extractedAt":  "2026-05-12T00:00:00Z",
+    "assets":  {
+                   "manifest":  "assets-manifest.json",
+                   "downloadRoot":  "public/figma-assets/raw",
+                   "totalAssets":  23
+               },
+    "files":  {
+                  "context.json":  "Full raw figma context (node metadata snapshot)",
+                  "components.json":  "UI components extracted from Figma",
+                  "design-system.json":  "Figma styles and document metadata (globalVars)",
+                  "assets-manifest.json":  "Resolved mapping from Figma node/style refs to local asset files",
+                  "asset-candidates-unique.json":  "Normalized unique list of candidate IMAGE fills",
+                  "DESIGN_SYSTEM_REFERENCE.md":  "Primary oracle for agents: colors, typography, layout tokens, component mapping",
+                  "OFFLINE_ASSETS_REFERENCE.md":  "Practical guide for consuming local assets without MCP",
+                  "PAGES_REFERENCE.md":  "Per-page section breakdown with Figma node IDs, backgrounds, and components"
+              },
+    "websiteSection":  {
+                           "nodeId":  "1200:4302",
+                           "name":  "Website",
+                           "pages":  {
+                                         "home":  {
+                                                      "sectionNodeId":  "1200:4303",
+                                                      "desktop":  {
+                                                                      "frameNodeId":  "1200:4584",
+                                                                      "width":  1440
+                                                                  },
+                                                      "mobile":  {
+                                                                     "frameNodeId":  "1200:4304",
+                                                                     "width":  375
+                                                                 }
+                                                  },
+                                         "produtos":  {
+                                                          "sectionNodeId":  "1200:4765",
+                                                          "desktop":  {
+                                                                          "frameNodeId":  "1200:4982",
+                                                                          "width":  1440
+                                                                      },
+                                                          "mobile":  {
+                                                                         "frameNodeId":  "1200:4766",
+                                                                         "width":  375
+                                                                     }
+                                                      },
+                                         "produto-selecionado":  {
+                                                                     "sectionNodeId":  "1200:5390",
+                                                                     "desktop":  {
+                                                                                     "frameNodeId":  "1200:5666",
+                                                                                     "width":  1440
+                                                                                 },
+                                                                     "mobile":  {
+                                                                                    "frameNodeId":  "1200:5391",
+                                                                                    "width":  375
+                                                                                }
+                                                                 },
+                                         "sobre":  {
+                                                       "sectionNodeId":  "1200:5943",
+                                                       "desktop":  {
+                                                                       "frameNodeId":  "1200:6180",
+                                                                       "width":  1440
+                                                                   },
+                                                       "mobile":  {
+                                                                      "frameNodeId":  "1200:5944",
+                                                                      "width":  375
+                                                                  }
+                                                   },
+                                         "suporte":  {
+                                                         "sectionNodeId":  "1200:6453",
+                                                         "desktop":  {
+                                                                         "frameNodeId":  "1200:6454",
+                                                                         "width":  1440
+                                                                     },
+                                                         "mobile":  {
+                                                                        "frameNodeId":  "1200:6785",
+                                                                        "width":  375
+                                                                    }
+                                                     },
+                                         "404":  {
+                                                     "sectionNodeId":  "1200:7085",
+                                                     "desktop":  {
+                                                                     "frameNodeId":  "1200:7086",
+                                                                     "width":  1440
+                                                                 },
+                                                     "mobile":  {
+                                                                    "frameNodeId":  "1200:7151",
+                                                                    "width":  375
+                                                                }
+                                                 }
+                                     }
+                       }
 }

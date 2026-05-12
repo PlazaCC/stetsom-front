@@ -7,9 +7,81 @@
       "agent": "claude-sonnet-4-6",
       "type": "chore",
       "summary": "Initialized LLM-owned context changelog",
-      "files": ["docs/ia/context.json", ".claude/rules/llm-owned-context-json.md", ".agents/rules/llm-owned-context-json.md"],
+      "files": [
+        "docs/ia/context.json",
+        ".claude/rules/llm-owned-context-json.md",
+        ".agents/rules/llm-owned-context-json.md"
+      ],
       "rationale": "Establish cross-agent visibility: every AI change logged here so any future agent knows what was done, why, and by whom.",
       "outcome": "Changelog file created with v1 schema. Rule updated to enforce mandatory append on every AI-driven change."
+    },
+    {
+      "ts": "2026-05-12T06:39:54Z",
+      "agent": "gpt-5.3-codex",
+      "type": "chore",
+      "summary": "Generate offline Figma asset manifest and enforce local-first rules",
+      "files": [
+        "docs/ia/figma/asset-candidates.json",
+        "docs/ia/figma/asset-candidates-unique.json",
+        "docs/ia/figma/assets-manifest.json",
+        "docs/ia/figma/meta.json",
+        "docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md",
+        "docs/ia/figma/OFFLINE_ASSETS_REFERENCE.md",
+        ".agents/rules/figma-to-code.md",
+        ".claude/rules/figma-to-code.md",
+        ".agents/rules/stetsom-design-system.md",
+        ".claude/rules/stetsom-design-system.md",
+        "src/components/ui/container.tsx",
+        "public/figma-assets/raw/*",
+        "docs/ia/context.json"
+      ],
+      "rationale": "The user requested a full local-first workflow with Figma assets downloaded and reusable context/rules so future implementation does not depend on repeated MCP lookups.",
+      "outcome": "Downloaded 46 Figma assets into the public folder, generated a node/style-to-path manifest, documented the offline workflow, and updated mirrored agent rules to prioritize local manifest usage."
+    },
+    {
+      "ts": "2026-05-12T17:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "docs",
+      "summary": "Extract full page/section Figma node map for all 6 routes (Home, Produtos, Produto, Sobre, Suporte, 404)",
+      "files": [
+        "docs/ia/figma/meta.json",
+        "docs/ia/figma/PAGES_REFERENCE.md",
+        "docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md"
+      ],
+      "rationale": "User requested a full audit and re-extraction of Figma context so all AI/docs files accurately reflect the complete website design. Previous meta.json lacked page-level node IDs; DESIGN_SYSTEM_REFERENCE.md lacked layout tokens and typography table.",
+      "outcome": "meta.json now contains page-to-nodeId map for all 6 routes (desktop+mobile frames). New PAGES_REFERENCE.md documents every section per page with nodeId, background, and key components. DESIGN_SYSTEM_REFERENCE.md updated with precise layout tokens, color table, typography styles, and image asset map."
+    },
+    {
+      "ts": "2026-05-12T18:30:00Z",
+      "agent": "gpt-5.3-codex",
+      "type": "config",
+      "summary": "Add autonomous POC loop custom agent",
+      "files": [".github/agents/orquestrador-poc-loop.agent.md", "docs/ia/context.json"],
+      "rationale": "User requested a dedicated orchestrator agent to run the project task pipeline continuously with branch-per-activity behavior and autonomous review/refinement cycles.",
+      "outcome": "Workspace now includes a custom invocable agent focused on continuous docs/ia/tasks orchestration, subagent-assisted execution, branch isolation, and backlog regeneration when exhausted."
+    },
+    {
+      "ts": "2026-05-12T19:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "docs",
+      "summary": "Create 12 task files with task-NN naming, Priority field and correct branch names",
+      "files": [
+        "docs/ia/tasks/TASKS.md",
+        "docs/ia/tasks/task-01-foundation-layout-primitives.md",
+        "docs/ia/tasks/task-02-header-figma-fidelity.md",
+        "docs/ia/tasks/task-03-footer-figma-fidelity.md",
+        "docs/ia/tasks/task-04-home-hero-gradiente-dark-section.md",
+        "docs/ia/tasks/task-05-home-novidades-tabs-bases.md",
+        "docs/ia/tasks/task-06-produtos-hero-filtros-grid.md",
+        "docs/ia/tasks/task-07-produto-detalhe-implementacao-completa.md",
+        "docs/ia/tasks/task-08-sobre-hero-redbanner-galeria.md",
+        "docs/ia/tasks/task-09-sobre-factory-social-medias.md",
+        "docs/ia/tasks/task-10-suporte-redesign-completo.md",
+        "docs/ia/tasks/task-11-404-not-found-page.md",
+        "docs/ia/tasks/task-12-mock-data-enrichment.md"
+      ],
+      "rationale": "User requested task files renamed from POC-NN to task-NN prefix, with Priority field added and branch names updated to feat/task-NN-* convention.",
+      "outcome": "All 12 task files use task-NN naming with Priority, Status, Branch, Acceptance Criteria and Implementation Notes. TASKS.md index updated to match."
     }
   ]
 }
