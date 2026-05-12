@@ -74,16 +74,14 @@ export default function TimelineRefactored({
               <div className='mb-2 font-sans-condensed text-sm font-medium uppercase tracking-wide text-brand'>
                 {label}
               </div>
-              <h2 className='font-sans-condensed text-[48px] font-black leading-none text-white lg:text-[56px]'>
+              <h2 className='font-sans-condensed text-5xl font-black leading-none text-white lg:text-display-lg'>
                 {title.split('\n').map((line) => (
                   <span key={line} className='block'>
                     {line}
                   </span>
                 ))}
               </h2>
-              <p className='mt-4 max-w-md text-sm leading-[1.6] text-[rgb(184,184,184)] lg:text-base'>
-                {description}
-              </p>
+              <p className='mt-4 max-w-md text-sm leading-[1.6] text-text-subtle-dark lg:text-base'>{description}</p>
             </div>
 
             {/* Setas de Controle */}
@@ -137,7 +135,7 @@ export default function TimelineRefactored({
                         className={`absolute left-1/2 top-1/2 w-8 h-8 -translate-x-1/2 -translate-y-1/2 rounded-full transition-colors duration-300 ${
                           index === activeIndex
                             ? 'bg-brand border-2 border-brand z-30'
-                            : 'bg-brand-dark border-2 border-[rgb(80,80,80)] hover:border-brand z-20'
+                            : 'bg-brand-dark border-2 border-zinc-600 hover:border-brand z-20'
                         }`}
                         aria-label={`Go to ${event.title}`}
                       />
@@ -145,14 +143,14 @@ export default function TimelineRefactored({
                       <div className='absolute left-1/2 top-4.5 flex min-w-max -translate-x-1/2 flex-col items-center gap-1 text-center'>
                         <span
                           className={`font-sans-condensed font-bold transition-all duration-300 ${
-                            index === activeIndex ? 'text-sm text-brand' : 'text-xs text-[rgb(102,102,102)]'
+                            index === activeIndex ? 'text-sm text-brand' : 'text-xs text-text-subtle'
                           }`}>
                           {event.year}
                         </span>
 
                         <span
                           className={`font-sans-condensed font-bold uppercase text-center leading-tight transition-all duration-300 ${
-                            index === activeIndex ? 'text-xs text-white' : 'text-xs text-[rgb(102,102,102)]'
+                            index === activeIndex ? 'text-xs text-white' : 'text-xs text-text-subtle'
                           }`}>
                           {event.shortTitle}
                         </span>
@@ -167,7 +165,7 @@ export default function TimelineRefactored({
           {/* BOX 3: EVENT DETAILS - Imagem + Data + Título + Descrição */}
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'>
             {/* Imagem */}
-            <div className='relative w-full aspect-video bg-[rgb(40,40,40)] rounded-sm overflow-hidden'>
+            <div className='relative w-full aspect-video bg-surface-elevated rounded-sm overflow-hidden'>
               <Image
                 src={activeEvent.image}
                 alt={activeEvent.title}
@@ -179,7 +177,7 @@ export default function TimelineRefactored({
             {/* Texto */}
             <div className='transition-all duration-500 space-y-4'>
               <div>
-                <h3 className='font-sans-condensed font-black text-[64px] lg:text-[80px] text-brand leading-none mb-2'>
+                <h3 className='font-sans-condensed font-black text-display-xl lg:text-display-2xl text-brand leading-none mb-2'>
                   {activeEvent.year}
                 </h3>
                 <h4 className='font-sans-condensed font-black text-[28px] lg:text-[32px] text-white uppercase'>
@@ -187,7 +185,7 @@ export default function TimelineRefactored({
                 </h4>
               </div>
 
-              <p className='text-base text-[rgb(184,184,184)] leading-[1.7]'>{activeEvent.description}</p>
+              <p className='text-base text-text-subtle-dark leading-[1.7]'>{activeEvent.description}</p>
             </div>
           </div>
         </div>

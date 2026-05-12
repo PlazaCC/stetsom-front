@@ -21,7 +21,7 @@ export default async function ProdutoDetalhePage(props: PageProps<ProductDetailR
       <Container>
         <div className='mb-10'>
           <SectionLabel label={category.name} title={product.name} />
-          <p className='mt-4 max-w-[760px] text-base text-[rgb(102,102,102)]'>{product.description}</p>
+          <p className='mt-4 max-w-190 text-base text-text-subtle'>{product.description}</p>
           <div className='mt-4 flex flex-wrap gap-3'>
             {Object.entries(product.specifications).map(([key, value]) => (
               <span

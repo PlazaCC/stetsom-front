@@ -15,7 +15,7 @@ export default async function SobrePage() {
   return (
     <div>
       {/* 1. HERO */}
-      <section className='relative bg-[rgb(9,9,11)] h-[400px] overflow-hidden flex items-center'>
+      <section className='relative bg-brand-dark h-100 overflow-hidden flex items-center'>
         <Image
           src={aboutPayload.hero.image}
           alt={aboutPayload.hero.imageAlt}
@@ -25,7 +25,7 @@ export default async function SobrePage() {
         />
         <Container className='z-10'>
           <SectionLabel label={aboutPayload.hero.label} />
-          <h1 className='font-sans-condensed font-black text-[72px] leading-none uppercase text-white mt-1'>
+          <h1 className='font-sans-condensed font-black text-7xl leading-none uppercase text-white mt-1'>
             {aboutPayload.hero.title.split('\n').map((line) => (
               <span key={line} className='block'>
                 {line}

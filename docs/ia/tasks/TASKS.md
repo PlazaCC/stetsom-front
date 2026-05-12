@@ -41,3 +41,4 @@ Fase 6 — Suporte + 404 (paralelo, depende de task-01):
 | task-10 | Suporte — Redesign Completo (8 seções)        | 6          | TODO        | YES         | feat/task-10-suporte-redesign-completo        |
 | task-11 | 404 — Criar Página not-found.tsx              | 6          | TODO        | YES         | feat/task-11-404-not-found-page               |
 | task-12 | Mock Data — Enriquecimento Imagens + Specs    | 1          | TODO        | NO          | feat/task-12-mock-data-enrichment             |
+| task-13 | Design Token Foundation — Cores, tipografia, espaçamento | 1 | TODO  | NO          | feat/task-02-header-figma-fidelity            |

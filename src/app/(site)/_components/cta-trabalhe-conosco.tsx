@@ -18,16 +18,10 @@ export default function CTATrabalheConosco({ section }: Readonly<CTATrabalheCono
           <div>
             <SectionLabel label={section.label} title={section.title} />
 
-            <p className='text-base text-[rgb(102,102,102)] mt-6 leading-[1.7] mb-8'>
-              {section.description}
-            </p>
+            <p className='text-base text-text-subtle mt-6 leading-[1.7] mb-8'>{section.description}</p>
 
             <a href={section.buttonHref} target='_blank' rel='noopener noreferrer'>
-              <Button
-                variant='brand'
-                size='md'
-                className='inline-flex items-center gap-2'
-              >
+              <Button variant='brand' size='md' className='inline-flex items-center gap-2'>
                 {section.buttonLabel}
                 <ExternalLink size={18} />
               </Button>
@@ -35,7 +29,7 @@ export default function CTATrabalheConosco({ section }: Readonly<CTATrabalheCono
           </div>
 
           {/* Imagem Direita */}
-          <div className='relative aspect-square w-full rounded-sm bg-[rgb(240,240,240)] flex items-center justify-center'>
+          <div className='relative aspect-square w-full rounded-sm bg-muted flex items-center justify-center'>
             <Image src={section.image} alt={section.imageAlt} fill className='object-cover' />
           </div>
         </div>

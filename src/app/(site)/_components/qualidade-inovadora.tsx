@@ -15,16 +15,13 @@ interface QualidadeInovadoraProps {
   values: AboutValue[]
 }
 
-export default function QualidadeInovadora({
-  section,
-  values,
-}: Readonly<QualidadeInovadoraProps>) {
+export default function QualidadeInovadora({ section, values }: Readonly<QualidadeInovadoraProps>) {
   return (
     <section className='bg-white py-20'>
       <Container>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-16 items-start'>
           {/* Imagem Esquerda */}
-          <div className='relative aspect-square w-full rounded-sm bg-[rgb(240,240,240)] flex items-center justify-center'>
+          <div className='relative aspect-square w-full rounded-sm bg-muted flex items-center justify-center'>
             <Image src={section.image} alt={section.imageAlt} fill className='object-cover' />
           </div>
 
@@ -32,9 +29,7 @@ export default function QualidadeInovadora({
           <div>
             <SectionLabel label={section.label} title={section.title} />
 
-            <p className='text-base text-[rgb(102,102,102)] mt-6 leading-[1.7]'>
-              {section.description}
-            </p>
+            <p className='text-base text-text-subtle mt-6 leading-[1.7]'>{section.description}</p>
 
             {/* 3 Value Cards */}
             <div className='grid grid-cols-1 gap-6 mt-10'>
@@ -50,9 +45,7 @@ export default function QualidadeInovadora({
                       <h3 className='font-sans-condensed font-bold text-base uppercase text-brand-dark mb-2'>
                         {value.title}
                       </h3>
-                      <p className='text-sm text-[rgb(102,102,102)] leading-relaxed'>
-                        {value.description}
-                      </p>
+                      <p className='text-sm text-text-subtle leading-relaxed'>{value.description}</p>
                     </div>
                   </div>
                 )

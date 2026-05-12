@@ -13,7 +13,7 @@ export default function RedBanner({ milestones }: Readonly<RedBannerProps>) {
         <div className='flex items-center gap-6'>
           {repeatedMilestones.map((milestone, i) => (
             <div key={i} className='flex items-center gap-6 shrink-0'>
-              <span className='text-white font-sans-condensed font-medium text-[18px] uppercase whitespace-nowrap'>
+              <span className='text-white font-sans-condensed font-medium text-lg uppercase whitespace-nowrap'>
                 {milestone}
               </span>
               {i < repeatedMilestones.length - 1 && <div className='w-2 h-2 rounded-full bg-white shrink-0' />}

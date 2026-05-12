@@ -7,7 +7,7 @@ import Link from "next/link";
 // Legacy hero kept for fallback while HeroCarousel is being rolled out.
 export default function Hero() {
   return (
-    <div className="relative w-full h-130 sm:h-155 lg:h-175 overflow-hidden bg-[rgb(9,9,11)]">
+    <div className="relative w-full h-130 sm:h-155 lg:h-175 overflow-hidden bg-brand-dark">
       <Image
         className="absolute inset-0 object-cover opacity-60"
         src="/produtos-hero.png"
@@ -19,14 +19,14 @@ export default function Hero() {
       <Container className="relative mx-auto flex h-full flex-col justify-center py-16 sm:py-0">
         <SectionLabel label="Catálogo 2024" />
 
-        <h1 className="mt-2 font-sans-condensed font-black text-[48px] leading-[0.92] uppercase text-white sm:text-[64px] lg:text-[90px]">
+        <h1 className="mt-2 font-sans-condensed font-black text-5xl leading-[0.92] uppercase text-white sm:text-display-xl lg:text-[90px]">
           SEMPRE
           <br />
           PRIMEIRA
           <br />
           NA POTÊNCIA
         </h1>
-        <p className="mt-4 max-w-70 text-sm leading-relaxed text-[rgb(184,184,184)] sm:max-w-95 sm:text-base lg:mt-5 lg:max-w-120 lg:text-lg">
+        <p className="mt-4 max-w-70 text-sm leading-relaxed text-text-subtle-dark sm:max-w-95 sm:text-base lg:mt-5 lg:max-w-120 lg:text-lg">
           Tecnologia de amplificação que define o padrão de qualidade no mercado
           automotivo.
         </p>

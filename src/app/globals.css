@@ -8,9 +8,22 @@
   --color-brand: rgb(232, 19, 42);
   --color-brand-dark: rgb(18, 18, 18);
   --color-off-white: rgb(245, 244, 242);
-  --color-surface-elevated: rgb(31, 31, 31);
-  --color-text-subtle: rgb(102, 102, 102);
-  --color-text-subtle-dark: rgb(184, 184, 184);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-text-subtle: var(--text-subtle);
+  --color-text-subtle-dark: var(--text-subtle-dark);
+  --color-icon-muted: var(--icon-muted);
+
+  /* Typography — non-standard sizes not in Tailwind default scale */
+  --text-2xs: 0.6875rem;
+  --text-button-md: 0.8125rem;
+  --text-section-title: 1.375rem;
+  --text-display-sm: 2.5rem;
+  --text-display-lg: 3.5rem;
+  --text-display-xl: 4rem;
+  --text-display-2xl: 5rem;
+
+  /* Spacing — Figma layout values reused across components */
+  --spacing-logo-nav: 3.1875rem;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -59,8 +72,7 @@
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
-  --color-icon-muted: #767676;
-  --card: oklch(1 0 0);
+  --card: oklch(0.975 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
@@ -68,8 +80,13 @@
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --muted: oklch(0.942 0 0);
+  --muted-foreground: oklch(0.37 0 0);
+  /* Stetsom custom tokens — follow :root → @theme inline var() pattern */
+  --text-subtle: oklch(0.42 0 0);
+  --text-subtle-dark: oklch(0.73 0 0);
+  --surface-elevated: oklch(0.22 0 0);
+  --icon-muted: oklch(0.50 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
@@ -95,7 +112,6 @@
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --color-icon-muted: #767676;
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);

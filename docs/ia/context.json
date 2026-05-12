@@ -228,6 +228,104 @@
       "files": [".agents/skills/create-pr/SKILL.md", ".claude/skills/create-pr/SKILL.md"],
       "rationale": "User requested skill show PR title/body as copy-paste blocks and ask whether to create PR online or run code-review first before proceeding",
       "outcome": "create-pr skill restructured to 7 steps: Step 4 presents copy-paste blocks, Step 5 asks A/B choice, Step 6 runs gh pr create, Step 7 marks task DONE"
+    },
+    {
+      "ts": "2026-05-12T14:31:24.9063824Z",
+      "agent": "gpt-5.4-mini",
+      "type": "chore",
+      "summary": "Add theme token rule to block hardcoded colors",
+      "files": [".agents/rules/theme-tokens.md", ".claude/rules/theme-tokens.md", "docs/ia/context.json"],
+      "rationale": "The user asked to codify a permanent rule that keeps UI work aligned with the official shadcn theme and avoids hardcoded color values like text-[#000000] across the app.",
+      "outcome": "Both agent runtimes now have a shared theme-token rule that prefers semantic theme variables and rejects arbitrary color values for consistent UI implementation."
+    },
+    {
+      "ts": "2026-05-12T14:32:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "feat",
+      "summary": "Align Header with Figma fidelity — typography, pill button, mobile border",
+      "files": ["src/components/ui/header.tsx"],
+      "rationale": "task-02 requires aligning Header to Figma nodes 1200:4585 (desktop) / 1200:4305 (mobile): nav link color/weight, Garantia button shape, and mobile border color",
+      "outcome": "Nav links use Barlow Regular 18px #565656; Garantia button is rounded-full bg-brand-dark; mobile border is border-[#999999]; all 6 acceptance criteria met"
+    },
+    {
+      "ts": "2026-05-12T14:50:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Install theme-tokens rule in .claude/rules and create task-13 for design token foundation",
+      "files": [
+        ".claude/rules/theme-tokens.md",
+        "docs/ia/tasks/task-13-design-token-foundation.md",
+        "docs/ia/tasks/TASKS.md"
+      ],
+      "rationale": "theme-tokens.md existed only in .agents/rules (not loaded by Claude Code CLI); task-13 created to eliminate all hardcoded color values and centralize design tokens in globals.css",
+      "outcome": "Rule now dual-installed; task-13 queued on feat/task-02-header-figma-fidelity branch with 8 token mappings and acceptance criteria"
+    },
+    {
+      "ts": "2026-05-12T15:30:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "feat",
+      "summary": "Implement task-13: remap shadcn tokens to Stetsom values and eliminate all hardcoded color/size classes",
+      "files": [
+        "src/app/globals.css",
+        "src/components/ui/header.tsx",
+        "src/components/ui/footer.tsx",
+        "src/components/ui/product-card.tsx",
+        "src/components/ui/section-label.tsx",
+        "src/components/ui/button.tsx",
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/_components/hero.tsx",
+        "src/app/(site)/_components/hero-carousel.tsx",
+        "src/app/(site)/_components/timeline-refactored.tsx",
+        "src/app/(site)/_components/cta-trabalhe-conosco.tsx",
+        "src/app/(site)/_components/qualidade-inovadora.tsx",
+        "src/app/(site)/_components/nossas-bases.tsx",
+        "src/app/(site)/_components/faq-accordion.tsx",
+        "src/app/(site)/_components/red-banner.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "docs/ia/tasks/task-13-design-token-foundation.md",
+        ".claude/rules/tailwind-v4.md",
+        ".agents/rules/tailwind-v4.md"
+      ],
+      "rationale": "User requested token system to follow shadcn pattern: remap existing semantic tokens (--muted-foreground, --card, --muted) to Stetsom values; move inline @theme tokens to :root → var() pattern; add typography/spacing utilities. No new arbitrary color tokens created.",
+      "outcome": "Zero hardcoded color classes remain in src/. shadcn tokens remapped: --muted-foreground=#565656, --card=#F8F8F8, --muted=#F0F0F0. Custom tokens follow :root→@theme pattern. Typography tokens text-2xs/text-button-md/text-display-* and spacing gap-logo-nav available. pnpm tsc passes."
+    }
+    ,{
+      "ts": "2026-05-12T16:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Replace all remaining arbitrary dimension values with Tailwind v4 canonical classes",
+      "files": [
+        "eslint.config.mjs",
+        "src/components/ui/button.tsx",
+        "src/components/ui/container.tsx",
+        "src/components/ui/product-card.tsx",
+        "src/components/ui/dropdown-menu.tsx",
+        "src/components/theme-toggle.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/_components/social-medias.tsx"
+      ],
+      "rationale": "User requested all VS Code IntelliSense canonical-class suggestions be applied (e.g. h-[45px]→h-11.25, px-[170px]→px-42.5) and eslint-plugin-tailwindcss removed as it crashed on pnpm due to worker-thread resolution failure with Tailwind v4",
+      "outcome": "No arbitrary dimension values remain in source files. eslint.config.mjs cleaned of broken plugin import. pnpm tsc and pnpm lint pass on source files."
+    },
+    {
+      "ts": "2026-05-12T16:30:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Add styling-practices rule and correct tailwind-canonical with v4 decimal support",
+      "files": [
+        ".claude/rules/styling-practices.md",
+        ".agents/rules/styling-practices.md",
+        ".claude/rules/tailwind-canonical.md",
+        ".agents/rules/tailwind-canonical.md",
+        ".claude/rules/tailwind-v4.md",
+        ".agents/rules/tailwind-v4.md"
+      ],
+      "rationale": "tailwind-canonical.md incorrectly listed non-multiples-of-4 as exceptions; Tailwind v4 supports any decimal so ALL px dimensions are canonical. New styling-practices.md codifies the full decision tree for colors, dimensions, font sizes, and token creation.",
+      "outcome": "Agents now have a master styling checklist. tailwind-canonical.md corrected with decimal examples (h-11.25, px-42.5, h-0.75). tailwind-v4.md Container note updated to current values."
     }
   ]
 }

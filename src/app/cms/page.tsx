@@ -81,7 +81,7 @@ export default function CMSHome() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder='Buscar por nome ou slug'
-          className='h-10 w-full rounded border border-zinc-300 px-3 text-sm outline-none md:max-w-[360px]'
+          className='h-10 w-full rounded border border-zinc-300 px-3 text-sm outline-none md:max-w-90'
         />
 
         <select
