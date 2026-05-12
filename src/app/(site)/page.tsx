@@ -19,7 +19,7 @@ export default async function Home() {
         section={homePayload.novidades}
       />
       <NossaHistoria section={homePayload.history} />
-      <NossasBases bases={homePayload.bases} className='bg-white' />
+      <NossasBases bases={homePayload.bases} className='bg-off-white' />
       <MidiasSociais section={homePayload.social} />
       <Faq items={homePayload.faq} section={homePayload.faqSection} />
     </>

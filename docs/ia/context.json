@@ -434,6 +434,15 @@
       ],
       "rationale": "Task-05 required client-side filtering in Novidades plus Home payload enrichment with bases data while preserving existing component parity and responsive structure.",
       "outcome": "Home now filters featured products by active tab, renders Nossas Bases after the dark section with white background, uses off-white social background, and exposes bases in SiteHomePayload mock data."
+    },
+    {
+      "ts": "2025-07-14T12:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix ARIA roles, extract TabStrip, add empty state, replace bg-white token in task-05 components",
+      "files": ["src/app/(site)/_components/novidades.tsx", "src/app/(site)/page.tsx"],
+      "rationale": "Code review on feat/task-05-home-novidades-tabs-bases identified: aria-pressed misuse on tab buttons, duplicated tab strip markup, missing empty state for filtered grid, and hardcoded bg-white on NossasBases instead of semantic token",
+      "outcome": "Tab buttons now use role=tab+aria-selected under role=tablist; TabStrip extracted as subcomponent eliminating duplicate; empty state shown when filter returns no products; NossasBases background uses bg-off-white token"
     }
   ]
 }
