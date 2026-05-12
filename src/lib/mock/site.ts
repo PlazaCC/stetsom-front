@@ -39,6 +39,8 @@ export const HOME_HERO_SLIDES: HeroBannerSlide[] = [
     mobileImage: FIGMA_SITE_ASSETS.homeHeroPrimaryMobile,
     alt: 'Catalogo Stetsom',
     href: '/produtos',
+    label: 'Potencia Sem Limites',
+    title: 'CATALOGO STETSOM',
   },
   {
     id: 'hero-2',
@@ -46,6 +48,8 @@ export const HOME_HERO_SLIDES: HeroBannerSlide[] = [
     mobileImage: FIGMA_SITE_ASSETS.homeHeroSecondaryMobile,
     alt: 'Historia Stetsom',
     href: '/sobre',
+    label: 'Desde 1989',
+    title: 'NOSSA HISTORIA',
   },
   {
     id: 'hero-3',
@@ -53,6 +57,8 @@ export const HOME_HERO_SLIDES: HeroBannerSlide[] = [
     mobileImage: FIGMA_SITE_ASSETS.homeHeroTertiaryMobile,
     alt: 'Comunidade Stetsom',
     href: '/suporte',
+    label: 'Suporte Oficial',
+    title: 'COMUNIDADE STETSOM',
   },
 ]
 

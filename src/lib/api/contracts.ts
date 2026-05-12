@@ -101,6 +101,8 @@ export type HeroBannerSlide = {
   mobileImage?: string
   alt?: string
   href?: string
+  label?: string
+  title?: string
 }
 
 export type FAQItem = {

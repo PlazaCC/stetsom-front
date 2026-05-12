@@ -1,6 +1,6 @@
 # task-04: Home — Hero Carousel Gradiente + Seção Escura
 
-**Status:** TODO
+**Status:** REVIEW
 **Priority:** 3 — Home sections; depende de task-01 + task-12
 **Branch:** feat/task-04-home-hero-gradiente-dark-section
 **Created:** 2026-05-12
@@ -12,11 +12,11 @@ Alinhar as seções 2 e 4 da Home (Hero Carousel e seção dark "NossaHistoria")
 
 ## Acceptance Criteria
 
-- [ ] Hero carousel usa gradiente `linear-gradient(180deg, rgba(0,0,0,0) 72%, rgba(0,0,0,1) 100%)` no overlay, não `bg-black/35` uniforme
-- [ ] Tipo `HeroBannerSlide` aceita `label?: string` e `title?: string`; quando presentes, renderizam texto overlay acima do gradiente
-- [ ] `HOME_HERO_SLIDES` mock atualizado com `label` e `title` para cada slide
-- [ ] Seção dark (`NossaHistoria`) desktop tem layout duas colunas com `gap-[91px]` — imagem à esquerda, texto à direita
-- [ ] Seção dark mobile mantém layout stack (imagem acima, texto abaixo)
+- [x] Hero carousel usa gradiente `linear-gradient(180deg, rgba(0,0,0,0) 72%, rgba(0,0,0,1) 100%)` no overlay, não `bg-black/35` uniforme
+- [x] Tipo `HeroBannerSlide` aceita `label?: string` e `title?: string`; quando presentes, renderizam texto overlay acima do gradiente
+- [x] `HOME_HERO_SLIDES` mock atualizado com `label` e `title` para cada slide
+- [x] Seção dark (`NossaHistoria`) desktop tem layout duas colunas com `gap-[91px]` — imagem à esquerda, texto à direita
+- [x] Seção dark mobile mantém layout stack (imagem acima, texto abaixo)
 
 ## In Scope
 

@@ -14,7 +14,7 @@ interface NossaHistoriaProps {
 export default function NossaHistoria({ section }: Readonly<NossaHistoriaProps>) {
   return (
     <section className='flex justify-center bg-brand-dark py-0 lg:min-h-132'>
-      <Container className='flex w-full flex-col items-stretch lg:flex-row'>
+      <Container className='flex w-full flex-col items-stretch lg:flex-row lg:items-center lg:gap-22.75'>
         <div className='relative aspect-16/11 w-full shrink-0 overflow-hidden lg:hidden'>
           <Image src={section.image} alt={section.imageAlt} fill className='object-cover' />
         </div>
@@ -23,7 +23,7 @@ export default function NossaHistoria({ section }: Readonly<NossaHistoriaProps>)
           <Image src={section.image} alt={section.imageAlt} fill className='object-cover' />
         </div>
 
-        <div className='flex flex-1 items-center justify-center px-6 py-10 sm:px-8 sm:py-12 lg:px-18 lg:py-0'>
+        <div className='flex flex-1 items-center justify-center px-6 py-10 sm:px-8 sm:py-12 lg:px-0 lg:py-0'>
           <div className='w-full max-w-122'>
             <SectionLabel label={section.label} title={section.title} subtitle={section.subtitle} dark />
 

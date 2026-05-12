@@ -399,6 +399,22 @@
       ],
       "rationale": "Task-03 required matching the Figma footer structure and spacing while keeping the component aligned with project token and responsive layout conventions.",
       "outcome": "Footer now uses exact desktop/mobile spacing, updated logo and social set, corrected navigation columns, and legal copyright row; task moved to REVIEW with all criteria checked."
+    },
+    {
+      "ts": "2026-05-12T22:40:00Z",
+      "agent": "gpt-5.3-codex",
+      "type": "feat",
+      "summary": "Implement task-04 hero gradient overlay and NossaHistoria desktop gap",
+      "files": [
+        "src/app/(site)/_components/hero-carousel.tsx",
+        "src/lib/api/contracts.ts",
+        "src/lib/mock/site.ts",
+        "src/app/(site)/_components/nossa-historia.tsx",
+        "docs/ia/tasks/task-04-home-hero-gradiente-dark-section.md",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Task-04 requested Figma-accurate Home Hero gradient/text overlay and desktop spacing adjustments while preserving responsive behavior and existing design tokens.",
+      "outcome": "Hero now uses the exact gradient and optional slide copy overlay, mock slide data includes label/title, NossaHistoria desktop layout applies 91px-equivalent gap, and task-04 is in REVIEW with all criteria checked."
     }
   ]
 }
