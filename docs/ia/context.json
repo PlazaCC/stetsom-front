@@ -144,6 +144,30 @@
       "files": [".github/prompts/loop-exaustivo-orquestrador.prompt.md", "docs/ia/context.json"],
       "rationale": "User requested a reusable slash prompt that consistently starts continuous and exhaustive execution with the orchestrator workflow.",
       "outcome": "Workspace now has a dedicated prompt that invokes Orquestrador POC Loop with explicit continuous-loop, subagent delegation, task-only refinement generation, and automated commit push PR behavior."
+    },
+    {
+      "ts": "2026-05-12T21:15:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "feat",
+      "summary": "Implement Task 01: Layout Primitives and Figma Alignment",
+      "files": [
+        "src/components/ui/container.tsx",
+        "src/components/ui/button.tsx",
+        "src/components/ui/section-label.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/_components/nossas-bases.tsx",
+        "src/app/(site)/_components/cta-trabalhe-conosco.tsx",
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/_components/faq.tsx",
+        "src/app/(site)/_components/qualidade-inovadora.tsx",
+        "src/app/(site)/_components/timeline-refactored.tsx",
+        "src/components/ui/header.tsx",
+        "src/components/ui/footer.tsx"
+      ],
+      "rationale": "Align layout primitives (Container, Button, SectionLabel) with Figma design tokens and replace manual paddings with standardized Container component across all site pages.",
+      "outcome": "Container now uses 170px/32px padding; Button has pill variant and sm/md sizes; SectionLabel supports dark mode; all main pages and components migrated to use Container."
     }
   ]
 }

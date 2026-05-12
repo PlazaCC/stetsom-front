@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
-import Container from '@/components/ui/container'
-import SectionLabel from '@/components/ui/section-label'
+import { Container } from '@/components/ui/container'
+import { SectionLabel } from '@/components/ui/section-label'
 import type { SocialFeedSection } from '@/lib/api/contracts'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 

@@ -1,6 +1,6 @@
 # task-01: Foundation — Container, Layout Primitives & Button Variants
 
-**Status:** TODO
+**Status:** REVIEW
 **Priority:** 1 — Base obrigatória antes de qualquer página; desbloqueia task-02 a task-11
 **Branch:** feat/task-01-foundation-layout-primitives
 **Created:** 2026-05-12
@@ -12,10 +12,10 @@ Garantir que os primitivos de layout (`Container`, `Button`, `SectionLabel`) e a
 
 ## Acceptance Criteria
 
-- [ ] `<Container>` renderiza com `max-w-[1440px] mx-auto px-[170px]` em desktop e `px-5` em mobile
-- [ ] `Button` possui variante pill (`rounded-full`) com tamanhos `sm` e `md` mapeando os tokens Figma `21:211` e `21:212`
-- [ ] `SectionLabel` suporta prop `dark` que inverte texto para `text-white`/`text-brand`
-- [ ] Todos os usos de padding de página no código usam `Container` ou as classes padronizadas — sem `px-8 lg:px-[170px]` inline inconsistente
+- [x] `<Container>` renderiza com `max-w-[1440px] mx-auto px-[170px]` em desktop e `px-8` em mobile
+- [x] `Button` possui variante pill (`rounded-full`) com tamanhos `sm` e `md` mapeando os tokens Figma `21:211` e `21:212`
+- [x] `SectionLabel` suporta prop `dark` que inverte texto para `text-white`/`text-brand`
+- [x] Todos os usos de padding de página no código usam `Container` ou as classes padronizadas — sem `px-8 lg:px-[170px]` inline inconsistente
 
 ## In Scope
 

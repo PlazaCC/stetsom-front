@@ -8,7 +8,7 @@ interface SectionLabelProps {
   className?: string;
 }
 
-export default function SectionLabel({
+export function SectionLabel({
   label,
   title,
   subtitle,
@@ -18,8 +18,15 @@ export default function SectionLabel({
   return (
     <div className={cn("flex flex-col gap-1", className)}>
       <div className="flex items-center gap-2">
-        <div className="w-6 h-px bg-brand shrink-0" />
-        <span className="font-sans-condensed font-medium text-base uppercase text-brand leading-none">
+        <div
+          className={cn("w-6 h-px shrink-0", dark ? "bg-white" : "bg-brand")}
+        />
+        <span
+          className={cn(
+            "font-sans-condensed font-medium text-base uppercase leading-none",
+            dark ? "text-white" : "text-brand",
+          )}
+        >
           {label}
         </span>
       </div>

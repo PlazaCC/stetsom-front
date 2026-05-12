@@ -6,6 +6,7 @@ import { Menu, Search } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Container } from './container'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -18,7 +19,7 @@ import {
 export default function Header() {
   return (
     <header className='sticky top-0 z-50 h-22 w-full border-b border-zinc-200 bg-white'>
-      <div className='flex h-full items-center justify-between px-8 lg:px-[170px] max-w-[1440px] mx-auto'>
+      <Container className='flex h-full items-center justify-between'>
         {/* Desktop header (unchanged layout) */}
         <div className='hidden md:flex items-center gap-[51px]'>
           <Link href='/'>
@@ -28,7 +29,7 @@ export default function Header() {
           <div className='hidden md:block'>
             <NavigationMenu>
               <NavigationMenuList>
-                <NavigationMenuItem className='hidden md:flex h-6 flex items-center '>
+                <NavigationMenuItem className='hidden md:flex h-6 items-center'>
                   <NavigationMenuTrigger
                     nativeButton={false}
                     render={
@@ -72,7 +73,7 @@ export default function Header() {
             </button>
           </div>
 
-          <Link href='/' className='flex-shrink-0'>
+          <Link href='/' className='shrink-0'>
             <Image src='/logo.png' alt='Stetsom' width={120} height={28} />
           </Link>
 
@@ -91,7 +92,7 @@ export default function Header() {
             Garantia
           </Link>
         </div>
-      </div>
+      </Container>
     </header>
   )
 }

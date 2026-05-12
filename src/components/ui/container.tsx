@@ -3,13 +3,20 @@ import { mergeProps, useRender } from '@base-ui/react'
 
 type ContainerProps = useRender.ComponentProps<'div'>
 
-export default function Container(props: ContainerProps) {
+export function Container(props: ContainerProps) {
   const { render, ...rest } = props
 
   const element = useRender({
     defaultTagName: 'div',
     render,
-    props: mergeProps<'div'>({ className: cn('relative w-full max-w-291 px-8') }, rest),
+    props: mergeProps<'div'>(
+      {
+        className: cn(
+          'relative mx-auto w-full max-w-[1440px] px-8 lg:px-[170px]',
+        ),
+      },
+      rest,
+    ),
   })
 
   return element

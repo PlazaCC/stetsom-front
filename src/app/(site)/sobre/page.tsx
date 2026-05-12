@@ -1,4 +1,5 @@
-import SectionLabel from '@/components/ui/section-label'
+import { Container } from '@/components/ui/container'
+import { SectionLabel } from '@/components/ui/section-label'
 import { getSiteAboutPayload } from '@/lib/api/server'
 import Image from 'next/image'
 import CTATrabalheConosco from '../_components/cta-trabalhe-conosco'
@@ -22,7 +23,7 @@ export default async function SobrePage() {
           className='object-cover opacity-35'
           priority
         />
-        <div className='relative z-10 px-8 lg:px-[170px] max-w-[1440px] mx-auto w-full'>
+        <Container className='z-10'>
           <SectionLabel label={aboutPayload.hero.label} />
           <h1 className='font-sans-condensed font-black text-[72px] leading-none uppercase text-white mt-1'>
             {aboutPayload.hero.title.split('\n').map((line) => (
@@ -31,7 +32,7 @@ export default async function SobrePage() {
               </span>
             ))}
           </h1>
-        </div>
+        </Container>
       </section>
 
       {/* 2. RED BANNER - Milestones Carousel */}

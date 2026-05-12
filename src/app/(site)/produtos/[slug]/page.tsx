@@ -1,5 +1,5 @@
-import Container from '@/components/ui/container'
-import SectionLabel from '@/components/ui/section-label'
+import { Container } from '@/components/ui/container'
+import { SectionLabel } from '@/components/ui/section-label'
 import { getCatalogProductDetail } from '@/lib/api/server'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
