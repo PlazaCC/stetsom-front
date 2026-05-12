@@ -1,5 +1,6 @@
 'use client'
 
+import { Container } from '@/components/ui/container'
 import type { TimelineEvent } from '@/lib/api/contracts'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
@@ -65,35 +66,37 @@ export default function TimelineRefactored({
 
   return (
     <section className='bg-brand-dark py-20'>
-      <div className='px-8 lg:px-42.5 max-w-360 mx-auto'>
+      <Container>
         <div className='space-y-12'>
           {/* BOX 1: HEADER - Título + Descrição + Setas */}
           <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8'>
             <div className='flex-1'>
-              <div className='text-brand font-sans-condensed font-medium text-sm uppercase tracking-wide mb-2'>
+              <div className='mb-2 font-sans-condensed text-sm font-medium uppercase tracking-wide text-brand'>
                 {label}
               </div>
-              <h2 className='font-sans-condensed font-black text-[48px] lg:text-[56px] text-white leading-none mb-4'>
+              <h2 className='font-sans-condensed text-[48px] font-black leading-none text-white lg:text-[56px]'>
                 {title.split('\n').map((line) => (
                   <span key={line} className='block'>
                     {line}
                   </span>
                 ))}
               </h2>
-              <p className='text-sm lg:text-base text-[rgb(184,184,184)] max-w-md leading-[1.6]'>{description}</p>
+              <p className='mt-4 max-w-md text-sm leading-[1.6] text-[rgb(184,184,184)] lg:text-base'>
+                {description}
+              </p>
             </div>
 
             {/* Setas de Controle */}
             <div className='flex gap-3'>
               <button
                 onClick={handlePrevious}
-                className='w-12 h-12 rounded-full border border-brand hover:bg-brand hover:text-white transition-all flex items-center justify-center text-brand'
+                className='flex h-12 w-12 items-center justify-center rounded-full border border-brand text-brand transition-all hover:bg-brand hover:text-white'
                 aria-label='Previous event'>
                 <ChevronLeft size={24} />
               </button>
               <button
                 onClick={handleNext}
-                className='w-12 h-12 rounded-full border border-brand hover:bg-brand hover:text-white transition-all flex items-center justify-center text-brand'
+                className='flex h-12 w-12 items-center justify-center rounded-full border border-brand text-brand transition-all hover:bg-brand hover:text-white'
                 aria-label='Next event'>
                 <ChevronRight size={24} />
               </button>
@@ -188,7 +191,7 @@ export default function TimelineRefactored({
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

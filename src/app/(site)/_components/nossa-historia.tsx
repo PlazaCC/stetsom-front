@@ -1,6 +1,6 @@
 import { buttonVariants } from '@/components/ui/button'
-import Container from '@/components/ui/container'
-import SectionLabel from '@/components/ui/section-label'
+import { Container } from '@/components/ui/container'
+import { SectionLabel } from '@/components/ui/section-label'
 import type { SiteHomePayload } from '@/lib/api/contracts'
 import { cn } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'

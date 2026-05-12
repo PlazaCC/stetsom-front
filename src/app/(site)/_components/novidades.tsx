@@ -1,6 +1,6 @@
-import Container from '@/components/ui/container'
+import { Container } from '@/components/ui/container'
 import ProductCard from '@/components/ui/product-card'
-import SectionLabel from '@/components/ui/section-label'
+import { SectionLabel } from '@/components/ui/section-label'
 import type { ProductCardItem, SiteHomePayload } from '@/lib/api/contracts'
 import { cn } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'

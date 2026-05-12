@@ -1,5 +1,5 @@
-import Container from "@/components/ui/container";
-import SectionLabel from "@/components/ui/section-label";
+import { Container } from "@/components/ui/container";
+import { SectionLabel } from "@/components/ui/section-label";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";

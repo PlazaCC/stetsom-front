@@ -14,8 +14,8 @@ There are only two valid starting cases.
 
 There are tasks in the pipe.
 
-Start with `/poc-next-task`.
-This skill picks the next available POC task and moves execution forward.
+Start with `/next-task` (or use `/deliver` for fully automated end-to-end delivery).
+This skill picks the next available task and moves execution forward.
 
 ### Case 2
 
@@ -24,26 +24,28 @@ There are no tasks in the pipe.
 Start with `/brainstorm`.
 Use it to refine the idea, clarify the objective, and define the scope.
 
-After the idea is clear, use `/create-poc-task`.
+After the idea is clear, use `/create-task`.
 This creates the new task that will enter the pipe.
 
-Once the new task exists, return to `/poc-next-task`.
+Once the new task exists, return to `/next-task` (or `/deliver`).
 
 ## Standard Cycle
 
 The delivery cycle follows the same sequence.
 
 1. `/brainstorm` refines the idea when a new task must be created or when the current direction is still unclear.
-2. `/create-poc-task` creates the task after the idea is ready.
-3. `/poc-next-task` executes the next available task.
+2. `/create-task` creates the task after the idea is ready.
+3. `/next-task` executes the next available task.
 4. `/create-pr` creates the pull request from the current branch.
 5. `/code-review` reviews the PR branch.
    - If there are fixes needed, address them and run both steps again.
    - Repeat until the review passes.
 
+> **Shortcut:** Use `/deliver` to run steps 3–5 automatically in one command.
+
 ## Optional Design Step
 
-Use `/poc-refine-design` when the current task needs a design refinement pass with Figma.
+Use `/refine-design` when the current task needs a design refinement pass with Figma.
 This step is optional.
 It should be used only when the task needs visual alignment, design correction, or a clearer implementation target.
 
@@ -53,9 +55,9 @@ It should be used only when the task needs visual alignment, design correction, 
 
 Tasks already exist.
 
-1. Run `/poc-next-task`.
+1. Run `/next-task` (or `/deliver` for automated end-to-end).
 2. Implement the selected task.
-3. Run `/poc-refine-design` if the task needs Figma refinement.
+3. Run `/refine-design` if the task needs Figma refinement.
 4. Run `/create-pr`.
 5. Run `/code-review`.
    - If the review passes, the work is done.
@@ -66,9 +68,9 @@ Tasks already exist.
 No tasks exist.
 
 1. Run `/brainstorm`.
-2. Run `/create-poc-task`.
-3. Run `/poc-next-task`.
-4. Run `/poc-refine-design` if the task needs Figma refinement.
+2. Run `/create-task`.
+3. Run `/next-task` (or `/deliver` for automated end-to-end).
+4. Run `/refine-design` if the task needs Figma refinement.
 5. Run `/create-pr`.
 6. Run `/code-review`.
    - If the review passes, the work is done.
@@ -78,15 +80,17 @@ No tasks exist.
 
 `/brainstorm` defines and sharpens the idea.
 
-`/create-poc-task` turns the refined idea into a tracked task with a file in `docs/ia/tasks/`.
+`/create-task` turns the refined idea into a tracked task with a file in `docs/ia/tasks/`.
 
-`/poc-next-task` is the execution entry point for delivery work.
+`/next-task` is the execution entry point for delivery work.
 
-`/poc-refine-design` improves the current task when design work needs another pass with Figma.
+`/refine-design` improves the current task when design work needs another pass with Figma.
 
 `/create-pr` opens the pull request from the current branch.
 
 `/code-review` reviews the PR branch and signals whether it is ready or needs fixes. Cycles with `/create-pr` until the review passes.
+
+`/deliver` is the full-cycle orchestrator — chains `/next-task` → `/create-pr` → `/code-review` automatically, with up to 3 fix loops before escalating to the user.
 
 ## Task Files
 

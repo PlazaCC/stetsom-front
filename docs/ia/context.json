@@ -82,6 +82,125 @@
       ],
       "rationale": "User requested task files renamed from POC-NN to task-NN prefix, with Priority field added and branch names updated to feat/task-NN-* convention.",
       "outcome": "All 12 task files use task-NN naming with Priority, Status, Branch, Acceptance Criteria and Implementation Notes. TASKS.md index updated to match."
+    },
+    {
+      "ts": "2026-05-12T20:10:00Z",
+      "agent": "gpt-5.3-codex",
+      "type": "feat",
+      "summary": "Integrate manageable content with mock API and prune raw Figma assets",
+      "files": [
+        "src/lib/api/contracts.ts",
+        "src/lib/api/provider-contract.ts",
+        "src/lib/api/providers/mock-provider.ts",
+        "src/lib/api/providers/remote-provider.ts",
+        "src/lib/api/server.ts",
+        "src/lib/api/client.ts",
+        "src/lib/api/endpoints.ts",
+        "src/hooks/use-catalog.ts",
+        "src/app/api/catalog/page/route.ts",
+        "src/lib/mock/site.ts",
+        "src/lib/mock/catalog.ts",
+        "src/lib/mock/navigation.ts",
+        "src/lib/mock/support.ts",
+        "src/app/(site)/page.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/_components/nossa-historia.tsx",
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/_components/faq.tsx",
+        "src/app/(site)/_components/qualidade-inovadora.tsx",
+        "src/app/(site)/_components/cta-trabalhe-conosco.tsx",
+        "src/app/(site)/_components/timeline-refactored.tsx",
+        "docs/ia/figma/assets-manifest.json",
+        "docs/ia/figma/meta.json",
+        "public/figma-assets/raw/*",
+        "docs/ia/context.json"
+      ],
+      "rationale": "User requested cleaning unused raw Figma assets and ensuring all developed manageable content is served through the existing mock API and hook integration flow.",
+      "outcome": "Home, about, support and catalog hero/section copy now come from payload contracts via API/hooks; timeline local fallback data was removed; raw asset folder was reduced to referenced files and manifest/meta totals were synchronized."
+    },
+    {
+      "ts": "2026-05-12T19:30:00Z",
+      "agent": "gpt-5.3-codex",
+      "type": "config",
+      "summary": "Expand orchestrator into multi-subagent autonomous delivery loop",
+      "files": [
+        ".github/agents/orquestrador-poc-loop.agent.md",
+        ".github/agents/pipeline-analyst.agent.md",
+        ".github/agents/task-implementer.agent.md",
+        ".github/agents/quality-refiner.agent.md",
+        ".github/agents/git-pr-automation.agent.md",
+        "docs/ia/context.json"
+      ],
+      "rationale": "User confirmed continuous execution policy, required multiple subagents, task generation constrained to docs/ia/tasks, and automatic commit push PR handling.",
+      "outcome": "Workspace now has a delegated custom-agent architecture where the orchestrator coordinates planning, implementation, quality refinement, and Git/PR automation until tasks and refinements are exhausted."
+    },
+    {
+      "ts": "2026-05-12T20:40:00Z",
+      "agent": "gpt-5.3-codex",
+      "type": "config",
+      "summary": "Add reusable prompt to trigger exhaustive orchestrator loop",
+      "files": [".github/prompts/loop-exaustivo-orquestrador.prompt.md", "docs/ia/context.json"],
+      "rationale": "User requested a reusable slash prompt that consistently starts continuous and exhaustive execution with the orchestrator workflow.",
+      "outcome": "Workspace now has a dedicated prompt that invokes Orquestrador POC Loop with explicit continuous-loop, subagent delegation, task-only refinement generation, and automated commit push PR behavior."
+    },
+    {
+      "ts": "2026-05-12T21:15:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "feat",
+      "summary": "Implement Task 01: Layout Primitives and Figma Alignment",
+      "files": [
+        "src/components/ui/container.tsx",
+        "src/components/ui/button.tsx",
+        "src/components/ui/section-label.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/_components/nossas-bases.tsx",
+        "src/app/(site)/_components/cta-trabalhe-conosco.tsx",
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/_components/faq.tsx",
+        "src/app/(site)/_components/qualidade-inovadora.tsx",
+        "src/app/(site)/_components/timeline-refactored.tsx",
+        "src/components/ui/header.tsx",
+        "src/components/ui/footer.tsx"
+      ],
+      "rationale": "Align layout primitives (Container, Button, SectionLabel) with Figma design tokens and replace manual paddings with standardized Container component across all site pages.",
+      "outcome": "Container now uses 170px/32px padding; Button has pill variant and sm/md sizes; SectionLabel supports dark mode; all main pages and components migrated to use Container."
+    },
+    {
+      "ts": "2025-07-14T00:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Rename poc-* skills to next-task/refine-design/create-task and add deliver orchestrator skill",
+      "files": [
+        ".agents/skills/next-task/SKILL.md",
+        ".claude/skills/next-task/SKILL.md",
+        ".agents/skills/refine-design/SKILL.md",
+        ".claude/skills/refine-design/SKILL.md",
+        ".agents/skills/create-task/SKILL.md",
+        ".claude/skills/create-task/SKILL.md",
+        ".agents/skills/deliver/SKILL.md",
+        ".claude/skills/deliver/SKILL.md",
+        "docs/ia/AI-DRIVEN-WORKFLOW.md"
+      ],
+      "rationale": "User requested skill renames to remove poc- prefix and creation of deliver orchestrator skill for full-cycle delivery",
+      "outcome": "Skills discoverable by cleaner names; deliver skill chains next-task→create-pr→code-review automatically"
+    },
+    {
+      "ts": "2025-07-14T01:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Remove unused cn import and replace arbitrary RGB colors with design tokens",
+      "files": [
+        "src/app/(site)/_components/faq.tsx",
+        "src/components/ui/button.tsx",
+        "src/components/ui/section-label.tsx",
+        "src/app/globals.css"
+      ],
+      "rationale": "Code review identified: unused cn import in faq.tsx triggers lint error; bg-[rgb(31,31,31)], text-[rgb(184,184,184)], text-[rgb(102,102,102)] violate Tailwind v4 design token convention",
+      "outcome": "Lint error resolved; three new tokens (surface-elevated, text-subtle, text-subtle-dark) added to @theme in globals.css; components now use semantic token classes"
     }
   ]
 }

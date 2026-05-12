@@ -1,10 +1,10 @@
 ---
-name: poc-refine-design
-description: Optional design refinement step — use when a task needs visual alignment with Figma before or during implementation. Fetches design context, resolves design tokens, and produces implementation-ready specs. Trigger keywords: refine design, figma alignment, design pass, design review, poc refine design.
+name: refine-design
+description: Optional design refinement step — use when a task needs visual alignment with Figma before or during implementation. Fetches design context, resolves design tokens, and produces implementation-ready specs. Trigger keywords: refine design, figma alignment, design pass, design review.
 argument-hint: '<Figma URL or component name>'
 ---
 
-# POC Refine Design — Design Pass
+# Refine Design — Design Pass
 
 ## Overview
 
@@ -28,6 +28,7 @@ Pulls design context from Figma and translates it into implementation-ready spec
 ### Step 1 — Get Figma URL
 
 Ask for or extract from conversation:
+
 - Figma file URL (figma.com/design/...)
 - Node ID or component name
 
@@ -36,19 +37,20 @@ If no URL provided: check `docs/ia/figma/meta.json` for the project's Figma entr
 ### Step 2 — Fetch Design Context
 
 Use the Figma MCP (`get_design_context`) to retrieve:
+
 - Component structure
 - Colors, spacing, typography
 - Screenshot for visual reference
 
 Map Figma tokens to project tokens before writing any code:
 
-| Figma value | Project class |
-|-------------|--------------|
-| `#E8132A` / Stetsom Red | `text-brand` / `bg-brand` |
+| Figma value              | Project class                       |
+| ------------------------ | ----------------------------------- |
+| `#E8132A` / Stetsom Red  | `text-brand` / `bg-brand`           |
 | `#121212` / Stetsom Dark | `bg-brand-dark` / `text-brand-dark` |
-| `#F5F4F2` / Off White | `bg-off-white` |
-| Barlow font | `font-sans` |
-| Barlow Condensed | `font-sans-condensed` |
+| `#F5F4F2` / Off White    | `bg-off-white`                      |
+| Barlow font              | `font-sans`                         |
+| Barlow Condensed         | `font-sans-condensed`               |
 
 ### Step 3 — Produce Design Spec
 
@@ -83,13 +85,14 @@ Output a structured implementation guide:
 ### Step 4 — Validate Against Rules
 
 Confirm the spec uses:
+
 - Tailwind classes only (no arbitrary CSS values for colors)
 - Brand tokens from `globals.css`
 - No hardcoded hex values
 
 ### Step 5 — Hand Off to Implementation
 
-Return to `/poc-next-task` with the design spec attached. Implementation proceeds with the spec as the visual target.
+Return to `/next-task` with the design spec attached. Implementation proceeds with the spec as the visual target.
 
 ---
 
@@ -104,6 +107,6 @@ Return to `/poc-next-task` with the design spec attached. Implementation proceed
 
 ## Integration
 
-**Optional step in:** `/poc-next-task` cycle
+**Optional step in:** `/next-task` cycle
 **Uses:** Figma MCP (`get_design_context`, `get_screenshot`)
 **References:** `docs/ia/figma/meta.json`, `docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md`
