@@ -1,6 +1,6 @@
 # task-06: Produtos — Hero Radial Gradient + Filtros + Grid Alinhados ao Figma
 
-**Status:** TODO
+**Status:** REVIEW
 **Priority:** 4 — Catálogo; depende de task-05 + task-12
 **Branch:** feat/task-06-produtos-hero-filtros-grid
 **Created:** 2026-05-12
@@ -12,11 +12,11 @@ Substituir o hero simples da página `/produtos` pelo gradiente radial dark do F
 
 ## Acceptance Criteria
 
-- [ ] Hero desktop tem `h-[336px]`, gradiente radial dark `radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(28,24,24,1) 100%)` + image overlay + gradiente linear de fade-out na parte inferior
-- [ ] Watermark de texto no hero está posicionado `absolute right-0 bottom-0` com `opacity-[0.08]`
-- [ ] Botões de filtro de categoria inativos: `border border-zinc-200 text-zinc-500 bg-transparent`; ativos: `bg-brand-dark text-white border-brand-dark` (mantém estilo atual, apenas verificar alinhamento)
-- [ ] Input de busca usa `border border-zinc-500` com ícone `Search` à esquerda (mantém estrutura atual)
-- [ ] Produtos mockados têm `thumbnail_url` válido apontando para `/figma-assets/raw/` ou `/public/`
+- [x] Hero desktop tem `h-[336px]`, gradiente radial dark `radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(28,24,24,1) 100%)` + image overlay + gradiente linear de fade-out na parte inferior
+- [x] Watermark de texto no hero está posicionado `absolute right-0 bottom-0` com `opacity-[0.08]`
+- [x] Botões de filtro de categoria inativos: `border border-zinc-200 text-zinc-500 bg-transparent`; ativos: `bg-brand-dark text-white border-brand-dark` (mantém estilo atual, apenas verificar alinhamento)
+- [x] Input de busca usa `border border-zinc-500` com ícone `Search` à esquerda (mantém estrutura atual)
+- [x] Produtos mockados têm `thumbnail_url` válido apontando para `/figma-assets/raw/` ou `/public/`
 
 ## In Scope
 

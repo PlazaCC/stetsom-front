@@ -53,9 +53,19 @@ export default function ProdutosPage() {
   return (
     <div>
       {/* HERO */}
-      <section className='relative bg-brand-dark overflow-hidden h-50 md:h-70 lg:h-89.25'>
-        <Image src={hero.heroImage} alt={hero.heroImageAlt} fill className='object-cover opacity-40' priority />
-        <Container className='z-10 pt-8 md:pt-16 lg:pt-25.75'>
+      <section className='relative overflow-hidden bg-brand-dark h-50 md:h-70 lg:h-84'>
+        <div
+          className='absolute inset-0'
+          style={{
+            background: 'radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(28,24,24,1) 100%)',
+          }}
+        />
+        <Image src={hero.heroImage} alt={hero.heroImageAlt} fill className='object-cover opacity-45' priority />
+        <div
+          className='absolute inset-0'
+          style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 72%, rgba(0,0,0,1) 100%)' }}
+        />
+        <Container className='relative z-10 pt-8 md:pt-16 lg:pt-25.75'>
           <div className='flex items-center gap-2 mb-1'>
             <div className='w-6 h-px bg-brand shrink-0' />
             <span className='font-sans-condensed font-medium text-xs md:text-base uppercase text-brand'>
@@ -71,7 +81,7 @@ export default function ProdutosPage() {
           </h1>
           <span className='text-xs md:text-base text-text-subtle-dark mt-2 block'>{totalProducts} produtos</span>
         </Container>
-        <div className='absolute hidden lg:block right-5 md:right-10 lg:right-20 bottom-0 font-sans-condensed font-black text-[100px] lg:text-[150px] text-white/[0.04] leading-none pointer-events-none select-none'>
+        <div className='absolute right-0 bottom-0 font-sans-condensed font-black text-[72px] md:text-[120px] lg:text-[150px] text-white leading-none pointer-events-none select-none opacity-[0.08]'>
           {hero.heroWatermark}
         </div>
       </section>

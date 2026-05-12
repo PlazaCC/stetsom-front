@@ -461,6 +461,19 @@
       "files": ["src/app/(site)/page.tsx"],
       "rationale": "NossasBases already applies bg-off-white unconditionally in its own className; passing it from page.tsx was duplicate and violated DRY principle",
       "outcome": "NossasBases rendered without redundant prop; visual output unchanged"
+    },
+    {
+      "ts": "2026-05-12T20:28:39Z",
+      "agent": "gpt-5.3-codex",
+      "type": "feat",
+      "summary": "Implement task-06 products hero gradient and catalog filters alignment",
+      "files": [
+        "src/app/(site)/produtos/page.tsx",
+        "docs/ia/tasks/task-06-produtos-hero-filtros-grid.md",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Task-06 required Figma-aligned products hero treatment and verification of existing filters/search/thumb data without regressing responsive grid behavior.",
+      "outcome": "Products page hero now uses the required radial and fade gradients with desktop height at 336px and watermark alignment, criteria were checked, and task moved to REVIEW."
     }
   ]
 }
