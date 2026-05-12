@@ -1,5 +1,3 @@
-'use client'
-
 import Image from 'next/image'
 
 import { Container } from '@/components/ui/container'
@@ -41,23 +39,25 @@ export default function NossaFabrica() {
                 Nossa Fábrica
               </h2>
             </div>
-            <p className='font-sans text-base text-text-text-subtle-dark leading-relaxed'>
+            <p className='font-sans text-base text-text-subtle-dark leading-relaxed'>
               Localizada no coração de São Paulo, nossa fábrica é equipada com tecnologia de ponta
               para a manufatura de amplificadores de classe mundial. Aqui, cada detalhe é
               meticulosamente verificado para garantir a máxima qualidade e desempenho.
             </p>
             <div className='pt-4'>
-              <p className='font-sans text-sm text-text-text-subtle-dark'>
+              <p className='font-sans text-sm text-text-subtle-dark'>
                 <strong>Endereço:</strong> Rua Exemplo, 123 — São Paulo, SP
               </p>
-              <p className='font-sans text-sm text-text-text-subtle-dark mt-2'>
+              <p className='font-sans text-sm text-text-subtle-dark mt-2'>
                 <strong>Telefone:</strong> (11) 3000-0000
               </p>
             </div>
           </div>
 
-          {/* Placeholder for Right Content (could be a map or additional image) */}
-          <div className='hidden lg:block h-96 bg-surface-elevated rounded-lg' />
+          {/* Map or Additional Content Placeholder */}
+          <div className='hidden lg:flex items-center justify-center h-96 bg-surface-elevated rounded-lg text-text-subtle-dark'>
+            Mapa ou conteúdo adicional
+          </div>
         </div>
       </Container>
     </section>
