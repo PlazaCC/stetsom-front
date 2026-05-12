@@ -8,8 +8,8 @@ export default function RedBanner({ milestones }: Readonly<RedBannerProps>) {
     .flatMap(() => milestones)
 
   return (
-    <section className='bg-brand py-4'>
-      <div className='w-full px-8'>
+    <section className='bg-brand py-4 overflow-hidden'>
+      <div className='w-full'>
         <div className='flex items-center gap-6'>
           {repeatedMilestones.map((milestone, i) => (
             <div key={i} className='flex items-center gap-6 shrink-0'>
