@@ -452,6 +452,15 @@
       "files": ["src/lib/api/contracts.ts", "src/lib/mock/site.ts", "src/app/(site)/_components/social-medias.tsx"],
       "rationale": "Code review flagged non-semantic span as CTA, backgroundImage bypassing next/image optimization, and non-functional Server Component carousel buttons",
       "outcome": "CTA uses next/link with ctaHref, post images use next/image with fill, carousel buttons removed from Server Component"
+    },
+    {
+      "ts": "2025-07-14T03:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Remove redundant className='bg-off-white' from NossasBases in home page",
+      "files": ["src/app/(site)/page.tsx"],
+      "rationale": "NossasBases already applies bg-off-white unconditionally in its own className; passing it from page.tsx was duplicate and violated DRY principle",
+      "outcome": "NossasBases rendered without redundant prop; visual output unchanged"
     }
   ]
 }
