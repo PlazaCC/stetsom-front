@@ -1,6 +1,6 @@
 # task-05: Home — Novidades com Tabs Interativas + Seção Nossas Bases
 
-**Status:** TODO
+**Status:** REVIEW
 **Priority:** 3 — Home sections; depende de task-01 + task-12
 **Branch:** feat/task-05-home-novidades-tabs-bases
 **Created:** 2026-05-12
@@ -12,11 +12,11 @@ Implementar filtragem interativa nas Tabs de Novidades, adicionar a seção "Nos
 
 ## Acceptance Criteria
 
-- [ ] Clicar numa tab de categoria na seção Novidades filtra os `featuredProducts` exibidos no grid
-- [ ] Tab ativa tem estilo `bg-white shadow-sm rounded-[6px]`; inativas têm `bg-transparent text-[rgb(113,113,122)]`
-- [ ] Home exibe seção "Nossas Bases" com `bg-white` após a seção dark, com 3 cards iguais ao padrão do componente existente
-- [ ] `MidiasSociais` na Home usa `bg-off-white` (não `bg-white`)
-- [ ] `SiteHomePayload` inclui campo `bases: AboutBase[]` populado no mock
+- [x] Clicar numa tab de categoria na seção Novidades filtra os `featuredProducts` exibidos no grid
+- [x] Tab ativa tem estilo `bg-white shadow-sm rounded-[6px]`; inativas têm `bg-transparent text-[rgb(113,113,122)]`
+- [x] Home exibe seção "Nossas Bases" com `bg-white` após a seção dark, com 3 cards iguais ao padrão do componente existente
+- [x] `MidiasSociais` na Home usa `bg-off-white` (não `bg-white`)
+- [x] `SiteHomePayload` inclui campo `bases: AboutBase[]` populado no mock
 
 ## In Scope
 

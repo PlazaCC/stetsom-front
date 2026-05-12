@@ -415,6 +415,25 @@
       ],
       "rationale": "Task-04 requested Figma-accurate Home Hero gradient/text overlay and desktop spacing adjustments while preserving responsive behavior and existing design tokens.",
       "outcome": "Hero now uses the exact gradient and optional slide copy overlay, mock slide data includes label/title, NossaHistoria desktop layout applies 91px-equivalent gap, and task-04 is in REVIEW with all criteria checked."
+    },
+    {
+      "ts": "2026-05-12T23:10:00Z",
+      "agent": "gpt-5.3-codex",
+      "type": "feat",
+      "summary": "Implement task-05 tabs filtering and home bases section",
+      "files": [
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/page.tsx",
+        "src/app/(site)/_components/nossas-bases.tsx",
+        "src/app/(site)/_components/social-medias.tsx",
+        "src/lib/api/contracts.ts",
+        "src/lib/mock/site.ts",
+        "src/lib/api/providers/mock-provider.ts",
+        "docs/ia/tasks/task-05-home-novidades-tabs-bases.md",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Task-05 required client-side filtering in Novidades plus Home payload enrichment with bases data while preserving existing component parity and responsive structure.",
+      "outcome": "Home now filters featured products by active tab, renders Nossas Bases after the dark section with white background, uses off-white social background, and exposes bases in SiteHomePayload mock data."
     }
   ]
 }

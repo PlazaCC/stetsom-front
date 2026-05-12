@@ -10,7 +10,7 @@ interface MidiasSociaisProps {
 
 export default function MidiasSociais({ section }: Readonly<MidiasSociaisProps>) {
   return (
-    <section className='flex justify-center bg-white py-12'>
+    <section className='flex justify-center bg-off-white py-12'>
       <Container>
         <div className='flex justify-between items-end mb-8'>
           <SectionLabel label={section.handle} title={section.title} subtitle={section.subtitle} />

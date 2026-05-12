@@ -167,6 +167,7 @@ export type SiteHomePayload = {
     ctaLabel: string
     ctaHref: string
   }
+  bases: AboutBase[]
   faq: FAQItem[]
   faqSection: {
     label: string
