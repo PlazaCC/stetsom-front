@@ -1,0 +1,15 @@
+{
+  "v": 1,
+  "project": "stetsom-front",
+  "log": [
+    {
+      "ts": "2026-05-12T00:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Initialized LLM-owned context changelog",
+      "files": ["docs/ia/context.json", ".claude/rules/llm-owned-context-json.md", ".agents/rules/llm-owned-context-json.md"],
+      "rationale": "Establish cross-agent visibility: every AI change logged here so any future agent knows what was done, why, and by whom.",
+      "outcome": "Changelog file created with v1 schema. Rule updated to enforce mandatory append on every AI-driven change."
+    }
+  ]
+}
