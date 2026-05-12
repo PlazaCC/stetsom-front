@@ -1,9 +1,9 @@
 ---
-name: poc-next-task
-description: Use to start or resume implementation of the next available task — picks the next TODO task, reads its acceptance criteria, and drives implementation to completion. Trigger keywords: next task, start task, implement task, execute task, poc next task.
+name: next-task
+description: Use to start or resume implementation of the next available task — picks the next TODO task, reads its acceptance criteria, and drives implementation to completion. Trigger keywords: next task, start task, implement task, execute task.
 ---
 
-# POC Next Task — Execution Entry Point
+# Next Task — Execution Entry Point
 
 ## Overview
 
@@ -37,23 +37,26 @@ If no tasks exist → "No tasks in the backlog. Run `/brainstorm` to create one.
 ### Step 2 — Load Task Context
 
 Read the task file fully. Extract:
+
 - Objective
 - Acceptance criteria
 - Implementation notes
 - Whether a design pass is needed
 
-If `Needs design pass: YES` and no Figma work has been done → suggest running `/poc-refine-design` before implementation.
+If `Needs design pass: YES` and no Figma work has been done → suggest running `/refine-design` before implementation.
 
 ### Step 3 — Update Task Status
 
 Edit the task file: change `Status: TODO` → `Status: IN_PROGRESS`.
 
 Confirm the correct git branch is active:
+
 ```bash
 git branch --show-current
 ```
 
 If not on the task's branch, switch:
+
 ```bash
 git checkout feat/<slug>
 ```
@@ -83,6 +86,7 @@ Fix all errors before proceeding.
 ### Step 6 — Verify Acceptance Criteria
 
 Go through each criterion in the task file. Mark completed ones:
+
 ```
 - [x] <criterion>
 ```
@@ -94,6 +98,7 @@ Edit the task file: change `Status: IN_PROGRESS` → `Status: REVIEW`.
 ### Step 8 — Announce Completion
 
 Report:
+
 - What was implemented (summary)
 - Files changed
 - All acceptance criteria met: YES/NO
@@ -103,6 +108,6 @@ Report:
 
 ## Integration
 
-**Called after:** `/create-poc-task` (or directly if tasks exist)
-**Optional next:** `/poc-refine-design` (if design pass needed)
+**Called after:** `/create-task` (or directly if tasks exist)
+**Optional next:** `/refine-design` (if design pass needed)
 **Required next:** `/create-pr` → `/code-review`

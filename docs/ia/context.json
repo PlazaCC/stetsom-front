@@ -168,6 +168,39 @@
       ],
       "rationale": "Align layout primitives (Container, Button, SectionLabel) with Figma design tokens and replace manual paddings with standardized Container component across all site pages.",
       "outcome": "Container now uses 170px/32px padding; Button has pill variant and sm/md sizes; SectionLabel supports dark mode; all main pages and components migrated to use Container."
+    },
+    {
+      "ts": "2025-07-14T00:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Rename poc-* skills to next-task/refine-design/create-task and add deliver orchestrator skill",
+      "files": [
+        ".agents/skills/next-task/SKILL.md",
+        ".claude/skills/next-task/SKILL.md",
+        ".agents/skills/refine-design/SKILL.md",
+        ".claude/skills/refine-design/SKILL.md",
+        ".agents/skills/create-task/SKILL.md",
+        ".claude/skills/create-task/SKILL.md",
+        ".agents/skills/deliver/SKILL.md",
+        ".claude/skills/deliver/SKILL.md",
+        "docs/ia/AI-DRIVEN-WORKFLOW.md"
+      ],
+      "rationale": "User requested skill renames to remove poc- prefix and creation of deliver orchestrator skill for full-cycle delivery",
+      "outcome": "Skills discoverable by cleaner names; deliver skill chains next-task→create-pr→code-review automatically"
+    },
+    {
+      "ts": "2025-07-14T01:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Remove unused cn import and replace arbitrary RGB colors with design tokens",
+      "files": [
+        "src/app/(site)/_components/faq.tsx",
+        "src/components/ui/button.tsx",
+        "src/components/ui/section-label.tsx",
+        "src/app/globals.css"
+      ],
+      "rationale": "Code review identified: unused cn import in faq.tsx triggers lint error; bg-[rgb(31,31,31)], text-[rgb(184,184,184)], text-[rgb(102,102,102)] violate Tailwind v4 design token convention",
+      "outcome": "Lint error resolved; three new tokens (surface-elevated, text-subtle, text-subtle-dark) added to @theme in globals.css; components now use semantic token classes"
     }
   ]
 }
