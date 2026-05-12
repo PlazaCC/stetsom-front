@@ -490,6 +490,15 @@
       ],
       "rationale": "The next-task workflow selected task-07, which required replacing the debug product detail page with a Figma-aligned implementation and mocked related products support.",
       "outcome": "The product detail route now renders navigable breadcrumb, radial hero with centered product image, styled TEXT/IMAGE blocks, placeholders for out-of-scope block types, and a 4-card related products grid; task-07 moved to REVIEW with all criteria checked."
+    },
+    {
+      "ts": "2026-05-12T21:15:00Z",
+      "agent": "claude-haiku-4-5-20251001",
+      "type": "chore",
+      "summary": "Regenerate types/routes.d.ts with /produtos/[slug] route for CI compatibility",
+      "files": ["types/routes.d.ts"],
+      "rationale": "Code review via /code-review skill found TypeScript errors in CI due to stale types/routes.d.ts missing /produtos/[slug] route. File must exist in repo root (not just .next/types/) for CI environments without .next cache.",
+      "outcome": "Copied types/routes.d.ts from .next/types/routes.d.ts post-build; now includes all routes (/, /admin, /cms, /produtos, /produtos/[slug], /sobre, /suporte) with correct ParamMap; pnpm tsc --noEmit and pnpm lint both pass"
     }
   ]
 }
