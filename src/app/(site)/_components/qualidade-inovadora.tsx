@@ -1,22 +1,23 @@
 import Image from "next/image";
 import SectionLabel from "@/components/ui/section-label";
+import { Rocket, ShieldCheck, Zap } from "lucide-react";
 
 export default function QualidadeInovadora() {
   const VALORES = [
     {
-      icon: "⚡",
+      icon: Zap,
       title: "Potência",
       description:
         'Quando se fala em STETSOM, logo associamos ao Slogan da marca: "Potência sem limites".',
     },
     {
-      icon: "✓",
+      icon: ShieldCheck,
       title: "Qualidade",
       description:
         "Desde 1989 fazemos o melhor para fazer sempre! Esse é o nosso lema.",
     },
     {
-      icon: "🚀",
+      icon: Rocket,
       title: "Inovação",
       description:
         "Projetados para serem objetos de desejo, os produtos STETSOM ocupam lugar de destaque.",
@@ -25,7 +26,7 @@ export default function QualidadeInovadora() {
 
   return (
     <section className="bg-white py-20">
-      <div className="px-8 lg:px-[170px] max-w-[1440px] mx-auto">
+      <div className="px-8 lg:px-42.5 max-w-360 mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* Imagem Esquerda */}
           <div className="relative w-full aspect-square bg-[rgb(240,240,240)] rounded-sm flex items-center justify-center">
@@ -52,8 +53,11 @@ export default function QualidadeInovadora() {
             <div className="grid grid-cols-1 gap-6 mt-10">
               {VALORES.map((valor) => (
                 <div key={valor.title} className="flex gap-4">
-                  <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center text-white font-bold shrink-0">
-                    {valor.icon}
+                  <div className="w-8 h-8 rounded-full  flex items-center justify-center text-white font-bold shrink-0">
+                    <valor.icon
+                      className="w-4 h-4 text-brand"
+                      aria-hidden="true"
+                    />
                   </div>
                   <div>
                     <h3 className="font-sans-condensed font-bold text-base uppercase text-brand-dark mb-2">

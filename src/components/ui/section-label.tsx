@@ -1,11 +1,11 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 interface SectionLabelProps {
-  label: string
-  title?: string
-  subtitle?: string
-  dark?: boolean
-  className?: string
+  label: string;
+  title?: string;
+  subtitle?: string;
+  dark?: boolean;
+  className?: string;
 }
 
 export default function SectionLabel({
@@ -26,8 +26,8 @@ export default function SectionLabel({
       {title && (
         <div
           className={cn(
-            "font-sans-condensed font-bold text-[40px] uppercase leading-none mt-0.5 whitespace-pre-line",
-            dark ? "text-white" : "text-brand-dark"
+            "font-sans-condensed font-black text-[40px] uppercase leading-none mt-0.5 whitespace-pre-line",
+            dark ? "text-white" : "text-brand-dark",
           )}
         >
           {title}
@@ -37,12 +37,12 @@ export default function SectionLabel({
         <p
           className={cn(
             "font-medium text-base leading-relaxed mt-1",
-            dark ? "text-[rgb(184,184,184)]" : "text-[rgb(102,102,102)]"
+            dark ? "text-[rgb(184,184,184)]" : "text-[rgb(102,102,102)]",
           )}
         >
           {subtitle}
         </p>
       )}
     </div>
-  )
+  );
 }

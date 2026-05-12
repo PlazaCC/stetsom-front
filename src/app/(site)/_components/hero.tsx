@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
+// Legacy hero kept for fallback while HeroCarousel is being rolled out.
 export default function Hero() {
   return (
     <div className="relative w-full h-130 sm:h-155 lg:h-175 overflow-hidden bg-[rgb(9,9,11)]">

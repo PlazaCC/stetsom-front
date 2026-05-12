@@ -1,14 +1,17 @@
 import Container from "@/components/ui/container";
 import SectionLabel from "@/components/ui/section-label";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const COMPANY_METRICS = [
-  { value: "35+", label: "ANOS DE MERCADO" },
-  { value: "200+", label: "PRODUTOS" },
-  { value: "60+", label: "PAÍSES DE EXPORTAÇÃO" },
-  { value: "1M+", label: "UNIDADES VENDIDAS" },
-];
+// const COMPANY_METRICS = [
+//   { value: "35+", label: "ANOS DE MERCADO" },
+//   { value: "200+", label: "PRODUTOS" },
+//   { value: "60+", label: "PAÍSES DE EXPORTAÇÃO" },
+//   { value: "1M+", label: "UNIDADES VENDIDAS" },
+// ];
 
 export default function NossaHistoria() {
   return (
@@ -41,7 +44,7 @@ export default function NossaHistoria() {
               dark
             />
 
-            <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-5 lg:mt-7">
+            {/* <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-5 lg:mt-7">
               {COMPANY_METRICS.map((metric) => (
                 <div key={metric.label} className="px-0 py-0">
                   <div className="flex items-start gap-1 leading-none">
@@ -57,13 +60,17 @@ export default function NossaHistoria() {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
 
             <Link
               href="/sobre"
-              className="mt-8 inline-flex h-10 items-center justify-center bg-brand px-6 text-sm font-sans-condensed font-bold uppercase tracking-wide text-white transition-colors hover:bg-brand/90"
+              className={cn(
+                buttonVariants({ variant: "brand", size: "figma-sm" }),
+                "mt-8",
+              )}
             >
-              Conheça mais →
+              Conheça mais
+              <ArrowRight className="size-4" strokeWidth={2.5} />
             </Link>
           </div>
         </div>

@@ -29,7 +29,7 @@ export default function SobrePage() {
       </section>
 
       {/* 2. RED BANNER - Milestones Carousel */}
-      <RedBanner />
+      {/* <RedBanner /> */}
 
       {/* 3. QUALIDADE INOVADORA - 2 Cols */}
       <QualidadeInovadora />

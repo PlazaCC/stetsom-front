@@ -1,5 +1,8 @@
 import Container from "@/components/ui/container";
 import SectionLabel from "@/components/ui/section-label";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import FaqAccordion from "./faq-accordion";
 
@@ -31,9 +34,13 @@ export default function Faq() {
             />
             <Link
               href="/suporte"
-              className="mt-7 inline-flex items-center justify-center h-9 px-6 bg-[rgb(31,31,31)] text-white font-sans-condensed font-bold text-sm uppercase hover:bg-zinc-800 transition-colors"
+              className={cn(
+                buttonVariants({ variant: "brand-dark", size: "figma-sm" }),
+                "mt-7",
+              )}
             >
-              Falar com suporte →
+              Falar com suporte
+              <ArrowRight className="size-4" strokeWidth={2.5} />
             </Link>
           </div>
           <div className="pt-2">

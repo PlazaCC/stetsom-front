@@ -4,6 +4,7 @@ import SectionLabel from "@/components/ui/section-label";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 const FEATURED_PRODUCTS = [
   {
@@ -44,41 +45,85 @@ export default function Novidades() {
   return (
     <section className="flex w-full justify-center bg-white py-12">
       <Container>
-        <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:gap-5">
-          <div className="flex items-end justify-between gap-4">
+        {/* Header: title + tabs/cta */}
+        <div className="mb-6 sm:mb-8">
+          {/* Desktop: title box left, badges box right aligned to bottom */}
+          <div className="hidden lg:flex items-stretch justify-between gap-6">
+            <div className="max-w-[320px]">
+              <SectionLabel
+                label="Novidades"
+                title={"CONHEÇA A\nPRATICIDADE"}
+                className=""
+              />
+            </div>
+
+            <div className="flex-1 flex items-end justify-end">
+              <div className="inline-flex items-center gap-3 overflow-x-auto pb-1 pr-1 sm:gap-4 lg:pr-0 bg-[rgb(244,244,245)] rounded-[8px] px-2 py-1">
+                {["Todos", "Amplificadores", "Processadores", "Subwoofers"].map(
+                  (t, i) => (
+                    <div
+                      key={t}
+                      className={cn(
+                        "shrink-0 px-3 py-1.5 transition-colors text-[14px] leading-5 font-sans text-center",
+                        i === 0
+                          ? "rounded-[6px] bg-white text-[#09090B] shadow-sm"
+                          : "rounded-[6px] bg-transparent text-[rgb(113,113,122)]",
+                      )}
+                    >
+                      {t}
+                    </div>
+                  ),
+                )}
+              </div>
+
+              <Link
+                href="/produtos"
+                className="ml-4 inline-flex items-center gap-2 px-2 text-sm font-sans-condensed font-medium text-brand"
+              >
+                <span>Ver todos</span>
+                <ArrowRight className="size-4 inline-block" strokeWidth={2.5} />
+              </Link>
+            </div>
+          </div>
+
+          {/* Mobile: stack title then badges */}
+          <div className="lg:hidden flex flex-col gap-4">
             <SectionLabel
               label="Novidades"
               title={"CONHEÇA A\nPRATICIDADE"}
               className="max-w-[320px]"
             />
-            <Link
-              href="/produtos"
-              className="inline-flex shrink-0 items-center gap-2 font-sans-condensed text-base font-medium text-brand transition-colors hover:text-brand/80"
-            >
-              <span>Ver todos</span>
-              <span aria-hidden="true" className="text-[1.35em] leading-none">
-                →
-              </span>
-            </Link>
-          </div>
-          <div className="flex gap-3 overflow-x-auto pb-1 pr-1 sm:gap-4 lg:pr-0">
-            {["Todos", "Amplificadores", "Processadores", "Subwoofers"].map(
-              (t, i) => (
-                <div
-                  key={t}
-                  className={cn(
-                    "shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
-                    i === 0
-                      ? "border-zinc-900 bg-zinc-900 text-white"
-                      : "border-zinc-300 bg-white text-zinc-500",
-                  )}
-                >
-                  {t}
-                </div>
-              ),
-            )}
+
+            <div className="flex items-center justify-between">
+              <div className="inline-flex items-center gap-3 overflow-x-auto pb-1 pr-1 sm:gap-4 lg:pr-0 bg-[rgb(244,244,245)] rounded-[8px] px-2 py-1">
+                {["Todos", "Amplificadores", "Processadores", "Subwoofers"].map(
+                  (t, i) => (
+                    <div
+                      key={t}
+                      className={cn(
+                        "shrink-0 px-3 py-1.5 transition-colors text-[14px] leading-5 font-sans text-center",
+                        i === 0
+                          ? "rounded-[6px] bg-white text-[#09090B] shadow-sm"
+                          : "rounded-[6px] bg-transparent text-[rgb(113,113,122)]",
+                      )}
+                    >
+                      {t}
+                    </div>
+                  ),
+                )}
+              </div>
+
+              <Link
+                href="/produtos"
+                className="ml-2 inline-flex items-center gap-2 px-2 text-sm font-sans-condensed font-medium text-brand"
+              >
+                <span>Ver todos</span>
+                <ArrowRight className="size-4 inline-block" strokeWidth={2.5} />
+              </Link>
+            </div>
           </div>
         </div>
+
         <div className="grid gap-5 lg:grid-cols-[447px_1fr]">
           <Link
             href="/produtos/1"

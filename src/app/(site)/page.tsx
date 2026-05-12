@@ -1,5 +1,5 @@
 import Faq from "./_components/faq";
-import Hero from "./_components/hero";
+import HeroCarousel from "./_components/hero-carousel";
 import NossaHistoria from "./_components/nossa-historia";
 import Novidades from "./_components/novidades";
 import MidiasSociais from "./_components/social-medias";
@@ -7,7 +7,7 @@ import MidiasSociais from "./_components/social-medias";
 export default function Home() {
   return (
     <>
-      <Hero />
+      <HeroCarousel />
       <Novidades />
       <NossaHistoria />
       <MidiasSociais />
