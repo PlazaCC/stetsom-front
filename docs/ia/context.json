@@ -335,6 +335,15 @@
       "files": [".github/workflows/ci.yml"],
       "rationale": "User requested creation of CI workflow file based on template but adapted for pnpm and Next.js.",
       "outcome": "A workflow file `.github/workflows/ci.yml` has been added. It provisions node 20, uses pnpm v9 via setup-pnpm, typechecks, lints, and builds the project on push and PRs."
+    },
+    {
+      "ts": "2026-05-12T16:45:00Z",
+      "agent": "gemini-3.1-pro",
+      "type": "chore",
+      "summary": "Add pre-commit hook using husky and lint-staged",
+      "files": ["package.json", ".husky/pre-commit"],
+      "rationale": "User requested a lightweight pre-commit hook to prevent committing code with errors, specifically avoiding heavy builds.",
+      "outcome": "Configured husky and lint-staged in package.json and created an executable pre-commit hook that runs `pnpm lint-staged` and typechecking (`pnpm tsc --noEmit`)."
     }
   ]
 }
