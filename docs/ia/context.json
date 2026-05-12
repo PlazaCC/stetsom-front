@@ -353,6 +353,37 @@
       "files": ["pnpm-workspace.yaml"],
       "rationale": "The GitHub Actions workflow failed during setup-node's pnpm caching step because pnpm-workspace.yaml lacked a 'packages' field, breaking 'pnpm store path'.",
       "outcome": "Added 'packages: [ \".\" ]' to pnpm-workspace.yaml, allowing setup-node to correctly cache pnpm dependencies."
+    },
+    {
+      "ts": "2026-05-12T17:00:00Z",
+      "agent": "gemini-3.1-pro",
+      "type": "fix",
+      "summary": "Fix TypeScript build errors causing CI checks to fail",
+      "files": ["types/routes.d.ts", "src/app/api/catalog/products/[slug]/route.ts"],
+      "rationale": "Typescript checks failed in CI due to missing '/produtos/[slug]' in static generated Routes, and an undefined global 'RouteContext' type used in the API.",
+      "outcome": "Updated 'types/routes.d.ts' with the correct app routes constraint and standardized API route typed params to fix the build locally and in CI."
+    },
+    {
+      "ts": "2026-05-12T17:15:00Z",
+      "agent": "gemini-3.1-pro",
+      "type": "fix",
+      "summary": "Revert manual changes to types/routes.d.ts and fix dynamic route types",
+      "files": [
+        "types/routes.d.ts",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/api/catalog/products/[slug]/route.ts"
+      ],
+      "rationale": "Code review identified modification of Next.js auto-generated file 'types/routes.d.ts' violated Next.js 16 conventions. Fixed CI route constraints directly in the components.",
+      "outcome": "Reverted 'types/routes.d.ts' to auto-generation flow. Dynamic routes now safely type their params using explicit `{ params: Promise<{ ... }> }` standardizing for Next.js App Router."
+    },
+    {
+      "ts": "2025-07-14T12:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Remove pnpm-workspace.yaml, move ignoredBuiltDependencies to package.json, bump CI to pnpm v10, rewrite README",
+      "files": ["pnpm-workspace.yaml", "package.json", ".github/workflows/ci.yml", "README.md"],
+      "rationale": "Project is not a monorepo; pnpm-workspace.yaml with packages:['.'] was a workaround for CI cache step; proper fix is package.json pnpm field; CI had pnpm v9 vs local v10 mismatch; README was default Next.js boilerplate",
+      "outcome": "Clean non-workspace pnpm config; CI uses pnpm v10 matching local dev; README reflects actual project stack and conventions"
     }
   ]
 }

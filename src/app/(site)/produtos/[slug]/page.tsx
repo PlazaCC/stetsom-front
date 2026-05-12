@@ -4,9 +4,7 @@ import { getCatalogProductDetail } from '@/lib/api/server'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-type ProductDetailRoute = '/produtos/[slug]'
-
-export default async function ProdutoDetalhePage(props: PageProps<ProductDetailRoute>) {
+export default async function ProdutoDetalhePage(props: { params: Promise<{ slug: string }> }) {
   const { slug } = await props.params
   const payload = await getCatalogProductDetail(slug)
 

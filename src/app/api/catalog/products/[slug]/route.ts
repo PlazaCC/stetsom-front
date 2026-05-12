@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET(_request: NextRequest, context: RouteContext<'/api/catalog/products/[slug]'>) {
+export async function GET(_request: NextRequest, context: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await context.params
     const payload = await getCatalogProductDetail(slug)
