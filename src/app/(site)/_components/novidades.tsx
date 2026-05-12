@@ -1,3 +1,5 @@
+'use client'
+
 import { Container } from '@/components/ui/container'
 import ProductCard from '@/components/ui/product-card'
 import { SectionLabel } from '@/components/ui/section-label'
@@ -6,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useMemo, useState } from 'react'
 
 interface NovidadesProps {
   featuredProducts: ProductCardItem[]
@@ -14,69 +17,90 @@ interface NovidadesProps {
   section: SiteHomePayload['novidades']
 }
 
+interface TabStripProps {
+  tabs: string[]
+  activeTab: string
+  onSelect: (tab: string) => void
+  ctaHref: string
+  ctaLabel: string
+}
+
+function TabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel }: TabStripProps) {
+  return (
+    <>
+      <div
+        role='tablist'
+        className='inline-flex items-center gap-3 overflow-x-auto pb-1 pr-1 sm:gap-4 lg:pr-0 bg-zinc-100 rounded-[8px] px-2 py-1'>
+        {tabs.map((tab) => (
+          <button
+            type='button'
+            key={tab}
+            role='tab'
+            onClick={() => onSelect(tab)}
+            aria-selected={activeTab === tab}
+            className={cn(
+              'shrink-0 px-3 py-1.5 transition-colors text-sm leading-5 font-sans text-center rounded-[6px]',
+              activeTab === tab ? 'bg-white text-foreground shadow-sm' : 'bg-transparent text-zinc-500',
+            )}>
+            {tab}
+          </button>
+        ))}
+      </div>
+      <Link
+        href={ctaHref}
+        className='ml-4 inline-flex items-center gap-2 px-2 text-sm font-sans-condensed font-medium text-brand'>
+        <span>{ctaLabel}</span>
+        <ArrowRight className='size-4 inline-block' strokeWidth={2.5} />
+      </Link>
+    </>
+  )
+}
+
 export default function Novidades({ featuredProducts, spotlightProduct, tabs, section }: Readonly<NovidadesProps>) {
+  const [activeTab, setActiveTab] = useState(tabs[0] ?? 'Todos')
+
+  const filteredProducts = useMemo(() => {
+    if (activeTab === 'Todos') {
+      return featuredProducts
+    }
+
+    return featuredProducts.filter((product) => product.category === activeTab)
+  }, [activeTab, featuredProducts])
+
   return (
     <section className='flex w-full justify-center bg-white py-12'>
       <Container>
         {/* Header: title + tabs/cta */}
         <div className='mb-6 sm:mb-8'>
-          {/* Desktop: title box left, badges box right aligned to bottom */}
+          {/* Desktop: title box left, tabs+cta right aligned to bottom */}
           <div className='hidden lg:flex items-stretch justify-between gap-6'>
             <div className='max-w-80'>
               <SectionLabel label={section.label} title={section.title} className='' />
             </div>
 
             <div className='flex-1 flex items-end justify-end'>
-              <div className='inline-flex items-center gap-3 overflow-x-auto pb-1 pr-1 sm:gap-4 lg:pr-0 bg-zinc-100 rounded-[8px] px-2 py-1'>
-                {tabs.map((t, i) => (
-                  <div
-                    key={t}
-                    className={cn(
-                      'shrink-0 px-3 py-1.5 transition-colors text-sm leading-5 font-sans text-center',
-                      i === 0
-                        ? 'rounded-[6px] bg-white text-foreground shadow-sm'
-                        : 'rounded-[6px] bg-transparent text-zinc-500',
-                    )}>
-                    {t}
-                  </div>
-                ))}
-              </div>
-
-              <Link
-                href={section.ctaHref}
-                className='ml-4 inline-flex items-center gap-2 px-2 text-sm font-sans-condensed font-medium text-brand'>
-                <span>{section.ctaLabel}</span>
-                <ArrowRight className='size-4 inline-block' strokeWidth={2.5} />
-              </Link>
+              <TabStrip
+                tabs={tabs}
+                activeTab={activeTab}
+                onSelect={setActiveTab}
+                ctaHref={section.ctaHref}
+                ctaLabel={section.ctaLabel}
+              />
             </div>
           </div>
 
-          {/* Mobile: stack title then badges */}
+          {/* Mobile: stack title then tabs+cta */}
           <div className='lg:hidden flex flex-col gap-4'>
             <SectionLabel label={section.label} title={section.title} className='max-w-80' />
 
             <div className='flex items-center justify-between'>
-              <div className='inline-flex items-center gap-3 overflow-x-auto pb-1 pr-1 sm:gap-4 lg:pr-0 bg-zinc-100 rounded-[8px] px-2 py-1'>
-                {tabs.map((t, i) => (
-                  <div
-                    key={t}
-                    className={cn(
-                      'shrink-0 px-3 py-1.5 transition-colors text-sm leading-5 font-sans text-center',
-                      i === 0
-                        ? 'rounded-[6px] bg-white text-foreground shadow-sm'
-                        : 'rounded-[6px] bg-transparent text-zinc-500',
-                    )}>
-                    {t}
-                  </div>
-                ))}
-              </div>
-
-              <Link
-                href={section.ctaHref}
-                className='ml-2 inline-flex items-center gap-2 px-2 text-sm font-sans-condensed font-medium text-brand'>
-                <span>{section.ctaLabel}</span>
-                <ArrowRight className='size-4 inline-block' strokeWidth={2.5} />
-              </Link>
+              <TabStrip
+                tabs={tabs}
+                activeTab={activeTab}
+                onSelect={setActiveTab}
+                ctaHref={section.ctaHref}
+                ctaLabel={section.ctaLabel}
+              />
             </div>
           </div>
         </div>
@@ -102,9 +126,13 @@ export default function Novidades({ featuredProducts, spotlightProduct, tabs, se
             </div>
           </Link>
           <div className='grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5'>
-            {featuredProducts.map((p) => (
-              <ProductCard key={p.id} {...p} href={p.href} />
-            ))}
+            {filteredProducts.length === 0 ? (
+              <p className='col-span-2 flex items-center justify-center py-12 text-sm text-muted-foreground'>
+                Nenhum produto encontrado nesta categoria.
+              </p>
+            ) : (
+              filteredProducts.map((p) => <ProductCard key={p.id} {...p} href={p.href} />)
+            )}
           </div>
         </div>
       </Container>

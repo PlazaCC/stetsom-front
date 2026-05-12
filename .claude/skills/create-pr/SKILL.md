@@ -84,8 +84,6 @@ Output the generated title and body as copy-paste ready blocks — **do not run 
 - [ ] ESLint passes
 - [ ] Tested locally
 - [ ] Ready for review
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
 ```
 
 ---

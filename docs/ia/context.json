@@ -415,6 +415,52 @@
       ],
       "rationale": "Task-04 requested Figma-accurate Home Hero gradient/text overlay and desktop spacing adjustments while preserving responsive behavior and existing design tokens.",
       "outcome": "Hero now uses the exact gradient and optional slide copy overlay, mock slide data includes label/title, NossaHistoria desktop layout applies 91px-equivalent gap, and task-04 is in REVIEW with all criteria checked."
+    },
+    {
+      "ts": "2026-05-12T23:10:00Z",
+      "agent": "gpt-5.3-codex",
+      "type": "feat",
+      "summary": "Implement task-05 tabs filtering and home bases section",
+      "files": [
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/page.tsx",
+        "src/app/(site)/_components/nossas-bases.tsx",
+        "src/app/(site)/_components/social-medias.tsx",
+        "src/lib/api/contracts.ts",
+        "src/lib/mock/site.ts",
+        "src/lib/api/providers/mock-provider.ts",
+        "docs/ia/tasks/task-05-home-novidades-tabs-bases.md",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Task-05 required client-side filtering in Novidades plus Home payload enrichment with bases data while preserving existing component parity and responsive structure.",
+      "outcome": "Home now filters featured products by active tab, renders Nossas Bases after the dark section with white background, uses off-white social background, and exposes bases in SiteHomePayload mock data."
+    },
+    {
+      "ts": "2025-07-14T12:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix ARIA roles, extract TabStrip, add empty state, replace bg-white token in task-05 components",
+      "files": ["src/app/(site)/_components/novidades.tsx", "src/app/(site)/page.tsx"],
+      "rationale": "Code review on feat/task-05-home-novidades-tabs-bases identified: aria-pressed misuse on tab buttons, duplicated tab strip markup, missing empty state for filtered grid, and hardcoded bg-white on NossasBases instead of semantic token",
+      "outcome": "Tab buttons now use role=tab+aria-selected under role=tablist; TabStrip extracted as subcomponent eliminating duplicate; empty state shown when filter returns no products; NossasBases background uses bg-off-white token"
+    },
+    {
+      "ts": "2025-07-14T02:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix social-medias.tsx: replace span CTA with Link, use next/image for posts, remove non-functional carousel buttons",
+      "files": ["src/lib/api/contracts.ts", "src/lib/mock/site.ts", "src/app/(site)/_components/social-medias.tsx"],
+      "rationale": "Code review flagged non-semantic span as CTA, backgroundImage bypassing next/image optimization, and non-functional Server Component carousel buttons",
+      "outcome": "CTA uses next/link with ctaHref, post images use next/image with fill, carousel buttons removed from Server Component"
+    },
+    {
+      "ts": "2025-07-14T03:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Remove redundant className='bg-off-white' from NossasBases in home page",
+      "files": ["src/app/(site)/page.tsx"],
+      "rationale": "NossasBases already applies bg-off-white unconditionally in its own className; passing it from page.tsx was duplicate and violated DRY principle",
+      "outcome": "NossasBases rendered without redundant prop; visual output unchanged"
     }
   ]
 }

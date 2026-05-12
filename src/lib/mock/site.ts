@@ -110,6 +110,7 @@ export const SITE_SOCIAL_SECTION: SocialFeedSection = {
   title: 'MIDIAS SOCIAIS',
   subtitle: 'Participe da comunidade de profissionais do audio.',
   ctaLabel: 'Seguir no instagram',
+  ctaHref: 'https://instagram.com/stetsombrasil',
   posts: [
     { id: 'social-1', image: FIGMA_SITE_ASSETS.socialOne, href: '#', opacity: 0.82 },
     { id: 'social-2', image: FIGMA_SITE_ASSETS.socialTwo, href: '#', opacity: 0.86 },
@@ -160,6 +161,8 @@ export const ABOUT_BASES: AboutBase[] = [
       'P&D constante para desenvolver solucoes que surpreendem e sustentam nossa lideranca em amplificacao automotiva.',
   },
 ]
+
+export const HOME_BASES: SiteHomePayload['bases'] = ABOUT_BASES
 
 export const ABOUT_HERO_SECTION: SiteAboutPayload['hero'] = {
   label: 'Quem Somos',

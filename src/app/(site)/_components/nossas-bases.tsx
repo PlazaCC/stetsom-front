@@ -1,14 +1,16 @@
 import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import type { AboutBase } from '@/lib/api/contracts'
+import { cn } from '@/lib/utils'
 
 interface NossasBasesProps {
   bases: AboutBase[]
+  className?: string
 }
 
-export default function NossasBases({ bases }: Readonly<NossasBasesProps>) {
+export default function NossasBases({ bases, className }: Readonly<NossasBasesProps>) {
   return (
-    <section className='bg-off-white py-20'>
+    <section className={cn('bg-off-white py-20', className)}>
       <Container>
         <SectionLabel label='Como Trabalhamos' title='NOSSAS BASES' />
 

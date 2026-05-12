@@ -114,6 +114,7 @@ export type SocialMediaPost = {
   id: string
   image: string
   href: string
+  alt?: string
   opacity?: number
 }
 
@@ -122,6 +123,7 @@ export type SocialFeedSection = {
   title: string
   subtitle: string
   ctaLabel: string
+  ctaHref: string
   posts: SocialMediaPost[]
 }
 
@@ -167,6 +169,7 @@ export type SiteHomePayload = {
     ctaLabel: string
     ctaHref: string
   }
+  bases: AboutBase[]
   faq: FAQItem[]
   faqSection: {
     label: string
