@@ -1,6 +1,6 @@
 # task-03: Footer — Fidelidade Completa Desktop + Mobile + Links Copyright
 
-**Status:** TODO
+**Status:** REVIEW
 **Priority:** 2 — Componente global; depende de task-01 (tokens de layout)
 **Branch:** feat/task-03-footer-figma-fidelity
 **Created:** 2026-05-12
@@ -12,11 +12,11 @@ Corrigir o Footer para corresponder exatamente ao Figma (nodes `1200:4713` deskt
 
 ## Acceptance Criteria
 
-- [ ] Desktop: container usa `px-[100px] py-6` (não `px-8 lg:px-24` atual)
-- [ ] Desktop: layout `flex flex-row flex-wrap gap-x-[164px] gap-y-9 bg-[#111111]`
-- [ ] Coluna 1 exibe logo Stetsom + tagline + ícones sociais (Facebook, Instagram, YouTube, TikTok)
-- [ ] Copyright row exibe: "©2025 Stetsom Eletrônica Ltda. Todos os direitos reservados." à esquerda + "Política de privacidade | Termos de uso | Cookies" à direita
-- [ ] Mobile: layout `flex flex-col gap-9 px-5 py-6`
+- [x] Desktop: container usa `px-[100px] py-6` (não `px-8 lg:px-24` atual)
+- [x] Desktop: layout `flex flex-row flex-wrap gap-x-[164px] gap-y-9 bg-[#111111]`
+- [x] Coluna 1 exibe logo Stetsom + tagline + ícones sociais (Facebook, Instagram, YouTube, TikTok)
+- [x] Copyright row exibe: "©2025 Stetsom Eletrônica Ltda. Todos os direitos reservados." à esquerda + "Política de privacidade | Termos de uso | Cookies" à direita
+- [x] Mobile: layout `flex flex-col gap-9 px-5 py-6`
 
 ## In Scope
 

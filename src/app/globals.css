@@ -7,6 +7,7 @@
 @theme inline {
   --color-brand: rgb(232, 19, 42);
   --color-brand-dark: rgb(18, 18, 18);
+  --color-footer: var(--footer);
   --color-off-white: rgb(245, 244, 242);
   --color-surface-elevated: var(--surface-elevated);
   --color-text-subtle: var(--text-subtle);
@@ -70,6 +71,7 @@
 }
 
 :root {
+  --footer: rgb(17, 17, 17);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(0.975 0 0);
@@ -86,7 +88,7 @@
   --text-subtle: oklch(0.42 0 0);
   --text-subtle-dark: oklch(0.73 0 0);
   --surface-elevated: oklch(0.22 0 0);
-  --icon-muted: oklch(0.50 0 0);
+  --icon-muted: oklch(0.5 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);

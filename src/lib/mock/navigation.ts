@@ -42,9 +42,9 @@ export const FOOTER_COLUMNS = [
     title: 'Empresa',
     links: [
       { label: 'Sobre nos', href: '/sobre' },
-      { label: 'Produtos', href: '/produtos' },
-      { label: 'Suporte', href: '/suporte' },
-      { label: 'Garantia', href: '/suporte' },
+      { label: 'Nossa historia', href: '/sobre' },
+      { label: 'Fabrica', href: '/sobre' },
+      { label: 'Contato', href: '/suporte' },
     ],
   },
   {
@@ -53,6 +53,8 @@ export const FOOTER_COLUMNS = [
       { label: 'Todos', href: '/produtos' },
       { label: 'Amplificadores', href: '/produtos?category=amplificadores' },
       { label: 'Processadores', href: '/produtos?category=processadores' },
+      { label: 'Fontes', href: '/produtos?category=fontes' },
+      { label: 'Controladores', href: '/produtos?category=controladores' },
       { label: 'Acessorios', href: '/produtos?category=acessorios' },
     ],
   },
@@ -62,23 +64,15 @@ export const FOOTER_COLUMNS = [
       { label: 'Central de ajuda', href: '/suporte' },
       { label: 'Garantia', href: '/suporte' },
       { label: 'Manuais', href: '/suporte' },
+      { label: 'Postos autorizados', href: '/suporte' },
       { label: 'Contato', href: '/suporte' },
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
-      { label: 'Politica de privacidade', href: '/privacidade' },
-      { label: 'Termos de uso', href: '/termos' },
-      { label: 'Cookies', href: '/privacidade' },
-      { label: 'Portal CMS', href: '/cms' },
     ],
   },
 ] as const
 
 export const FOOTER_SOCIALS = [
   { label: 'Facebook', href: '#' },
-  { label: 'Twitter', href: '#' },
+  { label: 'Instagram', href: '#' },
   { label: 'YouTube', href: '#' },
   { label: 'TikTok', href: '#' },
 ] as const
