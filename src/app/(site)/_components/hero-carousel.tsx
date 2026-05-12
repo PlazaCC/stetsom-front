@@ -23,12 +23,12 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
   const paginationRef = useRef<HTMLDivElement | null>(null)
 
   if (safeSlides.length === 0) {
-    return <div className={cn('relative w-full overflow-hidden bg-[rgb(9,9,11)]', HERO_HEIGHT_CLASS)} />
+    return <div className={cn('relative w-full overflow-hidden bg-brand-dark', HERO_HEIGHT_CLASS)} />
   }
 
   return (
     <section
-      className={cn('hero-carousel relative w-full overflow-hidden bg-[rgb(9,9,11)]', HERO_HEIGHT_CLASS)}
+      className={cn('hero-carousel relative w-full overflow-hidden bg-brand-dark', HERO_HEIGHT_CLASS)}
       aria-label='Banners principais'>
       <Swiper
         className='h-full w-full'

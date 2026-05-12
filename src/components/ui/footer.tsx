@@ -56,21 +56,14 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer className='bg-[rgb(17,17,17)] pt-12 pb-6'>
+    <footer className='bg-brand-dark pt-12 pb-6'>
       <Container>
         <div className='mb-10'>
           <div className='flex flex-col lg:flex-row lg:items-start gap-8'>
             <div className='shrink-0 max-w-63.25'>
-              <Image
-                src='/brand-image.png'
-                alt='Stetsom'
-                width={160}
-                height={49}
-                className='mb-4 object-contain'
-              />
-              <p className='text-sm leading-5 text-[rgb(133,133,133)]'>
-                Potência sem limite desde 1989. Fabricamos os melhores amplificadores automotivos do
-                Brasil.
+              <Image src='/brand-image.png' alt='Stetsom' width={160} height={49} className='mb-4 object-contain' />
+              <p className='text-sm leading-5 text-zinc-400'>
+                Potência sem limite desde 1989. Fabricamos os melhores amplificadores automotivos do Brasil.
               </p>
 
               <div className='mt-4 flex items-center gap-3'>
@@ -79,7 +72,7 @@ export default function Footer() {
                     key={label}
                     href={href}
                     aria-label={label}
-                    className='w-9 h-9 rounded border border-[rgb(44,44,44)] flex items-center justify-center text-[rgb(133,133,133)] hover:text-white transition-colors'>
+                    className='w-9 h-9 rounded border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors'>
                     {icon}
                   </a>
                 ))}
@@ -87,19 +80,17 @@ export default function Footer() {
             </div>
 
             <div className='w-full'>
-              <div className='block lg:hidden border-t border-[rgb(44,44,44)] my-6' />
+              <div className='block lg:hidden border-t border-white/10 my-6' />
 
               <div className='grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-4'>
                 {FOOTER_COLUMNS.map(({ title, links }) => (
                   <div key={title} className='flex flex-col gap-3'>
-                    <span className='font-sans-condensed font-bold text-sm uppercase text-white mb-1'>
-                      {title}
-                    </span>
+                    <span className='font-sans-condensed font-bold text-sm uppercase text-white mb-1'>{title}</span>
                     {links.map(({ label, href }) => (
                       <Link
                         key={label || href}
                         href={href}
-                        className='text-sm text-[rgb(133,133,133)] hover:text-white transition-colors'>
+                        className='text-sm text-zinc-400 hover:text-white transition-colors'>
                         {label}
                       </Link>
                     ))}
@@ -110,11 +101,9 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className='border-t border-[rgb(44,44,44)] pt-5 flex flex-col-reverse items-center gap-2 md:flex-row md:justify-between'>
-          <span className='text-[13px] text-[rgb(86,86,86)]'>
-            © 2024 Stetsom. Todos os direitos reservados.
-          </span>
-          <span className='text-[13px] text-[rgb(86,86,86)]'>@stetsombrasil</span>
+        <div className='border-t border-white/10 pt-5 flex flex-col-reverse items-center gap-2 md:flex-row md:justify-between'>
+          <span className='text-button-md text-muted-foreground'>© 2024 Stetsom. Todos os direitos reservados.</span>
+          <span className='text-button-md text-muted-foreground'>@stetsombrasil</span>
         </div>
       </Container>
     </footer>

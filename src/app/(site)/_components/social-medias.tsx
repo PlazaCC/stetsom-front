@@ -22,7 +22,7 @@ export default function MidiasSociais({ section }: Readonly<MidiasSociaisProps>)
           {section.posts.map((post) => (
             <div
               key={post.id}
-              className='w-[250px] h-[250px] shrink-0 rounded-sm bg-cover bg-center'
+              className='w-62.5 h-62.5 shrink-0 rounded-sm bg-cover bg-center'
               style={{
                 backgroundImage: `url('${post.image}')`,
                 opacity: post.opacity ?? 1,

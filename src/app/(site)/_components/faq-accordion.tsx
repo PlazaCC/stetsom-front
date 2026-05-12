@@ -17,7 +17,7 @@ export default function FaqAccordion({ items }: { items: FAQItem[] }) {
             </AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionContent>
-            <p className='text-sm leading-relaxed text-[rgb(102,102,102)]'>{a}</p>
+            <p className='text-sm leading-relaxed text-text-subtle'>{a}</p>
           </AccordionContent>
         </AccordionItem>
       ))}

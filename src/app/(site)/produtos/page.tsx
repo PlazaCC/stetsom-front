@@ -53,23 +53,23 @@ export default function ProdutosPage() {
   return (
     <div>
       {/* HERO */}
-      <section className='relative bg-[rgb(9,9,11)] overflow-hidden h-[200px] md:h-[280px] lg:h-[357px]'>
+      <section className='relative bg-brand-dark overflow-hidden h-50 md:h-70 lg:h-89.25'>
         <Image src={hero.heroImage} alt={hero.heroImageAlt} fill className='object-cover opacity-40' priority />
-        <Container className='z-10 pt-8 md:pt-16 lg:pt-[103px]'>
+        <Container className='z-10 pt-8 md:pt-16 lg:pt-25.75'>
           <div className='flex items-center gap-2 mb-1'>
             <div className='w-6 h-px bg-brand shrink-0' />
             <span className='font-sans-condensed font-medium text-xs md:text-base uppercase text-brand'>
               {hero.heroLabel}
             </span>
           </div>
-          <h1 className='font-sans-condensed font-black text-[32px] md:text-[48px] lg:text-[60px] leading-tight md:leading-[64px] uppercase text-white'>
+          <h1 className='font-sans-condensed font-black text-[32px] md:text-5xl lg:text-6xl leading-tight md:leading-16 uppercase text-white'>
             {hero.heroTitle.split('\n').map((line) => (
               <span key={line} className='block'>
                 {line}
               </span>
             ))}
           </h1>
-          <span className='text-xs md:text-base text-[rgb(184,184,184)] mt-2 block'>{totalProducts} produtos</span>
+          <span className='text-xs md:text-base text-text-subtle-dark mt-2 block'>{totalProducts} produtos</span>
         </Container>
         <div className='absolute hidden lg:block right-5 md:right-10 lg:right-20 bottom-0 font-sans-condensed font-black text-[100px] lg:text-[150px] text-white/[0.04] leading-none pointer-events-none select-none'>
           {hero.heroWatermark}
@@ -79,7 +79,7 @@ export default function ProdutosPage() {
       {/* FILTROS */}
       <div className='bg-white border-b border-zinc-200'>
         <Container className='py-3 md:py-4 flex flex-col gap-3 md:flex-row md:items-center md:gap-4'>
-          <div className='w-full md:flex-1 border border-zinc-500 flex items-center h-9 md:h-11 px-3 md:px-3.5 gap-2.5 md:max-w-[400px]'>
+          <div className='w-full md:flex-1 border border-zinc-500 flex items-center h-9 md:h-11 px-3 md:px-3.5 gap-2.5 md:max-w-100'>
             <Search size={16} className='text-zinc-500 shrink-0' />
             <input
               value={search}
@@ -132,4 +132,3 @@ export default function ProdutosPage() {
     </div>
   )
 }
-

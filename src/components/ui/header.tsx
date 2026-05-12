@@ -6,6 +6,7 @@ import { Menu, Search } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Button } from './button'
 import { Container } from './container'
 import {
   NavigationMenu,
@@ -18,10 +19,10 @@ import {
 
 export default function Header() {
   return (
-    <header className='sticky top-0 z-50 h-22 w-full border-b border-zinc-200 bg-white'>
+    <header className='sticky top-0 z-50 h-22 w-full border-b border-neutral-400 bg-white'>
       <Container className='flex h-full items-center justify-between'>
         {/* Desktop header (unchanged layout) */}
-        <div className='hidden md:flex items-center gap-[51px]'>
+        <div className='hidden md:flex items-center gap-logo-nav'>
           <Link href='/'>
             <Image src='/logo.png' alt='Stetsom' width={158} height={35} priority />
           </Link>
@@ -39,7 +40,7 @@ export default function Header() {
                     }
                   />
                   <NavigationMenuContent>
-                    <ul className='grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]'>
+                    <ul className='grid w-100 gap-2 md:w-125 md:grid-cols-2 lg:w-150'>
                       {PRODUCT_MENU_CATEGORIES.map((component) => (
                         <ListItem
                           key={component.label}
@@ -68,8 +69,8 @@ export default function Header() {
         {/* Mobile header: hamburger, centered logo, search */}
         <div className='flex items-center justify-between w-full md:hidden'>
           <div className='w-10 flex items-center justify-start'>
-            <button aria-label='Abrir menu' className='inline-flex items-center justify-center w-10 h-10'>
-              <Menu size={22} color='var(--color-icon-muted)' />
+            <button aria-label='Abrir menu' className='inline-flex items-center justify-center w-10 h-10 text-icon-muted'>
+              <Menu size={22} />
             </button>
           </div>
 
@@ -78,19 +79,21 @@ export default function Header() {
           </Link>
 
           <div className='w-10 flex items-center justify-end'>
-            <button aria-label='Buscar' className='inline-flex items-center justify-center w-10 h-10'>
-              <Search size={20} color='var(--color-icon-muted)' />
+            <button aria-label='Buscar' className='inline-flex items-center justify-center w-10 h-10 text-icon-muted'>
+              <Search size={20} />
             </button>
           </div>
         </div>
 
         {/* Right side (desktop) */}
         <div className='hidden md:flex items-center'>
-          <Link
-            href='/garantia'
-            className='inline-flex items-center justify-center h-10 px-6 bg-brand-dark text-white font-sans-condensed font-bold text-sm uppercase tracking-wide hover:bg-zinc-800 transition-colors'>
+          <Button
+            variant='pill'
+            nativeButton={false}
+            className='bg-brand-dark hover:bg-zinc-800 py-2 px-3 h-auto text-xs'
+            render={<Link href='/garantia' />}>
             Garantia
-          </Link>
+          </Button>
         </div>
       </Container>
     </header>
@@ -106,8 +109,8 @@ function MenuLink({ href, label }: { href: string; label: string }) {
     <Link
       href={href}
       className={cn(
-        'font-semibold text-base pb-0.5 border-b-2 transition-colors mx-4',
-        active ? 'text-brand border-brand' : 'text-brand-dark border-transparent hover:text-brand hover:border-brand',
+        'font-sans font-normal text-lg pb-0.5 border-b-2 transition-colors mx-4',
+        active ? 'text-brand border-brand' : 'text-muted-foreground border-transparent hover:text-brand hover:border-brand',
       )}>
       {label}
     </Link>

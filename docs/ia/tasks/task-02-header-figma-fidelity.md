@@ -1,6 +1,6 @@
 # task-02: Header — Fidelidade Completa Desktop + Mobile
 
-**Status:** TODO
+**Status:** REVIEW
 **Priority:** 2 — Componente global; depende de task-01 (Button pill)
 **Branch:** feat/task-02-header-figma-fidelity
 **Created:** 2026-05-12
@@ -12,11 +12,11 @@ Alinhar o `Header` com o Figma (nodes `1200:4585` desktop / `1200:4305` mobile) 
 
 ## Acceptance Criteria
 
-- [ ] Desktop: gap entre logo e nav links é visualmente 51px; links usam Barlow Regular 18px `#565656`
-- [ ] Desktop: botão "Garantia" tem shape pill (`rounded-full`) com `bg-brand-dark text-white`, padding `8px 12px`
-- [ ] Mobile: três elementos em row — hamburger (40×40) | logo centralizado | search (40×40)
-- [ ] Mobile: borda inferior do header usa `border-b border-[#999999]`
-- [ ] Nav link ativo tem underline `border-brand` e cor `text-brand`
+- [x] Desktop: gap entre logo e nav links é visualmente 51px; links usam Barlow Regular 18px `#565656`
+- [x] Desktop: botão "Garantia" tem shape pill (`rounded-full`) com `bg-brand-dark text-white`, padding `8px 12px`
+- [x] Mobile: três elementos em row — hamburger (40×40) | logo centralizado | search (40×40)
+- [x] Mobile: borda inferior do header usa `border-b border-[#999999]`
+- [x] Nav link ativo tem underline `border-brand` e cor `text-brand`
 
 ## In Scope
 

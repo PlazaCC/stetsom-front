@@ -22,20 +22,20 @@ export default function Novidades({ featuredProducts, spotlightProduct, tabs, se
         <div className='mb-6 sm:mb-8'>
           {/* Desktop: title box left, badges box right aligned to bottom */}
           <div className='hidden lg:flex items-stretch justify-between gap-6'>
-            <div className='max-w-[320px]'>
+            <div className='max-w-80'>
               <SectionLabel label={section.label} title={section.title} className='' />
             </div>
 
             <div className='flex-1 flex items-end justify-end'>
-              <div className='inline-flex items-center gap-3 overflow-x-auto pb-1 pr-1 sm:gap-4 lg:pr-0 bg-[rgb(244,244,245)] rounded-[8px] px-2 py-1'>
+              <div className='inline-flex items-center gap-3 overflow-x-auto pb-1 pr-1 sm:gap-4 lg:pr-0 bg-zinc-100 rounded-[8px] px-2 py-1'>
                 {tabs.map((t, i) => (
                   <div
                     key={t}
                     className={cn(
-                      'shrink-0 px-3 py-1.5 transition-colors text-[14px] leading-5 font-sans text-center',
+                      'shrink-0 px-3 py-1.5 transition-colors text-sm leading-5 font-sans text-center',
                       i === 0
-                        ? 'rounded-[6px] bg-white text-[#09090B] shadow-sm'
-                        : 'rounded-[6px] bg-transparent text-[rgb(113,113,122)]',
+                        ? 'rounded-[6px] bg-white text-foreground shadow-sm'
+                        : 'rounded-[6px] bg-transparent text-zinc-500',
                     )}>
                     {t}
                   </div>
@@ -53,18 +53,18 @@ export default function Novidades({ featuredProducts, spotlightProduct, tabs, se
 
           {/* Mobile: stack title then badges */}
           <div className='lg:hidden flex flex-col gap-4'>
-            <SectionLabel label={section.label} title={section.title} className='max-w-[320px]' />
+            <SectionLabel label={section.label} title={section.title} className='max-w-80' />
 
             <div className='flex items-center justify-between'>
-              <div className='inline-flex items-center gap-3 overflow-x-auto pb-1 pr-1 sm:gap-4 lg:pr-0 bg-[rgb(244,244,245)] rounded-[8px] px-2 py-1'>
+              <div className='inline-flex items-center gap-3 overflow-x-auto pb-1 pr-1 sm:gap-4 lg:pr-0 bg-zinc-100 rounded-[8px] px-2 py-1'>
                 {tabs.map((t, i) => (
                   <div
                     key={t}
                     className={cn(
-                      'shrink-0 px-3 py-1.5 transition-colors text-[14px] leading-5 font-sans text-center',
+                      'shrink-0 px-3 py-1.5 transition-colors text-sm leading-5 font-sans text-center',
                       i === 0
-                        ? 'rounded-[6px] bg-white text-[#09090B] shadow-sm'
-                        : 'rounded-[6px] bg-transparent text-[rgb(113,113,122)]',
+                        ? 'rounded-[6px] bg-white text-foreground shadow-sm'
+                        : 'rounded-[6px] bg-transparent text-zinc-500',
                     )}>
                     {t}
                   </div>
@@ -84,7 +84,7 @@ export default function Novidades({ featuredProducts, spotlightProduct, tabs, se
         <div className='grid gap-5 lg:grid-cols-[447px_1fr]'>
           <Link
             href={spotlightProduct.href}
-            className='relative flex h-80 items-center justify-center overflow-hidden rounded-lg border border-zinc-200 bg-[rgb(248,248,248)] transition-colors hover:border-brand sm:h-95 lg:h-111.75'>
+            className='relative flex h-80 items-center justify-center overflow-hidden rounded-lg border border-zinc-200 bg-card transition-colors hover:border-brand sm:h-95 lg:h-111.75'>
             <Image
               src={spotlightProduct.img}
               alt={spotlightProduct.name}
@@ -93,10 +93,10 @@ export default function Novidades({ featuredProducts, spotlightProduct, tabs, se
               className='max-h-55 max-w-[75%] object-contain shadow-[0_8px_24px_rgba(0,0,0,0.15)] sm:max-h-65 lg:max-h-75'
             />
             <div className='absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/65 to-transparent px-4 pb-4 pt-12 sm:px-5'>
-              <div className='font-sans-condensed text-[12px] font-medium uppercase text-brand'>
+              <div className='font-sans-condensed text-xs font-medium uppercase text-brand'>
                 {spotlightProduct.category}
               </div>
-              <div className='font-sans-condensed text-[18px] font-bold uppercase leading-tight text-white sm:text-xl'>
+              <div className='font-sans-condensed text-lg font-bold uppercase leading-tight text-white sm:text-xl'>
                 {spotlightProduct.name}
               </div>
             </div>

@@ -24,7 +24,7 @@ export function SectionLabel({ label, title, subtitle, dark = false, className }
       {title && (
         <div
           className={cn(
-            'font-sans-condensed font-black text-[40px] uppercase leading-none mt-0.5 whitespace-pre-line',
+            'font-sans-condensed font-black text-display-sm uppercase leading-none mt-0.5 whitespace-pre-line',
             dark ? 'text-white' : 'text-brand-dark',
           )}>
           {title}

@@ -26,8 +26,8 @@ const buttonVariants = cva(
       size: {
         default: 'h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
         xs: "h-6 gap-1 px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: 'h-[32px] gap-2 px-6 text-[11px] font-bold leading-[32px] tracking-[0.6px]',
-        md: 'h-[45px] gap-2 px-8 text-[13px] font-bold leading-[45px] tracking-[0.8px]',
+        sm: 'h-8 gap-2 px-6 text-2xs font-bold leading-8 tracking-[0.6px]',
+        md: 'h-11.25 gap-2 px-8 text-button-md font-bold leading-11.25 tracking-[0.8px]',
         lg: 'h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
         'figma-sm':
           'h-9 gap-1 rounded-[4px] px-2.5 leading-6 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',

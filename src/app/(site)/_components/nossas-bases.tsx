@@ -16,12 +16,10 @@ export default function NossasBases({ bases }: Readonly<NossasBasesProps>) {
           {bases.map((base) => (
             <div key={base.id}>
               <div className='w-12 h-1 bg-brand mb-6' />
-              <h3 className='font-sans-condensed font-bold text-[22px] uppercase text-brand-dark mb-4'>
+              <h3 className='font-sans-condensed font-bold text-section-title uppercase text-brand-dark mb-4'>
                 {base.title}
               </h3>
-              <p className='text-base text-[rgb(102,102,102)] leading-[1.7]'>
-                {base.description}
-              </p>
+              <p className='text-base text-text-subtle leading-[1.7]'>{base.description}</p>
             </div>
           ))}
         </div>
