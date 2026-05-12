@@ -1,6 +1,6 @@
 # task-08: Sobre — Hero, RedBanner Marquee + Galeria Dark
 
-**Status:** TODO
+**Status:** REVIEW
 **Priority:** 5 — Institucional; depende de task-01
 **Branch:** feat/task-08-sobre-hero-redbanner-galeria
 **Created:** 2026-05-12
@@ -12,10 +12,10 @@ Alinhar as seções 2, 3 e 5 da página `/sobre` com o Figma: hero com gradiente
 
 ## Acceptance Criteria
 
-- [ ] Hero Sobre tem `h-[439px]` em desktop, gradiente radial dark `fill_W1677V` aplicado como overlay
-- [ ] `RedBanner` anima continuamente em loop horizontal (CSS marquee) sem parar
-- [ ] Galeria dark (seção 5) existe com `bg-brand-dark` (ou gradiente radial dark) após a seção Timeline
-- [ ] `CTATrabalheConosco` é verificado contra o Figma — remover da página se não mapeado, ou manter com comentário indicando que é conteúdo extra
+- [x] Hero Sobre tem `h-[439px]` em desktop, gradiente radial dark `fill_W1677V` aplicado como overlay
+- [x] `RedBanner` anima continuamente em loop horizontal (CSS marquee) sem parar
+- [x] Galeria dark (seção 5) existe com `bg-brand-dark` (ou gradiente radial dark) após a seção Timeline
+- [x] `CTATrabalheConosco` é verificado contra o Figma — remover da página se não mapeado, ou manter com comentário indicando que é conteúdo extra
 
 ## In Scope
 

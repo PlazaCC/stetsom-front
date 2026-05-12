@@ -3,13 +3,13 @@ interface RedBannerProps {
 }
 
 export default function RedBanner({ milestones }: Readonly<RedBannerProps>) {
-  const repeatedMilestones = Array(4)
+  const repeatedMilestones = Array(2)
     .fill(null)
     .flatMap(() => milestones)
 
   return (
     <section className='bg-brand py-4 overflow-hidden'>
-      <div className='w-full'>
+      <div className='w-full animate-marquee'>
         <div className='flex items-center gap-6'>
           {repeatedMilestones.map((milestone, i) => (
             <div key={i} className='flex items-center gap-6 shrink-0'>

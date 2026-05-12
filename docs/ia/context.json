@@ -499,6 +499,21 @@
       "files": ["types/routes.d.ts"],
       "rationale": "Code review via /code-review skill found TypeScript errors in CI due to stale types/routes.d.ts missing /produtos/[slug] route. File must exist in repo root (not just .next/types/) for CI environments without .next cache.",
       "outcome": "Copied types/routes.d.ts from .next/types/routes.d.ts post-build; now includes all routes (/, /admin, /cms, /produtos, /produtos/[slug], /sobre, /suporte) with correct ParamMap; pnpm tsc --noEmit and pnpm lint both pass"
+    },
+    {
+      "ts": "2026-05-12T21:45:00Z",
+      "agent": "claude-haiku-4-5-20251001",
+      "type": "feat",
+      "summary": "Implement task-08 sobre page with hero height, marquee banner, and dark gallery",
+      "files": [
+        "src/app/globals.css",
+        "src/app/(site)/_components/red-banner.tsx",
+        "src/app/(site)/_components/galeria-dark.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "docs/ia/tasks/task-08-sobre-hero-redbanner-galeria.md"
+      ],
+      "rationale": "Task-08 design pass produced specs for: Hero height 439px with radial overlay, RedBanner with CSS marquee animation (2x duplicate), and new Galeria Dark section with dark background after Timeline.",
+      "outcome": "Added @keyframes marquee and .animate-marquee utility to globals.css; updated Hero height h-109.75 (439px) with radial gradient overlay; RedBanner duplicates milestones 2x for seamless marquee loop; created galeria-dark.tsx component with bg-brand-dark + grid placeholders; all 4 acceptance criteria met."
     }
   ]
 }
