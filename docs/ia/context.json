@@ -201,6 +201,8 @@
       ],
       "rationale": "Code review identified: unused cn import in faq.tsx triggers lint error; bg-[rgb(31,31,31)], text-[rgb(184,184,184)], text-[rgb(102,102,102)] violate Tailwind v4 design token convention",
       "outcome": "Lint error resolved; three new tokens (surface-elevated, text-subtle, text-subtle-dark) added to @theme in globals.css; components now use semantic token classes"
+    },
+    {
       "ts": "2026-05-14T20:00:00Z",
       "agent": "claude-sonnet-4-6",
       "type": "feat",
@@ -208,6 +210,24 @@
       "files": ["src/lib/api/contracts.ts", "src/lib/api/mappers.ts", "src/lib/mock/catalog.ts"],
       "rationale": "Task-12 acceptance criteria require valid spec keys in Portuguese, badge fields on Product type, and at least one VIDEO block for product with video_url",
       "outcome": "Mock catalog has correct Portuguese spec key names, LANÇAMENTO/DESTAQUE badges on 4 products, and VIDEO block for prod-st-4000eq-4c satisfying all 6 acceptance criteria"
+    },
+    {
+      "ts": "2026-05-15T00:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Improve create-pr skill to mark task DONE and update context.json on PR creation",
+      "files": [".agents/skills/create-pr/SKILL.md", ".claude/skills/create-pr/SKILL.md"],
+      "rationale": "User requested skill improvement to automate task lifecycle management after PR creation",
+      "outcome": "create-pr skill now includes Step 5 — marks related task as DONE and appends changelog entry post-PR"
+    },
+    {
+      "ts": "2026-05-15T03:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Add copy-paste PR preview and A/B user prompt before gh pr create in create-pr skill",
+      "files": [".agents/skills/create-pr/SKILL.md", ".claude/skills/create-pr/SKILL.md"],
+      "rationale": "User requested skill show PR title/body as copy-paste blocks and ask whether to create PR online or run code-review first before proceeding",
+      "outcome": "create-pr skill restructured to 7 steps: Step 4 presents copy-paste blocks, Step 5 asks A/B choice, Step 6 runs gh pr create, Step 7 marks task DONE"
     }
   ]
 }
