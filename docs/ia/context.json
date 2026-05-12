@@ -384,6 +384,21 @@
       "files": ["pnpm-workspace.yaml", "package.json", ".github/workflows/ci.yml", "README.md"],
       "rationale": "Project is not a monorepo; pnpm-workspace.yaml with packages:['.'] was a workaround for CI cache step; proper fix is package.json pnpm field; CI had pnpm v9 vs local v10 mismatch; README was default Next.js boilerplate",
       "outcome": "Clean non-workspace pnpm config; CI uses pnpm v10 matching local dev; README reflects actual project stack and conventions"
+    },
+    {
+      "ts": "2026-05-12T22:10:00Z",
+      "agent": "gpt-5.3-codex",
+      "type": "feat",
+      "summary": "Implement task-03 footer fidelity for desktop and mobile",
+      "files": [
+        "src/components/ui/footer.tsx",
+        "src/lib/mock/navigation.ts",
+        "src/app/globals.css",
+        "docs/ia/tasks/task-03-footer-figma-fidelity.md",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Task-03 required matching the Figma footer structure and spacing while keeping the component aligned with project token and responsive layout conventions.",
+      "outcome": "Footer now uses exact desktop/mobile spacing, updated logo and social set, corrected navigation columns, and legal copyright row; task moved to REVIEW with all criteria checked."
     }
   ]
 }

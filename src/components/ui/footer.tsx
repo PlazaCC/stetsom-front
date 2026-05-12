@@ -1,7 +1,6 @@
 import { FOOTER_COLUMNS } from '@/lib/mock/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Container } from './container'
 
 const SOCIALS = [
   {
@@ -17,14 +16,13 @@ const SOCIALS = [
     ),
   },
   {
-    label: 'Twitter',
+    label: 'Instagram',
     href: '#',
     icon: (
       <svg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path
-          d='M22 5.924c-.63.28-1.307.47-2.017.556a3.52 3.52 0 0 0 1.547-1.944 7.017 7.017 0 0 1-2.23.852A3.506 3.506 0 0 0 12.07 8.5c0 .275.03.543.09.799A9.966 9.966 0 0 1 3.11 4.87a3.504 3.504 0 0 0 1.084 4.68 3.47 3.47 0 0 1-1.588-.438v.044a3.506 3.506 0 0 0 2.81 3.437 3.6 3.6 0 0 1-.923.123c-.225 0-.444-.02-.657-.062a3.51 3.51 0 0 0 3.274 2.433A7.03 7.03 0 0 1 2 18.407 9.93 9.93 0 0 0 7.29 20c6.513 0 10.075-5.395 10.075-10.075 0-.153-.004-.305-.01-.456A7.2 7.2 0 0 0 22 5.924z'
-          fill='currentColor'
-        />
+        <rect x='3' y='3' width='18' height='18' rx='5' stroke='currentColor' strokeWidth='2' />
+        <circle cx='12' cy='12' r='4' stroke='currentColor' strokeWidth='2' />
+        <circle cx='17.5' cy='6.5' r='1.25' fill='currentColor' />
       </svg>
     ),
   },
@@ -54,58 +52,68 @@ const SOCIALS = [
   },
 ]
 
+const COPYRIGHT_LINKS = [
+  { label: 'Política de privacidade', href: '#' },
+  { label: 'Termos de uso', href: '#' },
+  { label: 'Cookies', href: '#' },
+]
+
 export default function Footer() {
   return (
-    <footer className='bg-brand-dark pt-12 pb-6'>
-      <Container>
-        <div className='mb-10'>
-          <div className='flex flex-col lg:flex-row lg:items-start gap-8'>
-            <div className='shrink-0 max-w-63.25'>
-              <Image src='/brand-image.png' alt='Stetsom' width={160} height={49} className='mb-4 object-contain' />
-              <p className='text-sm leading-5 text-zinc-400'>
-                Potência sem limite desde 1989. Fabricamos os melhores amplificadores automotivos do Brasil.
-              </p>
+    <footer className='bg-footer'>
+      <div className='mx-auto flex w-full max-w-360 flex-col gap-9 px-5 py-6 lg:px-25'>
+        <div className='flex flex-col gap-9 lg:flex-row lg:flex-wrap lg:gap-x-41 lg:gap-y-9'>
+          <div className='max-w-63.25'>
+            <Image src='/logo.png' alt='Stetsom' width={160} height={49} className='object-contain' />
+            <p className='mt-4 text-sm leading-5 text-text-subtle-dark'>
+              Potência sem limite desde 1989. Fabricamos os melhores amplificadores automotivos do Brasil.
+            </p>
 
-              <div className='mt-4 flex items-center gap-3'>
-                {SOCIALS.map(({ label, href, icon }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    aria-label={label}
-                    className='w-9 h-9 rounded border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors'>
-                    {icon}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            <div className='w-full'>
-              <div className='block lg:hidden border-t border-white/10 my-6' />
-
-              <div className='grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-4'>
-                {FOOTER_COLUMNS.map(({ title, links }) => (
-                  <div key={title} className='flex flex-col gap-3'>
-                    <span className='font-sans-condensed font-bold text-sm uppercase text-white mb-1'>{title}</span>
-                    {links.map(({ label, href }) => (
-                      <Link
-                        key={label || href}
-                        href={href}
-                        className='text-sm text-zinc-400 hover:text-white transition-colors'>
-                        {label}
-                      </Link>
-                    ))}
-                  </div>
-                ))}
-              </div>
+            <div className='mt-4 flex items-center gap-3'>
+              {SOCIALS.map(({ label, href, icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  className='flex h-9 w-9 items-center justify-center rounded border border-white/10 text-text-subtle-dark transition-colors hover:text-white'>
+                  {icon}
+                </a>
+              ))}
             </div>
           </div>
+
+          {FOOTER_COLUMNS.map(({ title, links }) => (
+            <div key={title} className='flex min-w-32 flex-col gap-3'>
+              <span className='mb-1 font-sans-condensed text-sm font-bold uppercase text-white'>{title}</span>
+              {links.map(({ label, href }) => (
+                <Link
+                  key={label || href}
+                  href={href}
+                  className='text-sm text-text-subtle-dark transition-colors hover:text-white'>
+                  {label}
+                </Link>
+              ))}
+            </div>
+          ))}
         </div>
 
-        <div className='border-t border-white/10 pt-5 flex flex-col-reverse items-center gap-2 md:flex-row md:justify-between'>
-          <span className='text-button-md text-muted-foreground'>© 2024 Stetsom. Todos os direitos reservados.</span>
-          <span className='text-button-md text-muted-foreground'>@stetsombrasil</span>
+        <div className='flex flex-col gap-3 border-t border-white/10 pt-5 lg:flex-row lg:items-center lg:justify-between'>
+          <span className='text-button-md text-text-subtle-dark'>
+            ©2025 Stetsom Eletrônica Ltda. Todos os direitos reservados.
+          </span>
+
+          <div className='flex flex-wrap items-center gap-y-1 text-button-md text-text-subtle-dark'>
+            {COPYRIGHT_LINKS.map(({ label, href }, index) => (
+              <div key={label} className='flex items-center'>
+                {index > 0 ? <span className='px-2'>|</span> : null}
+                <Link href={href} className='transition-colors hover:text-white'>
+                  {label}
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
-      </Container>
+      </div>
     </footer>
   )
 }
