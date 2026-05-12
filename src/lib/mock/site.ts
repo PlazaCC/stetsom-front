@@ -110,6 +110,7 @@ export const SITE_SOCIAL_SECTION: SocialFeedSection = {
   title: 'MIDIAS SOCIAIS',
   subtitle: 'Participe da comunidade de profissionais do audio.',
   ctaLabel: 'Seguir no instagram',
+  ctaHref: 'https://instagram.com/stetsombrasil',
   posts: [
     { id: 'social-1', image: FIGMA_SITE_ASSETS.socialOne, href: '#', opacity: 0.82 },
     { id: 'social-2', image: FIGMA_SITE_ASSETS.socialTwo, href: '#', opacity: 0.86 },
