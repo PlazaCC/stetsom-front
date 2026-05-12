@@ -201,6 +201,17 @@
       ],
       "rationale": "Code review identified: unused cn import in faq.tsx triggers lint error; bg-[rgb(31,31,31)], text-[rgb(184,184,184)], text-[rgb(102,102,102)] violate Tailwind v4 design token convention",
       "outcome": "Lint error resolved; three new tokens (surface-elevated, text-subtle, text-subtle-dark) added to @theme in globals.css; components now use semantic token classes"
+      "ts": "2026-05-14T20:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "feat",
+      "summary": "Enrich catalog mock data with realistic specs, badges, and VIDEO product block",
+      "files": [
+        "src/lib/api/contracts.ts",
+        "src/lib/api/mappers.ts",
+        "src/lib/mock/catalog.ts"
+      ],
+      "rationale": "Task-12 acceptance criteria require valid spec keys in Portuguese, badge fields on Product type, and at least one VIDEO block for product with video_url",
+      "outcome": "Mock catalog has correct Portuguese spec key names, LANÇAMENTO/DESTAQUE badges on 4 products, and VIDEO block for prod-st-4000eq-4c satisfying all 6 acceptance criteria"
     }
   ]
 }
