@@ -11,7 +11,7 @@ export default function GaleriaDark() {
           {galleryItems.map((_, i) => (
             <div
               key={i}
-              className='bg-zinc-800 aspect-square rounded-lg overflow-hidden'
+              className='bg-surface-elevated aspect-square rounded-lg overflow-hidden'
             />
           ))}
         </div>

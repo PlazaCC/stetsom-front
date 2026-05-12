@@ -504,16 +504,17 @@
       "ts": "2026-05-12T21:45:00Z",
       "agent": "claude-haiku-4-5-20251001",
       "type": "feat",
-      "summary": "Implement task-08 sobre page with hero height, marquee banner, and dark gallery",
+      "summary": "Implement task-08 sobre page with hero height, marquee banner, and dark gallery using react-fast-marquee",
       "files": [
+        "package.json",
         "src/app/globals.css",
         "src/app/(site)/_components/red-banner.tsx",
         "src/app/(site)/_components/galeria-dark.tsx",
         "src/app/(site)/sobre/page.tsx",
         "docs/ia/tasks/task-08-sobre-hero-redbanner-galeria.md"
       ],
-      "rationale": "Task-08 design pass produced specs for: Hero height 439px with radial overlay, RedBanner with CSS marquee animation (2x duplicate), and new Galeria Dark section with dark background after Timeline.",
-      "outcome": "Added @keyframes marquee and .animate-marquee utility to globals.css; updated Hero height h-109.75 (439px) with radial gradient overlay; RedBanner duplicates milestones 2x for seamless marquee loop; created galeria-dark.tsx component with bg-brand-dark + grid placeholders; all 4 acceptance criteria met."
+      "rationale": "Task-08 requires: Hero height 439px with radial overlay, RedBanner with seamless marquee loop respecting design padding, GaleriaDark section after Timeline with semantic color token.",
+      "outcome": "Installed react-fast-marquee v1.6.5; RedBanner uses <Marquee gap={24}> to respect design padding between milestone items; updated Hero h-109.75 with radial gradient overlay; created GaleriaDark with bg-surface-elevated tokens; all 4 acceptance criteria met; pnpm tsc and lint pass."
     }
   ]
 }
