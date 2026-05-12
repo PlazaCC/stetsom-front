@@ -344,6 +344,15 @@
       "files": ["package.json", ".husky/pre-commit"],
       "rationale": "User requested a lightweight pre-commit hook to prevent committing code with errors, specifically avoiding heavy builds.",
       "outcome": "Configured husky and lint-staged in package.json and created an executable pre-commit hook that runs `pnpm lint-staged` and typechecking (`pnpm tsc --noEmit`)."
+    },
+    {
+      "ts": "2026-05-12T16:50:00Z",
+      "agent": "gemini-3.1-pro",
+      "type": "fix",
+      "summary": "Fix missing packages field in pnpm-workspace.yaml causing GitHub Actions failure",
+      "files": ["pnpm-workspace.yaml"],
+      "rationale": "The GitHub Actions workflow failed during setup-node's pnpm caching step because pnpm-workspace.yaml lacked a 'packages' field, breaking 'pnpm store path'.",
+      "outcome": "Added 'packages: [ \".\" ]' to pnpm-workspace.yaml, allowing setup-node to correctly cache pnpm dependencies."
     }
   ]
 }
