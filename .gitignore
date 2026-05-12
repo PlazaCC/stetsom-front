@@ -49,3 +49,4 @@ next-env.d.ts
 graphify-out/manifest.json    # mtime-based, breaks after git clone
 graphify-out/cost.json        # local only
 graphify-out/cache/
+package-lock.json

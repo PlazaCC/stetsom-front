@@ -1,6 +1,6 @@
 # task-12: Mock Data — Enriquecimento de Imagens e Dados Realistas
 
-**Status:** TODO
+**Status:** REVIEW
 **Priority:** 1 — Base obrigatória; executa em paralelo com task-01
 **Branch:** feat/task-12-mock-data-enrichment
 **Created:** 2026-05-12

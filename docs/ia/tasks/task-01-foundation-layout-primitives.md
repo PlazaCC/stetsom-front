@@ -1,8 +1,9 @@
 # task-01: Foundation — Container, Layout Primitives & Button Variants
 
-**Status:** REVIEW
+**Status:** DONE
 **Priority:** 1 — Base obrigatória antes de qualquer página; desbloqueia task-02 a task-11
 **Branch:** feat/task-01-foundation-layout-primitives
+**PR:** https://github.com/PlazaCC/stetsom-front/pull/1
 **Created:** 2026-05-12
 **Needs design pass:** NO
 

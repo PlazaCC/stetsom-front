@@ -39,6 +39,7 @@ export type Product = {
   specifications: ProductSpecifications
   thumbnail_url: string
   video_url?: string
+  badge?: string | null
   created_at: ISODateString
   updated_at: ISODateString
   created_by: string
