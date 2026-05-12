@@ -1,6 +1,6 @@
 # task-09: Sobre — Seção Factory/Mapa + Social Medias com Controles
 
-**Status:** TODO
+**Status:** REVIEW
 **Priority:** 5 — Institucional; depende de task-01
 **Branch:** feat/task-09-sobre-factory-social-medias
 **Created:** 2026-05-12
@@ -12,11 +12,11 @@ Implementar a seção de foto da fábrica/mapa ausente na página `/sobre` (seç
 
 ## Acceptance Criteria
 
-- [ ] Seção factory/localização renderiza com a imagem local da fábrica (`imageRef: b3596ec5433f770d4d9fd82c2a7c2631bbf56674`) e overlay gradiente radial dark
-- [ ] Overlay aplica `fill_UGV0H2`: `radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(22,16,16,1) 100%)`
-- [ ] Layout da seção é row (imagem + coluna de texto) em desktop e stack em mobile
-- [ ] `MidiasSociais` — botões ChevronLeft/Right scrollam o container de posts via ref programático
-- [ ] `MidiasSociais` usa `bg-off-white` (já corrigido em task-05, mas confirmar)
+- [x] Seção factory/localização renderiza com a imagem local da fábrica (`imageRef: b3596ec5433f770d4d9fd82c2a7c2631bbf56674`) e overlay gradiente radial dark
+- [x] Overlay aplica `fill_UGV0H2`: `radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(22,16,16,1) 100%)`
+- [x] Layout da seção é row (imagem + coluna de texto) em desktop e stack em mobile
+- [x] `MidiasSociais` — botões ChevronLeft/Right scrollam o container de posts via ref programático
+- [x] `MidiasSociais` usa `bg-off-white` (já corrigido em task-05, mas confirmar)
 
 ## In Scope
 
