@@ -201,6 +201,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     description: 'Processador digital com presets avancados e equalizacao em tempo real.',
     badge: 'LANÇAMENTO',
     specifications: {
+      power_rms: 'DSP 96kHz',
       entradas: 6,
       saidas: 8,
       resposta_frequencia: '20Hz-20kHz',
@@ -241,6 +242,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     description: 'Fonte chaveada para sistemas automotivos de alta demanda continua.',
     badge: 'DESTAQUE',
     specifications: {
+      power_rms: '120A / 13.8V',
       corrente_saida: '120A continuo',
       tensao_saida: '13.8V',
       protecao: true,
@@ -303,7 +305,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
   {
     id: 'blk-4000eq-video',
     product_id: 'prod-st-4000eq-4c',
-    type: 'VIDEO' as const,
+    type: 'VIDEO',
     order: 3,
     data: {
       video_url: 'https://www.youtube.com/watch?v=stetsom-demo-4000',

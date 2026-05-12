@@ -31,7 +31,7 @@ export function toProductCardItem(product: Product, categories: Map<string, Cate
     name: product.name,
     category: category?.name ?? 'Produto',
     spec: toPowerSpec(product),
-    badge: product.badge ?? badgeByStatus(product.status),
+    badge: product.badge !== undefined ? product.badge : badgeByStatus(product.status),
     img: product.thumbnail_url,
     href: `/produtos/${product.slug}`,
     status: product.status,
