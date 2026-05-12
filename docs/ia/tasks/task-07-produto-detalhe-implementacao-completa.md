@@ -1,6 +1,6 @@
 # task-07: Produto Detalhe — Implementação Completa da Página /produtos/[slug]
 
-**Status:** TODO
+**Status:** REVIEW
 **Priority:** 4 — Catálogo; depende de task-06 (sequencial)
 **Branch:** feat/task-07-produto-detalhe-implementacao-completa
 **Created:** 2026-05-12
@@ -12,12 +12,12 @@ Substituir o esqueleto de debug da página `/produtos/[slug]` por uma implementa
 
 ## Acceptance Criteria
 
-- [ ] Breadcrumb navegável exibe: Início → Produtos → [Categoria] → [Nome do produto]
-- [ ] Hero visual do produto exibe gradiente radial vermelho/preto (`#EE0800 → #000`) com imagem do produto centralizada
-- [ ] Especificações do produto são exibidas como badges com `rounded-full border px-3 py-1 text-xs uppercase text-brand-dark`
-- [ ] Blocos de conteúdo `TEXT` renderizam parágrafo estilizado; blocos `IMAGE` renderizam `<Image>` fullwidth
-- [ ] Seção de produtos relacionados exibe grid de 4 `ProductCard` com dados mockados
-- [ ] Layout desktop e mobile são responsivos e fiéis ao Figma
+- [x] Breadcrumb navegável exibe: Início → Produtos → [Categoria] → [Nome do produto]
+- [x] Hero visual do produto exibe gradiente radial vermelho/preto (`#EE0800 → #000`) com imagem do produto centralizada
+- [x] Especificações do produto são exibidas como badges com `rounded-full border px-3 py-1 text-xs uppercase text-brand-dark`
+- [x] Blocos de conteúdo `TEXT` renderizam parágrafo estilizado; blocos `IMAGE` renderizam `<Image>` fullwidth
+- [x] Seção de produtos relacionados exibe grid de 4 `ProductCard` com dados mockados
+- [x] Layout desktop e mobile são responsivos e fiéis ao Figma
 
 ## In Scope
 
