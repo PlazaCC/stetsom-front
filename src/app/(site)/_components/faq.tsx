@@ -1,53 +1,36 @@
-import Container from "@/components/ui/container";
-import SectionLabel from "@/components/ui/section-label";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
-import FaqAccordion from "./faq-accordion";
+import { buttonVariants } from '@/components/ui/button'
+import Container from '@/components/ui/container'
+import SectionLabel from '@/components/ui/section-label'
+import type { FAQItem, SiteHomePayload } from '@/lib/api/contracts'
+import { cn } from '@/lib/utils'
+import { ArrowRight } from 'lucide-react'
+import Link from 'next/link'
+import FaqAccordion from './faq-accordion'
 
-const FAQ_ITEMS = [
-  {
-    q: "Qual a diferença entre 1 Ohm e 2 Ohms de impedância?",
-    a: "A impedância afeta diretamente a carga sobre o amplificador. Impedâncias menores (1 Ohm) permitem maior potência de saída, porém exigem equipamentos preparados para suportar essa carga.",
-  },
-  {
-    q: "Como verificar a garantia do meu produto?",
-    a: "Acesse nossa central de garantia em garantia.stetsom.com.br e informe o número de série do produto para consultar o status da garantia.",
-  },
-  {
-    q: "Onde encontrar postos autorizados Stetsom?",
-    a: "Temos uma rede de mais de 500 distribuidores autorizados em todo o Brasil. Use nosso localizador na página de Suporte.",
-  },
-];
+interface FaqProps {
+  items: FAQItem[]
+  section: SiteHomePayload['faqSection']
+}
 
-export default function Faq() {
+export default function Faq({ items, section }: Readonly<FaqProps>) {
   return (
-    <section className="bg-off-white py-12 justify-center flex">
+    <section className='bg-off-white py-12 justify-center flex'>
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-20'>
           <div>
-            <SectionLabel
-              label="Dúvidas"
-              title={"PERGUNTAS\nFREQUENTES"}
-              subtitle="Não encontrou o que procura? Entre em contato com nosso suporte."
-            />
+            <SectionLabel label={section.label} title={section.title} subtitle={section.subtitle} />
             <Link
-              href="/suporte"
-              className={cn(
-                buttonVariants({ variant: "brand-dark", size: "figma-sm" }),
-                "mt-7",
-              )}
-            >
-              Falar com suporte
-              <ArrowRight className="size-4" strokeWidth={2.5} />
+              href={section.ctaHref}
+              className={cn(buttonVariants({ variant: 'brand-dark', size: 'figma-sm' }), 'mt-7')}>
+              {section.ctaLabel}
+              <ArrowRight className='size-4' strokeWidth={2.5} />
             </Link>
           </div>
-          <div className="pt-2">
-            <FaqAccordion items={FAQ_ITEMS} />
+          <div className='pt-2'>
+            <FaqAccordion items={items} />
           </div>
         </div>
       </Container>
     </section>
-  );
+  )
 }

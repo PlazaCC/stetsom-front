@@ -1,19 +1,16 @@
-import { cn } from "@/lib/utils";
-import { mergeProps, useRender } from "@base-ui/react";
+import { cn } from '@/lib/utils'
+import { mergeProps, useRender } from '@base-ui/react'
 
-interface ContainerProps extends useRender.ComponentProps<"div"> {}
+type ContainerProps = useRender.ComponentProps<'div'>
 
 export default function Container(props: ContainerProps) {
-  const { render, ...rest } = props;
+  const { render, ...rest } = props
 
   const element = useRender({
-    defaultTagName: "div",
+    defaultTagName: 'div',
     render,
-    props: mergeProps<"div">(
-      { className: cn("relative w-full max-w-291 px-8") },
-      rest,
-    ),
-  });
+    props: mergeProps<'div'>({ className: cn('relative w-full max-w-291 px-8') }, rest),
+  })
 
-  return element;
+  return element
 }

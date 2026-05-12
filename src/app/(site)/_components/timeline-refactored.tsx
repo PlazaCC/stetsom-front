@@ -1,271 +1,194 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-
-interface TimelineEvent {
-  id: string;
-  year: number;
-  title: string;
-  shortTitle: string;
-  description: string;
-  image: string;
-}
-
-const DEFAULT_TIMELINE_EVENTS: TimelineEvent[] = [
-  {
-    id: "1989",
-    year: 1989,
-    title: "Fundação",
-    shortTitle: "Linha Booster",
-    description:
-      "Stetsom é fundada com a missão de inovar no mercado de amplificadores automotivos. Uma marca que nasceu da paixão por som de qualidade.",
-    image: "/timeline-1989.png",
-  },
-  {
-    id: "1999",
-    year: 1999,
-    title: "Linha CL",
-    shortTitle: "CLP da Stetsom",
-    description:
-      "Lançamento da linha CL que revoluciona o mercado. Os amplificadores Stetsom ganham reconhecimento entre profissionais de áudio.",
-    image: "/timeline-1999.png",
-  },
-  {
-    id: "2002",
-    year: 2002,
-    title: "Antenas & Crossovers",
-    shortTitle: "Antenas & Crossovers",
-    description:
-      "Expansão do portfólio com antenas e crossovers de alta fidelidade. A Stetsom consolidou sua posição como fabricante de soluções completas para áudio automotivo, não apenas amplificadores.",
-    image: "/timeline-2002.png",
-  },
-  {
-    id: "2007",
-    year: 2007,
-    title: "Melhor Amplificador",
-    shortTitle: "Melhor Amplificador",
-    description:
-      "Stetsom estabelece record mundial de potência em um amplificador. Consolidando liderança tecnológica na indústria global de áudio automotivo.",
-    image: "/timeline-2007.png",
-  },
-  {
-    id: "2014",
-    year: 2014,
-    title: "Era Digital",
-    shortTitle: "Era Digital",
-    description:
-      "Reconhecimento como Marca Brasil. Stetsom é certificada como uma das melhores marcas brasileiras de amplificadores e inicia transformação digital.",
-    image: "/timeline-2014.png",
-  },
-];
+import type { TimelineEvent } from '@/lib/api/contracts'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import Image from 'next/image'
+import { useCallback, useEffect, useState } from 'react'
 
 interface TimelineRefactoredProps {
-  events?: TimelineEvent[];
-  label?: string;
-  title?: string;
-  description?: string;
-  initialActiveIndex?: number;
+  events: TimelineEvent[]
+  label?: string
+  title?: string
+  description?: string
+  initialActiveIndex?: number
 }
 
 export default function TimelineRefactored({
-  events = DEFAULT_TIMELINE_EVENTS,
-  label = "Nossa História",
-  title = "35 ANOS DE\nHISTÓRIA",
-  description = "Uma empresa de inovação constante que transformou a Stetsom na maior referência de amplificação automotiva do Brasil.",
+  events,
+  label = 'Nossa História',
+  title = '35 ANOS DE\nHISTÓRIA',
+  description = 'Uma empresa de inovação constante que transformou a Stetsom na maior referência de amplificação automotiva do Brasil.',
   initialActiveIndex = 0,
 }: TimelineRefactoredProps) {
-  const safeInitialIndex = Math.min(
-    Math.max(initialActiveIndex, 0),
-    Math.max(events.length - 1, 0),
-  );
-  const [activeIndex, setActiveIndex] = useState(safeInitialIndex);
+  const safeInitialIndex = Math.min(Math.max(initialActiveIndex, 0), Math.max(events.length - 1, 0))
+  const [activeIndex, setActiveIndex] = useState(safeInitialIndex)
 
   const handlePrevious = useCallback(() => {
-    if (!events.length) return;
-    setActiveIndex((prev) => (prev - 1 + events.length) % events.length);
-  }, [events.length]);
+    if (!events.length) return
+    setActiveIndex((prev) => (prev - 1 + events.length) % events.length)
+  }, [events.length])
 
   const handleNext = useCallback(() => {
-    if (!events.length) return;
-    setActiveIndex((prev) => (prev + 1) % events.length);
-  }, [events.length]);
+    if (!events.length) return
+    setActiveIndex((prev) => (prev + 1) % events.length)
+  }, [events.length])
 
   const handleCheckpointClick = useCallback((index: number) => {
-    setActiveIndex(index);
-  }, []);
+    setActiveIndex(index)
+  }, [])
 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!events.length) {
-        return;
+        return
       }
 
-      if (e.key === "ArrowLeft") {
-        handlePrevious();
-      } else if (e.key === "ArrowRight") {
-        handleNext();
+      if (e.key === 'ArrowLeft') {
+        handlePrevious()
+      } else if (e.key === 'ArrowRight') {
+        handleNext()
       }
-    };
+    }
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleNext, handlePrevious, events.length]);
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleNext, handlePrevious, events.length])
 
   if (!events.length) {
-    return null;
+    return null
   }
 
-  const selectedIndex = Math.min(activeIndex, events.length - 1);
-  const activeEvent = events[selectedIndex];
-  const progressPercent =
-    events.length <= 1 ? 0 : (selectedIndex / (events.length - 1)) * 100;
+  const selectedIndex = Math.min(activeIndex, events.length - 1)
+  const activeEvent = events[selectedIndex]
+  const progressPercent = events.length <= 1 ? 0 : (selectedIndex / (events.length - 1)) * 100
 
   return (
-    <section className="bg-brand-dark py-20">
-      <div className="px-8 lg:px-42.5 max-w-360 mx-auto">
-        <div className="space-y-12">
+    <section className='bg-brand-dark py-20'>
+      <div className='px-8 lg:px-42.5 max-w-360 mx-auto'>
+        <div className='space-y-12'>
           {/* BOX 1: HEADER - Título + Descrição + Setas */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-            <div className="flex-1">
-              <div className="text-brand font-sans-condensed font-medium text-sm uppercase tracking-wide mb-2">
+          <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8'>
+            <div className='flex-1'>
+              <div className='text-brand font-sans-condensed font-medium text-sm uppercase tracking-wide mb-2'>
                 {label}
               </div>
-              <h2 className="font-sans-condensed font-black text-[48px] lg:text-[56px] text-white leading-none mb-4">
-                {title.split("\n").map((line) => (
-                  <span key={line} className="block">
+              <h2 className='font-sans-condensed font-black text-[48px] lg:text-[56px] text-white leading-none mb-4'>
+                {title.split('\n').map((line) => (
+                  <span key={line} className='block'>
                     {line}
                   </span>
                 ))}
               </h2>
-              <p className="text-sm lg:text-base text-[rgb(184,184,184)] max-w-md leading-[1.6]">
-                {description}
-              </p>
+              <p className='text-sm lg:text-base text-[rgb(184,184,184)] max-w-md leading-[1.6]'>{description}</p>
             </div>
 
             {/* Setas de Controle */}
-            <div className="flex gap-3">
+            <div className='flex gap-3'>
               <button
                 onClick={handlePrevious}
-                className="w-12 h-12 rounded-full border border-brand hover:bg-brand hover:text-white transition-all flex items-center justify-center text-brand"
-                aria-label="Previous event"
-              >
+                className='w-12 h-12 rounded-full border border-brand hover:bg-brand hover:text-white transition-all flex items-center justify-center text-brand'
+                aria-label='Previous event'>
                 <ChevronLeft size={24} />
               </button>
               <button
                 onClick={handleNext}
-                className="w-12 h-12 rounded-full border border-brand hover:bg-brand hover:text-white transition-all flex items-center justify-center text-brand"
-                aria-label="Next event"
-              >
+                className='w-12 h-12 rounded-full border border-brand hover:bg-brand hover:text-white transition-all flex items-center justify-center text-brand'
+                aria-label='Next event'>
                 <ChevronRight size={24} />
               </button>
             </div>
           </div>
 
           {/* BOX 2: TIMELINE LINE + CHECKPOINTS + LABELS */}
-          <div className="space-y-6">
-            <div className="relative h-20">
+          <div className='space-y-6'>
+            <div className='relative h-20'>
               {/* Background Line (centered vertically) */}
-              <div className="absolute left-0 right-0 top-1/2 h-1 -translate-y-1/2 z-0">
+              <div className='absolute left-0 right-0 top-1/2 h-1 -translate-y-1/2 z-0'>
                 <svg
-                  width="100%"
-                  height="100%"
-                  viewBox="0 0 100 4"
-                  preserveAspectRatio="none"
-                  className="absolute left-0 top-0 w-full h-full"
-                >
-                  <rect width="100%" height="100%" fill="rgb(80,80,80)" />
+                  width='100%'
+                  height='100%'
+                  viewBox='0 0 100 4'
+                  preserveAspectRatio='none'
+                  className='absolute left-0 top-0 w-full h-full'>
+                  <rect width='100%' height='100%' fill='rgb(80,80,80)' />
                   <rect
                     width={`${progressPercent}%`}
-                    height="100%"
-                    fill="rgb(232,19,42)"
-                    style={{ transition: "width 0.6s ease-out" }}
+                    height='100%'
+                    fill='rgb(232,19,42)'
+                    style={{ transition: 'width 0.6s ease-out' }}
                   />
                 </svg>
               </div>
 
-              <div className="relative w-full h-full">
+              <div className='relative w-full h-full'>
                 {events.map((event, index) => {
-                  const leftPercent =
-                    events.length === 1
-                      ? 50
-                      : (index / (events.length - 1)) * 100;
+                  const leftPercent = events.length === 1 ? 50 : (index / (events.length - 1)) * 100
                   return (
                     <div
                       key={event.id}
                       style={{ left: `${leftPercent}%` }}
-                      className="absolute top-1/2 z-10 cursor-pointer"
-                    >
+                      className='absolute top-1/2 z-10 cursor-pointer'>
                       <button
                         onClick={() => handleCheckpointClick(index)}
                         className={`absolute left-1/2 top-1/2 w-8 h-8 -translate-x-1/2 -translate-y-1/2 rounded-full transition-colors duration-300 ${
                           index === activeIndex
-                            ? "bg-brand border-2 border-brand z-30"
-                            : "bg-brand-dark border-2 border-[rgb(80,80,80)] hover:border-brand z-20"
+                            ? 'bg-brand border-2 border-brand z-30'
+                            : 'bg-brand-dark border-2 border-[rgb(80,80,80)] hover:border-brand z-20'
                         }`}
                         aria-label={`Go to ${event.title}`}
                       />
 
-                      <div className="absolute left-1/2 top-4.5 flex min-w-max -translate-x-1/2 flex-col items-center gap-1 text-center">
+                      <div className='absolute left-1/2 top-4.5 flex min-w-max -translate-x-1/2 flex-col items-center gap-1 text-center'>
                         <span
                           className={`font-sans-condensed font-bold transition-all duration-300 ${
-                            index === activeIndex
-                              ? "text-sm text-brand"
-                              : "text-xs text-[rgb(102,102,102)]"
-                          }`}
-                        >
+                            index === activeIndex ? 'text-sm text-brand' : 'text-xs text-[rgb(102,102,102)]'
+                          }`}>
                           {event.year}
                         </span>
 
                         <span
                           className={`font-sans-condensed font-bold uppercase text-center leading-tight transition-all duration-300 ${
-                            index === activeIndex
-                              ? "text-xs text-white"
-                              : "text-xs text-[rgb(102,102,102)]"
-                          }`}
-                        >
+                            index === activeIndex ? 'text-xs text-white' : 'text-xs text-[rgb(102,102,102)]'
+                          }`}>
                           {event.shortTitle}
                         </span>
                       </div>
                     </div>
-                  );
+                  )
                 })}
               </div>
             </div>
           </div>
 
           {/* BOX 3: EVENT DETAILS - Imagem + Data + Título + Descrição */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'>
             {/* Imagem */}
-            <div className="relative w-full aspect-video bg-[rgb(40,40,40)] rounded-sm overflow-hidden">
+            <div className='relative w-full aspect-video bg-[rgb(40,40,40)] rounded-sm overflow-hidden'>
               <Image
                 src={activeEvent.image}
                 alt={activeEvent.title}
                 fill
-                className="object-cover transition-opacity duration-500"
+                className='object-cover transition-opacity duration-500'
               />
             </div>
 
             {/* Texto */}
-            <div className="transition-all duration-500 space-y-4">
+            <div className='transition-all duration-500 space-y-4'>
               <div>
-                <h3 className="font-sans-condensed font-black text-[64px] lg:text-[80px] text-brand leading-none mb-2">
+                <h3 className='font-sans-condensed font-black text-[64px] lg:text-[80px] text-brand leading-none mb-2'>
                   {activeEvent.year}
                 </h3>
-                <h4 className="font-sans-condensed font-black text-[28px] lg:text-[32px] text-white uppercase">
+                <h4 className='font-sans-condensed font-black text-[28px] lg:text-[32px] text-white uppercase'>
                   {activeEvent.title}
                 </h4>
               </div>
 
-              <p className="text-base text-[rgb(184,184,184)] leading-[1.7]">
-                {activeEvent.description}
-              </p>
+              <p className='text-base text-[rgb(184,184,184)] leading-[1.7]'>{activeEvent.description}</p>
             </div>
           </div>
         </div>
       </div>
     </section>
-  );
+  )
 }
