@@ -3,6 +3,7 @@ import { SectionLabel } from '@/components/ui/section-label'
 import { getSiteAboutPayload } from '@/lib/api/server'
 import Image from 'next/image'
 import CTATrabalheConosco from '../_components/cta-trabalhe-conosco'
+import GaleriaDark from '../_components/galeria-dark'
 import NossasBases from '../_components/nossas-bases'
 import QualidadeInovadora from '../_components/qualidade-inovadora'
 import RedBanner from '../_components/red-banner'
@@ -15,7 +16,7 @@ export default async function SobrePage() {
   return (
     <div>
       {/* 1. HERO */}
-      <section className='relative bg-brand-dark h-100 overflow-hidden flex items-center'>
+      <section className='relative bg-brand-dark h-109.75 overflow-hidden flex items-center'>
         <Image
           src={aboutPayload.hero.image}
           alt={aboutPayload.hero.imageAlt}
@@ -23,6 +24,7 @@ export default async function SobrePage() {
           className='object-cover opacity-35'
           priority
         />
+        <div className='absolute inset-0 bg-gradient-dark-overlay' />
         <Container className='z-10'>
           <SectionLabel label={aboutPayload.hero.label} />
           <h1 className='font-sans-condensed font-black text-7xl leading-none uppercase text-white mt-1'>
@@ -44,13 +46,16 @@ export default async function SobrePage() {
       {/* 4. TIMELINE REFACTORED - Con Sidebar */}
       <TimelineRefactored events={aboutPayload.timeline} />
 
-      {/* 5. NOSSAS BASES - 3 Cards */}
+      {/* 5. GALERIA DARK - Qualidade */}
+      <GaleriaDark />
+
+      {/* 6. NOSSAS BASES - 3 Cards */}
       <NossasBases bases={aboutPayload.bases} />
 
-      {/* 6. NOSSA FAMÍLIA / MÍDIAS SOCIAIS */}
+      {/* 7. NOSSA FAMÍLIA / MÍDIAS SOCIAIS */}
       <MidiasSociais section={aboutPayload.social} />
 
-      {/* 7. CTA - Trabalhe Conosco */}
+      {/* 8. CTA - Trabalhe Conosco (conteúdo extra, não mapeado no Figma) */}
       <CTATrabalheConosco section={aboutPayload.jobsCta} />
     </div>
   )
