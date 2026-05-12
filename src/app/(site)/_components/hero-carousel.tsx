@@ -12,6 +12,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 
 const AUTOPLAY_INTERVAL_MS = 5000
 const HERO_HEIGHT_CLASS = 'h-130 sm:h-155 lg:h-175'
+const HERO_OVERLAY_GRADIENT = 'linear-gradient(180deg, rgba(0, 0, 0, 0) 72%, rgba(0, 0, 0, 1) 100%)'
 
 interface HeroCarouselProps {
   slides: HeroBannerSlide[]
@@ -78,7 +79,27 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
                 sizes='100vw'
                 priority={index === 0}
               />
-              <div className='absolute inset-0 bg-black/35' />
+              <div className='absolute inset-0 z-10' style={{ background: HERO_OVERLAY_GRADIENT }} />
+
+              {(slide.label || slide.title) && (
+                <div className='pointer-events-none absolute bottom-0 left-0 z-20 px-6 pb-12 sm:px-8 lg:px-42.5'>
+                  {slide.label && (
+                    <p className='font-sans-condensed font-medium text-sm leading-none uppercase text-brand'>
+                      {slide.label}
+                    </p>
+                  )}
+
+                  {slide.title && (
+                    <h2
+                      className={cn(
+                        'font-sans-condensed text-3xl leading-none font-black whitespace-pre-line uppercase text-white sm:text-display-sm',
+                        slide.label ? 'mt-2' : 'mt-0',
+                      )}>
+                      {slide.title}
+                    </h2>
+                  )}
+                </div>
+              )}
             </>
           )
 
