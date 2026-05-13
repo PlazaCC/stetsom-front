@@ -139,20 +139,25 @@ After fetching live data, check whether local files are outdated:
 
 Only update what actually changed. Do not rewrite entire files from scratch.
 
-### Step 7 — Create Action Plan via /next-task
+### Step 7 — Present Action Plan and Ask How to Proceed
 
-List every issue found as a numbered action plan. If the issues are new tasks (not already tracked), call `/create-task` first to register them, then call `/next-task` to begin execution:
+List every issue found as a numbered action plan, then **ask the user how to proceed** — do not auto-execute:
 
 ```
-Action Plan:
+## Plano de Ação
+
 1. Fix <issue 1> in <file> — <specific change>
 2. Fix <issue 2> in <file> — <specific change>
 ...
 
-→ Creating tasks via /create-task, then calling /next-task to start with item 1.
+Como você prefere prosseguir?
+A) Criar tasks via /create-task para acompanhar o progresso
+B) Executar agora mesmo sem criar tasks
 ```
 
-If the issues are minor enough to fix inline (single-file, < 10 lines), fix them directly and skip `/create-task`.
+- **Option A chosen** → invoke `/create-task` for each item, then `/next-task` to start item 1
+- **Option B chosen** → invoke `/next-task` directly and begin executing from item 1
+- **No issues found** → state that explicitly; do not ask and do not call `/next-task`
 
 ---
 
