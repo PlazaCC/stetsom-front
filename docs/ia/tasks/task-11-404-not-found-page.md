@@ -1,6 +1,6 @@
 # task-11: 404 — Criar Página not-found.tsx
 
-**Status:** TODO
+**Status:** REVIEW
 **Priority:** 6 — Suporte + 404; depende de task-01
 **Branch:** feat/task-11-404-not-found-page
 **Created:** 2026-05-12
@@ -12,13 +12,13 @@ Criar a página `not-found.tsx` fiel ao Figma (node `1200:7086` desktop / `1200:
 
 ## Acceptance Criteria
 
-- [ ] `src/app/not-found.tsx` existe e é renderizada ao acessar qualquer rota inválida
-- [ ] Fundo da seção de conteúdo é `bg-off-white`
-- [ ] Texto "404" grande está visível com `opacity-[0.08]` como elemento de fundo decorativo
-- [ ] Título "PÁGINA NÃO ENCONTRADA" usa `font-sans-condensed font-black uppercase text-[50px] text-[#111111]`
-- [ ] Subtítulo usa `font-sans text-xl font-medium text-[#B8B8B8]`
-- [ ] Botão "Voltar para a Home" navega para `/`
-- [ ] Header e Footer são incluídos na página
+- [x] `src/app/not-found.tsx` existe e é renderizada ao acessar qualquer rota inválida
+- [x] Fundo da seção de conteúdo é `bg-off-white`
+- [x] Texto "404" grande está visível com `opacity-[0.08]` como elemento de fundo decorativo
+- [x] Título "PÁGINA NÃO ENCONTRADA" usa `font-sans-condensed font-black uppercase text-[50px] text-[#111111]`
+- [x] Subtítulo usa `font-sans text-xl font-medium text-[#B8B8B8]`
+- [x] Botão "Voltar para a Home" navega para `/`
+- [x] Header e Footer são incluídos na página
 
 ## In Scope
 
