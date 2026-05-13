@@ -1,6 +1,7 @@
 import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
 import { getSupportPayload } from '@/lib/api/server'
 import Image from 'next/image'
 import { Search } from 'lucide-react'
@@ -20,10 +21,10 @@ export default async function SuportePage() {
           priority
         />
         <div className='absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-black/40' />
-        <span className='absolute inset-0 font-sans-condensed font-black uppercase text-center flex items-center justify-center text-[263px] text-[#B9B9B9] opacity-[0.08] pointer-events-none select-none leading-none'>
+        <span className='absolute inset-0 font-sans-condensed font-black uppercase text-center flex items-center justify-center text-[263px] text-watermark-text opacity-[0.08] pointer-events-none select-none leading-none'>
           {supportPayload.hero.watermarkText}
         </span>
-        <div className='absolute left-0 top-0 w-3.5 h-84 bg-[#DC2626]' />
+        <div className='absolute left-0 top-0 w-3.5 h-84 bg-bar-accent' />
         <Container className='z-10 relative'>
           <SectionLabel label={supportPayload.hero.label} />
           <h1 className='font-sans-condensed font-black text-7xl leading-none uppercase text-white mt-1'>
@@ -43,9 +44,9 @@ export default async function SuportePage() {
                   {card.title}
                 </h3>
                 <p className='text-base text-text-subtle leading-relaxed flex-1 mb-6'>{card.description}</p>
-                <button className='self-start h-10 px-6 bg-brand text-white font-sans-condensed font-black text-button-md uppercase hover:bg-brand/90 transition-colors'>
+                <Button className='self-start font-sans-condensed font-black text-button-md uppercase h-10 px-6'>
                   {card.cta}
-                </button>
+                </Button>
               </div>
             ))}
           </div>
@@ -148,12 +149,9 @@ export default async function SuportePage() {
                 className='w-full px-4 py-3 border border-zinc-300 rounded focus:outline-none focus:ring-2 focus:ring-brand'
               />
             </div>
-            <button
-              type='button'
-              className='h-10 px-8 bg-brand text-white font-sans-condensed font-black text-button-md uppercase hover:bg-brand/90 transition-colors'
-            >
+            <Button className='font-sans-condensed font-black text-button-md uppercase h-10 px-8'>
               Enviar Mensagem
-            </button>
+            </Button>
           </form>
         </Container>
       </section>
@@ -173,9 +171,9 @@ export default async function SuportePage() {
                 </AccordionItem>
               ))}
             </Accordion>
-            <button className='mt-8 h-9 px-6 border border-brand text-brand font-sans-condensed font-black text-button-md uppercase hover:bg-brand hover:text-white transition-colors'>
+            <Button variant='outline' className='mt-8 h-9 px-6 font-sans-condensed font-black text-button-md uppercase'>
               {supportPayload.faq.supportButtonLabel}
-            </button>
+            </Button>
           </div>
         </Container>
       </section>
