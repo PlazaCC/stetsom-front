@@ -15,8 +15,8 @@ Criar a página `not-found.tsx` fiel ao Figma (node `1200:7086` desktop / `1200:
 - [x] `src/app/not-found.tsx` existe e é renderizada ao acessar qualquer rota inválida
 - [x] Fundo da seção de conteúdo é `bg-off-white`
 - [x] Texto "404" grande está visível com `opacity-[0.08]` como elemento de fundo decorativo
-- [x] Título "PÁGINA NÃO ENCONTRADA" usa `font-sans-condensed font-black uppercase text-[50px] text-[#111111]`
-- [x] Subtítulo usa `font-sans text-xl font-medium text-[#B8B8B8]`
+- [x] Título "PÁGINA NÃO ENCONTRADA" usa `font-sans-condensed font-black uppercase text-[50px] text-footer` (`#111111`)
+- [x] Subtítulo usa `font-sans text-xl font-medium text-text-subtle-dark` (`#B8B8B8`)
 - [x] Botão "Voltar para a Home" navega para `/`
 - [x] Header e Footer são incluídos na página
 
@@ -34,9 +34,9 @@ Criar a página `not-found.tsx` fiel ao Figma (node `1200:7086` desktop / `1200:
 
 - Next.js App Router: `not-found.tsx` em `src/app/` é capturado automaticamente pelo framework
 - Para incluir Header e Footer, importar diretamente (não herda layout do `(site)` group por ser `not-found.tsx` em nível raiz)
-- "404" decorativo: `<span className="font-sans-condensed font-black text-[#878787] opacity-[0.08] text-[200px] lg:text-[300px] uppercase absolute pointer-events-none select-none">`
+- "404" decorativo: `<span className="font-sans-condensed font-black text-icon-muted opacity-[0.08] text-[200px] lg:text-[300px] uppercase absolute pointer-events-none select-none">`
 - Layout do conteúdo: node `1200:7094` → `layout_PDYRF0`: `mode: column, alignItems: center, gap: 48px, padding: 48px 170px, height: 596`
 - Título: node `1200:7096` → `style_RSDKJM`: `fontFamily: Barlow Condensed, fontWeight: 900, fontSize: 50, UPPER`
 - Subtítulo: node `1200:7097` → `style_CNCZAP`: `fontFamily: Barlow, fontWeight: 500, fontSize: 20`
 - Texto do subtítulo: "Parece que a página que você tentou acessar não existe"
-- Rodar `/poc-refine-design` no node `1200:7086` antes da implementação
+- Rodar `/refine-design` no node `1200:7086` antes da implementação
