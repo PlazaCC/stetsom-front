@@ -44,7 +44,7 @@ export default async function SuportePage() {
                   {card.title}
                 </h3>
                 <p className='text-base text-text-subtle leading-relaxed flex-1 mb-6'>{card.description}</p>
-                <Button className='self-start font-sans-condensed font-black text-button-md uppercase h-10 px-6'>
+                <Button variant='brand' className='self-start'>
                   {card.cta}
                 </Button>
               </div>
@@ -149,7 +149,7 @@ export default async function SuportePage() {
                 className='w-full px-4 py-3 border border-zinc-300 rounded focus:outline-none focus:ring-2 focus:ring-brand'
               />
             </div>
-            <Button className='font-sans-condensed font-black text-button-md uppercase h-10 px-8'>
+            <Button variant='brand'>
               Enviar Mensagem
             </Button>
           </form>
@@ -171,7 +171,7 @@ export default async function SuportePage() {
                 </AccordionItem>
               ))}
             </Accordion>
-            <Button variant='outline' className='mt-8 h-9 px-6 font-sans-condensed font-black text-button-md uppercase'>
+            <Button variant='outline' className='mt-8 border-brand text-brand hover:bg-brand hover:text-white'>
               {supportPayload.faq.supportButtonLabel}
             </Button>
           </div>
