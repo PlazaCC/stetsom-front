@@ -543,6 +543,24 @@
       ],
       "rationale": "Task-10 required replacing placeholder /suporte page with Figma-aligned 8-section implementation: Hero with radial gradient dark overlay, watermark SOS, red bar; 3 support cards with red vertical decoration; documentation section with tabs; FAQ search with input and category filters; contact form with name/email/message fields; FAQ accordion with support button.",
       "outcome": "Redesigned /suporte page with all 8 sections: Hero at h-84 with gradient-dark-overlay and red accent bar; 3-column responsive grid of cards with vertical red borders; documentation tabs with filtered link grid; FAQ search section with input icon and category pills; contact form with 3 fields and submit button; FAQ accordion using shadcn Accordion component; all 6 acceptance criteria met; pnpm tsc and lint pass."
+    },
+    {
+      "ts": "2026-05-13T13:01:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "feat",
+      "summary": "Create 404 not-found page with Header, Footer and decorative 404 watermark",
+      "files": ["src/app/not-found.tsx", "docs/ia/tasks/task-11-404-not-found-page.md"],
+      "rationale": "Task-11 required creating src/app/not-found.tsx faithful to Figma node 1200:7086 — bg-off-white content section, decorative 404 watermark at 8% opacity, Barlow Condensed Black title, Barlow Medium subtitle, and brand-red CTA button linking to home.",
+      "outcome": "not-found.tsx renders at any invalid route with Header + Footer included; decorative 404 span at opacity-[0.08]; title in font-sans-condensed font-black uppercase at 50px; subtitle in text-text-subtle-dark; button navigates to /; all 7 acceptance criteria met; tsc and lint pass."
+    },
+    {
+      "ts": "2026-05-13T13:25:39Z",
+      "agent": "gpt-5.3-codex",
+      "type": "fix",
+      "summary": "Fix task-11 review issues with tokenized colors and canonical sizing",
+      "files": ["src/app/not-found.tsx", "docs/ia/tasks/task-11-404-not-found-page.md", "docs/ia/context.json"],
+      "rationale": "Code review flagged arbitrary color and sizing classes; user requested all issues fixed with no regressions and preference for existing theme tokens before adding new global variables.",
+      "outcome": "Replaced hardcoded colors with existing semantic tokens, switched min height to canonical Tailwind class, updated stale /poc-refine-design reference, and kept 404 visual fidelity aligned with Figma intent."
     }
   ]
 }
