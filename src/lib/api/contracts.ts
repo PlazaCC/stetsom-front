@@ -219,18 +219,50 @@ export type SupportCard = {
   cta: string
 }
 
+export type SupportDocumentationCategory = {
+  id: string
+  name: string
+}
+
+export type SupportDocumentationLink = {
+  id: string
+  title: string
+  href: string
+  category: string
+}
+
 export type SupportPayload = {
-  heroLabel: string
-  heroTitle: string
-  heroDescription: string
+  hero: {
+    label: string
+    title: string
+    description: string
+    image: string
+    watermarkText: string
+  }
   cards: SupportCard[]
-  faqLabel: string
-  faqTitle: string
-  faq: FAQItem[]
-  distributorLabel: string
-  distributorTitle: string
-  distributorSubtitle: string
-  distributorMapLabel: string
+  documentation: {
+    label: string
+    title: string
+    categories: SupportDocumentationCategory[]
+    links: SupportDocumentationLink[]
+  }
+  faqSearch: {
+    label: string
+    title: string
+    placeholder: string
+    categories: SupportDocumentationCategory[]
+  }
+  contact: {
+    label: string
+    title: string
+    description: string
+  }
+  faq: {
+    label: string
+    title: string
+    items: FAQItem[]
+    supportButtonLabel: string
+  }
 }
 
 export type DashboardMetric = {
