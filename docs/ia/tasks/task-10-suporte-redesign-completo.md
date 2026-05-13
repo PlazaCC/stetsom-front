@@ -1,6 +1,6 @@
 # task-10: Suporte — Redesign Completo da Página /suporte
 
-**Status:** TODO
+**Status:** REVIEW
 **Priority:** 6 — Suporte + 404; depende de task-01
 **Branch:** feat/task-10-suporte-redesign-completo
 **Created:** 2026-05-12
@@ -12,12 +12,12 @@ Substituir o placeholder atual da página `/suporte` pela implementação comple
 
 ## Acceptance Criteria
 
-- [ ] Hero tem gradiente radial dark + overlay da imagem de produtos + watermark "SOS" (263px desktop / 151px mobile, `#B9B9B9`, opacity 8%) + barra decorativa vermelha de 14px width
-- [ ] 3 cards de suporte ("Central de Ajuda", "Garantia", "Manuais") têm barra vermelha vertical decorativa, título em `font-sans-condensed uppercase`, descrição e CTA vermelho
-- [ ] Seção de busca FAQ contém input de busca com ícone `Search` e tabs de categoria para filtrar
-- [ ] Formulário de contato tem campos nome, email, mensagem e botão "Enviar mensagem" (vermelho, não funcional)
-- [ ] FAQ accordion usa `FaqAccordion` existente com botão "Falar com suporte" abaixo
-- [ ] Seção de documentação/categorias exibe tabs e lista de links mockados
+- [x] Hero tem gradiente radial dark + overlay da imagem de produtos + watermark "SOS" (263px desktop / 151px mobile, `#B9B9B9`, opacity 8%) + barra decorativa vermelha de 14px width
+- [x] 3 cards de suporte ("Central de Ajuda", "Garantia", "Manuais") têm barra vermelha vertical decorativa, título em `font-sans-condensed uppercase`, descrição e CTA vermelho
+- [x] Seção de busca FAQ contém input de busca com ícone `Search` e tabs de categoria para filtrar
+- [x] Formulário de contato tem campos nome, email, mensagem e botão "Enviar mensagem" (vermelho, não funcional)
+- [x] FAQ accordion usa `FaqAccordion` existente com botão "Falar com suporte" abaixo
+- [x] Seção de documentação/categorias exibe tabs e lista de links mockados
 
 ## In Scope
 
