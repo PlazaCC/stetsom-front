@@ -1,112 +1,186 @@
 ---
 name: refine-design
-description: Optional design refinement step — use when a task needs visual alignment with Figma before or during implementation. Fetches design context, resolves design tokens, and produces implementation-ready specs. Trigger keywords: refine design, figma alignment, design pass, design review.
-argument-hint: '<Figma URL or component name>'
+description: Design refinement pass using Figma MCP. Fetches live design from Figma (never local files), maps tokens, validates code against design standards, updates local context if stale, and produces an action plan via /next-task. Trigger keywords: refine design, figma alignment, design pass, design review, check design.
+argument-hint: '<Figma URL or component/page name>'
 ---
 
 # Refine Design — Design Pass
 
 ## Overview
 
-Pulls design context from Figma and translates it into implementation-ready specifications aligned with the Stetsom design system. Optional step — only use when a task needs visual alignment.
+Pulls **live design context directly from the Figma MCP** and translates it into implementation-ready specs aligned with the Stetsom design system. Always fetches from Figma — never reads local snapshot files as the source of truth.
 
-**Core principle:** Design informs implementation. Don't hallucinate design — read it from Figma.
+**Core principle:** Design truth lives in Figma. Always read it fresh. Local files are caches — treat them as potentially stale.
 
 ---
 
 ## When to Use
 
 - Task file has `Needs design pass: YES`
-- Implementation diverged visually from Figma reference
+- Implementation diverged visually from the Figma reference
 - A new component needs to match an existing Figma spec
-- User provides a Figma URL and asks to match the design
+- User provides a Figma URL or component name for visual alignment
+- Periodic design consistency check across pages
 
 ---
 
 ## Procedure
 
-### Step 1 — Get Figma URL
+### Step 1 — Resolve Figma Target
 
-Ask for or extract from conversation:
+**If a Figma URL was provided as argument:**
+- Parse `fileKey` and `nodeId` from the URL.
+- Use directly in Step 2.
 
-- Figma file URL (figma.com/design/...)
-- Node ID or component name
+**If no URL was provided:**
+- Read `docs/ia/figma/meta.json` to get `figmaFileKey` and the node IDs for the relevant page/section from `websiteSection.pages`.
+- Construct the target: `fileKey = huD41oTL0FAa7xsNEK8tAM`, `nodeId` = the section or frame node from `meta.json`.
+- DO NOT read `DESIGN_SYSTEM_REFERENCE.md` or any other local snapshot as the source of truth — use them only to know which node IDs to query.
 
-If no URL provided: check `docs/ia/figma/meta.json` for the project's Figma entry points.
+> If the `/figma` skill is available, invoke it first to understand the MCP API capabilities before calling tools directly.
 
-### Step 2 — Fetch Design Context
+### Step 2 — Fetch Live Design from Figma MCP
 
-Use the Figma MCP (`get_design_context`) to retrieve:
+Use `get_design_context` (primary) and `get_screenshot` (visual reference):
 
-- Component structure
-- Colors, spacing, typography
-- Screenshot for visual reference
+```
+get_design_context(fileKey, nodeId)
+get_screenshot(fileKey, nodeId)
+```
 
-Map Figma tokens to project tokens before writing any code:
+Retrieve:
+- Component hierarchy and structure
+- Colors (exact hex → map to project tokens)
+- Spacing and padding values (px → convert to Tailwind canonical)
+- Typography (font family, weight, size, transform)
+- Screenshot for visual ground-truth
+
+**Never substitute a local file read for an MCP call.** Local snapshots are caches.
+
+### Step 3 — Perform Analysis
+
+Produce a precise, general design analysis covering:
+
+1. **Layout fidelity** — does the implementation match Figma's structure, grid, and alignment?
+2. **Color accuracy** — are all colors mapped to the correct project tokens? Flag any hardcoded values.
+3. **Typography** — correct font family, weight, size, and transform?
+4. **Spacing / padding** — convert all Figma px values to Tailwind canonical classes.
+5. **Responsive behavior** — mobile vs desktop frames differ?
+6. **Component quality** — validate against `/frontend-design` and `/ui-ux-pro-max` standards (padding hierarchy, visual rhythm, interaction states, accessibility).
+
+> Figma is visually correct but can have non-standard paddings or layout quirks. Use `/frontend-design` and `/ui-ux-pro-max` to validate and improve where needed — don't blindly copy Figma pixel-for-pixel if it violates design system standards.
+
+Token mapping reference:
 
 | Figma value              | Project class                       |
 | ------------------------ | ----------------------------------- |
 | `#E8132A` / Stetsom Red  | `text-brand` / `bg-brand`           |
 | `#121212` / Stetsom Dark | `bg-brand-dark` / `text-brand-dark` |
 | `#F5F4F2` / Off White    | `bg-off-white`                      |
-| Barlow font              | `font-sans`                         |
+| `#F8F8F8`                | `bg-card`                           |
+| `#565656`                | `text-muted-foreground`             |
+| `#B8B8B8`                | `text-text-subtle-dark`             |
+| Barlow                   | `font-sans`                         |
 | Barlow Condensed         | `font-sans-condensed`               |
 
-### Step 3 — Produce Design Spec
+### Step 4 — Produce Design Spec
 
-Output a structured implementation guide:
+Output a structured spec:
 
 ```
-## Design Spec: <Component Name>
+## Design Spec: <Component / Page Name>
 
 ### Layout
-- <structure notes>
+- <structure, grid, alignment notes>
 
 ### Colors
 - Background: <token>
 - Text: <token>
+- Accent: <token>
 
 ### Typography
 - Heading: font-sans-condensed font-black text-[Xpx] uppercase
-- Body: font-sans text-base
+- Body: font-sans text-base text-muted-foreground
 
 ### Spacing
-- Padding: <tailwind classes>
-- Gap: <tailwind classes>
+- Padding: <tailwind canonical classes — never [Npx]>
+- Gap: <tailwind canonical classes>
 
 ### Responsive
-- Mobile: <behavior>
-- Desktop: <behavior>
+- Mobile (<frame node>): <behavior>
+- Desktop (<frame node>): <behavior>
+
+### Issues Found
+- [ ] <design issue 1>
+- [ ] <design issue 2>
 
 ### Screenshot reference
 [Captured from Figma — see above]
 ```
 
-### Step 4 — Validate Against Rules
+### Step 5 — Validate Against Project Rules
 
-Confirm the spec uses:
+Before handing off, confirm the spec:
 
-- Tailwind classes only (no arbitrary CSS values for colors)
-- Brand tokens from `globals.css`
+- Uses Tailwind classes only — no arbitrary color values
+- Uses brand tokens from `globals.css`
 - No hardcoded hex values
+- Spacing converted to canonical classes (N/4 formula)
+- Typography uses `font-sans` / `font-sans-condensed` — never inline `fontFamily`
+- Padding/gap values match Tailwind canonical (see `.claude/rules/tailwind-canonical.md`)
 
-### Step 5 — Hand Off to Implementation
+### Step 6 — Update Local Context Files (if stale)
 
-Return to `/next-task` with the design spec attached. Implementation proceeds with the spec as the visual target.
+After fetching live data, check whether local files are outdated:
+
+- `docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md` — update color/typography sections if Figma values differ
+- `docs/ia/figma/PAGES_REFERENCE.md` — update node IDs or section descriptions if changed
+- `src/app/globals.css` — add missing CSS custom properties for any new tokens found
+
+Only update what actually changed. Do not rewrite entire files from scratch.
+
+### Step 7 — Create Action Plan via /next-task
+
+List every issue found as a numbered action plan. If the issues are new tasks (not already tracked), call `/create-task` first to register them, then call `/next-task` to begin execution:
+
+```
+Action Plan:
+1. Fix <issue 1> in <file> — <specific change>
+2. Fix <issue 2> in <file> — <specific change>
+...
+
+→ Creating tasks via /create-task, then calling /next-task to start with item 1.
+```
+
+If the issues are minor enough to fix inline (single-file, < 10 lines), fix them directly and skip `/create-task`.
 
 ---
 
-## Important Constraints
+## Hard Constraints
 
-- Do NOT use arbitrary color values (`bg-[#E8132A]`) — always map to brand tokens
-- Do NOT create new CSS variables — only use what's in `src/app/globals.css`
-- Figma absolute pixel values → convert to responsive Tailwind classes
-- Refer to `docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md` for the full token map
+- NEVER use `docs/ia/figma/*.json` or `DESIGN_SYSTEM_REFERENCE.md` as the design source — always MCP
+- NEVER use arbitrary color values (`bg-[#E8132A]`) — always project tokens
+- NEVER create new CSS variables without adding them to `src/app/globals.css`
+- Figma px values for dimensions → Tailwind canonical (N/4 formula)
+- `text-[Npx]` is allowed only for font sizes outside the named Tailwind scale
+- Always call `/next-task` at the end if issues were found
+
+---
+
+## Support Skills
+
+| Skill            | When to invoke                                         |
+| ---------------- | ------------------------------------------------------ |
+| `/figma`         | To understand Figma MCP API before calling tools       |
+| `/frontend-design` | To validate component quality and production-readiness |
+| `/ui-ux-pro-max` | To check design standards: spacing, accessibility, rhythm |
+| `/next-task`     | To execute the action plan after analysis              |
 
 ---
 
 ## Integration
 
-**Optional step in:** `/next-task` cycle
-**Uses:** Figma MCP (`get_design_context`, `get_screenshot`)
-**References:** `docs/ia/figma/meta.json`, `docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md`
+**Optional step in:** `/next-task` cycle  
+**Always uses:** Figma MCP (`get_design_context`, `get_screenshot`)  
+**Never uses:** Local snapshot files as source of truth  
+**Ends with:** `/next-task` action plan if issues found
