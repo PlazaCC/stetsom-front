@@ -515,6 +515,20 @@
       ],
       "rationale": "Task-08 requires: Hero height 439px with radial overlay, RedBanner with seamless marquee loop respecting design padding, GaleriaDark section after Timeline with semantic color token.",
       "outcome": "Installed react-fast-marquee v1.6.5; RedBanner uses <Marquee gap={24}> to respect design padding between milestone items; updated Hero h-109.75 with radial gradient overlay; created GaleriaDark with bg-surface-elevated tokens; all 4 acceptance criteria met; pnpm tsc and lint pass."
+    },
+    {
+      "ts": "2026-05-12T22:15:00Z",
+      "agent": "claude-haiku-4-5-20251001",
+      "type": "feat",
+      "summary": "Implement task-09 factory section and social medias scroll controls",
+      "files": [
+        "src/app/(site)/_components/nossa-fabrica.tsx",
+        "src/app/(site)/_components/social-medias.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "docs/ia/tasks/task-09-sobre-factory-social-medias.md"
+      ],
+      "rationale": "Task-09 required: create NossaFabrica component with factory image and radial gradient overlay; implement scroll controls (ChevronLeft/Right) with smooth scrolling in MidiasSociais; integrate section into Sobre page.",
+      "outcome": "Created NossaFabrica with fill_OJJ5Q1_b3596ec5.png image and radial-gradient overlay matching Figma spec; converted MidiasSociais to client component with useRef-based smooth scroll at ±300px per click; added section to page after MidiasSociais; all 5 acceptance criteria met; pnpm tsc and lint pass."
     }
   ]
 }

@@ -5,6 +5,7 @@ import Image from 'next/image'
 import CTATrabalheConosco from '../_components/cta-trabalhe-conosco'
 import GaleriaDark from '../_components/galeria-dark'
 import NossasBases from '../_components/nossas-bases'
+import NossaFabrica from '../_components/nossa-fabrica'
 import QualidadeInovadora from '../_components/qualidade-inovadora'
 import RedBanner from '../_components/red-banner'
 import MidiasSociais from '../_components/social-medias'
@@ -55,7 +56,10 @@ export default async function SobrePage() {
       {/* 7. NOSSA FAMÍLIA / MÍDIAS SOCIAIS */}
       <MidiasSociais section={aboutPayload.social} />
 
-      {/* 8. CTA - Trabalhe Conosco (conteúdo extra, não mapeado no Figma) */}
+      {/* 8. NOSSA FÁBRICA / LOCALIZAÇÃO */}
+      <NossaFabrica />
+
+      {/* 9. CTA - Trabalhe Conosco (conteúdo extra, não mapeado no Figma) */}
       <CTATrabalheConosco section={aboutPayload.jobsCta} />
     </div>
   )
