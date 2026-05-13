@@ -1,6 +1,7 @@
 # Stetsom — Pages Reference (Figma Node Map)
 
 Fonte: Figma file `huD41oTL0FAa7xsNEK8tAM`, seção `Website` (node `1200:4302`).
+**Link direto:** https://www.figma.com/design/huD41oTL0FAa7xsNEK8tAM/Stetsom-%7C-CMS?node-id=1200-4302
 Extraído em: 2026-05-12. Para encontrar IDs atualizados, consulte `meta.json`.
 
 > **Regra:** use os `nodeId` abaixo para chamar `get_figma_data` ou `get_design_context`

@@ -83,28 +83,31 @@ export default async function SuportePage() {
         </Container>
       </section>
 
-      {/* 4. FAQ SEARCH SECTION - input + tabs de categoria */}
+      {/* 4. LOCALIZAÇÃO / MAPA - 2 colunas: info + imagem */}
       <section className='w-full bg-off-white py-12'>
         <Container>
-          <SectionLabel label={supportPayload.faqSearch.label} title={supportPayload.faqSearch.title} />
-          <div className='mt-8 max-w-120'>
-            <div className='relative mb-8'>
-              <Search className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none' />
-              <input
-                type='text'
-                placeholder={supportPayload.faqSearch.placeholder}
-                className='w-full pl-12 pr-4 py-3 border border-zinc-300 rounded focus:outline-none focus:ring-2 focus:ring-brand'
-              />
+          <div className='flex flex-col lg:flex-row lg:gap-6 lg:items-stretch'>
+            {/* Info column */}
+            <div className='flex flex-col gap-8 lg:w-[344px] shrink-0'>
+              <SectionLabel label={supportPayload.faqSearch.label} title={supportPayload.faqSearch.title} />
+              <div className='flex flex-col gap-3'>
+                {supportPayload.faqSearch.categories.map((cat) => (
+                  <div key={cat.id} className='flex items-center gap-3 py-2 border-b border-zinc-200'>
+                    <span className='font-sans text-base text-brand-dark'>{cat.name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className='flex gap-3 flex-wrap'>
-              {supportPayload.faqSearch.categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  className='px-4 py-2 rounded text-sm font-medium bg-white border border-zinc-300 text-foreground hover:border-brand transition-colors'
-                >
-                  {cat.name}
-                </button>
-              ))}
+
+            {/* Map image */}
+            <div className='relative mt-8 lg:mt-0 lg:flex-1 h-[340px] lg:h-[457px] rounded-[16px] overflow-hidden bg-zinc-200'>
+              <Image
+                src='/figma-assets/raw/fill_SXY62B_51d05531.png'
+                alt='Localização Stetsom'
+                fill
+                className='object-cover'
+                sizes='(max-width: 1024px) 100vw, 732px'
+              />
             </div>
           </div>
         </Container>
