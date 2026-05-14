@@ -1,6 +1,6 @@
 'use client'
 
-import { BlockRenderer } from './BlockRenderer'
+import { BlockRenderer } from './block-renderer'
 import { Container } from '@/components/ui/container'
 import ProductCard from '@/components/ui/product-card'
 import type { ProductBlock, ProductCardItem, ProductSpecifications } from '@/lib/api/contracts'
@@ -9,7 +9,7 @@ import { formatSpecKey } from '@/lib/utils/product'
 import Image from 'next/image'
 import { useState } from 'react'
 
-type Tab = 'visao_geral' | 'especificacoes' | 'confira'
+type Tab = 'overview' | 'specifications' | 'related'
 
 interface ProductDetailTabsProps {
   productName: string
@@ -24,9 +24,9 @@ const PRODUCT_HERO_GRADIENT = {
 } as const
 
 const TAB_CONFIG = [
-  ['visao_geral', 'Visão geral'],
-  ['especificacoes', 'Especificações'],
-  ['confira', 'Confira também'],
+  ['overview', 'Visão geral'],
+  ['specifications', 'Especificações'],
+  ['related', 'Confira também'],
 ] as const satisfies readonly (readonly [Tab, string])[]
 
 export default function ProductDetailTabs({
@@ -36,7 +36,7 @@ export default function ProductDetailTabs({
   blocks,
   relatedProducts,
 }: ProductDetailTabsProps) {
-  const [activeTab, setActiveTab] = useState<Tab>('visao_geral')
+  const [activeTab, setActiveTab] = useState<Tab>('overview')
 
   const specEntries = Object.entries(specifications)
   const specificationsTable =
@@ -83,7 +83,7 @@ export default function ProductDetailTabs({
         </div>
       </div>
 
-      {activeTab === 'visao_geral' && (
+      {activeTab === 'overview' && (
         <>
           {/* RED GRADIENT HERO */}
           <section className='relative isolate overflow-hidden bg-black'>
@@ -125,9 +125,9 @@ export default function ProductDetailTabs({
         </>
       )}
 
-      {activeTab === 'especificacoes' && specificationsTable}
+      {activeTab === 'specifications' && specificationsTable}
 
-      {activeTab === 'confira' && (
+      {activeTab === 'related' && (
         <section className='bg-off-white py-10 md:py-12 lg:py-16'>
           <Container>
             <h2 className='font-sans-condensed text-display-sm font-black uppercase leading-none text-brand-dark'>

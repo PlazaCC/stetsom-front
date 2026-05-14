@@ -2,14 +2,14 @@ import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import { getSiteAboutPayload } from '@/lib/api/server'
 import Image from 'next/image'
-import CTATrabalheConosco from '../_components/cta-trabalhe-conosco'
-import GaleriaDark from '../_components/galeria-dark'
-import NossaFabrica from '../_components/nossa-fabrica'
-import NossasBases from '../_components/nossas-bases'
-import QualidadeInovadora from '../_components/qualidade-inovadora'
+import CareersCTA from '../_components/careers-cta'
+import CompanyTimeline from '../_components/company-timeline'
+import DarkGallery from '../_components/dark-gallery'
+import OurFactory from '../_components/our-factory'
+import OurFoundations from '../_components/our-foundations'
+import QualitySection from '../_components/quality-section'
 import RedBanner from '../_components/red-banner'
-import MidiasSociais from '../_components/social-medias'
-import TimelineRefactored from '../_components/timeline-refactored'
+import SocialFeed from '../_components/social-feed'
 import { ABOUT_STATS } from './_components/data'
 
 export default async function SobrePage() {
@@ -80,26 +80,26 @@ export default async function SobrePage() {
       {/* 2. RED BANNER - Milestones Carousel */}
       <RedBanner milestones={aboutPayload.milestones} />
 
-      {/* 3. QUALIDADE INOVADORA - 2 Cols */}
-      <QualidadeInovadora values={aboutPayload.values} section={aboutPayload.quality} />
+      {/* 3. QUALITY SECTION - 2 Cols */}
+      <QualitySection values={aboutPayload.values} section={aboutPayload.quality} />
 
-      {/* 4. TIMELINE REFACTORED - Con Sidebar */}
-      <TimelineRefactored events={aboutPayload.timeline} />
+      {/* 4. COMPANY TIMELINE */}
+      <CompanyTimeline events={aboutPayload.timeline} />
 
-      {/* 5. GALERIA DARK - Qualidade */}
-      <GaleriaDark />
+      {/* 5. DARK GALLERY */}
+      <DarkGallery />
 
-      {/* 6. NOSSAS BASES - 3 Cards */}
-      <NossasBases bases={aboutPayload.bases} />
+      {/* 6. OUR FOUNDATIONS - 3 Cards */}
+      <OurFoundations bases={aboutPayload.bases} />
 
-      {/* 7. NOSSA FAMÍLIA / MÍDIAS SOCIAIS */}
-      <MidiasSociais section={aboutPayload.social} />
+      {/* 7. SOCIAL FEED */}
+      <SocialFeed section={aboutPayload.social} />
 
-      {/* 8. NOSSA FÁBRICA / LOCALIZAÇÃO */}
-      <NossaFabrica />
+      {/* 8. OUR FACTORY */}
+      <OurFactory />
 
-      {/* 9. CTA - Trabalhe Conosco (conteúdo extra, não mapeado no Figma) */}
-      <CTATrabalheConosco section={aboutPayload.jobsCta} />
+      {/* 9. CAREERS CTA */}
+      <CareersCTA section={aboutPayload.jobsCta} />
     </div>
   )
 }

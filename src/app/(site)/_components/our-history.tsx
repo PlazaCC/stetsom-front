@@ -8,11 +8,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ABOUT_STATS } from '../sobre/_components/data'
 
-interface NossaHistoriaProps {
+interface OurHistoryProps {
   section: SiteHomePayload['history']
 }
 
-export default function NossaHistoria({ section }: Readonly<NossaHistoriaProps>) {
+export default function OurHistory({ section }: Readonly<OurHistoryProps>) {
   return (
     <section className='flex justify-center bg-brand-dark py-0 lg:min-h-132'>
       <Container className='flex w-full flex-col items-stretch lg:flex-row lg:items-center lg:gap-22.75'>

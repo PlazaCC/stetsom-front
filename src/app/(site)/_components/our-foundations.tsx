@@ -3,12 +3,12 @@ import { SectionLabel } from '@/components/ui/section-label'
 import type { AboutBase } from '@/lib/api/contracts'
 import { cn } from '@/lib/utils'
 
-interface NossasBasesProps {
+interface OurFoundationsProps {
   bases: AboutBase[]
   className?: string
 }
 
-export default function NossasBases({ bases, className }: Readonly<NossasBasesProps>) {
+export default function OurFoundations({ bases, className }: Readonly<OurFoundationsProps>) {
   return (
     <section className={cn('bg-white py-20', className)}>
       <Container>

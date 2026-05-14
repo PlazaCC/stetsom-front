@@ -9,11 +9,11 @@ import { SectionLabel } from '@/components/ui/section-label'
 import { useHorizontalScroll } from '@/hooks/use-horizontal-scroll'
 import type { SocialFeedSection } from '@/lib/api/contracts'
 
-interface MidiasSociaisProps {
+interface SocialFeedProps {
   section: SocialFeedSection
 }
 
-export default function MidiasSociais({ section }: Readonly<MidiasSociaisProps>) {
+export default function SocialFeed({ section }: Readonly<SocialFeedProps>) {
   const { ref: scrollRef, scroll } = useHorizontalScroll()
 
   return (

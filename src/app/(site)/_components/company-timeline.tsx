@@ -5,10 +5,10 @@ import type { TimelineEvent } from '@/lib/api/contracts'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
-import { TimelineCheckpoint } from './TimelineCheckpoint'
-import { TimelineProgressBar } from './TimelineProgressBar'
+import { TimelineCheckpoint } from './timeline-checkpoint'
+import { TimelineProgressBar } from './timeline-progress-bar'
 
-interface TimelineRefactoredProps {
+interface CompanyTimelineProps {
   events: TimelineEvent[]
   label?: string
   title?: string
@@ -16,13 +16,13 @@ interface TimelineRefactoredProps {
   initialActiveIndex?: number
 }
 
-export default function TimelineRefactored({
+export default function CompanyTimeline({
   events,
   label = 'Nossa História',
   title = '35 ANOS DE\nHISTÓRIA',
   description = 'Uma empresa de inovação constante que transformou a Stetsom na maior referência de amplificação automotiva do Brasil.',
   initialActiveIndex = 0,
-}: TimelineRefactoredProps) {
+}: CompanyTimelineProps) {
   const safeInitialIndex = Math.min(Math.max(initialActiveIndex, 0), Math.max(events.length - 1, 0))
   const [activeIndex, setActiveIndex] = useState(safeInitialIndex)
 

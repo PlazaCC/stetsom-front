@@ -5,11 +5,11 @@ import type { SiteAboutPayload } from '@/lib/api/contracts'
 import { ExternalLink } from 'lucide-react'
 import Image from 'next/image'
 
-interface CTATrabalheConoscoProps {
+interface CareersCTAProps {
   section: SiteAboutPayload['jobsCta']
 }
 
-export default function CTATrabalheConosco({ section }: Readonly<CTATrabalheConoscoProps>) {
+export default function CareersCTA({ section }: Readonly<CareersCTAProps>) {
   return (
     <section className='bg-white py-20'>
       <Container>

@@ -62,9 +62,9 @@ export const HOME_HERO_SLIDES: HeroBannerSlide[] = [
   },
 ]
 
-export const HOME_NOVIDADES_TABS = ['Todos', 'Amplificadores', 'Processadores', 'Subwoofers']
+export const HOME_FEATURED_TABS = ['Todos', 'Amplificadores', 'Processadores', 'Subwoofers']
 
-export const HOME_NOVIDADES_SECTION: SiteHomePayload['novidades'] = {
+export const HOME_FEATURED_SECTION: SiteHomePayload['featured'] = {
   label: 'Novidades',
   title: 'CONHECA A\nPRATICIDADE',
   ctaLabel: 'Ver todos',

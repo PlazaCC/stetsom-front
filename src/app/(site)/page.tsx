@@ -1,10 +1,10 @@
 import { getSiteHomePayload } from '@/lib/api/server'
 import Faq from './_components/faq'
+import FeaturedProducts from './_components/featured-products'
 import HeroCarousel from './_components/hero-carousel'
-import NossaHistoria from './_components/nossa-historia'
-import NossasBases from './_components/nossas-bases'
-import Novidades from './_components/novidades'
-import MidiasSociais from './_components/social-medias'
+import OurFoundations from './_components/our-foundations'
+import OurHistory from './_components/our-history'
+import SocialFeed from './_components/social-feed'
 
 export default async function Home() {
   const homePayload = await getSiteHomePayload()
@@ -12,15 +12,15 @@ export default async function Home() {
   return (
     <>
       <HeroCarousel slides={homePayload.hero} />
-      <Novidades
+      <FeaturedProducts
         featuredProducts={homePayload.featuredProducts}
         spotlightProduct={homePayload.spotlightProduct}
-        tabs={homePayload.novidadesTabs}
-        section={homePayload.novidades}
+        tabs={homePayload.featuredTabs}
+        section={homePayload.featured}
       />
-      <NossaHistoria section={homePayload.history} />
-      <NossasBases bases={homePayload.bases} />
-      <MidiasSociais section={homePayload.social} />
+      <OurHistory section={homePayload.history} />
+      <OurFoundations bases={homePayload.bases} />
+      <SocialFeed section={homePayload.social} />
       <Faq items={homePayload.faq} section={homePayload.faqSection} />
     </>
   )

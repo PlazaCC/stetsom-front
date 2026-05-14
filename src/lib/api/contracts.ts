@@ -154,8 +154,8 @@ export type SiteHomePayload = {
   hero: HeroBannerSlide[]
   featuredProducts: ProductCardItem[]
   spotlightProduct: ProductCardItem
-  novidadesTabs: string[]
-  novidades: {
+  featuredTabs: string[]
+  featured: {
     label: string
     title: string
     ctaLabel: string

@@ -10,12 +10,12 @@ const ICONS = {
   rocket: Rocket,
 } as const
 
-interface QualidadeInovadoraProps {
+interface QualitySectionProps {
   section: SiteAboutPayload['quality']
   values: AboutValue[]
 }
 
-export default function QualidadeInovadora({ section, values }: Readonly<QualidadeInovadoraProps>) {
+export default function QualitySection({ section, values }: Readonly<QualitySectionProps>) {
   return (
     <section className='bg-brand-dark py-20'>
       <Container>

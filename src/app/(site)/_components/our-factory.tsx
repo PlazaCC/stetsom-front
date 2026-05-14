@@ -6,7 +6,7 @@ const FACTORY_IMAGE = '/figma-assets/raw/fill_OJJ5Q1_b3596ec5.png'
 const MAP_IMAGE = '/figma-assets/raw/fill_SXY62B_51d05531.png'
 const FACTORY_OVERLAY_GRADIENT = 'radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(22,16,16,1) 100%)'
 
-export default function NossaFabrica() {
+export default function OurFactory() {
   return (
     <section className='relative bg-brand-dark overflow-hidden'>
       {/* Factory Image with Radial Overlay */}

@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
-interface NovidadesTabStripProps {
+interface FeaturedTabStripProps {
   tabs: string[]
   activeTab: string
   onSelect: (tab: string) => void
@@ -12,7 +12,7 @@ interface NovidadesTabStripProps {
   ctaLabel: string
 }
 
-export function NovidadesTabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel }: NovidadesTabStripProps) {
+export function FeaturedTabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel }: FeaturedTabStripProps) {
   return (
     <>
       <div

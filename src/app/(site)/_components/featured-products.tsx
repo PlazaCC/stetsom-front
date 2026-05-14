@@ -7,16 +7,16 @@ import type { ProductCardItem, SiteHomePayload } from '@/lib/api/contracts'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import { NovidadesTabStrip } from './NovidadesTabStrip'
+import { FeaturedTabStrip } from './featured-tab-strip'
 
-interface NovidadesProps {
+interface FeaturedProductsProps {
   featuredProducts: ProductCardItem[]
   spotlightProduct: ProductCardItem
   tabs: string[]
-  section: SiteHomePayload['novidades']
+  section: SiteHomePayload['featured']
 }
 
-export default function Novidades({ featuredProducts, spotlightProduct, tabs, section }: Readonly<NovidadesProps>) {
+export default function FeaturedProducts({ featuredProducts, spotlightProduct, tabs, section }: Readonly<FeaturedProductsProps>) {
   const [activeTab, setActiveTab] = useState(tabs[0] ?? 'Todos')
 
   const filteredProducts = useMemo(() => {
@@ -39,7 +39,7 @@ export default function Novidades({ featuredProducts, spotlightProduct, tabs, se
             </div>
 
             <div className='flex-1 flex items-end justify-end'>
-              <NovidadesTabStrip
+              <FeaturedTabStrip
                 tabs={tabs}
                 activeTab={activeTab}
                 onSelect={setActiveTab}
@@ -54,7 +54,7 @@ export default function Novidades({ featuredProducts, spotlightProduct, tabs, se
             <SectionLabel label={section.label} title={section.title} className='max-w-80' />
 
             <div className='flex items-center justify-between'>
-              <NovidadesTabStrip
+              <FeaturedTabStrip
                 tabs={tabs}
                 activeTab={activeTab}
                 onSelect={setActiveTab}
