@@ -95,7 +95,7 @@ export default function ProdutosPage() {
             <strong className='font-sans-condensed font-black text-xl text-white'>{totalProducts}</strong> produtos
           </span>
         </Container>
-        <div className='absolute right-0 bottom-0 font-sans-condensed font-black text-[72px] sm:text-[100px] lg:text-[150px] text-white leading-none pointer-events-none select-none opacity-[0.08]'>
+        <div className='absolute right-0 bottom-0 font-sans-condensed font-black text-[72px] sm:text-[100px] lg:text-[150px] text-watermark-text leading-none pointer-events-none select-none opacity-[0.08]'>
           {hero.heroWatermark}
         </div>
         <div className='absolute left-0 top-0 w-3.5 h-full bg-bar-accent' />

@@ -86,11 +86,11 @@ export default async function SobrePage() {
       {/* 4. COMPANY TIMELINE */}
       <CompanyTimeline events={aboutPayload.timeline} />
 
-      {/* 5. DARK GALLERY */}
-      <DarkGallery />
-
-      {/* 6. OUR FOUNDATIONS - 3 Cards */}
+      {/* 5. OUR FOUNDATIONS - 3 Cards */}
       <OurFoundations bases={aboutPayload.bases} />
+
+      {/* 6. DARK GALLERY */}
+      <DarkGallery />
 
       {/* 7. SOCIAL FEED */}
       <SocialFeed section={aboutPayload.social} />

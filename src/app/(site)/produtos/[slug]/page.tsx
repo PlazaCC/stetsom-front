@@ -44,9 +44,9 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
   ]
 
   return (
-    <div className='bg-card'>
+    <div className='bg-[#F8F8F8]'>
       {/* PRODUCT PREVIEW — image left + info right */}
-      <section className='bg-card py-6 lg:py-8'>
+      <section className='bg-[#F8F8F8] py-6 lg:py-8'>
         <Container>
           <Breadcrumb items={breadcrumbItems} />
 
@@ -69,7 +69,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
                   <button
                     key={`${image}-${index}`}
                     type='button'
-                    className='relative h-16 w-18 shrink-0 overflow-hidden rounded border border-zinc-300 bg-card'>
+                    className='relative h-19 w-19 shrink-0 overflow-hidden rounded border border-zinc-200 bg-card'>
                     <Image
                       src={image}
                       alt={`${product.name} miniatura ${index + 1}`}
@@ -102,7 +102,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
                 {Object.entries(product.specifications).map(([key, value]) => (
                   <li
                     key={key}
-                    className='rounded-full border border-zinc-300 px-3 py-1 text-xs uppercase text-brand-dark'>
+                    className='rounded-[12px] border border-muted px-3 py-1 text-xs uppercase text-brand-dark'>
                     {key.replace(/_/g, ' ')}: {String(value)}
                   </li>
                 ))}
@@ -133,13 +133,13 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
                 {manualFile && (
                   <Link
                     href={manualFile.file_url}
-                    className='inline-flex h-10 items-center rounded-[4px] bg-brand px-5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-zinc-50 transition-colors hover:bg-brand/90'>
+                    className='inline-flex h-10 items-center rounded-[4px] bg-brand px-5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-white transition-colors hover:bg-brand/90'>
                     Acessar manual do produto
                   </Link>
                 )}
                 <button
                   type='button'
-                  className='inline-flex h-10 items-center rounded-[4px] border border-zinc-300 bg-card px-5 font-sans text-button-md font-black uppercase tracking-[0.8px] text-brand-dark'>
+                  className='inline-flex h-10 items-center rounded-[4px] border border-zinc-200 bg-card px-5 font-sans text-button-md font-semibold uppercase tracking-[0.8px] text-brand-dark'>
                   Download de fotos
                 </button>
               </div>

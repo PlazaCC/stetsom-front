@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import { getSupportPayload } from '@/lib/api/server'
-import { ArrowUpRight, FileText } from 'lucide-react'
+import { ArrowUpRight, Download, FileText } from 'lucide-react'
 import Image from 'next/image'
-import { AUTHORIZED_POSTS, CARD_ICONS, CONTACT_DETAILS } from './_components/data'
+import Link from 'next/link'
+import { CARD_ICONS, CONTACT_DETAILS } from './_components/data'
 import { ContactForm } from './_components/contact-form'
 
 export default async function SuportePage() {
@@ -64,64 +65,69 @@ export default async function SuportePage() {
         </Container>
       </section>
 
-      {/* 3. DOCUMENTATION SECTION - com tabs/categorias */}
-      <section className='w-full bg-card py-12'>
+      {/* 3. DOWNLOAD DE MATERIAIS - lista de arquivos com ProductFile schema */}
+      <section className='w-full bg-white py-12'>
         <Container>
-          <SectionLabel label={supportPayload.documentation.label} title={supportPayload.documentation.title} />
-          <div className='mt-8'>
-            <div className='flex gap-4 mb-8 overflow-x-auto pb-4 border-b border-border'>
-              {supportPayload.documentation.categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  className='font-sans text-base font-medium text-muted-foreground whitespace-nowrap hover:text-brand transition-colors'>
-                  {cat.name}
-                </button>
-              ))}
-            </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-              {supportPayload.documentation.links.map((link) => (
-                <a
-                  key={link.id}
-                  href={link.href}
-                  className='block p-4 border border-zinc-200 rounded hover:border-brand hover:bg-off-white transition-colors'>
-                  <h4 className='font-sans text-base font-medium text-foreground'>{link.title}</h4>
-                </a>
-              ))}
-            </div>
+          <SectionLabel label='Materiais' title='DOWNLOAD DE MATERIAIS' />
+          <div className='mt-8 flex flex-col gap-3'>
+            {supportPayload.documentationFiles.map((file) => (
+              <div
+                key={file.id}
+                className='flex items-center justify-between border border-zinc-200 rounded px-5 py-4 hover:border-brand transition-colors'>
+                <div className='flex items-center gap-4'>
+                  <FileText size={20} className='text-brand shrink-0' />
+                  <div>
+                    <p className='font-sans text-sm font-medium text-foreground'>
+                      {file.type === 'MANUAL' && 'Manual — '}
+                      {file.type === 'CERTIFICATE' && 'Certificado — '}
+                      {file.type === 'CATALOG' && 'Catálogo — '}
+                      {file.type === 'IMAGE' && 'Imagem — '}
+                      Documento v{file.version}
+                    </p>
+                    <p className='font-sans text-xs text-text-subtle'>
+                      {file.type === 'MANUAL' && 'Manual técnico'}
+                      {file.type === 'CERTIFICATE' && 'Certificado de conformidade'}
+                      {file.type === 'CATALOG' && 'Catálogo do produto'}
+                      {file.type === 'IMAGE' && 'Imagem técnica'}
+                    </p>
+                  </div>
+                </div>
+                <Link
+                  href={file.file_url}
+                  className='inline-flex h-9 shrink-0 items-center gap-1.5 rounded-[4px] bg-brand px-4 font-sans text-2xs font-bold uppercase tracking-[0.6px] text-white transition-colors hover:bg-brand/90'>
+                  <Download size={14} />
+                  Download
+                </Link>
+              </div>
+            ))}
           </div>
         </Container>
       </section>
 
-      {/* 4. POSTOS AUTORIZADOS - lista de locais + mapa */}
+      {/* 4. FAQ ACCORDION SECTION - accordion com items + botão "Falar com suporte" */}
       <section className='w-full bg-off-white py-12'>
         <Container>
-          <SectionLabel label='Rede Autorizada' title='POSTOS AUTORIZADOS' />
-          <div className='mt-8 flex flex-col lg:flex-row lg:gap-6 lg:items-start'>
-            <div className='flex flex-col gap-4 lg:w-86 shrink-0'>
-              {AUTHORIZED_POSTS.map((post) => (
-                <div key={post.id} className='border-b border-zinc-200 pb-4 last:border-0'>
-                  <p className='font-sans text-2xs uppercase tracking-wider text-brand mb-1'>{post.type}</p>
-                  <h4 className='font-sans-condensed font-black text-section-title uppercase text-brand-dark mb-1'>{post.name}</h4>
-                  <p className='text-sm text-text-subtle'>{post.address}</p>
-                  <p className='text-sm text-text-subtle mt-0.5'>{post.phone}</p>
-                </div>
+          <SectionLabel label={supportPayload.faq.label} title={supportPayload.faq.title} />
+          <div className='max-w-175 mt-8'>
+            <Accordion className='space-y-3'>
+              {supportPayload.faq.items.map((item, index) => (
+                <AccordionItem key={index} value={`item-${index}`} className='border border-zinc-200 rounded px-6 py-4'>
+                  <AccordionTrigger className='hover:no-underline py-0 font-sans-condensed font-black text-base uppercase text-foreground hover:text-brand'>
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className='text-base text-text-subtle pt-4'>{item.a}</AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
-            <div className='relative mt-8 lg:mt-0 lg:flex-1 h-85 lg:h-114.25 rounded-[16px] overflow-hidden bg-muted'>
-              <Image
-                src='/figma-assets/raw/fill_SXY62B_51d05531.png'
-                alt='Mapa postos autorizados Stetsom'
-                fill
-                className='object-cover'
-                sizes='(max-width: 1024px) 100vw, 732px'
-              />
-            </div>
+            </Accordion>
+            <Button variant='default' className='mt-8 bg-surface-elevated text-white hover:bg-brand-dark'>
+              {supportPayload.faq.supportButtonLabel}
+            </Button>
           </div>
         </Container>
       </section>
 
       {/* 5. CONTATO - 2 colunas: info + formulário */}
-      <section className='w-full bg-card py-12'>
+      <section className='w-full bg-white py-12'>
         <Container>
           <div className='flex flex-col lg:flex-row lg:gap-16 lg:items-start'>
             <div className='flex flex-col gap-6 lg:w-90 shrink-0'>
@@ -145,28 +151,6 @@ export default async function SuportePage() {
             <div className='flex-1 mt-8 lg:mt-0'>
               <ContactForm />
             </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* 6. FAQ ACCORDION SECTION - accordion com items + botão "Falar com suporte" */}
-      <section className='w-full bg-off-white py-12'>
-        <Container>
-          <SectionLabel label={supportPayload.faq.label} title={supportPayload.faq.title} />
-          <div className='max-w-175 mt-8'>
-            <Accordion className='space-y-3'>
-              {supportPayload.faq.items.map((item, index) => (
-                <AccordionItem key={index} value={`item-${index}`} className='border border-zinc-200 rounded px-6 py-4'>
-                  <AccordionTrigger className='hover:no-underline py-0 font-sans-condensed font-black text-base uppercase text-foreground hover:text-brand'>
-                    {item.q}
-                  </AccordionTrigger>
-                  <AccordionContent className='text-base text-text-subtle pt-4'>{item.a}</AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-            <Button variant='default' className='mt-8 bg-surface-elevated text-white hover:bg-brand-dark'>
-              {supportPayload.faq.supportButtonLabel}
-            </Button>
           </div>
         </Container>
       </section>

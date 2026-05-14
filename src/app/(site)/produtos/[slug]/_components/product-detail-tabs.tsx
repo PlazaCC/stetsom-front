@@ -111,8 +111,6 @@ export default function ProductDetailTabs({
             </Container>
           </section>
 
-          {specificationsTable}
-
           {blocks.length > 0 && (
             <section className='bg-white py-10 md:py-12 lg:py-14'>
               <Container className='space-y-6 md:space-y-8'>
@@ -122,6 +120,8 @@ export default function ProductDetailTabs({
               </Container>
             </section>
           )}
+
+          {specificationsTable}
         </>
       )}
 
