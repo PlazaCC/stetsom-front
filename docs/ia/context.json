@@ -907,6 +907,77 @@
       ],
       "rationale": "docs/ia/figma/ had 1.8MB of raw Figma dumps (context.json 1.5MB, design-system.json 172KB, asset-candidates 59KB) that were too heavy and confusing for agents. User requested a clean rebuild: extract fresh Figma data via Framelink MCP, distill into code-first tables (Figma style → CSS var → Tailwind class), map every component to its React file, remove all raw dumps.",
       "outcome": "Folder reduced from 1.8MB (8 files) to ~60KB (4 files). DESIGN_SYSTEM.md has full color/typography/spacing/effects tables with direct Tailwind class mapping. PAGES.md maps every page section to its Figma node ID and React component file. COMPONENTS.md maps every Figma component to its React implementation. meta.json is now minimal JSON only. Rules updated to reference new file names."
+    },
+    {
+      "ts": "2026-05-14T23:55:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Macro design system audit: fix text-zinc-50, hover:bg-zinc-800 and watermark token mismatches",
+      "files": [
+        "src/components/ui/button.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/not-found.tsx"
+      ],
+      "rationale": "Full audit against DESIGN_SYSTEM.md: zinc-50 not in color table (use text-white); hover:bg-zinc-800 lightens dark button inconsistently (use hover:bg-brand-dark); produtos watermark used text-white instead of text-watermark-text; 404 watermark used text-icon-muted (#767676) instead of DESIGN_SYSTEM-specified #878787",
+      "outcome": "Brand/brand-dark buttons use text-white and hover semantically darkens. Watermarks now use correct token (text-watermark-text) or Figma-exact value (text-[#878787]). All border-zinc-200, rounded-[4px], text-[Npx] exceptions confirmed correct per DESIGN_SYSTEM and left unchanged."
+    },
+    {
+      "ts": "2026-05-14T23:50:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix typography token precedence in @theme inline — move --text-* declarations to end of block",
+      "files": [
+        "src/app/globals.css",
+        ".claude/rules/styling-practices.md",
+        ".agents/rules/styling-practices.md"
+      ],
+      "rationale": "shadcn/tailwind.css and tw-animate-css can define --text-* variables in their own @theme blocks; since multiple @theme blocks are merged, last declaration wins — project typography tokens must be declared last to not be overridden.",
+      "outcome": "text-display-sm, text-section-title and other custom font-size tokens now correctly apply; styling-practices rule documents the required declaration order to prevent future regressions."
+    },
+    {
+      "ts": "2026-05-14T23:58:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Design fidelity audit — complete remaining 7 divergences from interrupted session",
+      "files": [
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/suporte/_components/data.ts",
+        "src/app/(site)/_components/our-foundations.tsx",
+        "src/app/(site)/_components/our-history.tsx",
+        "src/lib/api/contracts.ts",
+        "src/lib/mock/support.ts"
+      ],
+      "rationale": "Completed the pending items from the interrupted /design-fidelity-audit session. HIGH: [slug]/page.tsx hero bg changed from bg-card (#F4F4F4) to bg-[#F8F8F8] per PAGES.md; inline manual link changed from text-zinc-50 to text-white; product-detail-tabs.tsx reordered blocks before specs to match Figma. H4: suporte/page.tsx sections reordered to Figma spec (Docs → FAQ → Contato), Postos Autorizados removed (not in PAGES.md), Documentação refactored to DOWNLOAD DE MATERIAIS with ProductFile[] schema. MED: thumbnails and download button border-zinc-300→zinc-200; our-foundations.tsx py-20→py-12. LOW: download button font-black→font-semibold; our-history.tsx stats text-3xl→text-display-sm.",
+      "outcome": "7 divergences fixed across 8 files. [slug]/page.tsx: 5 corrections (H1 bg, H2 text, M1 border, M2 border, L1 weight). product-detail-tabs.tsx: blocks rendered before specs (H3). suporte section order corrected to Figma spec (H4). Postos Autorizados removed. Documentation refactored to file list with ProductFile schema. Mock aligned to backend type. tsc --noEmit and pnpm lint both exit 0."
+    },
+    {
+      "ts": "2026-05-14T22:30:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Design fidelity audit Phase 5 — implement all 9 divergences (HIGH/MED/LOW/DOCS)",
+      "files": [
+        "src/app/(site)/_components/our-history.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/not-found.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "docs/ia/figma/PAGES.md"
+      ],
+      "rationale": "Full-site design fidelity audit against Figma baseline: HIGH — our-history.tsx image was inside Container adding left padding; Figma requires flush-left image (no left padding, right padding only at 170px). MED — sobre page had DarkGallery before OurFoundations (wrong order). MED — suporte sections were in wrong order (Documentation → Postos → Contact → FAQ) and Documentation/Contact used bg-card instead of bg-white. MED — not-found.tsx h1 used text-footer (Footer bg color) instead of text-brand-dark; missing CTA button. MED — product detail thumbnails were h-16 w-18 (non-square) instead of ~76px square. LOW — product spec tags used rounded-full border-zinc-300 instead of rounded-[12px] border-muted. DOCS — PAGES.md incorrectly mapped Home section 4 to QualitySection and Sobre section 7 to OurHistory.",
+      "outcome": "our-history.tsx restructured to flush-left desktop layout (w-182.75 = 731px image, pl-22.75 = 91px gap, pr-42.5 = 170px right padding). sobre/page.tsx swapped OurFoundations before DarkGallery. suporte/page.tsx reordered to Contact → Postos → Documentation → FAQ with bg-white on Contact and Documentation. not-found.tsx h1 uses text-brand-dark; brand CTA button added via buttonVariants+Link. produto slug thumbnails h-19 w-19 (square 76px). spec tags rounded-[12px] border-muted. PAGES.md corrected for home section 4 (OurHistory) and sobre section 7 (OurFoundations). pnpm tsc --noEmit and pnpm lint both exit 0."
+    },
+    {
+      "ts": "2026-05-14T00:00:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Configure tailwind-merge to recognize custom font-size tokens (text-display-*, text-section-title, text-2xs, text-button-md)",
+      "files": [
+        "src/lib/utils.ts"
+      ],
+      "rationale": "cn() used raw twMerge which doesn't know about Tailwind v4 @theme custom text-* tokens (--text-display-sm, etc.). When merging text-display-sm with text-brand-dark, tailwind-merge treated both as unknown text-* classes and dropped the font-size. Fix: use extendTailwindMerge with theme.text array listing all custom text tokens.",
+      "outcome": "Changed twMerge import to extendTailwindMerge with custom text tokens. tsc --noEmit exits 0."
     }
   ]
 }

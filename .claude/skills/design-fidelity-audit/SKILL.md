@@ -1,20 +1,25 @@
 ---
 name: design-fidelity-audit
 description: 'Full-site Figma fidelity audit for Stetsom Front. Downloads all page frames (desktop + mobile), performs cross-page divergence analysis with a ranked severity matrix, implements phased corrections, validates with tsc+lint, and exports baseline images. Use for periodic design audits, before major releases, or after big refactors. Trigger keywords: design audit, full design review, fidelity check, design fidelity, figma audit, audit figma, all pages review, full site audit.'
-argument-hint: '[optional: specific page slug or "all"]'
+argument-hint: '[source: local|mcp] [optional: specific page slug or "all"]'
 ---
 
 # Design Fidelity Audit — Full-Site Pass
 
 ## Overview
 
-This skill runs a **complete design fidelity cycle** across all Stetsom Front pages against Figma truth. It is distinct from the lighter `/refine-design` skill (single component) — this one audits every page, produces a cross-site divergence matrix, and drives phased implementation of all corrections.
+This skill runs a **complete design fidelity cycle** across all Stetsom Front pages against a design source of truth. It is distinct from the lighter `/refine-design` skill (single component) — this one audits every page, produces a cross-site divergence matrix, and drives phased implementation of all corrections.
 
-**Guiding principle:** Figma is the single source of truth. Local snapshot files (`DESIGN_SYSTEM_REFERENCE.md`, etc.) are caches and may be stale. Always fetch live data from the Figma MCP before comparing.
+**Source selector:** Pass `source:mcp` to fetch live data from the Figma MCP, or `source:local` (default) to use cached design reference files in `docs/ia/figma/`.
+
+| Source   | Behavior                                                              | Use case                                  |
+| -------- | --------------------------------------------------------------------- | ----------------------------------------- |
+| `local`  | Reads `DESIGN_SYSTEM_REFERENCE.md` + `PAGES_REFERENCE.md` + `meta.json` from `docs/ia/figma/`. No MCP calls needed. | Quick audit, offline, no Figma access     |
+| `mcp`    | Fetches live Figma data via `mcp_framelink_fig_get_figma_data` + download frames. Slower but authoritative. | Full fidelity pass, before releases       |
 
 ---
 
-## Figma Reference
+## Figma Reference (MCP source only)
 
 File key: `huD41oTL0FAa7xsNEK8tAM`
 
@@ -42,6 +47,8 @@ File key: `huD41oTL0FAa7xsNEK8tAM`
 ## Procedure
 
 ### Phase 0 — Baseline Export
+
+**If source is `mcp`:**
 
 Download all page frames to `.raw/figma-design/<page-slug>/` for before/after comparison.
 
@@ -87,15 +94,23 @@ mcp_framelink_fig_download_figma_images(
 
 Repeat for all 6 pages (12 calls total, batched 2 per call = 6 batches).
 
+**If source is `local`:**
+
+Read the existing baselines from `.raw/figma-design/`. They may be stale — note the date from the file timestamps and warn the user.
+
 ---
 
 ### Phase 1 — Design Token Audit
 
-Fetch the Figma document styles using `mcp_framelink_fig_get_figma_data` on the root websiteSection node `1200:4302`. Compare against `src/app/globals.css`:
+Read the design token reference and compare against `src/app/globals.css`:
+
+**If source is `mcp`:** Fetch Figma document styles via `mcp_framelink_fig_get_figma_data` on root websiteSection node `1200:4302`.
+
+**If source is `local`:** Read `docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md` for token mappings.
 
 **Check:**
 
-1. All Figma color styles have matching CSS custom properties + `@theme inline` tokens.
+1. All design system color tokens have matching CSS custom properties + `@theme inline` tokens.
 2. No hardcoded hex/rgb values exist in TSX/CSS files — run:
    ```
    grep -rn "bg-\[#\|text-\[#\|border-\[#\|style={{ color" src/
@@ -103,7 +118,7 @@ Fetch the Figma document styles using `mcp_framelink_fig_get_figma_data` on the 
 3. Typography tokens: `--font-sans` (Barlow), `--font-sans-condensed` (Barlow Condensed).
 4. All Tailwind size utilities use canonical form — no `[Npx]` for h/w/p/m/gap/leading.
 
-Token mapping reference:
+Token mapping reference (from reference docs, whichever source):
 
 | Figma value              | Project class                       |
 | ------------------------ | ----------------------------------- |
@@ -124,18 +139,22 @@ Token mapping reference:
 
 ### Phase 2 — Shared Component Audit
 
-For each shared component in `src/components/ui/`, fetch the relevant Figma node and compare.
+For each shared component in `src/components/ui/`, read the code and compare against design intent.
+
+**If source is `mcp`:** Fetch each component's Figma node for the design reference.
+
+**If source is `local`:** Read `docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md` for component specs.
 
 Key components to audit:
 
-| Component file        | Figma component to fetch         | Key checks                                                           |
-| --------------------- | -------------------------------- | -------------------------------------------------------------------- |
-| `button.tsx`          | Button variants in design system | Size heights (sm=h-8/32px, md=h-10/40px, lg=h-12/48px), font, colors |
-| `product-card.tsx`    | ProductCard component            | Border tokens (no hardcoded colors), shadow, badge style             |
-| `header.tsx`          | Header / Nav component           | Logo spacing, nav link colors, mobile menu                           |
-| `footer.tsx`          | Footer component                 | Column layout, link colors, copyright                                |
-| `section-label.tsx`   | SectionLabel component           | Typography, color, spacing                                           |
-| `navigation-menu.tsx` | NavigationMenu                   | Dropdown styles, active state                                        |
+| Component file        | Key checks                                                           |
+| --------------------- | -------------------------------------------------------------------- |
+| `button.tsx`          | Size heights (sm=h-8/32px, md=h-10/40px, lg=h-12/48px), font, colors |
+| `product-card.tsx`    | Border tokens (no hardcoded colors), shadow, badge style             |
+| `header.tsx`          | Logo spacing, nav link colors, mobile menu                           |
+| `footer.tsx`          | Column layout, link colors, copyright                                |
+| `section-label.tsx`   | Typography, color, spacing                                           |
+| `navigation-menu.tsx` | Dropdown styles, active state                                        |
 
 Document each divergence in the matrix (Phase 4).
 
@@ -143,9 +162,11 @@ Document each divergence in the matrix (Phase 4).
 
 ### Phase 3 — Page-by-Page Visual Review
 
-For each page, fetch live Figma data AND compare with the current implementation side-by-side.
+For each page, compare implementation against the design reference.
 
-**Fetch tool:** `mcp_framelink_fig_get_figma_data(fileKey, nodeId)` on the desktop frame for detailed structure.
+**If source is `mcp`:** Fetch live Figma data via `mcp_framelink_fig_get_figma_data(fileKey, nodeId)` on each page's desktop frame.
+
+**If source is `local`:** Read `docs/ia/figma/PAGES_REFERENCE.md` for per-page section structure and layout specs.
 
 **Inspect code:** Read the page's `page.tsx` and all `_components/` files.
 
@@ -157,7 +178,7 @@ For each page, evaluate these dimensions:
 4. **Spacing** — section padding-top/bottom, gaps between elements
 5. **Responsive behavior** — does mobile frame differ? Are breakpoints handled?
 6. **Interactive components** — tabs, accordions, carousels: correct active/hover styles?
-7. **Images & assets** — are Figma images mapped to correct local paths?
+7. **Images & assets** — are images mapped to correct paths?
 8. **Watermarks / decorative elements** — background text, overlapping graphics
 
 Pages to audit in order:
@@ -191,7 +212,7 @@ Format:
 
 **Severity criteria:**
 
-- **HIGH**: Wrong brand colors, layout broken vs Figma, missing entire sections, accessibility failure
+- **HIGH**: Wrong brand colors, layout broken vs design, missing entire sections, accessibility failure
 - **MED**: Wrong spacing, incorrect typography weight/size, missing responsive behavior, wrong interactive states
 - **LOW**: Minor spacing deviations (≤4px), copy/label differences, non-critical icon variants
 
@@ -242,9 +263,9 @@ If any errors: fix before proceeding to Phase 7.
 
 ### Phase 7 — Re-export Baseline Images
 
-After corrections are implemented, re-download all page frames to update the baseline for future comparisons. Follow the same procedure as Phase 0 — overwrites the before-state images with the new after-state.
+**If source is `mcp`:** After corrections are implemented, re-download all page frames to update the baseline for future comparisons. Follow the same procedure as Phase 0 — overwrites the before-state images with the new after-state.
 
-This ensures the next audit run starts from the correct baseline.
+**If source is `local`:** Skip this phase — no MCP connection to re-export from.
 
 ---
 
@@ -257,10 +278,10 @@ Append a single entry to `docs/ia/context.json`:
   "ts": "<ISO8601 UTC>",
   "agent": "claude-sonnet-4-6",
   "type": "fix",
-  "summary": "Design fidelity audit — <N> corrections across <M> pages",
+  "summary": "Design fidelity audit — <N> corrections across <M> pages (source: <local|mcp>)",
   "files": ["<list of modified files>"],
-  "rationale": "Periodic design fidelity audit against Figma source of truth",
-  "outcome": "Visual implementation aligned with Figma design for all <M> pages"
+  "rationale": "Periodic design fidelity audit against <source>",
+  "outcome": "Visual implementation aligned with design for all <M> pages"
 }
 ```
 
@@ -291,14 +312,14 @@ docs/ia/context.json                ← Cross-agent changelog
 
 ## Typical Run Duration
 
-| Phase               | Estimated effort                             |
-| ------------------- | -------------------------------------------- |
-| 0 — Baseline export | 6 download batches (2 frames each)           |
-| 1 — Token audit     | Fast — grep + globals.css read               |
-| 2 — Component audit | 1 MCP call per component (~6 calls)          |
-| 3 — Page review     | 1 MCP call + code read per page (~6 pages)   |
-| 4 — Matrix          | Present to user, await confirmation          |
-| 5 — Corrections     | Varies — typically 2–4 implementation phases |
-| 6 — Validation      | 2 commands (tsc + lint)                      |
-| 7 — Re-export       | 6 download batches                           |
-| 8 — Changelog       | 1 read + 1 write                             |
+| Phase               | local source                   | mcp source                                   |
+| ------------------- | ------------------------------ | -------------------------------------------- |
+| 0 — Baseline export | Instant (read existing)        | 6 download batches (2 frames each)           |
+| 1 — Token audit     | Fast — read file + grep        | Fast — 1 MCP call + grep                     |
+| 2 — Component audit | Fast — read reference file     | 1 MCP call per component (~6 calls)          |
+| 3 — Page review     | Fast — read ref per page       | 1 MCP call + code read per page (~6 pages)   |
+| 4 — Matrix          | Present to user, await confirm | Present to user, await confirm               |
+| 5 — Corrections     | Varies — 2–4 phases            | Varies — 2–4 phases                          |
+| 6 — Validation      | 2 commands (tsc + lint)        | 2 commands (tsc + lint)                      |
+| 7 — Re-export       | **Skip** (no MCP)              | 6 download batches                           |
+| 8 — Changelog       | 1 read + 1 write               | 1 read + 1 write                             |

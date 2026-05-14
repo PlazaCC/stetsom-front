@@ -24,7 +24,7 @@ Desktop: `1200:4584` (1440px) | Mobile: `1200:4304` (375px)
 | 1 | `1200:4585` | `1200:4305` | Header | `bg-white` | Header | `ui/header.tsx` |
 | 2 | `1200:4592` | `1200:4310` | Hero Carousel | Imagem + overlay | HeroCarousel | `_components/hero-carousel.tsx` |
 | 3 | `1200:4600` | `1200:4318` | Novidades | `bg-white` | FeaturedProducts | `_components/featured-products.tsx` |
-| 4 | `1200:4630` | `1200:4445` | Qualidade Inovadora | `bg-brand-dark` | QualitySection | `_components/quality-section.tsx` |
+| 4 | `1200:4630` | `1200:4445` | História / Stats | `bg-brand-dark` | OurHistory | `_components/our-history.tsx` |
 | 5 | `1200:4654` | `1200:4469` | Nossas Bases / Stats | `bg-white` | OurFoundations | `_components/our-foundations.tsx` |
 | 6 | `1200:4702` | `1200:4517` | Social Medias | `bg-off-white` | SocialFeed | `_components/social-feed.tsx` |
 | 7 | `1200:4713` | `1200:4526` | Footer | `bg-footer` | Footer | `ui/footer.tsx` |
@@ -99,7 +99,7 @@ Desktop: `1200:6180` (1440px) | Mobile: `1200:5944` (375px)
 | 4 | `1200:6237` | `1200:5998` | Timeline / História | `bg-white` | CompanyTimeline | `_components/company-timeline.tsx` |
 | 5 | `1200:6271` | `1200:6033` | Galeria Qualidade | `bg-brand-dark` + dark radial | DarkGallery | `_components/dark-gallery.tsx` |
 | 6 | `1200:6322` | `1200:6061` | Social Medias | `bg-off-white` | SocialFeed | `_components/social-feed.tsx` |
-| 7 | `1200:6346` | `1200:6091` | Seção complementar | `bg-white` | OurHistory | `_components/our-history.tsx` |
+| 7 | `1200:6346` | `1200:6091` | Nossas Bases / Stats | `bg-white` | OurFoundations | `_components/our-foundations.tsx` |
 | 8 | `1200:6390` | `1200:6112` | Fábrica / Mapa | imagem + dark radial | OurFactory | `_components/our-factory.tsx` |
 | 9 | `1200:6401` | `1200:6122` | Footer | `bg-footer` | Footer | `ui/footer.tsx` |
 
