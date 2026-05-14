@@ -38,11 +38,23 @@ export default async function SobrePage() {
             <div>
               <SectionLabel label={aboutPayload.hero.label} />
               <h1 className='font-sans-condensed font-black text-5xl leading-none uppercase text-white mt-1 lg:text-display-2xl'>
-                {aboutPayload.hero.title.split('\n').map((line) => (
-                  <span key={line} className='block'>
-                    {line}
-                  </span>
-                ))}
+                {aboutPayload.hero.title.split('\n').map((line, lineIdx, allLines) => {
+                  if (lineIdx === allLines.length - 1) {
+                    const words = line.split(' ')
+                    const lastWord = words.pop()
+                    return (
+                      <span key={line} className='block'>
+                        {words.length > 0 ? `${words.join(' ')} ` : ''}
+                        <span className='text-brand'>{lastWord}</span>
+                      </span>
+                    )
+                  }
+                  return (
+                    <span key={line} className='block'>
+                      {line}
+                    </span>
+                  )
+                })}
               </h1>
               <p className='mt-4 max-w-125 text-base leading-relaxed text-text-subtle-dark'>
                 Desde 1989, a Stetsom define o padrão de qualidade em amplificação automotiva brasileira com tecnologia,
@@ -58,9 +70,9 @@ export default async function SobrePage() {
                 {ABOUT_HERO_STATS.map((stat) => (
                   <div key={stat.label} className='border border-white/20 px-4 py-4'>
                     <p className='font-sans-condensed text-display-sm font-black leading-none text-white'>
-                      {stat.value}
+                      {stat.value.replace('+', '')}<span className='text-brand'>+</span>
                     </p>
-                    <p className='mt-1 text-2xs font-sans uppercase tracking-wide text-text-subtle-dark'>
+                    <p className='mt-1 text-sm font-sans font-medium uppercase text-text-subtle-dark'>
                       {stat.label}
                     </p>
                   </div>

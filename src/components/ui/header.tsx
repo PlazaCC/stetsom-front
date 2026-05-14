@@ -19,7 +19,7 @@ import {
 
 export default function Header() {
   return (
-    <header className='sticky top-0 z-50 h-22 w-full border-b border-neutral-400 bg-white'>
+    <header className='sticky top-0 z-50 h-22 w-full border-b border-border bg-white'>
       <Container className='flex h-full items-center justify-between'>
         {/* Desktop header (unchanged layout) */}
         <div className='hidden md:flex items-center gap-logo-nav'>
@@ -32,9 +32,10 @@ export default function Header() {
               <NavigationMenuList>
                 <NavigationMenuItem className='hidden md:flex h-6 items-center'>
                   <NavigationMenuTrigger
+                    className='p-0! m-0! h-auto! rounded-none! bg-transparent! hover:bg-transparent! focus:bg-transparent! data-popup-open:bg-transparent! data-open:bg-transparent! data-popup-open:hover:bg-transparent! data-open:hover:bg-transparent! data-open:focus:bg-transparent!'
                     nativeButton={false}
                     render={
-                      <div className='p-0! h-6! flex items-center'>
+                      <div className='flex items-center'>
                         <MenuLink href='/produtos' label='Produtos' />
                       </div>
                     }

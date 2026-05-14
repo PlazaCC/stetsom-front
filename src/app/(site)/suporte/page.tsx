@@ -30,10 +30,10 @@ export default async function SuportePage() {
         <span className='absolute inset-0 font-sans-condensed font-black uppercase text-center flex items-center justify-center text-[80px] sm:text-[150px] lg:text-[263px] text-watermark-text opacity-[0.08] pointer-events-none select-none leading-none'>
           {supportPayload.hero.watermarkText}
         </span>
-        <div className='absolute left-0 top-0 w-3.5 h-84 bg-bar-accent' />
+        <div className='absolute left-0 top-0 w-3.5 h-full bg-bar-accent' />
         <Container className='z-10 relative'>
           <SectionLabel label={supportPayload.hero.label} />
-          <h1 className='font-sans-condensed font-black text-6xl lg:text-7xl leading-none uppercase text-white mt-1'>
+          <h1 className='font-sans-condensed font-black text-5xl lg:text-[90px] lg:leading-[74px] leading-none uppercase text-white mt-1'>
             {supportPayload.hero.title.split('\n').map((line) => (
               <span key={line} className='block'>
                 {line}
@@ -52,7 +52,7 @@ export default async function SuportePage() {
               const Icon = CARD_ICONS[card.id as keyof typeof CARD_ICONS] ?? FileText
 
               return (
-                <div key={card.id} className='relative bg-card border border-border p-8 flex min-h-52 flex-col'>
+                <div key={card.id} className='bg-card border border-border p-4 flex min-h-52 flex-col'>
                   <Icon size={20} className='mb-5 text-brand' />
                   <h3 className='font-sans-condensed font-black text-section-title uppercase text-brand-dark mb-3'>
                     {card.title}
@@ -61,7 +61,6 @@ export default async function SuportePage() {
                   <div className='mt-6 flex items-center justify-end'>
                     <ArrowUpRight size={18} className='text-brand' />
                   </div>
-                  <span className='absolute left-0 top-0 h-full w-px bg-brand' aria-hidden />
                 </div>
               )
             })}
@@ -186,7 +185,7 @@ export default async function SuportePage() {
                 </AccordionItem>
               ))}
             </Accordion>
-            <Button variant='outline' className='mt-8 border-brand text-brand hover:bg-brand hover:text-white'>
+            <Button variant='default' className='mt-8 bg-surface-elevated text-white hover:bg-brand-dark'>
               {supportPayload.faq.supportButtonLabel}
             </Button>
           </div>

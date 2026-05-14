@@ -39,8 +39,8 @@ function TabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel }: TabStripProp
             onClick={() => onSelect(tab)}
             aria-selected={activeTab === tab}
             className={cn(
-              'shrink-0 px-3 py-3 transition-colors text-sm leading-5 font-sans text-center border-b-2',
-              activeTab === tab ? 'border-brand text-brand font-semibold' : 'border-transparent text-zinc-500',
+              'shrink-0 px-3 py-3 transition-colors text-lg font-medium leading-5 font-sans text-center border-b-2',
+              activeTab === tab ? 'border-brand text-brand-dark' : 'border-transparent text-muted-foreground hover:text-brand-dark',
             )}>
             {tab}
           </button>
