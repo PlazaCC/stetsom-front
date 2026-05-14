@@ -165,8 +165,8 @@ export const ABOUT_BASES: AboutBase[] = [
 export const HOME_BASES: SiteHomePayload['bases'] = ABOUT_BASES
 
 export const ABOUT_HERO_SECTION: SiteAboutPayload['hero'] = {
-  label: 'Quem Somos',
-  title: 'SOBRE A\nSTETSOM',
+  label: 'Nossa historia',
+  title: 'SEMPRE\nPIONEIRA\nNA POTENCIA',
   image: FIGMA_SITE_ASSETS.aboutHero,
   imageAlt: 'Sobre a Stetsom',
 }

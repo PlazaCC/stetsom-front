@@ -27,7 +27,7 @@ export default function NossaHistoria({ section }: Readonly<NossaHistoriaProps>)
           <div className='w-full max-w-122'>
             <SectionLabel label={section.label} title={section.title} subtitle={section.subtitle} dark />
 
-            <Link href={section.ctaHref} className={cn(buttonVariants({ variant: 'brand', size: 'figma-sm' }), 'mt-8')}>
+            <Link href={section.ctaHref} className={cn(buttonVariants({ variant: 'brand', size: 'sm' }), 'mt-8')}>
               {section.ctaLabel}
               <ArrowRight className='size-4' strokeWidth={2.5} />
             </Link>

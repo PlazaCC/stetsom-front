@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import { useState } from 'react'
 
-type Tab = 'especificacoes' | 'confira'
+type Tab = 'visao_geral' | 'especificacoes' | 'confira'
 
 interface ProductDetailTabsProps {
   productName: string
@@ -49,12 +49,6 @@ function formatSpecKey(key: string) {
   return key.replace(/_/g, ' ')
 }
 
-const BLOCK_PLACEHOLDER_LABEL: Record<'VIDEO' | 'MODEL3D' | 'HTML', string> = {
-  VIDEO: 'Video',
-  MODEL3D: 'Modelo 3D',
-  HTML: 'HTML customizado',
-}
-
 function renderBlock(block: ProductBlock, productName: string, fallbackImage: string) {
   if (block.type === 'TEXT') {
     const data = toTextBlockData(block.data)
@@ -63,7 +57,11 @@ function renderBlock(block: ProductBlock, productName: string, fallbackImage: st
         <h2 className='font-sans-condensed text-section-title font-black uppercase text-brand-dark'>
           {data.title ?? 'Detalhes do produto'}
         </h2>
-        <p className={cn('mt-3 text-sm leading-relaxed text-text-subtle md:text-base', resolveTextAlignClass(data.align))}>
+        <p
+          className={cn(
+            'mt-3 text-sm leading-relaxed text-text-subtle md:text-base',
+            resolveTextAlignClass(data.align),
+          )}>
           {data.content ?? 'Descrição indisponível para este bloco.'}
         </p>
       </article>
@@ -79,7 +77,13 @@ function renderBlock(block: ProductBlock, productName: string, fallbackImage: st
           <div
             key={`${block.id}-${i}`}
             className='relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-brand-dark'>
-            <Image src={src} alt={`${productName} visual ${i + 1}`} fill sizes='(max-width: 1024px) 100vw, 1100px' className='object-cover' />
+            <Image
+              src={src}
+              alt={`${productName} visual ${i + 1}`}
+              fill
+              sizes='(max-width: 1024px) 100vw, 1100px'
+              className='object-cover'
+            />
           </div>
         ))}
         {data.caption && <p className='text-sm text-text-subtle'>{data.caption}</p>}
@@ -87,14 +91,72 @@ function renderBlock(block: ProductBlock, productName: string, fallbackImage: st
     )
   }
 
-  return (
-    <article key={block.id} className='rounded-xl border border-dashed border-zinc-300 bg-card p-5 md:p-6'>
-      <p className='font-sans-condensed text-sm font-bold uppercase text-brand-dark'>
-        {BLOCK_PLACEHOLDER_LABEL[block.type as 'VIDEO' | 'MODEL3D' | 'HTML']}
-      </p>
-      <p className='mt-1 text-sm leading-relaxed text-text-subtle'>Conteúdo em breve para este bloco.</p>
-    </article>
-  )
+  if (block.type === 'VIDEO') {
+    const title = typeof block.data.title === 'string' ? block.data.title : `${productName} em destaque`
+    const description =
+      typeof block.data.description === 'string'
+        ? block.data.description
+        : 'Veja a demonstração completa com foco em potência, estabilidade e performance real em uso automotivo.'
+    const videoUrl = typeof block.data.video_url === 'string' ? block.data.video_url : undefined
+
+    return (
+      <article key={block.id} className='rounded-xl border border-zinc-200 bg-card p-6 md:p-8'>
+        <p className='font-sans-condensed text-xs font-bold uppercase tracking-wider text-brand'>Video</p>
+        <h3 className='mt-2 font-sans-condensed text-section-title font-black uppercase text-brand-dark'>{title}</h3>
+        <p className='mt-3 text-sm leading-relaxed text-text-subtle'>{description}</p>
+        {videoUrl ? (
+          <a
+            href={videoUrl}
+            target='_blank'
+            rel='noreferrer'
+            className='mt-5 inline-flex rounded-[4px] bg-brand px-4 py-2 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-zinc-50'>
+            Assistir demonstração
+          </a>
+        ) : null}
+      </article>
+    )
+  }
+
+  if (block.type === 'HTML') {
+    const html = typeof block.data.html === 'string' ? block.data.html : '<p>Conteúdo técnico indisponível.</p>'
+
+    return (
+      <article key={block.id} className='rounded-xl border border-zinc-200 bg-card p-6 md:p-8'>
+        <p className='font-sans-condensed text-xs font-bold uppercase tracking-wider text-brand'>Detalhes técnicos</p>
+        <div
+          className='mt-3 text-sm leading-relaxed text-text-subtle [&_strong]:text-brand-dark [&_strong]:font-semibold'
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      </article>
+    )
+  }
+
+  if (block.type === 'MODEL3D') {
+    const modelUrl = typeof block.data.file_url === 'string' ? block.data.file_url : null
+
+    return (
+      <article key={block.id} className='rounded-xl border border-zinc-200 bg-card p-6 md:p-8'>
+        <p className='font-sans-condensed text-xs font-bold uppercase tracking-wider text-brand'>Modelo 3D</p>
+        <h3 className='mt-2 font-sans-condensed text-section-title font-black uppercase text-brand-dark'>
+          Visualização interativa
+        </h3>
+        <p className='mt-3 text-sm leading-relaxed text-text-subtle'>
+          Explore o produto em perspectiva completa para conferir conectores, acabamento e dimensões reais.
+        </p>
+        {modelUrl ? (
+          <a
+            href={modelUrl}
+            target='_blank'
+            rel='noreferrer'
+            className='mt-5 inline-flex rounded-[4px] border border-zinc-300 bg-white px-4 py-2 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-brand-dark'>
+            Abrir modelo
+          </a>
+        ) : null}
+      </article>
+    )
+  }
+
+  return null
 }
 
 const PRODUCT_HERO_GRADIENT = {
@@ -108,16 +170,44 @@ export default function ProductDetailTabs({
   blocks,
   relatedProducts,
 }: ProductDetailTabsProps) {
-  const [activeTab, setActiveTab] = useState<Tab>('especificacoes')
+  const [activeTab, setActiveTab] = useState<Tab>('visao_geral')
 
   const specEntries = Object.entries(specifications)
+  const specificationsTable =
+    specEntries.length > 0 ? (
+      <section className='py-9'>
+        <div className='w-full'>
+          <div className='bg-white border-b border-zinc-200 px-5 lg:px-42.5 py-3'>
+            <p className='font-sans-condensed font-black text-xs uppercase tracking-widest text-muted-foreground'>
+              Especificações técnicas
+            </p>
+          </div>
+          {specEntries.map(([key, value], i) => (
+            <div
+              key={key}
+              className={cn('flex items-center px-5 lg:px-42.5 py-4.5 gap-8', i % 2 === 0 ? 'bg-muted' : 'bg-white')}>
+              <span className='font-sans text-sm font-medium uppercase text-brand-dark w-1/2 shrink-0 capitalize'>
+                {formatSpecKey(key)}
+              </span>
+              <span className='font-sans text-sm text-text-subtle'>{String(value)}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+    ) : null
 
   return (
     <>
       {/* TAB BAR */}
       <div className='w-full border-t border-zinc-200 bg-white'>
-        <div className='flex justify-center gap-5 px-42.5 py-4'>
-          {([['especificacoes', 'Especificações'], ['confira', 'Confira também']] as const).map(([id, label]) => (
+        <div className='flex justify-center gap-5 px-5 lg:px-42.5 py-4'>
+          {(
+            [
+              ['visao_geral', 'Visão geral'],
+              ['especificacoes', 'Especificações'],
+              ['confira', 'Confira também'],
+            ] as const
+          ).map(([id, label]) => (
             <button
               key={id}
               onClick={() => setActiveTab(id)}
@@ -133,7 +223,7 @@ export default function ProductDetailTabs({
         </div>
       </div>
 
-      {activeTab === 'especificacoes' && (
+      {activeTab === 'visao_geral' && (
         <>
           {/* RED GRADIENT HERO */}
           <section className='relative isolate overflow-hidden bg-black'>
@@ -151,35 +241,18 @@ export default function ProductDetailTabs({
                     className='object-contain drop-shadow-[0_28px_38px_rgba(0,0,0,0.35)]'
                   />
                 </div>
+
+                <div className='mt-5 text-center'>
+                  <p className='font-sans-condensed text-4xl font-black uppercase leading-none text-white sm:text-5xl lg:text-display-lg'>
+                    ALTA POTENCIA.
+                    <span className='mt-1 block text-brand'>ALTA PERFORMANCE.</span>
+                  </p>
+                </div>
               </div>
             </Container>
           </section>
 
-          {/* SPECIFICATIONS TABLE */}
-          {specEntries.length > 0 && (
-            <section className='py-9'>
-              <div className='w-full'>
-                <div className='bg-white border-b border-zinc-200 px-8 lg:px-42.5 py-3'>
-                  <p className='font-sans-condensed font-black text-xs uppercase tracking-widest text-muted-foreground'>
-                    Especificações técnicas
-                  </p>
-                </div>
-                {specEntries.map(([key, value], i) => (
-                  <div
-                    key={key}
-                    className={cn(
-                      'flex items-center px-8 lg:px-42.5 py-4.5 gap-8',
-                      i % 2 === 0 ? 'bg-muted' : 'bg-white',
-                    )}>
-                    <span className='font-sans text-sm font-medium uppercase text-brand-dark w-1/2 shrink-0 capitalize'>
-                      {formatSpecKey(key)}
-                    </span>
-                    <span className='font-sans text-sm text-text-subtle'>{String(value)}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+          {specificationsTable}
 
           {/* CONTENT BLOCKS */}
           {blocks.length > 0 && (
@@ -191,6 +264,8 @@ export default function ProductDetailTabs({
           )}
         </>
       )}
+
+      {activeTab === 'especificacoes' && specificationsTable}
 
       {activeTab === 'confira' && (
         <section className='bg-off-white py-10 md:py-12 lg:py-16'>

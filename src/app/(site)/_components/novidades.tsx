@@ -30,7 +30,7 @@ function TabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel }: TabStripProp
     <>
       <div
         role='tablist'
-        className='inline-flex items-center gap-3 overflow-x-auto pb-1 pr-1 sm:gap-4 lg:pr-0 bg-zinc-100 rounded-[8px] px-2 py-1'>
+        className='inline-flex items-center gap-0 overflow-x-auto pb-0 pr-0 sm:gap-0 lg:pr-0 border-b border-zinc-200'>
         {tabs.map((tab) => (
           <button
             type='button'
@@ -39,8 +39,8 @@ function TabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel }: TabStripProp
             onClick={() => onSelect(tab)}
             aria-selected={activeTab === tab}
             className={cn(
-              'shrink-0 px-3 py-1.5 transition-colors text-sm leading-5 font-sans text-center rounded-[6px]',
-              activeTab === tab ? 'bg-white text-foreground shadow-sm' : 'bg-transparent text-zinc-500',
+              'shrink-0 px-3 py-3 transition-colors text-sm leading-5 font-sans text-center border-b-2',
+              activeTab === tab ? 'border-brand text-brand font-semibold' : 'border-transparent text-zinc-500',
             )}>
             {tab}
           </button>

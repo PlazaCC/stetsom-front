@@ -1,6 +1,6 @@
 export const NAV_LINKS = [
   { label: 'Produtos', href: '/produtos' },
-  { label: 'Sobre nos', href: '/sobre' },
+  { label: 'Sobre nós', href: '/sobre' },
   { label: 'Suporte', href: '/suporte' },
 ] as const
 
@@ -41,9 +41,9 @@ export const FOOTER_COLUMNS = [
   {
     title: 'Empresa',
     links: [
-      { label: 'Sobre nos', href: '/sobre' },
-      { label: 'Nossa historia', href: '/sobre' },
-      { label: 'Fabrica', href: '/sobre' },
+      { label: 'Sobre nós', href: '/sobre' },
+      { label: 'Nossa história', href: '/sobre' },
+      { label: 'Fábrica', href: '/sobre' },
       { label: 'Contato', href: '/suporte' },
     ],
   },
@@ -55,7 +55,7 @@ export const FOOTER_COLUMNS = [
       { label: 'Processadores', href: '/produtos?category=processadores' },
       { label: 'Fontes', href: '/produtos?category=fontes' },
       { label: 'Controladores', href: '/produtos?category=controladores' },
-      { label: 'Acessorios', href: '/produtos?category=acessorios' },
+      { label: 'Acessórios', href: '/produtos?category=acessorios' },
     ],
   },
   {

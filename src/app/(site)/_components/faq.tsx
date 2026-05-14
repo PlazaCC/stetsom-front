@@ -19,7 +19,7 @@ export default function Faq({ items, section }: Readonly<FaqProps>) {
           <div>
             <SectionLabel label={section.label} title={section.title} subtitle={section.subtitle} />
             <Link href={section.ctaHref}>
-              <Button variant='brand-dark' size='figma-sm' className='mt-7 flex items-center gap-2'>
+              <Button variant='brand-dark' size='sm' className='mt-7 flex items-center gap-2'>
                 {section.ctaLabel}
                 <ArrowRight className='size-4' strokeWidth={2.5} />
               </Button>

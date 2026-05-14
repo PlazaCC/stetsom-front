@@ -29,9 +29,9 @@ export const SUPPORT_FAQ_ITEMS: FAQItem[] = [
 
 export const SUPPORT_PAYLOAD: SupportPayload = {
   hero: {
-    label: 'Estamos aqui',
-    title: 'SOS SUPORTE',
-    description: 'Encontre respostas técnicas, consulte sua garantia e localize distribuidores autorizados.',
+    label: 'Central de ajuda',
+    title: 'COMO PODEMOS\nTE AJUDAR',
+    description: 'Nossa equipe técnica está pronta para ajudar você a tirar o máximo dos seus produtos Stetsom.',
     image: '/figma-assets/raw/fill_CGM3WO_6a0a1876.png',
     watermarkText: 'SOS',
   },

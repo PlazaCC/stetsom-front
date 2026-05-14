@@ -11,7 +11,7 @@ export function Container(props: ContainerProps) {
     render,
     props: mergeProps<'div'>(
       {
-        className: cn('relative mx-auto w-full max-w-360 px-8 lg:px-42.5'),
+        className: cn('relative mx-auto w-full max-w-360 px-5 lg:px-42.5'),
       },
       rest,
     ),

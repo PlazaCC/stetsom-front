@@ -4,7 +4,7 @@ import { Container } from '@/components/ui/container'
 import ProductCard from '@/components/ui/product-card'
 import { useCatalogCategories, useCatalogPage, useCatalogProducts } from '@/hooks/use-catalog'
 import { createCategoryLookup, toProductCardItem } from '@/lib/api/mappers'
-import { Search, SlidersHorizontal } from 'lucide-react'
+import { ChevronDown, Search, SlidersHorizontal } from 'lucide-react'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
 
@@ -44,6 +44,7 @@ export default function ProdutosPage() {
     () => (productsQuery.data?.items ?? []).map((p) => toProductCardItem(p, categoryLookup)),
     [productsQuery.data?.items, categoryLookup],
   )
+  const typeFilterOptions = useMemo(() => categoryOptions.filter((category) => category !== 'Todos'), [categoryOptions])
 
   const isLoading = categoriesQuery.isLoading || productsQuery.isLoading
   const totalProducts = productsQuery.data?.total ?? 0
@@ -79,11 +80,10 @@ export default function ProdutosPage() {
             ))}
           </h1>
           <span className='text-xs md:text-base text-text-subtle-dark mt-2 block'>
-            <strong className='font-sans-condensed font-black text-xl text-white'>{totalProducts}</strong>{' '}
-            produtos
+            <strong className='font-sans-condensed font-black text-xl text-white'>{totalProducts}</strong> produtos
           </span>
         </Container>
-        <div className='absolute right-0 bottom-0 font-sans-condensed font-black text-[72px] md:text-[120px] lg:text-[150px] text-white leading-none pointer-events-none select-none opacity-[0.08]'>
+        <div className='absolute right-0 bottom-0 font-sans-condensed font-black text-[72px] sm:text-[100px] lg:text-[150px] text-white leading-none pointer-events-none select-none opacity-[0.08]'>
           {hero.heroWatermark}
         </div>
         <div className='absolute left-0 top-0 w-3.5 h-full bg-bar-accent' />
@@ -110,13 +110,57 @@ export default function ProdutosPage() {
       </div>
 
       {/* CONTENT: sidebar + grid */}
-      <section className='bg-white pt-6 pb-12'>
+      <section className='bg-off-white pt-6 pb-12'>
         <Container>
           <div className='flex gap-9'>
             {/* SIDEBAR — visible lg+ */}
             <aside className='hidden lg:flex flex-col gap-5 w-90 shrink-0'>
+              <div className='flex items-center justify-between'>
+                <h2 className='font-sans-condensed font-black text-[34px] leading-none uppercase text-brand-dark'>
+                  Filtros
+                </h2>
+                <button
+                  type='button'
+                  onClick={() => {
+                    setSearch('')
+                    setActiveCategory('Todos')
+                  }}
+                  className='font-sans text-sm text-brand underline underline-offset-2'>
+                  Limpar tudo
+                </button>
+              </div>
+
+              <div>
+                <p className='font-sans-condensed font-medium text-[34px] leading-none uppercase text-text-subtle-dark'>
+                  Ordenar por
+                </p>
+                <button
+                  type='button'
+                  className='mt-3 flex h-11 w-full items-center justify-between rounded border border-zinc-300 bg-white px-3.5 text-base text-text-subtle'>
+                  <span>Mais relevantes</span>
+                  <ChevronDown size={14} className='text-text-subtle-dark' />
+                </button>
+              </div>
+
+              <div className='rounded border border-zinc-200 bg-white p-4'>
+                <div className='flex items-center justify-between border-b border-zinc-200 pb-3'>
+                  <span className='font-sans-condensed text-[34px] font-medium uppercase text-brand-dark'>Opções</span>
+                  <ChevronDown size={16} className='text-text-subtle-dark' />
+                </div>
+                <div className='mt-3 space-y-3'>
+                  <label className='flex items-center gap-3 text-base text-text-subtle'>
+                    <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' defaultChecked />
+                    Exibir fora de linha
+                  </label>
+                  <label className='flex items-center gap-3 text-base text-text-subtle'>
+                    <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' />
+                    Produtos de exportação
+                  </label>
+                </div>
+              </div>
+
               {/* Search */}
-              <div className='border border-zinc-300 flex items-center h-11 px-3.5 gap-2.5'>
+              <div className='border border-zinc-300 bg-white flex items-center h-11 px-3.5 gap-2.5'>
                 <Search size={16} className='text-zinc-500 shrink-0' />
                 <input
                   value={search}
@@ -127,23 +171,58 @@ export default function ProdutosPage() {
               </div>
 
               {/* Category filter */}
-              <div>
-                <p className='font-sans-condensed font-black text-xs uppercase text-brand-dark mb-3 tracking-wide'>
-                  Categorias
-                </p>
-                <div className='flex flex-col gap-1'>
-                  {categoryOptions.map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => setActiveCategory(cat)}
-                      className={`text-left font-sans text-[15px] py-1.5 px-3 transition-colors border-l-2 ${
-                        activeCategory === cat
-                          ? 'border-brand text-brand-dark font-medium bg-off-white'
-                          : 'border-transparent text-text-subtle hover:text-brand-dark hover:border-zinc-300'
-                      }`}>
-                      {cat}
-                    </button>
+              <div className='rounded border border-zinc-200 bg-white p-4'>
+                <div className='flex items-center justify-between border-b border-zinc-200 pb-3'>
+                  <span className='font-sans-condensed text-[34px] font-medium uppercase text-brand-dark'>
+                    Tipo de produto
+                  </span>
+                  <ChevronDown size={16} className='text-text-subtle-dark' />
+                </div>
+                <div className='mt-3 flex flex-col gap-2'>
+                  {typeFilterOptions.map((cat) => (
+                    <label key={cat} className='flex items-center justify-between text-base text-text-subtle'>
+                      <span className='flex items-center gap-3'>
+                        <input
+                          type='checkbox'
+                          checked={activeCategory === cat}
+                          onChange={() => setActiveCategory(cat)}
+                          className='size-4 rounded border-zinc-300 accent-brand'
+                        />
+                        {cat}
+                      </span>
+                      <span className='text-text-subtle-dark'>48</span>
+                    </label>
                   ))}
+                </div>
+              </div>
+
+              <div className='rounded border border-zinc-200 bg-white p-4'>
+                <div className='flex items-center justify-between border-b border-zinc-200 pb-3'>
+                  <span className='font-sans-condensed text-[34px] font-medium uppercase text-brand-dark'>Linhas</span>
+                  <ChevronDown size={16} className='text-text-subtle-dark' />
+                </div>
+                <div className='mt-3 space-y-2 text-base text-text-subtle'>
+                  <label className='flex items-center justify-between'>
+                    <span className='flex items-center gap-3'>
+                      <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' defaultChecked />
+                      Vulcan
+                    </span>
+                    <span className='text-text-subtle-dark'>48</span>
+                  </label>
+                  <label className='flex items-center justify-between'>
+                    <span className='flex items-center gap-3'>
+                      <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' />
+                      Combat Line
+                    </span>
+                    <span className='text-text-subtle-dark'>48</span>
+                  </label>
+                  <label className='flex items-center justify-between'>
+                    <span className='flex items-center gap-3'>
+                      <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' />
+                      Digital Bass
+                    </span>
+                    <span className='text-text-subtle-dark'>48</span>
+                  </label>
                 </div>
               </div>
             </aside>
@@ -196,7 +275,7 @@ export default function ProdutosPage() {
               {isLoading ? (
                 <div className='text-center py-16 text-zinc-400 text-base'>Carregando produtos...</div>
               ) : productCards.length > 0 ? (
-                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4'>
+                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4'>
                   {productCards.map((product) => (
                     <ProductCard
                       key={product.id}

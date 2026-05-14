@@ -4,12 +4,19 @@ import { getSiteAboutPayload } from '@/lib/api/server'
 import Image from 'next/image'
 import CTATrabalheConosco from '../_components/cta-trabalhe-conosco'
 import GaleriaDark from '../_components/galeria-dark'
-import NossasBases from '../_components/nossas-bases'
 import NossaFabrica from '../_components/nossa-fabrica'
+import NossasBases from '../_components/nossas-bases'
 import QualidadeInovadora from '../_components/qualidade-inovadora'
 import RedBanner from '../_components/red-banner'
 import MidiasSociais from '../_components/social-medias'
 import TimelineRefactored from '../_components/timeline-refactored'
+
+const ABOUT_HERO_STATS = [
+  { value: '35+', label: 'ANOS DE MERCADO' },
+  { value: '200+', label: 'PRODUTOS' },
+  { value: '60+', label: 'PAÍSES DE EXPORTAÇÃO' },
+  { value: '1M+', label: 'UNIDADES VENDIDAS' },
+] as const
 
 export default async function SobrePage() {
   const aboutPayload = await getSiteAboutPayload()
@@ -27,14 +34,40 @@ export default async function SobrePage() {
         />
         <div className='absolute inset-0 bg-gradient-dark-overlay' />
         <Container className='z-10'>
-          <SectionLabel label={aboutPayload.hero.label} />
-          <h1 className='font-sans-condensed font-black text-7xl leading-none uppercase text-white mt-1'>
-            {aboutPayload.hero.title.split('\n').map((line) => (
-              <span key={line} className='block'>
-                {line}
+          <div className='grid gap-10 lg:grid-cols-[1fr_428px] lg:items-end'>
+            <div>
+              <SectionLabel label={aboutPayload.hero.label} />
+              <h1 className='font-sans-condensed font-black text-5xl leading-none uppercase text-white mt-1 lg:text-display-2xl'>
+                {aboutPayload.hero.title.split('\n').map((line) => (
+                  <span key={line} className='block'>
+                    {line}
+                  </span>
+                ))}
+              </h1>
+              <p className='mt-4 max-w-125 text-base leading-relaxed text-text-subtle-dark'>
+                Desde 1989, a Stetsom define o padrão de qualidade em amplificação automotiva brasileira com tecnologia,
+                inovação e paixão pelo som.
+              </p>
+            </div>
+
+            <div className='relative border-t border-white/20 pt-5'>
+              <span className='pointer-events-none absolute right-0 top-[-96px] font-sans-condensed text-[112px] font-black leading-none text-white/10'>
+                1989
               </span>
-            ))}
-          </h1>
+              <div className='grid grid-cols-2 border border-white/20'>
+                {ABOUT_HERO_STATS.map((stat) => (
+                  <div key={stat.label} className='border border-white/20 px-4 py-4'>
+                    <p className='font-sans-condensed text-display-sm font-black leading-none text-white'>
+                      {stat.value}
+                    </p>
+                    <p className='mt-1 text-2xs font-sans uppercase tracking-wide text-text-subtle-dark'>
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </Container>
       </section>
 

@@ -2,8 +2,19 @@ import { type BreadcrumbItem, Breadcrumb } from '@/components/ui/breadcrumb'
 import { Container } from '@/components/ui/container'
 import { getCatalogProductDetail } from '@/lib/api/server'
 import Image from 'next/image'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ProductDetailTabs from './_components/product-detail-tabs'
+
+function toImageList(data: Record<string, unknown>): string[] {
+  const images = data.images
+
+  if (!Array.isArray(images)) {
+    return []
+  }
+
+  return images.filter((item): item is string => typeof item === 'string' && item.length > 0)
+}
 
 export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[slug]'>) {
   const { slug } = await props.params
@@ -14,6 +25,16 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
   }
 
   const { product, category, blocks, files, relatedProducts } = payload
+  const galleryImagesFromBlocks = blocks.flatMap((block) => (block.type === 'IMAGE' ? toImageList(block.data) : []))
+  const galleryImages = (galleryImagesFromBlocks.length ? galleryImagesFromBlocks : [product.thumbnail_url]).slice(0, 4)
+  const manualFile = files.find((file) => file.type === 'MANUAL')
+  const powerMetric =
+    String(product.specifications.power_rms ?? '')
+      .replace(' RMS', '')
+      .trim() || '800W'
+  const channelsMatch = /^(\d+)x/i.exec(String(product.specifications.power_rms ?? ''))
+  const channelsMetric = channelsMatch ? `${channelsMatch[1]} CH` : '4 CH'
+  const impedanceMetric = String(product.specifications.impedance ?? '').trim() || '2-4 Ohms'
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Início', href: '/' },
@@ -42,6 +63,24 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
                   className='object-contain p-6'
                 />
               </div>
+
+              <div className='flex items-center gap-3 overflow-x-auto pb-1'>
+                {galleryImages.map((image, index) => (
+                  <button
+                    key={`${image}-${index}`}
+                    type='button'
+                    className='relative h-16 w-18 shrink-0 overflow-hidden rounded border border-zinc-300 bg-white'>
+                    <Image
+                      src={image}
+                      alt={`${product.name} miniatura ${index + 1}`}
+                      fill
+                      sizes='72px'
+                      className='object-cover'
+                    />
+                  </button>
+                ))}
+              </div>
+
               {/* Files count badge */}
               {files.length > 0 && (
                 <p className='text-2xs font-sans uppercase text-muted-foreground tracking-wide'>
@@ -68,6 +107,40 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
                   </li>
                 ))}
               </ul>
+
+              <div className='mt-6 grid grid-cols-3 gap-4 border-y border-zinc-200 py-4'>
+                <div>
+                  <p className='font-sans-condensed text-3xl font-black uppercase leading-none text-brand'>
+                    {powerMetric}
+                  </p>
+                  <p className='text-2xs font-sans uppercase tracking-wide text-text-subtle'>Potência RMS</p>
+                </div>
+                <div>
+                  <p className='font-sans-condensed text-3xl font-black uppercase leading-none text-brand'>
+                    {channelsMetric}
+                  </p>
+                  <p className='text-2xs font-sans uppercase tracking-wide text-text-subtle'>Canais</p>
+                </div>
+                <div>
+                  <p className='font-sans-condensed text-3xl font-black uppercase leading-none text-brand'>
+                    {impedanceMetric}
+                  </p>
+                  <p className='text-2xs font-sans uppercase tracking-wide text-text-subtle'>Impedância</p>
+                </div>
+              </div>
+
+              <div className='mt-5 flex flex-wrap gap-3'>
+                <Link
+                  href={manualFile?.file_url ?? '#'}
+                  className='inline-flex h-10 items-center rounded-[4px] bg-brand px-5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-zinc-50 transition-colors hover:bg-brand/90'>
+                  Acessar manual do produto
+                </Link>
+                <button
+                  type='button'
+                  className='inline-flex h-10 items-center rounded-[4px] border border-zinc-300 bg-white px-5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-brand-dark'>
+                  Download de fotos
+                </button>
+              </div>
             </div>
           </div>
         </Container>
