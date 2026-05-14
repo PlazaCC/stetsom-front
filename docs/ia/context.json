@@ -625,6 +625,53 @@
       ],
       "rationale": "User authorized start of Item 2 implementation: execute all design corrections identified in audit, normalize button component sizing, update product card styling with semantic tokens, apply dark mode to Qualidade Inovadora section, fix tab styling in Novidades, normalize watermark sizing for mobile-first responsive approach, and export visual baselines from Figma for final validation.",
       "outcome": "Phase 1 (Foundation): Button sizes normalized sm/md/lg (h-8/h-10/h-12), ProductCard border/shadow tokens fixed, figma-sm variant removed and migrated to sm. Phase 2 (Home): Qualidade Inovadora changed to dark bg with dark SectionLabel prop, Novidades tabs use border-b instead of bg-zinc-100. Phase 5 (Watermarks): Produtos and Suporte watermarks use mobile-first sizing (text-[80px] sm:text-[150px] lg:text-[263px]). Phase 8 (Baselines): 6 Figma frames exported to public/figma-design/ as PNG reference. All pages render successfully; tsc and lint pass. Dev server confirmed operational on localhost:3000."
+    },
+    {
+      "ts": "2025-07-15T00:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Add design-fidelity-audit skill and reorganize Figma baseline images into per-page subfolders",
+      "files": [
+        ".agents/skills/design-fidelity-audit/SKILL.md",
+        ".claude/skills/design-fidelity-audit/SKILL.md",
+        ".raw/figma-design/home/desktop.png",
+        ".raw/figma-design/home/mobile.png",
+        ".raw/figma-design/produtos/desktop.png",
+        ".raw/figma-design/produtos/mobile.png",
+        ".raw/figma-design/produto-selecionado/desktop.png",
+        ".raw/figma-design/produto-selecionado/mobile.png",
+        ".raw/figma-design/sobre/desktop.png",
+        ".raw/figma-design/sobre/mobile.png",
+        ".raw/figma-design/suporte/desktop.png",
+        ".raw/figma-design/suporte/mobile.png",
+        ".raw/figma-design/404/desktop.png",
+        ".raw/figma-design/404/mobile.png"
+      ],
+      "rationale": "Codify full-site Figma audit methodology as reusable dual-install skill; organize baseline PNGs by page for easier per-page design comparison",
+      "outcome": "Skill available in both VS Code Copilot and Claude Code CLI runtimes; all 6 pages have desktop+mobile Figma baseline images in per-page subfolders under .raw/figma-design/"
+    },
+    {
+      "ts": "2026-05-14T14:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "style",
+      "summary": "Design fidelity audit — fix all token divergences across 12 files",
+      "files": [
+        "src/components/ui/header.tsx",
+        "src/components/ui/product-card.tsx",
+        "src/app/(site)/_components/qualidade-inovadora.tsx",
+        "src/app/(site)/_components/nossas-bases.tsx",
+        "src/app/(site)/_components/social-medias.tsx",
+        "src/app/(site)/_components/red-banner.tsx",
+        "src/app/(site)/_components/nossa-fabrica.tsx",
+        "src/app/(site)/_components/timeline-refactored.tsx",
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Full design fidelity audit: font-weight divergences (font-bold/font-medium → font-black in Barlow Condensed uppercase contexts), color token divergences (bg-white → bg-card, bg-zinc-200 → bg-muted, text-zinc-400 → text-icon-muted, hover:bg-zinc-800 → hover:bg-surface-elevated), semantic border tokens applied where applicable, and canonical Tailwind sizing for map height.",
+      "outcome": "All Barlow Condensed uppercase headings now use font-black; background surfaces use semantic tokens; hover/placeholder colors use design system tokens; product and support pages now follow Stetsom Tailwind token conventions."
     }
   ]
 }

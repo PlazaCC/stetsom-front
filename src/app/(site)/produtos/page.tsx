@@ -68,7 +68,7 @@ export default function ProdutosPage() {
         <Container className='relative z-10 pt-8 md:pt-16 lg:pt-25.75'>
           <div className='flex items-center gap-2 mb-1'>
             <div className='w-6 h-px bg-brand shrink-0' />
-            <span className='font-sans-condensed font-medium text-xs md:text-base uppercase text-brand'>
+            <span className='font-sans-condensed font-black text-xs md:text-base uppercase text-brand'>
               {hero.heroLabel}
             </span>
           </div>
@@ -90,7 +90,7 @@ export default function ProdutosPage() {
       </section>
 
       {/* CATEGORY TABS */}
-      <div className='bg-white border-b border-zinc-200'>
+      <div className='bg-card border-b border-border'>
         <Container>
           <div className='flex items-center gap-1 py-1 overflow-x-auto'>
             {categoryOptions.map((cat) => (
@@ -131,20 +131,20 @@ export default function ProdutosPage() {
               </div>
 
               <div>
-                <p className='font-sans-condensed font-medium text-[34px] leading-none uppercase text-text-subtle-dark'>
+                <p className='font-sans-condensed font-black text-[34px] leading-none uppercase text-text-subtle-dark'>
                   Ordenar por
                 </p>
                 <button
                   type='button'
-                  className='mt-3 flex h-11 w-full items-center justify-between rounded border border-zinc-300 bg-white px-3.5 text-base text-text-subtle'>
+                  className='mt-3 flex h-11 w-full items-center justify-between rounded border border-border bg-card px-3.5 text-base text-text-subtle'>
                   <span>Mais relevantes</span>
                   <ChevronDown size={14} className='text-text-subtle-dark' />
                 </button>
               </div>
 
-              <div className='rounded border border-zinc-200 bg-white p-4'>
-                <div className='flex items-center justify-between border-b border-zinc-200 pb-3'>
-                  <span className='font-sans-condensed text-[34px] font-medium uppercase text-brand-dark'>Opções</span>
+              <div className='rounded border border-border bg-card p-4'>
+                <div className='flex items-center justify-between border-b border-border pb-3'>
+                  <span className='font-sans-condensed text-[34px] font-black uppercase text-brand-dark'>Opções</span>
                   <ChevronDown size={16} className='text-text-subtle-dark' />
                 </div>
                 <div className='mt-3 space-y-3'>
@@ -160,7 +160,7 @@ export default function ProdutosPage() {
               </div>
 
               {/* Search */}
-              <div className='border border-zinc-300 bg-white flex items-center h-11 px-3.5 gap-2.5'>
+              <div className='border border-border bg-card flex items-center h-11 px-3.5 gap-2.5'>
                 <Search size={16} className='text-zinc-500 shrink-0' />
                 <input
                   value={search}
@@ -171,9 +171,9 @@ export default function ProdutosPage() {
               </div>
 
               {/* Category filter */}
-              <div className='rounded border border-zinc-200 bg-white p-4'>
-                <div className='flex items-center justify-between border-b border-zinc-200 pb-3'>
-                  <span className='font-sans-condensed text-[34px] font-medium uppercase text-brand-dark'>
+              <div className='rounded border border-border bg-card p-4'>
+                <div className='flex items-center justify-between border-b border-border pb-3'>
+                  <span className='font-sans-condensed text-[34px] font-black uppercase text-brand-dark'>
                     Tipo de produto
                   </span>
                   <ChevronDown size={16} className='text-text-subtle-dark' />
@@ -196,9 +196,9 @@ export default function ProdutosPage() {
                 </div>
               </div>
 
-              <div className='rounded border border-zinc-200 bg-white p-4'>
-                <div className='flex items-center justify-between border-b border-zinc-200 pb-3'>
-                  <span className='font-sans-condensed text-[34px] font-medium uppercase text-brand-dark'>Linhas</span>
+              <div className='rounded border border-border bg-card p-4'>
+                <div className='flex items-center justify-between border-b border-border pb-3'>
+                  <span className='font-sans-condensed text-[34px] font-black uppercase text-brand-dark'>Linhas</span>
                   <ChevronDown size={16} className='text-text-subtle-dark' />
                 </div>
                 <div className='mt-3 space-y-2 text-base text-text-subtle'>

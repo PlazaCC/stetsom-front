@@ -52,7 +52,7 @@ export default async function SuportePage() {
               const Icon = CARD_ICONS[card.id as keyof typeof CARD_ICONS] ?? FileText
 
               return (
-                <div key={card.id} className='relative bg-white border border-zinc-200 p-8 flex min-h-52 flex-col'>
+                <div key={card.id} className='relative bg-card border border-border p-8 flex min-h-52 flex-col'>
                   <Icon size={20} className='mb-5 text-brand' />
                   <h3 className='font-sans-condensed font-black text-section-title uppercase text-brand-dark mb-3'>
                     {card.title}
@@ -70,11 +70,11 @@ export default async function SuportePage() {
       </section>
 
       {/* 3. DOCUMENTATION SECTION - com tabs/categorias */}
-      <section className='w-full bg-white py-12'>
+      <section className='w-full bg-card py-12'>
         <Container>
           <SectionLabel label={supportPayload.documentation.label} title={supportPayload.documentation.title} />
           <div className='mt-8'>
-            <div className='flex gap-4 mb-8 overflow-x-auto pb-4 border-b border-zinc-200'>
+            <div className='flex gap-4 mb-8 overflow-x-auto pb-4 border-b border-border'>
               {supportPayload.documentation.categories.map((cat) => (
                 <button
                   key={cat.id}
@@ -114,7 +114,7 @@ export default async function SuportePage() {
             </div>
 
             {/* Map image */}
-            <div className='relative mt-8 lg:mt-0 lg:flex-1 h-[340px] lg:h-[457px] rounded-[16px] overflow-hidden bg-zinc-200'>
+            <div className='relative mt-8 lg:mt-0 lg:flex-1 h-85 lg:h-[457px] rounded-[16px] overflow-hidden bg-muted'>
               <Image
                 src='/figma-assets/raw/fill_SXY62B_51d05531.png'
                 alt='Localização Stetsom'
@@ -128,7 +128,7 @@ export default async function SuportePage() {
       </section>
 
       {/* 5. CONTACT FORM SECTION - formulário com campos nome/email/mensagem */}
-      <section className='w-full bg-white py-12'>
+      <section className='w-full bg-card py-12'>
         <Container>
           <SectionLabel label={supportPayload.contact.label} title={supportPayload.contact.title} />
           <p className='text-base text-text-subtle mt-4 mb-8'>{supportPayload.contact.description}</p>

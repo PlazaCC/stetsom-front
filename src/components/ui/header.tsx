@@ -69,7 +69,9 @@ export default function Header() {
         {/* Mobile header: hamburger, centered logo, search */}
         <div className='flex items-center justify-between w-full md:hidden'>
           <div className='w-10 flex items-center justify-start'>
-            <button aria-label='Abrir menu' className='inline-flex items-center justify-center w-10 h-10 text-icon-muted'>
+            <button
+              aria-label='Abrir menu'
+              className='inline-flex items-center justify-center w-10 h-10 text-icon-muted'>
               <Menu size={22} />
             </button>
           </div>
@@ -90,7 +92,7 @@ export default function Header() {
           <Button
             variant='pill'
             nativeButton={false}
-            className='bg-brand-dark hover:bg-zinc-800 py-2 px-3 h-auto text-xs'
+            className='bg-brand-dark hover:bg-surface-elevated py-2 px-3 h-auto text-xs'
             render={<Link href='/garantia' />}>
             Garantia
           </Button>
@@ -110,7 +112,9 @@ function MenuLink({ href, label }: { href: string; label: string }) {
       href={href}
       className={cn(
         'font-sans font-normal text-lg pb-0.5 border-b-2 transition-colors mx-4',
-        active ? 'text-brand border-brand' : 'text-muted-foreground border-transparent hover:text-brand hover:border-brand',
+        active
+          ? 'text-brand border-brand'
+          : 'text-muted-foreground border-transparent hover:text-brand hover:border-brand',
       )}>
       {label}
     </Link>

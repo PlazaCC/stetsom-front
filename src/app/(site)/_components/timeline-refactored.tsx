@@ -71,7 +71,7 @@ export default function TimelineRefactored({
           {/* BOX 1: HEADER - Título + Descrição + Setas */}
           <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8'>
             <div className='flex-1'>
-              <div className='mb-2 font-sans-condensed text-sm font-medium uppercase tracking-wide text-brand'>
+              <div className='mb-2 font-sans-condensed text-sm font-black uppercase tracking-wide text-brand'>
                 {label}
               </div>
               <h2 className='font-sans-condensed text-5xl font-black leading-none text-white lg:text-display-lg'>
@@ -142,14 +142,14 @@ export default function TimelineRefactored({
 
                       <div className='absolute left-1/2 top-4.5 flex min-w-max -translate-x-1/2 flex-col items-center gap-1 text-center'>
                         <span
-                          className={`font-sans-condensed font-bold transition-all duration-300 ${
+                          className={`font-sans-condensed font-black transition-all duration-300 ${
                             index === activeIndex ? 'text-sm text-brand' : 'text-xs text-text-subtle'
                           }`}>
                           {event.year}
                         </span>
 
                         <span
-                          className={`font-sans-condensed font-bold uppercase text-center leading-tight transition-all duration-300 ${
+                          className={`font-sans-condensed font-black uppercase text-center leading-tight transition-all duration-300 ${
                             index === activeIndex ? 'text-xs text-white' : 'text-xs text-text-subtle'
                           }`}>
                           {event.shortTitle}

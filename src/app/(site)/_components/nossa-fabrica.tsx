@@ -9,19 +9,12 @@ export default function NossaFabrica() {
     <section className='relative bg-brand-dark py-12 overflow-hidden'>
       {/* Factory Image with Radial Overlay */}
       <div className='relative w-full h-96'>
-        <Image
-          src={FACTORY_IMAGE}
-          alt='Fábrica Stetsom'
-          fill
-          className='object-cover'
-          priority
-        />
+        <Image src={FACTORY_IMAGE} alt='Fábrica Stetsom' fill className='object-cover' priority />
         {/* Radial Gradient Overlay */}
         <div
           className='absolute inset-0'
           style={{
-            background:
-              'radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(22,16,16,1) 100%)',
+            background: 'radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(22,16,16,1) 100%)',
           }}
         />
       </div>
@@ -32,17 +25,13 @@ export default function NossaFabrica() {
           {/* Text Content */}
           <div className='text-white space-y-6'>
             <div>
-              <p className='font-sans-condensed font-medium text-sm uppercase text-brand mb-2'>
-                Localização
-              </p>
-              <h2 className='font-sans-condensed font-black text-display-xl uppercase leading-tight'>
-                Nossa Fábrica
-              </h2>
+              <p className='font-sans-condensed font-black text-sm uppercase text-brand mb-2'>Localização</p>
+              <h2 className='font-sans-condensed font-black text-display-xl uppercase leading-tight'>Nossa Fábrica</h2>
             </div>
             <p className='font-sans text-base text-text-subtle-dark leading-relaxed'>
-              Localizada no coração de São Paulo, nossa fábrica é equipada com tecnologia de ponta
-              para a manufatura de amplificadores de classe mundial. Aqui, cada detalhe é
-              meticulosamente verificado para garantir a máxima qualidade e desempenho.
+              Localizada no coração de São Paulo, nossa fábrica é equipada com tecnologia de ponta para a manufatura de
+              amplificadores de classe mundial. Aqui, cada detalhe é meticulosamente verificado para garantir a máxima
+              qualidade e desempenho.
             </p>
             <div className='pt-4'>
               <p className='font-sans text-sm text-text-subtle-dark'>

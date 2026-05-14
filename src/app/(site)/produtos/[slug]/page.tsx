@@ -44,7 +44,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
   ]
 
   return (
-    <div className='bg-white'>
+    <div className='bg-card'>
       {/* PRODUCT PREVIEW — image left + info right */}
       <section className='bg-card py-6 lg:py-8'>
         <Container>
@@ -53,7 +53,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
           <div className='mt-6 flex flex-col lg:flex-row lg:gap-12 lg:items-start'>
             {/* Left: main image */}
             <div className='flex flex-col gap-4 lg:w-[447px] shrink-0'>
-              <div className='relative w-full aspect-[4/3] lg:h-[358px] border border-zinc-200 rounded-[20px] overflow-hidden bg-white flex items-center justify-center'>
+              <div className='relative w-full aspect-[4/3] lg:h-[358px] border border-zinc-200 rounded-[20px] overflow-hidden bg-card flex items-center justify-center'>
                 <Image
                   src={product.thumbnail_url}
                   alt={product.name}
@@ -69,7 +69,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
                   <button
                     key={`${image}-${index}`}
                     type='button'
-                    className='relative h-16 w-18 shrink-0 overflow-hidden rounded border border-zinc-300 bg-white'>
+                    className='relative h-16 w-18 shrink-0 overflow-hidden rounded border border-zinc-300 bg-card'>
                     <Image
                       src={image}
                       alt={`${product.name} miniatura ${index + 1}`}
@@ -91,7 +91,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
 
             {/* Right: product info */}
             <div className='flex-1 mt-6 lg:mt-0 lg:max-w-[476px]'>
-              <p className='font-sans-condensed text-2xs font-medium uppercase text-brand'>{category.name}</p>
+              <p className='font-sans-condensed text-2xs font-black uppercase text-brand'>{category.name}</p>
               <h1 className='mt-2 font-sans-condensed text-4xl lg:text-display-sm font-black uppercase leading-none text-brand-dark'>
                 {product.name}
               </h1>
@@ -137,7 +137,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
                 </Link>
                 <button
                   type='button'
-                  className='inline-flex h-10 items-center rounded-[4px] border border-zinc-300 bg-white px-5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-brand-dark'>
+                  className='inline-flex h-10 items-center rounded-[4px] border border-zinc-300 bg-card px-5 font-sans text-button-md font-black uppercase tracking-[0.8px] text-brand-dark'>
                   Download de fotos
                 </button>
               </div>

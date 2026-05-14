@@ -42,7 +42,7 @@ export default function QualidadeInovadora({ section, values }: Readonly<Qualida
                       <Icon className='h-4 w-4 text-brand' aria-hidden='true' />
                     </div>
                     <div>
-                      <h3 className='font-sans-condensed font-bold text-base uppercase text-white mb-2'>
+                      <h3 className='font-sans-condensed font-black text-base uppercase text-white mb-2'>
                         {value.title}
                       </h3>
                       <p className='text-sm text-text-subtle-dark leading-relaxed'>{value.description}</p>

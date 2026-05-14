@@ -34,7 +34,7 @@ export default function MidiasSociais({ section }: Readonly<MidiasSociaisProps>)
           <div className='flex items-center gap-4'>
             <Link
               href={section.ctaHref}
-              className='font-sans-condensed font-medium text-base text-brand hover:text-brand/80 transition-colors'>
+              className='font-sans-condensed font-black text-base text-brand hover:text-brand/80 transition-colors'>
               {section.ctaLabel} ›
             </Link>
             <div className='flex gap-2'>

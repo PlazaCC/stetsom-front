@@ -23,13 +23,13 @@ export default function ProductCard({ name, category, spec, badge, img, href = '
         )}
       </div>
       <div className='p-3'>
-        <div className='font-sans-condensed font-medium text-2xs uppercase text-brand mb-1'>{category}</div>
-        <div className='font-sans-condensed font-bold text-base uppercase text-brand-dark leading-tight'>{name}</div>
-        {spec && <div className='text-xs text-zinc-400 mt-1.5'>{spec}</div>}
+        <div className='font-sans-condensed font-black text-2xs uppercase text-brand mb-1'>{category}</div>
+        <div className='font-sans-condensed font-black text-base uppercase text-brand-dark leading-tight'>{name}</div>
+        {spec && <div className='text-xs text-icon-muted mt-1.5'>{spec}</div>}
       </div>
       <div className='border-t border-zinc-100 px-3.5 py-2 flex justify-between items-center gap-2 mt-auto'>
         {badge && (
-          <span className='bg-brand text-white font-sans-condensed font-bold text-2xs uppercase px-2.5 py-1'>
+          <span className='bg-brand text-white font-sans-condensed font-black text-2xs uppercase px-2.5 py-1'>
             {badge}
           </span>
         )}
