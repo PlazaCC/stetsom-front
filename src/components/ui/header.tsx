@@ -19,7 +19,7 @@ import {
 
 export default function Header() {
   return (
-    <header className='sticky top-0 z-50 h-22 w-full border-b border-neutral-400 bg-white'>
+    <header className='sticky top-0 z-50 h-22 w-full border-b border-border bg-white'>
       <Container className='flex h-full items-center justify-between'>
         {/* Desktop header (unchanged layout) */}
         <div className='hidden md:flex items-center gap-logo-nav'>
@@ -32,9 +32,10 @@ export default function Header() {
               <NavigationMenuList>
                 <NavigationMenuItem className='hidden md:flex h-6 items-center'>
                   <NavigationMenuTrigger
+                    className='p-0! m-0! h-auto! rounded-none! bg-transparent! hover:bg-transparent! focus:bg-transparent! data-popup-open:bg-transparent! data-open:bg-transparent! data-popup-open:hover:bg-transparent! data-open:hover:bg-transparent! data-open:focus:bg-transparent!'
                     nativeButton={false}
                     render={
-                      <div className='p-0! h-6! flex items-center'>
+                      <div className='flex items-center'>
                         <MenuLink href='/produtos' label='Produtos' />
                       </div>
                     }
@@ -69,7 +70,9 @@ export default function Header() {
         {/* Mobile header: hamburger, centered logo, search */}
         <div className='flex items-center justify-between w-full md:hidden'>
           <div className='w-10 flex items-center justify-start'>
-            <button aria-label='Abrir menu' className='inline-flex items-center justify-center w-10 h-10 text-icon-muted'>
+            <button
+              aria-label='Abrir menu'
+              className='inline-flex items-center justify-center w-10 h-10 text-icon-muted'>
               <Menu size={22} />
             </button>
           </div>
@@ -90,7 +93,7 @@ export default function Header() {
           <Button
             variant='pill'
             nativeButton={false}
-            className='bg-brand-dark hover:bg-zinc-800 py-2 px-3 h-auto text-xs'
+            className='bg-brand-dark hover:bg-surface-elevated py-2 px-3 h-auto text-xs'
             render={<Link href='/garantia' />}>
             Garantia
           </Button>
@@ -110,7 +113,9 @@ function MenuLink({ href, label }: { href: string; label: string }) {
       href={href}
       className={cn(
         'font-sans font-normal text-lg pb-0.5 border-b-2 transition-colors mx-4',
-        active ? 'text-brand border-brand' : 'text-muted-foreground border-transparent hover:text-brand hover:border-brand',
+        active
+          ? 'text-brand border-brand'
+          : 'text-muted-foreground border-transparent hover:text-brand hover:border-brand',
       )}>
       {label}
     </Link>

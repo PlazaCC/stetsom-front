@@ -56,7 +56,10 @@
       "agent": "gpt-5.3-codex",
       "type": "config",
       "summary": "Add autonomous POC loop custom agent",
-      "files": [".github/agents/orquestrador-poc-loop.agent.md", "docs/ia/context.json"],
+      "files": [
+        ".github/agents/orquestrador-poc-loop.agent.md",
+        "docs/ia/context.json"
+      ],
       "rationale": "User requested a dedicated orchestrator agent to run the project task pipeline continuously with branch-per-activity behavior and autonomous review/refinement cycles.",
       "outcome": "Workspace now includes a custom invocable agent focused on continuous docs/ia/tasks orchestration, subagent-assisted execution, branch isolation, and backlog regeneration when exhausted."
     },
@@ -141,7 +144,10 @@
       "agent": "gpt-5.3-codex",
       "type": "config",
       "summary": "Add reusable prompt to trigger exhaustive orchestrator loop",
-      "files": [".github/prompts/loop-exaustivo-orquestrador.prompt.md", "docs/ia/context.json"],
+      "files": [
+        ".github/prompts/loop-exaustivo-orquestrador.prompt.md",
+        "docs/ia/context.json"
+      ],
       "rationale": "User requested a reusable slash prompt that consistently starts continuous and exhaustive execution with the orchestrator workflow.",
       "outcome": "Workspace now has a dedicated prompt that invokes Orquestrador POC Loop with explicit continuous-loop, subagent delegation, task-only refinement generation, and automated commit push PR behavior."
     },
@@ -207,7 +213,11 @@
       "agent": "claude-sonnet-4-6",
       "type": "feat",
       "summary": "Enrich catalog mock data with realistic specs, badges, and VIDEO product block",
-      "files": ["src/lib/api/contracts.ts", "src/lib/api/mappers.ts", "src/lib/mock/catalog.ts"],
+      "files": [
+        "src/lib/api/contracts.ts",
+        "src/lib/api/mappers.ts",
+        "src/lib/mock/catalog.ts"
+      ],
       "rationale": "Task-12 acceptance criteria require valid spec keys in Portuguese, badge fields on Product type, and at least one VIDEO block for product with video_url",
       "outcome": "Mock catalog has correct Portuguese spec key names, LANÇAMENTO/DESTAQUE badges on 4 products, and VIDEO block for prod-st-4000eq-4c satisfying all 6 acceptance criteria"
     },
@@ -216,7 +226,10 @@
       "agent": "claude-sonnet-4-6",
       "type": "chore",
       "summary": "Improve create-pr skill to mark task DONE and update context.json on PR creation",
-      "files": [".agents/skills/create-pr/SKILL.md", ".claude/skills/create-pr/SKILL.md"],
+      "files": [
+        ".agents/skills/create-pr/SKILL.md",
+        ".claude/skills/create-pr/SKILL.md"
+      ],
       "rationale": "User requested skill improvement to automate task lifecycle management after PR creation",
       "outcome": "create-pr skill now includes Step 5 — marks related task as DONE and appends changelog entry post-PR"
     },
@@ -225,7 +238,10 @@
       "agent": "claude-sonnet-4-6",
       "type": "chore",
       "summary": "Add copy-paste PR preview and A/B user prompt before gh pr create in create-pr skill",
-      "files": [".agents/skills/create-pr/SKILL.md", ".claude/skills/create-pr/SKILL.md"],
+      "files": [
+        ".agents/skills/create-pr/SKILL.md",
+        ".claude/skills/create-pr/SKILL.md"
+      ],
       "rationale": "User requested skill show PR title/body as copy-paste blocks and ask whether to create PR online or run code-review first before proceeding",
       "outcome": "create-pr skill restructured to 7 steps: Step 4 presents copy-paste blocks, Step 5 asks A/B choice, Step 6 runs gh pr create, Step 7 marks task DONE"
     },
@@ -234,7 +250,11 @@
       "agent": "gpt-5.4-mini",
       "type": "chore",
       "summary": "Add theme token rule to block hardcoded colors",
-      "files": [".agents/rules/theme-tokens.md", ".claude/rules/theme-tokens.md", "docs/ia/context.json"],
+      "files": [
+        ".agents/rules/theme-tokens.md",
+        ".claude/rules/theme-tokens.md",
+        "docs/ia/context.json"
+      ],
       "rationale": "The user asked to codify a permanent rule that keeps UI work aligned with the official shadcn theme and avoids hardcoded color values like text-[#000000] across the app.",
       "outcome": "Both agent runtimes now have a shared theme-token rule that prefers semantic theme variables and rejects arbitrary color values for consistent UI implementation."
     },
@@ -243,7 +263,9 @@
       "agent": "claude-sonnet-4-6",
       "type": "feat",
       "summary": "Align Header with Figma fidelity — typography, pill button, mobile border",
-      "files": ["src/components/ui/header.tsx"],
+      "files": [
+        "src/components/ui/header.tsx"
+      ],
       "rationale": "task-02 requires aligning Header to Figma nodes 1200:4585 (desktop) / 1200:4305 (mobile): nav link color/weight, Garantia button shape, and mobile border color",
       "outcome": "Nav links use Barlow Regular 18px #565656; Garantia button is rounded-full bg-brand-dark; mobile border is border-[#999999]; all 6 acceptance criteria met"
     },
@@ -332,7 +354,9 @@
       "agent": "gemini-3.1-pro",
       "type": "chore",
       "summary": "Add CI workflow configured with pnpm for GitHub Actions",
-      "files": [".github/workflows/ci.yml"],
+      "files": [
+        ".github/workflows/ci.yml"
+      ],
       "rationale": "User requested creation of CI workflow file based on template but adapted for pnpm and Next.js.",
       "outcome": "A workflow file `.github/workflows/ci.yml` has been added. It provisions node 20, uses pnpm v9 via setup-pnpm, typechecks, lints, and builds the project on push and PRs."
     },
@@ -341,7 +365,10 @@
       "agent": "gemini-3.1-pro",
       "type": "chore",
       "summary": "Add pre-commit hook using husky and lint-staged",
-      "files": ["package.json", ".husky/pre-commit"],
+      "files": [
+        "package.json",
+        ".husky/pre-commit"
+      ],
       "rationale": "User requested a lightweight pre-commit hook to prevent committing code with errors, specifically avoiding heavy builds.",
       "outcome": "Configured husky and lint-staged in package.json and created an executable pre-commit hook that runs `pnpm lint-staged` and typechecking (`pnpm tsc --noEmit`)."
     },
@@ -350,7 +377,9 @@
       "agent": "gemini-3.1-pro",
       "type": "fix",
       "summary": "Fix missing packages field in pnpm-workspace.yaml causing GitHub Actions failure",
-      "files": ["pnpm-workspace.yaml"],
+      "files": [
+        "pnpm-workspace.yaml"
+      ],
       "rationale": "The GitHub Actions workflow failed during setup-node's pnpm caching step because pnpm-workspace.yaml lacked a 'packages' field, breaking 'pnpm store path'.",
       "outcome": "Added 'packages: [ \".\" ]' to pnpm-workspace.yaml, allowing setup-node to correctly cache pnpm dependencies."
     },
@@ -359,7 +388,10 @@
       "agent": "gemini-3.1-pro",
       "type": "fix",
       "summary": "Fix TypeScript build errors causing CI checks to fail",
-      "files": ["types/routes.d.ts", "src/app/api/catalog/products/[slug]/route.ts"],
+      "files": [
+        "types/routes.d.ts",
+        "src/app/api/catalog/products/[slug]/route.ts"
+      ],
       "rationale": "Typescript checks failed in CI due to missing '/produtos/[slug]' in static generated Routes, and an undefined global 'RouteContext' type used in the API.",
       "outcome": "Updated 'types/routes.d.ts' with the correct app routes constraint and standardized API route typed params to fix the build locally and in CI."
     },
@@ -381,7 +413,12 @@
       "agent": "claude-sonnet-4-6",
       "type": "chore",
       "summary": "Remove pnpm-workspace.yaml, move ignoredBuiltDependencies to package.json, bump CI to pnpm v10, rewrite README",
-      "files": ["pnpm-workspace.yaml", "package.json", ".github/workflows/ci.yml", "README.md"],
+      "files": [
+        "pnpm-workspace.yaml",
+        "package.json",
+        ".github/workflows/ci.yml",
+        "README.md"
+      ],
       "rationale": "Project is not a monorepo; pnpm-workspace.yaml with packages:['.'] was a workaround for CI cache step; proper fix is package.json pnpm field; CI had pnpm v9 vs local v10 mismatch; README was default Next.js boilerplate",
       "outcome": "Clean non-workspace pnpm config; CI uses pnpm v10 matching local dev; README reflects actual project stack and conventions"
     },
@@ -440,7 +477,10 @@
       "agent": "claude-sonnet-4-6",
       "type": "fix",
       "summary": "Fix ARIA roles, extract TabStrip, add empty state, replace bg-white token in task-05 components",
-      "files": ["src/app/(site)/_components/novidades.tsx", "src/app/(site)/page.tsx"],
+      "files": [
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/page.tsx"
+      ],
       "rationale": "Code review on feat/task-05-home-novidades-tabs-bases identified: aria-pressed misuse on tab buttons, duplicated tab strip markup, missing empty state for filtered grid, and hardcoded bg-white on NossasBases instead of semantic token",
       "outcome": "Tab buttons now use role=tab+aria-selected under role=tablist; TabStrip extracted as subcomponent eliminating duplicate; empty state shown when filter returns no products; NossasBases background uses bg-off-white token"
     },
@@ -449,7 +489,11 @@
       "agent": "claude-sonnet-4-6",
       "type": "fix",
       "summary": "Fix social-medias.tsx: replace span CTA with Link, use next/image for posts, remove non-functional carousel buttons",
-      "files": ["src/lib/api/contracts.ts", "src/lib/mock/site.ts", "src/app/(site)/_components/social-medias.tsx"],
+      "files": [
+        "src/lib/api/contracts.ts",
+        "src/lib/mock/site.ts",
+        "src/app/(site)/_components/social-medias.tsx"
+      ],
       "rationale": "Code review flagged non-semantic span as CTA, backgroundImage bypassing next/image optimization, and non-functional Server Component carousel buttons",
       "outcome": "CTA uses next/link with ctaHref, post images use next/image with fill, carousel buttons removed from Server Component"
     },
@@ -458,7 +502,9 @@
       "agent": "claude-sonnet-4-6",
       "type": "fix",
       "summary": "Remove redundant className='bg-off-white' from NossasBases in home page",
-      "files": ["src/app/(site)/page.tsx"],
+      "files": [
+        "src/app/(site)/page.tsx"
+      ],
       "rationale": "NossasBases already applies bg-off-white unconditionally in its own className; passing it from page.tsx was duplicate and violated DRY principle",
       "outcome": "NossasBases rendered without redundant prop; visual output unchanged"
     },
@@ -496,7 +542,9 @@
       "agent": "claude-haiku-4-5-20251001",
       "type": "chore",
       "summary": "Regenerate types/routes.d.ts with /produtos/[slug] route for CI compatibility",
-      "files": ["types/routes.d.ts"],
+      "files": [
+        "types/routes.d.ts"
+      ],
       "rationale": "Code review via /code-review skill found TypeScript errors in CI due to stale types/routes.d.ts missing /produtos/[slug] route. File must exist in repo root (not just .next/types/) for CI environments without .next cache.",
       "outcome": "Copied types/routes.d.ts from .next/types/routes.d.ts post-build; now includes all routes (/, /admin, /cms, /produtos, /produtos/[slug], /sobre, /suporte) with correct ParamMap; pnpm tsc --noEmit and pnpm lint both pass"
     },
@@ -549,7 +597,10 @@
       "agent": "claude-sonnet-4-6",
       "type": "feat",
       "summary": "Create 404 not-found page with Header, Footer and decorative 404 watermark",
-      "files": ["src/app/not-found.tsx", "docs/ia/tasks/task-11-404-not-found-page.md"],
+      "files": [
+        "src/app/not-found.tsx",
+        "docs/ia/tasks/task-11-404-not-found-page.md"
+      ],
       "rationale": "Task-11 required creating src/app/not-found.tsx faithful to Figma node 1200:7086 — bg-off-white content section, decorative 404 watermark at 8% opacity, Barlow Condensed Black title, Barlow Medium subtitle, and brand-red CTA button linking to home.",
       "outcome": "not-found.tsx renders at any invalid route with Header + Footer included; decorative 404 span at opacity-[0.08]; title in font-sans-condensed font-black uppercase at 50px; subtitle in text-text-subtle-dark; button navigates to /; all 7 acceptance criteria met; tsc and lint pass."
     },
@@ -558,9 +609,215 @@
       "agent": "gpt-5.3-codex",
       "type": "fix",
       "summary": "Fix task-11 review issues with tokenized colors and canonical sizing",
-      "files": ["src/app/not-found.tsx", "docs/ia/tasks/task-11-404-not-found-page.md", "docs/ia/context.json"],
+      "files": [
+        "src/app/not-found.tsx",
+        "docs/ia/tasks/task-11-404-not-found-page.md",
+        "docs/ia/context.json"
+      ],
       "rationale": "Code review flagged arbitrary color and sizing classes; user requested all issues fixed with no regressions and preference for existing theme tokens before adding new global variables.",
       "outcome": "Replaced hardcoded colors with existing semantic tokens, switched min height to canonical Tailwind class, updated stale /poc-refine-design reference, and kept 404 visual fidelity aligned with Figma intent."
+    },
+    {
+      "ts": "2026-05-13T14:19:34.604Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "feat",
+      "summary": "Refine all 6 site pages to match Figma Final Website design: produtos sidebar, slug tabs, specs table, suporte map",
+      "files": [
+        "docs/ia/figma/PAGES_REFERENCE.md",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/suporte/page.tsx"
+      ],
+      "rationale": "Design pass against live Figma (fileKey huD41oTL0FAa7xsNEK8tAM, node 1200:4302): produtos needed desktop sidebar layout; produto selecionado needed tab bar + specs table + product preview redesign; suporte needed map/location section",
+      "outcome": "Produtos now shows sidebar+grid on desktop; produto selecionado has tab switching between Especificacoes (hero+table+blocks) and Confira Tambem (related products); suporte has map photo section; Figma URL added to PAGES_REFERENCE"
+    },
+    {
+      "ts": "2026-05-13T16:05:00Z",
+      "agent": "gpt-5.3-codex",
+      "type": "style",
+      "summary": "Run full Figma fidelity pass with desktop/mobile comparison and apply high-impact visual corrections across site pages",
+      "files": [
+        "src/components/ui/container.tsx",
+        "src/app/not-found.tsx",
+        "src/app/(site)/_components/hero-carousel.tsx",
+        "src/lib/mock/support.ts",
+        "src/lib/mock/site.ts",
+        "src/lib/mock/navigation.ts",
+        "src/app/(site)/produtos/page.tsx",
+        "src/lib/mock/catalog.ts",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "User requested a complete design-fidelity review against the Figma final website, including desktop/mobile screenshots, concrete deviation correction, mock data enrichment, and token-safe styling adjustments.",
+      "outcome": "Implemented Figma-aligned improvements for products filters/grid density, product detail hierarchy (metrics/actions/visao geral), support hero/cards, about hero stats composition, and 404 cleanup; enriched mock catalog to realistic product breadth; TypeScript and lint checks pass and post-fix screenshots confirm improved visual parity."
+    },
+    {
+      "ts": "2026-05-13T21:35:00Z",
+      "agent": "claude-haiku-4.5",
+      "type": "feat",
+      "summary": "Execute Phase 1-6 design fidelity corrections and baseline visual export",
+      "files": [
+        "src/components/ui/button.tsx",
+        "src/components/ui/product-card.tsx",
+        "src/components/ui/section-label.tsx",
+        "src/app/(site)/_components/qualidade-inovadora.tsx",
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/_components/faq.tsx",
+        "src/app/(site)/_components/nossa-historia.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "public/figma-design/01-home-desktop.png",
+        "public/figma-design/02-produtos-desktop.png",
+        "public/figma-design/03-produto-detalhe-desktop.png",
+        "public/figma-design/04-sobre-desktop.png",
+        "public/figma-design/05-suporte-desktop.png",
+        "public/figma-design/06-404-desktop.png",
+        "docs/ia/context.json"
+      ],
+      "rationale": "User authorized start of Item 2 implementation: execute all design corrections identified in audit, normalize button component sizing, update product card styling with semantic tokens, apply dark mode to Qualidade Inovadora section, fix tab styling in Novidades, normalize watermark sizing for mobile-first responsive approach, and export visual baselines from Figma for final validation.",
+      "outcome": "Phase 1 (Foundation): Button sizes normalized sm/md/lg (h-8/h-10/h-12), ProductCard border/shadow tokens fixed, figma-sm variant removed and migrated to sm. Phase 2 (Home): Qualidade Inovadora changed to dark bg with dark SectionLabel prop, Novidades tabs use border-b instead of bg-zinc-100. Phase 5 (Watermarks): Produtos and Suporte watermarks use mobile-first sizing (text-[80px] sm:text-[150px] lg:text-[263px]). Phase 8 (Baselines): 6 Figma frames exported to public/figma-design/ as PNG reference. All pages render successfully; tsc and lint pass. Dev server confirmed operational on localhost:3000."
+    },
+    {
+      "ts": "2025-07-15T00:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Add design-fidelity-audit skill and reorganize Figma baseline images into per-page subfolders",
+      "files": [
+        ".agents/skills/design-fidelity-audit/SKILL.md",
+        ".claude/skills/design-fidelity-audit/SKILL.md",
+        ".raw/figma-design/home/desktop.png",
+        ".raw/figma-design/home/mobile.png",
+        ".raw/figma-design/produtos/desktop.png",
+        ".raw/figma-design/produtos/mobile.png",
+        ".raw/figma-design/produto-selecionado/desktop.png",
+        ".raw/figma-design/produto-selecionado/mobile.png",
+        ".raw/figma-design/sobre/desktop.png",
+        ".raw/figma-design/sobre/mobile.png",
+        ".raw/figma-design/suporte/desktop.png",
+        ".raw/figma-design/suporte/mobile.png",
+        ".raw/figma-design/404/desktop.png",
+        ".raw/figma-design/404/mobile.png"
+      ],
+      "rationale": "Codify full-site Figma audit methodology as reusable dual-install skill; organize baseline PNGs by page for easier per-page design comparison",
+      "outcome": "Skill available in both VS Code Copilot and Claude Code CLI runtimes; all 6 pages have desktop+mobile Figma baseline images in per-page subfolders under .raw/figma-design/"
+    },
+    {
+      "ts": "2026-05-14T14:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "style",
+      "summary": "Design fidelity audit — fix all token divergences across 12 files",
+      "files": [
+        "src/components/ui/header.tsx",
+        "src/components/ui/product-card.tsx",
+        "src/app/(site)/_components/qualidade-inovadora.tsx",
+        "src/app/(site)/_components/nossas-bases.tsx",
+        "src/app/(site)/_components/social-medias.tsx",
+        "src/app/(site)/_components/red-banner.tsx",
+        "src/app/(site)/_components/nossa-fabrica.tsx",
+        "src/app/(site)/_components/timeline-refactored.tsx",
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Full design fidelity audit: font-weight divergences (font-bold/font-medium → font-black in Barlow Condensed uppercase contexts), color token divergences (bg-white → bg-card, bg-zinc-200 → bg-muted, text-zinc-400 → text-icon-muted, hover:bg-zinc-800 → hover:bg-surface-elevated), semantic border tokens applied where applicable, and canonical Tailwind sizing for map height.",
+      "outcome": "All Barlow Condensed uppercase headings now use font-black; background surfaces use semantic tokens; hover/placeholder colors use design system tokens; product and support pages now follow Stetsom Tailwind token conventions."
+    },
+    {
+      "ts": "2026-05-14T13:15:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Design fidelity audit — 8 corrections across header, suporte, sobre, novidades",
+      "files": [
+        "src/components/ui/header.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/_components/novidades.tsx"
+      ],
+      "rationale": "Full-site Figma fidelity audit: nav trigger hover/padding fix, suporte hero size/cards padding/FAQ button/bar, sobre hero title red word + stats label size, novidades tab font size",
+      "outcome": "Header nav trigger aligned, suporte hero heading at 90px, support cards at p-4, sobre POTENCIA in brand red, stats labels at text-sm, novidades tabs at 18px Medium"
+    },
+    {
+      "ts": "2026-05-14T13:15:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Render '+' in stat values (35+, 200+, 60+, 1M+) in brand red on sobre hero",
+      "files": [
+        "src/app/(site)/sobre/page.tsx"
+      ],
+      "rationale": "Figma ts5 fill for '+' character in hero stats is #E8132A (brand red), while number portion is white; current code rendered entire stat.value as plain white text",
+      "outcome": "Stat values split at '+': number portion stays text-white, '+' wrapped in <span className='text-brand'> matching Figma reference"
+    },
+    {
+      "ts": "2026-05-14T15:30:00Z",
+      "agent": "gpt-5-mini",
+      "type": "chore",
+      "summary": "Add Product Data Schema and Mock API guideline rules (dual-install)",
+      "files": [
+        ".agents/rules/product-data-schema.md",
+        ".claude/rules/product-data-schema.md",
+        ".agents/rules/mock-api-guidelines.md",
+        ".claude/rules/mock-api-guidelines.md",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Codify the Product Data Schema as the contract and require mock API payloads to follow it until backend integration.",
+      "outcome": "Dual-installed rules ensure agents and developers use the same contract and mock provider until backend exists."
+    },
+    {
+      "ts": "2026-05-14T16:30:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "refactor",
+      "summary": "Simplify and modularize branch: extract product utils, useHorizontalScroll hook, ContactForm, BlockRenderer",
+      "files": [
+        "src/hooks/use-horizontal-scroll.ts",
+        "src/lib/utils/product.ts",
+        "src/components/ui/cta-link.tsx",
+        "src/app/(site)/suporte/_components/contact-form.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
+        "src/app/(site)/_components/social-medias.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/lib/mock/catalog.ts"
+      ],
+      "rationale": "Reduce large files via componentization, eliminate inline utils by centralizing in product.ts, fix 10 products violating schema (missing required blocks).",
+      "outcome": "product-detail-tabs.tsx reduced from 299 to ~200 lines; 10 mock products now have at least one block; scroll logic centralized in reusable hook; contact form extracted as subcomponent."
+    },
+    {
+      "ts": "2026-05-15T14:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Design fidelity audit — 12 corrections across 8 files covering HIGH/MED/LOW divergences",
+      "files": [
+        "src/app/(site)/_components/galeria-dark.tsx",
+        "src/app/(site)/_components/nossa-fabrica.tsx",
+        "src/app/(site)/_components/nossa-historia.tsx",
+        "src/app/(site)/_components/nossas-bases.tsx",
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx"
+      ],
+      "rationale": "Full-site design fidelity audit against fresh Figma baseline exports (12 frames). HIGH: GaleriaDark had 6 empty placeholders → real brand images; NossaFabrica desktop had placeholder text → Image+address content; Suporte section 4 was wrong layout (map+FAQ categories) → POSTOS AUTORIZADOS section; Suporte contact was single-column form → 2-column with contact info. MED: leading-[74px] → leading-18.5 in suporte/produtos heroes; h-[358px]/w-[447px]/max-w-[476px] → canonical in produto-selecionado; NossasBases bg-off-white → bg-white; Produtos category tabs now show thumbnail images. LOW: Novidades bg-card → bg-white; NossaHistoria adds stats grid (35+/200+/60+/1M+); Produtos mobile adds Comparar button.",
+      "outcome": "All 12 divergences resolved. tsc --noEmit and lint pass with zero errors. 12 Figma baseline PNGs refreshed in .raw/figma-design/."
+    },
+    {
+      "ts": "2026-05-14T00:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix all code-review issues: XSS sanitization, cn() consistency, contact form interactivity, manual link guard, hardcoded counts",
+      "files": [
+        "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
+        "src/app/(site)/_components/timeline-refactored.tsx",
+        "src/app/(site)/suporte/_components/contact-form.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/produtos/page.tsx"
+      ],
+      "rationale": "Code review identified 5 issues: dangerouslySetInnerHTML without sanitization (XSS risk), template literal conditional classes instead of cn(), non-functional contact form submit, manual download link falling back to #, hardcoded count badges showing incorrect data",
+      "outcome": "HTML blocks sanitized via DOMPurify; timeline uses cn() for all conditional classes; contact form has working submit with success state; manual link hidden when no file; filter count badges removed. tsc and lint pass."
     }
   ]
 }

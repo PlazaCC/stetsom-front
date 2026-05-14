@@ -30,7 +30,7 @@ function TabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel }: TabStripProp
     <>
       <div
         role='tablist'
-        className='inline-flex items-center gap-3 overflow-x-auto pb-1 pr-1 sm:gap-4 lg:pr-0 bg-zinc-100 rounded-[8px] px-2 py-1'>
+        className='inline-flex items-center gap-0 overflow-x-auto pb-0 pr-0 sm:gap-0 lg:pr-0 border-b border-zinc-200'>
         {tabs.map((tab) => (
           <button
             type='button'
@@ -39,8 +39,8 @@ function TabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel }: TabStripProp
             onClick={() => onSelect(tab)}
             aria-selected={activeTab === tab}
             className={cn(
-              'shrink-0 px-3 py-1.5 transition-colors text-sm leading-5 font-sans text-center rounded-[6px]',
-              activeTab === tab ? 'bg-white text-foreground shadow-sm' : 'bg-transparent text-zinc-500',
+              'shrink-0 px-3 py-3 transition-colors text-lg font-medium leading-5 font-sans text-center border-b-2',
+              activeTab === tab ? 'border-brand text-brand-dark' : 'border-transparent text-muted-foreground hover:text-brand-dark',
             )}>
             {tab}
           </button>
@@ -48,7 +48,7 @@ function TabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel }: TabStripProp
       </div>
       <Link
         href={ctaHref}
-        className='ml-4 inline-flex items-center gap-2 px-2 text-sm font-sans-condensed font-medium text-brand'>
+        className='ml-4 inline-flex items-center gap-2 px-2 text-sm font-sans-condensed font-black text-brand'>
         <span>{ctaLabel}</span>
         <ArrowRight className='size-4 inline-block' strokeWidth={2.5} />
       </Link>
@@ -117,10 +117,10 @@ export default function Novidades({ featuredProducts, spotlightProduct, tabs, se
               className='max-h-55 max-w-[75%] object-contain shadow-[0_8px_24px_rgba(0,0,0,0.15)] sm:max-h-65 lg:max-h-75'
             />
             <div className='absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/65 to-transparent px-4 pb-4 pt-12 sm:px-5'>
-              <div className='font-sans-condensed text-xs font-medium uppercase text-brand'>
+              <div className='font-sans-condensed text-xs font-black uppercase text-brand'>
                 {spotlightProduct.category}
               </div>
-              <div className='font-sans-condensed text-lg font-bold uppercase leading-tight text-white sm:text-xl'>
+              <div className='font-sans-condensed text-lg font-black uppercase leading-tight text-white sm:text-xl'>
                 {spotlightProduct.name}
               </div>
             </div>

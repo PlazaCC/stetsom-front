@@ -1,120 +1,19 @@
 import { type BreadcrumbItem, Breadcrumb } from '@/components/ui/breadcrumb'
 import { Container } from '@/components/ui/container'
-import ProductCard from '@/components/ui/product-card'
-import type { ProductBlock } from '@/lib/api/contracts'
 import { getCatalogProductDetail } from '@/lib/api/server'
-import { cn } from '@/lib/utils'
 import Image from 'next/image'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import ProductDetailTabs from './_components/product-detail-tabs'
 
-const PRODUCT_HERO_GRADIENT = {
-  background: 'radial-gradient(circle at 50% 50%, rgb(238, 8, 0) 45%, rgb(0, 0, 0) 100%)',
-} as const
+function toImageList(data: Record<string, unknown>): string[] {
+  const images = data.images
 
-const BLOCK_PLACEHOLDER_LABEL: Record<'VIDEO' | 'MODEL3D' | 'HTML', string> = {
-  VIDEO: 'Video',
-  MODEL3D: 'Modelo 3D',
-  HTML: 'HTML customizado',
-}
-
-type TextBlockData = {
-  title?: string
-  content?: string
-  align?: string
-}
-
-type ImageBlockData = {
-  images?: string[]
-  caption?: string
-}
-
-function isStringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every((item) => typeof item === 'string' && item.length > 0)
-}
-
-function toTextBlockData(data: Record<string, unknown>): TextBlockData {
-  return {
-    title: typeof data.title === 'string' ? data.title : undefined,
-    content: typeof data.content === 'string' ? data.content : undefined,
-    align: typeof data.align === 'string' ? data.align : undefined,
-  }
-}
-
-function toImageBlockData(data: Record<string, unknown>): ImageBlockData {
-  return {
-    images: isStringArray(data.images) ? data.images : undefined,
-    caption: typeof data.caption === 'string' ? data.caption : undefined,
-  }
-}
-
-function resolveTextAlignClass(align: string | undefined) {
-  if (align === 'center') {
-    return 'text-center'
+  if (!Array.isArray(images)) {
+    return []
   }
 
-  if (align === 'right') {
-    return 'text-right'
-  }
-
-  return 'text-left'
-}
-
-function formatSpecificationKey(value: string) {
-  return value.replace(/_/g, ' ')
-}
-
-function renderProductBlock(block: ProductBlock, productName: string, fallbackImage: string) {
-  if (block.type === 'TEXT') {
-    const data = toTextBlockData(block.data)
-    const title = data.title ?? 'Detalhes do produto'
-    const content = data.content ?? 'Descricao indisponivel para este bloco.'
-
-    return (
-      <article key={block.id} className='rounded-xl border border-zinc-200 bg-card p-6 md:p-8'>
-        <h2 className='font-sans-condensed text-section-title font-black uppercase text-brand-dark'>{title}</h2>
-        <p
-          className={cn(
-            'mt-3 text-sm leading-relaxed text-text-subtle md:text-base',
-            resolveTextAlignClass(data.align),
-          )}>
-          {content}
-        </p>
-      </article>
-    )
-  }
-
-  if (block.type === 'IMAGE') {
-    const data = toImageBlockData(block.data)
-    const images = data.images?.length ? data.images : [fallbackImage]
-
-    return (
-      <article key={block.id} className='space-y-3'>
-        {images.map((source, index) => (
-          <div
-            key={`${block.id}-${source}-${index}`}
-            className='relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-brand-dark'>
-            <Image
-              src={source}
-              alt={`${productName} visual ${index + 1}`}
-              fill
-              sizes='(max-width: 1024px) 100vw, 1100px'
-              className='object-cover'
-            />
-          </div>
-        ))}
-        {data.caption && <p className='text-sm text-text-subtle'>{data.caption}</p>}
-      </article>
-    )
-  }
-
-  return (
-    <article key={block.id} className='rounded-xl border border-dashed border-zinc-300 bg-card p-5 md:p-6'>
-      <p className='font-sans-condensed text-sm font-bold uppercase text-brand-dark'>
-        {BLOCK_PLACEHOLDER_LABEL[block.type]}
-      </p>
-      <p className='mt-1 text-sm leading-relaxed text-text-subtle'>Conteudo em breve para este bloco.</p>
-    </article>
-  )
+  return images.filter((item): item is string => typeof item === 'string' && item.length > 0)
 }
 
 export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[slug]'>) {
@@ -126,6 +25,16 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
   }
 
   const { product, category, blocks, files, relatedProducts } = payload
+  const galleryImagesFromBlocks = blocks.flatMap((block) => (block.type === 'IMAGE' ? toImageList(block.data) : []))
+  const galleryImages = (galleryImagesFromBlocks.length ? galleryImagesFromBlocks : [product.thumbnail_url]).slice(0, 4)
+  const manualFile = files.find((file) => file.type === 'MANUAL')
+  const powerMetric =
+    String(product.specifications.power_rms ?? '')
+      .replace(' RMS', '')
+      .trim() || '800W'
+  const channelsMatch = /^(\d+)x/i.exec(String(product.specifications.power_rms ?? ''))
+  const channelsMetric = channelsMatch ? `${channelsMatch[1]} CH` : '4 CH'
+  const impedanceMetric = String(product.specifications.impedance ?? '').trim() || '2-4 Ohms'
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Início', href: '/' },
@@ -135,87 +44,118 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
   ]
 
   return (
-    <div className='bg-white'>
-      <section className='bg-card py-5 md:py-6 lg:py-8'>
+    <div className='bg-card'>
+      {/* PRODUCT PREVIEW — image left + info right */}
+      <section className='bg-card py-6 lg:py-8'>
         <Container>
           <Breadcrumb items={breadcrumbItems} />
 
-          <div className='mt-4 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between'>
-            <div className='max-w-190'>
-              <p className='font-sans-condensed text-2xs font-medium uppercase text-brand'>{category.name}</p>
-              <h1 className='mt-2 font-sans-condensed text-4xl font-black uppercase leading-none text-brand-dark md:text-display-sm'>
+          <div className='mt-6 flex flex-col lg:flex-row lg:gap-12 lg:items-start'>
+            {/* Left: main image */}
+            <div className='flex flex-col gap-4 lg:w-111.75 shrink-0'>
+              <div className='relative w-full aspect-[4/3] lg:h-89.5 border border-zinc-200 rounded-[20px] overflow-hidden bg-card flex items-center justify-center'>
+                <Image
+                  src={product.thumbnail_url}
+                  alt={product.name}
+                  fill
+                  priority
+                  sizes='(max-width: 1024px) 100vw, 447px'
+                  className='object-contain p-6'
+                />
+              </div>
+
+              <div className='flex items-center gap-3 overflow-x-auto pb-1'>
+                {galleryImages.map((image, index) => (
+                  <button
+                    key={`${image}-${index}`}
+                    type='button'
+                    className='relative h-16 w-18 shrink-0 overflow-hidden rounded border border-zinc-300 bg-card'>
+                    <Image
+                      src={image}
+                      alt={`${product.name} miniatura ${index + 1}`}
+                      fill
+                      sizes='72px'
+                      className='object-cover'
+                    />
+                  </button>
+                ))}
+              </div>
+
+              {/* Files count badge */}
+              {files.length > 0 && (
+                <p className='text-2xs font-sans uppercase text-muted-foreground tracking-wide'>
+                  {files.length} arquivo{files.length > 1 ? 's' : ''} disponível{files.length > 1 ? 'is' : ''}
+                </p>
+              )}
+            </div>
+
+            {/* Right: product info */}
+            <div className='flex-1 mt-6 lg:mt-0 lg:max-w-119'>
+              <p className='font-sans-condensed text-2xs font-black uppercase text-brand'>{category.name}</p>
+              <h1 className='mt-2 font-sans-condensed text-4xl lg:text-display-sm font-black uppercase leading-none text-brand-dark'>
                 {product.name}
               </h1>
-              <p className='mt-3 text-sm leading-relaxed text-text-subtle md:text-base'>{product.description}</p>
+              <p className='mt-4 text-sm lg:text-base leading-relaxed text-text-subtle'>{product.description}</p>
+
+              {/* Spec tags */}
+              <ul className='mt-4 flex flex-wrap gap-2'>
+                {Object.entries(product.specifications).map(([key, value]) => (
+                  <li
+                    key={key}
+                    className='rounded-full border border-zinc-300 px-3 py-1 text-xs uppercase text-brand-dark'>
+                    {key.replace(/_/g, ' ')}: {String(value)}
+                  </li>
+                ))}
+              </ul>
+
+              <div className='mt-6 grid grid-cols-3 gap-4 border-y border-zinc-200 py-4'>
+                <div>
+                  <p className='font-sans-condensed text-3xl font-black uppercase leading-none text-brand'>
+                    {powerMetric}
+                  </p>
+                  <p className='text-2xs font-sans uppercase tracking-wide text-text-subtle'>Potência RMS</p>
+                </div>
+                <div>
+                  <p className='font-sans-condensed text-3xl font-black uppercase leading-none text-brand'>
+                    {channelsMetric}
+                  </p>
+                  <p className='text-2xs font-sans uppercase tracking-wide text-text-subtle'>Canais</p>
+                </div>
+                <div>
+                  <p className='font-sans-condensed text-3xl font-black uppercase leading-none text-brand'>
+                    {impedanceMetric}
+                  </p>
+                  <p className='text-2xs font-sans uppercase tracking-wide text-text-subtle'>Impedância</p>
+                </div>
+              </div>
+
+              <div className='mt-5 flex flex-wrap gap-3'>
+                {manualFile && (
+                  <Link
+                    href={manualFile.file_url}
+                    className='inline-flex h-10 items-center rounded-[4px] bg-brand px-5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-zinc-50 transition-colors hover:bg-brand/90'>
+                    Acessar manual do produto
+                  </Link>
+                )}
+                <button
+                  type='button'
+                  className='inline-flex h-10 items-center rounded-[4px] border border-zinc-300 bg-card px-5 font-sans text-button-md font-black uppercase tracking-[0.8px] text-brand-dark'>
+                  Download de fotos
+                </button>
+              </div>
             </div>
-
-            <ul className='flex flex-wrap gap-2 md:gap-3 lg:max-w-140 lg:justify-end'>
-              {Object.entries(product.specifications).map(([key, value]) => (
-                <li
-                  key={key}
-                  className='rounded-full border border-zinc-300 px-3 py-1 text-xs uppercase text-brand-dark'>
-                  {formatSpecificationKey(key)}: {String(value)}
-                </li>
-              ))}
-            </ul>
           </div>
         </Container>
       </section>
 
-      <section className='relative isolate overflow-hidden bg-black'>
-        <div className='absolute inset-0' style={PRODUCT_HERO_GRADIENT} />
-        <div className='absolute inset-x-0 bottom-0 h-22 bg-gradient-to-t from-black/70 to-transparent' />
-
-        <Container className='relative z-10 py-8 md:py-10 lg:py-14'>
-          <div className='mx-auto max-w-220'>
-            <div className='relative h-74.75 w-full sm:h-80 md:h-92 lg:h-100'>
-              <Image
-                src={product.thumbnail_url}
-                alt={product.name}
-                fill
-                priority
-                sizes='(max-width: 1024px) 100vw, 960px'
-                className='object-contain drop-shadow-[0_28px_38px_rgba(0,0,0,0.35)]'
-              />
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      <section className='bg-white py-10 md:py-12 lg:py-14'>
-        <Container className='space-y-6 md:space-y-8'>
-          {blocks.map((block) => renderProductBlock(block, product.name, product.thumbnail_url))}
-
-          <article className='rounded-xl border border-dashed border-zinc-300 bg-card p-5 md:p-6'>
-            <h2 className='font-sans-condensed text-section-title font-black uppercase text-brand-dark'>Arquivos</h2>
-            <p className='mt-1 text-sm text-text-subtle'>
-              Downloads e materiais desta pagina serao disponibilizados em breve.
-            </p>
-            <p className='mt-1 text-xs uppercase text-muted-foreground'>{files.length} item(ns) catalogado(s)</p>
-          </article>
-        </Container>
-      </section>
-
-      <section className='bg-off-white py-10 md:py-12 lg:py-16'>
-        <Container>
-          <h2 className='font-sans-condensed text-display-sm font-black uppercase leading-none text-brand-dark'>
-            Produtos relacionados
-          </h2>
-          <div className='mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-5'>
-            {relatedProducts.slice(0, 4).map((relatedProduct) => (
-              <ProductCard
-                key={relatedProduct.id}
-                name={relatedProduct.name}
-                category={relatedProduct.category}
-                spec={relatedProduct.spec}
-                badge={relatedProduct.badge}
-                img={relatedProduct.img}
-                href={relatedProduct.href}
-              />
-            ))}
-          </div>
-        </Container>
-      </section>
+      {/* TABS: Especificações / Confira também */}
+      <ProductDetailTabs
+        productName={product.name}
+        thumbnailUrl={product.thumbnail_url}
+        specifications={product.specifications}
+        blocks={blocks}
+        relatedProducts={relatedProducts}
+      />
     </div>
   )
 }

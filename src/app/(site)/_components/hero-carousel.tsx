@@ -10,7 +10,7 @@ import 'swiper/css/pagination'
 import { A11y, Autoplay, Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
-const AUTOPLAY_INTERVAL_MS = 5000
+const AUTOPLAY_INTERVAL_MS = 12000
 const HERO_HEIGHT_CLASS = 'h-130 sm:h-155 lg:h-175'
 const HERO_OVERLAY_GRADIENT = 'linear-gradient(180deg, rgba(0, 0, 0, 0) 72%, rgba(0, 0, 0, 1) 100%)'
 
