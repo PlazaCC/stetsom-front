@@ -10,13 +10,7 @@ import QualidadeInovadora from '../_components/qualidade-inovadora'
 import RedBanner from '../_components/red-banner'
 import MidiasSociais from '../_components/social-medias'
 import TimelineRefactored from '../_components/timeline-refactored'
-
-const ABOUT_HERO_STATS = [
-  { value: '35+', label: 'ANOS DE MERCADO' },
-  { value: '200+', label: 'PRODUTOS' },
-  { value: '60+', label: 'PAÍSES DE EXPORTAÇÃO' },
-  { value: '1M+', label: 'UNIDADES VENDIDAS' },
-] as const
+import { ABOUT_STATS } from './_components/data'
 
 export default async function SobrePage() {
   const aboutPayload = await getSiteAboutPayload()
@@ -63,11 +57,11 @@ export default async function SobrePage() {
             </div>
 
             <div className='relative border-t border-white/20 pt-5'>
-              <span className='pointer-events-none absolute right-0 top-[-96px] font-sans-condensed text-[112px] font-black leading-none text-white/10'>
+              <span className='pointer-events-none absolute right-0 -top-24 font-sans-condensed text-[112px] font-black leading-none text-white/10'>
                 1989
               </span>
               <div className='grid grid-cols-2 border border-white/20'>
-                {ABOUT_HERO_STATS.map((stat) => (
+                {ABOUT_STATS.map((stat) => (
                   <div key={stat.label} className='border border-white/20 px-4 py-4'>
                     <p className='font-sans-condensed text-display-sm font-black leading-none text-white'>
                       {stat.value.replace('+', '')}<span className='text-brand'>+</span>

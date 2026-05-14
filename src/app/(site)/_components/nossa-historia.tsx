@@ -6,13 +6,7 @@ import { cn } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-
-const HISTORY_STATS = [
-  { value: '35+', label: 'Anos de Mercado' },
-  { value: '200+', label: 'Produtos' },
-  { value: '60+', label: 'Países' },
-  { value: '1M+', label: 'Unidades Vendidas' },
-] as const
+import { ABOUT_STATS } from '../sobre/_components/data'
 
 interface NossaHistoriaProps {
   section: SiteHomePayload['history']
@@ -35,7 +29,7 @@ export default function NossaHistoria({ section }: Readonly<NossaHistoriaProps>)
             <SectionLabel label={section.label} title={section.title} subtitle={section.subtitle} dark />
 
             <div className='mt-8 grid grid-cols-2 border border-white/20'>
-              {HISTORY_STATS.map((stat) => (
+              {ABOUT_STATS.map((stat) => (
                 <div key={stat.label} className='border border-white/20 px-4 py-4'>
                   <p className='font-sans-condensed text-3xl font-black leading-none text-white'>
                     {stat.value.endsWith('+') ? (

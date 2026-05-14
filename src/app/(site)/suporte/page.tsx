@@ -3,28 +3,10 @@ import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import { getSupportPayload } from '@/lib/api/server'
-import { ArrowUpRight, FileText, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
+import { ArrowUpRight, FileText } from 'lucide-react'
 import Image from 'next/image'
+import { AUTHORIZED_POSTS, CARD_ICONS, CONTACT_DETAILS } from './_components/data'
 import { ContactForm } from './_components/contact-form'
-
-const CARD_ICONS = {
-  'central-ajuda': FileText,
-  garantia: MapPin,
-  manuais: MessageCircle,
-} as const
-
-const AUTHORIZED_POSTS = [
-  { id: 'sp-1', type: 'Distribuidor', name: 'Stetsom São Paulo', address: 'Rua Augusta, 1200 — São Paulo, SP', phone: '(11) 3000-0000' },
-  { id: 'rj-1', type: 'Distribuidor', name: 'Stetsom Rio de Janeiro', address: 'Av. Brasil, 500 — Rio de Janeiro, RJ', phone: '(21) 3000-0000' },
-  { id: 'mg-1', type: 'Distribuidor', name: 'Stetsom Belo Horizonte', address: 'Av. Amazonas, 300 — Belo Horizonte, MG', phone: '(31) 3000-0000' },
-  { id: 'rs-1', type: 'Distribuidor', name: 'Stetsom Porto Alegre', address: 'Av. Ipiranga, 800 — Porto Alegre, RS', phone: '(51) 3000-0000' },
-] as const
-
-const CONTACT_DETAILS = [
-  { id: 'address', icon: MapPin, label: 'Endereço', value: 'Av. Industrial Stetsom, 100 — São Paulo, SP 09850-000' },
-  { id: 'email', icon: Mail, label: 'E-mail', value: 'suporte@stetsom.com.br' },
-  { id: 'phone', icon: Phone, label: 'Telefone', value: '+55 (11) 3000-0000' },
-] as const
 
 export default async function SuportePage() {
   const supportPayload = await getSupportPayload()
@@ -40,8 +22,8 @@ export default async function SuportePage() {
           className='object-cover opacity-35 object-center'
           priority
         />
-        <div className='absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-black/40' />
-        <span className='absolute inset-0 font-sans-condensed font-black uppercase text-center flex items-center justify-center text-[80px] sm:text-[150px] lg:text-[263px] text-watermark-text opacity-[0.08] pointer-events-none select-none leading-none'>
+        <div className='absolute inset-0 bg-linear-to-br from-black/40 via-transparent to-black/40' />
+        <span className='absolute inset-0 font-sans-condensed font-black uppercase text-center flex items-center justify-center text-display-2xl sm:text-[150px] lg:text-[263px] text-watermark-text opacity-[0.08] pointer-events-none select-none leading-none'>
           {supportPayload.hero.watermarkText}
         </span>
         <div className='absolute left-0 top-0 w-3.5 h-full bg-bar-accent' />

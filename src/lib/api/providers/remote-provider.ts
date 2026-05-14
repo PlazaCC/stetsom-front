@@ -13,23 +13,9 @@ import type {
   SupportPayload,
 } from '@/lib/api/contracts'
 import type { CmsProvider } from '@/lib/api/provider-contract'
+import { buildSearchParams } from '@/lib/api/query-utils'
 
 const DEFAULT_REMOTE_BASE = 'http://localhost:3333'
-
-function buildSearchParams(params: Record<string, string | number | undefined>): string {
-  const search = new URLSearchParams()
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (value === undefined || value === '') {
-      return
-    }
-
-    search.set(key, String(value))
-  })
-
-  const query = search.toString()
-  return query ? `?${query}` : ''
-}
 
 async function fetchJson<T>(baseUrl: string, path: string): Promise<T> {
   const response = await fetch(`${baseUrl}${path}`, {
