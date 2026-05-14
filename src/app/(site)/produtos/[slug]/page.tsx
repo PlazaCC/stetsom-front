@@ -130,11 +130,13 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
               </div>
 
               <div className='mt-5 flex flex-wrap gap-3'>
-                <Link
-                  href={manualFile?.file_url ?? '#'}
-                  className='inline-flex h-10 items-center rounded-[4px] bg-brand px-5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-zinc-50 transition-colors hover:bg-brand/90'>
-                  Acessar manual do produto
-                </Link>
+                {manualFile && (
+                  <Link
+                    href={manualFile.file_url}
+                    className='inline-flex h-10 items-center rounded-[4px] bg-brand px-5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-zinc-50 transition-colors hover:bg-brand/90'>
+                    Acessar manual do produto
+                  </Link>
+                )}
                 <button
                   type='button'
                   className='inline-flex h-10 items-center rounded-[4px] border border-zinc-300 bg-card px-5 font-sans text-button-md font-black uppercase tracking-[0.8px] text-brand-dark'>

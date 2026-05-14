@@ -201,17 +201,14 @@ export default function ProdutosPage() {
                 </div>
                 <div className='mt-3 flex flex-col gap-2'>
                   {typeFilterOptions.map((cat) => (
-                    <label key={cat} className='flex items-center justify-between text-base text-text-subtle'>
-                      <span className='flex items-center gap-3'>
-                        <input
-                          type='checkbox'
-                          checked={activeCategory === cat}
-                          onChange={() => setActiveCategory(cat)}
-                          className='size-4 rounded border-zinc-300 accent-brand'
-                        />
-                        {cat}
-                      </span>
-                      <span className='text-text-subtle-dark'>48</span>
+                    <label key={cat} className='flex items-center gap-3 text-base text-text-subtle'>
+                      <input
+                        type='checkbox'
+                        checked={activeCategory === cat}
+                        onChange={() => setActiveCategory(cat)}
+                        className='size-4 rounded border-zinc-300 accent-brand'
+                      />
+                      {cat}
                     </label>
                   ))}
                 </div>
@@ -223,26 +220,17 @@ export default function ProdutosPage() {
                   <ChevronDown size={16} className='text-text-subtle-dark' />
                 </div>
                 <div className='mt-3 space-y-2 text-base text-text-subtle'>
-                  <label className='flex items-center justify-between'>
-                    <span className='flex items-center gap-3'>
-                      <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' defaultChecked />
-                      Vulcan
-                    </span>
-                    <span className='text-text-subtle-dark'>48</span>
+                  <label className='flex items-center gap-3'>
+                    <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' defaultChecked />
+                    Vulcan
                   </label>
-                  <label className='flex items-center justify-between'>
-                    <span className='flex items-center gap-3'>
-                      <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' />
-                      Combat Line
-                    </span>
-                    <span className='text-text-subtle-dark'>48</span>
+                  <label className='flex items-center gap-3'>
+                    <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' />
+                    Combat Line
                   </label>
-                  <label className='flex items-center justify-between'>
-                    <span className='flex items-center gap-3'>
-                      <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' />
-                      Digital Bass
-                    </span>
-                    <span className='text-text-subtle-dark'>48</span>
+                  <label className='flex items-center gap-3'>
+                    <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' />
+                    Digital Bass
                   </label>
                 </div>
               </div>

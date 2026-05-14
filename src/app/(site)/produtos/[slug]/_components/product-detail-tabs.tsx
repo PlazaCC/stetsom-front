@@ -5,6 +5,7 @@ import ProductCard from '@/components/ui/product-card'
 import type { ProductBlock, ProductCardItem, ProductSpecifications } from '@/lib/api/contracts'
 import { cn } from '@/lib/utils'
 import { formatSpecKey, resolveTextAlignClass, toImageBlockData, toTextBlockData } from '@/lib/utils/product'
+import DOMPurify from 'dompurify'
 import Image from 'next/image'
 import { useState } from 'react'
 
@@ -42,7 +43,11 @@ function BlockRenderer({ block, productName, fallbackImage }: BlockRendererProps
         <h2 className='font-sans-condensed text-section-title font-black uppercase text-brand-dark'>
           {data.title ?? 'Detalhes do produto'}
         </h2>
-        <p className={cn('mt-3 text-sm leading-relaxed text-text-subtle md:text-base', resolveTextAlignClass(data.align))}>
+        <p
+          className={cn(
+            'mt-3 text-sm leading-relaxed text-text-subtle md:text-base',
+            resolveTextAlignClass(data.align),
+          )}>
           {data.content ?? 'Descrição indisponível para este bloco.'}
         </p>
       </article>
@@ -55,7 +60,9 @@ function BlockRenderer({ block, productName, fallbackImage }: BlockRendererProps
     return (
       <article className='space-y-3'>
         {images.map((src, i) => (
-          <div key={`${block.id}-${i}`} className='relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-brand-dark'>
+          <div
+            key={`${block.id}-${i}`}
+            className='relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-brand-dark'>
             <Image
               src={src}
               alt={`${productName} visual ${i + 1}`}
@@ -87,7 +94,7 @@ function BlockRenderer({ block, productName, fallbackImage }: BlockRendererProps
             href={videoUrl}
             target='_blank'
             rel='noreferrer'
-            className='mt-5 inline-flex rounded-[4px] bg-brand px-4 py-2 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-zinc-50'>
+            className='mt-5 inline-flex rounded-lg bg-brand px-4 py-2 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-zinc-50'>
             Assistir demonstração
           </a>
         ) : null}
@@ -96,13 +103,14 @@ function BlockRenderer({ block, productName, fallbackImage }: BlockRendererProps
   }
 
   if (block.type === 'HTML') {
-    const html = typeof block.data.html === 'string' ? block.data.html : '<p>Conteúdo técnico indisponível.</p>'
+    const rawHtml = typeof block.data.html === 'string' ? block.data.html : '<p>Conteúdo técnico indisponível.</p>'
+    const safeHtml = DOMPurify.sanitize(rawHtml, { USE_PROFILES: { html: true } })
     return (
       <article className='rounded-xl border border-zinc-200 bg-card p-6 md:p-8'>
         <p className='font-sans-condensed text-xs font-bold uppercase tracking-wider text-brand'>Detalhes técnicos</p>
         <div
           className='mt-3 text-sm leading-relaxed text-text-subtle [&_strong]:font-semibold [&_strong]:text-brand-dark'
-          dangerouslySetInnerHTML={{ __html: html }}
+          dangerouslySetInnerHTML={{ __html: safeHtml }}
         />
       </article>
     )
@@ -242,7 +250,15 @@ export default function ProductDetailTabs({
             {relatedProducts.length > 0 ? (
               <div className='mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-5'>
                 {relatedProducts.slice(0, 6).map((p) => (
-                  <ProductCard key={p.id} name={p.name} category={p.category} spec={p.spec} badge={p.badge} img={p.img} href={p.href} />
+                  <ProductCard
+                    key={p.id}
+                    name={p.name}
+                    category={p.category}
+                    spec={p.spec}
+                    badge={p.badge}
+                    img={p.img}
+                    href={p.href}
+                  />
                 ))}
               </div>
             ) : (
