@@ -818,6 +818,95 @@
       ],
       "rationale": "Code review identified 5 issues: dangerouslySetInnerHTML without sanitization (XSS risk), template literal conditional classes instead of cn(), non-functional contact form submit, manual download link falling back to #, hardcoded count badges showing incorrect data",
       "outcome": "HTML blocks sanitized via DOMPurify; timeline uses cn() for all conditional classes; contact form has working submit with success state; manual link hidden when no file; filter count badges removed. tsc and lint pass."
+    },
+    {
+      "ts": "2026-05-14T21:30:00Z",
+      "agent": "gpt-5-mini",
+      "type": "refactor",
+      "summary": "Modularize catalog, product tabs, timeline, novidades, support data and API query params",
+      "files": [
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
+        "src/app/(site)/_components/timeline-refactored.tsx",
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/lib/api/client.ts",
+        "src/lib/api/providers/remote-provider.ts",
+        "src/app/(site)/sobre/_components/data.ts",
+        "src/app/(site)/_components/nossa-historia.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "The user asked to resume a paused modularization plan and continue from the last completed step while preserving behavior and avoiding mock-layer rewrites.",
+      "outcome": "Catalog page now uses extracted sidebar/mobile filters, product tabs consume external BlockRenderer, timeline and novidades use extracted subcomponents, support constants moved to data module, API query-string builders were centralized, and shared about stats now come from one source. Build passed after fixing a missing import."
+    },
+    {
+      "ts": "2026-05-14T22:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Overhaul multi-agent AI setup: slim CLAUDE.md, enrich AGENTS.md, install graphify skill dual-side, fix stale TASKS.md ref",
+      "files": [
+        "CLAUDE.md",
+        "AGENTS.md",
+        ".claude/skills/graphify/SKILL.md",
+        ".agents/skills/graphify/SKILL.md",
+        "docs/ia/tasks/TASKS.md",
+        "docs/ia/context.json"
+      ],
+      "rationale": "CLAUDE.md was bloated with content duplicated from AGENTS.md (via @AGENTS.md include) and missing graphify-out/ context, skills inventory, and multi-agent coordination note; graphify-out/ directory existed but no doc told agents to use it; TASKS.md had stale /poc-next-task reference",
+      "outcome": "CLAUDE.md is now lean (skills table, graphify-out reference, multi-agent note); AGENTS.md has Knowledge Graph, AI Workflow, and Cross-Agent Changelog sections; graphify skill installed in both .claude/ and .agents/ with Stetsom-specific context; TASKS.md command references corrected"
+    },
+    {
+      "ts": "2026-05-14T23:30:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "refactor",
+      "summary": "Enforce naming conventions: English identifiers, kebab-case files across entire codebase",
+      "files": [
+        ".claude/rules/naming-conventions.md",
+        ".agents/rules/naming-conventions.md",
+        "src/app/(site)/_components/our-history.tsx",
+        "src/app/(site)/_components/our-factory.tsx",
+        "src/app/(site)/_components/our-foundations.tsx",
+        "src/app/(site)/_components/quality-section.tsx",
+        "src/app/(site)/_components/careers-cta.tsx",
+        "src/app/(site)/_components/social-feed.tsx",
+        "src/app/(site)/_components/dark-gallery.tsx",
+        "src/app/(site)/_components/featured-products.tsx",
+        "src/app/(site)/_components/company-timeline.tsx",
+        "src/app/(site)/_components/featured-tab-strip.tsx",
+        "src/app/(site)/_components/timeline-progress-bar.tsx",
+        "src/app/(site)/_components/timeline-checkpoint.tsx",
+        "src/app/(site)/produtos/_components/catalog-sidebar.tsx",
+        "src/app/(site)/produtos/_components/catalog-mobile-filter.tsx",
+        "src/app/(site)/produtos/[slug]/_components/block-renderer.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
+        "src/app/(site)/page.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "src/lib/api/contracts.ts",
+        "src/lib/mock/site.ts",
+        "src/lib/api/providers/mock-provider.ts",
+        "docs/ia/tasks/TASKS.md"
+      ],
+      "rationale": "Project rule requires all code-level identifiers in English with kebab-case file names; 26 violations were found including 9 Portuguese component exports, 6 PascalCase filenames, Portuguese union discriminators, and Portuguese contract field names",
+      "outcome": "All component exports, file names, props interfaces, Tab discriminators, and contract fields are now in English; pnpm build passes with zero TypeScript errors"
+    },
+    {
+      "ts": "2026-05-14T16:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "docs",
+      "summary": "Rebuild docs/ia/figma/ from scratch: delete raw dumps, extract fresh Figma context, create distilled DESIGN_SYSTEM/PAGES/COMPONENTS docs",
+      "files": [
+        "docs/ia/figma/meta.json",
+        "docs/ia/figma/DESIGN_SYSTEM.md",
+        "docs/ia/figma/PAGES.md",
+        "docs/ia/figma/COMPONENTS.md",
+        ".claude/rules/stetsom-design-system.md",
+        ".agents/rules/stetsom-design-system.md",
+        ".claude/rules/figma-to-code.md",
+        ".agents/rules/figma-to-code.md"
+      ],
+      "rationale": "docs/ia/figma/ had 1.8MB of raw Figma dumps (context.json 1.5MB, design-system.json 172KB, asset-candidates 59KB) that were too heavy and confusing for agents. User requested a clean rebuild: extract fresh Figma data via Framelink MCP, distill into code-first tables (Figma style → CSS var → Tailwind class), map every component to its React file, remove all raw dumps.",
+      "outcome": "Folder reduced from 1.8MB (8 files) to ~60KB (4 files). DESIGN_SYSTEM.md has full color/typography/spacing/effects tables with direct Tailwind class mapping. PAGES.md maps every page section to its Figma node ID and React component file. COMPONENTS.md maps every Figma component to its React implementation. meta.json is now minimal JSON only. Rules updated to reference new file names."
     }
   ]
 }

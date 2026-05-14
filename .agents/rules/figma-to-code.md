@@ -7,19 +7,17 @@ applyTo: '**/*.tsx, **/*.ts, **/*.css'
 
 When building UI components from the Figma designs defined in `docs/ia/figma`, follow these rules to align with the Stetsom Next.js + Tailwind v4 stack:
 
-1. **Design Context Location**: Use `docs/ia/figma/meta.json` as the entry point when reconstructing UI based on Figma. It describes `components.json` and `design-system.json`.
+1. **Design Context Location**: Use `docs/ia/figma/meta.json` as the entry point. Pages → node IDs in `PAGES.md`. Components → `COMPONENTS.md`. Tokens → `DESIGN_SYSTEM.md`.
 2. **Offline Assets First**: Prefer `docs/ia/figma/assets-manifest.json` and local files in `public/figma-assets/raw` before any new MCP download.
    - Resolve images by `styleRef` or `nodeId` in the manifest.
    - Use `relativePath` from the manifest as frontend URL.
-3. **Tailwind v4 Variables**: The design system colors in Figma (like Stetsom Red `#E8132A` or Dark `#121212`) map directly to our CSS custom properties defined in `src/app/globals.css`.
-   - Use classes like `bg-brand`, `text-brand`, `bg-brand-dark`.
+3. **Tailwind v4 Variables**: Every Figma color maps directly to a CSS custom property — see `DESIGN_SYSTEM.md` color table.
+   - Use classes like `bg-brand`, `text-brand`, `bg-brand-dark`, `bg-bar-accent`, `bg-footer`.
    - Do not use arbitrary color values (e.g. `bg-[#E8132A]`). Look for the CSS variable mapping first.
-4. **Typography**: Figma text styles should map to our fonts defined in variables: `var(--font-barlow)` for standard `font-sans` and `var(--font-barlow-condensed)` for `font-sans-condensed`. Check `src/app/globals.css` instead of creating arbitrary CSS.
-5. **Icons**: Figma uses `Lucide Icons` for its components. Use the `lucide-react` package.
+4. **Typography**: Figma text styles → `font-sans` (Barlow) or `font-sans-condensed` (Barlow Condensed). See full mapping table in `DESIGN_SYSTEM.md`.
+5. **Icons**: Figma uses `Lucide Icons`. Use the `lucide-react` package.
 6. **Component Parity**:
    - Build with Server Components by default. Add `"use client"` only for interactivity.
-   - Check if a shadcn equivalent exists (e.g., `Accordion`, `Button`) before building from scratch, relying on our `base-nova` style configuration.
-   - When replacing raw Figma UI, map it efficiently to the corresponding Radix primitives or standard HTML semantic tags to preserve accessibility.
-7. **Spacing & Layout**: Convert Figma fixed spacing constraints (e.g. padding and margins) into Tailwind utility classes ensuring responsive behavior (e.g., instead of fixed width 375px, use `w-full max-w-sm` or responsive scaling).
-
-Refer closely to `AGENTS.md` and `docs/ia/figma/*` for exact design adherence.
+   - Check `COMPONENTS.md` for existing React component before building from scratch.
+   - Map Figma components to shadcn/Base-UI equivalents (Accordion, Button) when available.
+7. **Spacing & Layout**: Convert Figma fixed spacing into canonical Tailwind utilities — see `tailwind-canonical.md`. Container is `max-w-360 px-5 lg:px-42.5`.
