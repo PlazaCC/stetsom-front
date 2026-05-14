@@ -3,10 +3,10 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRef } from 'react'
 
 import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
+import { useHorizontalScroll } from '@/hooks/use-horizontal-scroll'
 import type { SocialFeedSection } from '@/lib/api/contracts'
 
 interface MidiasSociaisProps {
@@ -14,17 +14,7 @@ interface MidiasSociaisProps {
 }
 
 export default function MidiasSociais({ section }: Readonly<MidiasSociaisProps>) {
-  const scrollRef = useRef<HTMLDivElement>(null)
-
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      const scrollAmount = 300
-      scrollRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth',
-      })
-    }
-  }
+  const { ref: scrollRef, scroll } = useHorizontalScroll()
 
   return (
     <section className='flex justify-center bg-off-white py-12'>
