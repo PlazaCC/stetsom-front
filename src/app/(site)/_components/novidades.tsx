@@ -68,7 +68,7 @@ export default function Novidades({ featuredProducts, spotlightProduct, tabs, se
   }, [activeTab, featuredProducts])
 
   return (
-    <section className='flex w-full justify-center bg-card py-12'>
+    <section className='flex w-full justify-center bg-white py-12'>
       <Container>
         {/* Header: title + tabs/cta */}
         <div className='mb-6 sm:mb-8'>

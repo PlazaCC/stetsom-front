@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import { getSupportPayload } from '@/lib/api/server'
-import { ArrowUpRight, FileText, MapPin, MessageCircle } from 'lucide-react'
+import { ArrowUpRight, FileText, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
 import Image from 'next/image'
 import { ContactForm } from './_components/contact-form'
 
@@ -12,6 +12,19 @@ const CARD_ICONS = {
   garantia: MapPin,
   manuais: MessageCircle,
 } as const
+
+const AUTHORIZED_POSTS = [
+  { id: 'sp-1', type: 'Distribuidor', name: 'Stetsom São Paulo', address: 'Rua Augusta, 1200 — São Paulo, SP', phone: '(11) 3000-0000' },
+  { id: 'rj-1', type: 'Distribuidor', name: 'Stetsom Rio de Janeiro', address: 'Av. Brasil, 500 — Rio de Janeiro, RJ', phone: '(21) 3000-0000' },
+  { id: 'mg-1', type: 'Distribuidor', name: 'Stetsom Belo Horizonte', address: 'Av. Amazonas, 300 — Belo Horizonte, MG', phone: '(31) 3000-0000' },
+  { id: 'rs-1', type: 'Distribuidor', name: 'Stetsom Porto Alegre', address: 'Av. Ipiranga, 800 — Porto Alegre, RS', phone: '(51) 3000-0000' },
+] as const
+
+const CONTACT_DETAILS = [
+  { id: 'address', icon: MapPin, label: 'Endereço', value: 'Av. Industrial Stetsom, 100 — São Paulo, SP 09850-000' },
+  { id: 'email', icon: Mail, label: 'E-mail', value: 'suporte@stetsom.com.br' },
+  { id: 'phone', icon: Phone, label: 'Telefone', value: '+55 (11) 3000-0000' },
+] as const
 
 export default async function SuportePage() {
   const supportPayload = await getSupportPayload()
@@ -34,7 +47,7 @@ export default async function SuportePage() {
         <div className='absolute left-0 top-0 w-3.5 h-full bg-bar-accent' />
         <Container className='z-10 relative'>
           <SectionLabel label={supportPayload.hero.label} />
-          <h1 className='font-sans-condensed font-black text-5xl lg:text-[90px] lg:leading-[74px] leading-none uppercase text-white mt-1'>
+          <h1 className='font-sans-condensed font-black text-5xl lg:text-[90px] lg:leading-18.5 leading-none uppercase text-white mt-1'>
             {supportPayload.hero.title.split('\n').map((line) => (
               <span key={line} className='block'>
                 {line}
@@ -97,27 +110,25 @@ export default async function SuportePage() {
         </Container>
       </section>
 
-      {/* 4. LOCALIZAÇÃO / MAPA - 2 colunas: info + imagem */}
+      {/* 4. POSTOS AUTORIZADOS - lista de locais + mapa */}
       <section className='w-full bg-off-white py-12'>
         <Container>
-          <div className='flex flex-col lg:flex-row lg:gap-6 lg:items-stretch'>
-            {/* Info column */}
-            <div className='flex flex-col gap-8 lg:w-[344px] shrink-0'>
-              <SectionLabel label={supportPayload.faqSearch.label} title={supportPayload.faqSearch.title} />
-              <div className='flex flex-col gap-3'>
-                {supportPayload.faqSearch.categories.map((cat) => (
-                  <div key={cat.id} className='flex items-center gap-3 py-2 border-b border-zinc-200'>
-                    <span className='font-sans text-base text-brand-dark'>{cat.name}</span>
-                  </div>
-                ))}
-              </div>
+          <SectionLabel label='Rede Autorizada' title='POSTOS AUTORIZADOS' />
+          <div className='mt-8 flex flex-col lg:flex-row lg:gap-6 lg:items-start'>
+            <div className='flex flex-col gap-4 lg:w-86 shrink-0'>
+              {AUTHORIZED_POSTS.map((post) => (
+                <div key={post.id} className='border-b border-zinc-200 pb-4 last:border-0'>
+                  <p className='font-sans text-2xs uppercase tracking-wider text-brand mb-1'>{post.type}</p>
+                  <h4 className='font-sans-condensed font-black text-section-title uppercase text-brand-dark mb-1'>{post.name}</h4>
+                  <p className='text-sm text-text-subtle'>{post.address}</p>
+                  <p className='text-sm text-text-subtle mt-0.5'>{post.phone}</p>
+                </div>
+              ))}
             </div>
-
-            {/* Map image */}
-            <div className='relative mt-8 lg:mt-0 lg:flex-1 h-85 lg:h-[457px] rounded-[16px] overflow-hidden bg-muted'>
+            <div className='relative mt-8 lg:mt-0 lg:flex-1 h-85 lg:h-114.25 rounded-[16px] overflow-hidden bg-muted'>
               <Image
                 src='/figma-assets/raw/fill_SXY62B_51d05531.png'
-                alt='Localização Stetsom'
+                alt='Mapa postos autorizados Stetsom'
                 fill
                 className='object-cover'
                 sizes='(max-width: 1024px) 100vw, 732px'
@@ -127,12 +138,32 @@ export default async function SuportePage() {
         </Container>
       </section>
 
-      {/* 5. CONTACT FORM SECTION - formulário com campos nome/email/mensagem */}
+      {/* 5. CONTATO - 2 colunas: info + formulário */}
       <section className='w-full bg-card py-12'>
         <Container>
-          <SectionLabel label={supportPayload.contact.label} title={supportPayload.contact.title} />
-          <p className='text-base text-text-subtle mt-4 mb-8'>{supportPayload.contact.description}</p>
-          <ContactForm />
+          <div className='flex flex-col lg:flex-row lg:gap-16 lg:items-start'>
+            <div className='flex flex-col gap-6 lg:w-90 shrink-0'>
+              <SectionLabel label={supportPayload.contact.label} title={supportPayload.contact.title} />
+              <p className='text-base text-text-subtle leading-relaxed'>{supportPayload.contact.description}</p>
+              <div className='flex flex-col gap-5'>
+                {CONTACT_DETAILS.map((detail) => {
+                  const Icon = detail.icon
+                  return (
+                    <div key={detail.id} className='flex items-start gap-3'>
+                      <Icon size={18} className='text-brand mt-0.5 shrink-0' />
+                      <div>
+                        <p className='text-sm font-medium text-brand-dark font-sans'>{detail.label}</p>
+                        <p className='text-sm text-text-subtle font-sans'>{detail.value}</p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+            <div className='flex-1 mt-8 lg:mt-0'>
+              <ContactForm />
+            </div>
+          </div>
         </Container>
       </section>
 

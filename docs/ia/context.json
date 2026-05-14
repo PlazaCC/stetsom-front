@@ -729,5 +729,23 @@
       "rationale": "Reduce large files via componentization, eliminate inline utils by centralizing in product.ts, fix 10 products violating schema (missing required blocks).",
       "outcome": "product-detail-tabs.tsx reduced from 299 to ~200 lines; 10 mock products now have at least one block; scroll logic centralized in reusable hook; contact form extracted as subcomponent."
     }
+  ,{
+      "ts": "2026-05-15T14:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Design fidelity audit — 12 corrections across 8 files covering HIGH/MED/LOW divergences",
+      "files": [
+        "src/app/(site)/_components/galeria-dark.tsx",
+        "src/app/(site)/_components/nossa-fabrica.tsx",
+        "src/app/(site)/_components/nossa-historia.tsx",
+        "src/app/(site)/_components/nossas-bases.tsx",
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx"
+      ],
+      "rationale": "Full-site design fidelity audit against fresh Figma baseline exports (12 frames). HIGH: GaleriaDark had 6 empty placeholders → real brand images; NossaFabrica desktop had placeholder text → Image+address content; Suporte section 4 was wrong layout (map+FAQ categories) → POSTOS AUTORIZADOS section; Suporte contact was single-column form → 2-column with contact info. MED: leading-[74px] → leading-18.5 in suporte/produtos heroes; h-[358px]/w-[447px]/max-w-[476px] → canonical in produto-selecionado; NossasBases bg-off-white → bg-white; Produtos category tabs now show thumbnail images. LOW: Novidades bg-card → bg-white; NossaHistoria adds stats grid (35+/200+/60+/1M+); Produtos mobile adds Comparar button.",
+      "outcome": "All 12 divergences resolved. tsc --noEmit and lint pass with zero errors. 12 Figma baseline PNGs refreshed in .raw/figma-design/."
+    }
   ]
 }

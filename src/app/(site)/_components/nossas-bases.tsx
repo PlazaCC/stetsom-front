@@ -10,7 +10,7 @@ interface NossasBasesProps {
 
 export default function NossasBases({ bases, className }: Readonly<NossasBasesProps>) {
   return (
-    <section className={cn('bg-off-white py-20', className)}>
+    <section className={cn('bg-white py-20', className)}>
       <Container>
         <SectionLabel label='Como Trabalhamos' title='NOSSAS BASES' />
 

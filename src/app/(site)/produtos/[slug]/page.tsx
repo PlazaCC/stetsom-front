@@ -52,8 +52,8 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
 
           <div className='mt-6 flex flex-col lg:flex-row lg:gap-12 lg:items-start'>
             {/* Left: main image */}
-            <div className='flex flex-col gap-4 lg:w-[447px] shrink-0'>
-              <div className='relative w-full aspect-[4/3] lg:h-[358px] border border-zinc-200 rounded-[20px] overflow-hidden bg-card flex items-center justify-center'>
+            <div className='flex flex-col gap-4 lg:w-111.75 shrink-0'>
+              <div className='relative w-full aspect-[4/3] lg:h-89.5 border border-zinc-200 rounded-[20px] overflow-hidden bg-card flex items-center justify-center'>
                 <Image
                   src={product.thumbnail_url}
                   alt={product.name}
@@ -90,7 +90,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
             </div>
 
             {/* Right: product info */}
-            <div className='flex-1 mt-6 lg:mt-0 lg:max-w-[476px]'>
+            <div className='flex-1 mt-6 lg:mt-0 lg:max-w-119'>
               <p className='font-sans-condensed text-2xs font-black uppercase text-brand'>{category.name}</p>
               <h1 className='mt-2 font-sans-condensed text-4xl lg:text-display-sm font-black uppercase leading-none text-brand-dark'>
                 {product.name}

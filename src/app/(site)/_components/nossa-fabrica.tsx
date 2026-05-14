@@ -3,25 +3,24 @@ import Image from 'next/image'
 import { Container } from '@/components/ui/container'
 
 const FACTORY_IMAGE = '/figma-assets/raw/fill_OJJ5Q1_b3596ec5.png'
+const MAP_IMAGE = '/figma-assets/raw/fill_SXY62B_51d05531.png'
+const FACTORY_OVERLAY_GRADIENT = 'radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(22,16,16,1) 100%)'
 
 export default function NossaFabrica() {
   return (
-    <section className='relative bg-brand-dark py-12 overflow-hidden'>
+    <section className='relative bg-brand-dark overflow-hidden'>
       {/* Factory Image with Radial Overlay */}
       <div className='relative w-full h-96'>
         <Image src={FACTORY_IMAGE} alt='Fábrica Stetsom' fill className='object-cover' priority />
-        {/* Radial Gradient Overlay */}
         <div
           className='absolute inset-0'
-          style={{
-            background: 'radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(22,16,16,1) 100%)',
-          }}
+          style={{ background: FACTORY_OVERLAY_GRADIENT }}
         />
       </div>
 
       {/* Content Section */}
       <Container className='py-12'>
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-start'>
           {/* Text Content */}
           <div className='text-white space-y-6'>
             <div>
@@ -30,22 +29,30 @@ export default function NossaFabrica() {
             </div>
             <p className='font-sans text-base text-text-subtle-dark leading-relaxed'>
               Localizada no coração de São Paulo, nossa fábrica é equipada com tecnologia de ponta para a manufatura de
-              amplificadores de classe mundial. Aqui, cada detalhe é meticulosamente verificado para garantir a máxima
+              amplificadores de classe mundial. Cada detalhe é meticulosamente verificado para garantir a máxima
               qualidade e desempenho.
             </p>
-            <div className='pt-4'>
-              <p className='font-sans text-sm text-text-subtle-dark'>
-                <strong>Endereço:</strong> Rua Exemplo, 123 — São Paulo, SP
-              </p>
-              <p className='font-sans text-sm text-text-subtle-dark mt-2'>
-                <strong>Telefone:</strong> (11) 3000-0000
-              </p>
+            <div className='flex flex-col gap-2 pt-2'>
+              <div className='flex items-start gap-3'>
+                <div className='w-1 h-4 bg-brand mt-0.5 shrink-0' />
+                <p className='font-sans text-sm text-text-subtle-dark'>Av. Industrial Stetsom, 100 — São Paulo, SP 09850-000</p>
+              </div>
+              <div className='flex items-start gap-3'>
+                <div className='w-1 h-4 bg-brand mt-0.5 shrink-0' />
+                <p className='font-sans text-sm text-text-subtle-dark'>+55 (11) 3000-0000 | suporte@stetsom.com.br</p>
+              </div>
             </div>
           </div>
 
-          {/* Map or Additional Content Placeholder */}
-          <div className='hidden lg:flex items-center justify-center h-96 bg-surface-elevated rounded-lg text-text-subtle-dark'>
-            Mapa ou conteúdo adicional
+          {/* Map */}
+          <div className='relative h-72 lg:h-96 rounded-sm overflow-hidden bg-surface-elevated'>
+            <Image
+              src={MAP_IMAGE}
+              alt='Localização Stetsom'
+              fill
+              className='object-cover'
+              sizes='(max-width: 1024px) 100vw, 560px'
+            />
           </div>
         </div>
       </Container>

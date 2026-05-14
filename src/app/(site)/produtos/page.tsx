@@ -4,9 +4,19 @@ import { Container } from '@/components/ui/container'
 import ProductCard from '@/components/ui/product-card'
 import { useCatalogCategories, useCatalogPage, useCatalogProducts } from '@/hooks/use-catalog'
 import { createCategoryLookup, toProductCardItem } from '@/lib/api/mappers'
-import { ChevronDown, Search, SlidersHorizontal } from 'lucide-react'
+import { ArrowLeftRight, ChevronDown, Search, SlidersHorizontal } from 'lucide-react'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
+
+const CATEGORY_IMAGES: Record<string, string> = {
+  Amplificadores: '/figma-assets/raw/fill_CGM3WO_6a0a1876.png',
+  Processadores: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',
+  Subwoofers: '/figma-assets/raw/fill_3MZVXN_813a9a32.png',
+  Crossovers: '/figma-assets/raw/fill_6OC3H9_7136cc16.png',
+  Fontes: '/figma-assets/raw/fill_3FJG3P_64a33e19.png',
+  Controles: '/figma-assets/raw/fill_THI4RN_1e666beb.png',
+  Acessórios: '/figma-assets/raw/fill_YKBFZV_e95c6db4.png',
+}
 
 const DEFAULT_CATALOG_HERO = {
   heroLabel: 'CATALOGO COMPLETO',
@@ -72,7 +82,7 @@ export default function ProdutosPage() {
               {hero.heroLabel}
             </span>
           </div>
-          <h1 className='font-sans-condensed font-black text-[32px] md:text-5xl lg:text-[90px] leading-tight md:leading-16 lg:leading-[74px] uppercase text-white'>
+          <h1 className='font-sans-condensed font-black text-[32px] md:text-5xl lg:text-[90px] leading-tight md:leading-16 lg:leading-18.5 uppercase text-white'>
             {hero.heroTitle.split('\n').map((line) => (
               <span key={line} className='block'>
                 {line}
@@ -97,11 +107,22 @@ export default function ProdutosPage() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`font-sans font-medium text-[18px] leading-5 px-2 py-2 whitespace-nowrap border-b-2 transition-colors ${
+                className={`flex items-center gap-2 font-sans font-medium text-base leading-5 px-3 py-2 whitespace-nowrap border-b-2 transition-colors shrink-0 ${
                   activeCategory === cat
                     ? 'border-brand text-brand-dark'
                     : 'border-transparent text-muted-foreground hover:text-brand-dark'
                 }`}>
+                {CATEGORY_IMAGES[cat] && (
+                  <div className='w-7 h-7 rounded overflow-hidden shrink-0 bg-muted'>
+                    <Image
+                      src={CATEGORY_IMAGES[cat]}
+                      alt={cat}
+                      width={28}
+                      height={28}
+                      className='object-cover w-full h-full'
+                    />
+                  </div>
+                )}
                 {cat}
               </button>
             ))}
@@ -245,6 +266,12 @@ export default function ProdutosPage() {
                   className='border border-zinc-300 flex items-center gap-2 px-3 h-10 text-sm text-muted-foreground'>
                   <SlidersHorizontal size={14} />
                   Filtros
+                </button>
+                <button
+                  type='button'
+                  className='border border-zinc-300 flex items-center gap-2 px-3 h-10 text-sm text-muted-foreground'>
+                  <ArrowLeftRight size={14} />
+                  Comparar
                 </button>
               </div>
 
