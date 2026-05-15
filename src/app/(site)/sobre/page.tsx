@@ -8,8 +8,6 @@ import OurFactory from '../_components/our-factory'
 import OurFoundations from '../_components/our-foundations'
 import RedBanner from '../_components/red-banner'
 import SocialFeed from '../_components/social-feed'
-import { ABOUT_STATS } from './_components/data'
-
 export default async function SobrePage() {
   const aboutPayload = await getSiteAboutPayload()
 
@@ -17,14 +15,14 @@ export default async function SobrePage() {
     <div>
       {/* 1. HERO */}
       <section className='relative bg-brand-dark h-109.75 overflow-hidden flex items-center'>
-          <Image
-            src={aboutPayload.hero.image}
-            alt={aboutPayload.hero.imageAlt}
-            fill
-            className='object-cover opacity-35'
-            sizes='100vw'
-            priority
-          />
+        <Image
+          src={aboutPayload.hero.image}
+          alt={aboutPayload.hero.imageAlt}
+          fill
+          className='object-cover opacity-35'
+          sizes='100vw'
+          priority
+        />
         <div className='absolute inset-0 bg-gradient-dark-overlay' />
         <Container className='z-10'>
           <div className='grid gap-10 lg:grid-cols-[1fr_428px] lg:items-end'>
@@ -60,7 +58,7 @@ export default async function SobrePage() {
                 1989
               </span>
               <div className='grid grid-cols-2 border border-white/20'>
-                {ABOUT_STATS.map((stat) => (
+                {aboutPayload.stats.map((stat) => (
                   <div key={stat.label} className='border border-white/20 px-4 py-4'>
                     <p className='font-sans-condensed text-display-sm font-black leading-none text-white'>
                       {stat.value.replace('+', '')}<span className='text-brand'>+</span>

@@ -1,6 +1,7 @@
 import type {
   AboutBase,
   AboutValue,
+  CompanyStat,
   FAQItem,
   HeroBannerSlide,
   SiteAboutPayload,
@@ -71,6 +72,13 @@ export const HOME_FEATURED_SECTION: SiteHomePayload['featured'] = {
   ctaHref: '/produtos',
 }
 
+export const COMPANY_STATS: CompanyStat[] = [
+  { value: '35+', label: 'Anos de Mercado' },
+  { value: '200+', label: 'Produtos' },
+  { value: '60+', label: 'Países de Exportação' },
+  { value: '1M+', label: 'Unidades Vendidas' },
+]
+
 export const HOME_HISTORY_SECTION: SiteHomePayload['history'] = {
   label: 'Nossa Historia',
   title: 'CONSTRUINDO\nCOM PROPOSITO',
@@ -80,6 +88,7 @@ export const HOME_HISTORY_SECTION: SiteHomePayload['history'] = {
   imageAlt: 'Nossa historia',
   ctaLabel: 'Conheca mais',
   ctaHref: '/sobre',
+  stats: COMPANY_STATS,
 }
 
 export const HOME_FAQ_ITEMS: FAQItem[] = [
@@ -238,6 +247,7 @@ export const MILESTONE_PATTERN = ['POTENCIA', 'QUALIDADE', 'INOVACAO', 'FEITO NO
 
 export const SITE_ABOUT_PAYLOAD_BASE: Omit<SiteAboutPayload, 'social'> = {
   hero: ABOUT_HERO_SECTION,
+  stats: COMPANY_STATS,
   milestones: MILESTONE_PATTERN,
   quality: ABOUT_QUALITY_SECTION,
   values: ABOUT_VALUES,

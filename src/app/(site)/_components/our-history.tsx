@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ABOUT_STATS } from '../sobre/_components/data'
 
 interface OurHistoryProps {
   section: SiteHomePayload['history']
@@ -22,7 +21,7 @@ export default function OurHistory({ section }: Readonly<OurHistoryProps>) {
         <div className='px-5 py-10 sm:px-8 sm:py-12'>
           <SectionLabel label={section.label} title={section.title} subtitle={section.subtitle} dark />
           <div className='mt-8 grid grid-cols-2 border border-white/20'>
-            {ABOUT_STATS.map((stat) => (
+            {section.stats.map((stat) => (
               <div key={stat.label} className='border border-white/20 px-4 py-4'>
                 <p className='font-sans-condensed text-display-sm font-black leading-none text-white'>
                   {stat.value.endsWith('+') ? (
@@ -50,7 +49,7 @@ export default function OurHistory({ section }: Readonly<OurHistoryProps>) {
           <div className='w-full max-w-122'>
             <SectionLabel label={section.label} title={section.title} subtitle={section.subtitle} dark />
             <div className='mt-8 grid grid-cols-2 border border-white/20'>
-              {ABOUT_STATS.map((stat) => (
+              {section.stats.map((stat) => (
                 <div key={stat.label} className='border border-white/20 px-4 py-4'>
                   <p className='font-sans-condensed text-display-sm font-black leading-none text-white'>
                     {stat.value.endsWith('+') ? (

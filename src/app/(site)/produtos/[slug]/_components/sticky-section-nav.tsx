@@ -4,9 +4,9 @@ import { cn } from '@/lib/utils'
 import { useEffect, useState } from 'react'
 
 const SECTIONS = [
-  { id: 'visao-geral', label: 'Visão Geral' },
-  { id: 'especificacoes', label: 'Especificações' },
-  { id: 'confira-tambem', label: 'Confira também' },
+  { id: 'overview', label: 'Visão Geral' },
+  { id: 'specifications', label: 'Especificações' },
+  { id: 'related', label: 'Confira também' },
 ] as const
 
 export default function StickySectionNav() {

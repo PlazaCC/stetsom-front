@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import { getSupportPayload } from '@/lib/api/server'
+import { cn } from '@/lib/utils'
 import { ArrowUpRight, Download, FileText, Search } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -52,7 +53,7 @@ export default async function SuportePage() {
               const Icon = CARD_ICONS[card.id as keyof typeof CARD_ICONS] ?? FileText
 
               return (
-                <div key={card.id} className={'bg-white border border-border p-4 flex min-h-52 flex-col' + (index === supportPayload.cards.length - 1 ? ' border-b-brand' : '')}>
+                <div key={card.id} className={cn('bg-white border border-border p-4 flex min-h-52 flex-col', index === supportPayload.cards.length - 1 && 'border-b-brand')}>
                   <Icon size={20} className='mb-5 text-brand' />
                   <h3 className='font-sans-condensed font-black text-section-title uppercase text-brand-dark mb-3'>
                     {card.title}
@@ -115,7 +116,7 @@ export default async function SuportePage() {
             Informe seu CEP ou cidade para encontrarmos as assistências técnicas autorizadas Stetsom mais próximas de você.
           </p>
           <div className='flex flex-col lg:flex-row lg:gap-6 mt-8'>
-            <div className='lg:w-[344px] shrink-0'>
+            <div className='lg:w-86 shrink-0'>
               <div className='flex gap-2'>
                 <input
                   type='text'
@@ -139,7 +140,7 @@ export default async function SuportePage() {
               </div>
             </div>
             <div className='flex-1 mt-6 lg:mt-0'>
-              <div className='bg-muted rounded-xl h-[457px]' />
+              <div className='bg-muted rounded-xl h-114.25' />
             </div>
           </div>
         </Container>

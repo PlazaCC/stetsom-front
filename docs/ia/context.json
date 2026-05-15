@@ -1164,6 +1164,65 @@
       ],
       "rationale": "Design fidelity — Figma mostra seções no fluxo com sticky nav, não tabs. Barra secundária sticky (top-22) com IntersectionObserver para scroll spy, âncoras suaves para cada seção.",
       "outcome": "Tab switcher removido. Seções Visão Geral, Especificações e Confira Também renderizadas sequencialmente com navegação sticky. tsc --noEmit e lint exit 0."
+    },
+    {
+      "ts": "2026-05-15T18:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix code-review issues: replace template literals with cn(), canonical Tailwind dimensions, English section IDs, cross-route import",
+      "files": [
+        "src/app/(site)/produtos/_components/catalog-content.tsx",
+        "src/app/(site)/produtos/_components/catalog-mobile-filter.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/produtos/[slug]/_components/sticky-section-nav.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-content.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/_components/our-history.tsx",
+        "src/app/(site)/_components/data.ts"
+      ],
+      "rationale": "Code review flagged 6 important and 4 minor violations: cn() not used for conditional classes, arbitrary px dimensions where canonical Tailwind values exist, Portuguese HTML element IDs used as code discriminators, and cross-route _components import",
+      "outcome": "All validators pass; cn() used consistently, h-114.25/w-86 replace arbitrary values, section IDs are now overview/specifications/related, ABOUT_STATS moved to shared (site)/_components/data.ts"
+    },
+    {
+      "ts": "2026-05-15T18:30:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Add mock-data-constants rule and revert incorrect data.ts creation",
+      "files": [
+        ".agents/rules/mock-data-constants.md",
+        ".claude/rules/mock-data-constants.md",
+        "src/app/(site)/_components/our-history.tsx",
+        "src/app/(site)/sobre/page.tsx"
+      ],
+      "rationale": "User requested a project rule: no data.ts files to share constants between routes during mock phase. ABOUT_STATS moved back to inline const in our-history.tsx; sobre/_components/data.ts restored; site-level _components/data.ts removed",
+      "outcome": "Rule enforced in both agent runtimes; data.ts pattern reverted; ABOUT_STATS is now inline in our-history.tsx and local in sobre/_components/data.ts"
+    },
+    {
+      "ts": "2026-05-15T18:45:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Expand mock-data-constants rule with decision tree for API mock analysis",
+      "files": [
+        ".agents/rules/mock-data-constants.md",
+        ".claude/rules/mock-data-constants.md"
+      ],
+      "rationale": "Rule was too simplistic — needed to guide agents to check contracts.ts and add missing fields to mock payloads before falling back to inline const or local data.ts",
+      "outcome": "Rule now includes a full decision tree: API-originated data goes to contracts.ts + mock payload + server.ts; UI-only constants stay inline; cross-route sharing is always wrong"
+    },
+    {
+      "ts": "2026-05-15T19:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "feat",
+      "summary": "Add CompanyStat to contracts and COMPANY_STATS to mock; remove sobre/_components/data.ts",
+      "files": [
+        "src/lib/api/contracts.ts",
+        "src/lib/mock/site.ts",
+        "src/app/(site)/_components/our-history.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/sobre/_components/data.ts"
+      ],
+      "rationale": "ABOUT_STATS is API-originated data (company stats); per mock-data-constants rule, it must live in contracts.ts + mock payload, not in a data.ts file. Added CompanyStat type, stats field to SiteHomePayload[history] and SiteAboutPayload, and COMPANY_STATS to site.ts mock",
+      "outcome": "our-history.tsx consumes section.stats from SiteHomePayload; sobre/page.tsx consumes aboutPayload.stats; no data.ts needed; sobre/_components/data.ts deleted"
     }
   ]
 }

@@ -1,5 +1,7 @@
 'use client'
 
+import { cn } from '@/lib/utils'
+
 interface CategoryOption {
   name: string
   slug: string
@@ -20,11 +22,12 @@ export function CatalogMobileFilter({ categoryOptions, activeCategory, onCategor
           <button
             key={cat.slug}
             onClick={() => onCategoryChange(cat.slug)}
-            className={`font-sans text-sm px-3 py-1 border transition-colors ${
+            className={cn(
+              'font-sans text-sm px-3 py-1 border transition-colors',
               activeCategory === cat.slug
                 ? 'bg-brand-dark text-white border-brand-dark'
-                : 'bg-white text-muted-foreground border-border hover:border-muted-foreground'
-            }`}>
+                : 'bg-white text-muted-foreground border-border hover:border-muted-foreground',
+            )}>
             {cat.name}
           </button>
         ))}
