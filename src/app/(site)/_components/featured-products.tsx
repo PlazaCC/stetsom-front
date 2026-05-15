@@ -68,7 +68,7 @@ export default function FeaturedProducts({ featuredProducts, spotlightProduct, t
         <div className='grid gap-5 lg:grid-cols-[447px_1fr]'>
           <Link
             href={spotlightProduct.href}
-            className='relative flex h-80 items-center justify-center overflow-hidden rounded-[16px] border border-zinc-200 bg-card transition-colors hover:border-brand sm:h-95 lg:h-111.75'>
+            className='relative flex h-80 items-center justify-center overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-brand sm:h-95 lg:h-111.75'>
             <Image
               src={spotlightProduct.img}
               alt={spotlightProduct.name}

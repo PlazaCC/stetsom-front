@@ -1078,6 +1078,30 @@
       ],
       "rationale": "Local style-definition files (DESIGN_SYSTEM.md, PAGES.md, COMPONENTS.md, assets-manifest.json) drifted from live Figma. Replaced with FIGMA_GRAPH.md — a keyword/nodeID graph for AI-to-MCP navigation. meta.json enriched with keywords and per-page section trees. Audit skills (both runtimes) stripped of source:local branch — MCP is now the only data source.",
       "outcome": "4 stale files deleted, FIGMA_GRAPH.md created with full node→keyword→relationship graph, meta.json enriched with keywords and pageSections. Both skill files now reference FIGMA_GRAPH.md for node discovery, removed all local/mcp bifurcation. tsc and lint pass."
+    },
+    {
+      "ts": "2026-05-15T03:15:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — 20 corrections across 12 files (source: local)",
+      "files": [
+        "src/components/ui/product-card.tsx",
+        "src/components/ui/button.tsx",
+        "src/components/ui/header.tsx",
+        "src/components/ui/footer.tsx",
+        "src/app/(site)/_components/featured-tab-strip.tsx",
+        "src/app/(site)/_components/featured-products.tsx",
+        "src/app/(site)/_components/faq-accordion.tsx",
+        "src/app/(site)/_components/our-history.tsx",
+        "src/app/(site)/_components/our-factory.tsx",
+        "src/app/(site)/produtos/_components/catalog-sidebar.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Periodic design fidelity audit against local Figma reference (meta.json + fresh baselines). 12/12 baselines confirmed from today.",
+      "outcome": "20 corrections: shared components (product-card border-zinc-200→border-border, button rounded-[4px]→rounded-sm, header/footer logo aspect ratio fix + sizes props); page sections (catalog-sidebar zinc colors→tokens, featured-tab-strip border-zinc-200→border-border, featured-products border-zinc-200→border-border, faq-accordion border-zinc-200→border-border, our-history/our-factory added sizes props, sobre/suporte/produtos heroes added sizes='100vw'). tsc --noEmit and lint both exit 0."
     }
   ]
 }

@@ -17,7 +17,7 @@ export function FeaturedTabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel 
     <>
       <div
         role='tablist'
-        className='inline-flex items-center gap-0 overflow-x-auto pb-0 pr-0 sm:gap-0 lg:pr-0 border-b border-zinc-200'>
+        className='inline-flex items-center gap-0 overflow-x-auto pb-0 pr-0 sm:gap-0 lg:pr-0 border-b border-border'>
         {tabs.map((tab) => (
           <button
             type='button'

@@ -14,7 +14,7 @@ export default function ProductCard({ name, category, spec, badge, img, href = '
   return (
     <Link
       href={href}
-      className='group flex flex-col bg-white border border-zinc-200 hover:border-brand hover:shadow-md rounded-[16px] overflow-hidden transition-all'>
+      className='group flex flex-col bg-white border border-border hover:border-brand hover:shadow-md rounded-2xl overflow-hidden transition-all'>
       <div className='bg-card h-32 md:h-36 lg:h-40 flex items-center justify-center p-4'>
         {img ? (
           <Image src={img} alt={name} width={160} height={130} className='object-contain max-h-32.5' />

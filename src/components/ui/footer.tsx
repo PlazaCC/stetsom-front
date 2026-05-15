@@ -1,6 +1,6 @@
 import { FOOTER_COLUMNS } from '@/lib/mock/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
+import { Logo } from './logo'
 
 const SOCIALS = [
   {
@@ -64,7 +64,7 @@ export default function Footer() {
       <div className='mx-auto flex w-full max-w-360 flex-col gap-9 px-5 py-6 lg:px-42.5'>
         <div className='flex flex-col gap-9 lg:flex-row lg:flex-wrap lg:gap-x-41 lg:gap-y-9'>
           <div className='max-w-63.25'>
-            <Image src='/logo.png' alt='Stetsom' width={160} height={49} className='object-contain' />
+            <Logo variant='dark' width={160} height={49} className='object-contain' />
             <p className='mt-4 text-sm leading-5 text-text-subtle-dark'>
               Potência sem limite desde 1989. Fabricamos os melhores amplificadores automotivos do Brasil.
             </p>

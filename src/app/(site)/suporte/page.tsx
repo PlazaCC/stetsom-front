@@ -16,13 +16,14 @@ export default async function SuportePage() {
     <div>
       {/* 1. HERO BANNER - com gradiente dark + watermark "SOS" + barra vermelha */}
       <section className='relative w-full h-84 bg-brand-dark overflow-hidden flex items-center'>
-        <Image
-          src={supportPayload.hero.image}
-          alt='Hero Support'
-          fill
-          className='object-cover opacity-35 object-center'
-          priority
-        />
+          <Image
+            src={supportPayload.hero.image}
+            alt='Hero Support'
+            fill
+            className='object-cover opacity-35 object-center'
+            sizes='100vw'
+            priority
+          />
         <div className='absolute inset-0 bg-linear-to-br from-black/40 via-transparent to-black/40' />
         <span className='absolute inset-0 font-sans-condensed font-black uppercase text-center flex items-center justify-center text-display-2xl sm:text-[150px] lg:text-[263px] text-watermark-text opacity-[0.08] pointer-events-none select-none leading-none'>
           {supportPayload.hero.watermarkText}

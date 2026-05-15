@@ -17,13 +17,14 @@ export default async function SobrePage() {
     <div>
       {/* 1. HERO */}
       <section className='relative bg-brand-dark h-109.75 overflow-hidden flex items-center'>
-        <Image
-          src={aboutPayload.hero.image}
-          alt={aboutPayload.hero.imageAlt}
-          fill
-          className='object-cover opacity-35'
-          priority
-        />
+          <Image
+            src={aboutPayload.hero.image}
+            alt={aboutPayload.hero.imageAlt}
+            fill
+            className='object-cover opacity-35'
+            sizes='100vw'
+            priority
+          />
         <div className='absolute inset-0 bg-gradient-dark-overlay' />
         <Container className='z-10'>
           <div className='grid gap-10 lg:grid-cols-[1fr_428px] lg:items-end'>

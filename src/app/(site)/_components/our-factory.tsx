@@ -15,7 +15,7 @@ interface OurFactoryProps {
 export default function OurFactory({ jobsCta }: OurFactoryProps) {
   return (
     <section className='relative bg-brand-dark overflow-hidden'>
-      <Image src={FACTORY_IMAGE} alt='Fábrica Stetsom' fill className='object-cover' priority />
+      <Image src={FACTORY_IMAGE} alt='Fábrica Stetsom' fill className='object-cover' sizes='100vw' priority />
       <div
         className='absolute inset-0'
         style={{ background: 'radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(22,16,16,1) 100%)' }}

@@ -9,9 +9,9 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: 'rounded-lg bg-primary text-primary-foreground [a]:hover:bg-primary/80',
-        brand: 'rounded-[4px] bg-brand text-white hover:bg-brand/90 font-sans font-semibold uppercase',
+        brand: 'rounded-sm bg-brand text-white hover:bg-brand/90 font-sans font-semibold uppercase',
         'brand-dark':
-          'rounded-[4px] bg-surface-elevated text-white hover:bg-brand-dark font-sans font-semibold uppercase',
+          'rounded-sm bg-surface-elevated text-white hover:bg-brand-dark font-sans font-semibold uppercase',
         outline:
           'rounded-lg border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50',
         pill: 'rounded-full bg-brand text-white hover:bg-brand/90 font-sans font-semibold uppercase',

@@ -3,8 +3,8 @@
 import { NAV_LINKS, PRODUCT_MENU_CATEGORIES } from '@/lib/mock/navigation'
 import { cn } from '@/lib/utils'
 import { Menu, Search } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
+import { Logo } from './logo'
 import { usePathname } from 'next/navigation'
 import { Button } from './button'
 import { Container } from './container'
@@ -24,7 +24,7 @@ export default function Header() {
         {/* Desktop header (unchanged layout) */}
         <div className='hidden md:flex items-center gap-logo-nav'>
           <Link href='/'>
-            <Image src='/logo.png' alt='Stetsom' width={158} height={35} priority />
+            <Logo width={158} height={35} priority />
           </Link>
 
           <div className='hidden md:block'>
@@ -78,7 +78,7 @@ export default function Header() {
           </div>
 
           <Link href='/' className='shrink-0'>
-            <Image src='/logo.png' alt='Stetsom' width={120} height={28} />
+            <Logo width={120} height={28} />
           </Link>
 
           <div className='w-10 flex items-center justify-end'>

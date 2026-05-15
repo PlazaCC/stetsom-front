@@ -47,18 +47,18 @@ export function CatalogSidebar({
         </div>
         <div className='mt-3 space-y-3'>
           <label className='flex items-center gap-3 text-base text-text-subtle'>
-            <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' defaultChecked />
+            <input type='checkbox' className='size-4 rounded border-border accent-brand' defaultChecked />
             Exibir fora de linha
           </label>
           <label className='flex items-center gap-3 text-base text-text-subtle'>
-            <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' />
+            <input type='checkbox' className='size-4 rounded border-border accent-brand' />
             Produtos de exportação
           </label>
         </div>
       </div>
 
       <div className='border border-border bg-card flex items-center h-11 px-3.5 gap-2.5'>
-        <Search size={16} className='text-zinc-500 shrink-0' />
+        <Search size={16} className='text-icon-muted shrink-0' />
         <input
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
@@ -79,7 +79,7 @@ export function CatalogSidebar({
                 type='checkbox'
                 checked={activeCategory === cat}
                 onChange={() => onCategoryChange(cat)}
-                className='size-4 rounded border-zinc-300 accent-brand'
+                className='size-4 rounded border-border accent-brand'
               />
               {cat}
             </label>
@@ -94,15 +94,15 @@ export function CatalogSidebar({
         </div>
         <div className='mt-3 space-y-2 text-base text-text-subtle'>
           <label className='flex items-center gap-3'>
-            <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' defaultChecked />
+            <input type='checkbox' className='size-4 rounded border-border accent-brand' defaultChecked />
             Vulcan
           </label>
           <label className='flex items-center gap-3'>
-            <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' />
+            <input type='checkbox' className='size-4 rounded border-border accent-brand' />
             Combat Line
           </label>
           <label className='flex items-center gap-3'>
-            <input type='checkbox' className='size-4 rounded border-zinc-300 accent-brand' />
+            <input type='checkbox' className='size-4 rounded border-border accent-brand' />
             Digital Bass
           </label>
         </div>

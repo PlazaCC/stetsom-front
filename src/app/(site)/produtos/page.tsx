@@ -72,7 +72,7 @@ export default function ProdutosPage() {
             background: 'radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(28,24,24,1) 100%)',
           }}
         />
-        <Image src={hero.heroImage} alt={hero.heroImageAlt} fill className='object-cover opacity-45' priority />
+        <Image src={hero.heroImage} alt={hero.heroImageAlt} fill className='object-cover opacity-45' sizes='100vw' priority />
         <div
           className='absolute inset-0'
           style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 72%, rgba(0,0,0,1) 100%)' }}

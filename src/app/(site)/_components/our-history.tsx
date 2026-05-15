@@ -17,7 +17,7 @@ export default function OurHistory({ section }: Readonly<OurHistoryProps>) {
       {/* Mobile: image on top, content below */}
       <div className='lg:hidden'>
         <div className='relative aspect-16/11 w-full overflow-hidden'>
-          <Image src={section.image} alt={section.imageAlt} fill className='object-cover' />
+          <Image src={section.image} alt={section.imageAlt} fill className='object-cover' sizes='100vw' />
         </div>
         <div className='px-5 py-10 sm:px-8 sm:py-12'>
           <SectionLabel label={section.label} title={section.title} subtitle={section.subtitle} dark />
@@ -44,7 +44,7 @@ export default function OurHistory({ section }: Readonly<OurHistoryProps>) {
       {/* Desktop: image flush-left (no left padding), content padded right */}
       <div className='hidden lg:flex lg:min-h-132'>
         <div className='relative w-182.75 shrink-0 self-stretch overflow-hidden'>
-          <Image src={section.image} alt={section.imageAlt} fill className='object-cover' />
+          <Image src={section.image} alt={section.imageAlt} fill className='object-cover' sizes='731px' />
         </div>
         <div className='flex flex-1 items-center py-16 pl-22.75 pr-42.5'>
           <div className='w-full max-w-122'>
