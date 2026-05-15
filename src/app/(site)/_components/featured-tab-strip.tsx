@@ -15,9 +15,7 @@ interface FeaturedTabStripProps {
 export function FeaturedTabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel }: FeaturedTabStripProps) {
   return (
     <>
-      <div
-        role='tablist'
-        className='inline-flex items-center gap-0 overflow-x-auto pb-0 pr-0 sm:gap-0 lg:pr-0 border-b border-border'>
+      <div role='tablist' className='inline-flex items-center gap-0 overflow-x-auto bg-muted rounded-lg p-1'>
         {tabs.map((tab) => (
           <button
             type='button'
@@ -26,10 +24,10 @@ export function FeaturedTabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel 
             onClick={() => onSelect(tab)}
             aria-selected={activeTab === tab}
             className={cn(
-              'shrink-0 px-3 py-3 transition-colors text-lg font-medium leading-5 font-sans text-center border-b-2',
+              'shrink-0 px-3 py-1.5 transition-all text-sm leading-5 font-medium font-sans text-center rounded-md',
               activeTab === tab
-                ? 'border-brand text-brand-dark'
-                : 'border-transparent text-muted-foreground hover:text-brand-dark',
+                ? 'bg-white text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground',
             )}>
             {tab}
           </button>
@@ -37,7 +35,7 @@ export function FeaturedTabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel 
       </div>
       <Link
         href={ctaHref}
-        className='ml-4 inline-flex items-center gap-2 px-2 text-sm font-sans-condensed font-black text-brand'>
+        className='ml-4 inline-flex items-center gap-2 px-2 text-base font-sans-condensed font-medium text-brand'>
         <span>{ctaLabel}</span>
         <ArrowRight className='size-4 inline-block' strokeWidth={2.5} />
       </Link>

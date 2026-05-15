@@ -26,7 +26,7 @@ const buttonVariants = cva(
       size: {
         default: 'h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
         xs: "h-6 gap-1 px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: 'h-8 gap-2 px-4 leading-8 tracking-[0.6px]',
+        sm: 'h-8 gap-2 px-2.5 leading-8 tracking-[0.6px]',
         md: 'h-10 gap-2 px-6 text-button-md leading-10 tracking-[0.8px]',
         lg: 'h-12 gap-2.5 px-7 text-sm leading-12',
         icon: 'size-8',

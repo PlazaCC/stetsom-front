@@ -58,6 +58,7 @@
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
+  --radius-card: 1rem;
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
@@ -91,8 +92,8 @@
   --text-subtle-dark: oklch(0.73 0 0);
   --surface-elevated: oklch(0.12 0 0);
   --icon-muted: oklch(0.5 0 0);
-  --watermark-text: rgb(185, 185, 185);
-  --bar-accent: rgb(220, 38, 38);
+  --watermark-text: rgb(184, 184, 184);
+  --bar-accent: rgb(232, 19, 42);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);

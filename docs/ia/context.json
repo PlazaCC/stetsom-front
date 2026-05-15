@@ -1102,6 +1102,24 @@
       ],
       "rationale": "Periodic design fidelity audit against local Figma reference (meta.json + fresh baselines). 12/12 baselines confirmed from today.",
       "outcome": "20 corrections: shared components (product-card border-zinc-200→border-border, button rounded-[4px]→rounded-sm, header/footer logo aspect ratio fix + sizes props); page sections (catalog-sidebar zinc colors→tokens, featured-tab-strip border-zinc-200→border-border, featured-products border-zinc-200→border-border, faq-accordion border-zinc-200→border-border, our-history/our-factory added sizes props, sobre/suporte/produtos heroes added sizes='100vw'). tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T03:30:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — 10 corrections across 7 pages (source: MCP live Figma)",
+      "files": [
+        "src/app/globals.css",
+        "src/components/ui/button.tsx",
+        "src/components/ui/product-card.tsx",
+        "src/components/ui/section-label.tsx",
+        "src/app/(site)/_components/featured-tab-strip.tsx",
+        "src/app/not-found.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Full-site design fidelity audit against Figma MCP live data + .raw/figma-design/ baseline exports (12 frames). HIGH: featured-tab-strip tabs redesigned from underline to pill-segmented control (#F1F1F1 container, white active tab + shadow); 404 SVG watermark hardcoded color replaced with text-watermark-text token. MED: section-label label weight 500→400 (Figma Regular); button sm px-4→px-2.5 (Figma 10px); featured-tab-strip tab label text-lg(18px)→text-sm(14px), CTA font-black→font-medium; product-card rounded-2xl→rounded-card(16px) via new token. LOW: globals.css watermark-text rgb→(184,184,184) exact #B8B8B8; bar-accent rgb(220,38,38)→#E8132A brand red.",
+      "outcome": "Visual implementation aligned with Figma MCP live data for all 6 pages. tsc --noEmit and lint both exit 0."
     }
   ]
 }

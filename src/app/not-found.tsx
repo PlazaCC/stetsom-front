@@ -11,7 +11,7 @@ export default function NotFound() {
       <main className='relative flex min-h-149 flex-col items-center justify-center overflow-hidden bg-off-white px-5 py-12 lg:px-42.5'>
         <svg
           aria-hidden
-          className='absolute pointer-events-none select-none opacity-[0.08] text-[#878787]'
+          className='absolute pointer-events-none select-none opacity-[0.08] text-watermark-text'
           width='626'
           height='301'
           viewBox='0 0 626 301'>
@@ -29,7 +29,7 @@ export default function NotFound() {
 
         <div className='relative z-10 flex max-w-175 flex-col items-center gap-6 text-center'>
           <div className='flex flex-col items-center gap-6'>
-            <h1 className='font-sans-condensed text-[50px] leading-tight font-black uppercase text-brand-dark'>
+            <h1 className='font-sans-condensed text-5xl leading-tight font-black uppercase text-brand-dark'>
               PÁGINA NÃO ENCONTRADA
             </h1>
             <p className='font-sans text-xl text-text-subtle-dark'>

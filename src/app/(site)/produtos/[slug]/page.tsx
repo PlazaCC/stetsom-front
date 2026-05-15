@@ -53,7 +53,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
           <div className='mt-6 flex flex-col lg:flex-row lg:gap-12 lg:items-start'>
             {/* Left: main image */}
             <div className='flex flex-col gap-4 lg:w-111.75 shrink-0'>
-              <div className='relative w-full aspect-[4/3] lg:h-89.5 border border-border rounded-[20px] overflow-hidden bg-card flex items-center justify-center'>
+              <div className='relative w-full aspect-[4/3] lg:h-89.5 border border-border rounded-2xl overflow-hidden bg-card flex items-center justify-center'>
                 <Image
                   src={product.thumbnail_url}
                   alt={product.name}
@@ -102,7 +102,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
                 {Object.entries(product.specifications).map(([key, value]) => (
                   <li
                     key={key}
-                    className='rounded-[12px] border border-muted px-3 py-1 text-xs uppercase text-brand-dark'>
+                    className='rounded-lg border border-muted px-3 py-1 text-xs uppercase text-brand-dark'>
                     {key.replace(/_/g, ' ')}: {String(value)}
                   </li>
                 ))}
