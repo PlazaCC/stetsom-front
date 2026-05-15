@@ -16,7 +16,7 @@ export function BlockRenderer({ block, productName, fallbackImage }: BlockRender
   if (block.type === 'TEXT') {
     const data = toTextBlockData(block.data)
     return (
-      <article className='rounded-xl border border-zinc-200 bg-card p-6 md:p-8'>
+      <article className='rounded-xl border border-border bg-card p-6 md:p-8'>
         <h2 className='font-sans-condensed text-section-title font-black uppercase text-brand-dark'>
           {data.title ?? 'Detalhes do produto'}
         </h2>
@@ -62,7 +62,7 @@ export function BlockRenderer({ block, productName, fallbackImage }: BlockRender
         : 'Veja a demonstração completa com foco em potência, estabilidade e performance real em uso automotivo.'
     const videoUrl = typeof block.data.video_url === 'string' ? block.data.video_url : undefined
     return (
-      <article className='rounded-xl border border-zinc-200 bg-card p-6 md:p-8'>
+      <article className='rounded-xl border border-border bg-card p-6 md:p-8'>
         <p className='font-sans-condensed text-xs font-bold uppercase tracking-wider text-brand'>Video</p>
         <h3 className='mt-2 font-sans-condensed text-section-title font-black uppercase text-brand-dark'>{title}</h3>
         <p className='mt-3 text-sm leading-relaxed text-text-subtle'>{description}</p>
@@ -71,7 +71,7 @@ export function BlockRenderer({ block, productName, fallbackImage }: BlockRender
             href={videoUrl}
             target='_blank'
             rel='noreferrer'
-            className='mt-5 inline-flex rounded-lg bg-brand px-4 py-2 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-zinc-50'>
+            className='mt-5 inline-flex rounded-lg bg-brand px-4 py-2 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-white'>
             Assistir demonstração
           </a>
         ) : null}
@@ -83,7 +83,7 @@ export function BlockRenderer({ block, productName, fallbackImage }: BlockRender
     const rawHtml = typeof block.data.html === 'string' ? block.data.html : '<p>Conteúdo técnico indisponível.</p>'
     const safeHtml = DOMPurify.sanitize(rawHtml, { USE_PROFILES: { html: true } })
     return (
-      <article className='rounded-xl border border-zinc-200 bg-card p-6 md:p-8'>
+      <article className='rounded-xl border border-border bg-card p-6 md:p-8'>
         <p className='font-sans-condensed text-xs font-bold uppercase tracking-wider text-brand'>Detalhes técnicos</p>
         <div
           className='mt-3 text-sm leading-relaxed text-text-subtle [&_strong]:font-semibold [&_strong]:text-brand-dark'
@@ -96,7 +96,7 @@ export function BlockRenderer({ block, productName, fallbackImage }: BlockRender
   if (block.type === 'MODEL3D') {
     const modelUrl = typeof block.data.file_url === 'string' ? block.data.file_url : null
     return (
-      <article className='rounded-xl border border-zinc-200 bg-card p-6 md:p-8'>
+      <article className='rounded-xl border border-border bg-card p-6 md:p-8'>
         <p className='font-sans-condensed text-xs font-bold uppercase tracking-wider text-brand'>Modelo 3D</p>
         <h3 className='mt-2 font-sans-condensed text-section-title font-black uppercase text-brand-dark'>
           Visualização interativa
@@ -109,7 +109,7 @@ export function BlockRenderer({ block, productName, fallbackImage }: BlockRender
             href={modelUrl}
             target='_blank'
             rel='noreferrer'
-            className='mt-5 inline-flex rounded-[4px] border border-zinc-300 bg-white px-4 py-2 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-brand-dark'>
+            className='mt-5 inline-flex rounded-[4px] border border-border bg-white px-4 py-2 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-brand-dark'>
             Abrir modelo
           </a>
         ) : null}

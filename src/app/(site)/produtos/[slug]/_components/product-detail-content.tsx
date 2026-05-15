@@ -30,7 +30,7 @@ export default function ProductDetailContent({
 
   return (
     <>
-      <section id='visao-geral' className='scroll-mt-38'>
+      <section id='overview' className='scroll-mt-38'>
         <section className='relative isolate overflow-hidden bg-black'>
           <div className='absolute inset-0' style={PRODUCT_HERO_GRADIENT} />
           <div className='absolute inset-x-0 bottom-0 h-22 bg-gradient-to-t from-black/70 to-transparent' />
@@ -67,7 +67,7 @@ export default function ProductDetailContent({
         )}
       </section>
 
-      <section id='especificacoes' className='scroll-mt-38'>
+      <section id='specifications' className='scroll-mt-38'>
         <div className='border-b border-zinc-200 px-5 py-3 lg:px-42.5'>
           <p className='font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground'>
             Dados técnicos
@@ -108,7 +108,7 @@ export default function ProductDetailContent({
         )}
       </section>
 
-      <section id='confira-tambem' className='scroll-mt-38 bg-off-white py-10 md:py-12 lg:py-16'>
+      <section id='related' className='scroll-mt-38 bg-off-white py-10 md:py-12 lg:py-16'>
         <Container>
           <div className='border-b border-zinc-200 pb-3'>
             <p className='font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground'>

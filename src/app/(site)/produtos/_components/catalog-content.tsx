@@ -6,6 +6,7 @@ import { useCatalogCategories, useCatalogPage, useCatalogProducts } from '@/hook
 import { useCatalogFilters } from '@/hooks/use-catalog-filters'
 import { createCategoryLookup, toProductCardItem } from '@/lib/api/mappers'
 import type { Category } from '@/lib/api/contracts'
+import { cn } from '@/lib/utils'
 import { CatalogMobileFilter } from './catalog-mobile-filter'
 import { CatalogSidebar } from './catalog-sidebar'
 import { ArrowLeftRight, Search, SlidersHorizontal } from 'lucide-react'
@@ -139,16 +140,16 @@ export default function CatalogContent() {
                 <button
                   key={cat.slug}
                   onClick={() => setActiveCategory(cat.slug)}
-                  className={`flex items-center gap-2 font-sans font-medium text-base leading-5 px-3 py-2 whitespace-nowrap border-b-2 transition-colors shrink-0 ${
-                    isActive
-                      ? 'border-brand text-brand-dark'
-                      : 'border-transparent text-muted-foreground hover:text-brand-dark'
-                  }`}>
+                  className={cn(
+                    'flex items-center gap-2 font-sans font-medium text-base leading-5 px-3 py-2 whitespace-nowrap border-b-2 transition-colors shrink-0',
+                    isActive ? 'border-brand text-brand-dark' : 'border-transparent text-muted-foreground hover:text-brand-dark',
+                  )}>
                   {imageSrc && (
                     <div
-                      className={`rounded overflow-hidden shrink-0 flex items-center justify-center ${
-                        isActive ? 'w-10 h-10 bg-brand/10' : 'w-7 h-7 bg-muted'
-                      }`}>
+                      className={cn(
+                        'rounded overflow-hidden shrink-0 flex items-center justify-center',
+                        isActive ? 'w-10 h-10 bg-brand/10' : 'w-7 h-7 bg-muted',
+                      )}>
                       <Image
                         src={imageSrc}
                         alt=''

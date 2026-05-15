@@ -150,6 +150,11 @@ export type AboutBase = {
   description: string
 }
 
+export type CompanyStat = {
+  value: string
+  label: string
+}
+
 export type SiteHomePayload = {
   hero: HeroBannerSlide[]
   featuredProducts: ProductCardItem[]
@@ -169,6 +174,7 @@ export type SiteHomePayload = {
     imageAlt: string
     ctaLabel: string
     ctaHref: string
+    stats: CompanyStat[]
   }
   bases: AboutBase[]
   faq: FAQItem[]
@@ -189,6 +195,7 @@ export type SiteAboutPayload = {
     image: string
     imageAlt: string
   }
+  stats: CompanyStat[]
   milestones: string[]
   quality: {
     label: string

@@ -12,7 +12,7 @@ export default function RedBanner({ milestones }: Readonly<RedBannerProps>) {
       <Marquee gradient={false} speed={40}>
         <div className='flex items-center gap-9'>
           {milestones.map((milestone, i) => (
-            <div key={i} className='flex items-center gap-9 shrink-0'>
+            <div key={milestone} className='flex items-center gap-9 shrink-0'>
               <span className='text-white font-sans-condensed font-normal text-lg tracking-[0.05em] uppercase whitespace-nowrap'>
                 {milestone}
               </span>
