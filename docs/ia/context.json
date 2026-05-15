@@ -1154,6 +1154,21 @@
       ],
       "rationale": "Code review identified key={i} (array index) in red-banner and faq-accordion — should use stable content keys. Indentation inconsistency in AccordionItem. Rules files were pending creation after previous session ended.",
       "outcome": "red-banner uses key={milestone}; faq-accordion uses key={q} with corrected indentation; mock-data-constants rule dual-installed in both agent runtimes with full decision tree"
+    },
+    {
+      "ts": "2026-05-15T22:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix all code-review issues: remove data.ts, fix border tokens, text-white, key stability, extract PRODUCT_LINES",
+      "files": [
+        "src/app/(site)/suporte/_components/data.ts",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/produtos/[slug]/_components/block-renderer.tsx",
+        "src/app/(site)/produtos/_components/catalog-sidebar.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Code review of fix/simplify-modularize-refactor vs main found: suporte/data.ts violating mock-data-constants rule (consts used in one file only); block-renderer using border-zinc-200/zinc-300 and text-zinc-50 instead of design tokens; FAQ key={index}; hardcoded Linhas options without const",
+      "outcome": "data.ts deleted; CARD_ICONS and CONTACT_DETAILS inlined in suporte/page.tsx; border-border applied in all block-renderer articles; text-white replaces text-zinc-50; key={item.q} on FAQ items; PRODUCT_LINES const extracted in catalog-sidebar.tsx. tsc and lint pass."
     }
   ]
 }

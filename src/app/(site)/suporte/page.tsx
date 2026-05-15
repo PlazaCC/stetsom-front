@@ -4,11 +4,27 @@ import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import { getSupportPayload } from '@/lib/api/server'
 import { cn } from '@/lib/utils'
-import { ArrowUpRight, Download, FileText, Search } from 'lucide-react'
+import { ArrowUpRight, Download, FileText, Mail, MapPin, MessageCircle, Phone, Search } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { CARD_ICONS, CONTACT_DETAILS } from './_components/data'
 import { ContactForm } from './_components/contact-form'
+
+const CARD_ICONS = {
+  'central-ajuda': FileText,
+  garantia: MapPin,
+  manuais: MessageCircle,
+} as const
+
+const CONTACT_DETAILS = [
+  {
+    id: 'address',
+    icon: MapPin,
+    label: 'Endereço',
+    value: 'Av. Industrial Stetsom, 100 — São Paulo, SP 09850-000',
+  },
+  { id: 'email', icon: Mail, label: 'E-mail', value: 'suporte@stetsom.com.br' },
+  { id: 'phone', icon: Phone, label: 'Telefone', value: '+55 (11) 3000-0000' },
+] as const
 
 export default async function SuportePage() {
   const supportPayload = await getSupportPayload()
@@ -162,7 +178,7 @@ export default async function SuportePage() {
             <div className='flex-1 mt-8 lg:mt-0'>
               <Accordion className='space-y-3'>
                 {supportPayload.faq.items.map((item, index) => (
-                  <AccordionItem key={index} value={`item-${index}`} className='border border-border rounded px-6 py-4'>
+                  <AccordionItem key={item.q} value={`item-${index}`} className='border border-border rounded px-6 py-4'>
                     <AccordionTrigger className='hover:no-underline py-0 font-sans-condensed font-black text-base uppercase text-foreground hover:text-brand'>
                       {item.q}
                     </AccordionTrigger>

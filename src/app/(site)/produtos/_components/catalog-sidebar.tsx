@@ -2,6 +2,8 @@
 
 import { ChevronDown, Search } from 'lucide-react'
 
+const PRODUCT_LINES = ['Vulcan', 'Combat Line', 'Digital Bass'] as const
+
 interface CategoryOption {
   name: string
   slug: string
@@ -103,18 +105,12 @@ export function CatalogSidebar({
           <ChevronDown size={16} className='text-muted-foreground' />
         </div>
         <div className='mt-3 space-y-2 text-base text-muted-foreground'>
-          <label className='flex items-center gap-3'>
-            <input type='checkbox' className='size-4 rounded border-border accent-brand' defaultChecked />
-            Vulcan
-          </label>
-          <label className='flex items-center gap-3'>
-            <input type='checkbox' className='size-4 rounded border-border accent-brand' />
-            Combat Line
-          </label>
-          <label className='flex items-center gap-3'>
-            <input type='checkbox' className='size-4 rounded border-border accent-brand' />
-            Digital Bass
-          </label>
+          {PRODUCT_LINES.map((line, i) => (
+            <label key={line} className='flex items-center gap-3'>
+              <input type='checkbox' className='size-4 rounded border-border accent-brand' defaultChecked={i === 0} />
+              {line}
+            </label>
+          ))}
         </div>
       </div>
     </aside>
