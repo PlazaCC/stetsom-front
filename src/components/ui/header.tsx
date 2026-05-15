@@ -2,11 +2,10 @@
 
 import { NAV_LINKS, PRODUCT_MENU_CATEGORIES } from '@/lib/mock/navigation'
 import { cn } from '@/lib/utils'
-import { Menu, Search } from 'lucide-react'
+import { ChevronDown, Menu, Search } from 'lucide-react'
 import Link from 'next/link'
 import { Logo } from './logo'
 import { usePathname } from 'next/navigation'
-import { Button } from './button'
 import { Container } from './container'
 import {
   NavigationMenu,
@@ -88,15 +87,15 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Right side (desktop) */}
+        {/* Right side (desktop) — language selector */}
         <div className='hidden md:flex items-center'>
-          <Button
-            variant='pill'
-            nativeButton={false}
-            className='bg-brand-dark hover:bg-surface-elevated py-2 px-3 h-auto text-xs'
-            render={<Link href='/garantia' />}>
-            Garantia
-          </Button>
+          <button
+            type='button'
+            className='flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-brand hover:text-brand-dark'>
+            <BrFlag />
+            <span className='font-sans font-semibold uppercase tracking-wide'>PT</span>
+            <ChevronDown size={12} />
+          </button>
         </div>
       </Container>
     </header>
@@ -148,5 +147,15 @@ function ListItem({
         }
       />
     </li>
+  )
+}
+
+function BrFlag() {
+  return (
+    <svg width='16' height='12' viewBox='0 0 16 12' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true'>
+      <rect width='16' height='12' rx='1' fill='#009C3B' />
+      <path d='M8 1.5L14.5 6L8 10.5L1.5 6L8 1.5Z' fill='#FEDF00' />
+      <circle cx='8' cy='6' r='2.4' fill='#002776' />
+    </svg>
   )
 }

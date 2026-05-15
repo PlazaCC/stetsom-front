@@ -7,19 +7,19 @@ export const NAV_LINKS = [
 export const PRODUCT_MENU_CATEGORIES = [
   {
     label: 'Amplificadores',
-    image: '/figma-assets/raw/fill_3MZVXN_813a9a32.png',
+    image: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',
     href: '/produtos?category=amplificadores',
     description: 'Amplificadores de alta potencia para sistemas automotivos.',
   },
   {
     label: 'Processadores',
-    image: '/figma-assets/raw/fill_6OC3H9_7136cc16.png',
+    image: '/figma-assets/raw/fill_THI4RN_1e666beb.png',
     href: '/produtos?category=processadores',
     description: 'Processadores de alta performance para aplicacoes automotivas.',
   },
   {
     label: 'Subwoofers',
-    image: '/figma-assets/raw/fill_3FJG3P_64a33e19.png',
+    image: '/figma-assets/raw/product-c.png',
     href: '/produtos?category=subwoofers',
     description: 'Subwoofers com foco em SPL e resposta de graves.',
   },
@@ -42,9 +42,9 @@ export const FOOTER_COLUMNS = [
     title: 'Empresa',
     links: [
       { label: 'Sobre nós', href: '/sobre' },
-      { label: 'Nossa história', href: '/sobre' },
-      { label: 'Fábrica', href: '/sobre' },
-      { label: 'Contato', href: '/suporte' },
+      { label: 'Produtos', href: '/produtos' },
+      { label: 'Suporte', href: '/suporte' },
+      { label: 'Garantia', href: '/suporte' },
     ],
   },
   {
@@ -72,7 +72,6 @@ export const FOOTER_COLUMNS = [
 
 export const FOOTER_SOCIALS = [
   { label: 'Facebook', href: '#' },
-  { label: 'Instagram', href: '#' },
   { label: 'YouTube', href: '#' },
   { label: 'TikTok', href: '#' },
 ] as const

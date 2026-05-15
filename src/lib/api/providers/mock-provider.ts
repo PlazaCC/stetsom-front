@@ -23,7 +23,6 @@ import {
   SPOTLIGHT_PRODUCT_SLUG,
 } from '@/lib/mock/catalog'
 import {
-  HOME_BASES,
   HOME_FAQ_ITEMS,
   HOME_FAQ_SECTION,
   HOME_HERO_SLIDES,
@@ -211,7 +210,6 @@ export function createMockCmsProvider(): CmsProvider {
         featuredTabs: HOME_FEATURED_TABS,
         featured: HOME_FEATURED_SECTION,
         history: HOME_HISTORY_SECTION,
-        bases: HOME_BASES,
         faq: HOME_FAQ_ITEMS,
         faqSection: HOME_FAQ_SECTION,
         social: SITE_SOCIAL_SECTION,
