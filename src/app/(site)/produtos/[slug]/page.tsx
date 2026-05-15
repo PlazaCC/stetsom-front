@@ -4,7 +4,8 @@ import { getCatalogProductDetail } from '@/lib/api/server'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import ProductDetailTabs from './_components/product-detail-tabs'
+import ProductDetailContent from './_components/product-detail-content'
+import StickySectionNav from './_components/sticky-section-nav'
 
 function toImageList(data: Record<string, unknown>): string[] {
   const images = data.images
@@ -148,8 +149,8 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
         </Container>
       </section>
 
-      {/* TABS: Especificações / Confira também */}
-      <ProductDetailTabs
+      <StickySectionNav />
+      <ProductDetailContent
         productName={product.name}
         thumbnailUrl={product.thumbnail_url}
         specifications={product.specifications}

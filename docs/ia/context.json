@@ -1149,6 +1149,21 @@
       ],
       "rationale": "Full-site design fidelity audit against Figma MCP live data for /produtos page. HIGH: watermark 150px→263px, label font-black→font-medium, sidebar 'Ordenar por' redesigned from condensed black 34px to Barlow Medium 16px, 'Filtros' from 34px bold to 18px bold, sidebar sections switched from card containers to plain separator-line layout matching Figma. MED: hero mobile height 200→288px, title 32px→48px, category tab icons 28x28→40x40 active/28x28 inactive with red-tint bg, card gap 12px→20px mobile/16px→32px desktop, product-card border-radius 16px→10px. LOW: catalog-mobile-filter zinc tokens replaced with border-border.1: bar-accent #E8132A→#DC2626 per Figma red bar color.",
       "outcome": "Visual implementation aligned with Figma MCP live data for the /produtos page. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T00:35:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Refatorado ProductDetailTabs (tab switcher) para StickySectionNav + ProductDetailContent (seções no fluxo com navegação sticky por âncoras)",
+      "files": [
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-content.tsx",
+        "src/app/(site)/produtos/[slug]/_components/sticky-section-nav.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Design fidelity — Figma mostra seções no fluxo com sticky nav, não tabs. Barra secundária sticky (top-22) com IntersectionObserver para scroll spy, âncoras suaves para cada seção.",
+      "outcome": "Tab switcher removido. Seções Visão Geral, Especificações e Confira Também renderizadas sequencialmente com navegação sticky. tsc --noEmit e lint exit 0."
     }
   ]
 }
