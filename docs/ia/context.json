@@ -978,6 +978,24 @@
       ],
       "rationale": "cn() used raw twMerge which doesn't know about Tailwind v4 @theme custom text-* tokens (--text-display-sm, etc.). When merging text-display-sm with text-brand-dark, tailwind-merge treated both as unknown text-* classes and dropped the font-size. Fix: use extendTailwindMerge with theme.text array listing all custom text tokens.",
       "outcome": "Changed twMerge import to extendTailwindMerge with custom text tokens. tsc --noEmit exits 0."
+    },
+    {
+      "ts": "2026-05-14T20:00:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — 8 corrections across 8 files (source: local)",
+      "files": [
+        "src/components/ui/product-card.tsx",
+        "src/components/ui/footer.tsx",
+        "src/app/(site)/_components/company-timeline.tsx",
+        "src/app/(site)/_components/red-banner.tsx",
+        "src/app/(site)/_components/timeline-checkpoint.tsx",
+        "src/app/(site)/_components/timeline-progress-bar.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/produtos/page.tsx"
+      ],
+      "rationale": "Periodic design fidelity audit against local Figma reference docs (DESIGN_SYSTEM.md + PAGES.md)",
+      "outcome": "HIGH: CompanyTimeline kept bg-brand-dark (reverted incorrect bg-white change); PAGES.md corrected to bg-brand-dark. RedBanner bg-brand→bg-bar-accent; ProdutoSelecionado outer bg-[#F8F8F8] removed to prevent bleed into tabs. MED: ProductCard rounded-lg→rounded-[16px]; Footer lg:px-25→lg:px-42.5; Produtos grid section bg-off-white→bg-white; Produtos category tabs bg-card/border-border→bg-white/border-zinc-200. LOW: TimelineProgressBar hardcoded rgb→fill-brand/fill-zinc-600 tokens. tsc --noEmit and lint both exit 0."
     }
   ]
 }

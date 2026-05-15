@@ -102,7 +102,7 @@ export default function ProdutosPage() {
       </section>
 
       {/* CATEGORY TABS */}
-      <div className='bg-card border-b border-border'>
+      <div className='bg-white border-b border-zinc-200'>
         <Container>
           <div className='flex items-center gap-1 py-1 overflow-x-auto'>
             {categoryOptions.map((cat) => (
@@ -133,7 +133,7 @@ export default function ProdutosPage() {
       </div>
 
       {/* CONTENT: sidebar + grid */}
-      <section className='bg-off-white pt-6 pb-12'>
+      <section className='bg-white pt-6 pb-12'>
         <Container>
           <div className='flex gap-9'>
             <CatalogSidebar

@@ -96,7 +96,7 @@ Desktop: `1200:6180` (1440px) | Mobile: `1200:5944` (375px)
 | 1 | `1200:6181` | `1200:5945` | Header | `bg-white` | Header | `ui/header.tsx` |
 | 2 | `1200:6188` | `1200:5950` | Hero Banner | dark radial | — (inline) | `sobre/page.tsx` |
 | 3 | `1200:6215` | `1200:5976` | Stats Bar | `bg-bar-accent` | RedBanner / inline | `_components/red-banner.tsx` |
-| 4 | `1200:6237` | `1200:5998` | Timeline / História | `bg-white` | CompanyTimeline | `_components/company-timeline.tsx` |
+| 4 | `1200:6237` | `1200:5998` | Timeline / História | `bg-brand-dark` | CompanyTimeline | `_components/company-timeline.tsx` |
 | 5 | `1200:6271` | `1200:6033` | Galeria Qualidade | `bg-brand-dark` + dark radial | DarkGallery | `_components/dark-gallery.tsx` |
 | 6 | `1200:6322` | `1200:6061` | Social Medias | `bg-off-white` | SocialFeed | `_components/social-feed.tsx` |
 | 7 | `1200:6346` | `1200:6091` | Nossas Bases / Stats | `bg-white` | OurFoundations | `_components/our-foundations.tsx` |

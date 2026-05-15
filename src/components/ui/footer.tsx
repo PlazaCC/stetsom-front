@@ -61,7 +61,7 @@ const COPYRIGHT_LINKS = [
 export default function Footer() {
   return (
     <footer className='bg-footer'>
-      <div className='mx-auto flex w-full max-w-360 flex-col gap-9 px-5 py-6 lg:px-25'>
+      <div className='mx-auto flex w-full max-w-360 flex-col gap-9 px-5 py-6 lg:px-42.5'>
         <div className='flex flex-col gap-9 lg:flex-row lg:flex-wrap lg:gap-x-41 lg:gap-y-9'>
           <div className='max-w-63.25'>
             <Image src='/logo.png' alt='Stetsom' width={160} height={49} className='object-contain' />

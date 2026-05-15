@@ -11,11 +11,11 @@ export function TimelineProgressBar({ progressPercent }: TimelineProgressBarProp
         viewBox='0 0 100 4'
         preserveAspectRatio='none'
         className='absolute left-0 top-0 w-full h-full'>
-        <rect width='100%' height='100%' fill='rgb(80,80,80)' />
+        <rect width='100%' height='100%' className='fill-zinc-600' />
         <rect
           width={`${progressPercent}%`}
           height='100%'
-          fill='rgb(232,19,42)'
+          className='fill-brand'
           style={{ transition: 'width 0.6s ease-out' }}
         />
       </svg>

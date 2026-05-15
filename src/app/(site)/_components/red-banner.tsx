@@ -8,7 +8,7 @@ interface RedBannerProps {
 
 export default function RedBanner({ milestones }: Readonly<RedBannerProps>) {
   return (
-    <section className='bg-brand py-4 overflow-hidden'>
+    <section className='bg-bar-accent py-4 overflow-hidden'>
       <Marquee gradient={false} speed={40}>
         <div className='flex items-center gap-6 pr-6'>
           {milestones.map((milestone, i) => (

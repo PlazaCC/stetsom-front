@@ -44,7 +44,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
   ]
 
   return (
-    <div className='bg-[#F8F8F8]'>
+    <>
       {/* PRODUCT PREVIEW — image left + info right */}
       <section className='bg-[#F8F8F8] py-6 lg:py-8'>
         <Container>
@@ -156,6 +156,6 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
         blocks={blocks}
         relatedProducts={relatedProducts}
       />
-    </div>
+    </>
   )
 }
