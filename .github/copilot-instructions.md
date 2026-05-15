@@ -17,6 +17,7 @@ Skills are stored in `.agents/skills/` and discovered automatically. Invoke the 
 | `vercel-composition-patterns`   | Component architecture, compound components         |
 | `vercel-react-view-transitions` | Page transitions, animated route changes            |
 | `deploy-to-vercel`              | Deploying the app, creating preview deployments     |
+| `quick-commit`                  | Generating commit messages from staged/unstaged changes |
 
 ## Quick Rules
 

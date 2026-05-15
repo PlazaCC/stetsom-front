@@ -8,29 +8,38 @@ argument-hint: '[source: local|mcp] [optional: specific page slug or "all"]'
 
 ## Overview
 
-This skill runs a **complete design fidelity cycle** across all Stetsom Front pages against a design source of truth. It is distinct from the lighter `/refine-design` skill (single component) — this one audits every page, produces a cross-site divergence matrix, and drives phased implementation of all corrections.
+This skill runs a **complete design fidelity cycle** across all Stetsom Front pages against the Figma design. It is distinct from the lighter `/refine-design` skill (single component) — this one audits every page, produces a cross-site divergence matrix, and drives phased implementation of all corrections.
 
-**Source selector:** Pass `source:mcp` to fetch live data from the Figma MCP, or `source:local` (default) to use cached design reference files in `docs/ia/figma/`.
+**Data source:** All design data is fetched live from Figma via the Framelink Figma MCP. No local style-definition files are used — they have been removed to prevent drift.
 
-| Source   | Behavior                                                              | Use case                                  |
-| -------- | --------------------------------------------------------------------- | ----------------------------------------- |
-| `local`  | Reads `DESIGN_SYSTEM_REFERENCE.md` + `PAGES_REFERENCE.md` + `meta.json` from `docs/ia/figma/`. No MCP calls needed. | Quick audit, offline, no Figma access     |
-| `mcp`    | Fetches live Figma data via `mcp_framelink_fig_get_figma_data` + download frames. Slower but authoritative. | Full fidelity pass, before releases       |
+### Reference Priority
+
+During visual review (Phase 3), the agent consults references in this order:
+
+1. **`.raw/figma-design/` exports** — highest fidelity, extracted directly from Figma frames. These are the ground truth for pixel-level comparison.
+2. **Figma MCP live data** — supplementary structural data (node tree, properties, styles) not visible in the image.
+3. **`docs/ia/figma/FIGMA_GRAPH.md`** — node IDs, keywords, and section graphs for navigating Figma MCP with minimal calls.
+
+The `.raw/figma-design/` images take precedence because they capture exact Figma output — colors, spacing, typography, layout, and responsive differences — without interpretation or drift from MCP data.
 
 ---
 
-## Figma Reference (MCP source only)
+## Figma Reference
 
 File key: `huD41oTL0FAa7xsNEK8tAM`
 
-| Page slug             | Desktop nodeId | Mobile nodeId |
-| --------------------- | -------------- | ------------- |
-| `home`                | `1200:4584`    | `1200:4304`   |
-| `produtos`            | `1200:4982`    | `1200:4766`   |
-| `produto-selecionado` | `1200:5666`    | `1200:5391`   |
-| `sobre`               | `1200:6180`    | `1200:5944`   |
-| `suporte`             | `1200:6454`    | `1200:6785`   |
-| `404`                 | `1200:7086`    | `1200:7151`   |
+See `docs/ia/figma/FIGMA_GRAPH.md` for the full node graph (page frames, section trees, and component sets with keywords).
+
+For quick lookup, `docs/ia/figma/meta.json` contains all page/component node IDs in machine-readable format.
+
+| Page slug             | Desktop nodeId | Mobile nodeId | Keywords |
+| --------------------- | -------------- | ------------- | -------- |
+| `home`                | `1200:4584`    | `1200:4304`   | home, hero, carrossel, novidades, historia, foundations, social |
+| `produtos`            | `1200:4982`    | `1200:4766`   | catalogo, filtros, grid, cards |
+| `produto-selecionado` | `1200:5666`    | `1200:5391`   | detalhe, breadcrumb, specs, blocks, relacionados |
+| `sobre`               | `1200:6180`    | `1200:5944`   | historia, timeline, galeria, foundations, fabrica |
+| `suporte`             | `1200:6454`    | `1200:6785`   | sos, documentacao, faq, contato |
+| `404`                 | `1200:7086`    | `1200:7151`   | not found, nao encontrado |
 
 ---
 
@@ -48,11 +57,9 @@ File key: `huD41oTL0FAa7xsNEK8tAM`
 
 ### Phase 0 — Baseline Export
 
-**If source is `mcp`:**
-
 Download all page frames to `.raw/figma-design/<page-slug>/` for before/after comparison.
 
-**Tool:** `mcp_framelink_fig_download_figma_images`
+**Tool:** `Framelink_Figma_MCP_download_figma_images`
 
 Target structure:
 
@@ -83,7 +90,7 @@ Target structure:
 Example call pattern:
 
 ```
-mcp_framelink_fig_download_figma_images(
+Framelink_Figma_MCP_download_figma_images(
   fileKey: "huD41oTL0FAa7xsNEK8tAM",
   nodes: [
     { nodeId: "1200:4584", fileName: "desktop.png", localPath: ".raw/figma-design/home" },
@@ -94,19 +101,13 @@ mcp_framelink_fig_download_figma_images(
 
 Repeat for all 6 pages (12 calls total, batched 2 per call = 6 batches).
 
-**If source is `local`:**
-
-Read the existing baselines from `.raw/figma-design/`. They may be stale — note the date from the file timestamps and warn the user.
-
 ---
 
 ### Phase 1 — Design Token Audit
 
-Read the design token reference and compare against `src/app/globals.css`:
+Read the design token reference from `src/app/globals.css` (`@theme inline` block) and compare against Figma via MCP.
 
-**If source is `mcp`:** Fetch Figma document styles via `mcp_framelink_fig_get_figma_data` on root websiteSection node `1200:4302`.
-
-**If source is `local`:** Read `docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md` for token mappings.
+Fetch Figma document styles via `Framelink_Figma_MCP_get_figma_data(fileKey="huD41oTL0FAa7xsNEK8tAM", nodeId="1200:4302")` to inspect the root's local styles.
 
 **Check:**
 
@@ -141,9 +142,7 @@ Token mapping reference (from reference docs, whichever source):
 
 For each shared component in `src/components/ui/`, read the code and compare against design intent.
 
-**If source is `mcp`:** Fetch each component's Figma node for the design reference.
-
-**If source is `local`:** Read `docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md` for component specs.
+Fetch each component's Figma node (see `docs/ia/figma/FIGMA_GRAPH.md` or `meta.json` for node IDs) via `Framelink_Figma_MCP_get_figma_data` to inspect variant properties.
 
 Key components to audit:
 
@@ -162,11 +161,22 @@ Document each divergence in the matrix (Phase 4).
 
 ### Phase 3 — Page-by-Page Visual Review
 
-For each page, compare implementation against the design reference.
+For each page, compare implementation against the design reference using `.raw/figma-design/` images as the primary visual source.
 
-**If source is `mcp`:** Fetch live Figma data via `mcp_framelink_fig_get_figma_data(fileKey, nodeId)` on each page's desktop frame.
+**Visual comparison methodology:**
 
-**If source is `local`:** Read `docs/ia/figma/PAGES_REFERENCE.md` for per-page section structure and layout specs.
+1. Read the `.raw/figma-design/<page-slug>/desktop.png` image — this is the Figma-exported ground truth for the entire page.
+2. Open the corresponding page in the dev server at `localhost:3000`.
+3. Take a screenshot of the running page.
+4. Compare the active desktop frame from `.raw/figma-design/` side by side with the live page screenshot — identify divergences in colors, spacing, typography, layout, section order, watermarks, and interactive states.
+5. Repeat for `.raw/figma-design/<page-slug>/mobile.png` — compare responsive differences.
+6. For each divergence, inspect the source code to determine the root cause (wrong token, missing class, wrong component).
+
+**Supplementary sources** (consult after image comparison for additional detail):
+
+- Fetch live Figma data via `Framelink_Figma_MCP_get_figma_data(fileKey, nodeId)` on each page's desktop frame to inspect specific node properties, styles, and component structure not visible in the image.
+- Consult `docs/ia/figma/FIGMA_GRAPH.md` for quick node ID lookups and section keywords.
+- **If `.raw/figma-design/<page-slug>/` is missing** or stale, warn the user.
 
 **Inspect code:** Read the page's `page.tsx` and all `_components/` files.
 
@@ -263,9 +273,7 @@ If any errors: fix before proceeding to Phase 7.
 
 ### Phase 7 — Re-export Baseline Images
 
-**If source is `mcp`:** After corrections are implemented, re-download all page frames to update the baseline for future comparisons. Follow the same procedure as Phase 0 — overwrites the before-state images with the new after-state.
-
-**If source is `local`:** Skip this phase — no MCP connection to re-export from.
+After corrections are implemented, re-download all page frames to update the baseline for future comparisons. Follow the same procedure as Phase 0 — overwrites the before-state images with the new after-state.
 
 ---
 
@@ -301,9 +309,8 @@ src/app/(site)/
 src/app/not-found.tsx               ← 404
 src/components/ui/                  ← Shared components
 src/app/globals.css                 ← Design tokens (@theme inline)
-docs/ia/figma/meta.json             ← Figma fileKey + all page node IDs
-docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md  ← Local design system cache
-docs/ia/figma/PAGES_REFERENCE.md    ← Per-page section breakdown
+docs/ia/figma/meta.json             ← Figma fileKey + node IDs + keywords (machine-readable)
+docs/ia/figma/FIGMA_GRAPH.md        ← Node graph: section trees, keywords, relationships (human-readable)
 .raw/figma-design/                  ← Baseline PNG exports
 docs/ia/context.json                ← Cross-agent changelog
 ```
@@ -312,14 +319,14 @@ docs/ia/context.json                ← Cross-agent changelog
 
 ## Typical Run Duration
 
-| Phase               | local source                   | mcp source                                   |
-| ------------------- | ------------------------------ | -------------------------------------------- |
-| 0 — Baseline export | Instant (read existing)        | 6 download batches (2 frames each)           |
-| 1 — Token audit     | Fast — read file + grep        | Fast — 1 MCP call + grep                     |
-| 2 — Component audit | Fast — read reference file     | 1 MCP call per component (~6 calls)          |
-| 3 — Page review     | Fast — read ref per page       | 1 MCP call + code read per page (~6 pages)   |
-| 4 — Matrix          | Present to user, await confirm | Present to user, await confirm               |
-| 5 — Corrections     | Varies — 2–4 phases            | Varies — 2–4 phases                          |
-| 6 — Validation      | 2 commands (tsc + lint)        | 2 commands (tsc + lint)                      |
-| 7 — Re-export       | **Skip** (no MCP)              | 6 download batches                           |
-| 8 — Changelog       | 1 read + 1 write               | 1 read + 1 write                             |
+| Phase               | Duration                                        |
+| ------------------- | ----------------------------------------------- |
+| 0 — Baseline export | 6 download batches (2 frames each)              |
+| 1 — Token audit     | Fast — 1 MCP call + grep                        |
+| 2 — Component audit | 1 MCP call per component (~6 calls)             |
+| 3 — Page review     | 1 MCP call + code read per page (~6 pages)      |
+| 4 — Matrix          | Present to user, await confirm                  |
+| 5 — Corrections     | Varies — 2–4 phases                             |
+| 6 — Validation      | 2 commands (tsc + lint)                         |
+| 7 — Re-export       | 6 download batches                              |
+| 8 — Changelog       | 1 read + 1 write                                |

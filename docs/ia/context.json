@@ -1015,6 +1015,69 @@
       ],
       "rationale": "Periodic design fidelity audit against local Figma reference (meta.json + existing baselines). No DESIGN_SYSTEM_REFERENCE.md or PAGES_REFERENCE.md available — analysis based on meta.json, globals.css, and code comparison to Figma token mapping from AGENTS.md.",
       "outcome": "13 divergences resolved: 1 foundation token fix (--surface-elevated oklch(0.22→0.12) to match #1F1F1F), 2 shared component fixes (button rounded-[4px]→rounded-sm, product-card border-zinc/bg-zinc→border-border/bg-muted/rounded-2xl), 10 page section fixes (produto-selecionado bg-[#F8F8F8]→bg-card, all border-zinc-* and border-zinc-*→border-border, not-found watermark text-[#878787]→text-watermark-text, contact-form inputs border-zinc-300→border-border). tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-14T14:00:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — 8 corrections across 5 files (source: local)",
+      "files": [
+        "src/components/ui/button.tsx",
+        "src/app/not-found.tsx",
+        "src/components/ui/product-card.tsx",
+        "src/components/ui/footer.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/_components/faq-accordion.tsx"
+      ],
+      "rationale": "Periodic design fidelity audit against local Figma reference docs (DESIGN_SYSTEM.md + PAGES.md + COMPONENTS.md)",
+      "outcome": "MED: Button sm font text-2xs+font-bold -> text-sm+font-medium; 404 watermark span -> SVG + color #878787. LOW: ProductCard border-border -> border-zinc-200; Footer 2025 -> 2026; Produtos search/empty text-zinc-* -> text-icon-muted/text-muted-foreground; FaqAccordion text-[15px] -> text-base. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T02:36:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Design fidelity audit — 5 corrections across 4 files (source: local)",
+      "files": [
+        "src/components/ui/product-card.tsx",
+        "src/components/ui/button.tsx",
+        "src/app/(site)/_components/featured-products.tsx",
+        "src/app/not-found.tsx"
+      ],
+      "rationale": "Periodic design fidelity audit against local Figma reference docs (DESIGN_SYSTEM.md + PAGES.md + COMPONENTS.md)",
+      "outcome": "MED: ProductCard rounded-2xl→rounded-[16px]; FeaturedProducts spotlight rounded-lg→rounded-[16px]. LOW: Button brand/brand-dark rounded-sm→rounded-[4px]; 404 subtitle removed extra font-medium. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T03:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Design fidelity audit — Sobre page section order + backgrounds, RedBanner tracking, Timeline gradient",
+      "files": [
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/_components/red-banner.tsx",
+        "src/app/(site)/_components/company-timeline.tsx",
+        "src/app/(site)/_components/our-factory.tsx"
+      ],
+      "rationale": "Deep-dive design fidelity audit using Figma MCP live node data — second pass catching Sobre section order, background gradients, and RedBanner typography/spacing divergences",
+      "outcome": "MED: Sobre section order fixed to Figma layout (removed QualitySection, moved OurFoundations after SocialFeed, merged CareersCTA into OurFactory eliminating white break before footer); Timeline added radial gradient overlay matching DarkGallery pattern; RedBanner font-weight 900→400 + tracking-[0.05em] + gap 24→36px per Figma. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T04:00:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "refactor",
+      "summary": "Refactor Figma IA docs: replace local style-definition files with MCP-oriented graph metadata, remove source:local from audit skill",
+      "files": [
+        "docs/ia/figma/FIGMA_GRAPH.md",
+        "docs/ia/figma/meta.json",
+        "docs/ia/figma/DESIGN_SYSTEM.md",
+        "docs/ia/figma/PAGES.md",
+        "docs/ia/figma/COMPONENTS.md",
+        "docs/ia/figma/assets-manifest.json",
+        ".claude/skills/design-fidelity-audit/SKILL.md",
+        ".agents/skills/design-fidelity-audit/SKILL.md",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Local style-definition files (DESIGN_SYSTEM.md, PAGES.md, COMPONENTS.md, assets-manifest.json) drifted from live Figma. Replaced with FIGMA_GRAPH.md — a keyword/nodeID graph for AI-to-MCP navigation. meta.json enriched with keywords and per-page section trees. Audit skills (both runtimes) stripped of source:local branch — MCP is now the only data source.",
+      "outcome": "4 stale files deleted, FIGMA_GRAPH.md created with full node→keyword→relationship graph, meta.json enriched with keywords and pageSections. Both skill files now reference FIGMA_GRAPH.md for node discovery, removed all local/mcp bifurcation. tsc and lint pass."
     }
   ]
 }

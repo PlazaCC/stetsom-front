@@ -4,24 +4,69 @@
   "extractedAt": "2026-05-14T15:00:00Z",
   "websiteRootNode": "1200:4302",
   "pages": {
-    "home":                { "section": "1200:4303", "desktop": "1200:4584", "mobile": "1200:4304" },
-    "produtos":            { "section": "1200:4765", "desktop": "1200:4982", "mobile": "1200:4766" },
-    "produto-selecionado": { "section": "1200:5390", "desktop": "1200:5666", "mobile": "1200:5391" },
-    "sobre":               { "section": "1200:5943", "desktop": "1200:6180", "mobile": "1200:5944" },
-    "suporte":             { "section": "1200:6453", "desktop": "1200:6454", "mobile": "1200:6785" },
-    "404":                 { "section": "1200:7085", "desktop": "1200:7086", "mobile": "1200:7151" }
+    "home":                { "section": "1200:4303", "desktop": "1200:4584", "mobile": "1200:4304", "keywords": ["home", "hero", "carrossel", "novidades", "historia", "foundations", "social", "footer"] },
+    "produtos":            { "section": "1200:4765", "desktop": "1200:4982", "mobile": "1200:4766", "keywords": ["produtos", "catalogo", "filtros", "grid", "cards"] },
+    "produto-selecionado": { "section": "1200:5390", "desktop": "1200:5666", "mobile": "1200:5391", "keywords": ["produto", "detalhe", "breadcrumb", "specs", "blocks", "relacionados"] },
+    "sobre":               { "section": "1200:5943", "desktop": "1200:6180", "mobile": "1200:5944", "keywords": ["sobre", "historia", "timeline", "galeria", "social", "foundations", "fabrica"] },
+    "suporte":             { "section": "1200:6453", "desktop": "1200:6454", "mobile": "1200:6785", "keywords": ["suporte", "sos", "cards", "documentacao", "faq", "contato"] },
+    "404":                 { "section": "1200:7085", "desktop": "1200:7086", "mobile": "1200:7151", "keywords": ["404", "not found", "nao encontrado"] }
+  },
+  "pageSections": {
+    "home": [
+      { "order": 1, "nodeId": "1200:4585", "keywords": ["header", "nav", "logo"] },
+      { "order": 2, "nodeId": "1200:4592", "keywords": ["hero", "carousel", "swiper", "banners"] },
+      { "order": 3, "nodeId": "1200:4600", "keywords": ["novidades", "featured", "products", "spotlight", "tabs"] },
+      { "order": 4, "nodeId": "1200:4630", "keywords": ["historia", "stats", "dark", "quality", "values"] },
+      { "order": 5, "nodeId": "1200:4654", "keywords": ["foundations", "nossas bases", "3 cards"] },
+      { "order": 6, "nodeId": "1200:4702", "keywords": ["social", "instagram", "feed", "off-white"] },
+      { "order": 7, "nodeId": "1200:4713", "keywords": ["footer", "4 columns", "links"] }
+    ],
+    "produtos": [
+      { "order": 1, "nodeId": "1200:4983", "keywords": ["header"] },
+      { "order": 2, "nodeId": "1200:4990", "keywords": ["hero", "banner", "dark", "radial", "watermark"] },
+      { "order": 3, "nodeId": "1200:4999", "keywords": ["filtros", "categories", "tabs"] },
+      { "order": 4, "nodeId": "1200:5026", "keywords": ["grid", "cards", "product"] },
+      { "order": 5, "nodeId": "1200:5338", "keywords": ["footer"] }
+    ],
+    "produto-selecionado": [
+      { "order": 1, "nodeId": "1200:5667", "keywords": ["header"] },
+      { "order": 2, "nodeId": "1200:5674", "keywords": ["breadcrumb", "product info", "bg-F8F8F8"] },
+      { "order": 3, "nodeId": "1200:5721", "keywords": ["especificacoes", "specs", "table"] },
+      { "order": 4, "nodeId": "1200:5739", "keywords": ["highlight", "red gradient", "amp hero"] },
+      { "order": 5, "nodeId": "1200:5805", "keywords": ["blocks", "content", "image", "video", "text", "3d"] },
+      { "order": 6, "nodeId": "1200:5891", "keywords": ["related", "relacionados", "cards"] }
+    ],
+    "sobre": [
+      { "order": 1, "nodeId": "1200:6181", "keywords": ["header"] },
+      { "order": 2, "nodeId": "1200:6188", "keywords": ["hero", "dark radial", "watermark 1989", "stats"] },
+      { "order": 3, "nodeId": "1200:6215", "keywords": ["red banner", "marquee", "milestones"] },
+      { "order": 4, "nodeId": "1200:6237", "keywords": ["timeline", "historia", "checkpoint"] },
+      { "order": 5, "nodeId": "1200:6271", "keywords": ["galeria", "dark gallery", "6 images"] },
+      { "order": 6, "nodeId": "1200:6322", "keywords": ["social", "feed", "off-white"] },
+      { "order": 7, "nodeId": "1200:6346", "keywords": ["foundations", "bases", "white", "3 cards"] },
+      { "order": 8, "nodeId": "1200:6390", "keywords": ["fabrica", "factory", "careers", "vagas", "dark"] },
+      { "order": 9, "nodeId": "1200:6401", "keywords": ["footer"] }
+    ],
+    "suporte": [
+      { "order": 1, "nodeId": "1200:6455", "keywords": ["header"] },
+      { "order": 2, "nodeId": "1200:6462", "keywords": ["hero", "sos watermark", "dark radial", "red bar"] },
+      { "order": 3, "nodeId": "1200:6471", "keywords": ["support cards", "off-white", "3 cards"] },
+      { "order": 4, "nodeId": "1200:6495", "keywords": ["documentacao", "downloads", "files", "tabs"] },
+      { "order": 5, "nodeId": "1200:6592", "keywords": ["faq", "accordion", "perguntas", "off-white"] },
+      { "order": 6, "nodeId": "1200:6646", "keywords": ["contato", "form", "formulario", "white"] },
+      { "order": 7, "nodeId": "1200:6722", "keywords": ["footer"] }
+    ],
+    "404": [
+      { "order": 1, "nodeId": "1200:7087", "keywords": ["header"] },
+      { "order": 2, "nodeId": "1200:7094", "keywords": ["404 content", "off-white", "svg", "not found"] },
+      { "order": 3, "nodeId": "1200:7099", "keywords": ["footer"] }
+    ]
   },
   "figmaComponents": {
-    "Button":         "21:210",
-    "Card Novidades": "1034:9979",
-    "Breadcrumb":     "74:11593",
-    "Accordion":      "890:10459",
-    "Badge":          "1036:9869"
-  },
-  "assets": {
-    "manifest":    "assets-manifest.json",
-    "downloadDir": "/public/figma-assets/raw/",
-    "total":       23,
-    "missing":     0
+    "Button":         { "node": "21:210",  "keywords": ["button", "cta", "primary", "secondary", "pill", "ghost", "outline"] },
+    "Card Novidades": { "node": "1034:9979", "keywords": ["product card", "novidades", "big 447x447", "small"] },
+    "Breadcrumb":     { "node": "74:11593", "keywords": ["breadcrumb", "navegacao", "path"] },
+    "Accordion":      { "node": "890:10459", "keywords": ["accordion", "faq", "expand", "collapse"] },
+    "Badge":          { "node": "1036:9869", "keywords": ["badge", "tag", "rms", "label"] }
   }
 }
