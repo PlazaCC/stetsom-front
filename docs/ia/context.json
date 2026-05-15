@@ -1120,6 +1120,19 @@
       ],
       "rationale": "Full-site design fidelity audit against Figma MCP live data + .raw/figma-design/ baseline exports (12 frames). HIGH: featured-tab-strip tabs redesigned from underline to pill-segmented control (#F1F1F1 container, white active tab + shadow); 404 SVG watermark hardcoded color replaced with text-watermark-text token. MED: section-label label weight 500→400 (Figma Regular); button sm px-4→px-2.5 (Figma 10px); featured-tab-strip tab label text-lg(18px)→text-sm(14px), CTA font-black→font-medium; product-card rounded-2xl→rounded-card(16px) via new token. LOW: globals.css watermark-text rgb→(184,184,184) exact #B8B8B8; bar-accent rgb(220,38,38)→#E8132A brand red.",
       "outcome": "Visual implementation aligned with Figma MCP live data for all 6 pages. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T03:00:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — Suporte page section order + Postos Autorizados + pixel-perfect corrections",
+      "files": [
+        "src/app/(site)/suporte/page.tsx",
+        "src/lib/mock/support.ts",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Full-site design fidelity audit against Figma MCP live data + .raw/figma-design/suporte/ (local: MCP live Figma). Found section order wrong, Postos Autorizados section missing, FAQ merged wrong sections, cards/bg tokens incorrect.",
+      "outcome": "HIGH: Added Postos Autorizados section (search + service center list + map) between Downloads and FAQ; fixed section order (Hero→Cards→Downloads→Postos→FAQ→Contato→Footer); Support Cards now use bg-white + border-b-brand on third card. MED: FAQ layout redesigned to row (description+button left, accordion right) with missing description text; FAQ label/title updated to DÚVIDAS/PERGUNTAS FREQUENTES. LOW: Hero gradient updated to match Figma radial+linear overlay. tsc --noEmit and lint both exit 0."
     }
   ]
 }

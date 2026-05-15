@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import { getSupportPayload } from '@/lib/api/server'
-import { ArrowUpRight, Download, FileText } from 'lucide-react'
+import { ArrowUpRight, Download, FileText, Search } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { CARD_ICONS, CONTACT_DETAILS } from './_components/data'
@@ -15,7 +15,9 @@ export default async function SuportePage() {
   return (
     <div>
       {/* 1. HERO BANNER - com gradiente dark + watermark "SOS" + barra vermelha */}
-      <section className='relative w-full h-84 bg-brand-dark overflow-hidden flex items-center'>
+      <section className='relative w-full h-84 overflow-hidden flex items-center'
+        style={{ background: 'radial-gradient(circle at 99% 114%, rgb(27,26,44) 0%, rgb(28,24,24) 100%)' }}
+      >
           <Image
             src={supportPayload.hero.image}
             alt='Hero Support'
@@ -24,7 +26,7 @@ export default async function SuportePage() {
             sizes='100vw'
             priority
           />
-        <div className='absolute inset-0 bg-linear-to-br from-black/40 via-transparent to-black/40' />
+        <div className='absolute inset-0' style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 72%, rgba(0,0,0,1) 100%)' }} />
         <span className='absolute inset-0 font-sans-condensed font-black uppercase text-center flex items-center justify-center text-display-2xl sm:text-[150px] lg:text-[263px] text-watermark-text opacity-[0.08] pointer-events-none select-none leading-none'>
           {supportPayload.hero.watermarkText}
         </span>
@@ -46,11 +48,11 @@ export default async function SuportePage() {
       <section className='w-full bg-off-white py-12'>
         <Container>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-            {supportPayload.cards.map((card) => {
+            {supportPayload.cards.map((card, index) => {
               const Icon = CARD_ICONS[card.id as keyof typeof CARD_ICONS] ?? FileText
 
               return (
-                <div key={card.id} className='bg-card border border-border p-4 flex min-h-52 flex-col'>
+                <div key={card.id} className={'bg-white border border-border p-4 flex min-h-52 flex-col' + (index === supportPayload.cards.length - 1 ? ' border-b-brand' : '')}>
                   <Icon size={20} className='mb-5 text-brand' />
                   <h3 className='font-sans-condensed font-black text-section-title uppercase text-brand-dark mb-3'>
                     {card.title}
@@ -105,29 +107,74 @@ export default async function SuportePage() {
         </Container>
       </section>
 
-      {/* 4. FAQ ACCORDION SECTION - accordion com items + botão "Falar com suporte" */}
+      {/* 4. POSTOS AUTORIZADOS - busca de assistências técnicas */}
       <section className='w-full bg-off-white py-12'>
         <Container>
-          <SectionLabel label={supportPayload.faq.label} title={supportPayload.faq.title} />
-          <div className='max-w-175 mt-8'>
-            <Accordion className='space-y-3'>
-              {supportPayload.faq.items.map((item, index) => (
-                <AccordionItem key={index} value={`item-${index}`} className='border border-border rounded px-6 py-4'>
-                  <AccordionTrigger className='hover:no-underline py-0 font-sans-condensed font-black text-base uppercase text-foreground hover:text-brand'>
-                    {item.q}
-                  </AccordionTrigger>
-                  <AccordionContent className='text-base text-text-subtle pt-4'>{item.a}</AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-            <Button variant='default' className='mt-8 bg-surface-elevated text-white hover:bg-brand-dark'>
-              {supportPayload.faq.supportButtonLabel}
-            </Button>
+          <SectionLabel label='DÚVIDAS' title='POSTOS AUTORIZADOS' />
+          <p className='text-sm text-text-subtle mt-2 max-w-96 leading-relaxed'>
+            Informe seu CEP ou cidade para encontrarmos as assistências técnicas autorizadas Stetsom mais próximas de você.
+          </p>
+          <div className='flex flex-col lg:flex-row lg:gap-6 mt-8'>
+            <div className='lg:w-[344px] shrink-0'>
+              <div className='flex gap-2'>
+                <input
+                  type='text'
+                  placeholder='Busque por cidade ou estado...'
+                  className='w-full rounded border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand'
+                />
+                <Button variant='default' className='shrink-0 gap-1.5 rounded-md'>
+                  <Search size={16} />
+                  Buscar
+                </Button>
+              </div>
+              <div className='mt-4 flex flex-col'>
+                {['TODOS', 'SÃO PAULO', 'RIO DE JANEIRO', 'BELO HORIZONTE', 'CURITIBA'].map((city) => (
+                  <div
+                    key={city}
+                    className='border-b border-border py-1.5 px-3 text-sm text-text-subtle hover:text-brand cursor-pointer transition-colors'
+                  >
+                    {city}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className='flex-1 mt-6 lg:mt-0'>
+              <div className='bg-muted rounded-xl h-[457px]' />
+            </div>
           </div>
         </Container>
       </section>
 
-      {/* 5. CONTATO - 2 colunas: info + formulário */}
+      {/* 5. FAQ ACCORDION - perguntas frequentes + suporte */}
+      <section className='w-full bg-off-white py-12'>
+        <Container>
+          <div className='flex flex-col lg:flex-row lg:gap-24'>
+            <div className='lg:w-80 shrink-0'>
+              <SectionLabel label={supportPayload.faq.label} title={supportPayload.faq.title} />
+              <p className='text-base text-text-subtle mt-2 leading-relaxed'>
+                Não encontrou o que procura? Entre em contato com nosso suporte.
+              </p>
+              <Button variant='default' className='mt-6 bg-surface-elevated text-white hover:bg-brand-dark'>
+                {supportPayload.faq.supportButtonLabel}
+              </Button>
+            </div>
+            <div className='flex-1 mt-8 lg:mt-0'>
+              <Accordion className='space-y-3'>
+                {supportPayload.faq.items.map((item, index) => (
+                  <AccordionItem key={index} value={`item-${index}`} className='border border-border rounded px-6 py-4'>
+                    <AccordionTrigger className='hover:no-underline py-0 font-sans-condensed font-black text-base uppercase text-foreground hover:text-brand'>
+                      {item.q}
+                    </AccordionTrigger>
+                    <AccordionContent className='text-base text-text-subtle pt-4'>{item.a}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* 6. CONTATO - 2 colunas: info + formulário */}
       <section className='w-full bg-white py-12'>
         <Container>
           <div className='flex flex-col lg:flex-row lg:gap-16 lg:items-start'>

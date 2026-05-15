@@ -118,8 +118,8 @@ export const SUPPORT_PAYLOAD: SupportPayload = {
     description: 'Preencha o formulário abaixo e nossa equipe responderá em breve.',
   },
   faq: {
-    label: 'FAQ',
-    title: 'RESPOSTAS ÀS DÚVIDAS',
+    label: 'DÚVIDAS',
+    title: 'PERGUNTAS FREQUENTES',
     items: SUPPORT_FAQ_ITEMS,
     supportButtonLabel: 'Falar com suporte',
   },
