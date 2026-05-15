@@ -996,6 +996,25 @@
       ],
       "rationale": "Periodic design fidelity audit against local Figma reference docs (DESIGN_SYSTEM.md + PAGES.md)",
       "outcome": "HIGH: CompanyTimeline kept bg-brand-dark (reverted incorrect bg-white change); PAGES.md corrected to bg-brand-dark. RedBanner bg-brand→bg-bar-accent; ProdutoSelecionado outer bg-[#F8F8F8] removed to prevent bleed into tabs. MED: ProductCard rounded-lg→rounded-[16px]; Footer lg:px-25→lg:px-42.5; Produtos grid section bg-off-white→bg-white; Produtos category tabs bg-card/border-border→bg-white/border-zinc-200. LOW: TimelineProgressBar hardcoded rgb→fill-brand/fill-zinc-600 tokens. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-14T15:30:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — 13 corrections across 8 pages (source: local)",
+      "files": [
+        "src/app/globals.css",
+        "src/components/ui/button.tsx",
+        "src/components/ui/product-card.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/not-found.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/suporte/_components/contact-form.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Periodic design fidelity audit against local Figma reference (meta.json + existing baselines). No DESIGN_SYSTEM_REFERENCE.md or PAGES_REFERENCE.md available — analysis based on meta.json, globals.css, and code comparison to Figma token mapping from AGENTS.md.",
+      "outcome": "13 divergences resolved: 1 foundation token fix (--surface-elevated oklch(0.22→0.12) to match #1F1F1F), 2 shared component fixes (button rounded-[4px]→rounded-sm, product-card border-zinc/bg-zinc→border-border/bg-muted/rounded-2xl), 10 page section fixes (produto-selecionado bg-[#F8F8F8]→bg-card, all border-zinc-* and border-zinc-*→border-border, not-found watermark text-[#878787]→text-watermark-text, contact-form inputs border-zinc-300→border-border). tsc --noEmit and lint both exit 0."
     }
   ]
 }

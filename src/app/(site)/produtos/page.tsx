@@ -102,7 +102,7 @@ export default function ProdutosPage() {
       </section>
 
       {/* CATEGORY TABS */}
-      <div className='bg-white border-b border-zinc-200'>
+      <div className='bg-white border-b border-border'>
         <Container>
           <div className='flex items-center gap-1 py-1 overflow-x-auto'>
             {categoryOptions.map((cat) => (
@@ -152,7 +152,7 @@ export default function ProdutosPage() {
             <div className='flex-1 min-w-0'>
               {/* Mobile search + filter bar */}
               <div className='flex gap-3 mb-4 lg:hidden'>
-                <div className='flex-1 border border-zinc-300 flex items-center h-10 px-3 gap-2'>
+                <div className='flex-1 border border-border flex items-center h-10 px-3 gap-2'>
                   <Search size={14} className='text-zinc-500 shrink-0' />
                   <input
                     value={search}
@@ -163,13 +163,13 @@ export default function ProdutosPage() {
                 </div>
                 <button
                   onClick={() => setSidebarOpen((v) => !v)}
-                  className='border border-zinc-300 flex items-center gap-2 px-3 h-10 text-sm text-muted-foreground'>
+                  className='border border-border flex items-center gap-2 px-3 h-10 text-sm text-muted-foreground'>
                   <SlidersHorizontal size={14} />
                   Filtros
                 </button>
                 <button
                   type='button'
-                  className='border border-zinc-300 flex items-center gap-2 px-3 h-10 text-sm text-muted-foreground'>
+                  className='border border-border flex items-center gap-2 px-3 h-10 text-sm text-muted-foreground'>
                   <ArrowLeftRight size={14} />
                   Comparar
                 </button>

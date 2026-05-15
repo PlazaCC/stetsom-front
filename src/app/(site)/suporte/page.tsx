@@ -73,7 +73,7 @@ export default async function SuportePage() {
             {supportPayload.documentationFiles.map((file) => (
               <div
                 key={file.id}
-                className='flex items-center justify-between border border-zinc-200 rounded px-5 py-4 hover:border-brand transition-colors'>
+                className='flex items-center justify-between border border-border rounded px-5 py-4 hover:border-brand transition-colors'>
                 <div className='flex items-center gap-4'>
                   <FileText size={20} className='text-brand shrink-0' />
                   <div>
@@ -94,7 +94,7 @@ export default async function SuportePage() {
                 </div>
                 <Link
                   href={file.file_url}
-                  className='inline-flex h-9 shrink-0 items-center gap-1.5 rounded-[4px] bg-brand px-4 font-sans text-2xs font-bold uppercase tracking-[0.6px] text-white transition-colors hover:bg-brand/90'>
+                  className='inline-flex h-9 shrink-0 items-center gap-1.5 rounded-sm bg-brand px-4 font-sans text-2xs font-bold uppercase tracking-[0.6px] text-white transition-colors hover:bg-brand/90'>
                   <Download size={14} />
                   Download
                 </Link>
@@ -111,7 +111,7 @@ export default async function SuportePage() {
           <div className='max-w-175 mt-8'>
             <Accordion className='space-y-3'>
               {supportPayload.faq.items.map((item, index) => (
-                <AccordionItem key={index} value={`item-${index}`} className='border border-zinc-200 rounded px-6 py-4'>
+                <AccordionItem key={index} value={`item-${index}`} className='border border-border rounded px-6 py-4'>
                   <AccordionTrigger className='hover:no-underline py-0 font-sans-condensed font-black text-base uppercase text-foreground hover:text-brand'>
                     {item.q}
                   </AccordionTrigger>

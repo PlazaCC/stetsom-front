@@ -89,7 +89,7 @@
   /* Stetsom custom tokens — follow :root → @theme inline var() pattern */
   --text-subtle: oklch(0.42 0 0);
   --text-subtle-dark: oklch(0.73 0 0);
-  --surface-elevated: oklch(0.22 0 0);
+  --surface-elevated: oklch(0.12 0 0);
   --icon-muted: oklch(0.5 0 0);
   --watermark-text: rgb(185, 185, 185);
   --bar-accent: rgb(220, 38, 38);

@@ -11,7 +11,7 @@ export default function NotFound() {
       <main className='relative flex min-h-149 flex-col items-center justify-center overflow-hidden bg-off-white px-5 py-12 lg:px-42.5'>
         <span
           aria-hidden
-          className='absolute pointer-events-none select-none font-sans-condensed text-[200px] leading-none font-black uppercase text-[#878787] opacity-[0.08] lg:text-[300px]'>
+          className='absolute pointer-events-none select-none font-sans-condensed text-[200px] leading-none font-black uppercase text-watermark-text opacity-[0.08] lg:text-[300px]'>
           404
         </span>
 
