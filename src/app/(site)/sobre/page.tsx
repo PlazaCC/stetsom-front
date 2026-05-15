@@ -3,9 +3,9 @@ import { SectionLabel } from '@/components/ui/section-label'
 import { getSiteAboutPayload } from '@/lib/api/server'
 import Image from 'next/image'
 import CompanyTimeline from '../_components/company-timeline'
-import DarkGallery from '../_components/dark-gallery'
 import OurFactory from '../_components/our-factory'
 import OurFoundations from '../_components/our-foundations'
+import QualitySection from '../_components/quality-section'
 import RedBanner from '../_components/red-banner'
 import SocialFeed from '../_components/social-feed'
 export default async function SobrePage() {
@@ -77,11 +77,11 @@ export default async function SobrePage() {
       {/* 2. RED BANNER - Milestones Marquee */}
       <RedBanner milestones={aboutPayload.milestones} />
 
-      {/* 3. COMPANY TIMELINE */}
-      <CompanyTimeline events={aboutPayload.timeline} />
+      {/* 3. QUALITY SECTION - Qualidade Inovadora */}
+      <QualitySection section={aboutPayload.quality} values={aboutPayload.values} />
 
-      {/* 4. DARK GALLERY */}
-      <DarkGallery />
+      {/* 4. COMPANY TIMELINE */}
+      <CompanyTimeline events={aboutPayload.timeline} />
 
       {/* 5. SOCIAL FEED */}
       <SocialFeed section={aboutPayload.social} />

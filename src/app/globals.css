@@ -202,4 +202,8 @@
   .bg-gradient-dark-overlay {
     background: linear-gradient(to bottom, rgba(27, 26, 44, 0.5), rgba(22, 16, 16, 0.5));
   }
+
+  .bg-radial-dark {
+    background: radial-gradient(circle at 99% 114%, rgba(27, 26, 44, 1) 0%, rgba(28, 24, 24, 1) 100%);
+  }
 }

@@ -5,9 +5,10 @@ const AUTHOR = 'mock-system'
 
 const CATALOG_ASSETS = {
   hero: '/figma-assets/raw/fill_CGM3WO_6a0a1876.png',
-  thumbnailPrimary: '/figma-assets/raw/fill_3MZVXN_813a9a32.png',
-  thumbnailSecondary: '/figma-assets/raw/fill_6OC3H9_7136cc16.png',
-  thumbnailTertiary: '/figma-assets/raw/fill_3FJG3P_64a33e19.png',
+  // Thumbnails confirmados via MCP no product grid (node 1071:12265) — 3 imageRefs reais
+  thumbnailPrimary: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',   // imageRef 3d86cd17 (card A)
+  thumbnailSecondary: '/figma-assets/raw/fill_THI4RN_1e666beb.png', // imageRef 1e666beb (card B)
+  thumbnailTertiary: '/figma-assets/raw/product-c.png',             // imageRef 29578a53 (card C)
   detailPrimary: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',
   detailSecondary: '/figma-assets/raw/fill_THI4RN_1e666beb.png',
 } as const
@@ -46,10 +47,26 @@ export const CATALOG_CATEGORIES: Category[] = [
     updated_at: NOW,
   },
   {
+    id: 'cat-crossovers',
+    name: 'Crossovers',
+    slug: 'crossovers',
+    order: 4,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
     id: 'cat-fontes',
     name: 'Fontes',
     slug: 'fontes',
-    order: 4,
+    order: 5,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: 'cat-controles',
+    name: 'Controles',
+    slug: 'controles',
+    order: 6,
     created_at: NOW,
     updated_at: NOW,
   },
@@ -57,7 +74,7 @@ export const CATALOG_CATEGORIES: Category[] = [
     id: 'cat-acessorios',
     name: 'Acessorios',
     slug: 'acessorios',
-    order: 5,
+    order: 7,
     created_at: NOW,
     updated_at: NOW,
   },
@@ -123,9 +140,18 @@ export const CATALOG_PRODUCTS: Product[] = [
     launch_date: '2025-12-01T00:00:00.000Z',
     description: 'Amplificador 4 canais com alta eficiencia para sistemas automotivos de media e alta potencia.',
     specifications: {
-      power_rms: '4x 1000W RMS',
-      impedance: '2 Ohms',
-      class: 'Classe D',
+      'Número de canais': '4',
+      'Classe de operação': 'Classe D',
+      'Frequência de resposta': '20 Hz – 20 kHz',
+      'Ganho de Entrada': { ohm1: '0 a 6V', ohm2: '0 a 6V' },
+      'Potência RMS': { ohm1: '4x 1000W RMS', ohm2: '4x 600W RMS' },
+      'Potência Máxima': { ohm1: '4x 1400W', ohm2: '4x 900W' },
+      'Equalizador Gráfico': '8 bandas',
+      'Master Level': 'Sim',
+      'Roteamento': 'Estéreo / Mono',
+      'Limiter': 'Sim',
+      'Tensão de operação': '12 – 14,4V',
+      'Fusíveis': '2x 50A',
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailPrimary,
     video_url: 'https://www.youtube.com/watch?v=stetsom-demo-4000',

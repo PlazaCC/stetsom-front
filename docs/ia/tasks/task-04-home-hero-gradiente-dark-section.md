@@ -34,6 +34,6 @@ Alinhar as seções 2 e 4 da Home (Hero Carousel e seção dark "NossaHistoria")
 
 - Figma fill hero: `fill_QPGB3Q` tem `gradient: linear-gradient(180deg, rgba(0, 0, 0, 0) 72%, rgba(0, 0, 0, 1) 100%)`
 - Overlay de texto fica posicionado `absolute bottom-0 left-0 px-[170px] pb-12` em desktop
-- Seção dark node Figma: `1200:4630` desktop → `layout_YO8QAG`: `mode: row, alignItems: center, gap: 91px, padding: 0px 170px 0px 0px, width: 1440`
+- Seção dark node Figma: `1071:10411` desktop → `layout_UL9QG5`: `mode: row, alignItems: center, gap: 91px, padding: 0px 170px 0px 0px, width: 1440`
 - Texto overlay: label em `font-sans-condensed font-medium text-sm uppercase text-brand`, título em `font-sans-condensed font-black uppercase text-white`
-- Rodar `/poc-refine-design` no node `1200:4592` antes da implementação
+- Rodar `/poc-refine-design` no node `1071:10282` antes da implementação

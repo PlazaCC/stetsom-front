@@ -1,11 +1,16 @@
 import { type BreadcrumbItem, Breadcrumb } from '@/components/ui/breadcrumb'
 import { Container } from '@/components/ui/container'
 import { getCatalogProductDetail } from '@/lib/api/server'
+import type { SpecMultiColumnValue } from '@/lib/api/contracts'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ProductDetailContent from './_components/product-detail-content'
 import StickySectionNav from './_components/sticky-section-nav'
+
+function isMultiColumn(v: unknown): v is SpecMultiColumnValue {
+  return typeof v === 'object' && v !== null && 'ohm1' in v
+}
 
 function toImageList(data: Record<string, unknown>): string[] {
   const images = data.images
@@ -15,6 +20,37 @@ function toImageList(data: Record<string, unknown>): string[] {
   }
 
   return images.filter((item): item is string => typeof item === 'string' && item.length > 0)
+}
+
+function formatSpecTag(value: unknown): string {
+  if (isMultiColumn(value)) return `${value.ohm1} / ${value.ohm2}`
+  return String(value)
+}
+
+function extractPowerMetric(specs: Record<string, unknown>): string {
+  const raw = specs['Potência RMS'] ?? specs['power_rms']
+  if (!raw) return '800W'
+  if (isMultiColumn(raw)) {
+    const match = /(\d+[Ww])/.exec(raw.ohm1)
+    return match ? match[1].toUpperCase() : raw.ohm1
+  }
+  return String(raw).replace(' RMS', '').trim() || '800W'
+}
+
+function extractChannelsMetric(specs: Record<string, unknown>): string {
+  const raw = specs['Número de canais'] ?? specs['channels']
+  if (raw) return `${raw} CH`
+  const powerRaw = specs['Potência RMS'] ?? specs['power_rms']
+  const str = isMultiColumn(powerRaw) ? powerRaw.ohm1 : String(powerRaw ?? '')
+  const match = /^(\d+)x/i.exec(str)
+  return match ? `${match[1]} CH` : '4 CH'
+}
+
+function extractImpedanceMetric(specs: Record<string, unknown>): string {
+  const raw = specs['Impedância'] ?? specs['impedance']
+  if (!raw) return '2-4 Ohms'
+  if (isMultiColumn(raw)) return `${raw.ohm1} / ${raw.ohm2}`
+  return String(raw).trim() || '2-4 Ohms'
 }
 
 export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[slug]'>) {
@@ -29,13 +65,9 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
   const galleryImagesFromBlocks = blocks.flatMap((block) => (block.type === 'IMAGE' ? toImageList(block.data) : []))
   const galleryImages = (galleryImagesFromBlocks.length ? galleryImagesFromBlocks : [product.thumbnail_url]).slice(0, 4)
   const manualFile = files.find((file) => file.type === 'MANUAL')
-  const powerMetric =
-    String(product.specifications.power_rms ?? '')
-      .replace(' RMS', '')
-      .trim() || '800W'
-  const channelsMatch = /^(\d+)x/i.exec(String(product.specifications.power_rms ?? ''))
-  const channelsMetric = channelsMatch ? `${channelsMatch[1]} CH` : '4 CH'
-  const impedanceMetric = String(product.specifications.impedance ?? '').trim() || '2-4 Ohms'
+  const powerMetric = extractPowerMetric(product.specifications)
+  const channelsMetric = extractChannelsMetric(product.specifications)
+  const impedanceMetric = extractImpedanceMetric(product.specifications)
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Início', href: '/' },
@@ -104,7 +136,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
                   <li
                     key={key}
                     className='rounded-lg border border-muted px-3 py-1 text-xs uppercase text-brand-dark'>
-                    {key.replace(/_/g, ' ')}: {String(value)}
+                    {key.replace(/_/g, ' ')}: {formatSpecTag(value)}
                   </li>
                 ))}
               </ul>

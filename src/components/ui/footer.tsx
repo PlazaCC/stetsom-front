@@ -16,17 +16,6 @@ const SOCIALS = [
     ),
   },
   {
-    label: 'Instagram',
-    href: '#',
-    icon: (
-      <svg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <rect x='3' y='3' width='18' height='18' rx='5' stroke='currentColor' strokeWidth='2' />
-        <circle cx='12' cy='12' r='4' stroke='currentColor' strokeWidth='2' />
-        <circle cx='17.5' cy='6.5' r='1.25' fill='currentColor' />
-      </svg>
-    ),
-  },
-  {
     label: 'YouTube',
     href: '#',
     icon: (
@@ -84,12 +73,12 @@ export default function Footer() {
 
           {FOOTER_COLUMNS.map(({ title, links }) => (
             <div key={title} className='flex min-w-32 flex-col gap-3'>
-              <span className='mb-1 font-sans-condensed text-sm font-bold uppercase text-white'>{title}</span>
+              <span className='mb-1 font-sans text-xl font-medium uppercase text-white'>{title}</span>
               {links.map(({ label, href }) => (
                 <Link
                   key={label || href}
                   href={href}
-                  className='text-sm text-text-subtle-dark transition-colors hover:text-white'>
+                  className='text-lg underline text-text-subtle-dark transition-colors hover:text-white'>
                   {label}
                 </Link>
               ))}
@@ -98,11 +87,11 @@ export default function Footer() {
         </div>
 
         <div className='flex flex-col gap-3 border-t border-white/10 pt-5 lg:flex-row lg:items-center lg:justify-between'>
-          <span className='text-button-md text-text-subtle-dark'>
-            ©2026 Stetsom Eletrônica Ltda. Todos os direitos reservados.
+          <span className='text-lg font-medium text-text-subtle-dark'>
+            ©2025 Stetsom Eletrônica Ltda. Todos os direitos reservados.
           </span>
 
-          <div className='flex flex-wrap items-center gap-y-1 text-button-md text-text-subtle-dark'>
+          <div className='flex flex-wrap items-center gap-y-1 text-lg font-medium text-text-subtle-dark'>
             {COPYRIGHT_LINKS.map(({ label, href }, index) => (
               <div key={label} className='flex items-center'>
                 {index > 0 ? <span className='px-2'>|</span> : null}
