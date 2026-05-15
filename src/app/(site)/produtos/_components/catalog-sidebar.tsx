@@ -2,13 +2,18 @@
 
 import { ChevronDown, Search } from 'lucide-react'
 
+interface CategoryOption {
+  name: string
+  slug: string
+}
+
 interface CatalogSidebarProps {
   search: string
   onSearchChange: (value: string) => void
   activeCategory: string
-  onCategoryChange: (category: string) => void
+  onCategoryChange: (slug: string) => void
   onClear: () => void
-  typeFilterOptions: string[]
+  typeFilterOptions: CategoryOption[]
 }
 
 export function CatalogSidebar({
@@ -79,14 +84,14 @@ export function CatalogSidebar({
         </div>
         <div className='mt-3 flex flex-col gap-2'>
           {typeFilterOptions.map((cat) => (
-            <label key={cat} className='flex items-center gap-3 text-base text-muted-foreground'>
+            <label key={cat.slug} className='flex items-center gap-3 text-base text-muted-foreground'>
               <input
                 type='checkbox'
-                checked={activeCategory === cat}
-                onChange={() => onCategoryChange(cat)}
+                checked={activeCategory === cat.slug}
+                onChange={() => onCategoryChange(cat.slug)}
                 className='size-4 rounded border-border accent-brand'
               />
-              {cat}
+              {cat.name}
             </label>
           ))}
         </div>

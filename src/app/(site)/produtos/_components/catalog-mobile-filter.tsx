@@ -1,9 +1,14 @@
 'use client'
 
+interface CategoryOption {
+  name: string
+  slug: string
+}
+
 interface CatalogMobileFilterProps {
-  categoryOptions: string[]
+  categoryOptions: CategoryOption[]
   activeCategory: string
-  onCategoryChange: (category: string) => void
+  onCategoryChange: (slug: string) => void
 }
 
 export function CatalogMobileFilter({ categoryOptions, activeCategory, onCategoryChange }: CatalogMobileFilterProps) {
@@ -13,14 +18,14 @@ export function CatalogMobileFilter({ categoryOptions, activeCategory, onCategor
       <div className='flex flex-wrap gap-2'>
         {categoryOptions.map((cat) => (
           <button
-            key={cat}
-            onClick={() => onCategoryChange(cat)}
+            key={cat.slug}
+            onClick={() => onCategoryChange(cat.slug)}
             className={`font-sans text-sm px-3 py-1 border transition-colors ${
-              activeCategory === cat
+              activeCategory === cat.slug
                 ? 'bg-brand-dark text-white border-brand-dark'
                 : 'bg-white text-muted-foreground border-border hover:border-muted-foreground'
             }`}>
-            {cat}
+            {cat.name}
           </button>
         ))}
       </div>
