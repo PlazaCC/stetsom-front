@@ -2,12 +2,10 @@ import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import { getSiteAboutPayload } from '@/lib/api/server'
 import Image from 'next/image'
-import CareersCTA from '../_components/careers-cta'
 import CompanyTimeline from '../_components/company-timeline'
 import DarkGallery from '../_components/dark-gallery'
 import OurFactory from '../_components/our-factory'
 import OurFoundations from '../_components/our-foundations'
-import QualitySection from '../_components/quality-section'
 import RedBanner from '../_components/red-banner'
 import SocialFeed from '../_components/social-feed'
 import { ABOUT_STATS } from './_components/data'
@@ -77,29 +75,23 @@ export default async function SobrePage() {
         </Container>
       </section>
 
-      {/* 2. RED BANNER - Milestones Carousel */}
+      {/* 2. RED BANNER - Milestones Marquee */}
       <RedBanner milestones={aboutPayload.milestones} />
 
-      {/* 3. QUALITY SECTION - 2 Cols */}
-      <QualitySection values={aboutPayload.values} section={aboutPayload.quality} />
-
-      {/* 4. COMPANY TIMELINE */}
+      {/* 3. COMPANY TIMELINE */}
       <CompanyTimeline events={aboutPayload.timeline} />
 
-      {/* 5. OUR FOUNDATIONS - 3 Cards */}
-      <OurFoundations bases={aboutPayload.bases} />
-
-      {/* 6. DARK GALLERY */}
+      {/* 4. DARK GALLERY */}
       <DarkGallery />
 
-      {/* 7. SOCIAL FEED */}
+      {/* 5. SOCIAL FEED */}
       <SocialFeed section={aboutPayload.social} />
 
-      {/* 8. OUR FACTORY */}
-      <OurFactory />
+      {/* 6. OUR FOUNDATIONS - 3 Cards */}
+      <OurFoundations bases={aboutPayload.bases} />
 
-      {/* 9. CAREERS CTA */}
-      <CareersCTA section={aboutPayload.jobsCta} />
+      {/* 7. OUR FACTORY + CAREERS */}
+      <OurFactory jobsCta={aboutPayload.jobsCta} />
     </div>
   )
 }

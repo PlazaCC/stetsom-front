@@ -67,8 +67,12 @@ export default function CompanyTimeline({
   const progressPercent = events.length <= 1 ? 0 : (selectedIndex / (events.length - 1)) * 100
 
   return (
-    <section className='bg-brand-dark py-20'>
-      <Container>
+    <section className='relative bg-brand-dark py-20 overflow-hidden'>
+      <div
+        className='absolute inset-0'
+        style={{ background: 'radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(22,16,16,1) 100%)' }}
+      />
+      <Container className='relative z-10'>
         <div className='space-y-12'>
           {/* BOX 1: HEADER - Título + Descrição + Setas */}
           <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8'>

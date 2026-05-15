@@ -153,7 +153,7 @@ export default function ProdutosPage() {
               {/* Mobile search + filter bar */}
               <div className='flex gap-3 mb-4 lg:hidden'>
                 <div className='flex-1 border border-border flex items-center h-10 px-3 gap-2'>
-                  <Search size={14} className='text-zinc-500 shrink-0' />
+                  <Search size={14} className='text-icon-muted shrink-0' />
                   <input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -188,7 +188,7 @@ export default function ProdutosPage() {
               )}
 
               {isLoading ? (
-                <div className='text-center py-16 text-zinc-400 text-base'>Carregando produtos...</div>
+                <div className='text-center py-16 text-muted-foreground text-base'>Carregando produtos...</div>
               ) : productCards.length > 0 ? (
                 <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4'>
                   {productCards.map((product) => (
@@ -204,7 +204,7 @@ export default function ProdutosPage() {
                   ))}
                 </div>
               ) : (
-                <div className='text-center py-16 text-zinc-400 text-base'>Nenhum produto encontrado.</div>
+                <div className='text-center py-16 text-muted-foreground text-base'>Nenhum produto encontrado.</div>
               )}
             </div>
           </div>

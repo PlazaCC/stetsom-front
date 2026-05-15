@@ -99,7 +99,7 @@ export default function Footer() {
 
         <div className='flex flex-col gap-3 border-t border-white/10 pt-5 lg:flex-row lg:items-center lg:justify-between'>
           <span className='text-button-md text-text-subtle-dark'>
-            ©2025 Stetsom Eletrônica Ltda. Todos os direitos reservados.
+            ©2026 Stetsom Eletrônica Ltda. Todos os direitos reservados.
           </span>
 
           <div className='flex flex-wrap items-center gap-y-1 text-button-md text-text-subtle-dark'>
