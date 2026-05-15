@@ -1223,6 +1223,20 @@
       ],
       "rationale": "ABOUT_STATS is API-originated data (company stats); per mock-data-constants rule, it must live in contracts.ts + mock payload, not in a data.ts file. Added CompanyStat type, stats field to SiteHomePayload[history] and SiteAboutPayload, and COMPANY_STATS to site.ts mock",
       "outcome": "our-history.tsx consumes section.stats from SiteHomePayload; sobre/page.tsx consumes aboutPayload.stats; no data.ts needed; sobre/_components/data.ts deleted"
+    },
+    {
+      "ts": "2026-05-15T21:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix minor code-review issues: array index keys, indentation, and add mock-data-constants dual-install rule",
+      "files": [
+        "src/app/(site)/_components/red-banner.tsx",
+        "src/app/(site)/_components/faq-accordion.tsx",
+        ".claude/rules/mock-data-constants.md",
+        ".agents/rules/mock-data-constants.md"
+      ],
+      "rationale": "Code review identified key={i} (array index) in red-banner and faq-accordion — should use stable content keys. Indentation inconsistency in AccordionItem. Rules files were pending creation after previous session ended.",
+      "outcome": "red-banner uses key={milestone}; faq-accordion uses key={q} with corrected indentation; mock-data-constants rule dual-installed in both agent runtimes with full decision tree"
     }
   ]
 }
