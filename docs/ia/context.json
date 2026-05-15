@@ -818,6 +818,352 @@
       ],
       "rationale": "Code review identified 5 issues: dangerouslySetInnerHTML without sanitization (XSS risk), template literal conditional classes instead of cn(), non-functional contact form submit, manual download link falling back to #, hardcoded count badges showing incorrect data",
       "outcome": "HTML blocks sanitized via DOMPurify; timeline uses cn() for all conditional classes; contact form has working submit with success state; manual link hidden when no file; filter count badges removed. tsc and lint pass."
+    },
+    {
+      "ts": "2026-05-14T21:30:00Z",
+      "agent": "gpt-5-mini",
+      "type": "refactor",
+      "summary": "Modularize catalog, product tabs, timeline, novidades, support data and API query params",
+      "files": [
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
+        "src/app/(site)/_components/timeline-refactored.tsx",
+        "src/app/(site)/_components/novidades.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/lib/api/client.ts",
+        "src/lib/api/providers/remote-provider.ts",
+        "src/app/(site)/sobre/_components/data.ts",
+        "src/app/(site)/_components/nossa-historia.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "The user asked to resume a paused modularization plan and continue from the last completed step while preserving behavior and avoiding mock-layer rewrites.",
+      "outcome": "Catalog page now uses extracted sidebar/mobile filters, product tabs consume external BlockRenderer, timeline and novidades use extracted subcomponents, support constants moved to data module, API query-string builders were centralized, and shared about stats now come from one source. Build passed after fixing a missing import."
+    },
+    {
+      "ts": "2026-05-14T22:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Overhaul multi-agent AI setup: slim CLAUDE.md, enrich AGENTS.md, install graphify skill dual-side, fix stale TASKS.md ref",
+      "files": [
+        "CLAUDE.md",
+        "AGENTS.md",
+        ".claude/skills/graphify/SKILL.md",
+        ".agents/skills/graphify/SKILL.md",
+        "docs/ia/tasks/TASKS.md",
+        "docs/ia/context.json"
+      ],
+      "rationale": "CLAUDE.md was bloated with content duplicated from AGENTS.md (via @AGENTS.md include) and missing graphify-out/ context, skills inventory, and multi-agent coordination note; graphify-out/ directory existed but no doc told agents to use it; TASKS.md had stale /poc-next-task reference",
+      "outcome": "CLAUDE.md is now lean (skills table, graphify-out reference, multi-agent note); AGENTS.md has Knowledge Graph, AI Workflow, and Cross-Agent Changelog sections; graphify skill installed in both .claude/ and .agents/ with Stetsom-specific context; TASKS.md command references corrected"
+    },
+    {
+      "ts": "2026-05-14T23:30:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "refactor",
+      "summary": "Enforce naming conventions: English identifiers, kebab-case files across entire codebase",
+      "files": [
+        ".claude/rules/naming-conventions.md",
+        ".agents/rules/naming-conventions.md",
+        "src/app/(site)/_components/our-history.tsx",
+        "src/app/(site)/_components/our-factory.tsx",
+        "src/app/(site)/_components/our-foundations.tsx",
+        "src/app/(site)/_components/quality-section.tsx",
+        "src/app/(site)/_components/careers-cta.tsx",
+        "src/app/(site)/_components/social-feed.tsx",
+        "src/app/(site)/_components/dark-gallery.tsx",
+        "src/app/(site)/_components/featured-products.tsx",
+        "src/app/(site)/_components/company-timeline.tsx",
+        "src/app/(site)/_components/featured-tab-strip.tsx",
+        "src/app/(site)/_components/timeline-progress-bar.tsx",
+        "src/app/(site)/_components/timeline-checkpoint.tsx",
+        "src/app/(site)/produtos/_components/catalog-sidebar.tsx",
+        "src/app/(site)/produtos/_components/catalog-mobile-filter.tsx",
+        "src/app/(site)/produtos/[slug]/_components/block-renderer.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
+        "src/app/(site)/page.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "src/lib/api/contracts.ts",
+        "src/lib/mock/site.ts",
+        "src/lib/api/providers/mock-provider.ts",
+        "docs/ia/tasks/TASKS.md"
+      ],
+      "rationale": "Project rule requires all code-level identifiers in English with kebab-case file names; 26 violations were found including 9 Portuguese component exports, 6 PascalCase filenames, Portuguese union discriminators, and Portuguese contract field names",
+      "outcome": "All component exports, file names, props interfaces, Tab discriminators, and contract fields are now in English; pnpm build passes with zero TypeScript errors"
+    },
+    {
+      "ts": "2026-05-14T16:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "docs",
+      "summary": "Rebuild docs/ia/figma/ from scratch: delete raw dumps, extract fresh Figma context, create distilled DESIGN_SYSTEM/PAGES/COMPONENTS docs",
+      "files": [
+        "docs/ia/figma/meta.json",
+        "docs/ia/figma/DESIGN_SYSTEM.md",
+        "docs/ia/figma/PAGES.md",
+        "docs/ia/figma/COMPONENTS.md",
+        ".claude/rules/stetsom-design-system.md",
+        ".agents/rules/stetsom-design-system.md",
+        ".claude/rules/figma-to-code.md",
+        ".agents/rules/figma-to-code.md"
+      ],
+      "rationale": "docs/ia/figma/ had 1.8MB of raw Figma dumps (context.json 1.5MB, design-system.json 172KB, asset-candidates 59KB) that were too heavy and confusing for agents. User requested a clean rebuild: extract fresh Figma data via Framelink MCP, distill into code-first tables (Figma style → CSS var → Tailwind class), map every component to its React file, remove all raw dumps.",
+      "outcome": "Folder reduced from 1.8MB (8 files) to ~60KB (4 files). DESIGN_SYSTEM.md has full color/typography/spacing/effects tables with direct Tailwind class mapping. PAGES.md maps every page section to its Figma node ID and React component file. COMPONENTS.md maps every Figma component to its React implementation. meta.json is now minimal JSON only. Rules updated to reference new file names."
+    },
+    {
+      "ts": "2026-05-14T23:55:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Macro design system audit: fix text-zinc-50, hover:bg-zinc-800 and watermark token mismatches",
+      "files": [
+        "src/components/ui/button.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/not-found.tsx"
+      ],
+      "rationale": "Full audit against DESIGN_SYSTEM.md: zinc-50 not in color table (use text-white); hover:bg-zinc-800 lightens dark button inconsistently (use hover:bg-brand-dark); produtos watermark used text-white instead of text-watermark-text; 404 watermark used text-icon-muted (#767676) instead of DESIGN_SYSTEM-specified #878787",
+      "outcome": "Brand/brand-dark buttons use text-white and hover semantically darkens. Watermarks now use correct token (text-watermark-text) or Figma-exact value (text-[#878787]). All border-zinc-200, rounded-[4px], text-[Npx] exceptions confirmed correct per DESIGN_SYSTEM and left unchanged."
+    },
+    {
+      "ts": "2026-05-14T23:50:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix typography token precedence in @theme inline — move --text-* declarations to end of block",
+      "files": [
+        "src/app/globals.css",
+        ".claude/rules/styling-practices.md",
+        ".agents/rules/styling-practices.md"
+      ],
+      "rationale": "shadcn/tailwind.css and tw-animate-css can define --text-* variables in their own @theme blocks; since multiple @theme blocks are merged, last declaration wins — project typography tokens must be declared last to not be overridden.",
+      "outcome": "text-display-sm, text-section-title and other custom font-size tokens now correctly apply; styling-practices rule documents the required declaration order to prevent future regressions."
+    },
+    {
+      "ts": "2026-05-14T23:58:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Design fidelity audit — complete remaining 7 divergences from interrupted session",
+      "files": [
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/suporte/_components/data.ts",
+        "src/app/(site)/_components/our-foundations.tsx",
+        "src/app/(site)/_components/our-history.tsx",
+        "src/lib/api/contracts.ts",
+        "src/lib/mock/support.ts"
+      ],
+      "rationale": "Completed the pending items from the interrupted /design-fidelity-audit session. HIGH: [slug]/page.tsx hero bg changed from bg-card (#F4F4F4) to bg-[#F8F8F8] per PAGES.md; inline manual link changed from text-zinc-50 to text-white; product-detail-tabs.tsx reordered blocks before specs to match Figma. H4: suporte/page.tsx sections reordered to Figma spec (Docs → FAQ → Contato), Postos Autorizados removed (not in PAGES.md), Documentação refactored to DOWNLOAD DE MATERIAIS with ProductFile[] schema. MED: thumbnails and download button border-zinc-300→zinc-200; our-foundations.tsx py-20→py-12. LOW: download button font-black→font-semibold; our-history.tsx stats text-3xl→text-display-sm.",
+      "outcome": "7 divergences fixed across 8 files. [slug]/page.tsx: 5 corrections (H1 bg, H2 text, M1 border, M2 border, L1 weight). product-detail-tabs.tsx: blocks rendered before specs (H3). suporte section order corrected to Figma spec (H4). Postos Autorizados removed. Documentation refactored to file list with ProductFile schema. Mock aligned to backend type. tsc --noEmit and pnpm lint both exit 0."
+    },
+    {
+      "ts": "2026-05-14T22:30:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Design fidelity audit Phase 5 — implement all 9 divergences (HIGH/MED/LOW/DOCS)",
+      "files": [
+        "src/app/(site)/_components/our-history.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/not-found.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "docs/ia/figma/PAGES.md"
+      ],
+      "rationale": "Full-site design fidelity audit against Figma baseline: HIGH — our-history.tsx image was inside Container adding left padding; Figma requires flush-left image (no left padding, right padding only at 170px). MED — sobre page had DarkGallery before OurFoundations (wrong order). MED — suporte sections were in wrong order (Documentation → Postos → Contact → FAQ) and Documentation/Contact used bg-card instead of bg-white. MED — not-found.tsx h1 used text-footer (Footer bg color) instead of text-brand-dark; missing CTA button. MED — product detail thumbnails were h-16 w-18 (non-square) instead of ~76px square. LOW — product spec tags used rounded-full border-zinc-300 instead of rounded-[12px] border-muted. DOCS — PAGES.md incorrectly mapped Home section 4 to QualitySection and Sobre section 7 to OurHistory.",
+      "outcome": "our-history.tsx restructured to flush-left desktop layout (w-182.75 = 731px image, pl-22.75 = 91px gap, pr-42.5 = 170px right padding). sobre/page.tsx swapped OurFoundations before DarkGallery. suporte/page.tsx reordered to Contact → Postos → Documentation → FAQ with bg-white on Contact and Documentation. not-found.tsx h1 uses text-brand-dark; brand CTA button added via buttonVariants+Link. produto slug thumbnails h-19 w-19 (square 76px). spec tags rounded-[12px] border-muted. PAGES.md corrected for home section 4 (OurHistory) and sobre section 7 (OurFoundations). pnpm tsc --noEmit and pnpm lint both exit 0."
+    },
+    {
+      "ts": "2026-05-14T00:00:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Configure tailwind-merge to recognize custom font-size tokens (text-display-*, text-section-title, text-2xs, text-button-md)",
+      "files": [
+        "src/lib/utils.ts"
+      ],
+      "rationale": "cn() used raw twMerge which doesn't know about Tailwind v4 @theme custom text-* tokens (--text-display-sm, etc.). When merging text-display-sm with text-brand-dark, tailwind-merge treated both as unknown text-* classes and dropped the font-size. Fix: use extendTailwindMerge with theme.text array listing all custom text tokens.",
+      "outcome": "Changed twMerge import to extendTailwindMerge with custom text tokens. tsc --noEmit exits 0."
+    },
+    {
+      "ts": "2026-05-14T20:00:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — 8 corrections across 8 files (source: local)",
+      "files": [
+        "src/components/ui/product-card.tsx",
+        "src/components/ui/footer.tsx",
+        "src/app/(site)/_components/company-timeline.tsx",
+        "src/app/(site)/_components/red-banner.tsx",
+        "src/app/(site)/_components/timeline-checkpoint.tsx",
+        "src/app/(site)/_components/timeline-progress-bar.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/produtos/page.tsx"
+      ],
+      "rationale": "Periodic design fidelity audit against local Figma reference docs (DESIGN_SYSTEM.md + PAGES.md)",
+      "outcome": "HIGH: CompanyTimeline kept bg-brand-dark (reverted incorrect bg-white change); PAGES.md corrected to bg-brand-dark. RedBanner bg-brand→bg-bar-accent; ProdutoSelecionado outer bg-[#F8F8F8] removed to prevent bleed into tabs. MED: ProductCard rounded-lg→rounded-[16px]; Footer lg:px-25→lg:px-42.5; Produtos grid section bg-off-white→bg-white; Produtos category tabs bg-card/border-border→bg-white/border-zinc-200. LOW: TimelineProgressBar hardcoded rgb→fill-brand/fill-zinc-600 tokens. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-14T15:30:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — 13 corrections across 8 pages (source: local)",
+      "files": [
+        "src/app/globals.css",
+        "src/components/ui/button.tsx",
+        "src/components/ui/product-card.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/not-found.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/suporte/_components/contact-form.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Periodic design fidelity audit against local Figma reference (meta.json + existing baselines). No DESIGN_SYSTEM_REFERENCE.md or PAGES_REFERENCE.md available — analysis based on meta.json, globals.css, and code comparison to Figma token mapping from AGENTS.md.",
+      "outcome": "13 divergences resolved: 1 foundation token fix (--surface-elevated oklch(0.22→0.12) to match #1F1F1F), 2 shared component fixes (button rounded-[4px]→rounded-sm, product-card border-zinc/bg-zinc→border-border/bg-muted/rounded-2xl), 10 page section fixes (produto-selecionado bg-[#F8F8F8]→bg-card, all border-zinc-* and border-zinc-*→border-border, not-found watermark text-[#878787]→text-watermark-text, contact-form inputs border-zinc-300→border-border). tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-14T14:00:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — 8 corrections across 5 files (source: local)",
+      "files": [
+        "src/components/ui/button.tsx",
+        "src/app/not-found.tsx",
+        "src/components/ui/product-card.tsx",
+        "src/components/ui/footer.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/_components/faq-accordion.tsx"
+      ],
+      "rationale": "Periodic design fidelity audit against local Figma reference docs (DESIGN_SYSTEM.md + PAGES.md + COMPONENTS.md)",
+      "outcome": "MED: Button sm font text-2xs+font-bold -> text-sm+font-medium; 404 watermark span -> SVG + color #878787. LOW: ProductCard border-border -> border-zinc-200; Footer 2025 -> 2026; Produtos search/empty text-zinc-* -> text-icon-muted/text-muted-foreground; FaqAccordion text-[15px] -> text-base. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T02:36:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Design fidelity audit — 5 corrections across 4 files (source: local)",
+      "files": [
+        "src/components/ui/product-card.tsx",
+        "src/components/ui/button.tsx",
+        "src/app/(site)/_components/featured-products.tsx",
+        "src/app/not-found.tsx"
+      ],
+      "rationale": "Periodic design fidelity audit against local Figma reference docs (DESIGN_SYSTEM.md + PAGES.md + COMPONENTS.md)",
+      "outcome": "MED: ProductCard rounded-2xl→rounded-[16px]; FeaturedProducts spotlight rounded-lg→rounded-[16px]. LOW: Button brand/brand-dark rounded-sm→rounded-[4px]; 404 subtitle removed extra font-medium. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T03:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Design fidelity audit — Sobre page section order + backgrounds, RedBanner tracking, Timeline gradient",
+      "files": [
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/_components/red-banner.tsx",
+        "src/app/(site)/_components/company-timeline.tsx",
+        "src/app/(site)/_components/our-factory.tsx"
+      ],
+      "rationale": "Deep-dive design fidelity audit using Figma MCP live node data — second pass catching Sobre section order, background gradients, and RedBanner typography/spacing divergences",
+      "outcome": "MED: Sobre section order fixed to Figma layout (removed QualitySection, moved OurFoundations after SocialFeed, merged CareersCTA into OurFactory eliminating white break before footer); Timeline added radial gradient overlay matching DarkGallery pattern; RedBanner font-weight 900→400 + tracking-[0.05em] + gap 24→36px per Figma. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T04:00:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "refactor",
+      "summary": "Refactor Figma IA docs: replace local style-definition files with MCP-oriented graph metadata, remove source:local from audit skill",
+      "files": [
+        "docs/ia/figma/FIGMA_GRAPH.md",
+        "docs/ia/figma/meta.json",
+        "docs/ia/figma/DESIGN_SYSTEM.md",
+        "docs/ia/figma/PAGES.md",
+        "docs/ia/figma/COMPONENTS.md",
+        "docs/ia/figma/assets-manifest.json",
+        ".claude/skills/design-fidelity-audit/SKILL.md",
+        ".agents/skills/design-fidelity-audit/SKILL.md",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Local style-definition files (DESIGN_SYSTEM.md, PAGES.md, COMPONENTS.md, assets-manifest.json) drifted from live Figma. Replaced with FIGMA_GRAPH.md — a keyword/nodeID graph for AI-to-MCP navigation. meta.json enriched with keywords and per-page section trees. Audit skills (both runtimes) stripped of source:local branch — MCP is now the only data source.",
+      "outcome": "4 stale files deleted, FIGMA_GRAPH.md created with full node→keyword→relationship graph, meta.json enriched with keywords and pageSections. Both skill files now reference FIGMA_GRAPH.md for node discovery, removed all local/mcp bifurcation. tsc and lint pass."
+    },
+    {
+      "ts": "2026-05-15T03:15:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — 20 corrections across 12 files (source: local)",
+      "files": [
+        "src/components/ui/product-card.tsx",
+        "src/components/ui/button.tsx",
+        "src/components/ui/header.tsx",
+        "src/components/ui/footer.tsx",
+        "src/app/(site)/_components/featured-tab-strip.tsx",
+        "src/app/(site)/_components/featured-products.tsx",
+        "src/app/(site)/_components/faq-accordion.tsx",
+        "src/app/(site)/_components/our-history.tsx",
+        "src/app/(site)/_components/our-factory.tsx",
+        "src/app/(site)/produtos/_components/catalog-sidebar.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Periodic design fidelity audit against local Figma reference (meta.json + fresh baselines). 12/12 baselines confirmed from today.",
+      "outcome": "20 corrections: shared components (product-card border-zinc-200→border-border, button rounded-[4px]→rounded-sm, header/footer logo aspect ratio fix + sizes props); page sections (catalog-sidebar zinc colors→tokens, featured-tab-strip border-zinc-200→border-border, featured-products border-zinc-200→border-border, faq-accordion border-zinc-200→border-border, our-history/our-factory added sizes props, sobre/suporte/produtos heroes added sizes='100vw'). tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T03:30:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — 10 corrections across 7 pages (source: MCP live Figma)",
+      "files": [
+        "src/app/globals.css",
+        "src/components/ui/button.tsx",
+        "src/components/ui/product-card.tsx",
+        "src/components/ui/section-label.tsx",
+        "src/app/(site)/_components/featured-tab-strip.tsx",
+        "src/app/not-found.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Full-site design fidelity audit against Figma MCP live data + .raw/figma-design/ baseline exports (12 frames). HIGH: featured-tab-strip tabs redesigned from underline to pill-segmented control (#F1F1F1 container, white active tab + shadow); 404 SVG watermark hardcoded color replaced with text-watermark-text token. MED: section-label label weight 500→400 (Figma Regular); button sm px-4→px-2.5 (Figma 10px); featured-tab-strip tab label text-lg(18px)→text-sm(14px), CTA font-black→font-medium; product-card rounded-2xl→rounded-card(16px) via new token. LOW: globals.css watermark-text rgb→(184,184,184) exact #B8B8B8; bar-accent rgb(220,38,38)→#E8132A brand red.",
+      "outcome": "Visual implementation aligned with Figma MCP live data for all 6 pages. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T03:00:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — Suporte page section order + Postos Autorizados + pixel-perfect corrections",
+      "files": [
+        "src/app/(site)/suporte/page.tsx",
+        "src/lib/mock/support.ts",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Full-site design fidelity audit against Figma MCP live data + .raw/figma-design/suporte/ (local: MCP live Figma). Found section order wrong, Postos Autorizados section missing, FAQ merged wrong sections, cards/bg tokens incorrect.",
+      "outcome": "HIGH: Added Postos Autorizados section (search + service center list + map) between Downloads and FAQ; fixed section order (Hero→Cards→Downloads→Postos→FAQ→Contato→Footer); Support Cards now use bg-white + border-b-brand on third card. MED: FAQ layout redesigned to row (description+button left, accordion right) with missing description text; FAQ label/title updated to DÚVIDAS/PERGUNTAS FREQUENTES. LOW: Hero gradient updated to match Figma radial+linear overlay. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T03:05:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — Produtos page: 19 corrections across 5 files (source: MCP live Figma)",
+      "files": [
+        "src/app/globals.css",
+        "src/components/ui/product-card.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/produtos/_components/catalog-sidebar.tsx",
+        "src/app/(site)/produtos/_components/catalog-mobile-filter.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Full-site design fidelity audit against Figma MCP live data for /produtos page. HIGH: watermark 150px→263px, label font-black→font-medium, sidebar 'Ordenar por' redesigned from condensed black 34px to Barlow Medium 16px, 'Filtros' from 34px bold to 18px bold, sidebar sections switched from card containers to plain separator-line layout matching Figma. MED: hero mobile height 200→288px, title 32px→48px, category tab icons 28x28→40x40 active/28x28 inactive with red-tint bg, card gap 12px→20px mobile/16px→32px desktop, product-card border-radius 16px→10px. LOW: catalog-mobile-filter zinc tokens replaced with border-border.1: bar-accent #E8132A→#DC2626 per Figma red bar color.",
+      "outcome": "Visual implementation aligned with Figma MCP live data for the /produtos page. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T00:35:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Refatorado ProductDetailTabs (tab switcher) para StickySectionNav + ProductDetailContent (seções no fluxo com navegação sticky por âncoras)",
+      "files": [
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-content.tsx",
+        "src/app/(site)/produtos/[slug]/_components/sticky-section-nav.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Design fidelity — Figma mostra seções no fluxo com sticky nav, não tabs. Barra secundária sticky (top-22) com IntersectionObserver para scroll spy, âncoras suaves para cada seção.",
+      "outcome": "Tab switcher removido. Seções Visão Geral, Especificações e Confira Também renderizadas sequencialmente com navegação sticky. tsc --noEmit e lint exit 0."
     }
   ]
 }

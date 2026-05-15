@@ -2,12 +2,13 @@
 
 import { Container } from '@/components/ui/container'
 import type { TimelineEvent } from '@/lib/api/contracts'
-import { cn } from '@/lib/utils'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
+import { TimelineCheckpoint } from './timeline-checkpoint'
+import { TimelineProgressBar } from './timeline-progress-bar'
 
-interface TimelineRefactoredProps {
+interface CompanyTimelineProps {
   events: TimelineEvent[]
   label?: string
   title?: string
@@ -15,13 +16,13 @@ interface TimelineRefactoredProps {
   initialActiveIndex?: number
 }
 
-export default function TimelineRefactored({
+export default function CompanyTimeline({
   events,
   label = 'Nossa História',
   title = '35 ANOS DE\nHISTÓRIA',
   description = 'Uma empresa de inovação constante que transformou a Stetsom na maior referência de amplificação automotiva do Brasil.',
   initialActiveIndex = 0,
-}: TimelineRefactoredProps) {
+}: CompanyTimelineProps) {
   const safeInitialIndex = Math.min(Math.max(initialActiveIndex, 0), Math.max(events.length - 1, 0))
   const [activeIndex, setActiveIndex] = useState(safeInitialIndex)
 
@@ -66,8 +67,12 @@ export default function TimelineRefactored({
   const progressPercent = events.length <= 1 ? 0 : (selectedIndex / (events.length - 1)) * 100
 
   return (
-    <section className='bg-brand-dark py-20'>
-      <Container>
+    <section className='relative bg-brand-dark py-20 overflow-hidden'>
+      <div
+        className='absolute inset-0'
+        style={{ background: 'radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(22,16,16,1) 100%)' }}
+      />
+      <Container className='relative z-10'>
         <div className='space-y-12'>
           {/* BOX 1: HEADER - Título + Descrição + Setas */}
           <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8'>
@@ -105,61 +110,20 @@ export default function TimelineRefactored({
           {/* BOX 2: TIMELINE LINE + CHECKPOINTS + LABELS */}
           <div className='space-y-6'>
             <div className='relative h-20'>
-              {/* Background Line (centered vertically) */}
-              <div className='absolute left-0 right-0 top-1/2 h-1 -translate-y-1/2 z-0'>
-                <svg
-                  width='100%'
-                  height='100%'
-                  viewBox='0 0 100 4'
-                  preserveAspectRatio='none'
-                  className='absolute left-0 top-0 w-full h-full'>
-                  <rect width='100%' height='100%' fill='rgb(80,80,80)' />
-                  <rect
-                    width={`${progressPercent}%`}
-                    height='100%'
-                    fill='rgb(232,19,42)'
-                    style={{ transition: 'width 0.6s ease-out' }}
-                  />
-                </svg>
-              </div>
+              <TimelineProgressBar progressPercent={progressPercent} />
 
               <div className='relative w-full h-full'>
                 {events.map((event, index) => {
                   const leftPercent = events.length === 1 ? 50 : (index / (events.length - 1)) * 100
                   return (
-                    <div
+                    <TimelineCheckpoint
                       key={event.id}
-                      style={{ left: `${leftPercent}%` }}
-                      className='absolute top-1/2 z-10 cursor-pointer'>
-                      <button
-                        onClick={() => handleCheckpointClick(index)}
-                        className={cn(
-                          'absolute left-1/2 top-1/2 w-8 h-8 -translate-x-1/2 -translate-y-1/2 rounded-full transition-colors duration-300',
-                          index === activeIndex
-                            ? 'bg-brand border-2 border-brand z-30'
-                            : 'bg-brand-dark border-2 border-zinc-600 hover:border-brand z-20',
-                        )}
-                        aria-label={`Go to ${event.title}`}
-                      />
-
-                      <div className='absolute left-1/2 top-4.5 flex min-w-max -translate-x-1/2 flex-col items-center gap-1 text-center'>
-                        <span
-                          className={cn(
-                            'font-sans-condensed font-black transition-all duration-300',
-                            index === activeIndex ? 'text-sm text-brand' : 'text-xs text-text-subtle',
-                          )}>
-                          {event.year}
-                        </span>
-
-                        <span
-                          className={cn(
-                            'font-sans-condensed font-black uppercase text-center leading-tight transition-all duration-300 text-xs',
-                            index === activeIndex ? 'text-white' : 'text-text-subtle',
-                          )}>
-                          {event.shortTitle}
-                        </span>
-                      </div>
-                    </div>
+                      event={event}
+                      index={index}
+                      isActive={index === activeIndex}
+                      leftPercent={leftPercent}
+                      onClick={handleCheckpointClick}
+                    />
                   )
                 })}
               </div>

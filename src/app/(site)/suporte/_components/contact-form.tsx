@@ -13,7 +13,7 @@ export function ContactForm() {
 
   if (sent) {
     return (
-      <div className='max-w-120 rounded border border-zinc-200 bg-off-white p-8 text-center'>
+      <div className='max-w-120 rounded border border-border bg-off-white p-8 text-center'>
         <p className='font-sans-condensed text-section-title font-black uppercase text-brand-dark'>Mensagem enviada!</p>
         <p className='mt-2 text-sm text-text-subtle'>Em breve entraremos em contato.</p>
         <button
@@ -37,7 +37,7 @@ export function ContactForm() {
           id='name'
           name='name'
           required
-          className='w-full rounded border border-zinc-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand'
+          className='w-full rounded border border-border px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand'
         />
       </div>
       <div>
@@ -49,7 +49,7 @@ export function ContactForm() {
           id='email'
           name='email'
           required
-          className='w-full rounded border border-zinc-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand'
+          className='w-full rounded border border-border px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand'
         />
       </div>
       <div>
@@ -61,7 +61,7 @@ export function ContactForm() {
           name='message'
           rows={5}
           required
-          className='w-full rounded border border-zinc-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand'
+          className='w-full rounded border border-border px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand'
         />
       </div>
       <Button type='submit' variant='brand'>

@@ -10,7 +10,7 @@ const GALLERY_IMAGES = [
   { src: '/figma-assets/raw/fill_OJJ5Q1_b3596ec5.png', alt: 'Stetsom fábrica' },
 ] as const
 
-export default function GaleriaDark() {
+export default function DarkGallery() {
   return (
     <section className='relative bg-brand-dark py-12 overflow-hidden'>
       <div className='absolute inset-0 bg-gradient-dark-overlay' />

@@ -1,0 +1,34 @@
+'use client'
+
+interface CategoryOption {
+  name: string
+  slug: string
+}
+
+interface CatalogMobileFilterProps {
+  categoryOptions: CategoryOption[]
+  activeCategory: string
+  onCategoryChange: (slug: string) => void
+}
+
+export function CatalogMobileFilter({ categoryOptions, activeCategory, onCategoryChange }: CatalogMobileFilterProps) {
+  return (
+    <div className='lg:hidden mb-4 border border-border rounded p-4 bg-off-white'>
+      <p className='font-sans-condensed font-black text-xs uppercase text-brand-dark mb-3'>Categorias</p>
+      <div className='flex flex-wrap gap-2'>
+        {categoryOptions.map((cat) => (
+          <button
+            key={cat.slug}
+            onClick={() => onCategoryChange(cat.slug)}
+            className={`font-sans text-sm px-3 py-1 border transition-colors ${
+              activeCategory === cat.slug
+                ? 'bg-brand-dark text-white border-brand-dark'
+                : 'bg-white text-muted-foreground border-border hover:border-muted-foreground'
+            }`}>
+            {cat.name}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}

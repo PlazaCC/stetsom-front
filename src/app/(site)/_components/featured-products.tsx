@@ -4,59 +4,19 @@ import { Container } from '@/components/ui/container'
 import ProductCard from '@/components/ui/product-card'
 import { SectionLabel } from '@/components/ui/section-label'
 import type { ProductCardItem, SiteHomePayload } from '@/lib/api/contracts'
-import { cn } from '@/lib/utils'
-import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
+import { FeaturedTabStrip } from './featured-tab-strip'
 
-interface NovidadesProps {
+interface FeaturedProductsProps {
   featuredProducts: ProductCardItem[]
   spotlightProduct: ProductCardItem
   tabs: string[]
-  section: SiteHomePayload['novidades']
+  section: SiteHomePayload['featured']
 }
 
-interface TabStripProps {
-  tabs: string[]
-  activeTab: string
-  onSelect: (tab: string) => void
-  ctaHref: string
-  ctaLabel: string
-}
-
-function TabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel }: TabStripProps) {
-  return (
-    <>
-      <div
-        role='tablist'
-        className='inline-flex items-center gap-0 overflow-x-auto pb-0 pr-0 sm:gap-0 lg:pr-0 border-b border-zinc-200'>
-        {tabs.map((tab) => (
-          <button
-            type='button'
-            key={tab}
-            role='tab'
-            onClick={() => onSelect(tab)}
-            aria-selected={activeTab === tab}
-            className={cn(
-              'shrink-0 px-3 py-3 transition-colors text-lg font-medium leading-5 font-sans text-center border-b-2',
-              activeTab === tab ? 'border-brand text-brand-dark' : 'border-transparent text-muted-foreground hover:text-brand-dark',
-            )}>
-            {tab}
-          </button>
-        ))}
-      </div>
-      <Link
-        href={ctaHref}
-        className='ml-4 inline-flex items-center gap-2 px-2 text-sm font-sans-condensed font-black text-brand'>
-        <span>{ctaLabel}</span>
-        <ArrowRight className='size-4 inline-block' strokeWidth={2.5} />
-      </Link>
-    </>
-  )
-}
-
-export default function Novidades({ featuredProducts, spotlightProduct, tabs, section }: Readonly<NovidadesProps>) {
+export default function FeaturedProducts({ featuredProducts, spotlightProduct, tabs, section }: Readonly<FeaturedProductsProps>) {
   const [activeTab, setActiveTab] = useState(tabs[0] ?? 'Todos')
 
   const filteredProducts = useMemo(() => {
@@ -79,7 +39,7 @@ export default function Novidades({ featuredProducts, spotlightProduct, tabs, se
             </div>
 
             <div className='flex-1 flex items-end justify-end'>
-              <TabStrip
+              <FeaturedTabStrip
                 tabs={tabs}
                 activeTab={activeTab}
                 onSelect={setActiveTab}
@@ -94,7 +54,7 @@ export default function Novidades({ featuredProducts, spotlightProduct, tabs, se
             <SectionLabel label={section.label} title={section.title} className='max-w-80' />
 
             <div className='flex items-center justify-between'>
-              <TabStrip
+              <FeaturedTabStrip
                 tabs={tabs}
                 activeTab={activeTab}
                 onSelect={setActiveTab}
@@ -108,7 +68,7 @@ export default function Novidades({ featuredProducts, spotlightProduct, tabs, se
         <div className='grid gap-5 lg:grid-cols-[447px_1fr]'>
           <Link
             href={spotlightProduct.href}
-            className='relative flex h-80 items-center justify-center overflow-hidden rounded-lg border border-zinc-200 bg-card transition-colors hover:border-brand sm:h-95 lg:h-111.75'>
+            className='relative flex h-80 items-center justify-center overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-brand sm:h-95 lg:h-111.75'>
             <Image
               src={spotlightProduct.img}
               alt={spotlightProduct.name}

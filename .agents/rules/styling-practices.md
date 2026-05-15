@@ -48,3 +48,25 @@ Consulte `tailwind-canonical.md` para a tabela e a lista de exceções reais (`r
 2. É uma dimensão? → converte para canônico (`N/4`)
 3. É uma cor sem token? → adiciona em `globals.css`, não no componente
 4. O valor se repete em ≥ 2 lugares? → cria token; não copia o hardcode
+
+## 7. Ordem de declaração em `@theme inline` (globals.css)
+
+Os tokens de tipografia (`--text-*`) DEVEM ser declarados no **final** do bloco `@theme inline`, após todas as definições do shadcn/ui. Isso garante que nossos tamanhos personalizados têm precedência sobre qualquer `@theme` importado pelos pacotes (`shadcn/tailwind.css`, `tw-animate-css`).
+
+```css
+@theme inline {
+  /* 1. Cores de marca */
+  --color-brand: ...;
+  /* 2. Spacing */
+  --spacing-logo-nav: ...;
+  /* 3. Tokens shadcn (cor, radius) */
+  --color-background: var(--background);
+  --radius-sm: ...;
+  /* 4. Tipografia — ÚLTIMO para garantir precedência */
+  --text-2xs: 0.6875rem;
+  --text-display-sm: 2.5rem;
+  /* ... */
+}
+```
+
+❌ Nunca declare `--text-*` antes dos tokens do shadcn — eles serão sobrescritos.

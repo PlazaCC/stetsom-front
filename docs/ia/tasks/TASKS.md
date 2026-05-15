@@ -1,7 +1,7 @@
 # Stetsom Front — Task Backlog
 
 > Gerado em: 2026-05-12 | Fluxo: AI-Driven Workflow
-> Para executar: `/poc-next-task` | Para criar nova: `/brainstorm` → `/create-poc-task`
+> Para executar: `/next-task` | Para criar nova: `/brainstorm` → `/create-task`
 
 ## Sequência de Execução
 
@@ -42,3 +42,4 @@ Fase 6 — Suporte + 404 (paralelo, depende de task-01):
 | task-11 | 404 — Criar Página not-found.tsx              | 6          | TODO        | YES         | feat/task-11-404-not-found-page               |
 | task-12 | Mock Data — Enriquecimento Imagens + Specs    | 1          | TODO        | NO          | feat/task-12-mock-data-enrichment             |
 | task-13 | Design Token Foundation — Cores, tipografia, espaçamento | 1 | TODO  | NO          | feat/task-02-header-figma-fidelity            |
+

@@ -8,10 +8,10 @@ export default function FaqAccordion({ items }: { items: FAQItem[] }) {
   return (
     <Accordion>
       {items.map(({ q, a }, i) => (
-        <AccordionItem key={i} value={String(i)} className='border-zinc-200'>
+          <AccordionItem key={i} value={String(i)} className='border-border'>
           <AccordionPrimitive.Header className='flex'>
             <AccordionPrimitive.Trigger className='group/faq flex w-full cursor-pointer items-center justify-between gap-4 py-4 text-left outline-none'>
-              <span className='font-medium text-[15px] text-brand-dark'>{q}</span>
+              <span className='font-medium text-base text-brand-dark'>{q}</span>
               <span className='shrink-0 text-lg leading-none text-brand group-aria-expanded/faq:hidden'>+</span>
               <span className='hidden shrink-0 text-lg leading-none text-brand group-aria-expanded/faq:inline'>−</span>
             </AccordionPrimitive.Trigger>

@@ -1,4 +1,49 @@
-import type { FAQItem, SupportPayload } from '@/lib/api/contracts'
+import type { FAQItem, ProductFile, SupportPayload } from '@/lib/api/contracts'
+
+const NOW = new Date().toISOString()
+
+const SUPPORT_DOCUMENTATION_FILES: ProductFile[] = [
+  {
+    id: 'doc-manual-sr4000',
+    product_id: 'support',
+    file_url: '#',
+    type: 'MANUAL',
+    version: 1,
+    is_active: true,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: 'doc-guia-instalacao',
+    product_id: 'support',
+    file_url: '#',
+    type: 'MANUAL',
+    version: 1,
+    is_active: true,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: 'doc-diagrama-sr2000',
+    product_id: 'support',
+    file_url: '#',
+    type: 'MANUAL',
+    version: 2,
+    is_active: true,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: 'doc-certificado-fcc',
+    product_id: 'support',
+    file_url: '#',
+    type: 'CERTIFICATE',
+    version: 1,
+    is_active: true,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+]
 
 export const SUPPORT_FAQ_ITEMS: FAQItem[] = [
   {
@@ -55,21 +100,7 @@ export const SUPPORT_PAYLOAD: SupportPayload = {
       cta: 'Baixar',
     },
   ],
-  documentation: {
-    label: 'Documentação',
-    title: 'Categorias',
-    categories: [
-      { id: 'manuais', name: 'Manuais' },
-      { id: 'esquemas', name: 'Esquemas Elétricos' },
-      { id: 'certificados', name: 'Certificados' },
-    ],
-    links: [
-      { id: 'manual-1', title: 'Manual Amplificador SR4000', href: '#', category: 'manuais' },
-      { id: 'manual-2', title: 'Guia de Instalação Rápida', href: '#', category: 'manuais' },
-      { id: 'schema-1', title: 'Diagrama Elétrico SR2000', href: '#', category: 'esquemas' },
-      { id: 'cert-1', title: 'Certificado FCC', href: '#', category: 'certificados' },
-    ],
-  },
+  documentationFiles: SUPPORT_DOCUMENTATION_FILES,
   faqSearch: {
     label: 'FAQ',
     title: 'Perguntas Frequentes',
@@ -87,8 +118,8 @@ export const SUPPORT_PAYLOAD: SupportPayload = {
     description: 'Preencha o formulário abaixo e nossa equipe responderá em breve.',
   },
   faq: {
-    label: 'FAQ',
-    title: 'RESPOSTAS ÀS DÚVIDAS',
+    label: 'DÚVIDAS',
+    title: 'PERGUNTAS FREQUENTES',
     items: SUPPORT_FAQ_ITEMS,
     supportButtonLabel: 'Falar com suporte',
   },

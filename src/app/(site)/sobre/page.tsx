@@ -2,21 +2,13 @@ import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import { getSiteAboutPayload } from '@/lib/api/server'
 import Image from 'next/image'
-import CTATrabalheConosco from '../_components/cta-trabalhe-conosco'
-import GaleriaDark from '../_components/galeria-dark'
-import NossaFabrica from '../_components/nossa-fabrica'
-import NossasBases from '../_components/nossas-bases'
-import QualidadeInovadora from '../_components/qualidade-inovadora'
+import CompanyTimeline from '../_components/company-timeline'
+import DarkGallery from '../_components/dark-gallery'
+import OurFactory from '../_components/our-factory'
+import OurFoundations from '../_components/our-foundations'
 import RedBanner from '../_components/red-banner'
-import MidiasSociais from '../_components/social-medias'
-import TimelineRefactored from '../_components/timeline-refactored'
-
-const ABOUT_HERO_STATS = [
-  { value: '35+', label: 'ANOS DE MERCADO' },
-  { value: '200+', label: 'PRODUTOS' },
-  { value: '60+', label: 'PAÍSES DE EXPORTAÇÃO' },
-  { value: '1M+', label: 'UNIDADES VENDIDAS' },
-] as const
+import SocialFeed from '../_components/social-feed'
+import { ABOUT_STATS } from './_components/data'
 
 export default async function SobrePage() {
   const aboutPayload = await getSiteAboutPayload()
@@ -25,13 +17,14 @@ export default async function SobrePage() {
     <div>
       {/* 1. HERO */}
       <section className='relative bg-brand-dark h-109.75 overflow-hidden flex items-center'>
-        <Image
-          src={aboutPayload.hero.image}
-          alt={aboutPayload.hero.imageAlt}
-          fill
-          className='object-cover opacity-35'
-          priority
-        />
+          <Image
+            src={aboutPayload.hero.image}
+            alt={aboutPayload.hero.imageAlt}
+            fill
+            className='object-cover opacity-35'
+            sizes='100vw'
+            priority
+          />
         <div className='absolute inset-0 bg-gradient-dark-overlay' />
         <Container className='z-10'>
           <div className='grid gap-10 lg:grid-cols-[1fr_428px] lg:items-end'>
@@ -63,11 +56,11 @@ export default async function SobrePage() {
             </div>
 
             <div className='relative border-t border-white/20 pt-5'>
-              <span className='pointer-events-none absolute right-0 top-[-96px] font-sans-condensed text-[112px] font-black leading-none text-white/10'>
+              <span className='pointer-events-none absolute right-0 -top-24 font-sans-condensed text-[112px] font-black leading-none text-white/10'>
                 1989
               </span>
               <div className='grid grid-cols-2 border border-white/20'>
-                {ABOUT_HERO_STATS.map((stat) => (
+                {ABOUT_STATS.map((stat) => (
                   <div key={stat.label} className='border border-white/20 px-4 py-4'>
                     <p className='font-sans-condensed text-display-sm font-black leading-none text-white'>
                       {stat.value.replace('+', '')}<span className='text-brand'>+</span>
@@ -83,29 +76,23 @@ export default async function SobrePage() {
         </Container>
       </section>
 
-      {/* 2. RED BANNER - Milestones Carousel */}
+      {/* 2. RED BANNER - Milestones Marquee */}
       <RedBanner milestones={aboutPayload.milestones} />
 
-      {/* 3. QUALIDADE INOVADORA - 2 Cols */}
-      <QualidadeInovadora values={aboutPayload.values} section={aboutPayload.quality} />
+      {/* 3. COMPANY TIMELINE */}
+      <CompanyTimeline events={aboutPayload.timeline} />
 
-      {/* 4. TIMELINE REFACTORED - Con Sidebar */}
-      <TimelineRefactored events={aboutPayload.timeline} />
+      {/* 4. DARK GALLERY */}
+      <DarkGallery />
 
-      {/* 5. GALERIA DARK - Qualidade */}
-      <GaleriaDark />
+      {/* 5. SOCIAL FEED */}
+      <SocialFeed section={aboutPayload.social} />
 
-      {/* 6. NOSSAS BASES - 3 Cards */}
-      <NossasBases bases={aboutPayload.bases} />
+      {/* 6. OUR FOUNDATIONS - 3 Cards */}
+      <OurFoundations bases={aboutPayload.bases} />
 
-      {/* 7. NOSSA FAMÍLIA / MÍDIAS SOCIAIS */}
-      <MidiasSociais section={aboutPayload.social} />
-
-      {/* 8. NOSSA FÁBRICA / LOCALIZAÇÃO */}
-      <NossaFabrica />
-
-      {/* 9. CTA - Trabalhe Conosco (conteúdo extra, não mapeado no Figma) */}
-      <CTATrabalheConosco section={aboutPayload.jobsCta} />
+      {/* 7. OUR FACTORY + CAREERS */}
+      <OurFactory jobsCta={aboutPayload.jobsCta} />
     </div>
   )
 }

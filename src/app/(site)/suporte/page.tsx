@@ -3,28 +3,11 @@ import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import { getSupportPayload } from '@/lib/api/server'
-import { ArrowUpRight, FileText, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
+import { ArrowUpRight, Download, FileText, Search } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
+import { CARD_ICONS, CONTACT_DETAILS } from './_components/data'
 import { ContactForm } from './_components/contact-form'
-
-const CARD_ICONS = {
-  'central-ajuda': FileText,
-  garantia: MapPin,
-  manuais: MessageCircle,
-} as const
-
-const AUTHORIZED_POSTS = [
-  { id: 'sp-1', type: 'Distribuidor', name: 'Stetsom São Paulo', address: 'Rua Augusta, 1200 — São Paulo, SP', phone: '(11) 3000-0000' },
-  { id: 'rj-1', type: 'Distribuidor', name: 'Stetsom Rio de Janeiro', address: 'Av. Brasil, 500 — Rio de Janeiro, RJ', phone: '(21) 3000-0000' },
-  { id: 'mg-1', type: 'Distribuidor', name: 'Stetsom Belo Horizonte', address: 'Av. Amazonas, 300 — Belo Horizonte, MG', phone: '(31) 3000-0000' },
-  { id: 'rs-1', type: 'Distribuidor', name: 'Stetsom Porto Alegre', address: 'Av. Ipiranga, 800 — Porto Alegre, RS', phone: '(51) 3000-0000' },
-] as const
-
-const CONTACT_DETAILS = [
-  { id: 'address', icon: MapPin, label: 'Endereço', value: 'Av. Industrial Stetsom, 100 — São Paulo, SP 09850-000' },
-  { id: 'email', icon: Mail, label: 'E-mail', value: 'suporte@stetsom.com.br' },
-  { id: 'phone', icon: Phone, label: 'Telefone', value: '+55 (11) 3000-0000' },
-] as const
 
 export default async function SuportePage() {
   const supportPayload = await getSupportPayload()
@@ -32,16 +15,19 @@ export default async function SuportePage() {
   return (
     <div>
       {/* 1. HERO BANNER - com gradiente dark + watermark "SOS" + barra vermelha */}
-      <section className='relative w-full h-84 bg-brand-dark overflow-hidden flex items-center'>
-        <Image
-          src={supportPayload.hero.image}
-          alt='Hero Support'
-          fill
-          className='object-cover opacity-35 object-center'
-          priority
-        />
-        <div className='absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-black/40' />
-        <span className='absolute inset-0 font-sans-condensed font-black uppercase text-center flex items-center justify-center text-[80px] sm:text-[150px] lg:text-[263px] text-watermark-text opacity-[0.08] pointer-events-none select-none leading-none'>
+      <section className='relative w-full h-84 overflow-hidden flex items-center'
+        style={{ background: 'radial-gradient(circle at 99% 114%, rgb(27,26,44) 0%, rgb(28,24,24) 100%)' }}
+      >
+          <Image
+            src={supportPayload.hero.image}
+            alt='Hero Support'
+            fill
+            className='object-cover opacity-35 object-center'
+            sizes='100vw'
+            priority
+          />
+        <div className='absolute inset-0' style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 72%, rgba(0,0,0,1) 100%)' }} />
+        <span className='absolute inset-0 font-sans-condensed font-black uppercase text-center flex items-center justify-center text-display-2xl sm:text-[150px] lg:text-[263px] text-watermark-text opacity-[0.08] pointer-events-none select-none leading-none'>
           {supportPayload.hero.watermarkText}
         </span>
         <div className='absolute left-0 top-0 w-3.5 h-full bg-bar-accent' />
@@ -62,11 +48,11 @@ export default async function SuportePage() {
       <section className='w-full bg-off-white py-12'>
         <Container>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-            {supportPayload.cards.map((card) => {
+            {supportPayload.cards.map((card, index) => {
               const Icon = CARD_ICONS[card.id as keyof typeof CARD_ICONS] ?? FileText
 
               return (
-                <div key={card.id} className='bg-card border border-border p-4 flex min-h-52 flex-col'>
+                <div key={card.id} className={'bg-white border border-border p-4 flex min-h-52 flex-col' + (index === supportPayload.cards.length - 1 ? ' border-b-brand' : '')}>
                   <Icon size={20} className='mb-5 text-brand' />
                   <h3 className='font-sans-condensed font-black text-section-title uppercase text-brand-dark mb-3'>
                     {card.title}
@@ -82,64 +68,114 @@ export default async function SuportePage() {
         </Container>
       </section>
 
-      {/* 3. DOCUMENTATION SECTION - com tabs/categorias */}
-      <section className='w-full bg-card py-12'>
+      {/* 3. DOWNLOAD DE MATERIAIS - lista de arquivos com ProductFile schema */}
+      <section className='w-full bg-white py-12'>
         <Container>
-          <SectionLabel label={supportPayload.documentation.label} title={supportPayload.documentation.title} />
-          <div className='mt-8'>
-            <div className='flex gap-4 mb-8 overflow-x-auto pb-4 border-b border-border'>
-              {supportPayload.documentation.categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  className='font-sans text-base font-medium text-muted-foreground whitespace-nowrap hover:text-brand transition-colors'>
-                  {cat.name}
-                </button>
-              ))}
-            </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-              {supportPayload.documentation.links.map((link) => (
-                <a
-                  key={link.id}
-                  href={link.href}
-                  className='block p-4 border border-zinc-200 rounded hover:border-brand hover:bg-off-white transition-colors'>
-                  <h4 className='font-sans text-base font-medium text-foreground'>{link.title}</h4>
-                </a>
-              ))}
-            </div>
+          <SectionLabel label='Materiais' title='DOWNLOAD DE MATERIAIS' />
+          <div className='mt-8 flex flex-col gap-3'>
+            {supportPayload.documentationFiles.map((file) => (
+              <div
+                key={file.id}
+                className='flex items-center justify-between border border-border rounded px-5 py-4 hover:border-brand transition-colors'>
+                <div className='flex items-center gap-4'>
+                  <FileText size={20} className='text-brand shrink-0' />
+                  <div>
+                    <p className='font-sans text-sm font-medium text-foreground'>
+                      {file.type === 'MANUAL' && 'Manual — '}
+                      {file.type === 'CERTIFICATE' && 'Certificado — '}
+                      {file.type === 'CATALOG' && 'Catálogo — '}
+                      {file.type === 'IMAGE' && 'Imagem — '}
+                      Documento v{file.version}
+                    </p>
+                    <p className='font-sans text-xs text-text-subtle'>
+                      {file.type === 'MANUAL' && 'Manual técnico'}
+                      {file.type === 'CERTIFICATE' && 'Certificado de conformidade'}
+                      {file.type === 'CATALOG' && 'Catálogo do produto'}
+                      {file.type === 'IMAGE' && 'Imagem técnica'}
+                    </p>
+                  </div>
+                </div>
+                <Link
+                  href={file.file_url}
+                  className='inline-flex h-9 shrink-0 items-center gap-1.5 rounded-sm bg-brand px-4 font-sans text-2xs font-bold uppercase tracking-[0.6px] text-white transition-colors hover:bg-brand/90'>
+                  <Download size={14} />
+                  Download
+                </Link>
+              </div>
+            ))}
           </div>
         </Container>
       </section>
 
-      {/* 4. POSTOS AUTORIZADOS - lista de locais + mapa */}
+      {/* 4. POSTOS AUTORIZADOS - busca de assistências técnicas */}
       <section className='w-full bg-off-white py-12'>
         <Container>
-          <SectionLabel label='Rede Autorizada' title='POSTOS AUTORIZADOS' />
-          <div className='mt-8 flex flex-col lg:flex-row lg:gap-6 lg:items-start'>
-            <div className='flex flex-col gap-4 lg:w-86 shrink-0'>
-              {AUTHORIZED_POSTS.map((post) => (
-                <div key={post.id} className='border-b border-zinc-200 pb-4 last:border-0'>
-                  <p className='font-sans text-2xs uppercase tracking-wider text-brand mb-1'>{post.type}</p>
-                  <h4 className='font-sans-condensed font-black text-section-title uppercase text-brand-dark mb-1'>{post.name}</h4>
-                  <p className='text-sm text-text-subtle'>{post.address}</p>
-                  <p className='text-sm text-text-subtle mt-0.5'>{post.phone}</p>
-                </div>
-              ))}
+          <SectionLabel label='DÚVIDAS' title='POSTOS AUTORIZADOS' />
+          <p className='text-sm text-text-subtle mt-2 max-w-96 leading-relaxed'>
+            Informe seu CEP ou cidade para encontrarmos as assistências técnicas autorizadas Stetsom mais próximas de você.
+          </p>
+          <div className='flex flex-col lg:flex-row lg:gap-6 mt-8'>
+            <div className='lg:w-[344px] shrink-0'>
+              <div className='flex gap-2'>
+                <input
+                  type='text'
+                  placeholder='Busque por cidade ou estado...'
+                  className='w-full rounded border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand'
+                />
+                <Button variant='default' className='shrink-0 gap-1.5 rounded-md'>
+                  <Search size={16} />
+                  Buscar
+                </Button>
+              </div>
+              <div className='mt-4 flex flex-col'>
+                {['TODOS', 'SÃO PAULO', 'RIO DE JANEIRO', 'BELO HORIZONTE', 'CURITIBA'].map((city) => (
+                  <div
+                    key={city}
+                    className='border-b border-border py-1.5 px-3 text-sm text-text-subtle hover:text-brand cursor-pointer transition-colors'
+                  >
+                    {city}
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className='relative mt-8 lg:mt-0 lg:flex-1 h-85 lg:h-114.25 rounded-[16px] overflow-hidden bg-muted'>
-              <Image
-                src='/figma-assets/raw/fill_SXY62B_51d05531.png'
-                alt='Mapa postos autorizados Stetsom'
-                fill
-                className='object-cover'
-                sizes='(max-width: 1024px) 100vw, 732px'
-              />
+            <div className='flex-1 mt-6 lg:mt-0'>
+              <div className='bg-muted rounded-xl h-[457px]' />
             </div>
           </div>
         </Container>
       </section>
 
-      {/* 5. CONTATO - 2 colunas: info + formulário */}
-      <section className='w-full bg-card py-12'>
+      {/* 5. FAQ ACCORDION - perguntas frequentes + suporte */}
+      <section className='w-full bg-off-white py-12'>
+        <Container>
+          <div className='flex flex-col lg:flex-row lg:gap-24'>
+            <div className='lg:w-80 shrink-0'>
+              <SectionLabel label={supportPayload.faq.label} title={supportPayload.faq.title} />
+              <p className='text-base text-text-subtle mt-2 leading-relaxed'>
+                Não encontrou o que procura? Entre em contato com nosso suporte.
+              </p>
+              <Button variant='default' className='mt-6 bg-surface-elevated text-white hover:bg-brand-dark'>
+                {supportPayload.faq.supportButtonLabel}
+              </Button>
+            </div>
+            <div className='flex-1 mt-8 lg:mt-0'>
+              <Accordion className='space-y-3'>
+                {supportPayload.faq.items.map((item, index) => (
+                  <AccordionItem key={index} value={`item-${index}`} className='border border-border rounded px-6 py-4'>
+                    <AccordionTrigger className='hover:no-underline py-0 font-sans-condensed font-black text-base uppercase text-foreground hover:text-brand'>
+                      {item.q}
+                    </AccordionTrigger>
+                    <AccordionContent className='text-base text-text-subtle pt-4'>{item.a}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* 6. CONTATO - 2 colunas: info + formulário */}
+      <section className='w-full bg-white py-12'>
         <Container>
           <div className='flex flex-col lg:flex-row lg:gap-16 lg:items-start'>
             <div className='flex flex-col gap-6 lg:w-90 shrink-0'>
@@ -163,28 +199,6 @@ export default async function SuportePage() {
             <div className='flex-1 mt-8 lg:mt-0'>
               <ContactForm />
             </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* 6. FAQ ACCORDION SECTION - accordion com items + botão "Falar com suporte" */}
-      <section className='w-full bg-off-white py-12'>
-        <Container>
-          <SectionLabel label={supportPayload.faq.label} title={supportPayload.faq.title} />
-          <div className='max-w-175 mt-8'>
-            <Accordion className='space-y-3'>
-              {supportPayload.faq.items.map((item, index) => (
-                <AccordionItem key={index} value={`item-${index}`} className='border border-zinc-200 rounded px-6 py-4'>
-                  <AccordionTrigger className='hover:no-underline py-0 font-sans-condensed font-black text-base uppercase text-foreground hover:text-brand'>
-                    {item.q}
-                  </AccordionTrigger>
-                  <AccordionContent className='text-base text-text-subtle pt-4'>{item.a}</AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-            <Button variant='default' className='mt-8 bg-surface-elevated text-white hover:bg-brand-dark'>
-              {supportPayload.faq.supportButtonLabel}
-            </Button>
           </div>
         </Container>
       </section>

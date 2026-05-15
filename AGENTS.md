@@ -255,6 +255,41 @@ When fetching products from the API, expect this response shape:
 
 ---
 
+## Codebase Knowledge Graph
+
+A knowledge graph of this codebase lives in `graphify-out/`. Read it to understand structure before exploring unfamiliar areas.
+
+- `graphify-out/GRAPH_REPORT.md` — communities, god nodes, knowledge gaps (start here)
+- `graphify-out/graph.html` — interactive visualization
+
+Last run: 2026-05-12 · 58 files · 172 nodes · 32 communities  
+`cn()` is the highest-betweenness node (41 edges) — used in virtually every component.  
+Main communities: Utilities · Pages & Routes · UI Components · Technology Stack
+
+Regenerate with `/graphify` (Claude Code) after major structural changes.
+
+---
+
+## AI-Driven Workflow
+
+This project follows a skill-first delivery cycle. See `docs/ia/AI-DRIVEN-WORKFLOW.md` for the full description.
+
+**Standard cycle:** `/brainstorm` → `/create-task` → `/next-task` → `/create-pr` → `/code-review`  
+**Shortcut:** `/deliver` chains steps 3–5 automatically (up to 3 fix loops).  
+**Task backlog:** `docs/ia/tasks/TASKS.md` · Format: `docs/ia/tasks/task-<id>-<slug>.md`
+
+Skill entrypoints are installed in `.agents/skills/` (VSCode) and `.claude/skills/` (Claude Code).
+
+---
+
+## Cross-Agent Changelog (Required for all agents)
+
+Any agent — Claude Code CLI, VSCode Copilot Chat, or any other — that edits files **must** append one entry to `docs/ia/context.json` before finishing work. This is the coordination layer that keeps all agents in sync.
+
+Schema, field rules, and compaction policy: `.claude/rules/llm-owned-context-json.md`
+
+---
+
 ## Architecture Decisions (RFC-001)
 
 - **Backend:** Fastify API (separate repo) + Prisma ORM + Cloudflare R2 storage.

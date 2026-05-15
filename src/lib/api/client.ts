@@ -9,21 +9,7 @@ import type {
   Product,
 } from '@/lib/api/contracts'
 import { INTERNAL_API_ENDPOINTS } from '@/lib/api/endpoints'
-
-function createSearchParams(query: Record<string, string | number | undefined>): string {
-  const params = new URLSearchParams()
-
-  Object.entries(query).forEach(([key, value]) => {
-    if (value === undefined || value === '') {
-      return
-    }
-
-    params.set(key, String(value))
-  })
-
-  const serialized = params.toString()
-  return serialized ? `?${serialized}` : ''
-}
+import { buildSearchParams } from '@/lib/api/query-utils'
 
 async function fetchJson<T>(path: string): Promise<T> {
   const response = await fetch(path, {
@@ -49,7 +35,7 @@ export async function fetchCatalogPage() {
 }
 
 export async function fetchCatalogProducts(query: CatalogProductsQuery) {
-  const suffix = createSearchParams({
+  const suffix = buildSearchParams({
     q: query.q,
     category: query.category,
     status: query.status,
@@ -61,7 +47,7 @@ export async function fetchCatalogProducts(query: CatalogProductsQuery) {
 }
 
 export async function fetchCmsProducts(query: CmsProductsQuery) {
-  const suffix = createSearchParams({
+  const suffix = buildSearchParams({
     q: query.q,
     status: query.status,
     page: query.page,

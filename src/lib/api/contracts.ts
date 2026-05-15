@@ -154,8 +154,8 @@ export type SiteHomePayload = {
   hero: HeroBannerSlide[]
   featuredProducts: ProductCardItem[]
   spotlightProduct: ProductCardItem
-  novidadesTabs: string[]
-  novidades: {
+  featuredTabs: string[]
+  featured: {
     label: string
     title: string
     ctaLabel: string
@@ -224,13 +224,6 @@ export type SupportDocumentationCategory = {
   name: string
 }
 
-export type SupportDocumentationLink = {
-  id: string
-  title: string
-  href: string
-  category: string
-}
-
 export type SupportPayload = {
   hero: {
     label: string
@@ -240,12 +233,7 @@ export type SupportPayload = {
     watermarkText: string
   }
   cards: SupportCard[]
-  documentation: {
-    label: string
-    title: string
-    categories: SupportDocumentationCategory[]
-    links: SupportDocumentationLink[]
-  }
+  documentationFiles: ProductFile[]
   faqSearch: {
     label: string
     title: string

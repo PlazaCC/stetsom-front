@@ -15,7 +15,7 @@ export function SectionLabel({ label, title, subtitle, dark = false, className }
         <div className={cn('w-6 h-px shrink-0', dark ? 'bg-white' : 'bg-brand')} />
         <span
           className={cn(
-            'font-sans-condensed font-medium text-base uppercase leading-none',
+            'font-sans-condensed font-normal text-base uppercase leading-none',
             dark ? 'text-white' : 'text-brand',
           )}>
           {label}

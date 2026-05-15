@@ -16,15 +16,6 @@
   --color-watermark-text: var(--watermark-text);
   --color-bar-accent: var(--bar-accent);
 
-  /* Typography — non-standard sizes not in Tailwind default scale */
-  --text-2xs: 0.6875rem;
-  --text-button-md: 0.8125rem;
-  --text-section-title: 1.375rem;
-  --text-display-sm: 2.5rem;
-  --text-display-lg: 3.5rem;
-  --text-display-xl: 4rem;
-  --text-display-2xl: 5rem;
-
   /* Spacing — Figma layout values reused across components */
   --spacing-logo-nav: 3.1875rem;
 
@@ -67,9 +58,19 @@
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
+  --radius-card: 1rem;
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Typography — declared last to override any conflicting @theme definitions from imported CSS (shadcn, tw-animate) */
+  --text-2xs: 0.6875rem;
+  --text-button-md: 0.8125rem;
+  --text-section-title: 1.375rem;
+  --text-display-sm: 2.5rem;
+  --text-display-lg: 3.5rem;
+  --text-display-xl: 4rem;
+  --text-display-2xl: 5rem;
 }
 
 :root {
@@ -89,9 +90,9 @@
   /* Stetsom custom tokens — follow :root → @theme inline var() pattern */
   --text-subtle: oklch(0.42 0 0);
   --text-subtle-dark: oklch(0.73 0 0);
-  --surface-elevated: oklch(0.22 0 0);
+  --surface-elevated: oklch(0.12 0 0);
   --icon-muted: oklch(0.5 0 0);
-  --watermark-text: rgb(185, 185, 185);
+  --watermark-text: rgb(184, 184, 184);
   --bar-accent: rgb(220, 38, 38);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);

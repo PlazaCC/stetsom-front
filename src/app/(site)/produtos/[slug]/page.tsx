@@ -4,7 +4,8 @@ import { getCatalogProductDetail } from '@/lib/api/server'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import ProductDetailTabs from './_components/product-detail-tabs'
+import ProductDetailContent from './_components/product-detail-content'
+import StickySectionNav from './_components/sticky-section-nav'
 
 function toImageList(data: Record<string, unknown>): string[] {
   const images = data.images
@@ -44,7 +45,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
   ]
 
   return (
-    <div className='bg-card'>
+    <>
       {/* PRODUCT PREVIEW — image left + info right */}
       <section className='bg-card py-6 lg:py-8'>
         <Container>
@@ -53,7 +54,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
           <div className='mt-6 flex flex-col lg:flex-row lg:gap-12 lg:items-start'>
             {/* Left: main image */}
             <div className='flex flex-col gap-4 lg:w-111.75 shrink-0'>
-              <div className='relative w-full aspect-[4/3] lg:h-89.5 border border-zinc-200 rounded-[20px] overflow-hidden bg-card flex items-center justify-center'>
+              <div className='relative w-full aspect-[4/3] lg:h-89.5 border border-border rounded-2xl overflow-hidden bg-card flex items-center justify-center'>
                 <Image
                   src={product.thumbnail_url}
                   alt={product.name}
@@ -69,7 +70,7 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
                   <button
                     key={`${image}-${index}`}
                     type='button'
-                    className='relative h-16 w-18 shrink-0 overflow-hidden rounded border border-zinc-300 bg-card'>
+                    className='relative h-19 w-19 shrink-0 overflow-hidden rounded border border-border bg-card'>
                     <Image
                       src={image}
                       alt={`${product.name} miniatura ${index + 1}`}
@@ -102,13 +103,13 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
                 {Object.entries(product.specifications).map(([key, value]) => (
                   <li
                     key={key}
-                    className='rounded-full border border-zinc-300 px-3 py-1 text-xs uppercase text-brand-dark'>
+                    className='rounded-lg border border-muted px-3 py-1 text-xs uppercase text-brand-dark'>
                     {key.replace(/_/g, ' ')}: {String(value)}
                   </li>
                 ))}
               </ul>
 
-              <div className='mt-6 grid grid-cols-3 gap-4 border-y border-zinc-200 py-4'>
+              <div className='mt-6 grid grid-cols-3 gap-4 border-y border-border py-4'>
                 <div>
                   <p className='font-sans-condensed text-3xl font-black uppercase leading-none text-brand'>
                     {powerMetric}
@@ -133,13 +134,13 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
                 {manualFile && (
                   <Link
                     href={manualFile.file_url}
-                    className='inline-flex h-10 items-center rounded-[4px] bg-brand px-5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-zinc-50 transition-colors hover:bg-brand/90'>
+                    className='inline-flex h-10 items-center rounded-sm bg-brand px-5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-white transition-colors hover:bg-brand/90'>
                     Acessar manual do produto
                   </Link>
                 )}
                 <button
                   type='button'
-                  className='inline-flex h-10 items-center rounded-[4px] border border-zinc-300 bg-card px-5 font-sans text-button-md font-black uppercase tracking-[0.8px] text-brand-dark'>
+                  className='inline-flex h-10 items-center rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold uppercase tracking-[0.8px] text-brand-dark'>
                   Download de fotos
                 </button>
               </div>
@@ -148,14 +149,14 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
         </Container>
       </section>
 
-      {/* TABS: Especificações / Confira também */}
-      <ProductDetailTabs
+      <StickySectionNav />
+      <ProductDetailContent
         productName={product.name}
         thumbnailUrl={product.thumbnail_url}
         specifications={product.specifications}
         blocks={blocks}
         relatedProducts={relatedProducts}
       />
-    </div>
+    </>
   )
 }
