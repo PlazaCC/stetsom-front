@@ -1133,6 +1133,22 @@
       ],
       "rationale": "Full-site design fidelity audit against Figma MCP live data + .raw/figma-design/suporte/ (local: MCP live Figma). Found section order wrong, Postos Autorizados section missing, FAQ merged wrong sections, cards/bg tokens incorrect.",
       "outcome": "HIGH: Added Postos Autorizados section (search + service center list + map) between Downloads and FAQ; fixed section order (Hero→Cards→Downloads→Postos→FAQ→Contato→Footer); Support Cards now use bg-white + border-b-brand on third card. MED: FAQ layout redesigned to row (description+button left, accordion right) with missing description text; FAQ label/title updated to DÚVIDAS/PERGUNTAS FREQUENTES. LOW: Hero gradient updated to match Figma radial+linear overlay. tsc --noEmit and lint both exit 0."
+    },
+    {
+      "ts": "2026-05-15T03:05:00Z",
+      "agent": "opencode-big-pickle",
+      "type": "fix",
+      "summary": "Design fidelity audit — Produtos page: 19 corrections across 5 files (source: MCP live Figma)",
+      "files": [
+        "src/app/globals.css",
+        "src/components/ui/product-card.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/produtos/_components/catalog-sidebar.tsx",
+        "src/app/(site)/produtos/_components/catalog-mobile-filter.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Full-site design fidelity audit against Figma MCP live data for /produtos page. HIGH: watermark 150px→263px, label font-black→font-medium, sidebar 'Ordenar por' redesigned from condensed black 34px to Barlow Medium 16px, 'Filtros' from 34px bold to 18px bold, sidebar sections switched from card containers to plain separator-line layout matching Figma. MED: hero mobile height 200→288px, title 32px→48px, category tab icons 28x28→40x40 active/28x28 inactive with red-tint bg, card gap 12px→20px mobile/16px→32px desktop, product-card border-radius 16px→10px. LOW: catalog-mobile-filter zinc tokens replaced with border-border.1: bar-accent #E8132A→#DC2626 per Figma red bar color.",
+      "outcome": "Visual implementation aligned with Figma MCP live data for the /produtos page. tsc --noEmit and lint both exit 0."
     }
   ]
 }

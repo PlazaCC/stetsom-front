@@ -65,7 +65,7 @@ export default function ProdutosPage() {
   return (
     <div>
       {/* HERO */}
-      <section className='relative overflow-hidden bg-brand-dark h-50 md:h-70 lg:h-84'>
+      <section className='relative overflow-hidden bg-brand-dark h-72 lg:h-84'>
         <div
           className='absolute inset-0'
           style={{
@@ -80,11 +80,11 @@ export default function ProdutosPage() {
         <Container className='relative z-10 pt-8 md:pt-16 lg:pt-25.75'>
           <div className='flex items-center gap-2 mb-1'>
             <div className='w-6 h-px bg-brand shrink-0' />
-            <span className='font-sans-condensed font-black text-xs md:text-base uppercase text-brand'>
+            <span className='font-sans-condensed font-medium text-xs md:text-base uppercase text-brand'>
               {hero.heroLabel}
             </span>
           </div>
-          <h1 className='font-sans-condensed font-black text-[32px] md:text-5xl lg:text-[90px] leading-tight md:leading-16 lg:leading-18.5 uppercase text-white'>
+          <h1 className='font-sans-condensed font-black text-5xl md:text-6xl lg:text-[90px] leading-tight md:leading-16 lg:leading-18.5 uppercase text-white'>
             {hero.heroTitle.split('\n').map((line) => (
               <span key={line} className='block'>
                 {line}
@@ -95,7 +95,7 @@ export default function ProdutosPage() {
             <strong className='font-sans-condensed font-black text-xl text-white'>{totalProducts}</strong> produtos
           </span>
         </Container>
-        <div className='absolute right-0 bottom-0 font-sans-condensed font-black text-[72px] sm:text-[100px] lg:text-[150px] text-watermark-text leading-none pointer-events-none select-none opacity-[0.08]'>
+        <div className='absolute right-0 bottom-0 font-sans-condensed font-black text-display-2xl sm:text-[150px] lg:text-[263px] text-watermark-text leading-none pointer-events-none select-none opacity-[0.08]'>
           {hero.heroWatermark}
         </div>
         <div className='absolute left-0 top-0 w-3.5 h-full bg-bar-accent' />
@@ -104,7 +104,7 @@ export default function ProdutosPage() {
       {/* CATEGORY TABS */}
       <div className='bg-white border-b border-border'>
         <Container>
-          <div className='flex items-center gap-1 py-1 overflow-x-auto'>
+          <div className='flex items-center gap-3 py-1 overflow-x-auto'>
             {categoryOptions.map((cat) => (
               <button
                 key={cat}
@@ -115,13 +115,18 @@ export default function ProdutosPage() {
                     : 'border-transparent text-muted-foreground hover:text-brand-dark'
                 }`}>
                 {CATEGORY_IMAGES[cat] && (
-                  <div className='w-7 h-7 rounded overflow-hidden shrink-0 bg-muted'>
+                  <div
+                    className={`rounded overflow-hidden shrink-0 flex items-center justify-center ${
+                      activeCategory === cat
+                        ? 'w-10 h-10 bg-brand/10'
+                        : 'w-7 h-7 bg-muted'
+                    }`}>
                     <Image
                       src={CATEGORY_IMAGES[cat]}
                       alt={cat}
-                      width={28}
-                      height={28}
-                      className='object-cover w-full h-full'
+                      width={activeCategory === cat ? 24 : 20}
+                      height={activeCategory === cat ? 24 : 20}
+                      className='object-contain'
                     />
                   </div>
                 )}
@@ -190,7 +195,7 @@ export default function ProdutosPage() {
               {isLoading ? (
                 <div className='text-center py-16 text-muted-foreground text-base'>Carregando produtos...</div>
               ) : productCards.length > 0 ? (
-                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4'>
+                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5 md:gap-8'>
                   {productCards.map((product) => (
                     <ProductCard
                       key={product.id}
