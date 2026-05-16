@@ -19,18 +19,19 @@ interface CategoryOption {
 }
 
 const CATEGORY_IMAGE_BY_NAME: Record<string, string> = {
-  Amplificadores: '/figma-assets/raw/fill_CGM3WO_6a0a1876.png',
-  Processadores: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',
-  Subwoofers: '/figma-assets/raw/fill_3MZVXN_813a9a32.png',
-  Crossovers: '/figma-assets/raw/fill_6OC3H9_7136cc16.png',
-  Fontes: '/figma-assets/raw/fill_3FJG3P_64a33e19.png',
+  Amplificadores: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',
+  Processadores: '/figma-assets/raw/fill_THI4RN_1e666beb.png',
+  Crossovers: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',
   Controles: '/figma-assets/raw/fill_THI4RN_1e666beb.png',
-  Acessórios: '/figma-assets/raw/fill_YKBFZV_e95c6db4.png',
+  'Fontes e carregadores': '/figma-assets/raw/fill_THI4RN_1e666beb.png',
+  'Mesas de som': '/figma-assets/raw/product-c.png',
+  Acessórios: '/figma-assets/raw/product-c.png',
+  Subwoofers: '/figma-assets/raw/product-c.png',
 }
 
 const DEFAULT_CATALOG_HERO = {
   heroLabel: 'CATALOGO COMPLETO',
-  heroTitle: 'NOSSOS\nPRODUTOS',
+  heroTitle: 'NOSSO\nPRODUTOS',
   heroImage: '/figma-assets/raw/fill_CGM3WO_6a0a1876.png',
   heroImageAlt: 'Catalogo Stetsom',
   heroWatermark: 'PRODU',
@@ -130,9 +131,12 @@ export default function CatalogContent() {
         <div className='absolute left-0 top-0 w-3.5 h-full bg-bar-accent' />
       </section>
 
-      <div className='bg-white border-b border-border'>
+      <section className='bg-white border-b border-border py-8'>
         <Container>
-          <div className='flex items-center gap-3 py-1 overflow-x-auto'>
+          <p className='mb-5 font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground'>
+            Categorias
+          </p>
+          <div className='grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8'>
             {categoryOptions.map((cat) => {
               const imageSrc = categoryImageBySlug[cat.slug]
               const isActive = activeCategory === cat.slug
@@ -141,31 +145,41 @@ export default function CatalogContent() {
                   key={cat.slug}
                   onClick={() => setActiveCategory(cat.slug)}
                   className={cn(
-                    'flex items-center gap-2 font-sans font-medium text-base leading-5 px-3 py-2 whitespace-nowrap border-b-2 transition-colors shrink-0',
-                    isActive ? 'border-brand text-brand-dark' : 'border-transparent text-muted-foreground hover:text-brand-dark',
+                    'flex flex-col items-center gap-2 rounded p-2 text-center transition-colors',
+                    isActive ? 'bg-brand/10' : 'hover:bg-muted',
                   )}>
-                  {imageSrc && (
-                    <div
-                      className={cn(
-                        'rounded overflow-hidden shrink-0 flex items-center justify-center',
-                        isActive ? 'w-10 h-10 bg-brand/10' : 'w-7 h-7 bg-muted',
-                      )}>
+                  <div
+                    className={cn(
+                      'flex aspect-square w-full items-center justify-center overflow-hidden rounded',
+                      isActive ? 'bg-brand/10' : 'bg-muted',
+                    )}>
+                    {imageSrc ? (
                       <Image
                         src={imageSrc}
                         alt=''
-                        width={isActive ? 24 : 20}
-                        height={isActive ? 24 : 20}
-                        className='object-contain'
+                        width={48}
+                        height={48}
+                        className='h-10 w-10 object-contain'
                       />
-                    </div>
-                  )}
-                  {cat.name}
+                    ) : (
+                      <span className='font-sans-condensed text-xs font-black uppercase text-muted-foreground'>
+                        {cat.name.slice(0, 2)}
+                      </span>
+                    )}
+                  </div>
+                  <span
+                    className={cn(
+                      'font-sans text-2xs font-medium leading-tight',
+                      isActive ? 'text-brand' : 'text-muted-foreground',
+                    )}>
+                    {cat.name}
+                  </span>
                 </button>
               )
             })}
           </div>
         </Container>
-      </div>
+      </section>
 
       <section className='bg-white pt-6 pb-12'>
         <Container>

@@ -33,6 +33,6 @@ Implementar a seção de foto da fábrica/mapa ausente na página `/sobre` (seç
 
 - Imagem factory: verificar `assets-manifest.json` por `imageRef: b3596ec5433f770d4d9fd82c2a7c2631bbf56674` para obter `relativePath`
 - Figma fill: `fill_UGV0H2` e `fill_FH61XV` usam a mesma imagem com dark radial overlay
-- Layout factory desktop: node `1200:6390` → `layout_KMXG22`: `mode: row, alignItems: center, gap: 91px, padding: 48px 170px`
+- Layout factory desktop: node `1071:11641` → `layout_SR4ORF`: `mode: row, alignItems: center, gap: 91px, padding: 48px 170px`
 - Social medias scroll: `const scrollRef = useRef<HTMLDivElement>(null)` + `scrollRef.current.scrollBy({ left: ±300, behavior: 'smooth' })`
-- Rodar `/poc-refine-design` no node `1200:6390` antes da implementação
+- Rodar `/poc-refine-design` no node `1071:11641` antes da implementação

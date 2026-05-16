@@ -5,19 +5,20 @@ const AUTHOR = 'mock-system'
 
 const CATALOG_ASSETS = {
   hero: '/figma-assets/raw/fill_CGM3WO_6a0a1876.png',
-  thumbnailPrimary: '/figma-assets/raw/fill_3MZVXN_813a9a32.png',
-  thumbnailSecondary: '/figma-assets/raw/fill_6OC3H9_7136cc16.png',
-  thumbnailTertiary: '/figma-assets/raw/fill_3FJG3P_64a33e19.png',
+  // Thumbnails confirmados via MCP no product grid (node 1071:12265) — 3 imageRefs reais
+  thumbnailPrimary: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',   // imageRef 3d86cd17 (card A)
+  thumbnailSecondary: '/figma-assets/raw/fill_THI4RN_1e666beb.png', // imageRef 1e666beb (card B)
+  thumbnailTertiary: '/figma-assets/raw/product-c.png',             // imageRef 29578a53 (card C)
   detailPrimary: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',
   detailSecondary: '/figma-assets/raw/fill_THI4RN_1e666beb.png',
 } as const
 
 export const CATALOG_PAGE_PAYLOAD: CatalogPagePayload = {
-  heroLabel: 'CATALOGO COMPLETO',
-  heroTitle: 'NOSSOS\nPRODUTOS',
+  heroLabel: 'CATÁLOGO COMPLETO',
+  heroTitle: 'NOSSO\nPRODUTOS',
   heroImage: CATALOG_ASSETS.hero,
-  heroImageAlt: 'Catalogo Stetsom',
-  heroWatermark: 'PRODU',
+  heroImageAlt: 'Catálogo Stetsom',
+  heroWatermark: 'PRO',
 }
 
 export const CATALOG_CATEGORIES: Category[] = [
@@ -38,26 +39,50 @@ export const CATALOG_CATEGORIES: Category[] = [
     updated_at: NOW,
   },
   {
-    id: 'cat-subwoofers',
-    name: 'Subwoofers',
-    slug: 'subwoofers',
+    id: 'cat-crossovers',
+    name: 'Crossovers',
+    slug: 'crossovers',
     order: 3,
     created_at: NOW,
     updated_at: NOW,
   },
   {
-    id: 'cat-fontes',
-    name: 'Fontes',
-    slug: 'fontes',
+    id: 'cat-controles',
+    name: 'Controles',
+    slug: 'controles',
     order: 4,
     created_at: NOW,
     updated_at: NOW,
   },
   {
-    id: 'cat-acessorios',
-    name: 'Acessorios',
-    slug: 'acessorios',
+    id: 'cat-fontes-carregadores',
+    name: 'Fontes e carregadores',
+    slug: 'fontes-e-carregadores',
     order: 5,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: 'cat-mesas-de-som',
+    name: 'Mesas de som',
+    slug: 'mesas-de-som',
+    order: 6,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: 'cat-acessorios',
+    name: 'Acessórios',
+    slug: 'acessorios',
+    order: 7,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: 'cat-subwoofers',
+    name: 'Subwoofers',
+    slug: 'subwoofers',
+    order: 8,
     created_at: NOW,
     updated_at: NOW,
   },
@@ -102,7 +127,7 @@ export const CATALOG_SUBCATEGORIES: Subcategory[] = [
   },
   {
     id: 'sub-automotiva',
-    category_id: 'cat-fontes',
+    category_id: 'cat-fontes-carregadores',
     name: 'Fonte Automotiva',
     slug: 'fonte-automotiva',
     order: 1,
@@ -121,11 +146,20 @@ export const CATALOG_PRODUCTS: Product[] = [
     status: 'ACTIVE',
     badge: 'LANÇAMENTO',
     launch_date: '2025-12-01T00:00:00.000Z',
-    description: 'Amplificador 4 canais com alta eficiencia para sistemas automotivos de media e alta potencia.',
+    description: 'Amplificador 4 canais com alta eficiência para sistemas automotivos de média e alta potência.',
     specifications: {
-      power_rms: '4x 1000W RMS',
-      impedance: '2 Ohms',
-      class: 'Classe D',
+      'Número de canais': '4',
+      'Classe de operação': 'Classe D',
+      'Frequência de resposta': '20 Hz – 20 kHz',
+      'Ganho de Entrada': { ohm1: '0 a 6V', ohm2: '0 a 6V' },
+      'Potência RMS': { ohm1: '4x 1000W RMS', ohm2: '4x 600W RMS' },
+      'Potência Máxima': { ohm1: '4x 1400W', ohm2: '4x 900W' },
+      'Equalizador Gráfico': '8 bandas',
+      'Master Level': 'Sim',
+      'Roteamento': 'Estéreo / Mono',
+      'Limiter': 'Sim',
+      'Tensão de operação': '12 – 14,4V',
+      'Fusíveis': '2x 50A',
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailPrimary,
     video_url: 'https://www.youtube.com/watch?v=stetsom-demo-4000',
@@ -141,7 +175,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     subcategory_id: 'sub-mono',
     status: 'ACTIVE',
     launch_date: '2025-10-12T00:00:00.000Z',
-    description: 'Modulo mono para graves com resposta estavel e alto rendimento.',
+    description: 'Módulo mono para graves com resposta estável e alto rendimento.',
     specifications: {
       power_rms: '1x 2000W RMS',
       impedance: '1 Ohm',
@@ -160,7 +194,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     subcategory_id: 'sub-full-range',
     status: 'ACTIVE',
     launch_date: '2025-05-20T00:00:00.000Z',
-    description: 'Compacto, eficiente e ideal para projetos que priorizam espaco interno.',
+    description: 'Compacto, eficiente e ideal para projetos que priorizam espaço interno.',
     specifications: {
       power_rms: '4x 200W RMS',
       impedance: '2 Ohms',
@@ -179,7 +213,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     subcategory_id: 'sub-mono',
     status: 'ACTIVE',
     launch_date: '2024-11-06T00:00:00.000Z',
-    description: 'Projeto focado em graves com resposta rapida e controle termico aprimorado.',
+    description: 'Projeto focado em graves com resposta rápida e controle térmico aprimorado.',
     specifications: {
       power_rms: '1x 1200W RMS',
       impedance: '2 Ohms',
@@ -198,7 +232,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     subcategory_id: 'sub-dsp',
     status: 'ACTIVE',
     launch_date: '2025-08-21T00:00:00.000Z',
-    description: 'Processador digital com presets avancados e equalizacao em tempo real.',
+    description: 'Processador digital com presets avançados e equalização em tempo real.',
     badge: 'LANÇAMENTO',
     specifications: {
       power_rms: 'DSP 96kHz',
@@ -219,7 +253,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     subcategory_id: 'sub-12-pol',
     status: 'ACTIVE',
     launch_date: '2025-03-15T00:00:00.000Z',
-    description: 'Subwoofer de alta excursao para projetos SPL com grande deslocamento de ar.',
+    description: 'Subwoofer de alta excursão para projetos SPL com grande deslocamento de ar.',
     badge: 'DESTAQUE',
     specifications: {
       power_rms: '3000W RMS',
@@ -235,11 +269,11 @@ export const CATALOG_PRODUCTS: Product[] = [
     id: 'prod-sf-120a',
     name: 'FONTE SF 120A',
     slug: 'fonte-sf-120a',
-    category_id: 'cat-fontes',
+    category_id: 'cat-fontes-carregadores',
     subcategory_id: 'sub-automotiva',
     status: 'ACTIVE',
     launch_date: '2024-06-10T00:00:00.000Z',
-    description: 'Fonte chaveada para sistemas automotivos de alta demanda continua.',
+    description: 'Fonte chaveada para sistemas automotivos de alta demanda contínua.',
     badge: 'DESTAQUE',
     specifications: {
       power_rms: '120A / 13.8V',
@@ -260,7 +294,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     subcategory_id: 'sub-full-range',
     status: 'DISCONTINUED',
     launch_date: '2023-02-18T00:00:00.000Z',
-    description: 'Modelo compacto legado, mantido para historico e suporte documental.',
+    description: 'Modelo compacto legado, mantido para histórico e suporte documental.',
     specifications: {
       power_rms: '4x 87W RMS',
       impedance: '4 Ohms',
@@ -279,7 +313,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     subcategory_id: 'sub-mono',
     status: 'ACTIVE',
     launch_date: '2025-01-24T00:00:00.000Z',
-    description: 'Modulo mono de alta corrente para projetos SPL com subwoofers de grande deslocamento.',
+    description: 'Módulo mono de alta corrente para projetos SPL com subwoofers de grande deslocamento.',
     specifications: {
       power_rms: '1x 3000W RMS',
       impedance: '1 Ohm',
@@ -299,7 +333,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     subcategory_id: 'sub-full-range',
     status: 'ACTIVE',
     launch_date: '2024-08-12T00:00:00.000Z',
-    description: 'Amplificador full-range para sistemas compactos com excelente controle de medio e agudo.',
+    description: 'Amplificador full-range para sistemas compactos com excelente controle de médio e agudo.',
     specifications: {
       power_rms: '4x 100W RMS',
       impedance: '2 Ohms',
@@ -318,7 +352,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     subcategory_id: 'sub-mono',
     status: 'ACTIVE',
     launch_date: '2025-02-18T00:00:00.000Z',
-    description: 'Projetado para graves encorpados com estabilidade termica para uso continuo.',
+    description: 'Projetado para graves encorpados com estabilidade térmica para uso contínuo.',
     specifications: {
       power_rms: '1x 1600W RMS',
       impedance: '2 Ohms',
@@ -377,7 +411,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     subcategory_id: 'sub-dsp',
     status: 'ACTIVE',
     launch_date: '2024-09-03T00:00:00.000Z',
-    description: 'Processador para projetos profissionais com alinhamento de tempo e crossover avancado.',
+    description: 'Processador para projetos profissionais com alinhamento de tempo e crossover avançado.',
     specifications: {
       power_rms: 'DSP 96kHz',
       entradas: 8,
@@ -397,7 +431,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     subcategory_id: 'sub-12-pol',
     status: 'ACTIVE',
     launch_date: '2025-01-08T00:00:00.000Z',
-    description: 'Subwoofer de alto desempenho para competicoes, com bobina reforcada e resposta rapida.',
+    description: 'Subwoofer de alto desempenho para competições, com bobina reforçada e resposta rápida.',
     specifications: {
       power_rms: '3500W RMS',
       diametro: '12 polegadas',
@@ -413,11 +447,11 @@ export const CATALOG_PRODUCTS: Product[] = [
     id: 'prod-sf-200a-pro',
     name: 'FONTE SF 200A PRO',
     slug: 'fonte-sf-200a-pro',
-    category_id: 'cat-fontes',
+    category_id: 'cat-fontes-carregadores',
     subcategory_id: 'sub-automotiva',
     status: 'ACTIVE',
     launch_date: '2025-03-02T00:00:00.000Z',
-    description: 'Fonte automotiva para sistemas de alta potencia com protecao completa contra sobrecarga.',
+    description: 'Fonte automotiva para sistemas de alta potência com proteção completa contra sobrecarga.',
     specifications: {
       power_rms: '200A / 13.8V',
       corrente_saida: '200A continuo',
@@ -437,7 +471,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     category_id: 'cat-acessorios',
     status: 'ACTIVE',
     launch_date: '2024-07-01T00:00:00.000Z',
-    description: 'Cabos RCA blindados para reduzir ruido e preservar dinamica em sistemas de alta fidelidade.',
+    description: 'Cabos RCA blindados para reduzir ruído e preservar dinâmica em sistemas de alta fidelidade.',
     specifications: {
       comprimento: '5 metros',
       conectores: 'Banhados a ouro',
@@ -455,7 +489,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     category_id: 'cat-acessorios',
     status: 'ACTIVE',
     launch_date: '2024-05-17T00:00:00.000Z',
-    description: 'Kit de fusivel ANL e porta-fusivel para instalacoes seguras de alta corrente.',
+    description: 'Kit de fusível ANL e porta-fusível para instalações seguras de alta corrente.',
     specifications: {
       corrente_maxima: '200A',
       material: 'Liga de cobre',
@@ -476,7 +510,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     order: 1,
     data: {
       images: [CATALOG_ASSETS.detailPrimary, CATALOG_ASSETS.detailSecondary],
-      caption: 'Design robusto para alta entrega de potencia.',
+      caption: 'Design robusto para alta entrega de potência.',
       layout: 'grid',
     },
     created_by: AUTHOR,
@@ -490,7 +524,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     order: 2,
     data: {
       title: 'Performance sem limite',
-      content: 'Projetado para instalacoes exigentes, o ST-4000EQ entrega estabilidade e controle termico.',
+      content: 'Projetado para instalações exigentes, o ST-4000EQ entrega estabilidade e controle térmico.',
       align: 'left',
     },
     created_by: AUTHOR,
@@ -518,7 +552,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     order: 1,
     data: {
       images: [CATALOG_ASSETS.detailPrimary],
-      caption: 'Modulo mono para graves.',
+      caption: 'Módulo mono para graves.',
       layout: 'single',
     },
     created_by: AUTHOR,
@@ -532,7 +566,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     order: 1,
     data: {
       title: 'Compacto e inteligente',
-      content: 'Excelente para projetos de upgrade sem sacrificar espaco.',
+      content: 'Excelente para projetos de upgrade sem sacrificar espaço.',
       align: 'left',
     },
     created_by: AUTHOR,
@@ -547,7 +581,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     data: {
       video_url: 'https://www.youtube.com/watch?v=stetsom-demo-1200',
       title: 'Setup de graves com ST-1200.1D',
-      description: 'Exemplo de instalacao com foco em SPL.',
+      description: 'Exemplo de instalação com foco em SPL.',
     },
     created_by: AUTHOR,
     created_at: NOW,
@@ -559,7 +593,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     type: 'HTML',
     order: 1,
     data: {
-      html: '<div><strong>DSP 96kHz</strong> com presets customizaveis.</div>',
+      html: '<div><strong>DSP 96kHz</strong> com presets customizáveis.</div>',
       css_class: 'prose',
     },
     created_by: AUTHOR,
@@ -586,8 +620,8 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     type: 'TEXT',
     order: 1,
     data: {
-      title: 'Energia estavel',
-      content: 'Fonte chaveada para sistemas de alta demanda continua.',
+      title: 'Energia estável',
+      content: 'Fonte chaveada para sistemas de alta demanda contínua.',
       align: 'left',
     },
     created_by: AUTHOR,
@@ -601,7 +635,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     order: 1,
     data: {
       title: 'Modelo legado',
-      content: 'Produto descontinuado, disponivel para referencia tecnica.',
+      content: 'Produto descontinuado, disponível para referência técnica.',
       align: 'left',
     },
     created_by: AUTHOR,
@@ -615,7 +649,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     order: 1,
     data: {
       images: [CATALOG_ASSETS.detailPrimary],
-      caption: 'Modulo mono de alta corrente para projetos SPL.',
+      caption: 'Módulo mono de alta corrente para projetos SPL.',
       layout: 'single',
     },
     created_by: AUTHOR,
@@ -629,7 +663,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     order: 1,
     data: {
       images: [CATALOG_ASSETS.detailSecondary],
-      caption: 'Full-range compacto para controle de medio e agudo.',
+      caption: 'Full-range compacto para controle de médio e agudo.',
       layout: 'single',
     },
     created_by: AUTHOR,
@@ -643,7 +677,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     order: 1,
     data: {
       title: 'Graves encorpados',
-      content: 'Projetado para uso continuo com estabilidade termica e controle preciso de frequencia.',
+      content: 'Projetado para uso contínuo com estabilidade térmica e controle preciso de frequência.',
       align: 'left',
     },
     created_by: AUTHOR,
@@ -684,7 +718,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     type: 'HTML',
     order: 1,
     data: {
-      html: '<div><strong>DSP 96kHz</strong> com alinhamento de tempo, crossover avancado e 8 entradas / 12 saidas configuráveis.</div>',
+      html: '<div><strong>DSP 96kHz</strong> com alinhamento de tempo, crossover avançado e 8 entradas / 12 saídas configuráveis.</div>',
       css_class: 'prose',
     },
     created_by: AUTHOR,
@@ -698,7 +732,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     order: 1,
     data: {
       images: [CATALOG_ASSETS.detailPrimary],
-      caption: 'Subwoofer de alto desempenho para competicoes.',
+      caption: 'Subwoofer de alto desempenho para competições.',
       layout: 'single',
     },
     created_by: AUTHOR,
@@ -712,7 +746,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     order: 1,
     data: {
       title: 'Alta corrente',
-      content: 'Fonte automotiva com 200A continuos e protecao completa contra sobrecarga e curto-circuito.',
+      content: 'Fonte automotiva com 200A contínuos e proteção completa contra sobrecarga e curto-circuito.',
       align: 'left',
     },
     created_by: AUTHOR,
@@ -726,7 +760,7 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     order: 1,
     data: {
       title: 'Sinal limpo',
-      content: 'Blindagem dupla que elimina ruido e preserva a dinamica original do sistema de audio.',
+      content: 'Blindagem dupla que elimina ruído e preserva a dinâmica original do sistema de áudio.',
       align: 'left',
     },
     created_by: AUTHOR,
@@ -739,8 +773,8 @@ export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
     type: 'TEXT',
     order: 1,
     data: {
-      title: 'Protecao essencial',
-      content: 'Kit fusivel ANL 200A com porta-fusivel em liga de cobre para instalacoes seguras de alta corrente.',
+      title: 'Proteção essencial',
+      content: 'Kit fusível ANL 200A com porta-fusível em liga de cobre para instalações seguras de alta corrente.',
       align: 'left',
     },
     created_by: AUTHOR,

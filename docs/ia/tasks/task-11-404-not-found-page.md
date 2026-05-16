@@ -8,7 +8,7 @@
 
 ## Objective
 
-Criar a página `not-found.tsx` fiel ao Figma (node `1200:7086` desktop / `1200:7151` mobile) para ser exibida em qualquer rota inexistente.
+Criar a página `not-found.tsx` fiel ao Figma (node `1195:4200` desktop / `1195:4531` mobile) para ser exibida em qualquer rota inexistente.
 
 ## Acceptance Criteria
 
@@ -35,8 +35,7 @@ Criar a página `not-found.tsx` fiel ao Figma (node `1200:7086` desktop / `1200:
 - Next.js App Router: `not-found.tsx` em `src/app/` é capturado automaticamente pelo framework
 - Para incluir Header e Footer, importar diretamente (não herda layout do `(site)` group por ser `not-found.tsx` em nível raiz)
 - "404" decorativo: `<span className="font-sans-condensed font-black text-icon-muted opacity-[0.08] text-[200px] lg:text-[300px] uppercase absolute pointer-events-none select-none">`
-- Layout do conteúdo: node `1200:7094` → `layout_PDYRF0`: `mode: column, alignItems: center, gap: 48px, padding: 48px 170px, height: 596`
-- Título: node `1200:7096` → `style_RSDKJM`: `fontFamily: Barlow Condensed, fontWeight: 900, fontSize: 50, UPPER`
-- Subtítulo: node `1200:7097` → `style_CNCZAP`: `fontFamily: Barlow, fontWeight: 500, fontSize: 20`
+- Layout do conteúdo: node `1195:4338` → `layout_LH0C6W`: `mode: column, alignItems: center, gap: 48px, padding: 48px 170px, height: 596`
+- Título e subtítulo: inspecionar filhos de `1195:4338` → `1195:4975` (content frame)
 - Texto do subtítulo: "Parece que a página que você tentou acessar não existe"
-- Rodar `/refine-design` no node `1200:7086` antes da implementação
+- Rodar `/refine-design` no node `1195:4200` antes da implementação

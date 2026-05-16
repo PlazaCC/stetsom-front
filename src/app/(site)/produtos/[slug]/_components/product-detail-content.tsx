@@ -1,10 +1,14 @@
 import { BlockRenderer } from './block-renderer'
 import { Container } from '@/components/ui/container'
 import ProductCard from '@/components/ui/product-card'
-import type { ProductBlock, ProductCardItem, ProductSpecifications } from '@/lib/api/contracts'
+import type { ProductBlock, ProductCardItem, ProductSpecifications, SpecMultiColumnValue } from '@/lib/api/contracts'
 import { cn } from '@/lib/utils'
 import { formatSpecKey } from '@/lib/utils/product'
 import Image from 'next/image'
+
+function isMultiColumn(v: unknown): v is SpecMultiColumnValue {
+  return typeof v === 'object' && v !== null && 'ohm1' in v
+}
 
 interface ProductDetailContentProps {
   productName: string
@@ -80,12 +84,20 @@ export default function ProductDetailContent({
         </div>
         {hasSpecs ? (
           <div className='bg-white pb-9'>
-            <div className='w-full'>
-              <div className='border-b border-zinc-200 bg-white px-5 py-3 lg:px-42.5'>
-                <p className='font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground'>
-                  Especificações técnicas
-                </p>
-              </div>
+            <div className='w-full overflow-x-auto'>
+              {specEntries.some(([, v]) => isMultiColumn(v)) && (
+                <div className='flex items-center gap-8 border-b border-zinc-200 bg-white px-5 py-3 lg:px-42.5'>
+                  <span className='w-1/2 shrink-0' />
+                  <div className='flex flex-1 gap-4'>
+                    <span className='flex-1 font-sans-condensed text-xs font-black uppercase tracking-widest text-brand'>
+                      1 Ohm
+                    </span>
+                    <span className='flex-1 font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground'>
+                      2 Ohms
+                    </span>
+                  </div>
+                </div>
+              )}
               {specEntries.map(([key, value], i) => (
                 <div
                   key={key}
@@ -93,10 +105,17 @@ export default function ProductDetailContent({
                     'flex items-center gap-8 px-5 py-4.5 lg:px-42.5',
                     i % 2 === 0 ? 'bg-muted' : 'bg-white',
                   )}>
-                  <span className='w-1/2 shrink-0 font-sans text-sm font-medium uppercase capitalize text-brand-dark'>
+                  <span className='w-1/2 shrink-0 font-sans text-sm font-medium capitalize text-brand-dark'>
                     {formatSpecKey(key)}
                   </span>
-                  <span className='font-sans text-sm text-text-subtle'>{String(value)}</span>
+                  {isMultiColumn(value) ? (
+                    <div className='flex flex-1 gap-4'>
+                      <span className='flex-1 font-sans text-sm font-semibold text-brand-dark'>{value.ohm1}</span>
+                      <span className='flex-1 font-sans text-sm text-text-subtle'>{value.ohm2}</span>
+                    </div>
+                  ) : (
+                    <span className='font-sans text-sm text-text-subtle'>{String(value)}</span>
+                  )}
                 </div>
               ))}
             </div>

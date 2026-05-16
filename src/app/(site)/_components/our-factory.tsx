@@ -6,7 +6,7 @@ import { ExternalLink } from 'lucide-react'
 import Image from 'next/image'
 
 const FACTORY_IMAGE = '/figma-assets/raw/fill_OJJ5Q1_b3596ec5.png'
-const MAP_IMAGE = '/figma-assets/raw/fill_SXY62B_51d05531.png'
+const MAP_IMAGE = '/figma-assets/raw/fill_KULSWW_74ec6dcf.png'
 
 interface OurFactoryProps {
   jobsCta?: SiteAboutPayload['jobsCta']

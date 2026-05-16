@@ -37,4 +37,4 @@ Implementar filtragem interativa nas Tabs de Novidades, adicionar a seção "Nos
 - `Novidades` precisa ser `"use client"` ou usar um subcomponente client para as tabs
 - Filtragem: tabs mapeiam para categorias do `HOME_NOVIDADES_TABS`; tab "Todos" exibe todos os `featuredProducts`; outras tabs filtram por `product.category === tab`
 - Adicionar mock de `bases` ao `SITE_ABOUT_PAYLOAD_BASE` e reusar em `HOME_PAYLOAD` no mock-provider
-- Figma node Nossas Bases na Home: `1200:4654` desktop (`layout_Q69OF6`: column, gap 24px, padding 48px 170px)
+- Figma node Nossas Bases na Home: `1071:10435` desktop (`layout_SSWXIS`: column, gap 24px, padding 48px 170px)

@@ -6,7 +6,9 @@ export type ProductBlockType = 'IMAGE' | 'VIDEO' | 'HTML' | 'MODEL3D' | 'TEXT'
 
 export type ProductFileType = 'MANUAL' | 'CATALOG' | 'CERTIFICATE' | 'IMAGE' | 'OTHER'
 
-export type ProductSpecifications = Record<string, string | number | boolean>
+export type SpecSimpleValue = string | number | boolean
+export type SpecMultiColumnValue = { ohm1: string; ohm2: string }
+export type ProductSpecifications = Record<string, SpecSimpleValue | SpecMultiColumnValue>
 
 export type Category = {
   id: string
@@ -63,6 +65,8 @@ export type ProductFile = {
   type: ProductFileType
   version: number
   is_active: boolean
+  name?: string
+  fileSize?: string
   created_at: ISODateString
   updated_at: ISODateString
 }
@@ -176,7 +180,6 @@ export type SiteHomePayload = {
     ctaHref: string
     stats: CompanyStat[]
   }
-  bases: AboutBase[]
   faq: FAQItem[]
   faqSection: {
     label: string
@@ -226,9 +229,18 @@ export type SupportCard = {
   cta: string
 }
 
-export type SupportDocumentationCategory = {
+export type SupportContactInfo = {
+  phone: string
+  email: string
+  whatsapp: string
+}
+
+export type ServiceCenter = {
   id: string
   name: string
+  address: string
+  phone: string
+  phone2?: string
 }
 
 export type SupportPayload = {
@@ -241,23 +253,21 @@ export type SupportPayload = {
   }
   cards: SupportCard[]
   documentationFiles: ProductFile[]
-  faqSearch: {
-    label: string
-    title: string
-    placeholder: string
-    categories: SupportDocumentationCategory[]
-  }
+  documentationCategories?: string[]
   contact: {
     label: string
     title: string
     description: string
   }
+  contactInfo?: SupportContactInfo
+  serviceCenters?: ServiceCenter[]
   faq: {
     label: string
     title: string
     items: FAQItem[]
     supportButtonLabel: string
   }
+  mapImage: string
 }
 
 export type DashboardMetric = {
