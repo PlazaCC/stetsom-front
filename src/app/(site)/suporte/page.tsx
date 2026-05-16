@@ -38,10 +38,7 @@ export default async function SuportePage() {
           sizes='100vw'
           priority
         />
-        <div
-          className='absolute inset-0'
-          style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 72%, rgba(0,0,0,1) 100%)' }}
-        />
+        <div className='absolute inset-0 bg-gradient-fade-black' />
         <span className='pointer-events-none absolute inset-0 flex items-center justify-center text-center font-sans-condensed text-display-2xl font-black uppercase leading-none text-watermark-text opacity-[0.08] select-none sm:text-[150px] lg:text-[263px]'>
           {supportPayload.hero.watermarkText}
         </span>
@@ -278,7 +275,7 @@ export default async function SuportePage() {
               <p className='mt-2 text-base leading-relaxed text-text-subtle'>
                 Não encontrou o que procura? Entre em contato com nosso suporte.
               </p>
-              <Button variant='default' className='mt-6 bg-surface-elevated text-white hover:bg-brand-dark'>
+              <Button variant='brand-dark' size='md' className='mt-6'>
                 {supportPayload.faq.supportButtonLabel}
               </Button>
             </div>

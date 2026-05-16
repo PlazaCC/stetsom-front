@@ -23,7 +23,7 @@ interface QualitySectionProps {
   values: AboutValue[]
 }
 
-export default function QualitySection({ section, values }: Readonly<QualitySectionProps>) {
+export function QualitySection({ section, values }: Readonly<QualitySectionProps>) {
   return (
     <section className='bg-off-white py-20'>
       <Container>

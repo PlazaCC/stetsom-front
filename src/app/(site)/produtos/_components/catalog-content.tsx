@@ -6,6 +6,7 @@ import { useCatalogCategories, useCatalogPage, useCatalogProducts } from '@/hook
 import { useCatalogFilters } from '@/hooks/use-catalog-filters'
 import { createCategoryLookup, toProductCardItem } from '@/lib/api/mappers'
 import type { Category } from '@/lib/api/contracts'
+import { PRODUCT_LINES } from '@/lib/mock/catalog'
 import { cn } from '@/lib/utils'
 import { CatalogMobileFilter } from './catalog-mobile-filter'
 import { CatalogSidebar } from './catalog-sidebar'
@@ -54,7 +55,7 @@ function buildSlugImageMap(categories: Category[]): Record<string, string> {
   return map
 }
 
-export default function CatalogContent() {
+export function CatalogContent() {
   const {
     activeCategory,
     search,
@@ -96,17 +97,9 @@ export default function CatalogContent() {
   return (
     <div>
       <section className='relative overflow-hidden bg-brand-dark h-72 lg:h-84'>
-        <div
-          className='absolute inset-0'
-          style={{
-            background: 'radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(28,24,24,1) 100%)',
-          }}
-        />
+        <div className='absolute inset-0 bg-radial-dark' />
         <Image src={hero.heroImage} alt={hero.heroImageAlt} fill className='object-cover opacity-45' sizes='100vw' priority />
-        <div
-          className='absolute inset-0'
-          style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 72%, rgba(0,0,0,1) 100%)' }}
-        />
+        <div className='absolute inset-0 bg-gradient-fade-black' />
         <Container className='relative z-10 pt-8 md:pt-16 lg:pt-25.75'>
           <div className='flex items-center gap-2 mb-1'>
             <div className='w-6 h-px bg-brand shrink-0' />
@@ -191,6 +184,7 @@ export default function CatalogContent() {
               onCategoryChange={setActiveCategory}
               onClear={clearFilters}
               typeFilterOptions={typeFilterOptions}
+              productLines={PRODUCT_LINES}
             />
 
             <div className='flex-1 min-w-0'>

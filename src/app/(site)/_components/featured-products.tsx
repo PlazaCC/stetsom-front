@@ -16,7 +16,7 @@ interface FeaturedProductsProps {
   section: SiteHomePayload['featured']
 }
 
-export default function FeaturedProducts({ featuredProducts, spotlightProduct, tabs, section }: Readonly<FeaturedProductsProps>) {
+export function FeaturedProducts({ featuredProducts, spotlightProduct, tabs, section }: Readonly<FeaturedProductsProps>) {
   const [activeTab, setActiveTab] = useState(tabs[0] ?? 'Todos')
 
   const filteredProducts = useMemo(() => {

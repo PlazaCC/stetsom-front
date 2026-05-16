@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import CatalogContent from './_components/catalog-content'
+import { CatalogContent } from './_components/catalog-content'
 
 export default function ProdutosPage() {
   return (

@@ -1457,6 +1457,35 @@
       ],
       "rationale": "Design-fidelity-audit invocation 3: 17 screenshots identified divergences. P1: spec tags rendered [object Object] for SpecMultiColumnValue — added isMultiColumn guard + formatSpecTag helper + correct metric extraction from Portuguese keys. P2: QualitySection used bg-brand-dark (dark) vs Figma off-white; footer showed ©2026 vs ©2025 and had Instagram (4 icons) vs 3; catalog hero 'NOSSOS PRODUTOS' vs Figma 'NOSSO PRODUTOS'. P3: Header had 'Garantia' button vs Figma language selector (BR flag + PT + chevron); category section was horizontal tab strip vs Figma card grid; suporte sections were Downloads→Postos vs Figma Postos→Downloads. P4: ContactForm missing SETOR select, 2-col nome+phone, privacy checkbox, full-width red submit; postos items had 1 phone vs Figma 2; download items used filled button vs text link with V2 badge.",
       "outcome": "Spec tags no longer show [object Object]; QualitySection renders with off-white background; footer has ©2025 and 3 social icons; header shows language selector; category section is a grid of cards with label; suporte sections reordered; contact form has all Figma fields; postos show 2 phones; downloads show text link + V2 badge. tsc --noEmit and lint exit 0."
+    },
+    {
+      "ts": "2026-05-16T14:30:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Apply all code-review fixes: named exports, inline style tokens, initial state bug, formatSpecKey, PRODUCT_LINES prop",
+      "files": [
+        "src/app/globals.css",
+        "src/lib/mock/catalog.ts",
+        "src/app/(site)/produtos/[slug]/_components/sticky-section-nav.tsx",
+        "src/app/(site)/produtos/[slug]/_components/product-detail-content.tsx",
+        "src/app/(site)/_components/company-timeline.tsx",
+        "src/app/(site)/_components/our-factory.tsx",
+        "src/app/(site)/_components/our-history.tsx",
+        "src/app/(site)/_components/our-foundations.tsx",
+        "src/app/(site)/_components/social-feed.tsx",
+        "src/app/(site)/_components/featured-products.tsx",
+        "src/app/(site)/_components/quality-section.tsx",
+        "src/app/(site)/_components/red-banner.tsx",
+        "src/app/(site)/produtos/_components/catalog-content.tsx",
+        "src/app/(site)/produtos/_components/catalog-sidebar.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/produtos/[slug]/page.tsx",
+        "src/app/(site)/produtos/page.tsx",
+        "src/app/(site)/page.tsx",
+        "src/app/(site)/sobre/page.tsx"
+      ],
+      "rationale": "Code review (code-review skill) identified: 1 critical bug (wrong initial state in sticky nav), 4 inline gradient violations, 11 default exports violating react-components rule, duplicated formatSpecKey logic, PRODUCT_LINES hardcoded in component, button variant override in suporte FAQ",
+      "outcome": "All 19 files corrected. TypeScript and ESLint pass. Branch is now ready for PR."
     }
   ]
 }

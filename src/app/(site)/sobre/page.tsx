@@ -2,12 +2,12 @@ import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import { getSiteAboutPayload } from '@/lib/api/server'
 import Image from 'next/image'
-import CompanyTimeline from '../_components/company-timeline'
-import OurFactory from '../_components/our-factory'
-import OurFoundations from '../_components/our-foundations'
-import QualitySection from '../_components/quality-section'
-import RedBanner from '../_components/red-banner'
-import SocialFeed from '../_components/social-feed'
+import { CompanyTimeline } from '../_components/company-timeline'
+import { OurFactory } from '../_components/our-factory'
+import { OurFoundations } from '../_components/our-foundations'
+import { QualitySection } from '../_components/quality-section'
+import { RedBanner } from '../_components/red-banner'
+import { SocialFeed } from '../_components/social-feed'
 export default async function SobrePage() {
   const aboutPayload = await getSiteAboutPayload()
 
