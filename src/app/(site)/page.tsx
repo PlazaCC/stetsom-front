@@ -2,6 +2,7 @@ import { getSiteHomePayload } from '@/lib/api/server'
 import Faq from './_components/faq'
 import FeaturedProducts from './_components/featured-products'
 import HeroCarousel from './_components/hero-carousel'
+import OurFoundations from './_components/our-foundations'
 import OurHistory from './_components/our-history'
 import SocialFeed from './_components/social-feed'
 
@@ -18,6 +19,7 @@ export default async function Home() {
         section={homePayload.featured}
       />
       <OurHistory section={homePayload.history} />
+      <OurFoundations bases={homePayload.bases} />
       <SocialFeed section={homePayload.social} />
       <Faq items={homePayload.faq} section={homePayload.faqSection} />
     </>

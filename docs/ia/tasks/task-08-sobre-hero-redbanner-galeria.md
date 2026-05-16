@@ -31,8 +31,8 @@ Alinhar as seções 2, 3 e 5 da página `/sobre` com o Figma: hero com gradiente
 ## Implementation Notes
 
 - Hero gradient: `fill_W1677V` → `radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(22,16,16,1) 100%)`
-- Hero node Figma: `1071:11439` desktop → `layout_H6GC63`: `mode: none, width: 1440, height: 439`
+- Hero node Figma: `1200:6188` desktop → `layout_URM5ES`: `mode: none, width: 1440, height: 439`
 - RedBanner marquee: duplicar array de milestones, usar `@keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }` no `globals.css`
 - Classe de animação: `animate-marquee` com `animation: marquee 20s linear infinite`
-- Galeria dark Figma node: `1071:11522`, `layout_506MTR` → `padding: 48px 170px, bg: dark radial`
-- Rodar `/poc-refine-design` no node `1071:11439` e `1071:11522` antes da implementação
+- Galeria dark Figma node: `1200:6271`, `layout_HW1JSP` → `padding: 48px 170px, bg: dark radial`
+- Rodar `/poc-refine-design` no node `1200:6188` e `1200:6271` antes da implementação

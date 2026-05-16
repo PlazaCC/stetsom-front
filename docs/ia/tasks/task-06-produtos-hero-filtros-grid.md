@@ -34,5 +34,5 @@ Substituir o hero simples da página `/produtos` pelo gradiente radial dark do F
 - Figma fill hero: `fill_QDUJ2M` / `fill_M5AJUV` → imageRef `6a0a1876e7a45ba7189675a049ad45fe670394d2`
 - Gradiente composto: radial dark + linear `rgba(0,0,0,0) 72% → rgba(0,0,0,1) 100%` + imagem STRETCH
 - Verificar `assets-manifest.json` para path local da imagem do hero
-- Figma node hero desktop: `1071:12229`, layout `layout_DZ9SGQ` → `mode: none, width: 1440, height: 336`
-- Rodar `/poc-refine-design` no node `1071:12229` antes da implementação
+- Figma node hero desktop: `1200:4990`, layout `layout_YA6EFF` → `mode: none, width: 1440, height: 336`
+- Rodar `/poc-refine-design` no node `1200:4990` antes da implementação

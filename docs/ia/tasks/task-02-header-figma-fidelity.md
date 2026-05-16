@@ -8,7 +8,7 @@
 
 ## Objective
 
-Alinhar o `Header` com o Figma (nodes `1071:10274` desktop / mobile em `1071:9993`) corrigindo tipografia, espaçamentos, botão pill e layout do menu mobile.
+Alinhar o `Header` com o Figma (nodes `1200:4585` desktop / `1200:4305` mobile) corrigindo tipografia, espaçamentos, botão pill e layout do menu mobile.
 
 ## Acceptance Criteria
 
@@ -32,9 +32,9 @@ Alinhar o `Header` com o Figma (nodes `1071:10274` desktop / mobile em `1071:999
 
 ## Implementation Notes
 
-- Figma node desktop: `1071:10274` (Home) / `1071:10547` (Suporte)
+- Figma node desktop: `1200:4585` / `1200:6455`
 - Layout header desktop: `layout_IB159O` → `flex flex-row justify-between items-center py-6`
 - Logo + nav container: `layout_SXLGOC` → `flex flex-row items-center gap-[51px]`
 - Layout header mobile: `layout_R32J4W` → `flex flex-row justify-between items-center padding: 16px 20px`
 - Ícones mobile: `menu` e `search` de `lucide-react`, 40×40, cor `var(--color-icon-muted)` ou `#000`
-- Rodar `/poc-refine-design` no node `1071:10274` antes da implementação
+- Rodar `/poc-refine-design` no node `1200:4585` antes da implementação
