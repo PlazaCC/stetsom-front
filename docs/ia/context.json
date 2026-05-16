@@ -1537,6 +1537,17 @@
       ],
       "rationale": "Second simplification pass per user request: suporte/page.tsx was the largest non-shadcn file at 300 LOC orchestrating 6 distinct sections inline; split each section into its own _components/ file using SupportPayload sub-types for props",
       "outcome": "page.tsx reduced from 300 to ~25 LOC as a thin orchestrator; each section now isolated, typed, and independently maintainable. DOM output unchanged. tsc/lint pass."
+    },
+    {
+      "ts": "2026-05-16T21:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "feat",
+      "summary": "Implement mobile menu drawer and mobile search bar in header",
+      "files": [
+        "src/components/ui/header.tsx"
+      ],
+      "rationale": "Full mobile review identified the hamburger button as a non-functional placeholder (no state, no handler, no drawer component). Mobile search icon was also decorative only. Both are critical mobile gaps: users on mobile had no way to navigate or search. Figma does not specify a drawer design (task-02 marked it 'implementação futura') so design was derived from the established design system (dark bg-brand-dark, Barlow Condensed uppercase nav, brand red active state).",
+      "outcome": "Mobile menu: CSS slide-in drawer from left, bg-brand-dark, Logo (variant=dark), Produtos accordion with PRODUCT_MENU_CATEGORIES, Sobre nós and Suporte links with active pathname styling, language selector in footer. Backdrop (bg-black/50) with click-to-close. ESC key closes both menu and search. Scroll lock on body while menu open. Mobile search: auto-focus input replaces header content on click, submits to /produtos?q=. tsc --noEmit and lint exit 0."
     }
   ]
 }
