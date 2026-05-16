@@ -51,7 +51,7 @@ export default function Header() {
 
             <NavigationMenu>
               <NavigationMenuList>
-                <NavigationMenuItem className='hidden md:flex h-6 items-center'>
+                <NavigationMenuItem className='h-6 items-center'>
                   <NavigationMenuTrigger
                     className='p-0! m-0! h-auto! rounded-none! bg-transparent! hover:bg-transparent! focus:bg-transparent! data-popup-open:bg-transparent! data-open:bg-transparent! data-popup-open:hover:bg-transparent! data-open:hover:bg-transparent! data-open:focus:bg-transparent!'
                     nativeButton={false}
