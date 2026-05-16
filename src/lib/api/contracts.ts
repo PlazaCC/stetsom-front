@@ -235,6 +235,14 @@ export type SupportContactInfo = {
   whatsapp: string
 }
 
+export type ServiceCenter = {
+  id: string
+  name: string
+  address: string
+  phone: string
+  phone2?: string
+}
+
 export type SupportPayload = {
   hero: {
     label: string
@@ -252,6 +260,7 @@ export type SupportPayload = {
     description: string
   }
   contactInfo?: SupportContactInfo
+  serviceCenters?: ServiceCenter[]
   faq: {
     label: string
     title: string

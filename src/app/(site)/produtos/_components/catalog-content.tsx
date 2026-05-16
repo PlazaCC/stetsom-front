@@ -21,11 +21,12 @@ interface CategoryOption {
 const CATEGORY_IMAGE_BY_NAME: Record<string, string> = {
   Amplificadores: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',
   Processadores: '/figma-assets/raw/fill_THI4RN_1e666beb.png',
-  Subwoofers: '/figma-assets/raw/product-c.png',
   Crossovers: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',
-  Fontes: '/figma-assets/raw/fill_THI4RN_1e666beb.png',
   Controles: '/figma-assets/raw/fill_THI4RN_1e666beb.png',
+  'Fontes e carregadores': '/figma-assets/raw/fill_THI4RN_1e666beb.png',
+  'Mesas de som': '/figma-assets/raw/product-c.png',
   Acessórios: '/figma-assets/raw/product-c.png',
+  Subwoofers: '/figma-assets/raw/product-c.png',
 }
 
 const DEFAULT_CATALOG_HERO = {
