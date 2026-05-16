@@ -12,14 +12,11 @@ interface OurFactoryProps {
   jobsCta?: SiteAboutPayload['jobsCta']
 }
 
-export default function OurFactory({ jobsCta }: OurFactoryProps) {
+export function OurFactory({ jobsCta }: OurFactoryProps) {
   return (
     <section className='relative bg-brand-dark overflow-hidden'>
       <Image src={FACTORY_IMAGE} alt='Fábrica Stetsom' fill className='object-cover' sizes='100vw' priority />
-      <div
-        className='absolute inset-0'
-        style={{ background: 'radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(22,16,16,1) 100%)' }}
-      />
+      <div className='absolute inset-0 bg-radial-dark-alt' />
       <Container className='relative z-10 py-20'>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-16 items-center'>
           <div>

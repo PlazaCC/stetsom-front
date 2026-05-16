@@ -878,4 +878,6 @@ export const CATALOG_PRODUCT_FILES: ProductFile[] = [
 
 export const FEATURED_PRODUCT_SLUGS = ['st-2000eq-mono', 'st-800-4-compact', 'st-1200-1d-bass', 'stx-96-pro'] as const
 
+export const PRODUCT_LINES = ['Vulcan', 'Combat Line', 'Digital Bass'] as const
+
 export const SPOTLIGHT_PRODUCT_SLUG = 'st-4000eq-4-canais'

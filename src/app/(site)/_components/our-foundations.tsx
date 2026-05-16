@@ -8,7 +8,7 @@ interface OurFoundationsProps {
   className?: string
 }
 
-export default function OurFoundations({ bases, className }: Readonly<OurFoundationsProps>) {
+export function OurFoundations({ bases, className }: Readonly<OurFoundationsProps>) {
   return (
     <section className={cn('bg-white py-12', className)}>
       <Container>

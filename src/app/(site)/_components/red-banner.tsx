@@ -6,7 +6,7 @@ interface RedBannerProps {
   milestones: string[]
 }
 
-export default function RedBanner({ milestones }: Readonly<RedBannerProps>) {
+export function RedBanner({ milestones }: Readonly<RedBannerProps>) {
   return (
     <section className='bg-bar-accent py-4 overflow-hidden'>
       <Marquee gradient={false} speed={40}>

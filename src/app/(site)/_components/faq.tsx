@@ -4,14 +4,14 @@ import { SectionLabel } from '@/components/ui/section-label'
 import type { FAQItem, SiteHomePayload } from '@/lib/api/contracts'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import FaqAccordion from './faq-accordion'
+import { FaqAccordion } from './faq-accordion'
 
 interface FaqProps {
   items: FAQItem[]
   section: SiteHomePayload['faqSection']
 }
 
-export default function Faq({ items, section }: Readonly<FaqProps>) {
+export function Faq({ items, section }: Readonly<FaqProps>) {
   return (
     <section className='bg-off-white py-12 justify-center flex'>
       <Container>

@@ -4,7 +4,7 @@ import { Accordion, AccordionContent, AccordionItem } from '@/components/ui/acco
 import type { FAQItem } from '@/lib/api/contracts'
 import { Accordion as AccordionPrimitive } from '@base-ui/react/accordion'
 
-export default function FaqAccordion({ items }: { items: FAQItem[] }) {
+export function FaqAccordion({ items }: { items: FAQItem[] }) {
   return (
     <Accordion>
       {items.map(({ q, a }, i) => (

@@ -16,7 +16,7 @@ interface CompanyTimelineProps {
   initialActiveIndex?: number
 }
 
-export default function CompanyTimeline({
+export function CompanyTimeline({
   events,
   label = 'Nossa História',
   title = '35 ANOS DE\nHISTÓRIA',
@@ -68,10 +68,7 @@ export default function CompanyTimeline({
 
   return (
     <section className='relative bg-brand-dark py-20 overflow-hidden'>
-      <div
-        className='absolute inset-0'
-        style={{ background: 'radial-gradient(circle at 99% 114%, rgba(27,26,44,1) 0%, rgba(22,16,16,1) 100%)' }}
-      />
+      <div className='absolute inset-0 bg-radial-dark-alt' />
       <Container className='relative z-10'>
         <div className='space-y-12'>
           {/* BOX 1: HEADER - Título + Descrição + Setas */}

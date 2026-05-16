@@ -9,8 +9,8 @@ const SECTIONS = [
   { id: 'related', label: 'Confira também' },
 ] as const
 
-export default function StickySectionNav() {
-  const [activeSection, setActiveSection] = useState<string>('visao-geral')
+export function StickySectionNav() {
+  const [activeSection, setActiveSection] = useState<string>('overview')
 
   useEffect(() => {
     const observer = new IntersectionObserver(
