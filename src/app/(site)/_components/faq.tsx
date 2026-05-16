@@ -1,9 +1,7 @@
-import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
+import { CTAButton } from '@/components/ui/cta-button'
 import { SectionLabel } from '@/components/ui/section-label'
 import type { FAQItem, SiteHomePayload } from '@/lib/api/contracts'
-import { ArrowRight } from 'lucide-react'
-import Link from 'next/link'
 import { FaqAccordion } from './faq-accordion'
 
 interface FaqProps {
@@ -18,12 +16,7 @@ export function Faq({ items, section }: Readonly<FaqProps>) {
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-20'>
           <div>
             <SectionLabel label={section.label} title={section.title} subtitle={section.subtitle} />
-            <Link href={section.ctaHref}>
-              <Button variant='brand-dark' size='sm' className='mt-7 flex items-center gap-2'>
-                {section.ctaLabel}
-                <ArrowRight className='size-4' strokeWidth={2.5} />
-              </Button>
-            </Link>
+            <CTAButton href={section.ctaHref} label={section.ctaLabel} variant='brand-dark' size='sm' className='mt-7' />
           </div>
           <div className='pt-2'>
             <FaqAccordion items={items} />

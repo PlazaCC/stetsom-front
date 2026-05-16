@@ -1,7 +1,7 @@
 type TextBlockData = { title?: string; content?: string; align?: string }
 type ImageBlockData = { images?: string[]; caption?: string }
 
-export function isStringArray(v: unknown): v is string[] {
+function isStringArray(v: unknown): v is string[] {
   return Array.isArray(v) && v.every((i) => typeof i === 'string' && i.length > 0)
 }
 

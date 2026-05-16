@@ -16,10 +16,6 @@ function readProviderKind(): ProviderKind {
   return 'mock'
 }
 
-export function clearCmsProviderCache() {
-  providerCache = null
-}
-
 export function getCmsProvider(): CmsProvider {
   if (providerCache) {
     return providerCache
