@@ -1,12 +1,13 @@
 import { type BreadcrumbItem, Breadcrumb } from '@/components/ui/breadcrumb'
 import { Container } from '@/components/ui/container'
-import { getCatalogProductDetail } from '@/lib/api/server'
 import type { SpecMultiColumnValue } from '@/lib/api/contracts'
+import { getCatalogProductDetail } from '@/lib/api/server'
+import { formatSpecKey } from '@/lib/utils/product'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import ProductDetailContent from './_components/product-detail-content'
-import StickySectionNav from './_components/sticky-section-nav'
+import { ProductDetailContent } from './_components/product-detail-content'
+import { StickySectionNav } from './_components/sticky-section-nav'
 
 function isMultiColumn(v: unknown): v is SpecMultiColumnValue {
   return typeof v === 'object' && v !== null && 'ohm1' in v
@@ -133,10 +134,8 @@ export default async function ProdutoDetalhePage(props: PageProps<'/produtos/[sl
               {/* Spec tags */}
               <ul className='mt-4 flex flex-wrap gap-2'>
                 {Object.entries(product.specifications).map(([key, value]) => (
-                  <li
-                    key={key}
-                    className='rounded-lg border border-muted px-3 py-1 text-xs uppercase text-brand-dark'>
-                    {key.replace(/_/g, ' ')}: {formatSpecTag(value)}
+                  <li key={key} className='rounded-lg border border-muted px-3 py-1 text-xs uppercase text-brand-dark'>
+                    {formatSpecKey(key)}: {formatSpecTag(value)}
                   </li>
                 ))}
               </ul>

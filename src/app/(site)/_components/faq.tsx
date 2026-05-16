@@ -4,7 +4,7 @@ import { SectionLabel } from '@/components/ui/section-label'
 import type { FAQItem, SiteHomePayload } from '@/lib/api/contracts'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import FaqAccordion from './faq-accordion'
+import { FaqAccordion } from './faq-accordion'
 
 interface FaqProps {
   items: FAQItem[]

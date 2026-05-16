@@ -18,11 +18,7 @@ interface ProductDetailContentProps {
   relatedProducts: ProductCardItem[]
 }
 
-const PRODUCT_HERO_GRADIENT = {
-  background: 'radial-gradient(circle at 50% 50%, rgb(238, 8, 0) 45%, rgb(0, 0, 0) 100%)',
-} as const
-
-export default function ProductDetailContent({
+export function ProductDetailContent({
   productName,
   thumbnailUrl,
   specifications,
@@ -36,7 +32,7 @@ export default function ProductDetailContent({
     <>
       <section id='overview' className='scroll-mt-38'>
         <section className='relative isolate overflow-hidden bg-black'>
-          <div className='absolute inset-0' style={PRODUCT_HERO_GRADIENT} />
+          <div className='absolute inset-0 bg-product-hero' />
           <div className='absolute inset-x-0 bottom-0 h-22 bg-gradient-to-t from-black/70 to-transparent' />
           <Container className='relative z-10 py-8 md:py-10 lg:py-14'>
             <div className='mx-auto max-w-220'>

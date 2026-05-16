@@ -2,12 +2,12 @@ import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
 import { getSiteAboutPayload } from '@/lib/api/server'
 import Image from 'next/image'
-import CompanyTimeline from '../_components/company-timeline'
-import OurFactory from '../_components/our-factory'
-import OurFoundations from '../_components/our-foundations'
-import QualitySection from '../_components/quality-section'
-import RedBanner from '../_components/red-banner'
-import SocialFeed from '../_components/social-feed'
+import { CompanyTimeline } from '../_components/company-timeline'
+import { OurFactory } from '../_components/our-factory'
+import { OurFoundations } from '../_components/our-foundations'
+import { QualitySection } from '../_components/quality-section'
+import { RedBanner } from '../_components/red-banner'
+import { SocialFeed } from '../_components/social-feed'
 export default async function SobrePage() {
   const aboutPayload = await getSiteAboutPayload()
 
@@ -61,11 +61,10 @@ export default async function SobrePage() {
                 {aboutPayload.stats.map((stat) => (
                   <div key={stat.label} className='border border-white/20 px-4 py-4'>
                     <p className='font-sans-condensed text-display-sm font-black leading-none text-white'>
-                      {stat.value.replace('+', '')}<span className='text-brand'>+</span>
+                      {stat.value.replace('+', '')}
+                      <span className='text-brand'>+</span>
                     </p>
-                    <p className='mt-1 text-sm font-sans font-medium uppercase text-text-subtle-dark'>
-                      {stat.label}
-                    </p>
+                    <p className='mt-1 text-sm font-sans font-medium uppercase text-text-subtle-dark'>{stat.label}</p>
                   </div>
                 ))}
               </div>

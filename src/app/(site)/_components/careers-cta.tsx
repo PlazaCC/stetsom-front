@@ -9,7 +9,7 @@ interface CareersCTAProps {
   section: SiteAboutPayload['jobsCta']
 }
 
-export default function CareersCTA({ section }: Readonly<CareersCTAProps>) {
+export function CareersCTA({ section }: Readonly<CareersCTAProps>) {
   return (
     <section className='bg-white py-20'>
       <Container>

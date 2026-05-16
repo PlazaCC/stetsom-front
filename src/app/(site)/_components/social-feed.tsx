@@ -13,7 +13,7 @@ interface SocialFeedProps {
   section: SocialFeedSection
 }
 
-export default function SocialFeed({ section }: Readonly<SocialFeedProps>) {
+export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
   const { ref: scrollRef, scroll } = useHorizontalScroll()
 
   return (

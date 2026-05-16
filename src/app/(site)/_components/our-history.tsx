@@ -10,7 +10,7 @@ interface OurHistoryProps {
   section: SiteHomePayload['history']
 }
 
-export default function OurHistory({ section }: Readonly<OurHistoryProps>) {
+export function OurHistory({ section }: Readonly<OurHistoryProps>) {
   return (
     <section className='bg-brand-dark'>
       {/* Mobile: image on top, content below */}
