@@ -1,8 +1,7 @@
-import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
+import { CTAButton } from '@/components/ui/cta-button'
 import { SectionLabel } from '@/components/ui/section-label'
 import type { SiteAboutPayload } from '@/lib/api/contracts'
-import { ExternalLink } from 'lucide-react'
 import Image from 'next/image'
 
 interface CareersCTAProps {
@@ -20,12 +19,7 @@ export function CareersCTA({ section }: Readonly<CareersCTAProps>) {
 
             <p className='text-base text-text-subtle mt-6 leading-[1.7] mb-8'>{section.description}</p>
 
-            <a href={section.buttonHref} target='_blank' rel='noopener noreferrer'>
-              <Button variant='brand' size='md' className='inline-flex items-center gap-2'>
-                {section.buttonLabel}
-                <ExternalLink size={18} />
-              </Button>
-            </a>
+            <CTAButton href={section.buttonHref} label={section.buttonLabel} variant='brand' size='md' external />
           </div>
 
           {/* Imagem Direita */}

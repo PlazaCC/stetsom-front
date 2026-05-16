@@ -1,8 +1,7 @@
-import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
+import { CTAButton } from '@/components/ui/cta-button'
 import { SectionLabel } from '@/components/ui/section-label'
 import type { SiteAboutPayload } from '@/lib/api/contracts'
-import { ExternalLink } from 'lucide-react'
 import Image from 'next/image'
 
 const FACTORY_IMAGE = '/figma-assets/raw/fill_OJJ5Q1_b3596ec5.png'
@@ -24,12 +23,7 @@ export function OurFactory({ jobsCta }: OurFactoryProps) {
               <>
                 <SectionLabel label={jobsCta.label} title={jobsCta.title} dark />
                 <p className='text-base text-text-subtle-dark mt-6 leading-[1.7] mb-8'>{jobsCta.description}</p>
-                <a href={jobsCta.buttonHref} target='_blank' rel='noopener noreferrer'>
-                  <Button variant='brand' size='md' className='inline-flex items-center gap-2'>
-                    {jobsCta.buttonLabel}
-                    <ExternalLink size={18} />
-                  </Button>
-                </a>
+                <CTAButton href={jobsCta.buttonHref} label={jobsCta.buttonLabel} variant='brand' size='md' external />
               </>
             ) : (
               <div>

@@ -1,10 +1,7 @@
-import { buttonVariants } from '@/components/ui/button'
+import { CTAButton } from '@/components/ui/cta-button'
 import { SectionLabel } from '@/components/ui/section-label'
 import type { SiteHomePayload } from '@/lib/api/contracts'
-import { cn } from '@/lib/utils'
-import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
-import Link from 'next/link'
 
 interface OurHistoryProps {
   section: SiteHomePayload['history']
@@ -20,23 +17,8 @@ export function OurHistory({ section }: Readonly<OurHistoryProps>) {
         </div>
         <div className='px-5 py-10 sm:px-8 sm:py-12'>
           <SectionLabel label={section.label} title={section.title} subtitle={section.subtitle} dark />
-          <div className='mt-8 grid grid-cols-2 border border-white/20'>
-            {section.stats.map((stat) => (
-              <div key={stat.label} className='border border-white/20 px-4 py-4'>
-                <p className='font-sans-condensed text-display-sm font-black leading-none text-white'>
-                  {stat.value.endsWith('+') ? (
-                    <>{stat.value.slice(0, -1)}<span className='text-brand'>+</span></>
-                  ) : (
-                    stat.value
-                  )}
-                </p>
-                <p className='mt-1 font-sans text-xs font-medium uppercase text-text-subtle-dark'>{stat.label}</p>
-              </div>
-            ))}
-          </div>
-          <Link href={section.ctaHref} className={cn(buttonVariants({ variant: 'brand', size: 'sm' }), 'mt-8')}>
-            {section.ctaLabel} <ArrowRight className='size-4' strokeWidth={2.5} />
-          </Link>
+          <StatsGrid stats={section.stats} />
+          <CTAButton href={section.ctaHref} label={section.ctaLabel} variant='brand' size='sm' className='mt-8' />
         </div>
       </div>
 
@@ -48,26 +30,37 @@ export function OurHistory({ section }: Readonly<OurHistoryProps>) {
         <div className='flex flex-1 items-center py-16 pl-22.75 pr-42.5'>
           <div className='w-full max-w-122'>
             <SectionLabel label={section.label} title={section.title} subtitle={section.subtitle} dark />
-            <div className='mt-8 grid grid-cols-2 border border-white/20'>
-              {section.stats.map((stat) => (
-                <div key={stat.label} className='border border-white/20 px-4 py-4'>
-                  <p className='font-sans-condensed text-display-sm font-black leading-none text-white'>
-                    {stat.value.endsWith('+') ? (
-                      <>{stat.value.slice(0, -1)}<span className='text-brand'>+</span></>
-                    ) : (
-                      stat.value
-                    )}
-                  </p>
-                  <p className='mt-1 font-sans text-xs font-medium uppercase text-text-subtle-dark'>{stat.label}</p>
-                </div>
-              ))}
-            </div>
-            <Link href={section.ctaHref} className={cn(buttonVariants({ variant: 'brand', size: 'sm' }), 'mt-8')}>
-              {section.ctaLabel} <ArrowRight className='size-4' strokeWidth={2.5} />
-            </Link>
+            <StatsGrid stats={section.stats} />
+            <CTAButton href={section.ctaHref} label={section.ctaLabel} variant='brand' size='sm' className='mt-8' />
           </div>
         </div>
       </div>
     </section>
+  )
+}
+
+interface StatsGridProps {
+  stats: SiteHomePayload['history']['stats']
+}
+
+function StatsGrid({ stats }: Readonly<StatsGridProps>) {
+  return (
+    <div className='mt-8 grid grid-cols-2 border border-white/20'>
+      {stats.map((stat) => (
+        <div key={stat.label} className='border border-white/20 px-4 py-4'>
+          <p className='font-sans-condensed text-display-sm font-black leading-none text-white'>
+            {stat.value.endsWith('+') ? (
+              <>
+                {stat.value.slice(0, -1)}
+                <span className='text-brand'>+</span>
+              </>
+            ) : (
+              stat.value
+            )}
+          </p>
+          <p className='mt-1 font-sans text-xs font-medium uppercase text-text-subtle-dark'>{stat.label}</p>
+        </div>
+      ))}
+    </div>
   )
 }
