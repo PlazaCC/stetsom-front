@@ -11,7 +11,7 @@ interface FaqProps {
   section: SiteHomePayload['faqSection']
 }
 
-export default function Faq({ items, section }: Readonly<FaqProps>) {
+export function Faq({ items, section }: Readonly<FaqProps>) {
   return (
     <section className='bg-off-white py-12 justify-center flex'>
       <Container>

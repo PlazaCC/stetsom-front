@@ -1410,6 +1410,19 @@
       ],
       "rationale": "Code review (code-review skill) identified: 1 critical bug (wrong initial state in sticky nav), 4 inline gradient violations, 11 default exports violating react-components rule, duplicated formatSpecKey logic, PRODUCT_LINES hardcoded in component, button variant override in suporte FAQ",
       "outcome": "All 19 files corrected. TypeScript and ESLint pass. Branch is now ready for PR."
+    },
+    {
+      "ts": "2026-05-16T15:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix missed faq.tsx default export, add blank line in sobre/page.tsx",
+      "files": [
+        "src/app/(site)/_components/faq.tsx",
+        "src/app/(site)/page.tsx",
+        "src/app/(site)/sobre/page.tsx"
+      ],
+      "rationale": "Code review identified faq.tsx was modified in the branch (import fix) but missed the default→named export conversion required by react-components.md; sobre/page.tsx was missing blank line after imports",
+      "outcome": "Faq now uses named export; page.tsx updated to { Faq } import; sobre/page.tsx has blank line separator. tsc and lint pass."
     }
   ]
 }

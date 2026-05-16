@@ -8,6 +8,7 @@ import { OurFoundations } from '../_components/our-foundations'
 import { QualitySection } from '../_components/quality-section'
 import { RedBanner } from '../_components/red-banner'
 import { SocialFeed } from '../_components/social-feed'
+
 export default async function SobrePage() {
   const aboutPayload = await getSiteAboutPayload()
 
