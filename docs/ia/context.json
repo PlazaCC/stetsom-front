@@ -1410,6 +1410,38 @@
       "outcome": "All mock texts match Figma MCP live data. Timeline years corrected (1989/1999/2002/2007/2014). Suporte page now shows Fale Conosco (with 3 contact info cards + form) before Downloads (with category sidebar + search). Product specs table renders 1 Ohm/2 Ohms columns. tsc --noEmit and lint exit 0."
     },
     {
+      "ts": "2026-05-15T23:45:00Z",
+      "agent": "claude-opus-4-7",
+      "type": "fix",
+      "summary": "Deep pixel-perfect audit: sync mocks with Figma MCP, fix all Portuguese diacritics, swap Sobre order, add 1989 overlay, move postos to contract",
+      "files": [
+        "src/lib/mock/site.ts",
+        "src/lib/mock/catalog.ts",
+        "src/lib/mock/support.ts",
+        "src/lib/mock/navigation.ts",
+        "src/lib/api/contracts.ts",
+        "src/app/(site)/sobre/page.tsx",
+        "src/app/(site)/suporte/page.tsx",
+        "src/app/(site)/_components/quality-section.tsx",
+        "src/app/(site)/produtos/_components/catalog-content.tsx",
+        "src/app/globals.css",
+        ".raw/figma-design/home/desktop.png",
+        ".raw/figma-design/home/mobile.png",
+        ".raw/figma-design/produtos/desktop.png",
+        ".raw/figma-design/produtos/mobile.png",
+        ".raw/figma-design/produto-selecionado/desktop.png",
+        ".raw/figma-design/produto-selecionado/mobile.png",
+        ".raw/figma-design/sobre/desktop.png",
+        ".raw/figma-design/sobre/mobile.png",
+        ".raw/figma-design/suporte/desktop.png",
+        ".raw/figma-design/suporte/mobile.png",
+        ".raw/figma-design/404/desktop.png",
+        ".raw/figma-design/404/mobile.png"
+      ],
+      "rationale": "Deep design-fidelity-audit (5 phases): MCP-confirmed Figma categories (8 items: Novidades+Amplificadores+Processadores+Crossovers+Controles+Fontes e carregadores+Mesas de som+Acessórios) replacing 7-category mock. Fixed massive ASCII-only mock content (Potencia→Potência, fabricacao→fabricação, audio→áudio, ~40 corrections across site.ts/catalog.ts). Hero slide titles updated to match Figma ('SINTA O VERDADEIRO PODER DO GRAVE'). Sobre order corrected to match Figma baseline (Foundations before Social). QualitySection now renders 1989/FUNDAÇÃO badge overlay over image. POSTOS_LOCATIONS hardcoded in suporte/page.tsx moved to ServiceCenter contract type + SUPPORT_SERVICE_CENTERS mock. PRODUCT_MENU_CATEGORIES synced with new CATALOG_CATEGORIES slugs (cat-fontes-carregadores). --bar-accent token corrected from rgb(220,38,38) to brand rgb(232,19,42).",
+      "outcome": "All mock content now matches Figma MCP live data with full Portuguese accentuation. Sobre section order matches baseline. Quality section has 1989/FUNDAÇÃO badge. Service centers data-driven from mock. 12 Figma baselines re-exported. tsc --noEmit and lint exit 0."
+    },
+    {
       "ts": "2026-05-15T23:00:00Z",
       "agent": "claude-sonnet-4-6",
       "type": "fix",

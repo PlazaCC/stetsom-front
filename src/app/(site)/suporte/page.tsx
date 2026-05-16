@@ -15,37 +15,6 @@ const CARD_ICONS = {
   'fale-conosco': Mail,
 } as const
 
-const POSTOS_LOCATIONS = [
-  {
-    id: 'posto-1',
-    name: 'Centro Técnico Santo Ângelo',
-    address: 'Av. Brasil, 1200 — Santo Ângelo, RS',
-    phone: '(55) 3312-0000',
-    phone2: '(55) 9 9123-0000',
-  },
-  {
-    id: 'posto-2',
-    name: 'Stetsom Service São Paulo',
-    address: 'Rua Voluntários da Pátria, 847 — Santana, SP',
-    phone: '(11) 3991-0000',
-    phone2: '(11) 9 9234-0000',
-  },
-  {
-    id: 'posto-3',
-    name: 'Audio Center Curitiba',
-    address: 'Av. Sete de Setembro, 3770 — Batel, PR',
-    phone: '(41) 3252-0000',
-    phone2: '(41) 9 9345-0000',
-  },
-  {
-    id: 'posto-4',
-    name: 'RioSom Técnica',
-    address: 'Rua Visconde de Inhaúma, 58 — Centro, RJ',
-    phone: '(21) 2220-0000',
-    phone2: '(21) 9 9456-0000',
-  },
-]
-
 const CONTACT_INFO_ICONS = {
   phone: Phone,
   email: Mail,
@@ -55,6 +24,7 @@ const CONTACT_INFO_ICONS = {
 export default async function SuportePage() {
   const supportPayload = await getSupportPayload()
   const categories = supportPayload.documentationCategories ?? []
+  const serviceCenters = supportPayload.serviceCenters ?? []
 
   return (
     <div>
@@ -187,7 +157,7 @@ export default async function SuportePage() {
                 </button>
               </div>
               <div className='flex flex-col gap-2'>
-                {POSTOS_LOCATIONS.map((posto) => (
+                {serviceCenters.map((posto) => (
                   <div key={posto.id} className='flex flex-col gap-0.5 border border-border bg-white px-4 py-3'>
                     <p className='font-sans text-sm font-semibold text-brand-dark'>{posto.name}</p>
                     <p className='font-sans text-xs text-text-subtle'>{posto.address}</p>

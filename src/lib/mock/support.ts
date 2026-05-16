@@ -1,4 +1,4 @@
-import type { FAQItem, ProductFile, SupportPayload } from '@/lib/api/contracts'
+import type { FAQItem, ProductFile, ServiceCenter, SupportPayload } from '@/lib/api/contracts'
 
 const NOW = new Date().toISOString()
 
@@ -77,6 +77,37 @@ const SUPPORT_DOCUMENTATION_FILES: ProductFile[] = [
   },
 ]
 
+export const SUPPORT_SERVICE_CENTERS: ServiceCenter[] = [
+  {
+    id: 'posto-1',
+    name: 'Centro Técnico Santo Ângelo',
+    address: 'Av. Brasil, 1200 — Santo Ângelo, RS',
+    phone: '(55) 3312-0000',
+    phone2: '(55) 9 9123-0000',
+  },
+  {
+    id: 'posto-2',
+    name: 'Stetsom Service São Paulo',
+    address: 'Rua Voluntários da Pátria, 847 — Santana, SP',
+    phone: '(11) 3991-0000',
+    phone2: '(11) 9 9234-0000',
+  },
+  {
+    id: 'posto-3',
+    name: 'Audio Center Curitiba',
+    address: 'Av. Sete de Setembro, 3770 — Batel, PR',
+    phone: '(41) 3252-0000',
+    phone2: '(41) 9 9345-0000',
+  },
+  {
+    id: 'posto-4',
+    name: 'RioSom Técnica',
+    address: 'Rua Visconde de Inhaúma, 58 — Centro, RJ',
+    phone: '(21) 2220-0000',
+    phone2: '(21) 9 9456-0000',
+  },
+]
+
 export const SUPPORT_FAQ_ITEMS: FAQItem[] = [
   {
     q: 'Como instalar meu amplificador?',
@@ -152,6 +183,7 @@ export const SUPPORT_PAYLOAD: SupportPayload = {
     email: 'suporte@stetsom.com.br',
     whatsapp: '(18) 3300-0000',
   },
+  serviceCenters: SUPPORT_SERVICE_CENTERS,
   faq: {
     label: 'DÚVIDAS',
     title: 'PERGUNTAS FREQUENTES',

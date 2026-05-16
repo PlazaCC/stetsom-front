@@ -83,11 +83,11 @@ export default async function SobrePage() {
       {/* 4. COMPANY TIMELINE */}
       <CompanyTimeline events={aboutPayload.timeline} />
 
-      {/* 5. SOCIAL FEED */}
-      <SocialFeed section={aboutPayload.social} />
-
-      {/* 6. OUR FOUNDATIONS - 3 Cards */}
+      {/* 5. OUR FOUNDATIONS - 3 Cards (Figma: aparece antes do Social) */}
       <OurFoundations bases={aboutPayload.bases} />
+
+      {/* 6. SOCIAL FEED — Nossa Família */}
+      <SocialFeed section={aboutPayload.social} />
 
       {/* 7. OUR FACTORY + CAREERS */}
       <OurFactory jobsCta={aboutPayload.jobsCta} />

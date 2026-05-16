@@ -28,9 +28,18 @@ export default function QualitySection({ section, values }: Readonly<QualitySect
     <section className='bg-off-white py-20'>
       <Container>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-16 items-start'>
-          {/* Imagem Esquerda */}
+          {/* Imagem Esquerda com badge 1989 / FUNDAÇÃO */}
           <div className='relative aspect-square w-full rounded-sm bg-muted flex items-center justify-center overflow-hidden'>
             <Image src={section.image} alt={section.imageAlt} fill className='object-cover' />
+            {/* Badge "1989" + label "FUNDAÇÃO" no canto inferior esquerdo */}
+            <div className='absolute bottom-5 left-5 flex flex-col gap-2'>
+              <div className='flex h-15 w-15 items-center justify-center bg-brand'>
+                <span className='font-sans-condensed text-xl font-black uppercase leading-none text-white'>1989</span>
+              </div>
+              <span className='font-sans-condensed text-xs font-black uppercase tracking-widest text-white drop-shadow-md'>
+                Fundação
+              </span>
+            </div>
           </div>
 
           {/* Texto + Cards Direita */}
