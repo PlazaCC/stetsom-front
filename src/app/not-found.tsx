@@ -31,7 +31,7 @@ export default function NotFound() {
             <p className='font-sans text-xl text-text-subtle-dark'>
               Parece que a página que você tentou acessar não existe
             </p>
-            <Link href='/pt-BR' className={cn(buttonVariants({ variant: 'brand', size: 'md' }))}>
+            <Link href='/' className={cn(buttonVariants({ variant: 'brand', size: 'md' }))}>
               Voltar para Home
             </Link>
           </div>

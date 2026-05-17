@@ -6,8 +6,7 @@ import { type Locale, routing } from '@/i18n/routing'
 import { LocaleFlag } from './flag-icons'
 import { cn } from '@/lib/utils'
 import { ChevronDown } from 'lucide-react'
-import { useRef, useState } from 'react'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const LOCALE_CODES: Record<Locale, string> = {
   'pt-BR': 'PT',

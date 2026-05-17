@@ -1652,6 +1652,22 @@
       ],
       "rationale": "Double-check audit revealed: category names PT-only in API; PRODUCT_MENU_CATEGORIES in header using hardcoded PT labels/descriptions; product descriptions/badges in PT; block content in PT; spec keys of first product in PT; categories API route not accepting locale",
       "outcome": "Created catalog-i18n.ts with locale-aware functions for categories, subcategories, products and blocks; header nav menu uses i18n translations; categories API route accepts locale param; useCatalogCategories hook passes locale; all 18 products and 20 blocks translated to EN/ES/PT-BR; build and lint pass"
+    },
+    {
+      "ts": "2026-05-16T14:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix i18n Link imports and hardcoded strings found in code review",
+      "files": [
+        "src/app/not-found.tsx",
+        "src/app/[locale]/(site)/not-found.tsx",
+        "src/app/[locale]/(site)/produtos/[slug]/page.tsx",
+        "src/app/[locale]/(site)/produtos/page.tsx",
+        "src/app/[locale]/layout.tsx",
+        "src/components/ui/language-switcher.tsx"
+      ],
+      "rationale": "Code review identified next/link used in locale routes (should be @/i18n/navigation), hardcoded PT string in Suspense fallback, hardcoded /pt-BR href in root 404, and minor style inconsistencies",
+      "outcome": "All locale-aware Link components now auto-prefix the locale; Suspense fallback uses t(loading); root 404 redirects to / instead of /pt-BR"
     }
   ]
 }

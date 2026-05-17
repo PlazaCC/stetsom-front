@@ -7,6 +7,7 @@ import { hasLocale } from 'next-intl'
 import { routing } from '@/i18n/routing'
 import QueryProvider from '@/components/query-provider'
 import ThemeProvider from '@/components/theme-provider'
+
 const barlow = Barlow({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
   variable: '--font-barlow',
