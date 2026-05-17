@@ -1,0 +1,194 @@
+{
+  "Nav": {
+    "products": "Productos",
+    "about": "Nosotros",
+    "support": "Soporte",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "search": "Buscar",
+    "navAriaLabel": "Menú de navegación",
+    "categoryMenu": {
+      "amplifiers": { "label": "Amplificadores", "description": "Amplificadores de alta potencia para sistemas automotivos." },
+      "processors": { "label": "Procesadores", "description": "Procesadores de alta performance para aplicaciones automotivas." },
+      "crossovers": { "label": "Crossovers", "description": "Crossovers para división de frecuencias en sistemas multivia." },
+      "controls": { "label": "Controles", "description": "Controles remotos y periféricos para amplificadores Stetsom." },
+      "powerSupplies": { "label": "Fuentes y cargadores", "description": "Fuentes de alimentación y cargadores para sistemas automotivos exigentes." },
+      "mixers": { "label": "Mesas de sonido", "description": "Mesas de sonido y mezcladoras para profesionales y entusiastas." },
+      "accessories": { "label": "Accesorios", "description": "Accesorios para personalización y rendimiento del sistema." }
+    }
+  },
+  "Header": {
+    "searchPlaceholder": "Buscar productos...",
+    "closeSearch": "Cerrar búsqueda"
+  },
+  "Footer": {
+    "description": "Potencia sin límite desde 1989. Fabricamos los mejores amplificadores automotivos de Brasil.",
+    "company": "Empresa",
+    "products": "Productos",
+    "support": "Soporte",
+    "about": "Nosotros",
+    "warranty": "Garantía",
+    "allProducts": "Todos",
+    "amplifiers": "Amplificadores",
+    "processors": "Procesadores",
+    "controllers": "Controles",
+    "accessories": "Accesorios",
+    "helpCenter": "Centro de ayuda",
+    "manuals": "Manuales",
+    "authorizedCenters": "Centros autorizados",
+    "contact": "Contacto",
+    "privacyPolicy": "Política de privacidad",
+    "termsOfUse": "Términos de uso",
+    "cookies": "Cookies",
+    "copyright": "©{year} Stetsom Electrónica Ltda. Todos los derechos reservados."
+  },
+  "Catalog": {
+    "loading": "Cargando productos...",
+    "noProducts": "No se encontraron productos.",
+    "categories": "Categorías",
+    "filters": "Filtros",
+    "clearAll": "Limpiar todo",
+    "compare": "Comparar",
+    "searchPlaceholder": "Buscar producto...",
+    "allCategories": "Todos",
+    "products": "{count} productos",
+    "sortBy": "Ordenar por",
+    "mostRelevant": "Más relevantes",
+    "options": "Opciones",
+    "showDiscontinued": "Mostrar descontinuados",
+    "exportProducts": "Productos de exportación",
+    "search": "Buscar",
+    "productType": "Tipo de producto",
+    "productLines": "Líneas",
+    "heroLabel": "CATÁLOGO COMPLETO",
+    "heroTitle": "NUESTROS\nPRODUCTOS",
+    "heroImageAlt": "Catálogo Stetsom",
+    "emptyCategory": "No se encontraron productos en esta categoría."
+  },
+  "ProductDetail": {
+    "overview": "Vista general",
+    "specifications": "Especificaciones",
+    "related": "Ver también",
+    "discontinued": "Descontinuado",
+    "filesAvailable": "{count, plural, one {# archivo disponible} other {# archivos disponibles}}",
+    "manual": "Acceder al manual del producto",
+    "downloadPhotos": "Descargar fotos",
+    "breadcrumbHome": "Inicio",
+    "breadcrumbProducts": "Productos",
+    "powerRMS": "Potencia RMS",
+    "channels": "Canales",
+    "impedance": "Impedancia",
+    "heroTagline1": "ALTA POTENCIA.",
+    "heroTagline2": "ALTO RENDIMIENTO.",
+    "techData": "Datos técnicos",
+    "techSpecifications": "Especificaciones técnicas",
+    "ohm1": "1 Ohm",
+    "ohm2": "2 Ohms",
+    "noSpecs": "No hay especificaciones disponibles.",
+    "recommendations": "Recomendaciones",
+    "noRelated": "No hay productos relacionados disponibles.",
+    "blockTextDefaultTitle": "Detalles del producto",
+    "blockTextUnavailable": "Descripción no disponible para este bloque.",
+    "blockVideoLabel": "Video",
+    "blockVideoFeatured": "{productName} destacado",
+    "blockVideoDefaultDescription": "Vea la demostración completa centrada en potencia, estabilidad y rendimiento real en uso automotivo.",
+    "blockVideoWatch": "Ver demostración",
+    "blockHtmlLabel": "Detalles técnicos",
+    "blockHtmlUnavailable": "Contenido técnico no disponible.",
+    "blockModel3dLabel": "Modelo 3D",
+    "blockModel3dTitle": "Vista interactiva",
+    "blockModel3dDescription": "Explore el producto en perspectiva completa para verificar conectores, acabado y dimensiones reales.",
+    "blockModel3dOpen": "Abrir modelo",
+    "thumbnail": "{name} — miniatura {index}"
+  },
+  "Support": {
+    "contact": {
+      "sectorLabel": "Departamento de contacto",
+      "sectorPlaceholder": "Seleccione el departamento",
+      "sectors": {
+        "technical": "Soporte técnico",
+        "warranty": "Garantía",
+        "commercial": "Comercial",
+        "partnerships": "Alianzas",
+        "other": "Otros"
+      },
+      "nameLabel": "Nombre",
+      "namePlaceholder": "Su nombre completo",
+      "phoneLabel": "Teléfono",
+      "phonePlaceholder": "+54 (000) 000-0000",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "su@correo.com",
+      "messageLabel": "Mensaje",
+      "messagePlaceholder": "Describa su consulta o solicitud...",
+      "privacyText": "He leído y acepto la <privacyLink>política de privacidad</privacyLink> de Stetsom.",
+      "contactInfoPhone": "Teléfono",
+      "contactInfoEmail": "Correo electrónico",
+      "contactInfoWhatsapp": "WhatsApp",
+      "submit": "Enviar mensaje",
+      "successTitle": "¡Mensaje enviado!",
+      "successDescription": "Nos pondremos en contacto con usted en breve.",
+      "sendAnother": "Enviar otro mensaje"
+    },
+    "documentation": {
+      "label": "Materiales",
+      "title": "DESCARGA DE MATERIALES",
+      "searchPlaceholder": "Buscar por modelo...",
+      "typeManual": "Manual técnico",
+      "typeCertificate": "Certificado de conformidad",
+      "typeCatalog": "Catálogo del producto",
+      "typeImage": "Imagen técnica",
+      "fileManualPrefix": "Manual",
+      "fileCertificatePrefix": "Certificado",
+      "fileCatalogPrefix": "Catálogo",
+      "fileImagePrefix": "Imagen",
+      "fileDocVersion": "Documento v{version}",
+      "downloadLabel": "Descargar"
+    },
+    "serviceCenters": {
+      "label": "Red Autorizada",
+      "title": "CENTROS AUTORIZADOS",
+      "description": "Ingrese su código postal o ciudad para encontrar los centros de servicio técnico autorizados Stetsom más cercanos.",
+      "searchPlaceholder": "Ingrese su código postal o ciudad...",
+      "searchButton": "Buscar",
+      "mapAlt": "Mapa de centros de servicio autorizados"
+    },
+    "faq": {
+      "noAnswer": "¿No encontró lo que busca? Póngase en contacto con nuestro equipo de soporte."
+    }
+  },
+  "About": {
+    "heroDescription": "Desde 1989, Stetsom define el estándar de calidad en amplificación automotiva brasileña con tecnología, innovación y pasión por el sonido.",
+    "foundingLabel": "Fundación",
+    "foundationsLabel": "Cómo Trabajamos",
+    "foundationsTitle": "NUESTRAS BASES",
+    "timelineLabel": "Nuestra Historia",
+    "timelineTitle": "35 AÑOS DE\nHISTORIA",
+    "timelineDescription": "Una empresa de innovación constante que transformó a Stetsom en la mayor referencia de amplificación automotiva de Brasil.",
+    "timelinePrevious": "Evento anterior",
+    "timelineNext": "Siguiente evento"
+  },
+  "NotFound": {
+    "title": "PÁGINA NO ENCONTRADA",
+    "description": "Parece que la página que intentaste acceder no existe",
+    "backHome": "Volver al inicio"
+  },
+  "LanguageSwitcher": {
+    "label": "Idioma",
+    "pt-BR": "Português",
+    "en": "English",
+    "es": "Español"
+  },
+  "HeroCarousel": {
+    "bannerLabel": "Banners principales",
+    "openBanner": "Abrir banner {index}",
+    "goToBanner": "Ir al banner {index}"
+  },
+  "SocialFeed": {
+    "scrollLeft": "Desplazar a la izquierda",
+    "scrollRight": "Desplazar a la derecha"
+  },
+  "Meta": {
+    "homeTitle": "Stetsom | Amplificadores Automotivos",
+    "homeDescription": "Desde hace más de 35 años desarrollamos tecnología de amplificación que define el estándar de calidad en el mercado automotivo."
+  }
+}

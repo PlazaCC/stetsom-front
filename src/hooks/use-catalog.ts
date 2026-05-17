@@ -4,17 +4,17 @@ import { fetchCatalogCategories, fetchCatalogPage, fetchCatalogProducts } from '
 import type { CatalogProductsQuery } from '@/lib/api/contracts'
 import { useQuery } from '@tanstack/react-query'
 
-export function useCatalogPage() {
+export function useCatalogPage(locale?: string) {
   return useQuery({
-    queryKey: ['catalog', 'page'],
-    queryFn: fetchCatalogPage,
+    queryKey: ['catalog', 'page', locale ?? ''],
+    queryFn: () => fetchCatalogPage(locale),
   })
 }
 
-export function useCatalogCategories() {
+export function useCatalogCategories(locale?: string) {
   return useQuery({
-    queryKey: ['catalog', 'categories'],
-    queryFn: fetchCatalogCategories,
+    queryKey: ['catalog', 'categories', locale ?? ''],
+    queryFn: () => fetchCatalogCategories(locale),
   })
 }
 
@@ -28,6 +28,7 @@ export function useCatalogProducts(query: CatalogProductsQuery) {
       query.status ?? 'ALL',
       query.page ?? 1,
       query.pageSize ?? 12,
+      query.locale ?? '',
     ],
     queryFn: () => fetchCatalogProducts(query),
   })

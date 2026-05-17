@@ -26,12 +26,14 @@ async function fetchJson<T>(path: string): Promise<T> {
   return (await response.json()) as T
 }
 
-export async function fetchCatalogCategories() {
-  return fetchJson<Category[]>(INTERNAL_API_ENDPOINTS.catalogCategories)
+export async function fetchCatalogCategories(locale?: string) {
+  const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : ''
+  return fetchJson<Category[]>(`${INTERNAL_API_ENDPOINTS.catalogCategories}${suffix}`)
 }
 
-export async function fetchCatalogPage() {
-  return fetchJson<CatalogPagePayload>(INTERNAL_API_ENDPOINTS.catalogPage)
+export async function fetchCatalogPage(locale?: string) {
+  const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : ''
+  return fetchJson<CatalogPagePayload>(`${INTERNAL_API_ENDPOINTS.catalogPage}${suffix}`)
 }
 
 export async function fetchCatalogProducts(query: CatalogProductsQuery) {
@@ -41,6 +43,7 @@ export async function fetchCatalogProducts(query: CatalogProductsQuery) {
     status: query.status,
     page: query.page,
     pageSize: query.pageSize,
+    locale: query.locale,
   })
 
   return fetchJson<PaginatedResponse<Product>>(`${INTERNAL_API_ENDPOINTS.catalogProducts}${suffix}`)

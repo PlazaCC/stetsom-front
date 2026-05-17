@@ -37,40 +37,47 @@ export function createRemoteCmsProvider(): CmsProvider {
   const remoteBaseUrl = process.env.CMS_API_BASE_URL?.replace(/\/$/, '') ?? DEFAULT_REMOTE_BASE
 
   return {
-    async getCatalogPagePayload() {
-      return fetchJson<CatalogPagePayload>(remoteBaseUrl, '/catalog/page')
+    async getCatalogPagePayload(locale?: string) {
+      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : ''
+      return fetchJson<CatalogPagePayload>(remoteBaseUrl, `/catalog/page${suffix}`)
     },
 
-    async getCatalogProducts(query: CatalogProductsQuery) {
+    async getCatalogProducts(query: CatalogProductsQuery, locale?: string) {
       const suffix = buildSearchParams({
         q: query.q,
         category: query.category,
         status: query.status,
         page: query.page,
         pageSize: query.pageSize,
+        locale,
       })
 
       return fetchJson<PaginatedResponse<Product>>(remoteBaseUrl, `/catalog/products${suffix}`)
     },
 
-    async getCatalogProductDetail(slug: string) {
-      return fetchJson<ProductDetailPayload>(remoteBaseUrl, `/catalog/products/${slug}`)
+    async getCatalogProductDetail(slug: string, locale?: string) {
+      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : ''
+      return fetchJson<ProductDetailPayload>(remoteBaseUrl, `/catalog/products/${slug}${suffix}`)
     },
 
-    async getCatalogCategories() {
-      return fetchJson<Category[]>(remoteBaseUrl, '/catalog/categories')
+    async getCatalogCategories(locale?: string) {
+      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : ''
+      return fetchJson<Category[]>(remoteBaseUrl, `/catalog/categories${suffix}`)
     },
 
-    async getSiteHomePayload() {
-      return fetchJson<SiteHomePayload>(remoteBaseUrl, '/site/home')
+    async getSiteHomePayload(locale?: string) {
+      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : ''
+      return fetchJson<SiteHomePayload>(remoteBaseUrl, `/site/home${suffix}`)
     },
 
-    async getSiteAboutPayload() {
-      return fetchJson<SiteAboutPayload>(remoteBaseUrl, '/site/about')
+    async getSiteAboutPayload(locale?: string) {
+      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : ''
+      return fetchJson<SiteAboutPayload>(remoteBaseUrl, `/site/about${suffix}`)
     },
 
-    async getSupportPayload() {
-      return fetchJson<SupportPayload>(remoteBaseUrl, '/support')
+    async getSupportPayload(locale?: string) {
+      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : ''
+      return fetchJson<SupportPayload>(remoteBaseUrl, `/support${suffix}`)
     },
 
     async getAdminDashboardPayload() {

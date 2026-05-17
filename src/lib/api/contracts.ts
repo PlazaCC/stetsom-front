@@ -1,8 +1,8 @@
+export type Locale = 'pt-BR' | 'en' | 'es'
+
 export type ISODateString = string
 
 export type ProductStatus = 'ACTIVE' | 'DISCONTINUED'
-
-export type ProductBlockType = 'IMAGE' | 'VIDEO' | 'HTML' | 'MODEL3D' | 'TEXT'
 
 export type ProductFileType = 'MANUAL' | 'CATALOG' | 'CERTIFICATE' | 'IMAGE' | 'OTHER'
 
@@ -42,21 +42,56 @@ export type Product = {
   thumbnail_url: string
   video_url?: string
   badge?: string | null
+  markets?: Locale[]
   created_at: ISODateString
   updated_at: ISODateString
   created_by: string
 }
 
-export type ProductBlock = {
+export type ImageBlockData = {
+  images: string[]
+  caption?: string
+  layout?: 'default' | 'grid' | 'carousel' | 'single'
+}
+
+export type TextBlockData = {
+  title?: string
+  content: string
+  align?: 'left' | 'center' | 'right'
+}
+
+export type VideoBlockData = {
+  video_url: string
+  title?: string
+  description?: string
+}
+
+export type HtmlBlockData = {
+  html: string
+  css_class?: string
+}
+
+export type Model3dBlockData = {
+  file_url: string
+  background?: string
+  scale?: number
+}
+
+type ProductBlockBase = {
   id: string
   product_id: string
-  type: ProductBlockType
   order: number
-  data: Record<string, unknown>
   created_by: string
   created_at: ISODateString
   updated_at: ISODateString
 }
+
+export type ProductBlock =
+  | (ProductBlockBase & { type: 'IMAGE'; data: ImageBlockData })
+  | (ProductBlockBase & { type: 'TEXT'; data: TextBlockData })
+  | (ProductBlockBase & { type: 'VIDEO'; data: VideoBlockData })
+  | (ProductBlockBase & { type: 'HTML'; data: HtmlBlockData })
+  | (ProductBlockBase & { type: 'MODEL3D'; data: Model3dBlockData })
 
 export type ProductFile = {
   id: string
@@ -111,8 +146,15 @@ export type HeroBannerSlide = {
 }
 
 export type FAQItem = {
+  id: string
   q: string
   a: string
+}
+
+export type FeaturedTab = {
+  id: string
+  label: string
+  categorySlug?: string
 }
 
 export type SocialMediaPost = {
@@ -163,7 +205,7 @@ export type SiteHomePayload = {
   hero: HeroBannerSlide[]
   featuredProducts: ProductCardItem[]
   spotlightProduct: ProductCardItem
-  featuredTabs: string[]
+  featuredTabs: FeaturedTab[]
   featured: {
     label: string
     title: string
@@ -243,6 +285,11 @@ export type ServiceCenter = {
   phone2?: string
 }
 
+export type DocumentationCategory = {
+  id: string
+  label: string
+}
+
 export type SupportPayload = {
   hero: {
     label: string
@@ -253,7 +300,7 @@ export type SupportPayload = {
   }
   cards: SupportCard[]
   documentationFiles: ProductFile[]
-  documentationCategories?: string[]
+  documentationCategories?: DocumentationCategory[]
   contact: {
     label: string
     title: string
@@ -316,6 +363,7 @@ export type CatalogProductsQuery = {
   status?: ProductStatus | 'ALL'
   page?: number
   pageSize?: number
+  locale?: string
 }
 
 export type CmsProductsQuery = {
