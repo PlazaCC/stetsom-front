@@ -6,7 +6,6 @@ import { notFound } from 'next/navigation'
 import { hasLocale } from 'next-intl'
 import { routing } from '@/i18n/routing'
 import QueryProvider from '@/components/query-provider'
-import ThemeProvider from '@/components/theme-provider'
 
 const barlow = Barlow({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
@@ -58,11 +57,9 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
       className={`${barlow.variable} ${barlowCondensed.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning>
       <body className='min-h-full flex flex-col'>
-        <ThemeProvider>
-          <QueryProvider>
-            <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
-          </QueryProvider>
-        </ThemeProvider>
+        <QueryProvider>
+          <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+        </QueryProvider>
       </body>
     </html>
   )
