@@ -19,7 +19,7 @@ interface FeaturedProductsProps {
 
 export function FeaturedProducts({ featuredProducts, spotlightProduct, tabs, section }: Readonly<FeaturedProductsProps>) {
   const t = useTranslations('Catalog')
-  const [activeTab, setActiveTab] = useState<FeaturedTab>(tabs[0] ?? { id: 'tab-all', label: 'Todos' })
+  const [activeTab, setActiveTab] = useState<FeaturedTab>(tabs[0] ?? { id: 'tab-all', label: t('allCategories') })
 
   const filteredProducts = useMemo(() => {
     if (!activeTab.categorySlug) {

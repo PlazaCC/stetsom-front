@@ -29,7 +29,7 @@ export async function SupportFAQ({ faq }: Readonly<SupportFAQProps>) {
             <Accordion className='space-y-3'>
               {faq.items.map((item, index) => (
                 <AccordionItem
-                  key={item.q}
+                  key={item.id}
                   value={`item-${index}`}
                   className='rounded border border-border px-6 py-4'>
                   <AccordionTrigger className='py-0 font-sans-condensed text-base font-black uppercase text-foreground hover:text-brand hover:no-underline'>

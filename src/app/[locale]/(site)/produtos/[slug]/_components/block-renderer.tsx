@@ -58,12 +58,9 @@ export function BlockRenderer({ block, productName, fallbackImage }: BlockRender
   }
 
   if (block.type === 'VIDEO') {
-    const title = typeof block.data.title === 'string' ? block.data.title : t('blockVideoFeatured', { productName })
-    const description =
-      typeof block.data.description === 'string'
-        ? block.data.description
-        : t('blockVideoDefaultDescription')
-    const videoUrl = typeof block.data.video_url === 'string' ? block.data.video_url : undefined
+    const title = block.data.title ?? t('blockVideoFeatured', { productName })
+    const description = block.data.description ?? t('blockVideoDefaultDescription')
+    const videoUrl = block.data.video_url
     return (
       <article className='rounded-xl border border-border bg-card p-6 md:p-8'>
         <p className='font-sans-condensed text-xs font-bold uppercase tracking-wider text-brand'>{t('blockVideoLabel')}</p>
@@ -83,7 +80,7 @@ export function BlockRenderer({ block, productName, fallbackImage }: BlockRender
   }
 
   if (block.type === 'HTML') {
-    const rawHtml = typeof block.data.html === 'string' ? block.data.html : `<p>${t('blockHtmlUnavailable')}</p>`
+    const rawHtml = block.data.html
     const safeHtml = DOMPurify.sanitize(rawHtml, { USE_PROFILES: { html: true } })
     return (
       <article className='rounded-xl border border-border bg-card p-6 md:p-8'>
@@ -97,7 +94,7 @@ export function BlockRenderer({ block, productName, fallbackImage }: BlockRender
   }
 
   if (block.type === 'MODEL3D') {
-    const modelUrl = typeof block.data.file_url === 'string' ? block.data.file_url : null
+    const modelUrl = block.data.file_url
     return (
       <article className='rounded-xl border border-border bg-card p-6 md:p-8'>
         <p className='font-sans-condensed text-xs font-bold uppercase tracking-wider text-brand'>{t('blockModel3dLabel')}</p>

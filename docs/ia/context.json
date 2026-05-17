@@ -1773,6 +1773,19 @@
             ],
             "rationale": "Third code-review pass identified company-timeline.tsx with hardcoded PT-BR default props (label/title/description), English aria-labels for nav buttons, and 7 JSX structural comments violating project rules",
             "outcome": "Removed label/title/description props from interface; component now reads from useTranslations('About') with 5 new keys (timelineLabel, timelineTitle, timelineDescription, timelinePrevious, timelineNext) added to all 3 message files; aria-labels fully i18n; all comments removed. tsc and lint pass."
+        },
+        {
+            "ts": "2026-05-17T20:30:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Fix hardcoded Todos fallback, remove redundant typeof checks, fix FAQ key usage",
+            "files": [
+                "src/app/[locale]/(site)/_components/featured-products.tsx",
+                "src/app/[locale]/(site)/produtos/[slug]/_components/block-renderer.tsx",
+                "src/app/[locale]/(site)/suporte/_components/support-faq.tsx"
+            ],
+            "rationale": "Fourth code-review pass identified: hardcoded PT-BR fallback in useState, redundant typeof checks on statically-typed discriminated union fields, and unstable key={item.q} instead of key={item.id}",
+            "outcome": "useState fallback now uses t(allCategories); VIDEO/HTML/MODEL3D block.data fields accessed directly without typeof guards; FAQ items keyed by stable id. tsc and lint pass."
         }
     ]
 }
