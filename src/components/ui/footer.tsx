@@ -1,5 +1,5 @@
-import { FOOTER_COLUMNS } from '@/lib/mock/navigation'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
+import { getTranslations } from 'next-intl/server'
 import { Logo } from './logo'
 
 const SOCIALS = [
@@ -41,22 +41,55 @@ const SOCIALS = [
   },
 ]
 
-const COPYRIGHT_LINKS = [
-  { label: 'Política de privacidade', href: '#' },
-  { label: 'Termos de uso', href: '#' },
-  { label: 'Cookies', href: '#' },
-]
+export default async function Footer() {
+  const t = await getTranslations('Footer')
+  const year = new Date().getFullYear()
 
-export default function Footer() {
+  const footerColumns = [
+    {
+      title: t('company'),
+      links: [
+        { label: t('about'), href: '/sobre' },
+        { label: t('products'), href: '/produtos' },
+        { label: t('support'), href: '/suporte' },
+        { label: t('warranty'), href: '/suporte' },
+      ],
+    },
+    {
+      title: t('products'),
+      links: [
+        { label: t('allProducts'), href: '/produtos' },
+        { label: t('amplifiers'), href: '/produtos?category=amplificadores' },
+        { label: t('processors'), href: '/produtos?category=processadores' },
+        { label: t('controllers'), href: '/produtos?category=controles' },
+        { label: t('accessories'), href: '/produtos?category=acessorios' },
+      ],
+    },
+    {
+      title: t('support'),
+      links: [
+        { label: t('helpCenter'), href: '/suporte' },
+        { label: t('warranty'), href: '/suporte' },
+        { label: t('manuals'), href: '/suporte' },
+        { label: t('authorizedCenters'), href: '/suporte' },
+        { label: t('contact'), href: '/suporte' },
+      ],
+    },
+  ]
+
+  const copyrightLinks = [
+    { label: t('privacyPolicy'), href: '#' },
+    { label: t('termsOfUse'), href: '#' },
+    { label: t('cookies'), href: '#' },
+  ]
+
   return (
     <footer className='bg-footer'>
       <div className='mx-auto flex w-full max-w-360 flex-col gap-9 px-5 py-6 lg:px-42.5'>
         <div className='flex flex-col gap-9 lg:flex-row lg:flex-wrap lg:gap-x-41 lg:gap-y-9'>
           <div className='max-w-63.25'>
             <Logo variant='dark' width={160} height={49} className='object-contain' />
-            <p className='mt-4 text-sm leading-5 text-text-subtle-dark'>
-              Potência sem limite desde 1989. Fabricamos os melhores amplificadores automotivos do Brasil.
-            </p>
+            <p className='mt-4 text-sm leading-5 text-text-subtle-dark'>{t('description')}</p>
 
             <div className='mt-4 flex items-center gap-3'>
               {SOCIALS.map(({ label, href, icon }) => (
@@ -71,7 +104,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {FOOTER_COLUMNS.map(({ title, links }) => (
+          {footerColumns.map(({ title, links }) => (
             <div key={title} className='flex min-w-32 flex-col gap-3'>
               <span className='mb-1 font-sans text-xl font-medium uppercase text-white'>{title}</span>
               {links.map(({ label, href }) => (
@@ -88,11 +121,11 @@ export default function Footer() {
 
         <div className='flex flex-col gap-3 border-t border-white/10 pt-5 lg:flex-row lg:items-center lg:justify-between'>
           <span className='text-lg font-medium text-text-subtle-dark'>
-            ©2025 Stetsom Eletrônica Ltda. Todos os direitos reservados.
+            {t('copyright', { year })}
           </span>
 
           <div className='flex flex-wrap items-center gap-y-1 text-lg font-medium text-text-subtle-dark'>
-            {COPYRIGHT_LINKS.map(({ label, href }, index) => (
+            {copyrightLinks.map(({ label, href }, index) => (
               <div key={label} className='flex items-center'>
                 {index > 0 ? <span className='px-2'>|</span> : null}
                 <Link href={href} className='transition-colors hover:text-white'>

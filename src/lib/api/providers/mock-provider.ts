@@ -14,25 +14,36 @@ import type { CmsProvider } from '@/lib/api/provider-contract'
 import { ADMIN_DASHBOARD_PAYLOAD } from '@/lib/mock/admin-cms'
 import {
   CATALOG_CATEGORIES,
-  CATALOG_PAGE_PAYLOAD,
-  CATALOG_PRODUCT_BLOCKS,
   CATALOG_PRODUCT_FILES,
   CATALOG_PRODUCTS,
-  CATALOG_SUBCATEGORIES,
   FEATURED_PRODUCT_SLUGS,
   SPOTLIGHT_PRODUCT_SLUG,
+  getCatalogPagePayloadForLocale,
 } from '@/lib/mock/catalog'
 import {
-  HOME_FAQ_ITEMS,
-  HOME_FAQ_SECTION,
-  HOME_HERO_SLIDES,
-  HOME_HISTORY_SECTION,
-  HOME_FEATURED_SECTION,
-  HOME_FEATURED_TABS,
-  SITE_ABOUT_PAYLOAD_BASE,
-  SITE_SOCIAL_SECTION,
-} from '@/lib/mock/site'
-import { SUPPORT_PAYLOAD } from '@/lib/mock/support'
+  getCatalogBlocksForLocale,
+  getCatalogCategoriesForLocale,
+  getCatalogProductsForLocale,
+  getCatalogSubcategoriesForLocale,
+} from '@/lib/mock/catalog-i18n'
+import {
+  getAboutBases,
+  getAboutHeroSection,
+  getAboutJobsCta,
+  getAboutQualitySection,
+  getAboutTimeline,
+  getAboutValues,
+  getCompanyStats,
+  getHomeFaqItems,
+  getHomeFaqSection,
+  getHomeFeaturedSection,
+  getHomeFeaturedTabs,
+  getHomeHeroSlides,
+  getHomeHistorySection,
+  getMilestonePattern,
+  getSocialSection,
+} from '@/lib/mock/site-i18n'
+import { getSupportPayloadForLocale } from '@/lib/mock/support-i18n'
 
 const DEFAULT_PAGE = 1
 const DEFAULT_PAGE_SIZE = 12
@@ -72,12 +83,19 @@ function paginate<T>(items: T[], page: number, pageSize: number): PaginatedRespo
   }
 }
 
-function filterProducts(query: CatalogProductsQuery): Product[] {
+function isVisibleInLocale(product: Product, locale?: string): boolean {
+  if (!locale || !product.markets) return true
+  return product.markets.includes(locale)
+}
+
+function filterProducts(products: Product[], query: CatalogProductsQuery, locale?: string): Product[] {
   const q = normalizeSearch(query.q)
   const status = query.status
   const categoryQuery = normalizeSearch(query.category)
 
-  return CATALOG_PRODUCTS.filter((product) => {
+  return products.filter((product) => {
+    const matchesLocale = isVisibleInLocale(product, locale)
+
     const matchesSearch =
       !q ||
       product.name.toLowerCase().includes(q) ||
@@ -87,11 +105,11 @@ function filterProducts(query: CatalogProductsQuery): Product[] {
     const category = CATALOG_CATEGORIES.find((item) => item.id === product.category_id)
 
     const matchesCategory =
-      !categoryQuery || category?.slug.toLowerCase() === categoryQuery || category?.name.toLowerCase() === categoryQuery
+      !categoryQuery || category?.slug.toLowerCase() === categoryQuery
 
     const matchesStatus = !status || status === 'ALL' || product.status === status
 
-    return matchesSearch && matchesCategory && matchesStatus
+    return matchesLocale && matchesSearch && matchesCategory && matchesStatus
   })
 }
 
@@ -108,31 +126,37 @@ function filterCmsProducts(query: CmsProductsQuery): Product[] {
   })
 }
 
-function getFeaturedProducts() {
-  const categoryLookup = createCategoryLookup(CATALOG_CATEGORIES)
+function getFeaturedProducts(locale?: string) {
+  const products = getCatalogProductsForLocale(locale)
+  const categories = getCatalogCategoriesForLocale(locale)
+  const categoryLookup = createCategoryLookup(categories)
 
-  return FEATURED_PRODUCT_SLUGS.map((slug) => CATALOG_PRODUCTS.find((product) => product.slug === slug))
+  return FEATURED_PRODUCT_SLUGS.map((slug) => products.find((product) => product.slug === slug))
     .filter((product): product is Product => Boolean(product))
     .map((product) => toProductCardItem(product, categoryLookup))
 }
 
-function getSpotlightProduct() {
-  const categoryLookup = createCategoryLookup(CATALOG_CATEGORIES)
-  const spotlight = CATALOG_PRODUCTS.find((product) => product.slug === SPOTLIGHT_PRODUCT_SLUG)
+function getSpotlightProduct(locale?: string) {
+  const products = getCatalogProductsForLocale(locale)
+  const categories = getCatalogCategoriesForLocale(locale)
+  const categoryLookup = createCategoryLookup(categories)
+  const spotlight = products.find((product) => product.slug === SPOTLIGHT_PRODUCT_SLUG)
 
   if (spotlight) {
     return toProductCardItem(spotlight, categoryLookup)
   }
 
-  return toProductCardItem(CATALOG_PRODUCTS[0], categoryLookup)
+  return toProductCardItem(products[0], categoryLookup)
 }
 
-function getRelatedProducts(product: Product) {
-  const categoryLookup = createCategoryLookup(CATALOG_CATEGORIES)
-  const sameCategory = CATALOG_PRODUCTS.filter(
+function getRelatedProducts(product: Product, locale?: string) {
+  const products = getCatalogProductsForLocale(locale)
+  const categories = getCatalogCategoriesForLocale(locale)
+  const categoryLookup = createCategoryLookup(categories)
+  const sameCategory = products.filter(
     (item) => item.id !== product.id && item.category_id === product.category_id && item.status === 'ACTIVE',
   )
-  const fallback = CATALOG_PRODUCTS.filter((item) => item.id !== product.id && item.status === 'ACTIVE')
+  const fallback = products.filter((item) => item.id !== product.id && item.status === 'ACTIVE')
   const selectedProducts: Product[] = []
   const selectedIds = new Set<string>()
 
@@ -152,15 +176,20 @@ function getRelatedProducts(product: Product) {
   return selectedProducts.map((candidate) => toProductCardItem(candidate, categoryLookup))
 }
 
-function toProductDetailPayload(slug: string): ProductDetailPayload | null {
-  const product = CATALOG_PRODUCTS.find((item) => item.slug === slug)
+function toProductDetailPayload(slug: string, locale?: string): ProductDetailPayload | null {
+  const products = getCatalogProductsForLocale(locale)
+  const product = products.find((item) => item.slug === slug)
 
   if (!product) {
     return null
   }
 
-  const category = CATALOG_CATEGORIES.find((item) => item.id === product.category_id)
-  const subcategory = CATALOG_SUBCATEGORIES.find((item) => item.id === product.subcategory_id)
+  const categories = getCatalogCategoriesForLocale(locale)
+  const subcategories = getCatalogSubcategoriesForLocale(locale)
+  const blocks = getCatalogBlocksForLocale(locale)
+
+  const category = categories.find((item) => item.id === product.category_id)
+  const subcategory = subcategories.find((item) => item.id === product.subcategory_id)
 
   if (!category) {
     return null
@@ -168,11 +197,11 @@ function toProductDetailPayload(slug: string): ProductDetailPayload | null {
 
   return {
     product,
-    blocks: CATALOG_PRODUCT_BLOCKS.filter((item) => item.product_id === product.id).sort((a, b) => a.order - b.order),
+    blocks: blocks.filter((item) => item.product_id === product.id).sort((a, b) => a.order - b.order),
     files: CATALOG_PRODUCT_FILES.filter((item) => item.product_id === product.id),
     category,
     subcategory,
-    relatedProducts: getRelatedProducts(product),
+    relatedProducts: getRelatedProducts(product, locale),
   }
 }
 
@@ -182,49 +211,60 @@ function productStatusCount(status: ProductStatus): number {
 
 export function createMockCmsProvider(): CmsProvider {
   return {
-    async getCatalogPagePayload(): Promise<CatalogPagePayload> {
-      return CATALOG_PAGE_PAYLOAD
+    async getCatalogPagePayload(locale?: string): Promise<CatalogPagePayload> {
+      return getCatalogPagePayloadForLocale(locale)
     },
 
-    async getCatalogProducts(query) {
+    async getCatalogProducts(query, locale) {
       const page = clampPage(query.page)
       const pageSize = clampPageSize(query.pageSize)
-      const filtered = filterProducts(query)
+      const products = getCatalogProductsForLocale(locale)
+      const filtered = filterProducts(products, query, locale)
 
       return paginate(filtered, page, pageSize)
     },
 
-    async getCatalogProductDetail(slug) {
-      return toProductDetailPayload(slug)
+    async getCatalogProductDetail(slug, locale) {
+      const payload = toProductDetailPayload(slug, locale)
+      if (!payload) return null
+      if (!isVisibleInLocale(payload.product, locale)) return null
+      return payload
     },
 
-    async getCatalogCategories() {
-      return [...CATALOG_CATEGORIES].sort((a, b) => a.order - b.order)
+    async getCatalogCategories(locale?: string) {
+      return getCatalogCategoriesForLocale(locale).sort((a, b) => a.order - b.order)
     },
 
-    async getSiteHomePayload(): Promise<SiteHomePayload> {
+    async getSiteHomePayload(locale?: string): Promise<SiteHomePayload> {
       return {
-        hero: HOME_HERO_SLIDES,
-        featuredProducts: getFeaturedProducts(),
-        spotlightProduct: getSpotlightProduct(),
-        featuredTabs: HOME_FEATURED_TABS,
-        featured: HOME_FEATURED_SECTION,
-        history: HOME_HISTORY_SECTION,
-        faq: HOME_FAQ_ITEMS,
-        faqSection: HOME_FAQ_SECTION,
-        social: SITE_SOCIAL_SECTION,
+        hero: getHomeHeroSlides(locale),
+        featuredProducts: getFeaturedProducts(locale),
+        spotlightProduct: getSpotlightProduct(locale),
+        featuredTabs: getHomeFeaturedTabs(locale),
+        featured: getHomeFeaturedSection(locale),
+        history: getHomeHistorySection(locale),
+        faq: getHomeFaqItems(locale),
+        faqSection: getHomeFaqSection(locale),
+        social: getSocialSection(locale),
       }
     },
 
-    async getSiteAboutPayload(): Promise<SiteAboutPayload> {
+    async getSiteAboutPayload(locale?: string): Promise<SiteAboutPayload> {
       return {
-        ...SITE_ABOUT_PAYLOAD_BASE,
-        social: SITE_SOCIAL_SECTION,
+        hero: getAboutHeroSection(locale),
+        stats: getCompanyStats(locale),
+        milestones: getMilestonePattern(locale),
+        quality: getAboutQualitySection(locale),
+        values: getAboutValues(locale),
+        bases: getAboutBases(locale),
+        timeline: getAboutTimeline(locale),
+        jobsCta: getAboutJobsCta(locale),
+        social: getSocialSection(locale),
       }
     },
 
-    async getSupportPayload() {
-      return SUPPORT_PAYLOAD
+    async getSupportPayload(locale?: string) {
+      return getSupportPayloadForLocale(locale)
     },
 
     async getAdminDashboardPayload() {

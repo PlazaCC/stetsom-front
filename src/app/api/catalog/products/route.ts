@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
     const status = parseStatus(request.nextUrl.searchParams.get('status'))
     const page = parsePositiveInt(request.nextUrl.searchParams.get('page'), 1)
     const pageSize = parsePositiveInt(request.nextUrl.searchParams.get('pageSize'), 12)
+    const locale = request.nextUrl.searchParams.get('locale') ?? undefined
 
     const payload = await getCatalogProducts({
       q,
@@ -18,7 +19,7 @@ export async function GET(request: NextRequest) {
       status,
       page,
       pageSize,
-    })
+    }, locale)
 
     return NextResponse.json(payload)
   } catch (error) {

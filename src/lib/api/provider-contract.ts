@@ -14,13 +14,13 @@ import type {
 } from '@/lib/api/contracts'
 
 export interface CmsProvider {
-  getCatalogPagePayload(): Promise<CatalogPagePayload>
-  getCatalogProducts(query: CatalogProductsQuery): Promise<PaginatedResponse<Product>>
-  getCatalogProductDetail(slug: string): Promise<ProductDetailPayload | null>
-  getCatalogCategories(): Promise<Category[]>
-  getSiteHomePayload(): Promise<SiteHomePayload>
-  getSiteAboutPayload(): Promise<SiteAboutPayload>
-  getSupportPayload(): Promise<SupportPayload>
+  getCatalogPagePayload(locale?: string): Promise<CatalogPagePayload>
+  getCatalogProducts(query: CatalogProductsQuery, locale?: string): Promise<PaginatedResponse<Product>>
+  getCatalogProductDetail(slug: string, locale?: string): Promise<ProductDetailPayload | null>
+  getCatalogCategories(locale?: string): Promise<Category[]>
+  getSiteHomePayload(locale?: string): Promise<SiteHomePayload>
+  getSiteAboutPayload(locale?: string): Promise<SiteAboutPayload>
+  getSupportPayload(locale?: string): Promise<SupportPayload>
   getAdminDashboardPayload(): Promise<AdminDashboardPayload>
   getCmsProductsPayload(query: CmsProductsQuery): Promise<CmsProductsPayload>
 }

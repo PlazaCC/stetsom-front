@@ -42,6 +42,7 @@ export type Product = {
   thumbnail_url: string
   video_url?: string
   badge?: string | null
+  markets?: string[]
   created_at: ISODateString
   updated_at: ISODateString
   created_by: string
@@ -316,6 +317,7 @@ export type CatalogProductsQuery = {
   status?: ProductStatus | 'ALL'
   page?: number
   pageSize?: number
+  locale?: string
 }
 
 export type CmsProductsQuery = {

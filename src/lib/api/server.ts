@@ -1,5 +1,6 @@
 import type { CatalogProductsQuery, CmsProductsQuery, ProductStatus } from '@/lib/api/contracts'
 import { getCmsProvider } from '@/lib/api/provider'
+import { getLocale } from 'next-intl/server'
 
 function normalizePage(value: number | undefined): number {
   if (!value || Number.isNaN(value) || value < 1) {
@@ -29,37 +30,52 @@ function normalizeStatus(value: ProductStatus | 'ALL' | undefined): ProductStatu
   return undefined
 }
 
-export async function getCatalogProducts(query: CatalogProductsQuery) {
-  return getCmsProvider().getCatalogProducts({
-    ...query,
-    status: normalizeStatus(query.status),
-    page: normalizePage(query.page),
-    pageSize: normalizePageSize(query.pageSize),
-  })
+async function tryGetLocale(): Promise<string | undefined> {
+  try {
+    return await getLocale()
+  } catch {
+    return undefined
+  }
 }
 
-export async function getCatalogPagePayload() {
-  return getCmsProvider().getCatalogPagePayload()
+export async function getCatalogProducts(query: CatalogProductsQuery, locale?: string) {
+  return getCmsProvider().getCatalogProducts(
+    {
+      ...query,
+      status: normalizeStatus(query.status),
+      page: normalizePage(query.page),
+      pageSize: normalizePageSize(query.pageSize),
+    },
+    locale,
+  )
+}
+
+export async function getCatalogPagePayload(locale?: string) {
+  return getCmsProvider().getCatalogPagePayload(locale)
 }
 
 export async function getCatalogProductDetail(slug: string) {
-  return getCmsProvider().getCatalogProductDetail(slug)
+  const locale = await tryGetLocale()
+  return getCmsProvider().getCatalogProductDetail(slug, locale)
 }
 
-export async function getCatalogCategories() {
-  return getCmsProvider().getCatalogCategories()
+export async function getCatalogCategories(locale?: string) {
+  return getCmsProvider().getCatalogCategories(locale)
 }
 
 export async function getSiteHomePayload() {
-  return getCmsProvider().getSiteHomePayload()
+  const locale = await tryGetLocale()
+  return getCmsProvider().getSiteHomePayload(locale)
 }
 
 export async function getSiteAboutPayload() {
-  return getCmsProvider().getSiteAboutPayload()
+  const locale = await tryGetLocale()
+  return getCmsProvider().getSiteAboutPayload(locale)
 }
 
 export async function getSupportPayload() {
-  return getCmsProvider().getSupportPayload()
+  const locale = await tryGetLocale()
+  return getCmsProvider().getSupportPayload(locale)
 }
 
 export async function getAdminDashboardPayload() {

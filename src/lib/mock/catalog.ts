@@ -21,6 +21,28 @@ export const CATALOG_PAGE_PAYLOAD: CatalogPagePayload = {
   heroWatermark: 'PRO',
 }
 
+const CATALOG_PAGE_PAYLOAD_EN: CatalogPagePayload = {
+  heroLabel: 'FULL CATALOG',
+  heroTitle: 'OUR\nPRODUCTS',
+  heroImage: CATALOG_ASSETS.hero,
+  heroImageAlt: 'Stetsom Catalog',
+  heroWatermark: 'PRO',
+}
+
+const CATALOG_PAGE_PAYLOAD_ES: CatalogPagePayload = {
+  heroLabel: 'CATÁLOGO COMPLETO',
+  heroTitle: 'NUESTROS\nPRODUCTOS',
+  heroImage: CATALOG_ASSETS.hero,
+  heroImageAlt: 'Catálogo Stetsom',
+  heroWatermark: 'PRO',
+}
+
+export function getCatalogPagePayloadForLocale(locale?: string): CatalogPagePayload {
+  if (locale === 'en') return CATALOG_PAGE_PAYLOAD_EN
+  if (locale === 'es') return CATALOG_PAGE_PAYLOAD_ES
+  return CATALOG_PAGE_PAYLOAD
+}
+
 export const CATALOG_CATEGORIES: Category[] = [
   {
     id: 'cat-amplificadores',
@@ -148,18 +170,18 @@ export const CATALOG_PRODUCTS: Product[] = [
     launch_date: '2025-12-01T00:00:00.000Z',
     description: 'Amplificador 4 canais com alta eficiência para sistemas automotivos de média e alta potência.',
     specifications: {
-      'Número de canais': '4',
-      'Classe de operação': 'Classe D',
-      'Frequência de resposta': '20 Hz – 20 kHz',
-      'Ganho de Entrada': { ohm1: '0 a 6V', ohm2: '0 a 6V' },
-      'Potência RMS': { ohm1: '4x 1000W RMS', ohm2: '4x 600W RMS' },
-      'Potência Máxima': { ohm1: '4x 1400W', ohm2: '4x 900W' },
-      'Equalizador Gráfico': '8 bandas',
-      'Master Level': 'Sim',
-      'Roteamento': 'Estéreo / Mono',
-      'Limiter': 'Sim',
-      'Tensão de operação': '12 – 14,4V',
-      'Fusíveis': '2x 50A',
+      'Channels': '4',
+      'Operating class': 'Class D',
+      'Frequency response': '20 Hz – 20 kHz',
+      'Input gain': { ohm1: '0 to 6V', ohm2: '0 to 6V' },
+      'RMS power': { ohm1: '4x 1000W RMS', ohm2: '4x 600W RMS' },
+      'Max power': { ohm1: '4x 1400W', ohm2: '4x 900W' },
+      'Graphic EQ': '8 bands',
+      'Master level': 'Yes',
+      'Routing': 'Stereo / Mono',
+      'Limiter': 'Yes',
+      'Operating voltage': '12 – 14.4V',
+      'Fuses': '2x 50A',
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailPrimary,
     video_url: 'https://www.youtube.com/watch?v=stetsom-demo-4000',
@@ -275,6 +297,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     launch_date: '2024-06-10T00:00:00.000Z',
     description: 'Fonte chaveada para sistemas automotivos de alta demanda contínua.',
     badge: 'DESTAQUE',
+    markets: ['pt-BR'],
     specifications: {
       power_rms: '120A / 13.8V',
       corrente_saida: '120A continuo',
@@ -334,6 +357,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     status: 'ACTIVE',
     launch_date: '2024-08-12T00:00:00.000Z',
     description: 'Amplificador full-range para sistemas compactos com excelente controle de médio e agudo.',
+    markets: ['en', 'es'],
     specifications: {
       power_rms: '4x 100W RMS',
       impedance: '2 Ohms',
@@ -353,6 +377,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     status: 'ACTIVE',
     launch_date: '2025-02-18T00:00:00.000Z',
     description: 'Projetado para graves encorpados com estabilidade térmica para uso contínuo.',
+    markets: ['pt-BR', 'en'],
     specifications: {
       power_rms: '1x 1600W RMS',
       impedance: '2 Ohms',

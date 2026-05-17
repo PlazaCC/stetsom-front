@@ -1,11 +1,11 @@
 'use client'
 
-import { NAV_LINKS, PRODUCT_MENU_CATEGORIES } from '@/lib/mock/navigation'
+import { NAV_LINKS } from '@/lib/mock/navigation'
 import { cn } from '@/lib/utils'
+import { Link, usePathname } from '@/i18n/navigation'
 import { ChevronDown, Menu, Search, X } from 'lucide-react'
-import Link from 'next/link'
 import { Logo } from './logo'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
 import { Container } from './container'
 import {
   NavigationMenu,
@@ -16,10 +16,23 @@ import {
   NavigationMenuTrigger,
 } from './navigation-menu'
 import { FormEvent, useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { LanguageSwitcher } from './language-switcher'
+
+const CATEGORY_NAV_ITEMS = [
+  { key: 'amplifiers', href: '/produtos?category=amplificadores', image: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png' },
+  { key: 'processors', href: '/produtos?category=processadores', image: '/figma-assets/raw/fill_THI4RN_1e666beb.png' },
+  { key: 'crossovers', href: '/produtos?category=crossovers', image: '/figma-assets/raw/product-c.png' },
+  { key: 'controls', href: '/produtos?category=controles', image: '/figma-assets/raw/fill_THI4RN_1e666beb.png' },
+  { key: 'powerSupplies', href: '/produtos?category=fontes-e-carregadores', image: '/figma-assets/raw/fill_THI4RN_1e666beb.png' },
+  { key: 'mixers', href: '/produtos?category=mesas-de-som', image: '/figma-assets/raw/product-c.png' },
+  { key: 'accessories', href: '/produtos?category=acessorios', image: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png' },
+] as const
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const t = useTranslations('Nav')
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -57,15 +70,15 @@ export default function Header() {
                     nativeButton={false}
                     render={
                       <div className='flex items-center'>
-                        <MenuLink href='/produtos' label='Produtos' />
+                        <MenuLink href='/produtos' label={t('products')} />
                       </div>
                     }
                   />
                   <NavigationMenuContent>
                     <ul className='grid w-100 gap-2 md:w-125 md:grid-cols-2 lg:w-150'>
-                      {PRODUCT_MENU_CATEGORIES.map((cat) => (
-                        <ListItem key={cat.label} title={cat.label} href={cat.href} image={cat.image}>
-                          {cat.description}
+                      {CATEGORY_NAV_ITEMS.map((cat) => (
+                        <ListItem key={cat.key} title={t(`categoryMenu.${cat.key}.label`)} href={cat.href} image={cat.image}>
+                          {t(`categoryMenu.${cat.key}.description`)}
                         </ListItem>
                       ))}
                     </ul>
@@ -73,11 +86,11 @@ export default function Header() {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuLink render={<MenuLink href={NAV_LINKS[1].href} label={NAV_LINKS[1].label} />} />
+                  <NavigationMenuLink render={<MenuLink href={NAV_LINKS[1].href} label={t('about')} />} />
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuLink render={<MenuLink href={NAV_LINKS[2].href} label={NAV_LINKS[2].label} />} />
+                  <NavigationMenuLink render={<MenuLink href={NAV_LINKS[2].href} label={t('support')} />} />
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
@@ -91,7 +104,7 @@ export default function Header() {
               <>
                 <div className='w-10 flex items-center justify-start'>
                   <button
-                    aria-label='Abrir menu'
+                    aria-label={t('openMenu')}
                     aria-expanded={mobileMenuOpen}
                     aria-controls='mobile-menu'
                     className='inline-flex items-center justify-center w-10 h-10 text-icon-muted'
@@ -106,7 +119,7 @@ export default function Header() {
 
                 <div className='w-10 flex items-center justify-end'>
                   <button
-                    aria-label='Buscar'
+                    aria-label={t('search')}
                     className='inline-flex items-center justify-center w-10 h-10 text-icon-muted'
                     onClick={() => setSearchOpen(true)}>
                     <Search size={20} />
@@ -118,13 +131,7 @@ export default function Header() {
 
           {/* Right side (desktop) — language selector */}
           <div className='hidden md:flex items-center'>
-            <button
-              type='button'
-              className='flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-brand hover:text-brand-dark'>
-              <BrFlag />
-              <span className='font-sans font-semibold uppercase tracking-wide'>PT</span>
-              <ChevronDown size={12} />
-            </button>
+            <LanguageSwitcher variant='light' />
           </div>
         </Container>
       </header>
@@ -153,6 +160,7 @@ interface MobileDrawerProps {
 
 function MobileDrawer({ open, onClose }: MobileDrawerProps) {
   const pathname = usePathname()
+  const t = useTranslations('Nav')
   const [categoriesOpen, setCategoriesOpen] = useState(false)
 
   return (
@@ -171,7 +179,7 @@ function MobileDrawer({ open, onClose }: MobileDrawerProps) {
           <Logo variant='dark' width={120} height={28} />
         </Link>
         <button
-          aria-label='Fechar menu'
+          aria-label={t('closeMenu')}
           className='inline-flex items-center justify-center w-10 h-10 text-text-subtle-dark transition-colors hover:text-white'
           onClick={onClose}>
           <X size={22} />
@@ -185,7 +193,7 @@ function MobileDrawer({ open, onClose }: MobileDrawerProps) {
           <button
             onClick={() => setCategoriesOpen((o) => !o)}
             className='flex w-full items-center justify-between py-4 font-sans-condensed font-black uppercase text-xl text-white transition-colors hover:text-brand'>
-            Produtos
+            {t('products')}
             <ChevronDown
               size={18}
               className={cn(
@@ -197,13 +205,13 @@ function MobileDrawer({ open, onClose }: MobileDrawerProps) {
 
           <div className={cn('overflow-hidden transition-all duration-300', categoriesOpen ? 'max-h-96' : 'max-h-0')}>
             <div className='flex flex-col pb-4 pl-4'>
-              {PRODUCT_MENU_CATEGORIES.map((cat) => (
+              {CATEGORY_NAV_ITEMS.map((cat) => (
                 <Link
-                  key={cat.label}
+                  key={cat.key}
                   href={cat.href}
                   onClick={onClose}
                   className='py-2.5 font-sans text-sm text-text-subtle-dark transition-colors hover:text-white'>
-                  {cat.label}
+                  {t(`categoryMenu.${cat.key}.label`)}
                 </Link>
               ))}
             </div>
@@ -211,7 +219,10 @@ function MobileDrawer({ open, onClose }: MobileDrawerProps) {
         </div>
 
         {/* Sobre nós e Suporte */}
-        {NAV_LINKS.slice(1).map((link) => (
+        {[
+          { href: NAV_LINKS[1].href, label: t('about') },
+          { href: NAV_LINKS[2].href, label: t('support') },
+        ].map((link) => (
           <Link
             key={link.href}
             href={link.href}
@@ -229,13 +240,7 @@ function MobileDrawer({ open, onClose }: MobileDrawerProps) {
 
       {/* Drawer footer — language selector */}
       <div className='border-t border-white/10 px-5 py-5'>
-        <button
-          type='button'
-          className='flex items-center gap-1.5 rounded border border-white/20 px-3 py-1.5 text-xs font-medium text-text-subtle-dark transition-colors hover:border-brand hover:text-white'>
-          <BrFlag />
-          <span className='font-sans font-semibold uppercase tracking-wide'>PT</span>
-          <ChevronDown size={12} />
-        </button>
+        <LanguageSwitcher variant='dark' />
       </div>
     </nav>
   )
@@ -245,6 +250,7 @@ function MobileDrawer({ open, onClose }: MobileDrawerProps) {
 
 function MobileSearchBar({ onClose }: { onClose: () => void }) {
   const router = useRouter()
+  const t = useTranslations('Header')
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -259,7 +265,7 @@ function MobileSearchBar({ onClose }: { onClose: () => void }) {
         name='q'
         type='search'
         autoFocus
-        placeholder='Buscar produtos...'
+        placeholder={t('searchPlaceholder')}
         className='flex-1 border-b border-border bg-transparent py-1 font-sans text-sm text-foreground outline-none placeholder:text-muted-foreground'
       />
       <button
@@ -319,15 +325,5 @@ function ListItem({
         }
       />
     </li>
-  )
-}
-
-function BrFlag() {
-  return (
-    <svg width='16' height='12' viewBox='0 0 16 12' fill='none' xmlns='http://www.w3.org/2000/svg' aria-hidden='true'>
-      <rect width='16' height='12' rx='1' fill='#009C3B' />
-      <path d='M8 1.5L14.5 6L8 10.5L1.5 6L8 1.5Z' fill='#FEDF00' />
-      <circle cx='8' cy='6' r='2.4' fill='#002776' />
-    </svg>
   )
 }
