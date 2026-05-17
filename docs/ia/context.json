@@ -1668,6 +1668,26 @@
       ],
       "rationale": "Code review identified next/link used in locale routes (should be @/i18n/navigation), hardcoded PT string in Suspense fallback, hardcoded /pt-BR href in root 404, and minor style inconsistencies",
       "outcome": "All locale-aware Link components now auto-prefix the locale; Suspense fallback uses t(loading); root 404 redirects to / instead of /pt-BR"
+    },
+    {
+      "ts": "2026-05-16T13:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix i18n violations found in code-review: CATEGORY_IMAGE_BY_ID, aria-labels, Link import, thumbnail alt, default prop",
+      "files": [
+        "src/app/[locale]/(site)/produtos/_components/catalog-content.tsx",
+        "src/components/ui/header.tsx",
+        "src/app/[locale]/(site)/suporte/_components/support-documentation.tsx",
+        "src/app/[locale]/(site)/produtos/[slug]/page.tsx",
+        "src/app/[locale]/(site)/_components/quality-section.tsx",
+        "src/app/not-found.tsx",
+        "src/lib/api/providers/mock-provider.ts",
+        "src/i18n/messages/pt-BR.json",
+        "src/i18n/messages/en.json",
+        "src/i18n/messages/es.json"
+      ],
+      "rationale": "Code review identified: category images broken for EN/ES locales (map keyed by PT name); hardcoded PT aria-labels in header; next/link used instead of @/i18n/navigation in support-documentation; thumbnail alt text partially in PT; hardcoded default prop in quality-section",
+      "outcome": "Category images now resolve by cat.id (locale-invariant); all aria-labels use i18n keys; support-documentation uses locale-aware Link; thumbnail alt fully translated; quality-section default prop removed; new keys navAriaLabel, closeSearch, thumbnail added to all 3 message files"
     }
   ]
 }

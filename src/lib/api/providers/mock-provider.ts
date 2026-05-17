@@ -296,6 +296,7 @@ export function createMockCmsProvider(): CmsProvider {
 
       const paginated = paginate(items, page, pageSize)
 
+      // Admin CMS strings are not part of the public i18n system — admin has no locale routing.
       return {
         title: 'CMS de Produtos',
         subtitle: 'Gerencie status, catalogo e atualizacoes do portfolio.',

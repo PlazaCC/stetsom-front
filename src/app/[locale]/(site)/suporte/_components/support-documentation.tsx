@@ -3,7 +3,7 @@ import { SectionLabel } from '@/components/ui/section-label'
 import type { SupportPayload } from '@/lib/api/contracts'
 import { cn } from '@/lib/utils'
 import { Download, FileText, Search } from 'lucide-react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
 
 interface SupportDocumentationProps {

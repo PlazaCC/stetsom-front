@@ -20,15 +20,15 @@ interface CategoryOption {
   slug: string
 }
 
-const CATEGORY_IMAGE_BY_NAME: Record<string, string> = {
-  Amplificadores: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',
-  Processadores: '/figma-assets/raw/fill_THI4RN_1e666beb.png',
-  Crossovers: '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',
-  Controles: '/figma-assets/raw/fill_THI4RN_1e666beb.png',
-  'Fontes e carregadores': '/figma-assets/raw/fill_THI4RN_1e666beb.png',
-  'Mesas de som': '/figma-assets/raw/product-c.png',
-  Acessórios: '/figma-assets/raw/product-c.png',
-  Subwoofers: '/figma-assets/raw/product-c.png',
+const CATEGORY_IMAGE_BY_ID: Record<string, string> = {
+  'cat-amplificadores': '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',
+  'cat-processadores': '/figma-assets/raw/fill_THI4RN_1e666beb.png',
+  'cat-crossovers': '/figma-assets/raw/fill_EPTO4T_3d86cd17.png',
+  'cat-controles': '/figma-assets/raw/fill_THI4RN_1e666beb.png',
+  'cat-fontes-carregadores': '/figma-assets/raw/fill_THI4RN_1e666beb.png',
+  'cat-mesas-de-som': '/figma-assets/raw/product-c.png',
+  'cat-acessorios': '/figma-assets/raw/product-c.png',
+  'cat-subwoofers': '/figma-assets/raw/product-c.png',
 }
 
 const DEFAULT_HERO_IMAGE = '/figma-assets/raw/fill_CGM3WO_6a0a1876.png'
@@ -43,8 +43,8 @@ function toCategoryOptions(categories: Category[], allLabel: string): CategoryOp
 function buildSlugImageMap(categories: Category[]): Record<string, string> {
   const map: Record<string, string> = {}
   for (const cat of categories) {
-    if (CATEGORY_IMAGE_BY_NAME[cat.name]) {
-      map[cat.slug] = CATEGORY_IMAGE_BY_NAME[cat.name]
+    if (CATEGORY_IMAGE_BY_ID[cat.id]) {
+      map[cat.slug] = CATEGORY_IMAGE_BY_ID[cat.id]
     }
   }
   return map

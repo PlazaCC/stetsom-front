@@ -1,5 +1,7 @@
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+// next/link is intentional here: this root not-found fires before the [locale] segment
+// is resolved, so next-intl context is unavailable. Strings default to PT-BR as fallback.
 import Link from 'next/link'
 
 export default function NotFound() {

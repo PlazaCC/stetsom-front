@@ -113,7 +113,7 @@ export default async function ProdutoDetalhePage(props: ProductPageProps) {
                     className='relative h-19 w-19 shrink-0 overflow-hidden rounded border border-border bg-card'>
                     <Image
                       src={image}
-                      alt={`${product.name} miniatura ${index + 1}`}
+                      alt={t('thumbnail', { name: product.name, index: index + 1 })}
                       fill
                       sizes='72px'
                       className='object-cover'

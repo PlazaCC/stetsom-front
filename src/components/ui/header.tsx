@@ -168,7 +168,7 @@ function MobileDrawer({ open, onClose }: MobileDrawerProps) {
       id='mobile-menu'
       role='dialog'
       aria-modal='true'
-      aria-label='Menu de navegação'
+      aria-label={t('navAriaLabel')}
       className={cn(
         'fixed left-0 top-0 z-[60] flex h-full w-4/5 max-w-xs flex-col bg-brand-dark transition-transform duration-300 md:hidden',
         open ? 'translate-x-0' : '-translate-x-full',
@@ -270,7 +270,7 @@ function MobileSearchBar({ onClose }: { onClose: () => void }) {
       />
       <button
         type='button'
-        aria-label='Fechar busca'
+        aria-label={t('closeSearch')}
         className='inline-flex items-center justify-center w-10 h-10 text-icon-muted'
         onClick={onClose}>
         <X size={20} />

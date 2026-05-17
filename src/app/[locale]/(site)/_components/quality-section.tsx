@@ -24,7 +24,7 @@ interface QualitySectionProps {
   foundingLabel?: string
 }
 
-export function QualitySection({ section, values, foundingLabel = 'Fundação' }: Readonly<QualitySectionProps>) {
+export function QualitySection({ section, values, foundingLabel }: Readonly<QualitySectionProps>) {
   return (
     <section className='bg-off-white py-20'>
       <Container>

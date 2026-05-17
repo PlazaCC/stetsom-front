@@ -6,6 +6,7 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "search": "Search",
+    "navAriaLabel": "Navigation menu",
     "categoryMenu": {
       "amplifiers": { "label": "Amplifiers", "description": "High-power amplifiers for automotive audio systems." },
       "processors": { "label": "Processors", "description": "High-performance signal processors for automotive applications." },
@@ -17,7 +18,8 @@
     }
   },
   "Header": {
-    "searchPlaceholder": "Search products..."
+    "searchPlaceholder": "Search products...",
+    "closeSearch": "Close search"
   },
   "Footer": {
     "description": "Unlimited power since 1989. We manufacture the best automotive amplifiers in Brazil.",
@@ -95,7 +97,8 @@
     "blockModel3dLabel": "3D Model",
     "blockModel3dTitle": "Interactive view",
     "blockModel3dDescription": "Explore the product in full perspective to check connectors, finish and real dimensions.",
-    "blockModel3dOpen": "Open model"
+    "blockModel3dOpen": "Open model",
+    "thumbnail": "{name} — thumbnail {index}"
   },
   "Support": {
     "contact": {

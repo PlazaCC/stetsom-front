@@ -6,6 +6,7 @@
     "openMenu": "Abrir menu",
     "closeMenu": "Fechar menu",
     "search": "Buscar",
+    "navAriaLabel": "Menu de navegação",
     "categoryMenu": {
       "amplifiers": { "label": "Amplificadores", "description": "Amplificadores de alta potência para sistemas automotivos." },
       "processors": { "label": "Processadores", "description": "Processadores de alta performance para aplicações automotivas." },
@@ -17,7 +18,8 @@
     }
   },
   "Header": {
-    "searchPlaceholder": "Buscar produtos..."
+    "searchPlaceholder": "Buscar produtos...",
+    "closeSearch": "Fechar busca"
   },
   "Footer": {
     "description": "Potência sem limite desde 1989. Fabricamos os melhores amplificadores automotivos do Brasil.",
@@ -95,7 +97,8 @@
     "blockModel3dLabel": "Modelo 3D",
     "blockModel3dTitle": "Visualização interativa",
     "blockModel3dDescription": "Explore o produto em perspectiva completa para conferir conectores, acabamento e dimensões reais.",
-    "blockModel3dOpen": "Abrir modelo"
+    "blockModel3dOpen": "Abrir modelo",
+    "thumbnail": "{name} — miniatura {index}"
   },
   "Support": {
     "contact": {
