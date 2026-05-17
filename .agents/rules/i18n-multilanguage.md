@@ -7,10 +7,10 @@ applyTo: 'src/**/*.{ts,tsx}'
 
 ## Biblioteca: next-intl v4
 
-Este projeto usa **next-intl v4** com App Router, RSC-first, `localePrefix: 'always'`.
+Este projeto usa **next-intl v4** com App Router, RSC-first, `localePrefix: 'as-needed'`.
 
 - Locales suportados: `pt-BR` (padrão), `en`, `es`
-- Todas as URLs têm prefixo: `/pt-BR/produtos`, `/en/produtos`, `/es/produtos`
+- `localePrefix: 'as-needed'` — locale padrão (pt-BR) sem prefixo: `/produtos`; outros locales com prefixo: `/en/produtos`, `/es/produtos`
 - Arquivos de configuração: `src/i18n/routing.ts`, `src/i18n/request.ts`, `src/i18n/navigation.ts`
 - Mensagens: `src/i18n/messages/{pt-BR,en,es}.json`
 

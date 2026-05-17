@@ -29,10 +29,8 @@ export function QualitySection({ section, values, foundingLabel }: Readonly<Qual
     <section className='bg-off-white py-20'>
       <Container>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-16 items-start'>
-          {/* Imagem Esquerda com badge 1989 / FUNDAÇÃO */}
           <div className='relative aspect-square w-full rounded-sm bg-muted flex items-center justify-center overflow-hidden'>
             <Image src={section.image} alt={section.imageAlt} fill className='object-cover' />
-            {/* Badge "1989" + label "FUNDAÇÃO" no canto inferior esquerdo */}
             <div className='absolute bottom-5 left-5 flex flex-col gap-2'>
               <div className='flex h-15 w-15 items-center justify-center bg-brand'>
                 <span className='font-sans-condensed text-xl font-black uppercase leading-none text-white'>1989</span>
@@ -43,13 +41,11 @@ export function QualitySection({ section, values, foundingLabel }: Readonly<Qual
             </div>
           </div>
 
-          {/* Texto + Cards Direita */}
           <div>
             <SectionLabel label={section.label} title={section.title} />
 
             <p className='text-base text-text-subtle mt-6 leading-[1.7]'>{section.description}</p>
 
-            {/* 3 Value Cards */}
             <div className='grid grid-cols-1 gap-6 mt-10'>
               {values.map((value) => {
                 const Icon = ICONS[value.icon]

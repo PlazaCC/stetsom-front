@@ -3,7 +3,7 @@
 import type { FeaturedTab } from '@/lib/api/contracts'
 import { cn } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 
 interface FeaturedTabStripProps {
   tabs: FeaturedTab[]

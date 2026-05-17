@@ -62,7 +62,8 @@
     "productLines": "Lines",
     "heroLabel": "FULL CATALOG",
     "heroTitle": "OUR\nPRODUCTS",
-    "heroImageAlt": "Stetsom Catalog"
+    "heroImageAlt": "Stetsom Catalog",
+    "emptyCategory": "No products found in this category."
   },
   "ProductDetail": {
     "overview": "Overview",
@@ -140,7 +141,8 @@
       "fileCertificatePrefix": "Certificate",
       "fileCatalogPrefix": "Catalog",
       "fileImagePrefix": "Image",
-      "fileDocVersion": "Document v{version}"
+      "fileDocVersion": "Document v{version}",
+      "downloadLabel": "Download"
     },
     "serviceCenters": {
       "label": "Authorized Network",

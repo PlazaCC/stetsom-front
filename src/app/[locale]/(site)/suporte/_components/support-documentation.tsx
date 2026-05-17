@@ -88,7 +88,7 @@ export async function SupportDocumentation({ categories, files }: Readonly<Suppo
                   href={file.file_url}
                   className='inline-flex shrink-0 items-center gap-1.5 font-sans text-2xs font-bold uppercase tracking-[0.6px] text-brand transition-colors hover:text-brand/80'>
                   <Download size={14} />
-                  Download
+                  {t('downloadLabel')}
                 </Link>
               </div>
             ))}

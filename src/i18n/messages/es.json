@@ -62,7 +62,8 @@
     "productLines": "Líneas",
     "heroLabel": "CATÁLOGO COMPLETO",
     "heroTitle": "NUESTROS\nPRODUCTOS",
-    "heroImageAlt": "Catálogo Stetsom"
+    "heroImageAlt": "Catálogo Stetsom",
+    "emptyCategory": "No se encontraron productos en esta categoría."
   },
   "ProductDetail": {
     "overview": "Vista general",
@@ -140,7 +141,8 @@
       "fileCertificatePrefix": "Certificado",
       "fileCatalogPrefix": "Catálogo",
       "fileImagePrefix": "Imagen",
-      "fileDocVersion": "Documento v{version}"
+      "fileDocVersion": "Documento v{version}",
+      "downloadLabel": "Descargar"
     },
     "serviceCenters": {
       "label": "Red Autorizada",

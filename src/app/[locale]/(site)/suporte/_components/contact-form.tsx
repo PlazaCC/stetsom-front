@@ -31,7 +31,6 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-      {/* SETOR DE CONTATO */}
       <div>
         <label htmlFor='setor' className='mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground'>
           {t('sectorLabel')}
@@ -48,7 +47,6 @@ export function ContactForm() {
         </select>
       </div>
 
-      {/* NOME + TELEFONE — 2 colunas */}
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
         <div>
           <label htmlFor='name' className='mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground'>
@@ -77,7 +75,6 @@ export function ContactForm() {
         </div>
       </div>
 
-      {/* E-MAIL */}
       <div>
         <label htmlFor='email' className='mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground'>
           {t('emailLabel')}
@@ -92,7 +89,6 @@ export function ContactForm() {
         />
       </div>
 
-      {/* MENSAGEM */}
       <div>
         <label htmlFor='message' className='mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground'>
           {t('messageLabel')}
@@ -107,7 +103,6 @@ export function ContactForm() {
         />
       </div>
 
-      {/* PRIVACIDADE */}
       <label className='flex cursor-pointer items-start gap-3'>
         <input
           type='checkbox'
@@ -126,7 +121,6 @@ export function ContactForm() {
         </span>
       </label>
 
-      {/* SUBMIT */}
       <button
         type='submit'
         className='flex w-full items-center justify-center gap-2 bg-brand px-6 py-3.5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-white transition-colors hover:bg-brand/90'>

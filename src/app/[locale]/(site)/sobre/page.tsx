@@ -15,7 +15,6 @@ export default async function SobrePage() {
 
   return (
     <div>
-      {/* 1. HERO */}
       <section className='relative bg-brand-dark h-109.75 overflow-hidden flex items-center'>
         <Image
           src={aboutPayload.hero.image}
@@ -74,22 +73,11 @@ export default async function SobrePage() {
         </Container>
       </section>
 
-      {/* 2. RED BANNER - Milestones Marquee */}
       <RedBanner milestones={aboutPayload.milestones} />
-
-      {/* 3. QUALITY SECTION - Qualidade Inovadora */}
       <QualitySection section={aboutPayload.quality} values={aboutPayload.values} foundingLabel={t('foundingLabel')} />
-
-      {/* 4. COMPANY TIMELINE */}
       <CompanyTimeline events={aboutPayload.timeline} />
-
-      {/* 5. OUR FOUNDATIONS - 3 Cards */}
       <OurFoundations bases={aboutPayload.bases} />
-
-      {/* 6. SOCIAL FEED — Nossa Família */}
       <SocialFeed section={aboutPayload.social} />
-
-      {/* 7. OUR FACTORY + CAREERS */}
       <OurFactory jobsCta={aboutPayload.jobsCta} />
     </div>
   )

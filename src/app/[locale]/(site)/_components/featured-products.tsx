@@ -5,8 +5,9 @@ import ProductCard from '@/components/ui/product-card'
 import { SectionLabel } from '@/components/ui/section-label'
 import type { FeaturedTab, ProductCardItem, SiteHomePayload } from '@/lib/api/contracts'
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { FeaturedTabStrip } from './featured-tab-strip'
 
 interface FeaturedProductsProps {
@@ -17,6 +18,7 @@ interface FeaturedProductsProps {
 }
 
 export function FeaturedProducts({ featuredProducts, spotlightProduct, tabs, section }: Readonly<FeaturedProductsProps>) {
+  const t = useTranslations('Catalog')
   const [activeTab, setActiveTab] = useState<FeaturedTab>(tabs[0] ?? { id: 'tab-all', label: 'Todos' })
 
   const filteredProducts = useMemo(() => {
@@ -30,9 +32,7 @@ export function FeaturedProducts({ featuredProducts, spotlightProduct, tabs, sec
   return (
     <section className='flex w-full justify-center bg-white py-12'>
       <Container>
-        {/* Header: title + tabs/cta */}
         <div className='mb-6 sm:mb-8'>
-          {/* Desktop: title box left, tabs+cta right aligned to bottom */}
           <div className='hidden lg:flex items-stretch justify-between gap-6'>
             <div className='max-w-80'>
               <SectionLabel label={section.label} title={section.title} className='' />
@@ -49,7 +49,6 @@ export function FeaturedProducts({ featuredProducts, spotlightProduct, tabs, sec
             </div>
           </div>
 
-          {/* Mobile: stack title then tabs+cta */}
           <div className='lg:hidden flex flex-col gap-4'>
             <SectionLabel label={section.label} title={section.title} className='max-w-80' />
 
@@ -88,7 +87,7 @@ export function FeaturedProducts({ featuredProducts, spotlightProduct, tabs, sec
           <div className='grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5'>
             {filteredProducts.length === 0 ? (
               <p className='col-span-2 flex items-center justify-center py-12 text-sm text-muted-foreground'>
-                Nenhum produto encontrado nesta categoria.
+                {t('emptyCategory')}
               </p>
             ) : (
               filteredProducts.map((p) => <ProductCard key={p.id} {...p} href={p.href} />)

@@ -19,7 +19,6 @@ export async function SupportServiceCenters({ serviceCenters, mapImage }: Readon
         <SectionLabel label={t('label')} title={t('title')} />
         <p className='mt-2 text-sm text-text-subtle'>{t('description')}</p>
         <div className='mt-8 flex flex-col gap-6 lg:flex-row lg:gap-8'>
-          {/* Lista de postos */}
           <div className='flex flex-col gap-3 lg:w-86'>
             <div className='flex gap-2'>
               <div className='flex flex-1 h-10 items-center gap-2 border border-border bg-white px-3'>
@@ -50,7 +49,6 @@ export async function SupportServiceCenters({ serviceCenters, mapImage }: Readon
             </div>
           </div>
 
-          {/* Mapa placeholder */}
           <div className='relative flex-1 overflow-hidden rounded-2xl bg-muted lg:min-h-114.25'>
             <Image
               src={mapImage}
