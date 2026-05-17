@@ -5,24 +5,17 @@ import type { TimelineEvent } from '@/lib/api/contracts'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { TimelineCheckpoint } from './timeline-checkpoint'
 import { TimelineProgressBar } from './timeline-progress-bar'
 
 interface CompanyTimelineProps {
   events: TimelineEvent[]
-  label?: string
-  title?: string
-  description?: string
   initialActiveIndex?: number
 }
 
-export function CompanyTimeline({
-  events,
-  label = 'Nossa História',
-  title = '35 ANOS DE\nHISTÓRIA',
-  description = 'Uma empresa de inovação constante que transformou a Stetsom na maior referência de amplificação automotiva do Brasil.',
-  initialActiveIndex = 0,
-}: CompanyTimelineProps) {
+export function CompanyTimeline({ events, initialActiveIndex = 0 }: CompanyTimelineProps) {
+  const t = useTranslations('About')
   const safeInitialIndex = Math.min(Math.max(initialActiveIndex, 0), Math.max(events.length - 1, 0))
   const [activeIndex, setActiveIndex] = useState(safeInitialIndex)
 
@@ -40,7 +33,6 @@ export function CompanyTimeline({
     setActiveIndex(index)
   }, [])
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!events.length) {
@@ -71,40 +63,39 @@ export function CompanyTimeline({
       <div className='absolute inset-0 bg-radial-dark-alt' />
       <Container className='relative z-10'>
         <div className='space-y-12'>
-          {/* BOX 1: HEADER - Título + Descrição + Setas */}
           <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8'>
             <div className='flex-1'>
               <div className='mb-2 font-sans-condensed text-sm font-black uppercase tracking-wide text-brand'>
-                {label}
+                {t('timelineLabel')}
               </div>
               <h2 className='font-sans-condensed text-5xl font-black leading-none text-white lg:text-display-lg'>
-                {title.split('\n').map((line) => (
+                {t('timelineTitle').split('\n').map((line) => (
                   <span key={line} className='block'>
                     {line}
                   </span>
                 ))}
               </h2>
-              <p className='mt-4 max-w-md text-sm leading-[1.6] text-text-subtle-dark lg:text-base'>{description}</p>
+              <p className='mt-4 max-w-md text-sm leading-[1.6] text-text-subtle-dark lg:text-base'>
+                {t('timelineDescription')}
+              </p>
             </div>
 
-            {/* Setas de Controle */}
             <div className='flex gap-3'>
               <button
                 onClick={handlePrevious}
                 className='flex h-12 w-12 items-center justify-center rounded-full border border-brand text-brand transition-all hover:bg-brand hover:text-white'
-                aria-label='Previous event'>
+                aria-label={t('timelinePrevious')}>
                 <ChevronLeft size={24} />
               </button>
               <button
                 onClick={handleNext}
                 className='flex h-12 w-12 items-center justify-center rounded-full border border-brand text-brand transition-all hover:bg-brand hover:text-white'
-                aria-label='Next event'>
+                aria-label={t('timelineNext')}>
                 <ChevronRight size={24} />
               </button>
             </div>
           </div>
 
-          {/* BOX 2: TIMELINE LINE + CHECKPOINTS + LABELS */}
           <div className='space-y-6'>
             <div className='relative h-20'>
               <TimelineProgressBar progressPercent={progressPercent} />
@@ -127,9 +118,7 @@ export function CompanyTimeline({
             </div>
           </div>
 
-          {/* BOX 3: EVENT DETAILS - Imagem + Data + Título + Descrição */}
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'>
-            {/* Imagem */}
             <div className='relative w-full aspect-video bg-surface-elevated rounded-sm overflow-hidden'>
               <Image
                 src={activeEvent.image}
@@ -139,7 +128,6 @@ export function CompanyTimeline({
               />
             </div>
 
-            {/* Texto */}
             <div className='transition-all duration-500 space-y-4'>
               <div>
                 <h3 className='font-sans-condensed font-black text-display-xl lg:text-display-2xl text-brand leading-none mb-2'>

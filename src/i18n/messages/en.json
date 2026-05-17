@@ -160,7 +160,12 @@
     "heroDescription": "Since 1989, Stetsom has set the quality standard in Brazilian automotive amplification with technology, innovation and passion for sound.",
     "foundingLabel": "Founded",
     "foundationsLabel": "How We Work",
-    "foundationsTitle": "OUR PILLARS"
+    "foundationsTitle": "OUR PILLARS",
+    "timelineLabel": "Our History",
+    "timelineTitle": "35 YEARS OF\nHISTORY",
+    "timelineDescription": "A company of constant innovation that transformed Stetsom into Brazil's leading reference in automotive amplification.",
+    "timelinePrevious": "Previous event",
+    "timelineNext": "Next event"
   },
   "NotFound": {
     "title": "PAGE NOT FOUND",
@@ -172,6 +177,15 @@
     "pt-BR": "Português",
     "en": "English",
     "es": "Español"
+  },
+  "HeroCarousel": {
+    "bannerLabel": "Main banners",
+    "openBanner": "Open banner {index}",
+    "goToBanner": "Go to banner {index}"
+  },
+  "SocialFeed": {
+    "scrollLeft": "Scroll left",
+    "scrollRight": "Scroll right"
   },
   "Meta": {
     "homeTitle": "Stetsom | Automotive Amplifiers",

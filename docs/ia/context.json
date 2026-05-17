@@ -1744,6 +1744,35 @@
             ],
             "rationale": "Code review (code-review skill) identified bugs and convention violations: next/link instead of @/i18n/navigation broke locale-aware navigation for EN/ES users; hardcoded PT-BR strings violated i18n rule; localePrefix rule was out of sync with implementation",
             "outcome": "All links in FeaturedProducts and FeaturedTabStrip now preserve locale; emptyCategory and downloadLabel keys added to all 3 message files; rule files updated to reflect localePrefix as-needed; JSX what-comments removed across 5 components"
+        },
+        {
+            "ts": "2026-05-17T19:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Fix remaining code-review issues: next/link in hero-carousel and social-feed, aria-label i18n",
+            "files": [
+                "src/app/[locale]/(site)/_components/hero-carousel.tsx",
+                "src/app/[locale]/(site)/_components/social-feed.tsx",
+                "src/i18n/messages/pt-BR.json",
+                "src/i18n/messages/en.json",
+                "src/i18n/messages/es.json"
+            ],
+            "rationale": "Second code-review pass found R100-renamed files that moved into [locale]/ context without updating Link imports; aria-label strings were hardcoded in PT-BR or English instead of using translations",
+            "outcome": "All Link imports in locale-aware components now use @/i18n/navigation; HeroCarousel and SocialFeed aria-labels are fully i18n via new HeroCarousel and SocialFeed namespaces in all 3 message files"
+        },
+        {
+            "ts": "2026-05-17T20:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Fix company-timeline: remove hardcoded PT-BR default props, use useTranslations, fix aria-labels, remove JSX comments",
+            "files": [
+                "src/app/[locale]/(site)/_components/company-timeline.tsx",
+                "src/i18n/messages/pt-BR.json",
+                "src/i18n/messages/en.json",
+                "src/i18n/messages/es.json"
+            ],
+            "rationale": "Third code-review pass identified company-timeline.tsx with hardcoded PT-BR default props (label/title/description), English aria-labels for nav buttons, and 7 JSX structural comments violating project rules",
+            "outcome": "Removed label/title/description props from interface; component now reads from useTranslations('About') with 5 new keys (timelineLabel, timelineTitle, timelineDescription, timelinePrevious, timelineNext) added to all 3 message files; aria-labels fully i18n; all comments removed. tsc and lint pass."
         }
     ]
 }

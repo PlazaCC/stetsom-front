@@ -2,7 +2,8 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 
 import { Container } from '@/components/ui/container'
 import { SectionLabel } from '@/components/ui/section-label'
@@ -14,6 +15,7 @@ interface SocialFeedProps {
 }
 
 export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
+  const t = useTranslations('SocialFeed')
   const { ref: scrollRef, scroll } = useHorizontalScroll()
 
   return (
@@ -31,13 +33,13 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
               <button
                 onClick={() => scroll('left')}
                 className='p-2 hover:bg-muted rounded-sm transition-colors'
-                aria-label='Scroll left'>
+                aria-label={t('scrollLeft')}>
                 <ChevronLeft size={20} className='text-brand-dark' />
               </button>
               <button
                 onClick={() => scroll('right')}
                 className='p-2 hover:bg-muted rounded-sm transition-colors'
-                aria-label='Scroll right'>
+                aria-label={t('scrollRight')}>
                 <ChevronRight size={20} className='text-brand-dark' />
               </button>
             </div>

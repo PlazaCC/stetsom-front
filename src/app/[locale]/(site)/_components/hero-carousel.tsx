@@ -1,10 +1,11 @@
 'use client'
 
 import type { HeroBannerSlide } from '@/lib/api/contracts'
+import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useRef } from 'react'
+import { useTranslations } from 'next-intl'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import { A11y, Autoplay, Pagination } from 'swiper/modules'
@@ -19,6 +20,7 @@ interface HeroCarouselProps {
 }
 
 export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
+  const t = useTranslations('HeroCarousel')
   const safeSlides = slides
   const shouldLoop = safeSlides.length > 1
   const paginationRef = useRef<HTMLDivElement | null>(null)
@@ -30,7 +32,7 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
   return (
     <section
       className={cn('hero-carousel relative w-full overflow-hidden bg-brand-dark', HERO_HEIGHT_CLASS)}
-      aria-label='Banners principais'>
+      aria-label={t('bannerLabel')}>
       <Swiper
         className='h-full w-full'
         modules={[Autoplay, Pagination, A11y]}
@@ -41,7 +43,7 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
             clickable: true,
             el: paginationRef.current,
             renderBullet: (index, className) =>
-              `<button type=\"button\" class=\"${className}\" aria-label=\"Ir para banner ${index + 1}\"></button>`,
+              `<button type="button" class="${className}" aria-label="${t('goToBanner', { index: index + 1 })}"></button>`,
           }
 
           swiper.pagination.init()
@@ -109,7 +111,7 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
                 <Link
                   href={slide.href}
                   className='relative block h-full w-full'
-                  aria-label={`Abrir banner ${index + 1}`}>
+                  aria-label={t('openBanner', { index: index + 1 })}>
                   {bannerContent}
                 </Link>
               ) : (
