@@ -1688,6 +1688,28 @@
       ],
       "rationale": "Code review identified: category images broken for EN/ES locales (map keyed by PT name); hardcoded PT aria-labels in header; next/link used instead of @/i18n/navigation in support-documentation; thumbnail alt text partially in PT; hardcoded default prop in quality-section",
       "outcome": "Category images now resolve by cat.id (locale-invariant); all aria-labels use i18n keys; support-documentation uses locale-aware Link; thumbnail alt fully translated; quality-section default prop removed; new keys navAriaLabel, closeSearch, thumbnail added to all 3 message files"
+    },
+    {
+      "ts": "2026-05-17T14:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "refactor",
+      "summary": "Mature contracts with discriminated ProductBlock union, FAQItem.id, FeaturedTab, DocumentationCategory, Locale type; set localePrefix as-needed",
+      "files": [
+        "src/lib/api/contracts.ts",
+        "src/i18n/routing.ts",
+        "src/lib/mock/site.ts",
+        "src/lib/mock/support.ts",
+        "src/lib/mock/site-i18n.ts",
+        "src/lib/mock/support-i18n.ts",
+        "src/lib/mock/catalog-i18n.ts",
+        "src/lib/api/providers/mock-provider.ts",
+        "src/app/[locale]/(site)/_components/featured-products.tsx",
+        "src/app/[locale]/(site)/_components/featured-tab-strip.tsx",
+        "src/app/[locale]/(site)/_components/faq-accordion.tsx",
+        "src/app/[locale]/(site)/suporte/_components/support-documentation.tsx"
+      ],
+      "rationale": "Contracts were too generic (Record<string,unknown> for block data, string[] for markets/tabs/categories). Backend team needs typed discriminated unions as implementation spec. pt-BR locale prefix removed so default locale URLs are /, /produtos, /sobre without /pt-BR/ prefix.",
+      "outcome": "ProductBlock is now a fully discriminated union per type. FAQItem has stable id field. FeaturedTab and DocumentationCategory are structured types. pt-BR URLs no longer carry /pt-BR/ prefix. tsc --noEmit passes clean."
     }
   ]
 }

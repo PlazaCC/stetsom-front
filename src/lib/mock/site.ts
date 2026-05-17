@@ -3,6 +3,7 @@ import type {
   AboutValue,
   CompanyStat,
   FAQItem,
+  FeaturedTab,
   HeroBannerSlide,
   SiteAboutPayload,
   SiteHomePayload,
@@ -66,7 +67,12 @@ export const HOME_HERO_SLIDES: HeroBannerSlide[] = [
   },
 ]
 
-export const HOME_FEATURED_TABS = ['Todos', 'Amplificadores', 'Processadores', 'Subwoofers']
+export const HOME_FEATURED_TABS: FeaturedTab[] = [
+  { id: 'tab-all', label: 'Todos' },
+  { id: 'tab-amplificadores', label: 'Amplificadores', categorySlug: 'amplificadores' },
+  { id: 'tab-processadores', label: 'Processadores', categorySlug: 'processadores' },
+  { id: 'tab-subwoofers', label: 'Subwoofers', categorySlug: 'subwoofers' },
+]
 
 export const HOME_FEATURED_SECTION: SiteHomePayload['featured'] = {
   label: 'Novidades',
@@ -96,14 +102,17 @@ export const HOME_HISTORY_SECTION: SiteHomePayload['history'] = {
 
 export const HOME_FAQ_ITEMS: FAQItem[] = [
   {
+    id: 'home-faq-impedancia',
     q: 'Qual a diferença entre 1 Ohm e 2 Ohms de impedância?',
     a: 'A impedância afeta diretamente a carga sobre o amplificador. Impedâncias menores permitem maior potência, desde que o sistema seja compatível.',
   },
   {
+    id: 'home-faq-garantia',
     q: 'Como verificar a garantia do meu produto?',
     a: 'Acesse a central de garantia da Stetsom e informe o número de série para consultar o status atualizado.',
   },
   {
+    id: 'home-faq-postos',
     q: 'Onde encontrar postos autorizados Stetsom?',
     a: 'Nossa rede tem mais de 500 distribuidores no Brasil. Use o localizador da Central de Ajuda para encontrar o mais próximo.',
   },

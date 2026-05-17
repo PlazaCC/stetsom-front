@@ -1,13 +1,14 @@
 'use client'
 
+import type { FeaturedTab } from '@/lib/api/contracts'
 import { cn } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
 interface FeaturedTabStripProps {
-  tabs: string[]
-  activeTab: string
-  onSelect: (tab: string) => void
+  tabs: FeaturedTab[]
+  activeTab: FeaturedTab
+  onSelect: (tab: FeaturedTab) => void
   ctaHref: string
   ctaLabel: string
 }
@@ -19,17 +20,17 @@ export function FeaturedTabStrip({ tabs, activeTab, onSelect, ctaHref, ctaLabel 
         {tabs.map((tab) => (
           <button
             type='button'
-            key={tab}
+            key={tab.id}
             role='tab'
             onClick={() => onSelect(tab)}
-            aria-selected={activeTab === tab}
+            aria-selected={activeTab.id === tab.id}
             className={cn(
               'shrink-0 px-3 py-1.5 transition-all text-sm leading-5 font-medium font-sans text-center rounded-md',
-              activeTab === tab
+              activeTab.id === tab.id
                 ? 'bg-white text-foreground shadow-sm'
                 : 'text-muted-foreground hover:text-foreground',
             )}>
-            {tab}
+            {tab.label}
           </button>
         ))}
       </div>

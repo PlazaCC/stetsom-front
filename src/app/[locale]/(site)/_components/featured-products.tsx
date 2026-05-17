@@ -3,7 +3,7 @@
 import { Container } from '@/components/ui/container'
 import ProductCard from '@/components/ui/product-card'
 import { SectionLabel } from '@/components/ui/section-label'
-import type { ProductCardItem, SiteHomePayload } from '@/lib/api/contracts'
+import type { FeaturedTab, ProductCardItem, SiteHomePayload } from '@/lib/api/contracts'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
@@ -12,19 +12,19 @@ import { FeaturedTabStrip } from './featured-tab-strip'
 interface FeaturedProductsProps {
   featuredProducts: ProductCardItem[]
   spotlightProduct: ProductCardItem
-  tabs: string[]
+  tabs: FeaturedTab[]
   section: SiteHomePayload['featured']
 }
 
 export function FeaturedProducts({ featuredProducts, spotlightProduct, tabs, section }: Readonly<FeaturedProductsProps>) {
-  const [activeTab, setActiveTab] = useState(tabs[0] ?? 'Todos')
+  const [activeTab, setActiveTab] = useState<FeaturedTab>(tabs[0] ?? { id: 'tab-all', label: 'Todos' })
 
   const filteredProducts = useMemo(() => {
-    if (activeTab === 'Todos') {
+    if (!activeTab.categorySlug) {
       return featuredProducts
     }
 
-    return featuredProducts.filter((product) => product.category === activeTab)
+    return featuredProducts.filter((product) => product.category === activeTab.label)
   }, [activeTab, featuredProducts])
 
   return (

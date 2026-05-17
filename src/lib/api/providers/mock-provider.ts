@@ -2,6 +2,7 @@ import type {
   CatalogPagePayload,
   CatalogProductsQuery,
   CmsProductsQuery,
+  Locale,
   PaginatedResponse,
   Product,
   ProductDetailPayload,
@@ -83,8 +84,13 @@ function paginate<T>(items: T[], page: number, pageSize: number): PaginatedRespo
   }
 }
 
+function isLocale(v: string): v is Locale {
+  return v === 'pt-BR' || v === 'en' || v === 'es'
+}
+
 function isVisibleInLocale(product: Product, locale?: string): boolean {
   if (!locale || !product.markets) return true
+  if (!isLocale(locale)) return true
   return product.markets.includes(locale)
 }
 

@@ -1,4 +1,4 @@
-import type { FAQItem, SupportCard, SupportPayload } from '@/lib/api/contracts'
+import type { DocumentationCategory, FAQItem, SupportCard, SupportPayload } from '@/lib/api/contracts'
 import {
   SUPPORT_FAQ_ITEMS,
   SUPPORT_SERVICE_CENTERS,
@@ -35,13 +35,13 @@ const SUPPORT_CARDS_EN: SupportCard[] = [
   },
 ]
 
-const SUPPORT_DOC_CATEGORIES_EN = [
-  'Manuals',
-  'Logos',
-  'Product Catalogs',
-  'Product Photos',
-  'CDs and Stetsom Photos',
-  'Wallpapers and Banners',
+const SUPPORT_DOC_CATEGORIES_EN: DocumentationCategory[] = [
+  { id: 'MANUAL', label: 'Manuals' },
+  { id: 'logos', label: 'Logos' },
+  { id: 'CATALOG', label: 'Product Catalogs' },
+  { id: 'IMAGE', label: 'Product Photos' },
+  { id: 'cds-fotos', label: 'CDs and Stetsom Photos' },
+  { id: 'wallpapers', label: 'Wallpapers and Banners' },
 ]
 
 const SUPPORT_CONTACT_EN: SupportPayload['contact'] = {
@@ -52,26 +52,32 @@ const SUPPORT_CONTACT_EN: SupportPayload['contact'] = {
 
 const SUPPORT_FAQ_ITEMS_EN: FAQItem[] = [
   {
+    id: 'sup-faq-instalacao',
     q: 'How do I install my amplifier?',
     a: 'Follow the manual included with the product and, for best results, look for an authorized Stetsom installer.',
   },
   {
+    id: 'sup-faq-impedancia',
     q: 'What is the difference between 1 Ohm and 2 Ohms?',
     a: 'Lower impedances allow higher power output, as long as the system is sized for that load.',
   },
   {
+    id: 'sup-faq-garantia',
     q: 'How do I check the warranty?',
     a: "At Stetsom's warranty center, enter the serial number to check coverage and status.",
   },
   {
+    id: 'sup-faq-distribuidores',
     q: 'Where can I find authorized distributors?',
     a: 'We have over 500 distributors in Brazil. Use the locator in the support center itself.',
   },
   {
+    id: 'sup-faq-processador',
     q: 'What is the difference between an amplifier and a processor?',
     a: 'Amplifiers amplify audio signals. Processors work on pre-amplification and frequency control.',
   },
   {
+    id: 'sup-faq-fonte',
     q: 'Can I use a different power supply than the recommended one?',
     a: 'We recommend using Stetsom power supplies with equal specifications. Other brands may damage the equipment.',
   },
@@ -114,13 +120,13 @@ const SUPPORT_CARDS_ES: SupportCard[] = [
   },
 ]
 
-const SUPPORT_DOC_CATEGORIES_ES = [
-  'Manuales',
-  'Logos',
-  'Catálogos de productos',
-  'Fotos de productos',
-  'CDs y Fotos Stetsom',
-  'Wallpapers y banners',
+const SUPPORT_DOC_CATEGORIES_ES: DocumentationCategory[] = [
+  { id: 'MANUAL', label: 'Manuales' },
+  { id: 'logos', label: 'Logos' },
+  { id: 'CATALOG', label: 'Catálogos de productos' },
+  { id: 'IMAGE', label: 'Fotos de productos' },
+  { id: 'cds-fotos', label: 'CDs y Fotos Stetsom' },
+  { id: 'wallpapers', label: 'Wallpapers y banners' },
 ]
 
 const SUPPORT_CONTACT_ES: SupportPayload['contact'] = {
@@ -131,26 +137,32 @@ const SUPPORT_CONTACT_ES: SupportPayload['contact'] = {
 
 const SUPPORT_FAQ_ITEMS_ES: FAQItem[] = [
   {
+    id: 'sup-faq-instalacao',
     q: '¿Cómo instalo mi amplificador?',
     a: 'Siga el manual incluido con el producto y, para obtener mejores resultados, busque un instalador autorizado Stetsom.',
   },
   {
+    id: 'sup-faq-impedancia',
     q: '¿Cuál es la diferencia entre 1 Ohm y 2 Ohms?',
     a: 'Impedancias menores permiten mayor potencia de salida, siempre que el sistema esté dimensionado para esa carga.',
   },
   {
+    id: 'sup-faq-garantia',
     q: '¿Cómo verifico la garantía?',
     a: 'En el centro de garantía de Stetsom, ingrese el número de serie para consultar cobertura y estado.',
   },
   {
+    id: 'sup-faq-distribuidores',
     q: '¿Dónde encontrar distribuidores autorizados?',
     a: 'Tenemos más de 500 distribuidores en Brasil. Use el localizador en la central de soporte.',
   },
   {
+    id: 'sup-faq-processador',
     q: '¿Cuál es la diferencia entre amplificador y procesador?',
     a: 'Los amplificadores amplían señales de audio. Los procesadores trabajan en la preamplificación y el control de frecuencia.',
   },
   {
+    id: 'sup-faq-fonte',
     q: '¿Puedo usar una fuente diferente a la recomendada?',
     a: 'Recomendamos usar fuentes Stetsom de especificaciones iguales. Otras marcas pueden dañar el equipo.',
   },

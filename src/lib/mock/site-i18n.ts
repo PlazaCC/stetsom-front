@@ -3,6 +3,7 @@ import type {
   AboutValue,
   CompanyStat,
   FAQItem,
+  FeaturedTab,
   HeroBannerSlide,
   SiteAboutPayload,
   SiteHomePayload,
@@ -50,7 +51,12 @@ const HOME_HERO_SLIDES_EN: HeroBannerSlide[] = [
   },
 ]
 
-const HOME_FEATURED_TABS_EN = ['All', 'Amplifiers', 'Processors', 'Subwoofers']
+const HOME_FEATURED_TABS_EN: FeaturedTab[] = [
+  { id: 'tab-all', label: 'All' },
+  { id: 'tab-amplificadores', label: 'Amplifiers', categorySlug: 'amplificadores' },
+  { id: 'tab-processadores', label: 'Processors', categorySlug: 'processadores' },
+  { id: 'tab-subwoofers', label: 'Subwoofers', categorySlug: 'subwoofers' },
+]
 
 const HOME_FEATURED_SECTION_EN: SiteHomePayload['featured'] = {
   label: 'New arrivals',
@@ -80,14 +86,17 @@ const HOME_HISTORY_SECTION_EN: SiteHomePayload['history'] = {
 
 const HOME_FAQ_ITEMS_EN: FAQItem[] = [
   {
+    id: 'home-faq-impedancia',
     q: 'What is the difference between 1 Ohm and 2 Ohms impedance?',
     a: 'Impedance directly affects the load on the amplifier. Lower impedances allow higher power output, as long as the system is compatible.',
   },
   {
+    id: 'home-faq-garantia',
     q: 'How do I check my product warranty?',
     a: "Access Stetsom's warranty center and enter the serial number to check the current status.",
   },
   {
+    id: 'home-faq-postos',
     q: 'Where can I find authorized Stetsom service centers?',
     a: 'Our network has over 500 distributors in Brazil. Use the locator in the Help Center to find the nearest one.',
   },
@@ -245,7 +254,12 @@ const HOME_HERO_SLIDES_ES: HeroBannerSlide[] = [
   },
 ]
 
-const HOME_FEATURED_TABS_ES = ['Todos', 'Amplificadores', 'Procesadores', 'Subwoofers']
+const HOME_FEATURED_TABS_ES: FeaturedTab[] = [
+  { id: 'tab-all', label: 'Todos' },
+  { id: 'tab-amplificadores', label: 'Amplificadores', categorySlug: 'amplificadores' },
+  { id: 'tab-processadores', label: 'Procesadores', categorySlug: 'processadores' },
+  { id: 'tab-subwoofers', label: 'Subwoofers', categorySlug: 'subwoofers' },
+]
 
 const HOME_FEATURED_SECTION_ES: SiteHomePayload['featured'] = {
   label: 'Novedades',
@@ -275,14 +289,17 @@ const HOME_HISTORY_SECTION_ES: SiteHomePayload['history'] = {
 
 const HOME_FAQ_ITEMS_ES: FAQItem[] = [
   {
+    id: 'home-faq-impedancia',
     q: '¿Cuál es la diferencia entre 1 Ohm y 2 Ohms de impedancia?',
     a: 'La impedancia afecta directamente la carga sobre el amplificador. Impedancias menores permiten mayor potencia, siempre que el sistema sea compatible.',
   },
   {
+    id: 'home-faq-garantia',
     q: '¿Cómo verifico la garantía de mi producto?',
     a: 'Acceda al centro de garantía de Stetsom e ingrese el número de serie para consultar el estado actualizado.',
   },
   {
+    id: 'home-faq-postos',
     q: '¿Dónde encontrar centros autorizados Stetsom?',
     a: 'Nuestra red tiene más de 500 distribuidores en Brasil. Use el localizador en la Central de Ayuda para encontrar el más cercano.',
   },
@@ -432,7 +449,7 @@ export function getHomeHeroSlides(locale?: string): HeroBannerSlide[] {
   )
 }
 
-export function getHomeFeaturedTabs(locale?: string): string[] {
+export function getHomeFeaturedTabs(locale?: string): FeaturedTab[] {
   return selectLocale(
     { 'pt-BR': HOME_FEATURED_TABS, en: HOME_FEATURED_TABS_EN, es: HOME_FEATURED_TABS_ES },
     locale,

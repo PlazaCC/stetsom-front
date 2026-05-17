@@ -303,12 +303,39 @@ export function getCatalogBlocksForLocale(locale?: string): ProductBlock[] {
   return CATALOG_PRODUCT_BLOCKS.map((block) => {
     const map = BLOCK_CONTENT[block.id]
     if (!map) return block
-    const data = { ...block.data } as Record<string, unknown>
-    if (map.caption && 'caption' in data) data['caption'] = pick(map.caption, locale)
-    if (map.title && 'title' in data) data['title'] = pick(map.title, locale)
-    if (map.content && 'content' in data) data['content'] = pick(map.content, locale)
-    if (map.description && 'description' in data) data['description'] = pick(map.description, locale)
-    if (map.html && 'html' in data) data['html'] = pick(map.html, locale)
-    return { ...block, data }
+
+    if (block.type === 'IMAGE') {
+      return {
+        ...block,
+        data: { ...block.data, ...(map.caption ? { caption: pick(map.caption, locale) } : {}) },
+      }
+    }
+    if (block.type === 'TEXT') {
+      return {
+        ...block,
+        data: {
+          ...block.data,
+          ...(map.title ? { title: pick(map.title, locale) } : {}),
+          ...(map.content ? { content: pick(map.content, locale) } : {}),
+        },
+      }
+    }
+    if (block.type === 'VIDEO') {
+      return {
+        ...block,
+        data: {
+          ...block.data,
+          ...(map.title ? { title: pick(map.title, locale) } : {}),
+          ...(map.description ? { description: pick(map.description, locale) } : {}),
+        },
+      }
+    }
+    if (block.type === 'HTML') {
+      return {
+        ...block,
+        data: { ...block.data, ...(map.html ? { html: pick(map.html, locale) } : {}) },
+      }
+    }
+    return block
   })
 }

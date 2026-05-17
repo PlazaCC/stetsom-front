@@ -1,4 +1,4 @@
-import type { FAQItem, ProductFile, ServiceCenter, SupportPayload } from '@/lib/api/contracts'
+import type { DocumentationCategory, FAQItem, ProductFile, ServiceCenter, SupportPayload } from '@/lib/api/contracts'
 
 const NOW = new Date().toISOString()
 
@@ -110,26 +110,32 @@ export const SUPPORT_SERVICE_CENTERS: ServiceCenter[] = [
 
 export const SUPPORT_FAQ_ITEMS: FAQItem[] = [
   {
+    id: 'sup-faq-instalacao',
     q: 'Como instalar meu amplificador?',
     a: 'Siga o manual incluso no produto e, para melhor resultado, procure um instalador autorizado Stetsom.',
   },
   {
+    id: 'sup-faq-impedancia',
     q: 'Qual a diferença entre 1 Ohm e 2 Ohms?',
     a: 'Impedâncias menores permitem maior potência de saída, desde que o sistema esteja dimensionado para essa carga.',
   },
   {
+    id: 'sup-faq-garantia',
     q: 'Como verificar a garantia?',
     a: 'Na central de garantia da Stetsom, informe o número de série para consultar cobertura e status.',
   },
   {
+    id: 'sup-faq-distribuidores',
     q: 'Onde encontrar distribuidores autorizados?',
     a: 'Temos mais de 500 distribuidores no Brasil. Use o localizador na própria central de suporte.',
   },
   {
+    id: 'sup-faq-processador',
     q: 'Qual a diferença entre amplificador e processador?',
     a: 'Amplificadores amplificam sinais de áudio. Processadores trabalham na pré-amplificação e controle de frequência.',
   },
   {
+    id: 'sup-faq-fonte',
     q: 'Posso usar fonte diferente da recomendada?',
     a: 'Recomendamos usar fontes Stetsom de especificações iguais. Outras marcas podem danificar o equipamento.',
   },
@@ -166,13 +172,13 @@ export const SUPPORT_PAYLOAD: SupportPayload = {
   ],
   documentationFiles: SUPPORT_DOCUMENTATION_FILES,
   documentationCategories: [
-    'Manuais',
-    'Logos',
-    'Catálogos de produtos',
-    'Fotos de produtos',
-    'CDS e Fotos Stetsom',
-    'Wallpapers e banners',
-  ],
+    { id: 'MANUAL', label: 'Manuais' },
+    { id: 'logos', label: 'Logos' },
+    { id: 'CATALOG', label: 'Catálogos de produtos' },
+    { id: 'IMAGE', label: 'Fotos de produtos' },
+    { id: 'cds-fotos', label: 'CDS e Fotos Stetsom' },
+    { id: 'wallpapers', label: 'Wallpapers e banners' },
+  ] satisfies DocumentationCategory[],
   contact: {
     label: 'Contato',
     title: 'Fale Conosco',

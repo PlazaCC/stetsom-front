@@ -48,14 +48,14 @@ export async function SupportDocumentation({ categories, files }: Readonly<Suppo
               </div>
               {categories.map((cat, index) => (
                 <button
-                  key={cat}
+                  key={cat.id}
                   className={cn(
                     'flex items-center px-4 py-2.5 text-left font-sans text-sm transition-colors',
                     index === 0
                       ? 'border-l-2 border-brand bg-white font-medium text-brand-dark'
                       : 'border-l-2 border-transparent text-text-subtle hover:border-border hover:text-brand-dark',
                   )}>
-                  {cat}
+                  {cat.label}
                 </button>
               ))}
             </div>
