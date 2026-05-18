@@ -40,30 +40,32 @@ export function OurHistory({ section }: Readonly<OurHistoryProps>) {
 
       {/* Desktop: image flush-left (no left padding), content padded right */}
       <div className="hidden lg:flex lg:min-h-132">
-        <div className="relative w-182.75 shrink-0 self-stretch overflow-hidden">
-          <Image
-            src={section.image}
-            alt={section.imageAlt}
-            fill
-            className="object-cover"
-            sizes="731px"
-          />
-        </div>
-        <div className="flex flex-1 items-center py-16 pl-22.75 pr-42.5">
-          <div className="w-full max-w-122">
-            <SectionLabel
-              label={section.label}
-              title={section.title}
-              subtitle={section.subtitle}
-              dark
+        <div className="flex mx-auto">
+          <div className="relative w-182.75 shrink-0 self-stretch overflow-hidden">
+            <Image
+              src={section.image}
+              alt={section.imageAlt}
+              fill
+              className="object-cover"
+              sizes="731px"
             />
-            <CTAButton
-              href={section.ctaHref}
-              label={section.ctaLabel}
-              variant="brand"
-              size="sm"
-              className="mt-5"
-            />
+          </div>
+          <div className="flex flex-1 items-center py-16 pl-22.75 pr-42.5">
+            <div className="w-full max-w-122">
+              <SectionLabel
+                label={section.label}
+                title={section.title}
+                subtitle={section.subtitle}
+                dark
+              />
+              <CTAButton
+                href={section.ctaHref}
+                label={section.ctaLabel}
+                variant="brand"
+                size="sm"
+                className="mt-5"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -71,30 +73,30 @@ export function OurHistory({ section }: Readonly<OurHistoryProps>) {
   );
 }
 
-interface StatsGridProps {
-  stats: SiteHomePayload["history"]["stats"];
-}
+// interface StatsGridProps {
+//   stats: SiteHomePayload["history"]["stats"];
+// }
 
-function StatsGrid({ stats }: Readonly<StatsGridProps>) {
-  return (
-    <div className="mt-8 grid grid-cols-2 border border-white/20">
-      {stats.map((stat) => (
-        <div key={stat.label} className="border border-white/20 px-4 py-4">
-          <p className="font-sans-condensed text-display-sm font-black leading-none text-white">
-            {stat.value.endsWith("+") ? (
-              <>
-                {stat.value.slice(0, -1)}
-                <span className="text-brand">+</span>
-              </>
-            ) : (
-              stat.value
-            )}
-          </p>
-          <p className="mt-1 font-sans text-xs font-medium uppercase text-text-subtle-dark">
-            {stat.label}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-}
+// function StatsGrid({ stats }: Readonly<StatsGridProps>) {
+//   return (
+//     <div className="mt-8 grid grid-cols-2 border border-white/20">
+//       {stats.map((stat) => (
+//         <div key={stat.label} className="border border-white/20 px-4 py-4">
+//           <p className="font-sans-condensed text-display-sm font-black leading-none text-white">
+//             {stat.value.endsWith("+") ? (
+//               <>
+//                 {stat.value.slice(0, -1)}
+//                 <span className="text-brand">+</span>
+//               </>
+//             ) : (
+//               stat.value
+//             )}
+//           </p>
+//           <p className="mt-1 font-sans text-xs font-medium uppercase text-text-subtle-dark">
+//             {stat.label}
+//           </p>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
