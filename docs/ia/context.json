@@ -16,6 +16,32 @@
       "outcome": "Changelog file created with v1 schema. Rule updated to enforce mandatory append on every AI-driven change."
     },
     {
+      "ts": "2026-05-18T20:40:00Z",
+      "agent": "gpt-5.2-codex",
+      "type": "feat",
+      "summary": "Prepare social feed cards for Instagram fields",
+      "files": [
+        "src/lib/api/contracts.ts",
+        "src/app/[locale]/(site)/_components/social-feed.tsx",
+        "src/lib/mock/site.ts",
+        "src/lib/mock/site-i18n.ts"
+      ],
+      "rationale": "User requested Instagram API-aligned fields and mocked content for the social feed cards.",
+      "outcome": "Social feed now consumes Instagram-style post data, renders caption/username/date, and mocks are localized for EN/ES."
+    },
+    {
+      "ts": "2026-05-18T20:55:00Z",
+      "agent": "gpt-5.2-codex",
+      "type": "feat",
+      "summary": "Align social feed copy with reference image",
+      "files": [
+        "src/lib/mock/site.ts",
+        "src/lib/mock/site-i18n.ts"
+      ],
+      "rationale": "User requested copy to match the provided Social Feed heading and subtitle in all locales.",
+      "outcome": "Social feed handle, title, and subtitle now match the reference in PT, EN, and ES."
+    },
+    {
       "ts": "2026-05-12T06:39:54Z",
       "agent": "gpt-5.3-codex",
       "type": "chore",
@@ -220,6 +246,15 @@
       ],
       "rationale": "Task-12 acceptance criteria require valid spec keys in Portuguese, badge fields on Product type, and at least one VIDEO block for product with video_url",
       "outcome": "Mock catalog has correct Portuguese spec key names, LANÃ‡AMENTO/DESTAQUE badges on 4 products, and VIDEO block for prod-st-4000eq-4c satisfying all 6 acceptance criteria"
+    },
+    {
+      "ts": "2026-05-18T20:25:00Z",
+      "agent": "gpt-5.2-codex",
+      "type": "feat",
+      "summary": "Use Swiper for SocialFeed drag carousel",
+      "files": ["src/app/[locale]/(site)/_components/social-feed.tsx"],
+      "rationale": "User requested Swiper JS with drag interaction and no navigation buttons.",
+      "outcome": "SocialFeed now renders a drag-only Swiper carousel without pagination or nav controls."
     },
     {
       "ts": "2026-05-15T00:00:00Z",
