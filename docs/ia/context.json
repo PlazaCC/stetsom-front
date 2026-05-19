@@ -1816,6 +1816,20 @@
       "files": ["src/components/ui/accordion.tsx"],
       "rationale": "User requested the accordion chevrons use the brand color instead of the muted foreground token.",
       "outcome": "Accordion trigger icons now render with the brand color token."
+    },
+    {
+      "ts": "2026-05-19T00:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "chore",
+      "summary": "Add Prettier config, .prettierignore, .gitattributes to standardize formatting and eliminate CRLF/LF diffs",
+      "files": [
+        ".prettierrc",
+        ".prettierignore",
+        ".gitattributes",
+        "package.json"
+      ],
+      "rationale": "Two devs had different Prettier configs (one had none), causing quote/semicolon/indentation diffs in every PR. Added shared .prettierrc (double quotes, semi, trailing commas, printWidth 80, endOfLine lf) and .gitattributes (text=auto eol=lf) to normalize line endings across Windows/macOS. .prettierignore scoped to src/ only to avoid touching docs, .agents/, .claude/ and root config files.",
+      "outcome": "pnpm format now formats only src/ TypeScript/CSS/JSON files consistently. lint-staged runs prettier before eslint on pre-commit. .gitattributes ensures all text files store as LF in the repo."
     }
   ]
 }

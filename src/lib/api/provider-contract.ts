@@ -11,16 +11,22 @@ import type {
   SiteAboutPayload,
   SiteHomePayload,
   SupportPayload,
-} from '@/lib/api/contracts'
+} from "@/lib/api/contracts";
 
 export interface CmsProvider {
-  getCatalogPagePayload(locale?: string): Promise<CatalogPagePayload>
-  getCatalogProducts(query: CatalogProductsQuery, locale?: string): Promise<PaginatedResponse<Product>>
-  getCatalogProductDetail(slug: string, locale?: string): Promise<ProductDetailPayload | null>
-  getCatalogCategories(locale?: string): Promise<Category[]>
-  getSiteHomePayload(locale?: string): Promise<SiteHomePayload>
-  getSiteAboutPayload(locale?: string): Promise<SiteAboutPayload>
-  getSupportPayload(locale?: string): Promise<SupportPayload>
-  getAdminDashboardPayload(): Promise<AdminDashboardPayload>
-  getCmsProductsPayload(query: CmsProductsQuery): Promise<CmsProductsPayload>
+  getCatalogPagePayload(locale?: string): Promise<CatalogPagePayload>;
+  getCatalogProducts(
+    query: CatalogProductsQuery,
+    locale?: string,
+  ): Promise<PaginatedResponse<Product>>;
+  getCatalogProductDetail(
+    slug: string,
+    locale?: string,
+  ): Promise<ProductDetailPayload | null>;
+  getCatalogCategories(locale?: string): Promise<Category[]>;
+  getSiteHomePayload(locale?: string): Promise<SiteHomePayload>;
+  getSiteAboutPayload(locale?: string): Promise<SiteAboutPayload>;
+  getSupportPayload(locale?: string): Promise<SupportPayload>;
+  getAdminDashboardPayload(): Promise<AdminDashboardPayload>;
+  getCmsProductsPayload(query: CmsProductsQuery): Promise<CmsProductsPayload>;
 }

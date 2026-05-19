@@ -1,50 +1,67 @@
-import type { Category, CmsProductRow, Product, ProductCardItem, ProductStatus } from '@/lib/api/contracts'
+import type {
+  Category,
+  CmsProductRow,
+  Product,
+  ProductCardItem,
+  ProductStatus,
+} from "@/lib/api/contracts";
 
-export function createCategoryLookup(categories: Category[]): Map<string, Category> {
-  return new Map(categories.map((category) => [category.id, category]))
+export function createCategoryLookup(
+  categories: Category[],
+): Map<string, Category> {
+  return new Map(categories.map((category) => [category.id, category]));
 }
 
 function toPowerSpec(product: Product): string {
-  const power = product.specifications.power_rms
+  const power = product.specifications.power_rms;
 
-  if (typeof power === 'string' || typeof power === 'number') {
-    return String(power)
+  if (typeof power === "string" || typeof power === "number") {
+    return String(power);
   }
 
-  return 'Especificacao em breve'
+  return "Especificacao em breve";
 }
 
 function badgeByStatus(status: ProductStatus): string | null {
-  if (status === 'DISCONTINUED') {
-    return 'Descontinuado'
+  if (status === "DISCONTINUED") {
+    return "Descontinuado";
   }
 
-  return null
+  return null;
 }
 
-export function toProductCardItem(product: Product, categories: Map<string, Category>): ProductCardItem {
-  const category = categories.get(product.category_id)
+export function toProductCardItem(
+  product: Product,
+  categories: Map<string, Category>,
+): ProductCardItem {
+  const category = categories.get(product.category_id);
 
   return {
     id: product.id,
     slug: product.slug,
     name: product.name,
-    category: category?.name ?? 'Produto',
+    category: category?.name ?? "Produto",
     spec: toPowerSpec(product),
-    badge: product.badge !== undefined ? product.badge : badgeByStatus(product.status),
+    badge:
+      product.badge !== undefined
+        ? product.badge
+        : badgeByStatus(product.status),
     img: product.thumbnail_url,
     href: `/produtos/${product.slug}`,
     status: product.status,
-  }
+  };
 }
 
-export function toCmsProductRow(product: Product, categories: Map<string, Category>): CmsProductRow {
+export function toCmsProductRow(
+  product: Product,
+  categories: Map<string, Category>,
+): CmsProductRow {
   return {
     id: product.id,
     slug: product.slug,
     name: product.name,
-    category: categories.get(product.category_id)?.name ?? 'Categoria',
+    category: categories.get(product.category_id)?.name ?? "Categoria",
     status: product.status,
     updated_at: product.updated_at,
-  }
+  };
 }

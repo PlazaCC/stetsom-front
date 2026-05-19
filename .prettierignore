@@ -1,0 +1,41 @@
+# Agent and AI tool configurations
+.agents/
+.claude/
+docs/
+.github/
+.vscode/
+graphify-out/
+figma-assets/
+
+# Markdown files (documentation, not code)
+**/*.md
+
+# YAML/config files
+**/*.yml
+**/*.yaml
+
+# Root config files (not source code)
+tsconfig.json
+components.json
+eslint.config.mjs
+next.config.ts
+postcss.config.mjs
+orval.config.ts
+.graphify_incremental.json
+
+# Generated files (do not reformat)
+types/routes.d.ts
+types/cache-life.d.ts
+types/validator.ts
+
+# Package manager
+node_modules/
+pnpm-lock.yaml
+
+# Build outputs
+.next/
+out/
+dist/
+
+# Assets
+public/
