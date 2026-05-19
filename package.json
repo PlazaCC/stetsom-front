@@ -7,12 +7,17 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "format": "prettier --write .",
     "prepare": "husky",
     "generate:types": "orval"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
+      "prettier --write",
       "eslint --fix"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
     ]
   },
   "dependencies": {
@@ -48,6 +53,7 @@
     "lint-staged": "^17.0.4",
     "msw": "^2.14.6",
     "orval": "^8.10.0",
+    "prettier": "^3.5.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

@@ -1,0 +1,21 @@
+# Normalize line endings to LF for all text files
+* text=auto eol=lf
+
+# Force binary (no line-ending conversion)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.pdf binary
+*.zip binary
+*.lock binary
+
+# pnpm lockfile is text but should not be reformatted
+pnpm-lock.yaml text eol=lf

@@ -1,43 +1,52 @@
-import type { ApiErrorPayload, ProductStatus } from '@/lib/api/contracts'
-import { NextResponse } from 'next/server'
+import type { ApiErrorPayload, ProductStatus } from "@/lib/api/contracts";
+import { NextResponse } from "next/server";
 
 export class HttpError extends Error {
-  readonly status: number
-  readonly code: string
+  readonly status: number;
+  readonly code: string;
 
   constructor(status: number, code: string, message: string) {
-    super(message)
-    this.status = status
-    this.code = code
+    super(message);
+    this.status = status;
+    this.code = code;
   }
 }
 
-export function parsePositiveInt(value: string | null, fallback: number): number {
+export function parsePositiveInt(
+  value: string | null,
+  fallback: number,
+): number {
   if (!value) {
-    return fallback
+    return fallback;
   }
 
-  const parsed = Number(value)
+  const parsed = Number(value);
 
   if (!Number.isFinite(parsed) || parsed < 1) {
-    return fallback
+    return fallback;
   }
 
-  return Math.floor(parsed)
+  return Math.floor(parsed);
 }
 
-export function parseStatus(value: string | null): ProductStatus | 'ALL' | undefined {
+export function parseStatus(
+  value: string | null,
+): ProductStatus | "ALL" | undefined {
   if (!value) {
-    return undefined
+    return undefined;
   }
 
-  const normalized = value.toUpperCase()
+  const normalized = value.toUpperCase();
 
-  if (normalized === 'ACTIVE' || normalized === 'DISCONTINUED' || normalized === 'ALL') {
-    return normalized
+  if (
+    normalized === "ACTIVE" ||
+    normalized === "DISCONTINUED" ||
+    normalized === "ALL"
+  ) {
+    return normalized;
   }
 
-  return undefined
+  return undefined;
 }
 
 export function toErrorResponse(error: unknown) {
@@ -47,17 +56,17 @@ export function toErrorResponse(error: unknown) {
         code: error.code,
         message: error.message,
       },
-    }
+    };
 
-    return NextResponse.json(payload, { status: error.status })
+    return NextResponse.json(payload, { status: error.status });
   }
 
   const payload: ApiErrorPayload = {
     error: {
-      code: 'INTERNAL_SERVER_ERROR',
-      message: 'Unexpected server error',
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Unexpected server error",
     },
-  }
+  };
 
-  return NextResponse.json(payload, { status: 500 })
+  return NextResponse.json(payload, { status: 500 });
 }
