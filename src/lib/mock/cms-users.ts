@@ -1,13 +1,14 @@
 import type { AdminUser } from "@/lib/api/contracts";
 
+// MOCK ONLY: dev fallback — remove when Fastify auth is integrated
 export const MOCK_AUTH_PASSWORD =
   process.env.MOCK_ADMIN_PASSWORD ?? "stetsom2026";
 
 export const MOCK_ADMIN_USERS: AdminUser[] = [
   {
     id: "usr-1",
-    name: "Luis Bovo",
-    email: "dark.luismtns@gmail.com",
+    name: "Admin Stetsom",
+    email: "admin@stetsom.com.br",
     role: "SUPER_ADMIN",
     is_active: true,
     created_at: "2026-01-01T00:00:00.000Z",

@@ -4,6 +4,7 @@ import { AdminActionBar } from "@/app/admin/_components/crud/admin-action-bar";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminStatusToggle } from "@/app/admin/_components/crud/admin-status-toggle";
 import type { Banner } from "@/lib/api/contracts";
+import { MOCK_ADMIN_USERS } from "@/lib/mock/cms-users";
 import { Image, Plus } from "lucide-react";
 import { useState } from "react";
 import {
@@ -64,7 +65,7 @@ export function BannersContent({
         order: banners.length + 1,
         created_at: now,
         updated_at: now,
-        created_by: "usr-1",
+        created_by: MOCK_ADMIN_USERS[0].id,
       };
       setBanners((prev) => [...prev, next]);
     } else if (editingBanner) {

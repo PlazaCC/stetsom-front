@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { AdminInput, AdminSelect } from "./admin-input";
-import { AdminRichText } from "./admin-rich-text";
+import { AdminTextEditor } from "./admin-text-editor";
 
 export type BlockType = "TEXT" | "IMAGE" | "VIDEO";
 
@@ -78,7 +78,7 @@ function TextBlockForm({
       </div>
       <div>
         <label className={blockLabelClass}>Conteúdo</label>
-        <AdminRichText
+        <AdminTextEditor
           value={(data.content as string) ?? ""}
           onChange={(v) => onChange({ ...data, content: v })}
           placeholder="Conteúdo do bloco de texto..."

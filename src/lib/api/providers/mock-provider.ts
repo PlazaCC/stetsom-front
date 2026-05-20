@@ -375,6 +375,7 @@ export function createMockCmsProvider(): CmsProvider {
     async login(credentials: LoginCredentials) {
       const user = MOCK_ADMIN_USERS.find((u) => u.email === credentials.email);
 
+      // MOCK ONLY: plaintext comparison — backend will use bcrypt.compare()
       if (!user || credentials.password !== MOCK_AUTH_PASSWORD) {
         throw new HttpError(
           401,
@@ -384,6 +385,8 @@ export function createMockCmsProvider(): CmsProvider {
       }
 
       const expiresAt = new Date(Date.now() + 8 * 3600 * 1000).toISOString();
+
+      // MOCK ONLY: unsigned JWT — backend will use jose with a proper secret
       const header = Buffer.from(
         JSON.stringify({ alg: "HS256", typ: "JWT" }),
       ).toString("base64");

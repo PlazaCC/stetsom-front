@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
-interface AdminRichTextProps {
+interface AdminTextEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -11,13 +11,13 @@ interface AdminRichTextProps {
   className?: string;
 }
 
-export function AdminRichText({
+export function AdminTextEditor({
   value,
   onChange,
   placeholder = "Digite o conteúdo...",
   rows = 6,
   className,
-}: AdminRichTextProps) {
+}: AdminTextEditorProps) {
   const [mode, setMode] = useState<"edit" | "preview">("edit");
 
   return (

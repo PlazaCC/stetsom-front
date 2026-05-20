@@ -7,10 +7,25 @@ const handleLocale = createMiddleware(routing);
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/admin")) {
-    if (!pathname.startsWith("/admin/login")) {
+  const isAdminUi = pathname.startsWith("/admin");
+  const isAdminApi = pathname.startsWith("/api/admin");
+
+  if (isAdminUi || isAdminApi) {
+    const isLoginPage = pathname === "/admin/login";
+    if (!isLoginPage) {
       const token = request.cookies.get("admin_token");
       if (!token) {
+        if (isAdminApi) {
+          return NextResponse.json(
+            {
+              error: {
+                code: "UNAUTHORIZED",
+                message: "Authentication required",
+              },
+            },
+            { status: 401 },
+          );
+        }
         return NextResponse.redirect(new URL("/admin/login", request.url));
       }
     }
@@ -24,7 +39,9 @@ export const config = {
   matcher: [
     // Site routes — locale middleware
     "/((?!_next|_vercel|api|admin|figma-assets|favicon\\.ico|.*\\..*).*)",
-    // Admin routes — auth guard (locale middleware skipped via early return above)
+    // Admin UI routes — redirect to login when no cookie
     "/admin/:path*",
+    // Admin API routes — return 401 when no cookie
+    "/api/admin/:path*",
   ],
 };

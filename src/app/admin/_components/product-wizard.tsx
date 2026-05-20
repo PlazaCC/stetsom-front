@@ -32,7 +32,7 @@ function slugify(text: string): string {
   return text
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 }
@@ -108,19 +108,28 @@ function buildInitialHighlights(detail?: CmsProductDetailPayload): string[] {
 
 function buildInitialBlocks(detail?: CmsProductDetailPayload): DraftBlock[] {
   if (!detail) return [];
-  return detail.blocks.map((b) => ({
-    id: b.id,
-    type: b.type as "TEXT" | "IMAGE" | "VIDEO",
-    data:
-      b.type === "IMAGE"
-        ? {
-            images: (b.data as { images: string[] }).images[0] ?? "",
-            caption: (b.data as { caption?: string }).caption ?? "",
-            layout: (b.data as { layout?: string }).layout ?? "default",
-          }
-        : (b.data as Record<string, unknown>),
-    order: b.order,
-  }));
+  return detail.blocks.map((b) => {
+    if (b.type === "IMAGE") {
+      const d = b.data as Record<string, unknown>;
+      const images = Array.isArray(d.images) ? (d.images as string[]) : [];
+      return {
+        id: b.id,
+        type: "IMAGE" as const,
+        data: {
+          images: images[0] ?? "",
+          caption: typeof d.caption === "string" ? d.caption : "",
+          layout: typeof d.layout === "string" ? d.layout : "default",
+        },
+        order: b.order,
+      };
+    }
+    return {
+      id: b.id,
+      type: b.type as "TEXT" | "VIDEO",
+      data: b.data as Record<string, unknown>,
+      order: b.order,
+    };
+  });
 }
 
 const STEP_LABELS: Record<Step, string> = {
