@@ -43,7 +43,7 @@ export function FeaturedProducts({
   }, [activeTab, featuredProducts]);
 
   return (
-    <section className="flex w-full justify-center bg-white py-12">
+    <section className="flex w-full justify-center bg-background py-12">
       <Container>
         <div className="mb-6 sm:mb-8">
           <div className="hidden lg:flex items-stretch justify-between gap-6">

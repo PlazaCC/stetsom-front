@@ -1,11 +1,11 @@
 "use client";
 
-import type { HeroBannerSlide } from "@/lib/api/contracts";
 import { Link } from "@/i18n/navigation";
+import type { HeroBannerSlide } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRef } from "react";
-import { useTranslations } from "next-intl";
 import "swiper/css";
 import "swiper/css/pagination";
 import { A11y, Autoplay, Pagination } from "swiper/modules";
@@ -13,8 +13,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 const AUTOPLAY_INTERVAL_MS = 12000;
 const HERO_HEIGHT_CLASS = "h-130 sm:h-155 lg:h-175";
-const HERO_OVERLAY_GRADIENT =
-  "linear-gradient(180deg, rgba(0, 0, 0, 0) 72%, rgba(0, 0, 0, 1) 100%)";
 
 interface HeroCarouselProps {
   slides: HeroBannerSlide[];
@@ -94,10 +92,7 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
                 sizes="100vw"
                 priority={index === 0}
               />
-              <div
-                className="absolute inset-0 z-10"
-                style={{ background: HERO_OVERLAY_GRADIENT }}
-              />
+              <div className="absolute inset-0 z-10 bg-gradient-fade-black" />
 
               {(slide.label || slide.title) && (
                 <div className="pointer-events-none absolute bottom-0 left-0 z-20 px-6 pb-12 sm:px-8 lg:px-42.5">

@@ -19,7 +19,7 @@ import type {
   UpdateAdminUserInput,
   UserRole,
 } from "@/lib/api/contracts";
-import { Users, Plus } from "lucide-react";
+import { Plus, Users } from "lucide-react";
 import { useState } from "react";
 
 const ROLE_LABELS: Record<UserRole, string> = {
@@ -38,11 +38,11 @@ function RoleBadge({ role }: { role: UserRole }) {
 
 function StatusBadge({ active }: { active: boolean }) {
   return active ? (
-    <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700">
+    <span className="rounded-full border border-cms-step-done bg-cms-step-done px-2 py-0.5 text-xs font-medium text-white">
       Ativo
     </span>
   ) : (
-    <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
+    <span className="rounded-full border border-cms-step-pending bg-cms-step-pending px-2 py-0.5 text-xs font-medium text-muted-foreground">
       Inativo
     </span>
   );
@@ -71,7 +71,7 @@ function UserForm({ user, onClose, onSave, isPending }: UserFormProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4">
       <div className="w-full max-w-md">
         <AdminFormSection
           title={user ? "Editar Usuário" : "Novo Usuário"}

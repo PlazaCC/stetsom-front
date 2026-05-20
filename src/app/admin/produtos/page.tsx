@@ -108,8 +108,8 @@ export default function AdminProdutos() {
         <span
           className={
             row.status === "ACTIVE"
-              ? "rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700"
-              : "rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700"
+              ? "rounded-full border border-cms-step-done bg-cms-step-done px-2 py-0.5 text-xs font-medium text-white"
+              : "rounded-full border border-cms-step-pending bg-cms-step-pending px-2 py-0.5 text-xs font-medium text-muted-foreground"
           }
         >
           {STATUS_LABELS[row.status]}
@@ -123,7 +123,7 @@ export default function AdminProdutos() {
         <span
           className={
             row.is_published
-              ? "rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700"
+              ? "rounded-full border border-cms-active-item bg-cms-active-item px-2 py-0.5 text-xs font-medium text-foreground"
               : "rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
           }
         >

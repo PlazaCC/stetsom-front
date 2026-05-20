@@ -31,7 +31,7 @@ export function AdminStatusToggle({
       <span className="sr-only">{active ? "Desativar" : "Ativar"}</span>
       <span
         className={cn(
-          "pointer-events-none block size-4 rounded-full bg-white shadow-sm transition-transform",
+          "pointer-events-none block size-4 rounded-full bg-background shadow-sm transition-transform",
           active ? "translate-x-4" : "translate-x-0",
         )}
       />

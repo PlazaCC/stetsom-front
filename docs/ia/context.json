@@ -2182,6 +2182,23 @@
       ],
       "rationale": "User requested fixing all identified issues across priorities from the latest branch review.",
       "outcome": "CMS page now uses semantic design tokens instead of hardcoded palette classes, and admin messages tab button class merging now uses cn for consistency."
+    },
+    {
+      "ts": "2026-05-20T17:58:42Z",
+      "agent": "gpt-5.3-codex",
+      "type": "fix",
+      "summary": "Apply final all-priority token and overlay review fixes",
+      "files": [
+        "src/app/admin/produtos/page.tsx",
+        "src/app/admin/usuarios/page.tsx",
+        "src/app/admin/_components/crud/admin-block-builder.tsx",
+        "src/app/[locale]/(site)/_components/hero-carousel.tsx",
+        "src/app/[locale]/(site)/_components/featured-products.tsx",
+        "src/app/admin/_components/crud/admin-status-toggle.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "User requested implementing all remaining corrections from all review priorities in a single pass.",
+      "outcome": "Admin status badges and overlays now use semantic CMS tokens, hero overlay no longer relies on inline raw rgba style, and minor white-background utilities were replaced with semantic token classes."
     }
   ]
 }
