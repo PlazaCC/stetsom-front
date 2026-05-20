@@ -49,7 +49,7 @@ export function AdminRichText({
           className="w-full resize-none bg-card p-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
         />
       ) : (
-        <div className="min-h-[96px] whitespace-pre-wrap p-3 text-sm text-foreground">
+        <div className="min-h-24 whitespace-pre-wrap p-3 text-sm text-foreground">
           {value || (
             <span className="text-muted-foreground">
               Nenhum conteúdo para pré-visualizar.

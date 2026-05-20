@@ -19,9 +19,7 @@ export function AdminWizardPage({
       <AdminStepIndicator steps={steps} />
       <div className="flex gap-5 pt-1">
         <div className="min-w-0 flex-1 space-y-4">{children}</div>
-        {aside && (
-          <aside className="w-[388px] shrink-0 space-y-4">{aside}</aside>
-        )}
+        {aside && <aside className="w-97 shrink-0 space-y-4">{aside}</aside>}
       </div>
     </div>
   );

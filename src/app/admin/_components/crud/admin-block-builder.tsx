@@ -53,7 +53,7 @@ function generateId(): string {
 
 const DEFAULT_DATA: Record<BlockType, Record<string, unknown>> = {
   TEXT: { title: "", content: "", align: "left" },
-  IMAGE: { images: "", caption: "", layout: "default" },
+  IMAGE: { images: [], caption: "", layout: "default" },
   VIDEO: { video_url: "", title: "", description: "" },
 };
 
@@ -111,8 +111,13 @@ function ImageBlockForm({
       <div>
         <label className={blockLabelClass}>URL da imagem</label>
         <AdminInput
-          value={(data.images as string) ?? ""}
-          onChange={(e) => onChange({ ...data, images: e.target.value })}
+          value={(data.images as string[])?.[0] ?? ""}
+          onChange={(e) =>
+            onChange({
+              ...data,
+              images: e.target.value ? [e.target.value] : [],
+            })
+          }
           placeholder="/uploads/imagem.png ou https://..."
         />
       </div>

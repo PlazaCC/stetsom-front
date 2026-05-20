@@ -20,11 +20,10 @@ interface HeroCarouselProps {
 
 export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
   const t = useTranslations("HeroCarousel");
-  const safeSlides = slides;
-  const shouldLoop = safeSlides.length > 1;
+  const shouldLoop = slides.length > 1;
   const paginationRef = useRef<HTMLDivElement | null>(null);
 
-  if (safeSlides.length === 0) {
+  if (slides.length === 0) {
     return (
       <div
         className={cn(
@@ -71,7 +70,7 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
         loop={shouldLoop}
         pagination={{ clickable: true }}
       >
-        {safeSlides.map((slide, index) => {
+        {slides.map((slide, index) => {
           const mobileSrc = slide.mobileImage ?? slide.desktopImage;
 
           const bannerContent = (

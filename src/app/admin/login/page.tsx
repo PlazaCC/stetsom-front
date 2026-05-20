@@ -18,9 +18,9 @@ export default function AdminLoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="flex w-full max-w-[898px] overflow-hidden rounded-[16px] shadow-2xl">
+      <div className="flex w-full max-w-224.5 overflow-hidden rounded-[16px] shadow-2xl">
         {/* Form panel */}
-        <div className="flex w-[449px] shrink-0 flex-col justify-center bg-card p-12">
+        <div className="flex w-112.25 shrink-0 flex-col justify-center bg-card p-12">
           <div className="mb-10 flex justify-start">
             <Image
               src="/logo.png"

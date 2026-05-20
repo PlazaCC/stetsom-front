@@ -14,7 +14,7 @@ export function AdminFormPage({
   return (
     <div className={cn("flex gap-5", className)}>
       <div className="min-w-0 flex-1 space-y-4">{children}</div>
-      {aside && <aside className="w-[388px] shrink-0 space-y-4">{aside}</aside>}
+      {aside && <aside className="w-97 shrink-0 space-y-4">{aside}</aside>}
     </div>
   );
 }

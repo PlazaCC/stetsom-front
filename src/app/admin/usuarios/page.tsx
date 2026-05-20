@@ -217,12 +217,14 @@ export default function AdminUsuariosPage() {
       render: (u) => (
         <div className="flex items-center justify-end gap-3">
           <button
+            type="button"
             onClick={() => openEdit(u)}
             className="text-xs font-medium text-brand hover:underline"
           >
             Editar
           </button>
           <button
+            type="button"
             onClick={() => setToggleTarget(u)}
             className="text-xs font-medium text-muted-foreground hover:underline"
           >

@@ -13,6 +13,7 @@ import {
   Mail,
   Package,
   Settings,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -32,6 +33,7 @@ const MAIN_NAV: {
 ];
 
 const BOTTOM_NAV: { href: string; label: string; icon: LucideIcon }[] = [
+  { href: "/admin/usuarios", label: "Usuários", icon: Users },
   { href: "/admin/historico", label: "Histórico", icon: Clock },
   { href: "/admin/mensagens", label: "Central de contato", icon: Mail },
   { href: "/admin/configuracoes", label: "Opções", icon: Settings },
@@ -101,6 +103,7 @@ export function AdminSidebar() {
           ))}
         </ul>
         <button
+          type="button"
           onClick={() => logout.mutate()}
           disabled={logout.isPending}
           className="mt-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-sm font-medium text-foreground/60 transition-colors hover:bg-muted hover:text-foreground disabled:opacity-60"

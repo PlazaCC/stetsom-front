@@ -9,7 +9,7 @@ function PanelLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen">
       <AdminSidebar />
-      <main className="flex-1 overflow-y-auto bg-background px-[47px] py-[29px]">
+      <main className="flex-1 overflow-y-auto bg-background px-11.75 py-7.25">
         {children}
       </main>
     </div>
