@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
 import { useLocale } from "next-intl";
+import Image from "next/image";
+import "swiper/css";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
@@ -21,17 +21,18 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
   });
 
   return (
-    <section className="flex justify-center bg-off-white py-12">
+    <section className="flex justify-center overflow-x-hidden bg-off-white py-10 sm:py-12">
       <Container>
-        <div className="flex justify-between items-end mb-8">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <SectionLabel
             label={section.handle}
             title={section.title}
             subtitle={section.subtitle}
+            className="max-w-180"
           />
           <Link
             href={section.ctaHref}
-            className="font-sans-condensed font-medium text-base text-brand hover:text-brand/80 transition-colors"
+            className="w-fit font-sans-condensed text-base font-medium text-brand transition-colors hover:text-brand/80"
           >
             {section.ctaLabel} ›
           </Link>
@@ -40,15 +41,18 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
           slidesPerView="auto"
           spaceBetween={24}
           grabCursor
-          className="!overflow-visible"
+          className="w-full overflow-hidden"
         >
           {section.posts.map((post) => (
-            <SwiperSlide key={post.id} className="!w-62.5">
+            <SwiperSlide
+              key={post.id}
+              className="w-[calc(100vw-2.5rem)] max-w-62.5 sm:w-62.5"
+            >
               <Link
                 href={post.permalink}
-                className="flex w-62.5 flex-col gap-3"
+                className="flex w-full flex-col gap-3"
               >
-                <div className="relative h-62.5 w-62.5 shrink-0 overflow-hidden rounded-sm">
+                <div className="relative aspect-square w-full shrink-0 overflow-hidden rounded-sm">
                   {post.media_type === "VIDEO" ? (
                     <video
                       src={post.media_url}

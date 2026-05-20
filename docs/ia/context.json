@@ -2157,6 +2157,18 @@
       ],
       "rationale": "User requested applying all detected corrections, including the remaining minor issues from the latest review pass.",
       "outcome": "Removed dead commented code from history section and migrated ProductCard to named export with all consumer imports updated, keeping lint and typecheck green."
+    },
+    {
+      "ts": "2026-05-20T17:46:40Z",
+      "agent": "gpt-5.3-codex",
+      "type": "fix",
+      "summary": "Fix social feed overflow and mobile header wrapping",
+      "files": [
+        "src/app/[locale]/(site)/_components/social-feed.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "User reported that the social media sections were breaking the layout with horizontal overflow and requested verification for mobile behavior too.",
+      "outcome": "SocialFeed now clips horizontal overflow, uses responsive header alignment on small screens, and slide sizing adapts safely without page-width overflow in reused home/about sections."
     }
   ]
 }
