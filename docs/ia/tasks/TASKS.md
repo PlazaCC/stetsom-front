@@ -43,5 +43,4 @@ Fase 6 — Suporte + 404 (paralelo, depende de task-01):
 | task-12 | Mock Data — Enriquecimento Imagens + Specs    | 1          | TODO        | NO          | feat/task-12-mock-data-enrichment             |
 | task-13 | Design Token Foundation — Cores, tipografia, espaçamento | 1 | TODO  | NO          | feat/task-02-header-figma-fidelity            |
 | task-17 | CMS Theme Foundation + CRUD Component System              | 2 | TODO  | NO          | feat/cms-theme-crud-foundation                |
-| task-18 | CMS Admin — Mocks Completos + Telas e Fluxos Restantes    | 3 | TODO  | NO          | feat/cms-admin-mocks-screens-flows            |
-
+| task-18 | CMS Admin — Mocks Completos + Telas e Fluxos Restantes    | 3 | REVIEW| NO          | feat/cms-admin-mocks-screens-flows            |

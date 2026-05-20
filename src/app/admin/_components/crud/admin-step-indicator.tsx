@@ -23,13 +23,10 @@ export function AdminStepIndicator({
           className={cn(
             "flex items-center gap-2.5 rounded-full px-3 py-2.5 transition-opacity",
             step.status === "pending" && "opacity-70",
+            step.status === "pending"
+              ? "bg-cms-step-pending"
+              : "bg-cms-active-item",
           )}
-          style={{
-            backgroundColor:
-              step.status === "pending"
-                ? "var(--cms-step-pending)"
-                : "oklch(0.97 0.05 162)",
-          }}
         >
           <span
             className={cn(

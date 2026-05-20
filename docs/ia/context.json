@@ -2099,6 +2099,19 @@
       ],
       "rationale": "Needed to replace flat specifications and 2-column impedance assumptions with a scalable model that supports N variation columns and explicit highlight selection from CMS.",
       "outcome": "Product contract now uses specs+variations, catalog mocks are adapted via legacy-to-row mapper, product detail renders badges/highlights from row data, and admin step 2 supports dynamic variation columns plus highlight checkbox."
+    },
+    {
+      "ts": "2026-05-20T17:04:42Z",
+      "agent": "gpt-5.3-codex",
+      "type": "fix",
+      "summary": "Align task-18 status and remove inline step indicator background",
+      "files": [
+        "docs/ia/tasks/TASKS.md",
+        "src/app/admin/_components/crud/admin-step-indicator.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "User requested applying all review fixes across priorities, including task-state mismatch and minor styling consistency issue.",
+      "outcome": "Task backlog now matches task-18 status (REVIEW), and step indicator now uses semantic CMS token classes instead of inline hardcoded background style."
     }
   ]
 }
