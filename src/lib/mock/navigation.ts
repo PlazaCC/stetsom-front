@@ -48,6 +48,12 @@ export const PRODUCT_MENU_CATEGORIES = [
     href: "/produtos?category=acessorios",
     description: "Acessórios para personalização e desempenho do sistema.",
   },
+  {
+    label: "Subwoofers",
+    image: "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+    href: "/produtos?category=subwoofers",
+    description: "Subwoofers de alto desempenho para graves profundos.",
+  },
 ] as const;
 
 export const FOOTER_COLUMNS = [
@@ -84,7 +90,8 @@ export const FOOTER_COLUMNS = [
 ] as const;
 
 export const FOOTER_SOCIALS = [
-  { label: "Facebook", href: "#" },
-  { label: "YouTube", href: "#" },
-  { label: "TikTok", href: "#" },
+  { label: "Instagram", href: "https://instagram.com/stetsom" },
+  { label: "Facebook", href: "https://facebook.com/stetsom" },
+  { label: "YouTube", href: "https://youtube.com/@stetsom" },
+  { label: "TikTok", href: "https://tiktok.com/@stetsom" },
 ] as const;

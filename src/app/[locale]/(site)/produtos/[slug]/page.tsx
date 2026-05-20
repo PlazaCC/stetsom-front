@@ -1,21 +1,17 @@
 import { type BreadcrumbItem, Breadcrumb } from "@/components/ui/breadcrumb";
 import { Container } from "@/components/ui/container";
-import type { SpecMultiColumnValue } from "@/lib/api/contracts";
+import { Link } from "@/i18n/navigation";
 import { getCatalogProductDetail } from "@/lib/api/server";
 import { formatSpecKey } from "@/lib/utils/product";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { ProductDetailContent } from "./_components/product-detail-content";
 import { StickySectionNav } from "./_components/sticky-section-nav";
 type ProductPageProps = {
   params: Promise<{ locale: string; slug: string }>;
+  searchParams: Promise<{ variation?: string }>;
 };
-
-function isMultiColumn(v: unknown): v is SpecMultiColumnValue {
-  return typeof v === "object" && v !== null && "ohm1" in v;
-}
 
 function toImageList(data: Record<string, unknown>): string[] {
   const images = data.images;
@@ -29,39 +25,9 @@ function toImageList(data: Record<string, unknown>): string[] {
   );
 }
 
-function formatSpecTag(value: unknown): string {
-  if (isMultiColumn(value)) return `${value.ohm1} / ${value.ohm2}`;
-  return String(value);
-}
-
-function extractPowerMetric(specs: Record<string, unknown>): string {
-  const raw = specs["Potência RMS"] ?? specs["power_rms"];
-  if (!raw) return "800W";
-  if (isMultiColumn(raw)) {
-    const match = /(\d+[Ww])/.exec(raw.ohm1);
-    return match ? match[1].toUpperCase() : raw.ohm1;
-  }
-  return String(raw).replace(" RMS", "").trim() || "800W";
-}
-
-function extractChannelsMetric(specs: Record<string, unknown>): string {
-  const raw = specs["Número de canais"] ?? specs["channels"];
-  if (raw) return `${raw} CH`;
-  const powerRaw = specs["Potência RMS"] ?? specs["power_rms"];
-  const str = isMultiColumn(powerRaw) ? powerRaw.ohm1 : String(powerRaw ?? "");
-  const match = /^(\d+)x/i.exec(str);
-  return match ? `${match[1]} CH` : "4 CH";
-}
-
-function extractImpedanceMetric(specs: Record<string, unknown>): string {
-  const raw = specs["Impedância"] ?? specs["impedance"];
-  if (!raw) return "2-4 Ohms";
-  if (isMultiColumn(raw)) return `${raw.ohm1} / ${raw.ohm2}`;
-  return String(raw).trim() || "2-4 Ohms";
-}
-
 export default async function ProdutoDetalhePage(props: ProductPageProps) {
   const { slug } = await props.params;
+  const { variation } = await props.searchParams;
   const [payload, t] = await Promise.all([
     getCatalogProductDetail(slug),
     getTranslations("ProductDetail"),
@@ -81,9 +47,19 @@ export default async function ProdutoDetalhePage(props: ProductPageProps) {
       : [product.thumbnail_url]
   ).slice(0, 4);
   const manualFile = files.find((file) => file.type === "MANUAL");
-  const powerMetric = extractPowerMetric(product.specifications);
-  const channelsMetric = extractChannelsMetric(product.specifications);
-  const impedanceMetric = extractImpedanceMetric(product.specifications);
+  const sortedVariations = [...product.variations].sort(
+    (a, b) => a.order - b.order,
+  );
+  const activeVariation =
+    sortedVariations.find((item) => item.id === variation) ??
+    sortedVariations[0]!;
+  const activeSpecs = [...(activeVariation?.specs ?? [])].sort(
+    (a, b) => a.order - b.order,
+  );
+  const highlights = activeSpecs
+    .filter((spec) => product.highlight_attributes.includes(spec.attribute))
+    .sort((a, b) => a.order - b.order)
+    .slice(0, 3);
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: t("breadcrumbHome"), href: "/" },
@@ -158,41 +134,48 @@ export default async function ProdutoDetalhePage(props: ProductPageProps) {
 
               {/* Spec tags */}
               <ul className="mt-4 flex flex-wrap gap-2">
-                {Object.entries(product.specifications).map(([key, value]) => (
+                {activeSpecs.map((spec) => (
                   <li
-                    key={key}
+                    key={spec.id}
                     className="rounded-lg border border-muted px-3 py-1 text-xs uppercase text-brand-dark"
                   >
-                    {formatSpecKey(key)}: {formatSpecTag(value)}
+                    {formatSpecKey(spec.attribute)}: {spec.value}
                   </li>
                 ))}
               </ul>
 
+              {sortedVariations.length > 1 && (
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    {t("variations")}
+                  </span>
+                  {sortedVariations.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={`/produtos/${product.slug}?variation=${encodeURIComponent(item.id)}`}
+                      className={
+                        item.id === activeVariation.id
+                          ? "rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground"
+                          : "rounded-md border border-border bg-transparent px-3 py-1.5 text-sm text-muted-foreground"
+                      }
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+
               <div className="mt-6 grid grid-cols-3 gap-4 border-y border-border py-4">
-                <div>
-                  <p className="font-sans-condensed text-3xl font-black uppercase leading-none text-brand">
-                    {powerMetric}
-                  </p>
-                  <p className="text-2xs font-sans uppercase tracking-wide text-text-subtle">
-                    {t("powerRMS")}
-                  </p>
-                </div>
-                <div>
-                  <p className="font-sans-condensed text-3xl font-black uppercase leading-none text-brand">
-                    {channelsMetric}
-                  </p>
-                  <p className="text-2xs font-sans uppercase tracking-wide text-text-subtle">
-                    {t("channels")}
-                  </p>
-                </div>
-                <div>
-                  <p className="font-sans-condensed text-3xl font-black uppercase leading-none text-brand">
-                    {impedanceMetric}
-                  </p>
-                  <p className="text-2xs font-sans uppercase tracking-wide text-text-subtle">
-                    {t("impedance")}
-                  </p>
-                </div>
+                {highlights.map((spec) => (
+                  <div key={spec.id}>
+                    <p className="font-sans-condensed text-3xl font-black uppercase leading-none text-brand">
+                      {spec.value}
+                    </p>
+                    <p className="text-2xs font-sans uppercase tracking-wide text-text-subtle">
+                      {formatSpecKey(spec.attribute)}
+                    </p>
+                  </div>
+                ))}
               </div>
 
               <div className="mt-5 flex flex-wrap gap-3">
@@ -220,7 +203,7 @@ export default async function ProdutoDetalhePage(props: ProductPageProps) {
       <ProductDetailContent
         productName={product.name}
         thumbnailUrl={product.thumbnail_url}
-        specifications={product.specifications}
+        specs={activeSpecs}
         blocks={blocks}
         relatedProducts={relatedProducts}
       />

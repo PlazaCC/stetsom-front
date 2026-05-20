@@ -6,12 +6,12 @@ import type {
   SupportPayload,
 } from "@/lib/api/contracts";
 
-const NOW = new Date().toISOString();
+const NOW = "2026-05-12T00:00:00.000Z";
 
 const SUPPORT_DOCUMENTATION_FILES: ProductFile[] = [
   {
     id: "doc-manual-stx2448bt",
-    product_id: "support",
+    product_id: "library",
     file_url: "#",
     type: "MANUAL",
     name: "Manual STX2448BT",
@@ -23,7 +23,7 @@ const SUPPORT_DOCUMENTATION_FILES: ProductFile[] = [
   },
   {
     id: "doc-manual-sr4000",
-    product_id: "support",
+    product_id: "library",
     file_url: "#",
     type: "MANUAL",
     name: "Manual SR4000",
@@ -35,7 +35,7 @@ const SUPPORT_DOCUMENTATION_FILES: ProductFile[] = [
   },
   {
     id: "doc-manual-st4000eq",
-    product_id: "support",
+    product_id: "library",
     file_url: "#",
     type: "MANUAL",
     name: "Manual ST 4000EQ 4 Canais",
@@ -47,7 +47,7 @@ const SUPPORT_DOCUMENTATION_FILES: ProductFile[] = [
   },
   {
     id: "doc-catalogo-2024",
-    product_id: "support",
+    product_id: "library",
     file_url: "#",
     type: "CATALOG",
     name: "Catálogo Stetsom 2024",
@@ -59,7 +59,7 @@ const SUPPORT_DOCUMENTATION_FILES: ProductFile[] = [
   },
   {
     id: "doc-certificado-fcc",
-    product_id: "support",
+    product_id: "library",
     file_url: "#",
     type: "CERTIFICATE",
     name: "Certificado FCC — Amplificadores",
@@ -71,7 +71,7 @@ const SUPPORT_DOCUMENTATION_FILES: ProductFile[] = [
   },
   {
     id: "doc-logo-stetsom",
-    product_id: "support",
+    product_id: "library",
     file_url: "#",
     type: "IMAGE",
     name: "Logo Stetsom (PNG + SVG)",
@@ -183,11 +183,9 @@ export const SUPPORT_PAYLOAD: SupportPayload = {
   documentationFiles: SUPPORT_DOCUMENTATION_FILES,
   documentationCategories: [
     { id: "MANUAL", label: "Manuais" },
-    { id: "logos", label: "Logos" },
-    { id: "CATALOG", label: "Catálogos de produtos" },
-    { id: "IMAGE", label: "Fotos de produtos" },
-    { id: "cds-fotos", label: "CDS e Fotos Stetsom" },
-    { id: "wallpapers", label: "Wallpapers e banners" },
+    { id: "CATALOG", label: "Catálogos" },
+    { id: "CERTIFICATE", label: "Certificados" },
+    { id: "IMAGE", label: "Fotos e logos" },
   ] satisfies DocumentationCategory[],
   contact: {
     label: "Contato",

@@ -2,13 +2,20 @@ import type {
   AdminDashboardPayload,
   AdminUser,
   AdminUsersPayload,
+  AuditEntry,
   AuthPayload,
+  Banner,
   CatalogPagePayload,
   CatalogProductsQuery,
   Category,
+  CmsConfig,
+  CmsProductDetailPayload,
   CmsProductsPayload,
   CmsProductsQuery,
+  ContactMessage,
   CreateAdminUserInput,
+  LibraryAsset,
+  LibraryAssetType,
   LoginCredentials,
   PaginatedResponse,
   Product,
@@ -163,6 +170,36 @@ export function createRemoteCmsProvider(): CmsProvider {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(input),
       });
+    },
+
+    async getCmsProductDetail(id: string) {
+      return fetchJson<CmsProductDetailPayload>(
+        remoteBaseUrl,
+        `/cms/products/${id}`,
+      );
+    },
+
+    async getBanners() {
+      return fetchJson<Banner[]>(remoteBaseUrl, "/cms/banners");
+    },
+
+    async getLibraryAssets(params?: { type?: LibraryAssetType }) {
+      const suffix = params?.type
+        ? `?type=${encodeURIComponent(params.type)}`
+        : "";
+      return fetchJson<LibraryAsset[]>(remoteBaseUrl, `/cms/library${suffix}`);
+    },
+
+    async getContactMessages() {
+      return fetchJson<ContactMessage[]>(remoteBaseUrl, "/cms/messages");
+    },
+
+    async getAuditLog() {
+      return fetchJson<AuditEntry[]>(remoteBaseUrl, "/cms/audit");
+    },
+
+    async getCmsConfig() {
+      return fetchJson<CmsConfig>(remoteBaseUrl, "/cms/config");
     },
   };
 }

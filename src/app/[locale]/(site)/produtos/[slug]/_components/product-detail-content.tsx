@@ -1,25 +1,20 @@
-import { BlockRenderer } from "./block-renderer";
 import { Container } from "@/components/ui/container";
 import ProductCard from "@/components/ui/product-card";
 import type {
   ProductBlock,
   ProductCardItem,
-  ProductSpecifications,
-  SpecMultiColumnValue,
+  ProductSpec,
 } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
 import { formatSpecKey } from "@/lib/utils/product";
-import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-
-function isMultiColumn(v: unknown): v is SpecMultiColumnValue {
-  return typeof v === "object" && v !== null && "ohm1" in v;
-}
+import Image from "next/image";
+import { BlockRenderer } from "./block-renderer";
 
 interface ProductDetailContentProps {
   productName: string;
   thumbnailUrl: string;
-  specifications: ProductSpecifications;
+  specs: ProductSpec[];
   blocks: ProductBlock[];
   relatedProducts: ProductCardItem[];
 }
@@ -27,13 +22,13 @@ interface ProductDetailContentProps {
 export async function ProductDetailContent({
   productName,
   thumbnailUrl,
-  specifications,
+  specs,
   blocks,
   relatedProducts,
 }: ProductDetailContentProps) {
   const t = await getTranslations("ProductDetail");
-  const specEntries = Object.entries(specifications);
-  const hasSpecs = specEntries.length > 0;
+  const sortedSpecs = [...specs].sort((a, b) => a.order - b.order);
+  const hasSpecs = sortedSpecs.length > 0;
 
   return (
     <>
@@ -95,44 +90,20 @@ export async function ProductDetailContent({
         {hasSpecs ? (
           <div className="bg-white pb-9">
             <div className="w-full overflow-x-auto">
-              {specEntries.some(([, v]) => isMultiColumn(v)) && (
-                <div className="flex items-center gap-8 border-b border-zinc-200 bg-white px-5 py-3 lg:px-42.5">
-                  <span className="w-1/2 shrink-0" />
-                  <div className="flex flex-1 gap-4">
-                    <span className="flex-1 font-sans-condensed text-xs font-black uppercase tracking-widest text-brand">
-                      {t("ohm1")}
-                    </span>
-                    <span className="flex-1 font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground">
-                      {t("ohm2")}
-                    </span>
-                  </div>
-                </div>
-              )}
-              {specEntries.map(([key, value], i) => (
+              {sortedSpecs.map((spec, i) => (
                 <div
-                  key={key}
+                  key={spec.id}
                   className={cn(
                     "flex items-center gap-8 px-5 py-4.5 lg:px-42.5",
                     i % 2 === 0 ? "bg-muted" : "bg-white",
                   )}
                 >
                   <span className="w-1/2 shrink-0 font-sans text-sm font-medium capitalize text-brand-dark">
-                    {formatSpecKey(key)}
+                    {formatSpecKey(spec.attribute)}
                   </span>
-                  {isMultiColumn(value) ? (
-                    <div className="flex flex-1 gap-4">
-                      <span className="flex-1 font-sans text-sm font-semibold text-brand-dark">
-                        {value.ohm1}
-                      </span>
-                      <span className="flex-1 font-sans text-sm text-text-subtle">
-                        {value.ohm2}
-                      </span>
-                    </div>
-                  ) : (
-                    <span className="font-sans text-sm text-text-subtle">
-                      {String(value)}
-                    </span>
-                  )}
+                  <span className="font-sans text-sm text-text-subtle">
+                    {spec.value || "—"}
+                  </span>
                 </div>
               ))}
             </div>

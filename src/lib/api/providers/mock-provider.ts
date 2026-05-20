@@ -4,6 +4,7 @@ import type {
   CatalogProductsQuery,
   CmsProductsQuery,
   CreateAdminUserInput,
+  LibraryAssetType,
   Locale,
   LoginCredentials,
   PaginatedResponse,
@@ -24,9 +25,14 @@ import {
 import type { CmsProvider } from "@/lib/api/provider-contract";
 import {
   ADMIN_DASHBOARD_PAYLOAD,
-  MOCK_ADMIN_USERS,
-  MOCK_AUTH_PASSWORD,
+  buildCmsProductDetail,
 } from "@/lib/mock/admin-cms";
+import { MOCK_CMS_AUDIT_LOG } from "@/lib/mock/cms-audit";
+import { MOCK_CMS_BANNERS } from "@/lib/mock/cms-banners";
+import { MOCK_CMS_CONFIG } from "@/lib/mock/cms-config";
+import { MOCK_CMS_LIBRARY_ASSETS } from "@/lib/mock/cms-library";
+import { MOCK_CMS_MESSAGES } from "@/lib/mock/cms-messages";
+import { MOCK_ADMIN_USERS, MOCK_AUTH_PASSWORD } from "@/lib/mock/cms-users";
 import {
   CATALOG_CATEGORIES,
   CATALOG_PRODUCT_FILES,
@@ -454,6 +460,31 @@ export function createMockCmsProvider(): CmsProvider {
 
       MOCK_ADMIN_USERS[index] = updated;
       return updated;
+    },
+
+    async getCmsProductDetail(id: string) {
+      return buildCmsProductDetail(id);
+    },
+
+    async getBanners() {
+      return [...MOCK_CMS_BANNERS];
+    },
+
+    async getLibraryAssets(params?: { type?: LibraryAssetType }) {
+      if (!params?.type) return [...MOCK_CMS_LIBRARY_ASSETS];
+      return MOCK_CMS_LIBRARY_ASSETS.filter((a) => a.type === params.type);
+    },
+
+    async getContactMessages() {
+      return [...MOCK_CMS_MESSAGES];
+    },
+
+    async getAuditLog() {
+      return [...MOCK_CMS_AUDIT_LOG];
+    },
+
+    async getCmsConfig() {
+      return { ...MOCK_CMS_CONFIG };
     },
   };
 }

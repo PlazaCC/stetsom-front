@@ -4,6 +4,8 @@ import type {
   Product,
   ProductBlock,
   ProductFile,
+  ProductSpec,
+  ProductVariation,
   Subcategory,
 } from "@/lib/api/contracts";
 
@@ -167,7 +169,88 @@ export const CATALOG_SUBCATEGORIES: Subcategory[] = [
   },
 ];
 
-export const CATALOG_PRODUCTS: Product[] = [
+type LegacySpecValue =
+  | string
+  | number
+  | boolean
+  | { ohm1: string; ohm2: string };
+type LegacySpecifications = Record<string, LegacySpecValue>;
+type LegacyProduct = Omit<Product, "variations" | "highlight_attributes"> & {
+  specifications: LegacySpecifications;
+};
+
+const DEFAULT_HIGHLIGHT_PRIORITY = [
+  "rms_power",
+  "max_power",
+  "channels",
+  "impedance",
+  "sample_rate",
+  "outputs",
+  "output_current",
+  "output_voltage",
+] as const;
+
+function toVariationLabels(
+  specifications: LegacySpecifications,
+  preferredLabels?: string[],
+): string[] {
+  if (preferredLabels && preferredLabels.length > 0) {
+    return preferredLabels;
+  }
+
+  const hasMultiColumn = Object.values(specifications).some(
+    (value) => typeof value === "object" && value !== null && "ohm1" in value,
+  );
+
+  return hasMultiColumn ? ["Variação 1", "Variação 2"] : ["Padrão"];
+}
+
+function toVariationSpecs(
+  specifications: LegacySpecifications,
+  variationIndex: number,
+): ProductSpec[] {
+  return Object.entries(specifications).map(([attribute, value], index) => ({
+    id: `spec-${variationIndex + 1}-${attribute}-${index + 1}`,
+    attribute,
+    value:
+      typeof value === "object" && value !== null && "ohm1" in value
+        ? variationIndex === 0
+          ? value.ohm1
+          : value.ohm2
+        : String(value),
+    order: index + 1,
+  }));
+}
+
+function resolveHighlightAttributes(specs: ProductSpec[]): string[] {
+  const highlighted = new Set<string>();
+
+  for (const key of DEFAULT_HIGHLIGHT_PRIORITY) {
+    const match = specs.find((spec) => spec.attribute === key);
+    if (match) {
+      highlighted.add(match.attribute);
+    }
+
+    if (highlighted.size >= 3) {
+      break;
+    }
+  }
+
+  for (const spec of specs) {
+    if (highlighted.size >= 3) {
+      break;
+    }
+    highlighted.add(spec.attribute);
+  }
+
+  return Array.from(highlighted);
+}
+
+const PRODUCT_VARIATION_LABELS: Record<string, string[]> = {
+  "prod-st-4000eq-4c": ["2 Ohms", "4 Ohms"],
+};
+
+const LEGACY_CATALOG_PRODUCTS: LegacyProduct[] = [
   {
     id: "prod-st-4000eq-4c",
     name: "ST-4000EQ 4 CANAIS",
@@ -180,18 +263,18 @@ export const CATALOG_PRODUCTS: Product[] = [
     description:
       "Amplificador 4 canais com alta eficiência para sistemas automotivos de média e alta potência.",
     specifications: {
-      Channels: "4",
-      "Operating class": "Class D",
-      "Frequency response": "20 Hz – 20 kHz",
-      "Input gain": { ohm1: "0 to 6V", ohm2: "0 to 6V" },
-      "RMS power": { ohm1: "4x 1000W RMS", ohm2: "4x 600W RMS" },
-      "Max power": { ohm1: "4x 1400W", ohm2: "4x 900W" },
-      "Graphic EQ": "8 bands",
-      "Master level": "Yes",
-      Routing: "Stereo / Mono",
-      Limiter: "Yes",
-      "Operating voltage": "12 – 14.4V",
-      Fuses: "2x 50A",
+      channels: "4",
+      operating_class: "Class D",
+      frequency_response: "20 Hz – 20 kHz",
+      input_gain: { ohm1: "0 to 6V", ohm2: "0 to 6V" },
+      rms_power: { ohm1: "4x 1000W RMS", ohm2: "4x 600W RMS" },
+      max_power: { ohm1: "4x 1400W", ohm2: "4x 900W" },
+      graphic_eq: "8 bands",
+      master_level: "Yes",
+      routing: "Stereo / Mono",
+      limiter: "Yes",
+      operating_voltage: "12 – 14.4V",
+      fuses: "2x 50A",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailPrimary,
     video_url: "https://www.youtube.com/watch?v=stetsom-demo-4000",
@@ -210,9 +293,9 @@ export const CATALOG_PRODUCTS: Product[] = [
     description:
       "Módulo mono para graves com resposta estável e alto rendimento.",
     specifications: {
-      power_rms: "1x 2000W RMS",
+      rms_power: "1x 2000W RMS",
       impedance: "1 Ohm",
-      class: "Classe D",
+      operating_class: "Class D",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailPrimary,
     created_at: NOW,
@@ -230,9 +313,9 @@ export const CATALOG_PRODUCTS: Product[] = [
     description:
       "Compacto, eficiente e ideal para projetos que priorizam espaço interno.",
     specifications: {
-      power_rms: "4x 200W RMS",
+      rms_power: "4x 200W RMS",
       impedance: "2 Ohms",
-      class: "Classe D",
+      operating_class: "Class D",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailSecondary,
     created_at: NOW,
@@ -250,9 +333,9 @@ export const CATALOG_PRODUCTS: Product[] = [
     description:
       "Projeto focado em graves com resposta rápida e controle térmico aprimorado.",
     specifications: {
-      power_rms: "1x 1200W RMS",
+      rms_power: "1x 1200W RMS",
       impedance: "2 Ohms",
-      class: "Classe D",
+      operating_class: "Class D",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailSecondary,
     created_at: NOW,
@@ -261,7 +344,7 @@ export const CATALOG_PRODUCTS: Product[] = [
   },
   {
     id: "prod-stx-96-pro",
-    name: "STX 96 PRO",
+    name: "STX-96 PRO",
     slug: "stx-96-pro",
     category_id: "cat-processadores",
     subcategory_id: "sub-dsp",
@@ -271,10 +354,10 @@ export const CATALOG_PRODUCTS: Product[] = [
       "Processador digital com presets avançados e equalização em tempo real.",
     badge: "LANÇAMENTO",
     specifications: {
-      power_rms: "DSP 96kHz",
-      entradas: 6,
-      saidas: 8,
-      resposta_frequencia: "20Hz-20kHz",
+      sample_rate: "96kHz",
+      inputs: "6",
+      outputs: "8",
+      frequency_response: "20Hz–20kHz",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailTertiary,
     created_at: NOW,
@@ -293,8 +376,8 @@ export const CATALOG_PRODUCTS: Product[] = [
       "Subwoofer de alta excursão para projetos SPL com grande deslocamento de ar.",
     badge: "DESTAQUE",
     specifications: {
-      power_rms: "3000W RMS",
-      diametro: "12 polegadas",
+      rms_power: "3000W RMS",
+      diameter: '12"',
       impedance: "Dual 2 Ohms",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailSecondary,
@@ -315,10 +398,10 @@ export const CATALOG_PRODUCTS: Product[] = [
     badge: "DESTAQUE",
     markets: ["pt-BR"],
     specifications: {
-      power_rms: "120A / 13.8V",
-      corrente_saida: "120A continuo",
-      tensao_saida: "13.8V",
-      protecao: true,
+      rms_power: "120A / 13.8V",
+      output_current: "120A",
+      output_voltage: "13.8V",
+      protection: "Yes",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailPrimary,
     created_at: NOW,
@@ -336,9 +419,9 @@ export const CATALOG_PRODUCTS: Product[] = [
     description:
       "Modelo compacto legado, mantido para histórico e suporte documental.",
     specifications: {
-      power_rms: "4x 87W RMS",
+      rms_power: "4x 87W RMS",
       impedance: "4 Ohms",
-      class: "Classe AB",
+      operating_class: "Class AB",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailTertiary,
     created_at: NOW,
@@ -356,9 +439,9 @@ export const CATALOG_PRODUCTS: Product[] = [
     description:
       "Módulo mono de alta corrente para projetos SPL com subwoofers de grande deslocamento.",
     specifications: {
-      power_rms: "1x 3000W RMS",
+      rms_power: "1x 3000W RMS",
       impedance: "1 Ohm",
-      class: "Classe D",
+      operating_class: "Class D",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailPrimary,
     badge: "DESTAQUE",
@@ -378,9 +461,9 @@ export const CATALOG_PRODUCTS: Product[] = [
       "Amplificador full-range para sistemas compactos com excelente controle de médio e agudo.",
     markets: ["en", "es"],
     specifications: {
-      power_rms: "4x 100W RMS",
+      rms_power: "4x 100W RMS",
       impedance: "2 Ohms",
-      class: "Classe D",
+      operating_class: "Class D",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailSecondary,
     created_at: NOW,
@@ -399,9 +482,9 @@ export const CATALOG_PRODUCTS: Product[] = [
       "Projetado para graves encorpados com estabilidade térmica para uso contínuo.",
     markets: ["pt-BR", "en"],
     specifications: {
-      power_rms: "1x 1600W RMS",
+      rms_power: "1x 1600W RMS",
       impedance: "2 Ohms",
-      class: "Classe D",
+      operating_class: "Class D",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailTertiary,
     created_at: NOW,
@@ -419,9 +502,9 @@ export const CATALOG_PRODUCTS: Product[] = [
     description:
       "Linha CL com DSP de ajuste fino para alta fidelidade em sistemas multivia.",
     specifications: {
-      power_rms: "4x 625W RMS",
+      rms_power: "4x 625W RMS",
       impedance: "2 Ohms",
-      class: "Classe D",
+      operating_class: "Class D",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailPrimary,
     created_at: NOW,
@@ -439,10 +522,10 @@ export const CATALOG_PRODUCTS: Product[] = [
     description:
       "Processador digital com conectividade Bluetooth e interface de ajuste em tempo real.",
     specifications: {
-      power_rms: "DSP 48kHz",
-      entradas: 4,
-      saidas: 8,
-      bluetooth: true,
+      sample_rate: "48kHz",
+      inputs: "4",
+      outputs: "8",
+      connectivity: "Bluetooth 5.0",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailTertiary,
     badge: "LANÇAMENTO",
@@ -461,10 +544,10 @@ export const CATALOG_PRODUCTS: Product[] = [
     description:
       "Processador para projetos profissionais com alinhamento de tempo e crossover avançado.",
     specifications: {
-      power_rms: "DSP 96kHz",
-      entradas: 8,
-      saidas: 12,
-      resposta_frequencia: "20Hz-22kHz",
+      sample_rate: "96kHz",
+      inputs: "8",
+      outputs: "12",
+      frequency_response: "20Hz–22kHz",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailSecondary,
     created_at: NOW,
@@ -482,8 +565,8 @@ export const CATALOG_PRODUCTS: Product[] = [
     description:
       "Subwoofer de alto desempenho para competições, com bobina reforçada e resposta rápida.",
     specifications: {
-      power_rms: "3500W RMS",
-      diametro: "12 polegadas",
+      rms_power: "3500W RMS",
+      diameter: '12"',
       impedance: "Dual 1 Ohm",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailPrimary,
@@ -503,10 +586,10 @@ export const CATALOG_PRODUCTS: Product[] = [
     description:
       "Fonte automotiva para sistemas de alta potência com proteção completa contra sobrecarga.",
     specifications: {
-      power_rms: "200A / 13.8V",
-      corrente_saida: "200A continuo",
-      tensao_saida: "13.8V",
-      protecao: true,
+      rms_power: "200A / 13.8V",
+      output_current: "200A",
+      output_voltage: "13.8V",
+      protection: "Yes",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailSecondary,
     badge: "LANÇAMENTO",
@@ -524,9 +607,9 @@ export const CATALOG_PRODUCTS: Product[] = [
     description:
       "Cabos RCA blindados para reduzir ruído e preservar dinâmica em sistemas de alta fidelidade.",
     specifications: {
-      comprimento: "5 metros",
-      conectores: "Banhados a ouro",
-      blindagem: "Dupla",
+      length: "5m",
+      connectors: "Gold-plated",
+      shielding: "Dual",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailTertiary,
     created_at: NOW,
@@ -543,9 +626,9 @@ export const CATALOG_PRODUCTS: Product[] = [
     description:
       "Kit de fusível ANL e porta-fusível para instalações seguras de alta corrente.",
     specifications: {
-      corrente_maxima: "200A",
-      material: "Liga de cobre",
-      aplicacao: "Som automotivo",
+      max_current: "200A",
+      material: "Copper alloy",
+      application: "Car audio",
     },
     thumbnail_url: CATALOG_ASSETS.thumbnailPrimary,
     created_at: NOW,
@@ -553,6 +636,33 @@ export const CATALOG_PRODUCTS: Product[] = [
     created_by: AUTHOR,
   },
 ];
+
+export const CATALOG_PRODUCTS: Product[] = LEGACY_CATALOG_PRODUCTS.map(
+  ({ specifications, ...product }) => {
+    const variationLabels = toVariationLabels(
+      specifications,
+      PRODUCT_VARIATION_LABELS[product.id],
+    );
+    const variations: ProductVariation[] = variationLabels.map(
+      (label, index) => ({
+        id: `variation-${product.id}-${index + 1}`,
+        label,
+        order: index + 1,
+        specs: toVariationSpecs(specifications, index),
+      }),
+    );
+
+    const highlightAttributes = resolveHighlightAttributes(
+      variations[0]?.specs ?? [],
+    );
+
+    return {
+      ...product,
+      variations,
+      highlight_attributes: highlightAttributes,
+    };
+  },
+);
 
 export const CATALOG_PRODUCT_BLOCKS: ProductBlock[] = [
   {
@@ -926,6 +1036,86 @@ export const CATALOG_PRODUCT_FILES: ProductFile[] = [
     id: "file-350-manual-v1",
     product_id: "prod-st-350-4-mini",
     file_url: "/docs/manual-st-350-mini.pdf",
+    type: "MANUAL",
+    version: 1,
+    is_active: true,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: "file-ex3000-manual-v1",
+    product_id: "prod-ex-3000eq-bass",
+    file_url: "/docs/manual-ex-3000eq-bass.pdf",
+    type: "MANUAL",
+    version: 1,
+    is_active: true,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: "file-ir400-manual-v1",
+    product_id: "prod-ir-400-4",
+    file_url: "/docs/manual-ir-400-4.pdf",
+    type: "MANUAL",
+    version: 1,
+    is_active: true,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: "file-bravo-manual-v1",
+    product_id: "prod-bravo-1600-1",
+    file_url: "/docs/manual-bravo-1600-1.pdf",
+    type: "MANUAL",
+    version: 1,
+    is_active: true,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: "file-cl2500-manual-v1",
+    product_id: "prod-cl-2500-digital",
+    file_url: "/docs/manual-cl-2500-digital.pdf",
+    type: "MANUAL",
+    version: 1,
+    is_active: true,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: "file-stx2448-manual-v1",
+    product_id: "prod-stx-2448bt",
+    file_url: "/docs/manual-stx-2448bt.pdf",
+    type: "MANUAL",
+    version: 1,
+    is_active: true,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: "file-stx3248-manual-v1",
+    product_id: "prod-stx-3248-pro",
+    file_url: "/docs/manual-stx-3248-pro.pdf",
+    type: "MANUAL",
+    version: 1,
+    is_active: true,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: "file-vulcan15-manual-v1",
+    product_id: "prod-vulcan-15k",
+    file_url: "/docs/manual-vulcan-15k.pdf",
+    type: "MANUAL",
+    version: 1,
+    is_active: true,
+    created_at: NOW,
+    updated_at: NOW,
+  },
+  {
+    id: "file-sf200-manual-v1",
+    product_id: "prod-sf-200a-pro",
+    file_url: "/docs/manual-fonte-sf200-pro.pdf",
     type: "MANUAL",
     version: 1,
     is_active: true,

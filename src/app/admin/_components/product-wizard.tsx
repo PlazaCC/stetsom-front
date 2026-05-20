@@ -1,18 +1,21 @@
 "use client";
 
-import { AdminBlockBuilder } from "@/app/admin/_components/crud/admin-block-builder";
-import type { DraftBlock } from "@/app/admin/_components/crud/admin-block-builder";
-import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import { AdminWizardPage } from "@/app/admin/_components/crud/admin-wizard-page";
-import type { AdminStep } from "@/app/admin/_components/crud/admin-step-indicator";
-import { AdminPanel } from "@/app/admin/_components/admin-panel";
 import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
-import { ProductWizardStep1 } from "@/app/admin/_components/product-wizard-step1";
-import type { ProductInfo } from "@/app/admin/_components/product-wizard-step1";
-import { ProductWizardStepSpecs } from "@/app/admin/_components/product-wizard-step-specs";
+import { AdminPanel } from "@/app/admin/_components/admin-panel";
+import type { DraftBlock } from "@/app/admin/_components/crud/admin-block-builder";
+import { AdminBlockBuilder } from "@/app/admin/_components/crud/admin-block-builder";
+import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
+import type { AdminStep } from "@/app/admin/_components/crud/admin-step-indicator";
+import { AdminWizardPage } from "@/app/admin/_components/crud/admin-wizard-page";
 import { ProductWizardStepFiles } from "@/app/admin/_components/product-wizard-step-files";
 import { ProductWizardStepPublish } from "@/app/admin/_components/product-wizard-step-publish";
-import type { CmsProductDetailPayload, ProductSpec } from "@/lib/api/contracts";
+import { ProductWizardStepSpecs } from "@/app/admin/_components/product-wizard-step-specs";
+import type { ProductInfo } from "@/app/admin/_components/product-wizard-step1";
+import { ProductWizardStep1 } from "@/app/admin/_components/product-wizard-step1";
+import type {
+  CmsProductDetailPayload,
+  ProductVariation,
+} from "@/lib/api/contracts";
 import { CATALOG_CATEGORIES, CATALOG_SUBCATEGORIES } from "@/lib/mock/catalog";
 import { ArrowLeft, ArrowRight, Check, Package } from "lucide-react";
 import Link from "next/link";
@@ -66,14 +69,41 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
   };
 }
 
-function buildInitialSpecs(detail?: CmsProductDetailPayload): ProductSpec[] {
+function buildInitialVariations(
+  detail?: CmsProductDetailPayload,
+): ProductVariation[] {
+  if (!detail) {
+    return [
+      {
+        id: "variation-default",
+        label: "1 Ohm",
+        order: 1,
+        specs: [],
+      },
+    ];
+  }
+
+  const variations = [...detail.product.variations].sort(
+    (a, b) => a.order - b.order,
+  );
+
+  if (variations.length > 0) {
+    return variations;
+  }
+
+  return [
+    {
+      id: "variation-default",
+      label: "Padrão",
+      order: 1,
+      specs: [],
+    },
+  ];
+}
+
+function buildInitialHighlights(detail?: CmsProductDetailPayload): string[] {
   if (!detail) return [];
-  return Object.entries(detail.product.specifications).map(([k, v], i) => ({
-    id: `spec-init-${i}`,
-    attribute: k,
-    value: String(v),
-    order: i + 1,
-  }));
+  return detail.product.highlight_attributes;
 }
 
 function buildInitialBlocks(detail?: CmsProductDetailPayload): DraftBlock[] {
@@ -103,7 +133,15 @@ const STEP_LABELS: Record<Step, string> = {
 export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const [step, setStep] = useState<Step>(1);
   const [info, setInfo] = useState<ProductInfo>(buildInitialInfo(initial));
-  const [specs, setSpecs] = useState<ProductSpec[]>(buildInitialSpecs(initial));
+  const [variations, setVariations] = useState<ProductVariation[]>(
+    buildInitialVariations(initial),
+  );
+  const [activeVariationId, setActiveVariationId] = useState<string>(
+    buildInitialVariations(initial)[0].id,
+  );
+  const [highlightAttributes, setHighlightAttributes] = useState<string[]>(
+    buildInitialHighlights(initial),
+  );
   const [blocks, setBlocks] = useState<DraftBlock[]>(
     buildInitialBlocks(initial),
   );
@@ -141,6 +179,10 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const subcategory = CATALOG_SUBCATEGORIES.find(
     (s) => s.id === info.subcategory_id,
   );
+  const activeVariation =
+    variations.find((variation) => variation.id === activeVariationId) ??
+    variations[0];
+  const activeSpecs = activeVariation?.specs ?? [];
 
   const previewAside = (
     <div className="space-y-4">
@@ -190,7 +232,9 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           )}
           <div className="flex justify-between gap-2">
             <dt className="shrink-0 text-muted-foreground">Specs</dt>
-            <dd className="font-medium text-foreground">{specs.length}</dd>
+            <dd className="font-medium text-foreground">
+              {activeSpecs.length}
+            </dd>
           </div>
           <div className="flex justify-between gap-2">
             <dt className="shrink-0 text-muted-foreground">Blocos</dt>
@@ -224,7 +268,14 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
         {step === 1 && <ProductWizardStep1 info={info} onChange={updateInfo} />}
 
         {step === 2 && (
-          <ProductWizardStepSpecs specs={specs} onChange={setSpecs} />
+          <ProductWizardStepSpecs
+            variations={variations}
+            activeVariationId={activeVariationId}
+            highlightAttributes={highlightAttributes}
+            onVariationsChange={setVariations}
+            onActiveVariationChange={setActiveVariationId}
+            onHighlightAttributesChange={setHighlightAttributes}
+          />
         )}
 
         {step === 3 && (
@@ -242,7 +293,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
 
             <ProductWizardStepPublish
               info={info}
-              specs={specs}
+              specs={activeSpecs}
               onInfoChange={(key, value) => updateInfo(key, value)}
             />
           </div>

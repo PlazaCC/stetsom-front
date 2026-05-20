@@ -15,13 +15,25 @@ export function createCategoryLookup(
 }
 
 function toPowerSpec(product: Product): string {
-  const power = product.specifications.power_rms;
+  const defaultVariation = [...product.variations]
+    .sort((a, b) => a.order - b.order)
+    .at(0);
 
-  if (typeof power === "string" || typeof power === "number") {
-    return String(power);
+  const powerSpec = defaultVariation?.specs.find(
+    (spec) => spec.attribute === "rms_power",
+  );
+  if (powerSpec) {
+    return powerSpec.value;
   }
 
-  return "Especificacao em breve";
+  const sampleRateSpec = defaultVariation?.specs.find(
+    (spec) => spec.attribute === "sample_rate",
+  );
+  if (sampleRateSpec) {
+    return `DSP ${sampleRateSpec.value}`;
+  }
+
+  return "—";
 }
 
 function badgeByStatus(status: ProductStatus): string | null {

@@ -11,12 +11,19 @@ export type ProductFileType =
   | "IMAGE"
   | "OTHER";
 
-export type SpecSimpleValue = string | number | boolean;
-export type SpecMultiColumnValue = { ohm1: string; ohm2: string };
-export type ProductSpecifications = Record<
-  string,
-  SpecSimpleValue | SpecMultiColumnValue
->;
+export type ProductSpec = {
+  id: string;
+  attribute: string;
+  value: string;
+  order: number;
+};
+
+export type ProductVariation = {
+  id: string;
+  label: string;
+  order: number;
+  specs: ProductSpec[];
+};
 
 export type Category = {
   id: string;
@@ -46,7 +53,8 @@ export type Product = {
   status: ProductStatus;
   launch_date: ISODateString;
   description: string;
-  specifications: ProductSpecifications;
+  variations: ProductVariation[];
+  highlight_attributes: string[];
   thumbnail_url: string;
   video_url?: string;
   badge?: string | null;
@@ -380,13 +388,6 @@ export type CmsProductRow = {
   status: ProductStatus;
   is_published: boolean;
   updated_at: ISODateString;
-};
-
-export type ProductSpec = {
-  id: string;
-  attribute: string;
-  value: string;
-  order: number;
 };
 
 export type CmsProductsPayload = {

@@ -1,7 +1,7 @@
 "use client";
 
 import { ProductWizard } from "@/app/admin/_components/product-wizard";
-import { MOCK_CMS_PRODUCTS_DETAIL } from "@/lib/mock/admin-cms";
+import { buildCmsProductDetail } from "@/lib/mock/admin-cms";
 import { use } from "react";
 
 interface PageProps {
@@ -10,7 +10,7 @@ interface PageProps {
 
 export default function AdminProdutoEditPage({ params }: PageProps) {
   const { id } = use(params);
-  const detail = MOCK_CMS_PRODUCTS_DETAIL[id];
+  const detail = buildCmsProductDetail(id);
 
   if (!detail) {
     return (

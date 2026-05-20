@@ -94,6 +94,7 @@
     "filesAvailable": "{count, plural, one {# arquivo disponível} other {# arquivos disponíveis}}",
     "manual": "Acessar manual do produto",
     "downloadPhotos": "Download de fotos",
+    "variations": "Variações do produto",
     "breadcrumbHome": "Início",
     "breadcrumbProducts": "Produtos",
     "powerRMS": "Potência RMS",
