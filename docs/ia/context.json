@@ -1915,6 +1915,50 @@
       ],
       "rationale": "Admin routes bypass [locale]/layout.tsx (where html/body lived), causing Missing html/body error. Moved html/body/fonts to app/layout.tsx (true root); locale layout now only wraps with NextIntlClientProvider+QueryProvider",
       "outcome": "All routes (public and admin) share a single html/body from app/layout.tsx; [locale]/layout.tsx provides i18n context; admin/layout.tsx provides admin sidebar"
+    },
+    {
+      "ts": "2026-05-20T14:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "docs",
+      "summary": "Create task-17: CMS Theme Foundation + CRUD Component System",
+      "files": [
+        "docs/ia/tasks/task-17-cms-theme-crud-foundation.md",
+        "docs/ia/tasks/TASKS.md"
+      ],
+      "rationale": "Brainstorm completo com inspeção via Figma MCP revelou tokens, layouts e padrões CRUD do CMS; task criada para isolar tema do CMS e construir primitivos reutilizáveis",
+      "outcome": "Task-17 rastreada no backlog, branch feat/cms-theme-crud-foundation criado, pronto para /next-task"
+    },
+    {
+      "ts": "2026-05-20T15:30:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "feat",
+      "summary": "Implement CMS theme foundation + CRUD component system (task-17)",
+      "files": [
+        "src/app/globals.css",
+        "src/app/admin/admin.css",
+        "src/app/admin/layout.tsx",
+        "src/app/admin/login/page.tsx",
+        "src/app/admin/produtos/page.tsx",
+        "src/app/admin/usuarios/page.tsx",
+        "src/app/admin/_components/admin-sidebar.tsx",
+        "src/app/admin/_components/admin-panel.tsx",
+        "src/app/admin/_components/admin-page-header.tsx",
+        "src/app/admin/_components/crud/admin-list-page.tsx",
+        "src/app/admin/_components/crud/admin-action-bar.tsx",
+        "src/app/admin/_components/crud/admin-data-table.tsx",
+        "src/app/admin/_components/crud/admin-search-input.tsx",
+        "src/app/admin/_components/crud/admin-empty-state.tsx",
+        "src/app/admin/_components/crud/admin-form-page.tsx",
+        "src/app/admin/_components/crud/admin-form-section.tsx",
+        "src/app/admin/_components/crud/admin-wizard-page.tsx",
+        "src/app/admin/_components/crud/admin-step-indicator.tsx",
+        "src/app/admin/_components/crud/admin-file-upload.tsx",
+        "src/app/admin/_components/crud/admin-confirm-dialog.tsx",
+        "docs/ia/figma/meta.json",
+        "docs/ia/tasks/task-17-cms-theme-crud-foundation.md"
+      ],
+      "rationale": "Isolate CMS theme from public site using .cms CSS selector scope; build CRUD primitives so every new admin screen is a composition, not raw code",
+      "outcome": "Admin panel uses #E8ECFB bg, #FAFAFA panels, 240px sidebar with shadow, and 10 CRUD primitives covering list/wizard/form/detail patterns; tsc and lint pass"
     }
   ]
 }

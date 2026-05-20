@@ -1,5 +1,12 @@
 "use client";
 
+import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
+import {
+  AdminDataTable,
+  type AdminTableColumn,
+} from "@/app/admin/_components/crud/admin-data-table";
+import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
+import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { useAdminUserMutations, useAdminUsers } from "@/hooks/use-admin";
 import type {
   AdminUser,
@@ -7,6 +14,7 @@ import type {
   UpdateAdminUserInput,
   UserRole,
 } from "@/lib/api/contracts";
+import { Users, Plus } from "lucide-react";
 import { useState } from "react";
 
 const ROLE_LABELS: Record<UserRole, string> = {
@@ -17,136 +25,122 @@ const ROLE_LABELS: Record<UserRole, string> = {
 
 function RoleBadge({ role }: { role: UserRole }) {
   return (
-    <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-2xs text-zinc-700">
+    <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-foreground">
       {ROLE_LABELS[role]}
     </span>
   );
 }
 
 function StatusBadge({ active }: { active: boolean }) {
-  if (active) {
-    return (
-      <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-2xs font-medium text-emerald-700">
-        Ativo
-      </span>
-    );
-  }
-
-  return (
-    <span className="rounded-full bg-amber-50 px-2 py-0.5 text-2xs font-medium text-amber-700">
+  return active ? (
+    <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700">
+      Ativo
+    </span>
+  ) : (
+    <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
       Inativo
     </span>
   );
 }
 
-interface UserModalProps {
+interface UserFormProps {
   user?: AdminUser;
   onClose: () => void;
   onSave: (data: CreateAdminUserInput | UpdateAdminUserInput) => void;
   isPending: boolean;
 }
 
-function UserModal({ user, onClose, onSave, isPending }: UserModalProps) {
+function UserForm({ user, onClose, onSave, isPending }: UserFormProps) {
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>(user?.role ?? "EDITOR");
 
+  const inputClass =
+    "w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand";
+  const labelClass = "mb-1.5 block text-sm font-medium text-foreground";
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
     if (user) {
-      const input: UpdateAdminUserInput = { name, role };
-      onSave(input);
+      onSave({ name, role } satisfies UpdateAdminUserInput);
     } else {
-      const input: CreateAdminUserInput = { name, email, password, role };
-      onSave(input);
+      onSave({ name, email, password, role } satisfies CreateAdminUserInput);
     }
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-xl">
-        <h2 className="mb-6 font-sans-condensed text-2xl font-black uppercase text-brand-dark">
-          {user ? "Editar Usuário" : "Novo Usuário"}
-        </h2>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-zinc-700">
-              Nome
-            </label>
-            <input
-              type="text"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-            />
-          </div>
-
-          {!user && (
-            <>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-zinc-700">
-                  E-mail
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                />
-              </div>
-
-              <div>
-                <label className="mb-1 block text-sm font-medium text-zinc-700">
-                  Senha
-                </label>
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                />
-              </div>
-            </>
-          )}
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-zinc-700">
-              Perfil
-            </label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value as UserRole)}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-            >
-              <option value="SUPER_ADMIN">Super Admin</option>
-              <option value="ADMIN">Admin</option>
-              <option value="EDITOR">Editor</option>
-            </select>
-          </div>
-
-          <div className="flex gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 rounded-md border border-zinc-300 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="flex-1 rounded-md bg-brand py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
-            >
-              {isPending ? "Salvando..." : "Salvar"}
-            </button>
-          </div>
-        </form>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className="w-full max-w-md">
+        <AdminFormSection
+          title={user ? "Editar Usuário" : "Novo Usuário"}
+          className="shadow-xl"
+        >
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className={labelClass}>Nome</label>
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            {!user && (
+              <>
+                <div>
+                  <label className={labelClass}>E-mail</label>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Senha</label>
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+              </>
+            )}
+            <div>
+              <label className={labelClass}>Perfil</label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value as UserRole)}
+                className={inputClass}
+              >
+                <option value="SUPER_ADMIN">Super Admin</option>
+                <option value="ADMIN">Admin</option>
+                <option value="EDITOR">Editor</option>
+              </select>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 rounded-md border border-border py-2 text-sm font-medium text-foreground hover:bg-muted"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={isPending}
+                className="flex-1 rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-60"
+              >
+                {isPending ? "Salvando..." : "Salvar"}
+              </button>
+            </div>
+          </form>
+        </AdminFormSection>
       </div>
     </div>
   );
@@ -155,21 +149,22 @@ function UserModal({ user, onClose, onSave, isPending }: UserModalProps) {
 export default function AdminUsuariosPage() {
   const users = useAdminUsers();
   const { create, update } = useAdminUserMutations();
-  const [modalOpen, setModalOpen] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | undefined>();
+  const [toggleTarget, setToggleTarget] = useState<AdminUser | undefined>();
 
   function openCreate() {
     setEditingUser(undefined);
-    setModalOpen(true);
+    setFormOpen(true);
   }
 
   function openEdit(user: AdminUser) {
     setEditingUser(user);
-    setModalOpen(true);
+    setFormOpen(true);
   }
 
-  function closeModal() {
-    setModalOpen(false);
+  function closeForm() {
+    setFormOpen(false);
     setEditingUser(undefined);
   }
 
@@ -177,117 +172,126 @@ export default function AdminUsuariosPage() {
     if (editingUser) {
       update.mutate(
         { id: editingUser.id, input: data as UpdateAdminUserInput },
-        { onSuccess: closeModal },
+        { onSuccess: closeForm },
       );
     } else {
-      create.mutate(data as CreateAdminUserInput, { onSuccess: closeModal });
+      create.mutate(data as CreateAdminUserInput, { onSuccess: closeForm });
     }
   }
 
-  function toggleActive(user: AdminUser) {
-    update.mutate({ id: user.id, input: { is_active: !user.is_active } });
-  }
+  const columns: AdminTableColumn<AdminUser>[] = [
+    {
+      key: "name",
+      header: "Nome",
+      render: (u) => (
+        <span className="font-medium text-foreground">{u.name}</span>
+      ),
+    },
+    {
+      key: "email",
+      header: "E-mail",
+      render: (u) => <span className="text-muted-foreground">{u.email}</span>,
+    },
+    {
+      key: "role",
+      header: "Perfil",
+      render: (u) => <RoleBadge role={u.role} />,
+    },
+    {
+      key: "is_active",
+      header: "Status",
+      render: (u) => <StatusBadge active={u.is_active} />,
+    },
+    {
+      key: "last_login",
+      header: "Último acesso",
+      render: (u) => (
+        <span className="text-muted-foreground">
+          {u.last_login
+            ? new Date(u.last_login).toLocaleDateString("pt-BR")
+            : "—"}
+        </span>
+      ),
+    },
+    {
+      key: "actions",
+      header: "",
+      headerClassName: "text-right",
+      className: "text-right",
+      render: (u) => (
+        <div className="flex items-center justify-end gap-3">
+          <button
+            onClick={() => openEdit(u)}
+            className="text-xs font-medium text-brand hover:underline"
+          >
+            Editar
+          </button>
+          <button
+            onClick={() => setToggleTarget(u)}
+            className="text-xs font-medium text-muted-foreground hover:underline"
+          >
+            {u.is_active ? "Desativar" : "Ativar"}
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <div className="space-y-6">
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="font-sans-condensed text-4xl font-black uppercase text-brand-dark">
-            Usuários
-          </h1>
-          <p className="mt-1 text-sm text-zinc-500">
-            Gerencie os acessos ao painel administrativo.
-          </p>
-        </div>
+    <>
+      <AdminListPage
+        title="Usuários"
+        icon={Users}
+        action={
+          <button
+            onClick={openCreate}
+            className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+          >
+            <Plus className="size-4" />
+            Novo usuário
+          </button>
+        }
+      >
+        <AdminDataTable
+          columns={columns}
+          data={users.data?.items ?? []}
+          isLoading={users.isLoading}
+          keyExtractor={(u) => u.id}
+          emptyTitle="Nenhum usuário cadastrado"
+          emptyDescription="Crie um usuário para dar acesso ao painel."
+        />
+      </AdminListPage>
 
-        <button
-          onClick={openCreate}
-          className="rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
-        >
-          Novo usuário
-        </button>
-      </header>
-
-      {users.isLoading && (
-        <p className="text-sm text-zinc-500">Carregando...</p>
-      )}
-
-      {users.isError && (
-        <p className="text-sm text-red-600">Erro ao carregar usuários.</p>
-      )}
-
-      {users.data && (
-        <div className="overflow-hidden rounded-md border border-zinc-200 bg-white">
-          <table className="w-full text-sm">
-            <thead className="border-b border-zinc-200 bg-zinc-50">
-              <tr>
-                <th className="px-4 py-3 text-left font-medium text-zinc-600">
-                  Nome
-                </th>
-                <th className="px-4 py-3 text-left font-medium text-zinc-600">
-                  E-mail
-                </th>
-                <th className="px-4 py-3 text-left font-medium text-zinc-600">
-                  Perfil
-                </th>
-                <th className="px-4 py-3 text-left font-medium text-zinc-600">
-                  Status
-                </th>
-                <th className="px-4 py-3 text-left font-medium text-zinc-600">
-                  Último acesso
-                </th>
-                <th className="px-4 py-3" />
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-100">
-              {users.data.items.map((user) => (
-                <tr key={user.id} className="hover:bg-zinc-50">
-                  <td className="px-4 py-3 font-medium text-brand-dark">
-                    {user.name}
-                  </td>
-                  <td className="px-4 py-3 text-zinc-600">{user.email}</td>
-                  <td className="px-4 py-3">
-                    <RoleBadge role={user.role} />
-                  </td>
-                  <td className="px-4 py-3">
-                    <StatusBadge active={user.is_active} />
-                  </td>
-                  <td className="px-4 py-3 text-zinc-500">
-                    {user.last_login
-                      ? new Date(user.last_login).toLocaleDateString("pt-BR")
-                      : "—"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => openEdit(user)}
-                        className="text-xs font-medium text-brand hover:underline"
-                      >
-                        Editar
-                      </button>
-                      <button
-                        onClick={() => toggleActive(user)}
-                        className="text-xs font-medium text-zinc-500 hover:underline"
-                      >
-                        {user.is_active ? "Desativar" : "Ativar"}
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {modalOpen && (
-        <UserModal
+      {formOpen && (
+        <UserForm
           user={editingUser}
-          onClose={closeModal}
+          onClose={closeForm}
           onSave={handleSave}
           isPending={create.isPending || update.isPending}
         />
       )}
-    </div>
+
+      <AdminConfirmDialog
+        open={!!toggleTarget}
+        title={
+          toggleTarget?.is_active ? "Desativar usuário?" : "Ativar usuário?"
+        }
+        description={`${toggleTarget?.name} ${toggleTarget?.is_active ? "não terá mais acesso ao painel" : "poderá acessar o painel novamente"}.`}
+        confirmLabel={toggleTarget?.is_active ? "Desativar" : "Ativar"}
+        destructive={toggleTarget?.is_active}
+        isPending={update.isPending}
+        onConfirm={() => {
+          if (!toggleTarget) return;
+          update.mutate(
+            {
+              id: toggleTarget.id,
+              input: { is_active: !toggleTarget.is_active },
+            },
+            { onSuccess: () => setToggleTarget(undefined) },
+          );
+        }}
+        onCancel={() => setToggleTarget(undefined)}
+      />
+    </>
   );
 }

@@ -3,6 +3,7 @@
   "figmaUrl": "https://www.figma.com/design/huD41oTL0FAa7xsNEK8tAM/Stetsom-%7C-CMS",
   "extractedAt": "2026-05-15T12:00:00Z",
   "websiteRootNode": "1090:25874",
+  "cmsRootNode": "1200:7895",
   "pages": {
     "home":                { "section": "1090:25869", "desktop": "1071:10273", "mobile": "1071:9993",  "keywords": ["home", "hero", "carrossel", "novidades", "historia", "social", "faq", "footer"] },
     "produtos":            { "section": "1090:25870", "desktop": "1071:12220", "mobile": "1071:11704", "keywords": ["produtos", "catalogo", "filtros", "grid", "cards"] },
@@ -10,6 +11,44 @@
     "sobre":               { "section": "1090:25872", "desktop": "1071:11430", "mobile": "1071:9757",  "keywords": ["sobre", "qualidade", "timeline", "social", "foundations", "fabrica"] },
     "suporte":             { "section": "1090:25873", "desktop": "1071:10546", "mobile": "1071:11920", "keywords": ["suporte", "sos", "cards", "downloads", "postos", "contato", "faq"] },
     "404":                 { "section": "1195:4199",  "desktop": "1195:4200",  "mobile": "1195:4531",  "keywords": ["404", "not found", "nao encontrado"] }
+  },
+  "cmsPages": {
+    "login":                    { "node": "1200:9627",  "keywords": ["login", "autenticacao", "split panel", "form", "dark panel"] },
+    "home-dashboard":           { "node": "1200:9651",  "keywords": ["home", "dashboard", "cards", "stats", "bento grid"] },
+    "produtos-lista":           { "node": "1200:10270", "keywords": ["produtos", "lista", "tabela", "data table", "filtros"] },
+    "produtos-cadastro-geral":  { "node": "1200:10501", "keywords": ["cadastro", "dados gerais", "wizard", "form", "steps"] },
+    "produtos-cadastro-specs":  { "node": "1200:10726", "keywords": ["especificacoes", "specs", "wizard", "step 2"] },
+    "produtos-cadastro-files":  { "node": "1200:10982", "keywords": ["arquivos", "manual", "upload", "wizard", "step 3"] },
+    "produtos-cadastro-done":   { "node": "1200:11443", "keywords": ["conclusao", "success", "wizard", "step 4"] },
+    "banners-lista":            { "node": "1200:7897",  "keywords": ["banners", "lista"] },
+    "banners-visualizar":       { "node": "1200:8210",  "keywords": ["banners", "visualizar", "preview"] },
+    "banners-registrar":        { "node": "1200:8463",  "keywords": ["banners", "registrar", "form"] },
+    "biblioteca-manuais":       { "node": "1200:8634",  "keywords": ["biblioteca", "manuais", "lista"] },
+    "biblioteca-3d":            { "node": "1200:8764",  "keywords": ["biblioteca", "arquivos 3d", "lista"] },
+    "biblioteca-fotos":         { "node": "1200:9239",  "keywords": ["biblioteca", "fotos", "galeria"] },
+    "mensagens-lista":          { "node": "1200:9819",  "keywords": ["mensagens", "central", "lista"] },
+    "historico":                { "node": "1200:11637", "keywords": ["historico", "log", "lista"] }
+  },
+  "cmsTokens": {
+    "bg": "#E8ECFB",
+    "bgAlt": "#F2F3F7",
+    "panel": "#FAFAFA",
+    "border": "#E4E4E7",
+    "activeItem": "#E7EEFD",
+    "stepDone": "#16A34A",
+    "stepPending": "#F4F4F5",
+    "overlay": "rgba(142,142,142,0.4)",
+    "sidebarWidth": "240px",
+    "sidebarShadow": "0px 0px 8.8px 0px rgba(0,0,0,0.2)",
+    "panelRadius": "16px"
+  },
+  "cmsComponents": {
+    "Button":       { "node": "21:210",     "keywords": ["button", "primary black", "secondary gray", "text"] },
+    "Input":        { "node": "21:3082",    "keywords": ["input", "field", "text", "label", "help text"] },
+    "Tabs":         { "node": "21:2624",    "keywords": ["tabs", "filter tabs", "active blue"] },
+    "Table":        { "node": "23:4313",    "keywords": ["table", "data table", "pagination", "rows"] },
+    "Sidebar Item": { "node": "15:490",     "keywords": ["sidebar", "nav item", "selected blue"] },
+    "Steps":        { "node": "85:8476",    "keywords": ["steps", "wizard", "stepper", "progress"] }
   },
   "pageSections": {
     "home": [
