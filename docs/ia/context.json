@@ -2265,6 +2265,18 @@
       ],
       "rationale": "Code review findings: admin layout was entirely client due to inline AdminShell; buttons lacked type=button causing accidental form submit; redundant className props in admin-input interfaces; banners/page.tsx exceeded 150-line threshold at 518 lines",
       "outcome": "AdminLayout is now a Server Component; AdminShell extracted to client-only file; all interactive buttons have explicit type; banners page split into banner-form.tsx + banners-content.tsx + thin page.tsx"
+    },
+    {
+      "ts": "2026-05-20T21:30:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix missing type=button in biblioteca PhotoCard and move axios/dotenv to devDependencies",
+      "files": [
+        "src/app/admin/biblioteca/page.tsx",
+        "package.json"
+      ],
+      "rationale": "Code review minor findings: handleCopy button lacked explicit type attribute; axios and dotenv only used in orval.config.ts (dev tooling) but were listed in production dependencies",
+      "outcome": "All buttons in admin panel now have explicit type; package.json correctly separates runtime from dev-only dependencies"
     }
   ]
 }

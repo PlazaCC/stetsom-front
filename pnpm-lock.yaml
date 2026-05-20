@@ -14,9 +14,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.99.2
         version: 5.100.10(react@19.2.4)
-      axios:
-        specifier: ^1.16.1
-        version: 1.16.1
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -26,9 +23,6 @@ importers:
       dompurify:
         specifier: ^3.4.3
         version: 3.4.3
-      dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
       lucide-react:
         specifier: ^1.8.0
         version: 1.14.0(react@19.2.4)
@@ -81,6 +75,12 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.2.3(@types/react@19.2.14)
+      axios:
+        specifier: ^1.16.1
+        version: 1.16.1
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
       eslint:
         specifier: ^9
         version: 9.39.4(jiti@2.7.0)
@@ -98,7 +98,7 @@ importers:
         version: 2.14.6(@types/node@20.19.41)(typescript@5.9.3)
       orval:
         specifier: ^8.10.0
-        version: 8.10.0(prettier@3.8.3)(typescript@5.9.3)
+        version: 8.10.0(@faker-js/faker@10.4.0)(prettier@3.8.3)(typescript@5.9.3)
       prettier:
         specifier: ^3.5.3
         version: 3.8.3
@@ -6844,7 +6844,7 @@ snapshots:
       string-width: 7.2.0
       strip-ansi: 7.2.0
 
-  orval@8.10.0(prettier@3.8.3)(typescript@5.9.3):
+  orval@8.10.0(@faker-js/faker@10.4.0)(prettier@3.8.3)(typescript@5.9.3):
     dependencies:
       '@commander-js/extra-typings': 14.0.0(commander@14.0.3)
       '@orval/angular': 8.10.0(@faker-js/faker@10.4.0)(typescript@5.9.3)

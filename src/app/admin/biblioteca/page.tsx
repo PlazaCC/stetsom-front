@@ -53,6 +53,7 @@ function PhotoCard({ asset }: { asset: LibraryAsset }) {
         />
         <div className="absolute inset-0 flex items-center justify-center rounded-[16px] bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
           <button
+            type="button"
             onClick={handleCopy}
             className="flex items-center gap-1.5 rounded-md bg-white px-3 py-1.5 text-xs font-semibold text-foreground shadow"
           >
