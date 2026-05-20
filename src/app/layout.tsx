@@ -1,9 +1,46 @@
 import "@/app/globals.css";
+import { Barlow, Barlow_Condensed, Geist_Mono } from "next/font/google";
+import { getLocale } from "next-intl/server";
 
-export default function RootLayout({
+const barlow = Barlow({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-barlow",
+  subsets: ["latin"],
+});
+
+const barlowCondensed = Barlow_Condensed({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-barlow-condensed",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+async function safeGetLocale(): Promise<string> {
+  try {
+    return await getLocale();
+  } catch {
+    return "pt-BR";
+  }
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  const locale = await safeGetLocale();
+
+  return (
+    <html
+      lang={locale}
+      className={`${barlow.variable} ${barlowCondensed.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <body className="min-h-full flex flex-col">{children}</body>
+    </html>
+  );
 }

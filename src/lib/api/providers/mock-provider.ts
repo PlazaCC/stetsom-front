@@ -1,22 +1,31 @@
 import type {
+  AdminUser,
   CatalogPagePayload,
   CatalogProductsQuery,
   CmsProductsQuery,
+  CreateAdminUserInput,
   Locale,
+  LoginCredentials,
   PaginatedResponse,
   Product,
   ProductDetailPayload,
   ProductStatus,
   SiteAboutPayload,
   SiteHomePayload,
+  UpdateAdminUserInput,
 } from "@/lib/api/contracts";
+import { HttpError } from "@/lib/api/route-utils";
 import {
   createCategoryLookup,
   toCmsProductRow,
   toProductCardItem,
 } from "@/lib/api/mappers";
 import type { CmsProvider } from "@/lib/api/provider-contract";
-import { ADMIN_DASHBOARD_PAYLOAD } from "@/lib/mock/admin-cms";
+import {
+  ADMIN_DASHBOARD_PAYLOAD,
+  MOCK_ADMIN_USERS,
+  MOCK_AUTH_PASSWORD,
+} from "@/lib/mock/admin-cms";
 import {
   CATALOG_CATEGORIES,
   CATALOG_PRODUCT_FILES,
@@ -351,6 +360,96 @@ export function createMockCmsProvider(): CmsProvider {
         subtitle: "Gerencie status, catalogo e atualizacoes do portfolio.",
         ...paginated,
       };
+    },
+
+    async login(credentials: LoginCredentials) {
+      const user = MOCK_ADMIN_USERS.find((u) => u.email === credentials.email);
+
+      if (!user || credentials.password !== MOCK_AUTH_PASSWORD) {
+        throw new HttpError(
+          401,
+          "INVALID_CREDENTIALS",
+          "Email ou senha incorretos.",
+        );
+      }
+
+      const expiresAt = new Date(Date.now() + 8 * 3600 * 1000).toISOString();
+      const header = Buffer.from(
+        JSON.stringify({ alg: "HS256", typ: "JWT" }),
+      ).toString("base64");
+      const payload = Buffer.from(
+        JSON.stringify({
+          sub: user.id,
+          email: user.email,
+          role: user.role,
+          exp: Date.now() + 8 * 3600000,
+        }),
+      ).toString("base64");
+      const token = `${header}.${payload}.mock-signature`;
+
+      return {
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+        expires_at: expiresAt,
+      };
+    },
+
+    async logout() {
+      // No-op for mock — cookie is cleared by the API route
+    },
+
+    async getAdminUsers() {
+      return {
+        items: [...MOCK_ADMIN_USERS],
+        total: MOCK_ADMIN_USERS.length,
+      };
+    },
+
+    async createAdminUser(input: CreateAdminUserInput): Promise<AdminUser> {
+      const now = new Date().toISOString();
+      const newUser: AdminUser = {
+        id: `usr-${Date.now()}`,
+        name: input.name,
+        email: input.email,
+        role: input.role,
+        is_active: true,
+        created_at: now,
+        updated_at: now,
+      };
+
+      MOCK_ADMIN_USERS.push(newUser);
+      return newUser;
+    },
+
+    async updateAdminUser(
+      id: string,
+      input: UpdateAdminUserInput,
+    ): Promise<AdminUser> {
+      const index = MOCK_ADMIN_USERS.findIndex((u) => u.id === id);
+
+      if (index === -1) {
+        throw new HttpError(
+          404,
+          "USER_NOT_FOUND",
+          `Usuário ${id} não encontrado.`,
+        );
+      }
+
+      const updated: AdminUser = {
+        ...MOCK_ADMIN_USERS[index],
+        ...(input.name !== undefined && { name: input.name }),
+        ...(input.role !== undefined && { role: input.role }),
+        ...(input.is_active !== undefined && { is_active: input.is_active }),
+        updated_at: new Date().toISOString(),
+      };
+
+      MOCK_ADMIN_USERS[index] = updated;
+      return updated;
     },
   };
 }

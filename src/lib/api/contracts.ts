@@ -400,3 +400,45 @@ export type ApiErrorPayload = {
     message: string;
   };
 };
+
+export type UserRole = "SUPER_ADMIN" | "ADMIN" | "EDITOR";
+
+export type AdminUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  is_active: boolean;
+  created_at: ISODateString;
+  updated_at: ISODateString;
+  last_login?: ISODateString;
+};
+
+export type LoginCredentials = {
+  email: string;
+  password: string;
+};
+
+export type AuthPayload = {
+  token: string;
+  user: Pick<AdminUser, "id" | "name" | "email" | "role">;
+  expires_at: ISODateString;
+};
+
+export type AdminUsersPayload = {
+  items: AdminUser[];
+  total: number;
+};
+
+export type CreateAdminUserInput = {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+};
+
+export type UpdateAdminUserInput = {
+  name?: string;
+  role?: UserRole;
+  is_active?: boolean;
+};

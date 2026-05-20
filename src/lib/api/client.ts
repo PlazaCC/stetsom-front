@@ -1,12 +1,18 @@
 import type {
   AdminDashboardPayload,
+  AdminUser,
+  AdminUsersPayload,
+  AuthPayload,
   CatalogPagePayload,
   CatalogProductsQuery,
   Category,
   CmsProductsPayload,
   CmsProductsQuery,
+  CreateAdminUserInput,
+  LoginCredentials,
   PaginatedResponse,
   Product,
+  UpdateAdminUserInput,
 } from "@/lib/api/contracts";
 import { INTERNAL_API_ENDPOINTS } from "@/lib/api/endpoints";
 import { buildSearchParams } from "@/lib/api/query-utils";
@@ -72,4 +78,57 @@ export async function fetchAdminDashboard() {
   return fetchJson<AdminDashboardPayload>(
     INTERNAL_API_ENDPOINTS.adminDashboard,
   );
+}
+
+export async function fetchAdminUsers() {
+  return fetchJson<AdminUsersPayload>(INTERNAL_API_ENDPOINTS.adminUsers);
+}
+
+export async function loginAdmin(credentials: LoginCredentials) {
+  const response = await fetch(INTERNAL_API_ENDPOINTS.authLogin, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(credentials),
+  });
+
+  if (!response.ok) {
+    const data = (await response.json()) as { error?: { message?: string } };
+    throw new Error(data.error?.message ?? "Falha ao autenticar.");
+  }
+
+  return (await response.json()) as AuthPayload;
+}
+
+export async function logoutAdmin() {
+  await fetch(INTERNAL_API_ENDPOINTS.authLogout, { method: "POST" });
+}
+
+export async function createAdminUser(input: CreateAdminUserInput) {
+  const response = await fetch(INTERNAL_API_ENDPOINTS.adminUsers, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  if (!response.ok) {
+    const data = (await response.json()) as { error?: { message?: string } };
+    throw new Error(data.error?.message ?? "Falha ao criar usuário.");
+  }
+
+  return (await response.json()) as AdminUser;
+}
+
+export async function updateAdminUser(id: string, input: UpdateAdminUserInput) {
+  const response = await fetch(`${INTERNAL_API_ENDPOINTS.adminUsers}/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  if (!response.ok) {
+    const data = (await response.json()) as { error?: { message?: string } };
+    throw new Error(data.error?.message ?? "Falha ao atualizar usuário.");
+  }
+
+  return (await response.json()) as AdminUser;
 }

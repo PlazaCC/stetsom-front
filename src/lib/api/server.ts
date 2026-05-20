@@ -99,3 +99,7 @@ export async function getCmsProductsPayload(query: CmsProductsQuery) {
     pageSize: normalizePageSize(query.pageSize),
   });
 }
+
+export async function getAdminUsersPayload() {
+  return getCmsProvider().getAdminUsers();
+}

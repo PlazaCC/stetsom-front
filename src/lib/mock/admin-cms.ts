@@ -1,6 +1,40 @@
-import type { AdminDashboardPayload } from "@/lib/api/contracts";
+import type { AdminDashboardPayload, AdminUser } from "@/lib/api/contracts";
 
 const NOW = "2026-05-12T00:00:00.000Z";
+
+export const MOCK_AUTH_PASSWORD = "stetsom2026";
+
+export const MOCK_ADMIN_USERS: AdminUser[] = [
+  {
+    id: "usr-1",
+    name: "Luis Bovo",
+    email: "dark.luismtns@gmail.com",
+    role: "SUPER_ADMIN",
+    is_active: true,
+    created_at: "2026-01-01T00:00:00.000Z",
+    updated_at: "2026-05-19T00:00:00.000Z",
+    last_login: "2026-05-19T10:30:00.000Z",
+  },
+  {
+    id: "usr-2",
+    name: "Editor Stetsom",
+    email: "editor@stetsom.com.br",
+    role: "EDITOR",
+    is_active: true,
+    created_at: "2026-02-15T00:00:00.000Z",
+    updated_at: "2026-05-10T00:00:00.000Z",
+    last_login: "2026-05-15T08:00:00.000Z",
+  },
+  {
+    id: "usr-3",
+    name: "Admin Inativo",
+    email: "antigo@stetsom.com.br",
+    role: "ADMIN",
+    is_active: false,
+    created_at: "2025-06-01T00:00:00.000Z",
+    updated_at: "2026-01-20T00:00:00.000Z",
+  },
+];
 
 export const ADMIN_DASHBOARD_PAYLOAD: AdminDashboardPayload = {
   title: "Painel Administrativo",

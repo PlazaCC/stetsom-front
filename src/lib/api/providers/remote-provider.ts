@@ -1,26 +1,38 @@
 import type {
   AdminDashboardPayload,
+  AdminUser,
+  AdminUsersPayload,
+  AuthPayload,
   CatalogPagePayload,
   CatalogProductsQuery,
   Category,
   CmsProductsPayload,
   CmsProductsQuery,
+  CreateAdminUserInput,
+  LoginCredentials,
   PaginatedResponse,
   Product,
   ProductDetailPayload,
   SiteAboutPayload,
   SiteHomePayload,
   SupportPayload,
+  UpdateAdminUserInput,
 } from "@/lib/api/contracts";
 import type { CmsProvider } from "@/lib/api/provider-contract";
 import { buildSearchParams } from "@/lib/api/query-utils";
 
 const DEFAULT_REMOTE_BASE = "http://localhost:3333";
 
-async function fetchJson<T>(baseUrl: string, path: string): Promise<T> {
+async function fetchJson<T>(
+  baseUrl: string,
+  path: string,
+  init?: RequestInit,
+): Promise<T> {
   const response = await fetch(`${baseUrl}${path}`, {
+    ...init,
     headers: {
       Accept: "application/json",
+      ...init?.headers,
     },
     cache: "no-store",
   });
@@ -114,6 +126,43 @@ export function createRemoteCmsProvider(): CmsProvider {
         remoteBaseUrl,
         `/cms/products${suffix}`,
       );
+    },
+
+    async login(credentials: LoginCredentials) {
+      return fetchJson<AuthPayload>(remoteBaseUrl, "/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(credentials),
+      });
+    },
+
+    async logout() {
+      await fetchJson<void>(remoteBaseUrl, "/auth/logout", {
+        method: "DELETE",
+      });
+    },
+
+    async getAdminUsers() {
+      return fetchJson<AdminUsersPayload>(remoteBaseUrl, "/admin/users");
+    },
+
+    async createAdminUser(input: CreateAdminUserInput): Promise<AdminUser> {
+      return fetchJson<AdminUser>(remoteBaseUrl, "/admin/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+      });
+    },
+
+    async updateAdminUser(
+      id: string,
+      input: UpdateAdminUserInput,
+    ): Promise<AdminUser> {
+      return fetchJson<AdminUser>(remoteBaseUrl, `/admin/users/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+      });
     },
   };
 }

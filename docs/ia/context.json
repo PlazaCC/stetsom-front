@@ -252,7 +252,9 @@
       "agent": "gpt-5.2-codex",
       "type": "feat",
       "summary": "Use Swiper for SocialFeed drag carousel",
-      "files": ["src/app/[locale]/(site)/_components/social-feed.tsx"],
+      "files": [
+        "src/app/[locale]/(site)/_components/social-feed.tsx"
+      ],
       "rationale": "User requested Swiper JS with drag interaction and no navigation buttons.",
       "outcome": "SocialFeed now renders a drag-only Swiper carousel without pagination or nav controls."
     },
@@ -298,7 +300,9 @@
       "agent": "claude-sonnet-4-6",
       "type": "feat",
       "summary": "Align Header with Figma fidelity â€” typography, pill button, mobile border",
-      "files": ["src/components/ui/header.tsx"],
+      "files": [
+        "src/components/ui/header.tsx"
+      ],
       "rationale": "task-02 requires aligning Header to Figma nodes 1200:4585 (desktop) / 1200:4305 (mobile): nav link color/weight, Garantia button shape, and mobile border color",
       "outcome": "Nav links use Barlow Regular 18px #565656; Garantia button is rounded-full bg-brand-dark; mobile border is border-[#999999]; all 6 acceptance criteria met"
     },
@@ -387,7 +391,9 @@
       "agent": "gemini-3.1-pro",
       "type": "chore",
       "summary": "Add CI workflow configured with pnpm for GitHub Actions",
-      "files": [".github/workflows/ci.yml"],
+      "files": [
+        ".github/workflows/ci.yml"
+      ],
       "rationale": "User requested creation of CI workflow file based on template but adapted for pnpm and Next.js.",
       "outcome": "A workflow file `.github/workflows/ci.yml` has been added. It provisions node 20, uses pnpm v9 via setup-pnpm, typechecks, lints, and builds the project on push and PRs."
     },
@@ -396,7 +402,10 @@
       "agent": "gemini-3.1-pro",
       "type": "chore",
       "summary": "Add pre-commit hook using husky and lint-staged",
-      "files": ["package.json", ".husky/pre-commit"],
+      "files": [
+        "package.json",
+        ".husky/pre-commit"
+      ],
       "rationale": "User requested a lightweight pre-commit hook to prevent committing code with errors, specifically avoiding heavy builds.",
       "outcome": "Configured husky and lint-staged in package.json and created an executable pre-commit hook that runs `pnpm lint-staged` and typechecking (`pnpm tsc --noEmit`)."
     },
@@ -405,7 +414,9 @@
       "agent": "gemini-3.1-pro",
       "type": "fix",
       "summary": "Fix missing packages field in pnpm-workspace.yaml causing GitHub Actions failure",
-      "files": ["pnpm-workspace.yaml"],
+      "files": [
+        "pnpm-workspace.yaml"
+      ],
       "rationale": "The GitHub Actions workflow failed during setup-node's pnpm caching step because pnpm-workspace.yaml lacked a 'packages' field, breaking 'pnpm store path'.",
       "outcome": "Added 'packages: [ \".\" ]' to pnpm-workspace.yaml, allowing setup-node to correctly cache pnpm dependencies."
     },
@@ -528,7 +539,9 @@
       "agent": "claude-sonnet-4-6",
       "type": "fix",
       "summary": "Remove redundant className='bg-off-white' from NossasBases in home page",
-      "files": ["src/app/(site)/page.tsx"],
+      "files": [
+        "src/app/(site)/page.tsx"
+      ],
       "rationale": "NossasBases already applies bg-off-white unconditionally in its own className; passing it from page.tsx was duplicate and violated DRY principle",
       "outcome": "NossasBases rendered without redundant prop; visual output unchanged"
     },
@@ -566,7 +579,9 @@
       "agent": "claude-haiku-4-5-20251001",
       "type": "chore",
       "summary": "Regenerate types/routes.d.ts with /produtos/[slug] route for CI compatibility",
-      "files": ["types/routes.d.ts"],
+      "files": [
+        "types/routes.d.ts"
+      ],
       "rationale": "Code review via /code-review skill found TypeScript errors in CI due to stale types/routes.d.ts missing /produtos/[slug] route. File must exist in repo root (not just .next/types/) for CI environments without .next cache.",
       "outcome": "Copied types/routes.d.ts from .next/types/routes.d.ts post-build; now includes all routes (/, /admin, /cms, /produtos, /produtos/[slug], /sobre, /suporte) with correct ParamMap; pnpm tsc --noEmit and pnpm lint both pass"
     },
@@ -769,7 +784,9 @@
       "agent": "claude-sonnet-4-6",
       "type": "fix",
       "summary": "Render '+' in stat values (35+, 200+, 60+, 1M+) in brand red on sobre hero",
-      "files": ["src/app/(site)/sobre/page.tsx"],
+      "files": [
+        "src/app/(site)/sobre/page.tsx"
+      ],
       "rationale": "Figma ts5 fill for '+' character in hero stats is #E8132A (brand red), while number portion is white; current code rendered entire stat.value as plain white text",
       "outcome": "Stat values split at '+': number portion stays text-white, '+' wrapped in <span className='text-brand'> matching Figma reference"
     },
@@ -993,7 +1010,9 @@
       "agent": "opencode-big-pickle",
       "type": "fix",
       "summary": "Configure tailwind-merge to recognize custom font-size tokens (text-display-*, text-section-title, text-2xs, text-button-md)",
-      "files": ["src/lib/utils.ts"],
+      "files": [
+        "src/lib/utils.ts"
+      ],
       "rationale": "cn() used raw twMerge which doesn't know about Tailwind v4 @theme custom text-* tokens (--text-display-sm, etc.). When merging text-display-sm with text-brand-dark, tailwind-merge treated both as unknown text-* classes and dropped the font-size. Fix: use extendTailwindMerge with theme.text array listing all custom text tokens.",
       "outcome": "Changed twMerge import to extendTailwindMerge with custom text tokens. tsc --noEmit exits 0."
     },
@@ -1299,7 +1318,9 @@
       "agent": "claude-sonnet-4-6",
       "type": "docs",
       "summary": "Create docs/product-data-schema.md from original CMS schema HTML export",
-      "files": ["docs/product-data-schema.md"],
+      "files": [
+        "docs/product-data-schema.md"
+      ],
       "rationale": "User requested a Markdown documentation file from the original Product Data Schema design (exported from Notion). Document includes extensibility notice and known frontend divergences section.",
       "outcome": "docs/product-data-schema.md created with all 9 entities, ER diagram, validation rules, and a divergence-tracking section for frontend/backend reconciliation."
     },
@@ -1559,7 +1580,9 @@
       "agent": "claude-sonnet-4-6",
       "type": "feat",
       "summary": "Implement mobile menu drawer and mobile search bar in header",
-      "files": ["src/components/ui/header.tsx"],
+      "files": [
+        "src/components/ui/header.tsx"
+      ],
       "rationale": "Full mobile review identified the hamburger button as a non-functional placeholder (no state, no handler, no drawer component). Mobile search icon was also decorative only. Both are critical mobile gaps: users on mobile had no way to navigate or search. Figma does not specify a drawer design (task-02 marked it 'implementaÃ§Ã£o futura') so design was derived from the established design system (dark bg-brand-dark, Barlow Condensed uppercase nav, brand red active state).",
       "outcome": "Mobile menu: CSS slide-in drawer from left, bg-brand-dark, Logo (variant=dark), Produtos accordion with PRODUCT_MENU_CATEGORIES, Sobre nÃ³s and Suporte links with active pathname styling, language selector in footer. Backdrop (bg-black/50) with click-to-close. ESC key closes both menu and search. Scroll lock on body while menu open. Mobile search: auto-focus input replaces header content on click, submits to /produtos?q=. tsc --noEmit and lint exit 0."
     },
@@ -1730,7 +1753,9 @@
       "agent": "claude-sonnet-4-6",
       "type": "fix",
       "summary": "Remove ThemeProvider from locale layout to fix React 19 script tag warning",
-      "files": ["src/app/[locale]/layout.tsx"],
+      "files": [
+        "src/app/[locale]/layout.tsx"
+      ],
       "rationale": "next-themes injects a <script> tag that React 19 warns about; ModeToggle is unused so ThemeProvider is unnecessary",
       "outcome": "Console error eliminated; layout renders without next-themes script injection"
     },
@@ -1804,7 +1829,9 @@
       "agent": "gpt-5.2-codex",
       "type": "fix",
       "summary": "Use shadcn accordion chevrons in FAQ accordion",
-      "files": ["src/app/[locale]/(site)/_components/faq-accordion.tsx"],
+      "files": [
+        "src/app/[locale]/(site)/_components/faq-accordion.tsx"
+      ],
       "rationale": "User requested the FAQ accordion to rely on the shadcn Accordion base and use chevron up/down icons instead of plus/minus glyphs.",
       "outcome": "FaqAccordion now uses AccordionTrigger with built-in chevrons and removes custom +/− icons while keeping the same text styling."
     },
@@ -1813,7 +1840,9 @@
       "agent": "gpt-5.2-codex",
       "type": "fix",
       "summary": "Set accordion chevrons to brand color",
-      "files": ["src/components/ui/accordion.tsx"],
+      "files": [
+        "src/components/ui/accordion.tsx"
+      ],
       "rationale": "User requested the accordion chevrons use the brand color instead of the muted foreground token.",
       "outcome": "Accordion trigger icons now render with the brand color token."
     },
@@ -1830,8 +1859,8 @@
       ],
       "rationale": "Two devs had different Prettier configs (one had none), causing quote/semicolon/indentation diffs in every PR. Added shared .prettierrc (double quotes, semi, trailing commas, printWidth 80, endOfLine lf) and .gitattributes (text=auto eol=lf) to normalize line endings across Windows/macOS. .prettierignore scoped to src/ only to avoid touching docs, .agents/, .claude/ and root config files.",
       "outcome": "pnpm format now formats only src/ TypeScript/CSS/JSON files consistently. lint-staged runs prettier before eslint on pre-commit. .gitattributes ensures all text files store as LF in the repo."
-    }
-  ,{
+    },
+    {
       "ts": "2026-05-19T00:00:00Z",
       "agent": "claude-sonnet-4-6",
       "type": "chore",
@@ -1844,6 +1873,48 @@
       ],
       "rationale": "Project had style and componentization inconsistencies generated by AI agents: mixed leading values, gradient patterns, no static-vs-dynamic principle, no component folder structure guideline, !important usage, and subcomponents embedded in large files",
       "outcome": "Two new rules now guide agents on: leading scale, gradient unification, section spacing, CVA variants, icon sizes, component folder placement (ui/ vs components/ vs _components/), dummy component principle, composable pattern, file size limits, and !important prohibition"
+    },
+    {
+      "ts": "2026-05-19T14:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "feat",
+      "summary": "Implement Auth JWT + User Management for CMS Admin (task-16)",
+      "files": [
+        "src/lib/api/contracts.ts",
+        "src/lib/api/endpoints.ts",
+        "src/lib/api/provider-contract.ts",
+        "src/lib/api/providers/mock-provider.ts",
+        "src/lib/api/providers/remote-provider.ts",
+        "src/lib/api/server.ts",
+        "src/lib/api/client.ts",
+        "src/lib/mock/admin-cms.ts",
+        "src/app/api/auth/login/route.ts",
+        "src/app/api/auth/logout/route.ts",
+        "src/app/api/admin/users/route.ts",
+        "src/app/api/admin/users/[id]/route.ts",
+        "src/proxy.ts",
+        "src/hooks/use-admin.ts",
+        "src/app/admin/layout.tsx",
+        "src/app/admin/login/page.tsx",
+        "src/app/admin/usuarios/page.tsx",
+        "src/app/admin/produtos/page.tsx",
+        "docs/ia/tasks/task-16-auth-user-management.md"
+      ],
+      "rationale": "task-16 requires JWT auth with httpOnly cookie, auth guard in proxy, and user management UI following the full provider/mock/contract chain",
+      "outcome": "Admin routes protected by cookie guard; /admin/login page for auth; /admin/usuarios page with user table, create/edit modal, and activate/deactivate toggle"
+    },
+    {
+      "ts": "2026-05-20T00:30:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Fix Missing html/body error by moving root HTML shell to app/layout.tsx",
+      "files": [
+        "src/app/layout.tsx",
+        "src/app/[locale]/layout.tsx",
+        "src/app/admin/layout.tsx"
+      ],
+      "rationale": "Admin routes bypass [locale]/layout.tsx (where html/body lived), causing Missing html/body error. Moved html/body/fonts to app/layout.tsx (true root); locale layout now only wraps with NextIntlClientProvider+QueryProvider",
+      "outcome": "All routes (public and admin) share a single html/body from app/layout.tsx; [locale]/layout.tsx provides i18n context; admin/layout.tsx provides admin sidebar"
     }
   ]
 }
