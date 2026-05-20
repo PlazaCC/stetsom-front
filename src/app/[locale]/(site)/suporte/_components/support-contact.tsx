@@ -48,9 +48,7 @@ export async function SupportContact({
         <div className="flex flex-col lg:flex-row lg:items-start lg:gap-16">
           <div className="flex shrink-0 flex-col gap-6 lg:w-90">
             <SectionLabel label={contact.label} title={contact.title} />
-            <p className="text-base leading-relaxed text-text-subtle">
-              {contact.description}
-            </p>
+            <p className="text-base text-text-subtle">{contact.description}</p>
 
             {infoItems.length > 0 && (
               <div className="flex flex-col gap-3">

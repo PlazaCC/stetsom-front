@@ -34,7 +34,7 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
                 <h3 className="mb-3 font-sans-condensed text-section-title font-black uppercase text-brand-dark">
                   {card.title}
                 </h3>
-                <p className="flex-1 text-base leading-relaxed text-text-subtle">
+                <p className="flex-1 text-base text-text-subtle">
                   {card.description}
                 </p>
                 <div className="mt-6 flex items-center justify-end">

@@ -17,7 +17,7 @@ export function CareersCTA({ section }: Readonly<CareersCTAProps>) {
           <div>
             <SectionLabel label={section.label} title={section.title} />
 
-            <p className="text-base text-text-subtle mt-6 leading-[1.7] mb-8">
+            <p className="text-base text-text-subtle mt-6 mb-8">
               {section.description}
             </p>
 

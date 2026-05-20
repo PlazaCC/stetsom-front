@@ -84,7 +84,7 @@ export function CompanyTimeline({
                     </span>
                   ))}
               </h2>
-              <p className="mt-4 max-w-md text-sm leading-[1.6] text-text-subtle-dark lg:text-base">
+              <p className="mt-4 max-w-md text-sm text-text-subtle-dark lg:text-base">
                 {t("timelineDescription")}
               </p>
             </div>
@@ -152,7 +152,7 @@ export function CompanyTimeline({
                 </h4>
               </div>
 
-              <p className="text-base text-text-subtle-dark leading-[1.7]">
+              <p className="text-base text-text-subtle-dark">
                 {activeEvent.description}
               </p>
             </div>

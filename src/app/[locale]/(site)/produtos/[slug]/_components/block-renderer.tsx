@@ -33,7 +33,7 @@ export function BlockRenderer({
         </h2>
         <p
           className={cn(
-            "mt-3 text-sm leading-relaxed text-text-subtle md:text-base",
+            "mt-3 text-sm text-text-subtle md:text-base",
             resolveTextAlignClass(data.align),
           )}
         >
@@ -82,9 +82,7 @@ export function BlockRenderer({
         <h3 className="mt-2 font-sans-condensed text-section-title font-black uppercase text-brand-dark">
           {title}
         </h3>
-        <p className="mt-3 text-sm leading-relaxed text-text-subtle">
-          {description}
-        </p>
+        <p className="mt-3 text-sm text-text-subtle">{description}</p>
         {videoUrl ? (
           <a
             href={videoUrl}
@@ -110,7 +108,7 @@ export function BlockRenderer({
           {t("blockHtmlLabel")}
         </p>
         <div
-          className="mt-3 text-sm leading-relaxed text-text-subtle [&_strong]:font-semibold [&_strong]:text-brand-dark"
+          className="mt-3 text-sm text-text-subtle [&_strong]:font-semibold [&_strong]:text-brand-dark"
           dangerouslySetInnerHTML={{ __html: safeHtml }}
         />
       </article>
@@ -127,7 +125,7 @@ export function BlockRenderer({
         <h3 className="mt-2 font-sans-condensed text-section-title font-black uppercase text-brand-dark">
           {t("blockModel3dTitle")}
         </h3>
-        <p className="mt-3 text-sm leading-relaxed text-text-subtle">
+        <p className="mt-3 text-sm text-text-subtle">
           {t("blockModel3dDescription")}
         </p>
         {modelUrl ? (

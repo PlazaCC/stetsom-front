@@ -49,7 +49,7 @@ export async function ProductDetailContent({
                 />
               </div>
               <div className="mt-5 text-center">
-                <p className="font-sans-condensed text-4xl font-black uppercase leading-none text-white sm:text-5xl lg:text-display-lg">
+                <p className="font-sans-condensed text-4xl font-black uppercase text-white sm:text-5xl lg:text-display-lg">
                   {t("heroTagline1")}
                   <span className="mt-1 block text-brand">
                     {t("heroTagline2")}

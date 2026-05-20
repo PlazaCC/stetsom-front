@@ -128,7 +128,7 @@ export default async function ProdutoDetalhePage(props: ProductPageProps) {
               <h1 className="mt-2 font-sans-condensed text-4xl lg:text-display-sm font-black uppercase leading-none text-brand-dark">
                 {product.name}
               </h1>
-              <p className="mt-4 text-sm lg:text-base leading-relaxed text-text-subtle">
+              <p className="mt-4 text-sm lg:text-base text-text-subtle">
                 {product.description}
               </p>
 

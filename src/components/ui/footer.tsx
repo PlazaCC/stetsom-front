@@ -112,7 +112,7 @@ export default async function Footer() {
               height={49}
               className="object-contain"
             />
-            <p className="mt-4 text-sm leading-5 text-text-subtle-dark">
+            <p className="mt-4 text-sm text-text-subtle-dark">
               {t("description")}
             </p>
 
