@@ -18,20 +18,24 @@ export default function AdminHome() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="font-sans-condensed text-4xl font-black uppercase text-brand-dark">
+        <h1 className="font-sans-condensed text-4xl font-black uppercase text-foreground">
           {dashboard.data.title}
         </h1>
-        <p className="mt-2 text-sm text-zinc-500">{dashboard.data.subtitle}</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {dashboard.data.subtitle}
+        </p>
       </header>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {dashboard.data.metrics.map((metric) => (
           <article
             key={metric.id}
-            className="rounded-md border border-zinc-200 bg-white p-5"
+            className="rounded-[16px] border border-border bg-card p-5"
           >
-            <p className="text-xs uppercase text-zinc-500">{metric.label}</p>
-            <p className="mt-2 font-sans-condensed text-3xl font-black text-brand-dark">
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+              {metric.label}
+            </p>
+            <p className="mt-2 font-sans-condensed text-3xl font-black text-foreground">
               {metric.value}
             </p>
             {metric.variation ? (
@@ -41,25 +45,23 @@ export default function AdminHome() {
         ))}
       </section>
 
-      <section className="rounded-md border border-zinc-200 bg-white p-5">
-        <h2 className="font-sans-condensed text-2xl font-black uppercase text-brand-dark">
+      <section className="rounded-[16px] border border-border bg-card p-5">
+        <h2 className="font-sans-condensed text-2xl font-black uppercase text-foreground">
           Atividades recentes
         </h2>
 
-        <ul className="mt-4 space-y-4">
+        <ul className="mt-4 space-y-3">
           {dashboard.data.recentActivities.map((activity) => (
             <li
               key={activity.id}
-              className="rounded-sm border border-zinc-100 p-4"
+              className="rounded-md border border-border p-4"
             >
-              <p className="font-sans-condensed text-lg font-bold uppercase text-brand-dark">
-                {activity.title}
-              </p>
-              <p className="mt-1 text-sm text-zinc-600">
+              <p className="font-medium text-foreground">{activity.title}</p>
+              <p className="mt-0.5 text-sm text-muted-foreground">
                 {activity.description}
               </p>
-              <p className="mt-2 text-xs uppercase text-zinc-400">
-                {activity.timestamp}
+              <p className="mt-2 text-xs text-muted-foreground">
+                {new Date(activity.timestamp).toLocaleString("pt-BR")}
               </p>
             </li>
           ))}

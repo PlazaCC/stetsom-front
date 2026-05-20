@@ -9,13 +9,15 @@ import {
 import { AdminTagInput } from "@/app/admin/_components/crud/admin-tag-input";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import type { ProductStatus } from "@/lib/api/contracts";
-import { CATALOG_CATEGORIES } from "@/lib/mock/catalog";
+import { CATALOG_CATEGORIES, CATALOG_SUBCATEGORIES } from "@/lib/mock/catalog";
 
 export interface ProductInfo {
   name: string;
   slug: string;
   category_id: string;
+  subcategory_id: string;
   status: ProductStatus;
+  badge: string;
   description: string;
   thumbnail_url: string;
   video_url: string;
@@ -32,6 +34,10 @@ export function ProductWizardStep1({
   info,
   onChange,
 }: ProductWizardStep1Props) {
+  const subcategories = CATALOG_SUBCATEGORIES.filter(
+    (s) => s.category_id === info.category_id,
+  );
+
   return (
     <AdminFormSection
       title="Informações básicas"
@@ -65,7 +71,10 @@ export function ProductWizardStep1({
             <AdminLabel>Categoria</AdminLabel>
             <AdminSelect
               value={info.category_id}
-              onChange={(e) => onChange("category_id", e.target.value)}
+              onChange={(e) => {
+                onChange("category_id", e.target.value);
+                onChange("subcategory_id", "");
+              }}
             >
               <option value="">Selecione...</option>
               {CATALOG_CATEGORIES.map((cat) => (
@@ -77,6 +86,26 @@ export function ProductWizardStep1({
           </div>
 
           <div>
+            <AdminLabel>Subcategoria</AdminLabel>
+            <AdminSelect
+              value={info.subcategory_id}
+              onChange={(e) => onChange("subcategory_id", e.target.value)}
+              disabled={!info.category_id || subcategories.length === 0}
+            >
+              <option value="">
+                {subcategories.length === 0 ? "Nenhuma" : "Selecione..."}
+              </option>
+              {subcategories.map((sub) => (
+                <option key={sub.id} value={sub.id}>
+                  {sub.name}
+                </option>
+              ))}
+            </AdminSelect>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
             <AdminLabel>Status</AdminLabel>
             <AdminSelect
               value={info.status}
@@ -85,6 +114,15 @@ export function ProductWizardStep1({
               <option value="ACTIVE">Ativo</option>
               <option value="DISCONTINUED">Descontinuado</option>
             </AdminSelect>
+          </div>
+
+          <div>
+            <AdminLabel>Badge (opcional)</AdminLabel>
+            <AdminInput
+              value={info.badge}
+              onChange={(e) => onChange("badge", e.target.value)}
+              placeholder="Ex: LANÇAMENTO, DESTAQUE"
+            />
           </div>
         </div>
 

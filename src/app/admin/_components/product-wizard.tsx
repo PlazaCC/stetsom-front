@@ -11,6 +11,7 @@ import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
 import { ProductWizardStep1 } from "@/app/admin/_components/product-wizard-step1";
 import type { ProductInfo } from "@/app/admin/_components/product-wizard-step1";
 import type { CmsProductDetailPayload } from "@/lib/api/contracts";
+import { CATALOG_CATEGORIES, CATALOG_SUBCATEGORIES } from "@/lib/mock/catalog";
 import { ArrowLeft, ArrowRight, Package } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -35,7 +36,9 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
       name: "",
       slug: "",
       category_id: "",
+      subcategory_id: "",
       status: "ACTIVE",
+      badge: "",
       description: "",
       thumbnail_url: "",
       video_url: "",
@@ -49,7 +52,9 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
     name: detail.product.name,
     slug: detail.product.slug,
     category_id: detail.product.category_id,
+    subcategory_id: detail.product.subcategory_id ?? "",
     status: detail.product.status,
+    badge: detail.product.badge ?? "",
     description: detail.product.description,
     thumbnail_url: detail.product.thumbnail_url,
     video_url: detail.product.video_url ?? "",
@@ -169,20 +174,51 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
 
             <AdminFormSection title="Resumo">
               <dl className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Status</dt>
+                <div className="flex justify-between gap-2">
+                  <dt className="shrink-0 text-muted-foreground">Status</dt>
                   <dd className="font-medium text-foreground">
                     {info.status === "ACTIVE" ? "Ativo" : "Descontinuado"}
                   </dd>
                 </div>
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Blocos</dt>
+                {info.category_id && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="shrink-0 text-muted-foreground">
+                      Categoria
+                    </dt>
+                    <dd className="truncate font-medium text-foreground">
+                      {CATALOG_CATEGORIES.find((c) => c.id === info.category_id)
+                        ?.name ?? "—"}
+                    </dd>
+                  </div>
+                )}
+                {info.subcategory_id && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="shrink-0 text-muted-foreground">
+                      Subcategoria
+                    </dt>
+                    <dd className="truncate font-medium text-foreground">
+                      {CATALOG_SUBCATEGORIES.find(
+                        (s) => s.id === info.subcategory_id,
+                      )?.name ?? "—"}
+                    </dd>
+                  </div>
+                )}
+                {info.badge && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="shrink-0 text-muted-foreground">Badge</dt>
+                    <dd className="font-medium text-foreground">
+                      {info.badge}
+                    </dd>
+                  </div>
+                )}
+                <div className="flex justify-between gap-2">
+                  <dt className="shrink-0 text-muted-foreground">Blocos</dt>
                   <dd className="font-medium text-foreground">
                     {blocks.length}
                   </dd>
                 </div>
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Slug</dt>
+                <div className="flex justify-between gap-2">
+                  <dt className="shrink-0 text-muted-foreground">Slug</dt>
                   <dd className="truncate font-mono text-foreground">
                     {info.slug || "—"}
                   </dd>

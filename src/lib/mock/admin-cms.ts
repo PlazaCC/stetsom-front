@@ -361,41 +361,61 @@ export const MOCK_CMS_CONFIG: CmsConfig = {
   updated_by: "usr-1",
 };
 
+const CAT_AMPLIFICADORES = {
+  id: "cat-amplificadores",
+  name: "Amplificadores",
+  slug: "amplificadores",
+  order: 1,
+  created_at: NOW,
+  updated_at: NOW,
+};
+
+const CAT_PROCESSADORES = {
+  id: "cat-processadores",
+  name: "Processadores",
+  slug: "processadores",
+  order: 2,
+  created_at: NOW,
+  updated_at: NOW,
+};
+
 export const MOCK_CMS_PRODUCTS_DETAIL: Record<string, CmsProductDetailPayload> =
   {
-    "prod-st4000eq": {
+    "prod-st-4000eq-4c": {
       product: {
-        id: "prod-st4000eq",
-        name: "ST-4000EQ",
-        slug: "st-4000eq",
+        id: "prod-st-4000eq-4c",
+        name: "ST-4000EQ 4 CANAIS",
+        slug: "st-4000eq-4-canais",
         category_id: "cat-amplificadores",
+        subcategory_id: "sub-full-range",
         status: "ACTIVE",
         launch_date: "2026-01-15T00:00:00.000Z",
         description:
-          "O ST-4000EQ é o amplificador de referência da linha Stetsom, com 4000W RMS de potência e equalizador integrado de 5 bandas.",
+          "O ST-4000EQ 4 CANAIS é o amplificador Full Range de referência da linha Stetsom, com 4000W RMS de potência total e equalizador integrado de 5 bandas.",
         specifications: {
           "Potência RMS": "4000W",
-          Impedância: "1 ohm",
-          Canais: "1",
+          Impedância: "2 ohms",
+          Canais: "4",
           "Resposta de Frequência": "20Hz – 20kHz",
           "Tensão de Operação": "12V",
         },
-        thumbnail_url: "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        thumbnail_url: ASSETS.primary,
         video_url: "https://www.youtube.com/watch?v=example",
+        badge: "LANÇAMENTO",
         created_at: "2026-01-15T00:00:00.000Z",
         updated_at: "2026-05-19T00:00:00.000Z",
         created_by: "usr-1",
       },
       blocks: [
         {
-          id: "blk-1",
-          product_id: "prod-st4000eq",
+          id: "blk-st4000-1",
+          product_id: "prod-st-4000eq-4c",
           type: "TEXT",
           order: 1,
           data: {
             title: "Potência e Precisão",
             content:
-              "O ST-4000EQ entrega 4000W RMS com distorção mínima, garantindo graves profundos e médios cristalinos para o sistema de som mais exigente.",
+              "O ST-4000EQ 4 CANAIS entrega 4000W RMS com distorção mínima, garantindo graves profundos e médios cristalinos para o sistema de som mais exigente.",
             align: "left",
           },
           created_by: "usr-1",
@@ -403,13 +423,13 @@ export const MOCK_CMS_PRODUCTS_DETAIL: Record<string, CmsProductDetailPayload> =
           updated_at: "2026-01-15T00:00:00.000Z",
         },
         {
-          id: "blk-2",
-          product_id: "prod-st4000eq",
+          id: "blk-st4000-2",
+          product_id: "prod-st-4000eq-4c",
           type: "IMAGE",
           order: 2,
           data: {
-            images: ["/figma-assets/raw/fill_EPTO4T_3d86cd17.png"],
-            caption: "ST-4000EQ — Vista frontal",
+            images: [ASSETS.primary],
+            caption: "ST-4000EQ 4 CANAIS — Vista frontal",
             layout: "single",
           },
           created_by: "usr-1",
@@ -417,8 +437,8 @@ export const MOCK_CMS_PRODUCTS_DETAIL: Record<string, CmsProductDetailPayload> =
           updated_at: "2026-01-15T00:00:00.000Z",
         },
         {
-          id: "blk-3",
-          product_id: "prod-st4000eq",
+          id: "blk-st4000-3",
+          product_id: "prod-st-4000eq-4c",
           type: "VIDEO",
           order: 3,
           data: {
@@ -433,22 +453,158 @@ export const MOCK_CMS_PRODUCTS_DETAIL: Record<string, CmsProductDetailPayload> =
       ],
       files: [
         {
-          id: "file-1",
-          product_id: "prod-st4000eq",
+          id: "file-st4000-1",
+          product_id: "prod-st-4000eq-4c",
           file_url: "/uploads/manuals/manual-st-4000eq-v2.pdf",
           type: "MANUAL",
           version: 2,
           is_active: true,
-          name: "Manual ST-4000EQ v2",
+          name: "Manual ST-4000EQ 4 CANAIS v2",
           fileSize: "2.0 MB",
           created_at: "2026-03-01T00:00:00.000Z",
           updated_at: "2026-03-01T00:00:00.000Z",
         },
       ],
-      category: {
-        id: "cat-amplificadores",
-        name: "Amplificadores",
-        slug: "amplificadores",
+      category: CAT_AMPLIFICADORES,
+      subcategory: {
+        id: "sub-full-range",
+        category_id: "cat-amplificadores",
+        name: "Full Range",
+        slug: "full-range",
+        order: 1,
+        created_at: NOW,
+        updated_at: NOW,
+      },
+    },
+
+    "prod-st-2000eq-mono": {
+      product: {
+        id: "prod-st-2000eq-mono",
+        name: "ST-2000EQ MONO",
+        slug: "st-2000eq-mono",
+        category_id: "cat-amplificadores",
+        subcategory_id: "sub-mono",
+        status: "ACTIVE",
+        launch_date: "2025-06-01T00:00:00.000Z",
+        description:
+          "Amplificador Mono de alta potência com 2000W RMS e equalizador dedicado para subwoofer. Ideal para instalações exigentes.",
+        specifications: {
+          "Potência RMS": "2000W",
+          Impedância: "1 ohm",
+          Canais: "1",
+          "Resposta de Frequência": "20Hz – 250Hz",
+          "Tensão de Operação": "12V",
+        },
+        thumbnail_url: ASSETS.secondary,
+        badge: "DESTAQUE",
+        created_at: "2025-06-01T00:00:00.000Z",
+        updated_at: "2026-05-18T00:00:00.000Z",
+        created_by: "usr-2",
+      },
+      blocks: [
+        {
+          id: "blk-st2000-1",
+          product_id: "prod-st-2000eq-mono",
+          type: "IMAGE",
+          order: 1,
+          data: {
+            images: [ASSETS.secondary],
+            caption: "ST-2000EQ MONO — Vista frontal",
+            layout: "single",
+          },
+          created_by: "usr-2",
+          created_at: "2025-06-01T00:00:00.000Z",
+          updated_at: "2025-06-01T00:00:00.000Z",
+        },
+        {
+          id: "blk-st2000-2",
+          product_id: "prod-st-2000eq-mono",
+          type: "TEXT",
+          order: 2,
+          data: {
+            title: "Baixo com autoridade",
+            content:
+              "O ST-2000EQ MONO foi projetado para extrair o máximo dos subwoofers mais exigentes, com controle total de ganho e crossover dedicado.",
+            align: "left",
+          },
+          created_by: "usr-2",
+          created_at: "2025-06-01T00:00:00.000Z",
+          updated_at: "2025-06-01T00:00:00.000Z",
+        },
+      ],
+      files: [
+        {
+          id: "file-st2000-1",
+          product_id: "prod-st-2000eq-mono",
+          file_url: "/uploads/manuals/manual-st-2000eq-mono-v1.pdf",
+          type: "MANUAL",
+          version: 1,
+          is_active: true,
+          name: "Manual ST-2000EQ MONO",
+          fileSize: "1.4 MB",
+          created_at: "2025-06-15T00:00:00.000Z",
+          updated_at: "2025-06-15T00:00:00.000Z",
+        },
+      ],
+      category: CAT_AMPLIFICADORES,
+      subcategory: {
+        id: "sub-mono",
+        category_id: "cat-amplificadores",
+        name: "Mono",
+        slug: "mono",
+        order: 2,
+        created_at: NOW,
+        updated_at: NOW,
+      },
+    },
+
+    "prod-stx-96-pro": {
+      product: {
+        id: "prod-stx-96-pro",
+        name: "STX-96 PRO",
+        slug: "stx-96-pro",
+        category_id: "cat-processadores",
+        subcategory_id: "sub-dsp",
+        status: "ACTIVE",
+        launch_date: "2025-09-01T00:00:00.000Z",
+        description:
+          "Processador digital de sinal com 9 entradas e 6 saídas, DSP de alta resolução e conectividade Bluetooth para ajuste em tempo real pelo app.",
+        specifications: {
+          Entradas: "9",
+          Saídas: "6",
+          DSP: "32-bit Float",
+          Conectividade: "Bluetooth 5.0",
+          "Tensão de Operação": "12V",
+        },
+        thumbnail_url: ASSETS.hero,
+        created_at: "2025-09-01T00:00:00.000Z",
+        updated_at: "2026-04-10T00:00:00.000Z",
+        created_by: "usr-1",
+      },
+      blocks: [
+        {
+          id: "blk-stx96-1",
+          product_id: "prod-stx-96-pro",
+          type: "TEXT",
+          order: 1,
+          data: {
+            title: "Processamento em tempo real",
+            content:
+              "O STX-96 PRO oferece controle completo sobre o áudio do seu veículo com DSP de 32-bit e 9 canais de entrada independentes.",
+            align: "left",
+          },
+          created_by: "usr-1",
+          created_at: "2025-09-01T00:00:00.000Z",
+          updated_at: "2025-09-01T00:00:00.000Z",
+        },
+      ],
+      files: [],
+      category: CAT_PROCESSADORES,
+      subcategory: {
+        id: "sub-dsp",
+        category_id: "cat-processadores",
+        name: "DSP",
+        slug: "dsp",
         order: 1,
         created_at: NOW,
         updated_at: NOW,
@@ -458,19 +614,19 @@ export const MOCK_CMS_PRODUCTS_DETAIL: Record<string, CmsProductDetailPayload> =
 
 export const ADMIN_DASHBOARD_PAYLOAD: AdminDashboardPayload = {
   title: "Painel Administrativo",
-  subtitle: "Indicadores de operacao para a apresentacao do CMS Stetsom.",
+  subtitle: "Indicadores de operação para a apresentação do CMS Stetsom.",
   metrics: [
     {
       id: "metric-active-products",
       label: "Produtos ativos",
       value: "7",
-      variation: "+2 este mes",
+      variation: "+2 este mês",
     },
     {
       id: "metric-discontinued-products",
       label: "Produtos descontinuados",
       value: "1",
-      variation: "Sem alteracao",
+      variation: "Sem alteração",
     },
     {
       id: "metric-open-tickets",
@@ -480,7 +636,7 @@ export const ADMIN_DASHBOARD_PAYLOAD: AdminDashboardPayload = {
     },
     {
       id: "metric-updated-pages",
-      label: "Paginas atualizadas",
+      label: "Páginas atualizadas",
       value: "6",
       variation: "+3 hoje",
     },
@@ -489,13 +645,13 @@ export const ADMIN_DASHBOARD_PAYLOAD: AdminDashboardPayload = {
     {
       id: "activity-1",
       title: "Produto atualizado",
-      description: "ST-2000EQ MONO recebeu nova versao de manual.",
+      description: "ST-2000EQ MONO recebeu nova versão de manual.",
       timestamp: NOW,
     },
     {
       id: "activity-2",
-      title: "Conteudo publicado",
-      description: "Pagina de suporte teve FAQ revisado.",
+      title: "Conteúdo publicado",
+      description: "Página de suporte teve FAQ revisado.",
       timestamp: NOW,
     },
     {

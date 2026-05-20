@@ -16,7 +16,7 @@ const TYPE_ICONS: Record<LibraryAssetType, React.ElementType> = {
   IMAGE: Image,
   PDF: FileText,
   VIDEO: Film,
-  OTHER: FileText,
+  OTHER: Archive,
 };
 
 const TYPE_LABELS: Record<LibraryAssetType, string> = {

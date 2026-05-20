@@ -1975,6 +1975,22 @@
       ],
       "rationale": "User requested QA + simplify pass: eliminate inputClass/labelClass duplication across 5 files, modularize 370-line wizard, fix drag-end and click-outside bugs",
       "outcome": "AdminInput/Label/Select/Textarea shared components eliminate repeated style constants; ProductWizardStep1 extracted from ProductWizard; tsc 0 errors, lint 0 errors"
+    },
+    {
+      "ts": "2026-05-20T18:30:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "feat",
+      "summary": "Design-fidelity audit CMS: fix dashboard tokens, add banner CRUD drawer, expand wizard fields, fix mocks",
+      "files": [
+        "src/app/admin/page.tsx",
+        "src/app/admin/banners/page.tsx",
+        "src/app/admin/biblioteca/page.tsx",
+        "src/app/admin/_components/product-wizard-step1.tsx",
+        "src/app/admin/_components/product-wizard.tsx",
+        "src/lib/mock/admin-cms.ts"
+      ],
+      "rationale": "User requested design audit of CMS screens: dashboard used hardcoded zinc/white tokens; banners had no create/edit form; product wizard lacked subcategory_id and badge fields; MOCK_CMS_PRODUCTS_DETAIL had wrong IDs and only 1 entry",
+      "outcome": "Dashboard uses semantic tokens; banner drawer adds full create/edit flow with image preview; wizard Step 1 adds subcategory (dynamic) and badge; mock has 3 products with correct IDs; tsc 0 errors, lint 0 errors"
     }
   ]
 }
