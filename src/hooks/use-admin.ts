@@ -2,7 +2,12 @@
 
 import {
   createAdminUser,
+  fetchAdminAuditLog,
+  fetchAdminBanners,
+  fetchAdminConfig,
   fetchAdminDashboard,
+  fetchAdminLibrary,
+  fetchAdminMessages,
   fetchAdminUsers,
   loginAdmin,
   logoutAdmin,
@@ -10,6 +15,7 @@ import {
 } from "@/lib/api/client";
 import type {
   CreateAdminUserInput,
+  LibraryAssetType,
   LoginCredentials,
   UpdateAdminUserInput,
 } from "@/lib/api/contracts";
@@ -73,4 +79,39 @@ export function useAdminUserMutations() {
   });
 
   return { create, update };
+}
+
+export function useAdminBanners() {
+  return useQuery({
+    queryKey: ["admin", "banners"],
+    queryFn: fetchAdminBanners,
+  });
+}
+
+export function useAdminLibrary(type?: LibraryAssetType) {
+  return useQuery({
+    queryKey: ["admin", "library", type ?? "all"],
+    queryFn: () => fetchAdminLibrary(type),
+  });
+}
+
+export function useAdminMessages() {
+  return useQuery({
+    queryKey: ["admin", "messages"],
+    queryFn: fetchAdminMessages,
+  });
+}
+
+export function useAdminAuditLog() {
+  return useQuery({
+    queryKey: ["admin", "audit"],
+    queryFn: fetchAdminAuditLog,
+  });
+}
+
+export function useAdminConfig() {
+  return useQuery({
+    queryKey: ["admin", "config"],
+    queryFn: fetchAdminConfig,
+  });
 }

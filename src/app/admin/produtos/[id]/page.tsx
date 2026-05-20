@@ -1,5 +1,5 @@
 import { ProductWizard } from "@/app/admin/_components/product-wizard";
-import { buildCmsProductDetail } from "@/lib/mock/admin-cms";
+import { getCmsProvider } from "@/lib/api/provider";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -7,7 +7,7 @@ interface PageProps {
 
 export default async function AdminProdutoEditPage({ params }: PageProps) {
   const { id } = await params;
-  const detail = buildCmsProductDetail(id);
+  const detail = await getCmsProvider().getCmsProductDetail(id);
 
   if (!detail) {
     return (

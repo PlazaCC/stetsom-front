@@ -2,13 +2,19 @@ import type {
   AdminDashboardPayload,
   AdminUser,
   AdminUsersPayload,
+  AuditEntry,
   AuthPayload,
+  Banner,
   CatalogPagePayload,
   CatalogProductsQuery,
   Category,
+  CmsConfig,
   CmsProductsPayload,
   CmsProductsQuery,
+  ContactMessage,
   CreateAdminUserInput,
+  LibraryAsset,
+  LibraryAssetType,
   LoginCredentials,
   PaginatedResponse,
   Product,
@@ -131,4 +137,27 @@ export async function updateAdminUser(id: string, input: UpdateAdminUserInput) {
   }
 
   return (await response.json()) as AdminUser;
+}
+
+export async function fetchAdminBanners() {
+  return fetchJson<Banner[]>(INTERNAL_API_ENDPOINTS.adminBanners);
+}
+
+export async function fetchAdminLibrary(type?: LibraryAssetType) {
+  const suffix = type ? `?type=${encodeURIComponent(type)}` : "";
+  return fetchJson<LibraryAsset[]>(
+    `${INTERNAL_API_ENDPOINTS.adminLibrary}${suffix}`,
+  );
+}
+
+export async function fetchAdminMessages() {
+  return fetchJson<ContactMessage[]>(INTERNAL_API_ENDPOINTS.adminMessages);
+}
+
+export async function fetchAdminAuditLog() {
+  return fetchJson<AuditEntry[]>(INTERNAL_API_ENDPOINTS.adminAudit);
+}
+
+export async function fetchAdminConfig() {
+  return fetchJson<CmsConfig>(INTERNAL_API_ENDPOINTS.adminConfig);
 }

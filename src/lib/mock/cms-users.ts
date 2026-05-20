@@ -1,6 +1,7 @@
 import type { AdminUser } from "@/lib/api/contracts";
 
-export const MOCK_AUTH_PASSWORD = "stetsom2026";
+export const MOCK_AUTH_PASSWORD =
+  process.env.MOCK_ADMIN_PASSWORD ?? "stetsom2026";
 
 export const MOCK_ADMIN_USERS: AdminUser[] = [
   {

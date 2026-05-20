@@ -5,8 +5,8 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
+import { useAdminAuditLog } from "@/hooks/use-admin";
 import type { AuditEntry } from "@/lib/api/contracts";
-import { MOCK_CMS_AUDIT_LOG } from "@/lib/mock/admin-cms";
 import { Clock } from "lucide-react";
 
 const columns: AdminTableColumn<AuditEntry>[] = [
@@ -49,19 +49,23 @@ const columns: AdminTableColumn<AuditEntry>[] = [
 ];
 
 export default function AdminHistoricoPage() {
+  const audit = useAdminAuditLog();
+  const entries = audit.data ?? [];
+
   return (
     <AdminListPage
       title="Histórico"
       icon={Clock}
       toolbar={
         <p className="text-xs text-muted-foreground">
-          {MOCK_CMS_AUDIT_LOG.length} entradas registradas
+          {entries.length} entradas registradas
         </p>
       }
     >
       <AdminDataTable
         columns={columns}
-        data={MOCK_CMS_AUDIT_LOG}
+        data={entries}
+        isLoading={audit.isLoading}
         keyExtractor={(e) => e.id}
         emptyTitle="Nenhuma entrada registrada"
         emptyDescription="As ações dos usuários no CMS aparecerão aqui."

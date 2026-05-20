@@ -7,23 +7,40 @@ import {
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminDrawer } from "@/app/admin/_components/crud/admin-drawer";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
+import { useAdminMessages } from "@/hooks/use-admin";
 import type { ContactMessage } from "@/lib/api/contracts";
-import { MOCK_CMS_MESSAGES, MOCK_DEPARTMENTS } from "@/lib/mock/admin-cms";
 import { cn } from "@/lib/utils";
 import { Mail, Settings } from "lucide-react";
 import { useState } from "react";
 
 type Tab = "contatos" | "departamentos";
 
+const DEPARTMENTS: string[] = [
+  "Suporte Técnico",
+  "Comercial",
+  "Produto",
+  "Marketing",
+  "Financeiro",
+];
+
 export default function AdminMensagensPage() {
-  const [messages, setMessages] = useState<ContactMessage[]>(MOCK_CMS_MESSAGES);
+  const messagesQuery = useAdminMessages();
+  const [localOverrides, setLocalOverrides] = useState<
+    Record<string, Partial<ContactMessage>>
+  >({});
   const [selected, setSelected] = useState<ContactMessage | undefined>();
   const [activeTab, setActiveTab] = useState<Tab>("contatos");
 
+  const messages: ContactMessage[] = (messagesQuery.data ?? []).map((m) => ({
+    ...m,
+    ...localOverrides[m.id],
+  }));
+
   function markAsRead(id: string) {
-    setMessages((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, is_read: true } : m)),
-    );
+    setLocalOverrides((prev) => ({
+      ...prev,
+      [id]: { ...prev[id], is_read: true },
+    }));
   }
 
   function handleOpen(message: ContactMessage) {
@@ -82,6 +99,7 @@ export default function AdminMensagensPage() {
       className: "text-right",
       render: (m) => (
         <button
+          type="button"
           onClick={() => handleOpen(m)}
           className="text-xs font-medium text-brand hover:underline"
         >
@@ -98,7 +116,10 @@ export default function AdminMensagensPage() {
         icon={Mail}
         action={
           <AdminActionBar>
-            <button className="flex items-center gap-1.5 rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted">
+            <button
+              type="button"
+              className="flex items-center gap-1.5 rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+            >
               <Settings className="size-4" />
               Configurar encaminhamento
             </button>
@@ -136,6 +157,7 @@ export default function AdminMensagensPage() {
           <AdminDataTable
             columns={contactColumns}
             data={messages}
+            isLoading={messagesQuery.isLoading}
             keyExtractor={(m) => m.id}
             emptyTitle="Nenhuma mensagem"
             emptyDescription="As mensagens enviadas pelo site aparecerão aqui."
@@ -157,7 +179,7 @@ export default function AdminMensagensPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {MOCK_DEPARTMENTS.map((dept) => {
+                {DEPARTMENTS.map((dept) => {
                   const deptMessages = messages.filter(
                     (m) => m.department === dept,
                   );

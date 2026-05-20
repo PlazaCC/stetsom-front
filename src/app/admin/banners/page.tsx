@@ -3,8 +3,8 @@
 import { AdminActionBar } from "@/app/admin/_components/crud/admin-action-bar";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminStatusToggle } from "@/app/admin/_components/crud/admin-status-toggle";
+import { useAdminBanners } from "@/hooks/use-admin";
 import type { Banner, BannerStatus, Locale } from "@/lib/api/contracts";
-import { MOCK_CMS_BANNERS } from "@/lib/mock/admin-cms";
 import { ArrowLeft, Image, Plus } from "lucide-react";
 import { useState } from "react";
 import { AdminPageHeader } from "../_components/admin-page-header";
@@ -289,8 +289,8 @@ function BannerForm({
   );
 }
 
-export default function AdminBannersPage() {
-  const [banners, setBanners] = useState<Banner[]>(MOCK_CMS_BANNERS);
+function BannersContent({ initialBanners }: { initialBanners: Banner[] }) {
+  const [banners, setBanners] = useState<Banner[]>(initialBanners);
   const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [draft, setDraft] = useState<BannerDraft>(EMPTY_DRAFT);
@@ -389,6 +389,7 @@ export default function AdminBannersPage() {
       action={
         <AdminActionBar>
           <button
+            type="button"
             onClick={openCreate}
             className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
           >
@@ -480,6 +481,7 @@ export default function AdminBannersPage() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button
+                      type="button"
                       onClick={() => openEdit(banner)}
                       className="text-xs font-medium text-brand hover:underline"
                     >
@@ -493,5 +495,24 @@ export default function AdminBannersPage() {
         </div>
       </div>
     </AdminListPage>
+  );
+}
+
+export default function AdminBannersPage() {
+  const bannersQuery = useAdminBanners();
+
+  if (bannersQuery.isLoading || !bannersQuery.data) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <div className="size-6 animate-spin rounded-full border-2 border-border border-t-brand" />
+      </div>
+    );
+  }
+
+  return (
+    <BannersContent
+      key={bannersQuery.dataUpdatedAt}
+      initialBanners={bannersQuery.data}
+    />
   );
 }

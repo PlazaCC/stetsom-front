@@ -5,8 +5,8 @@ import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-sectio
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminPagination } from "@/app/admin/_components/crud/admin-pagination";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
+import { useAdminLibrary } from "@/hooks/use-admin";
 import type { LibraryAsset } from "@/lib/api/contracts";
-import { MOCK_CMS_LIBRARY_ASSETS } from "@/lib/mock/admin-cms";
 import { Archive, Check, FileText, Image, type LucideIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -150,10 +150,12 @@ export default function AdminBibliotecaPage() {
   const [activeTab, setActiveTab] = useState<Tab>("fotos");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
+  const libraryQuery = useAdminLibrary();
 
   const filtered = useMemo(() => {
+    const allAssets = libraryQuery.data ?? [];
     const q = query.trim().toLowerCase();
-    return MOCK_CMS_LIBRARY_ASSETS.filter((asset) => {
+    return allAssets.filter((asset) => {
       const matchesSearch = !q || asset.name.toLowerCase().includes(q);
       const matchesTab =
         activeTab === "fotos"
@@ -163,7 +165,7 @@ export default function AdminBibliotecaPage() {
             : asset.type === "MODEL3D";
       return matchesSearch && matchesTab;
     });
-  }, [query, activeTab]);
+  }, [query, activeTab, libraryQuery.data]);
 
   const paginatedAssets = filtered.slice(
     (page - 1) * PAGE_SIZE,

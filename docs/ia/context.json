@@ -2220,6 +2220,33 @@
       ],
       "rationale": "User requested fixing all findings from code-review across all priorities: ImageBlockData contract mismatch, missing Usuários sidebar link, arbitrary px values violating tailwind-canonical, dead safeSlides alias, and missing type=button attributes.",
       "outcome": "ImageBlockForm now stores images as string[], /admin/usuarios is reachable from sidebar, all [Npx] px values replaced with canonical Tailwind classes, safeSlides alias removed, and action buttons have explicit type attributes."
+    },
+    {
+      "ts": "2026-05-20T20:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Address code-review findings: proxy auth guard, provider pattern, env password, type=button",
+      "files": [
+        "src/proxy.ts",
+        "src/lib/api/endpoints.ts",
+        "src/lib/api/client.ts",
+        "src/hooks/use-admin.ts",
+        "src/lib/mock/cms-users.ts",
+        ".env.local.example",
+        "src/app/api/admin/banners/route.ts",
+        "src/app/api/admin/library/route.ts",
+        "src/app/api/admin/messages/route.ts",
+        "src/app/api/admin/audit/route.ts",
+        "src/app/api/admin/config/route.ts",
+        "src/app/admin/banners/page.tsx",
+        "src/app/admin/biblioteca/page.tsx",
+        "src/app/admin/configuracoes/page.tsx",
+        "src/app/admin/historico/page.tsx",
+        "src/app/admin/mensagens/page.tsx",
+        "src/app/admin/produtos/[id]/page.tsx"
+      ],
+      "rationale": "Code review identified admin routes not included in proxy.ts matcher (auth guard never ran), direct mock imports in admin pages bypassing provider pattern, missing type=button on buttons, and plain-text dev password",
+      "outcome": "Admin routes now protected server-side by cookie check in middleware; all admin pages use hooks+API routes+provider instead of direct mock imports; MOCK_AUTH_PASSWORD reads from env with fallback"
     }
   ]
 }
