@@ -67,6 +67,8 @@
   --color-cms-active-item: var(--cms-active-item);
   --color-cms-step-done: var(--cms-step-done);
   --color-cms-step-pending: var(--cms-step-pending);
+  --color-cms-overlay: var(--cms-overlay);
+  --shadow-cms-sidebar: var(--cms-sidebar-shadow);
 
   /* Typography — declared last to override any conflicting @theme definitions from imported CSS (shadcn, tw-animate) */
   --text-2xs: 0.6875rem;
@@ -88,6 +90,8 @@
   --cms-active-item: oklch(0.95 0.028 249);
   --cms-step-done: oklch(0.648 0.15 162);
   --cms-step-pending: oklch(0.968 0.001 286);
+  --cms-overlay: oklch(0.648 0.001 286 / 0.4);
+  --cms-sidebar-shadow: 0px 0px 8.8px 0px rgb(0 0 0 / 0.2);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(0.975 0 0);

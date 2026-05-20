@@ -29,8 +29,7 @@ export function AdminConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ backgroundColor: "var(--cms-overlay, rgba(142,142,142,0.4))" }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay"
       onClick={onCancel}
     >
       <div

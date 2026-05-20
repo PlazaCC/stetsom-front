@@ -1,5 +1,3 @@
-"use client";
-
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { FileText } from "lucide-react";
 

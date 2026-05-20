@@ -7,14 +7,14 @@ import type { Banner, BannerStatus, Locale } from "@/lib/api/contracts";
 import { MOCK_CMS_BANNERS } from "@/lib/mock/admin-cms";
 import { ArrowLeft, Image, Plus } from "lucide-react";
 import { useState } from "react";
+import { AdminPageHeader } from "../_components/admin-page-header";
+import { AdminPanel } from "../_components/admin-panel";
+import { AdminFormSection } from "../_components/crud/admin-form-section";
 import {
   AdminInput,
   AdminLabel,
   AdminSelect,
 } from "../_components/crud/admin-input";
-import { AdminFormSection } from "../_components/crud/admin-form-section";
-import { AdminPanel } from "../_components/admin-panel";
-import { AdminPageHeader } from "../_components/admin-page-header";
 
 interface BannerDraft {
   name: string;
@@ -62,9 +62,9 @@ function statusLabel(status: BannerStatus): string {
 
 function statusBadgeClass(status: BannerStatus): string {
   if (status === "ACTIVE")
-    return "bg-green-50 text-green-700 border border-green-200";
+    return "border border-cms-step-done bg-cms-step-done text-white";
   if (status === "SCHEDULED")
-    return "bg-blue-50 text-blue-700 border border-blue-200";
+    return "border border-cms-active-item bg-cms-active-item text-foreground";
   return "bg-muted text-muted-foreground border border-border";
 }
 

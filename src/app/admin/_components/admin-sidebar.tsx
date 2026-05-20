@@ -73,10 +73,7 @@ export function AdminSidebar() {
   const logout = useAdminLogout();
 
   return (
-    <aside
-      className="flex w-60 shrink-0 flex-col border-r border-border bg-card"
-      style={{ boxShadow: "0px 0px 8.8px 0px rgba(0,0,0,0.2)" }}
-    >
+    <aside className="shadow-cms-sidebar flex w-60 shrink-0 flex-col border-r border-border bg-card">
       <div className="px-4 py-5">
         <div className="flex items-center gap-2">
           <BarChart2 className="size-5 text-brand" />

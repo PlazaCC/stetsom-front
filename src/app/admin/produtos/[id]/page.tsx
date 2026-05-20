@@ -1,15 +1,12 @@
-"use client";
-
 import { ProductWizard } from "@/app/admin/_components/product-wizard";
 import { buildCmsProductDetail } from "@/lib/mock/admin-cms";
-import { use } from "react";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export default function AdminProdutoEditPage({ params }: PageProps) {
-  const { id } = use(params);
+export default async function AdminProdutoEditPage({ params }: PageProps) {
+  const { id } = await params;
   const detail = buildCmsProductDetail(id);
 
   if (!detail) {
