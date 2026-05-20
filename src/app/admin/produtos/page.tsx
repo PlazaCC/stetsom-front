@@ -9,7 +9,7 @@ type ProductOverride = {
   status: ProductStatus;
 };
 
-export default function CMSHome() {
+export default function AdminProdutos() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | ProductStatus>(
     "ALL",
@@ -70,7 +70,7 @@ export default function CMSHome() {
   }
 
   if (cmsProducts.isError || !cmsProducts.data) {
-    return <div className="text-red-600">Nao foi possivel carregar o CMS.</div>;
+    return <div className="text-red-600">Não foi possível carregar o CMS.</div>;
   }
 
   return (
@@ -117,7 +117,7 @@ export default function CMSHome() {
               <th className="px-4 py-3">Categoria</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Atualizado em</th>
-              <th className="px-4 py-3 text-right">Acoes</th>
+              <th className="px-4 py-3 text-right">Ações</th>
             </tr>
           </thead>
           <tbody>

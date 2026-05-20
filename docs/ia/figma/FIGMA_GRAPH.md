@@ -115,6 +115,23 @@
 
 ---
 
+## CMS Admin — Section Graph (`1090:25868`)
+
+> Documentação completa em `docs/ia/figma/CMS_PAGES.md`
+
+| Seção | Section Node | Telas principais |
+|---|---|---|
+| Autenticação | `1090:20214` | Login `1090:20215` |
+| Home / Dashboard | `1090:20238` | Dashboard `1090:20239` |
+| Produtos | `1090:20857` | Lista `1090:20858`, Novo (5 steps) `1090:21089–22031` |
+| Banners | `1090:18484` | Lista `1090:18485`, Visualizar `1090:18798`, Registrar `1090:19051` |
+| Biblioteca | `1090:19221` | Manuais `1090:19222`, 3D `1090:19352`, Fotos `1090:19827` |
+| Central de Mensagens | `1090:20406` | Telas 1–3: `1090:20407`, `1090:20527`, `1090:20659` |
+| Configurações | `1090:25867` | Config `1090:18287` |
+| Histórico | `1489:4758` | Histórico `1489:4759` |
+
+---
+
 ## How to Use This Graph
 
 1. Find the page slug matching your route

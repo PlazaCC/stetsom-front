@@ -42,4 +42,6 @@ Fase 6 — Suporte + 404 (paralelo, depende de task-01):
 | task-11 | 404 — Criar Página not-found.tsx              | 6          | TODO        | YES         | feat/task-11-404-not-found-page               |
 | task-12 | Mock Data — Enriquecimento Imagens + Specs    | 1          | TODO        | NO          | feat/task-12-mock-data-enrichment             |
 | task-13 | Design Token Foundation — Cores, tipografia, espaçamento | 1 | TODO  | NO          | feat/task-02-header-figma-fidelity            |
+| task-15 | CMS Admin Foundation — Consolidar rotas, sidebar, metadados IA | 7 | TODO | YES | feat/cms-base |
+| task-16 | Auth JWT + User Management (CMS Admin) | 7 | TODO | NO | feat/auth-user-management |
 

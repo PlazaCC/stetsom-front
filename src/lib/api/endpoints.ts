@@ -7,5 +7,6 @@ export const INTERNAL_API_ENDPOINTS = {
   support: "/api/support",
   supportFaq: "/api/support/faq",
   adminDashboard: "/api/admin/dashboard",
+  adminUsers: "/api/admin/users",
   cmsProducts: "/api/cms/products",
 } as const;
