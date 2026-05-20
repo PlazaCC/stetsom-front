@@ -1,14 +1,15 @@
 "use client";
 
+import { AdminActionBar } from "@/app/admin/_components/crud/admin-action-bar";
 import {
   AdminDataTable,
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminDrawer } from "@/app/admin/_components/crud/admin-drawer";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
-import { AdminActionBar } from "@/app/admin/_components/crud/admin-action-bar";
 import type { ContactMessage } from "@/lib/api/contracts";
 import { MOCK_CMS_MESSAGES, MOCK_DEPARTMENTS } from "@/lib/mock/admin-cms";
+import { cn } from "@/lib/utils";
 import { Mail, Settings } from "lucide-react";
 import { useState } from "react";
 
@@ -111,11 +112,12 @@ export default function AdminMensagensPage() {
                   key={tab}
                   type="button"
                   onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-2 text-sm font-medium capitalize transition-colors ${
+                  className={cn(
+                    "px-4 py-2 text-sm font-medium capitalize transition-colors",
                     activeTab === tab
                       ? "border-b-2 border-brand text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
                 >
                   {tab === "contatos" ? "Contatos" : "Departamentos"}
                 </button>

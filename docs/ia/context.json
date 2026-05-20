@@ -2169,6 +2169,19 @@
       ],
       "rationale": "User reported that the social media sections were breaking the layout with horizontal overflow and requested verification for mobile behavior too.",
       "outcome": "SocialFeed now clips horizontal overflow, uses responsive header alignment on small screens, and slide sizing adapts safely without page-width overflow in reused home/about sections."
+    },
+    {
+      "ts": "2026-05-20T17:49:53Z",
+      "agent": "gpt-5.3-codex",
+      "type": "fix",
+      "summary": "Resolve remaining review issues in CMS and messages tab classes",
+      "files": [
+        "src/app/cms/page.tsx",
+        "src/app/admin/mensagens/page.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "User requested fixing all identified issues across priorities from the latest branch review.",
+      "outcome": "CMS page now uses semantic design tokens instead of hardcoded palette classes, and admin messages tab button class merging now uses cn for consistency."
     }
   ]
 }
