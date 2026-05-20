@@ -116,17 +116,8 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Brand panel */}
-        <div
-          className="relative hidden flex-1 flex-col items-center justify-center gap-6 overflow-hidden md:flex"
-          style={{ backgroundColor: "#323232" }}
-        >
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(51deg, rgba(50,50,50,0) 0%, rgba(50,50,50,0.9) 71%, rgba(50,50,50,1) 90%)",
-            }}
-          />
+        <div className="relative hidden flex-1 flex-col items-center justify-center gap-6 overflow-hidden bg-surface-elevated md:flex">
+          <div className="absolute inset-0 bg-linear-to-br from-surface-elevated/0 via-surface-elevated/90 to-surface-elevated" />
           <div className="relative z-10 flex flex-col items-center gap-4 px-10 text-center">
             <Image
               src="/logo.png"

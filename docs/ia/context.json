@@ -2112,6 +2112,18 @@
       ],
       "rationale": "User requested applying all review fixes across priorities, including task-state mismatch and minor styling consistency issue.",
       "outcome": "Task backlog now matches task-18 status (REVIEW), and step indicator now uses semantic CMS token classes instead of inline hardcoded background style."
+    },
+    {
+      "ts": "2026-05-20T17:13:37Z",
+      "agent": "gpt-5.3-codex",
+      "type": "fix",
+      "summary": "Replace admin login hardcoded panel colors with semantic tokens",
+      "files": [
+        "src/app/admin/login/page.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "Code review identified hardcoded color values in the admin login brand panel, which violated the token-first styling rules.",
+      "outcome": "Admin login brand panel now uses semantic Tailwind token classes for both base background and overlay gradient, removing static inline color styles."
     }
   ]
 }
