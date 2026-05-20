@@ -242,6 +242,7 @@ export default function AdminUsuariosPage() {
         icon={Users}
         action={
           <button
+            type="button"
             onClick={openCreate}
             className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
           >

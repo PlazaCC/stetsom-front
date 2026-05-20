@@ -2247,6 +2247,24 @@
       ],
       "rationale": "Code review identified admin routes not included in proxy.ts matcher (auth guard never ran), direct mock imports in admin pages bypassing provider pattern, missing type=button on buttons, and plain-text dev password",
       "outcome": "Admin routes now protected server-side by cookie check in middleware; all admin pages use hooks+API routes+provider instead of direct mock imports; MOCK_AUTH_PASSWORD reads from env with fallback"
+    },
+    {
+      "ts": "2026-05-20T21:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "fix",
+      "summary": "Apply code-review fixes: layout RSC refactor, button types, admin-input cleanup, banners modularization",
+      "files": [
+        "src/app/admin/layout.tsx",
+        "src/app/admin/_components/admin-shell.tsx",
+        "src/app/admin/_components/crud/admin-drawer.tsx",
+        "src/app/admin/_components/crud/admin-input.tsx",
+        "src/app/admin/usuarios/page.tsx",
+        "src/app/admin/banners/page.tsx",
+        "src/app/admin/banners/_components/banner-form.tsx",
+        "src/app/admin/banners/_components/banners-content.tsx"
+      ],
+      "rationale": "Code review findings: admin layout was entirely client due to inline AdminShell; buttons lacked type=button causing accidental form submit; redundant className props in admin-input interfaces; banners/page.tsx exceeded 150-line threshold at 518 lines",
+      "outcome": "AdminLayout is now a Server Component; AdminShell extracted to client-only file; all interactive buttons have explicit type; banners page split into banner-form.tsx + banners-content.tsx + thin page.tsx"
     }
   ]
 }

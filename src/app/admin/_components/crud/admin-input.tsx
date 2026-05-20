@@ -1,20 +1,14 @@
 import { cn } from "@/lib/utils";
 
-interface AdminInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  className?: string;
-}
+type AdminInputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
-interface AdminTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  className?: string;
-}
+type AdminTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 interface AdminSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
-  className?: string;
   children: React.ReactNode;
 }
 
 interface AdminLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
-  className?: string;
   children: React.ReactNode;
 }
 

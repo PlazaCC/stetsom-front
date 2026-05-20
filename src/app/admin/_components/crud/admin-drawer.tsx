@@ -57,6 +57,7 @@ export function AdminDrawer({
             </h2>
           )}
           <button
+            type="button"
             onClick={onClose}
             className="ml-auto rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
           >
