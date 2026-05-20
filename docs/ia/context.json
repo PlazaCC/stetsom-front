@@ -1,4 +1,4 @@
-{
+﻿{
   "v": 1,
   "project": "stetsom-front",
   "log": [
@@ -1959,6 +1959,22 @@
       ],
       "rationale": "Isolate CMS theme from public site using .cms CSS selector scope; build CRUD primitives so every new admin screen is a composition, not raw code",
       "outcome": "Admin panel uses #E8ECFB bg, #FAFAFA panels, 240px sidebar with shadow, and 10 CRUD primitives covering list/wizard/form/detail patterns; tsc and lint pass"
+    },
+    {
+      "ts": "2026-05-20T17:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "refactor",
+      "summary": "QA pass: create AdminInput components, modularize wizard step, audit design consistency",
+      "files": [
+        "src/app/admin/_components/crud/admin-input.tsx",
+        "src/app/admin/_components/crud/admin-block-builder.tsx",
+        "src/app/admin/_components/product-wizard.tsx",
+        "src/app/admin/_components/product-wizard-step1.tsx",
+        "src/app/admin/configuracoes/page.tsx",
+        "src/app/admin/usuarios/page.tsx"
+      ],
+      "rationale": "User requested QA + simplify pass: eliminate inputClass/labelClass duplication across 5 files, modularize 370-line wizard, fix drag-end and click-outside bugs",
+      "outcome": "AdminInput/Label/Select/Textarea shared components eliminate repeated style constants; ProductWizardStep1 extracted from ProductWizard; tsc 0 errors, lint 0 errors"
     }
   ]
 }

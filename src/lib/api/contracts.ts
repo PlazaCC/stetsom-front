@@ -442,3 +442,85 @@ export type UpdateAdminUserInput = {
   role?: UserRole;
   is_active?: boolean;
 };
+
+export type BannerStatus = "ACTIVE" | "INACTIVE";
+
+export type Banner = {
+  id: string;
+  title: string;
+  subtitle?: string;
+  image_url: string;
+  link_url?: string;
+  link_label?: string;
+  status: BannerStatus;
+  order: number;
+  created_at: ISODateString;
+  updated_at: ISODateString;
+  created_by: string;
+};
+
+export type LibraryAssetType = "IMAGE" | "PDF" | "VIDEO" | "OTHER";
+
+export type LibraryAsset = {
+  id: string;
+  name: string;
+  file_url: string;
+  type: LibraryAssetType;
+  size_bytes: number;
+  width?: number;
+  height?: number;
+  alt?: string;
+  created_at: ISODateString;
+  created_by: string;
+};
+
+export type ContactMessage = {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  subject: string;
+  message: string;
+  is_read: boolean;
+  created_at: ISODateString;
+};
+
+export type AuditAction =
+  | "CREATE"
+  | "UPDATE"
+  | "DELETE"
+  | "LOGIN"
+  | "LOGOUT"
+  | "PUBLISH";
+
+export type AuditEntry = {
+  id: string;
+  user_id: string;
+  user_name: string;
+  action: AuditAction;
+  entity: string;
+  entity_id?: string;
+  entity_label?: string;
+  created_at: ISODateString;
+};
+
+export type CmsConfig = {
+  company_name: string;
+  company_email: string;
+  company_phone: string;
+  company_whatsapp: string;
+  company_address: string;
+  social_instagram?: string;
+  social_facebook?: string;
+  social_youtube?: string;
+  updated_at: ISODateString;
+  updated_by: string;
+};
+
+export type CmsProductDetailPayload = {
+  product: Product;
+  blocks: ProductBlock[];
+  files: ProductFile[];
+  category: Category;
+  subcategory?: Subcategory;
+};

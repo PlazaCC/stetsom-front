@@ -10,6 +10,7 @@ import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-inpu
 import { useCmsProducts } from "@/hooks/use-cms";
 import type { ProductStatus } from "@/lib/api/contracts";
 import { Package, Plus } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 type ProductRow = {
@@ -31,11 +32,14 @@ export default function AdminProdutos() {
     "ALL",
   );
 
+  const [page, setPage] = useState(1);
+  const pageSize = 12;
+
   const cmsProducts = useCmsProducts({
     q: query || undefined,
     status: statusFilter,
-    page: 1,
-    pageSize: 24,
+    page,
+    pageSize,
   });
 
   const rows = useMemo<ProductRow[]>(
@@ -85,10 +89,13 @@ export default function AdminProdutos() {
       header: "",
       headerClassName: "text-right",
       className: "text-right",
-      render: () => (
-        <button className="rounded border border-border px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted">
+      render: (row) => (
+        <Link
+          href={`/admin/produtos/${row.id}`}
+          className="rounded border border-border px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"
+        >
           Editar
-        </button>
+        </Link>
       ),
     },
   ];
@@ -102,10 +109,13 @@ export default function AdminProdutos() {
           <button className="rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted">
             Importar planilha
           </button>
-          <button className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80">
+          <Link
+            href="/admin/produtos/novo"
+            className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+          >
             <Plus className="size-4" />
             Cadastrar produto
-          </button>
+          </Link>
         </AdminActionBar>
       }
       toolbar={
@@ -142,6 +152,16 @@ export default function AdminProdutos() {
         keyExtractor={(row) => row.id}
         emptyTitle="Nenhum produto encontrado"
         emptyDescription="Cadastre um novo produto ou ajuste os filtros."
+        pagination={
+          cmsProducts.data
+            ? {
+                page,
+                pageSize,
+                total: cmsProducts.data.total,
+                onPageChange: setPage,
+              }
+            : undefined
+        }
       />
     </AdminListPage>
   );

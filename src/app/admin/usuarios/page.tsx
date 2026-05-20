@@ -6,6 +6,11 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
+import {
+  AdminInput,
+  AdminLabel,
+  AdminSelect,
+} from "@/app/admin/_components/crud/admin-input";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { useAdminUserMutations, useAdminUsers } from "@/hooks/use-admin";
 import type {
@@ -56,10 +61,6 @@ function UserForm({ user, onClose, onSave, isPending }: UserFormProps) {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>(user?.role ?? "EDITOR");
 
-  const inputClass =
-    "w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand";
-  const labelClass = "mb-1.5 block text-sm font-medium text-foreground";
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (user) {
@@ -78,50 +79,45 @@ function UserForm({ user, onClose, onSave, isPending }: UserFormProps) {
         >
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className={labelClass}>Nome</label>
-              <input
-                type="text"
+              <AdminLabel>Nome</AdminLabel>
+              <AdminInput
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className={inputClass}
               />
             </div>
             {!user && (
               <>
                 <div>
-                  <label className={labelClass}>E-mail</label>
-                  <input
+                  <AdminLabel>E-mail</AdminLabel>
+                  <AdminInput
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className={inputClass}
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Senha</label>
-                  <input
+                  <AdminLabel>Senha</AdminLabel>
+                  <AdminInput
                     type="password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className={inputClass}
                   />
                 </div>
               </>
             )}
             <div>
-              <label className={labelClass}>Perfil</label>
-              <select
+              <AdminLabel>Perfil</AdminLabel>
+              <AdminSelect
                 value={role}
                 onChange={(e) => setRole(e.target.value as UserRole)}
-                className={inputClass}
               >
                 <option value="SUPER_ADMIN">Super Admin</option>
                 <option value="ADMIN">Admin</option>
                 <option value="EDITOR">Editor</option>
-              </select>
+              </AdminSelect>
             </div>
             <div className="flex gap-3 pt-2">
               <button

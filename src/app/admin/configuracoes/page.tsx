@@ -1,0 +1,156 @@
+"use client";
+
+import { AdminFormPage } from "@/app/admin/_components/crud/admin-form-page";
+import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
+import {
+  AdminInput,
+  AdminLabel,
+} from "@/app/admin/_components/crud/admin-input";
+import type { CmsConfig } from "@/lib/api/contracts";
+import { MOCK_CMS_CONFIG } from "@/lib/mock/admin-cms";
+import { Settings } from "lucide-react";
+import { useState } from "react";
+import { AdminPageHeader } from "../_components/admin-page-header";
+import { AdminPanel } from "../_components/admin-panel";
+
+export default function AdminConfiguracoesPage() {
+  const [config, setConfig] = useState<CmsConfig>(MOCK_CMS_CONFIG);
+  const [saved, setSaved] = useState(false);
+
+  function handleChange(key: keyof CmsConfig, value: string) {
+    setSaved(false);
+    setConfig((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
+  }
+
+  return (
+    <div className="flex flex-col gap-5">
+      <AdminPanel className="p-5">
+        <AdminPageHeader title="Configurações" icon={Settings} />
+      </AdminPanel>
+
+      <form onSubmit={handleSubmit}>
+        <AdminFormPage
+          aside={
+            <div className="space-y-4">
+              <AdminFormSection title="Publicação">
+                <p className="text-xs text-muted-foreground">
+                  As configurações afetam todas as páginas do site imediatamente
+                  após salvar.
+                </p>
+                <div className="mt-4">
+                  <button
+                    type="submit"
+                    className="w-full rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+                  >
+                    {saved ? "Salvo!" : "Salvar configurações"}
+                  </button>
+                </div>
+              </AdminFormSection>
+            </div>
+          }
+        >
+          <AdminFormSection
+            title="Informações da Empresa"
+            description="Dados de contato e identificação exibidos no site."
+          >
+            <div className="space-y-4">
+              <div>
+                <AdminLabel>Nome da empresa</AdminLabel>
+                <AdminInput
+                  value={config.company_name}
+                  onChange={(e) => handleChange("company_name", e.target.value)}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <AdminLabel>E-mail</AdminLabel>
+                  <AdminInput
+                    type="email"
+                    value={config.company_email}
+                    onChange={(e) =>
+                      handleChange("company_email", e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <AdminLabel>Telefone</AdminLabel>
+                  <AdminInput
+                    value={config.company_phone}
+                    onChange={(e) =>
+                      handleChange("company_phone", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+              <div>
+                <AdminLabel>WhatsApp</AdminLabel>
+                <AdminInput
+                  value={config.company_whatsapp}
+                  onChange={(e) =>
+                    handleChange("company_whatsapp", e.target.value)
+                  }
+                />
+              </div>
+              <div>
+                <AdminLabel>Endereço</AdminLabel>
+                <AdminInput
+                  value={config.company_address}
+                  onChange={(e) =>
+                    handleChange("company_address", e.target.value)
+                  }
+                />
+              </div>
+            </div>
+          </AdminFormSection>
+
+          <AdminFormSection
+            title="Redes Sociais"
+            description="URLs completas dos perfis oficiais."
+          >
+            <div className="space-y-4">
+              <div>
+                <AdminLabel>Instagram</AdminLabel>
+                <AdminInput
+                  type="url"
+                  value={config.social_instagram ?? ""}
+                  onChange={(e) =>
+                    handleChange("social_instagram", e.target.value)
+                  }
+                  placeholder="https://instagram.com/stetsom"
+                />
+              </div>
+              <div>
+                <AdminLabel>Facebook</AdminLabel>
+                <AdminInput
+                  type="url"
+                  value={config.social_facebook ?? ""}
+                  onChange={(e) =>
+                    handleChange("social_facebook", e.target.value)
+                  }
+                  placeholder="https://facebook.com/stetsom"
+                />
+              </div>
+              <div>
+                <AdminLabel>YouTube</AdminLabel>
+                <AdminInput
+                  type="url"
+                  value={config.social_youtube ?? ""}
+                  onChange={(e) =>
+                    handleChange("social_youtube", e.target.value)
+                  }
+                  placeholder="https://youtube.com/@stetsom"
+                />
+              </div>
+            </div>
+          </AdminFormSection>
+        </AdminFormPage>
+      </form>
+    </div>
+  );
+}

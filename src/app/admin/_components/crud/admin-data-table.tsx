@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { AdminEmptyState } from "./admin-empty-state";
+import { AdminPagination } from "./admin-pagination";
 
 export interface AdminTableColumn<T> {
   key: string;
@@ -9,6 +10,13 @@ export interface AdminTableColumn<T> {
   render?: (row: T, index: number) => React.ReactNode;
 }
 
+interface AdminPaginationConfig {
+  page: number;
+  pageSize: number;
+  total: number;
+  onPageChange: (page: number) => void;
+}
+
 interface AdminDataTableProps<T> {
   columns: AdminTableColumn<T>[];
   data: T[];
@@ -16,6 +24,7 @@ interface AdminDataTableProps<T> {
   emptyTitle?: string;
   emptyDescription?: string;
   keyExtractor: (row: T) => string;
+  pagination?: AdminPaginationConfig;
   className?: string;
 }
 
@@ -26,6 +35,7 @@ export function AdminDataTable<T>({
   emptyTitle,
   emptyDescription,
   keyExtractor,
+  pagination,
   className,
 }: AdminDataTableProps<T>) {
   return (
@@ -42,46 +52,58 @@ export function AdminDataTable<T>({
       ) : data.length === 0 ? (
         <AdminEmptyState title={emptyTitle} description={emptyDescription} />
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted/50">
-                {columns.map((col) => (
-                  <th
-                    key={col.key}
-                    className={cn(
-                      "px-4 py-3 text-left text-xs font-medium text-muted-foreground",
-                      col.headerClassName,
-                    )}
-                  >
-                    {col.header}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {data.map((row, index) => (
-                <tr
-                  key={keyExtractor(row)}
-                  className="transition-colors hover:bg-muted/30"
-                >
+        <>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-muted/50">
                   {columns.map((col) => (
-                    <td
+                    <th
                       key={col.key}
-                      className={cn("px-4 py-3", col.className)}
+                      className={cn(
+                        "px-4 py-3 text-left text-xs font-medium text-muted-foreground",
+                        col.headerClassName,
+                      )}
                     >
-                      {col.render
-                        ? col.render(row, index)
-                        : ((row as Record<string, unknown>)[
-                            col.key
-                          ] as React.ReactNode)}
-                    </td>
+                      {col.header}
+                    </th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {data.map((row, index) => (
+                  <tr
+                    key={keyExtractor(row)}
+                    className="transition-colors hover:bg-muted/30"
+                  >
+                    {columns.map((col) => (
+                      <td
+                        key={col.key}
+                        className={cn("px-4 py-3", col.className)}
+                      >
+                        {col.render
+                          ? col.render(row, index)
+                          : ((row as Record<string, unknown>)[
+                              col.key
+                            ] as React.ReactNode)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {pagination && (
+            <div className="border-t border-border px-4 pb-3">
+              <AdminPagination
+                page={pagination.page}
+                pageSize={pagination.pageSize}
+                total={pagination.total}
+                onPageChange={pagination.onPageChange}
+              />
+            </div>
+          )}
+        </>
       )}
     </div>
   );
