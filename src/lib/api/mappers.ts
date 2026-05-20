@@ -1,9 +1,11 @@
 import type {
   Category,
   CmsProductRow,
+  Locale,
   Product,
   ProductCardItem,
   ProductStatus,
+  Subcategory,
 } from "@/lib/api/contracts";
 
 export function createCategoryLookup(
@@ -52,16 +54,33 @@ export function toProductCardItem(
   };
 }
 
+export function createSubcategoryLookup(
+  subcategories: Subcategory[],
+): Map<string, Subcategory> {
+  return new Map(subcategories.map((s) => [s.id, s]));
+}
+
 export function toCmsProductRow(
   product: Product,
   categories: Map<string, Category>,
+  subcategories?: Map<string, Subcategory>,
 ): CmsProductRow {
+  const markets = product.markets as Locale[] | undefined;
+  const languages: Locale[] =
+    markets && markets.length > 0 ? markets : ["pt-BR"];
+
   return {
     id: product.id,
     slug: product.slug,
     name: product.name,
+    thumbnail_url: product.thumbnail_url,
     category: categories.get(product.category_id)?.name ?? "Categoria",
+    subcategory: product.subcategory_id
+      ? subcategories?.get(product.subcategory_id)?.name
+      : undefined,
+    languages,
     status: product.status,
+    is_published: product.status === "ACTIVE",
     updated_at: product.updated_at,
   };
 }

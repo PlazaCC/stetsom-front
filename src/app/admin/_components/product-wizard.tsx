@@ -2,7 +2,6 @@
 
 import { AdminBlockBuilder } from "@/app/admin/_components/crud/admin-block-builder";
 import type { DraftBlock } from "@/app/admin/_components/crud/admin-block-builder";
-import { AdminFileUpload } from "@/app/admin/_components/crud/admin-file-upload";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import { AdminWizardPage } from "@/app/admin/_components/crud/admin-wizard-page";
 import type { AdminStep } from "@/app/admin/_components/crud/admin-step-indicator";
@@ -10,9 +9,12 @@ import { AdminPanel } from "@/app/admin/_components/admin-panel";
 import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
 import { ProductWizardStep1 } from "@/app/admin/_components/product-wizard-step1";
 import type { ProductInfo } from "@/app/admin/_components/product-wizard-step1";
-import type { CmsProductDetailPayload } from "@/lib/api/contracts";
+import { ProductWizardStepSpecs } from "@/app/admin/_components/product-wizard-step-specs";
+import { ProductWizardStepFiles } from "@/app/admin/_components/product-wizard-step-files";
+import { ProductWizardStepPublish } from "@/app/admin/_components/product-wizard-step-publish";
+import type { CmsProductDetailPayload, ProductSpec } from "@/lib/api/contracts";
 import { CATALOG_CATEGORIES, CATALOG_SUBCATEGORIES } from "@/lib/mock/catalog";
-import { ArrowLeft, ArrowRight, Package } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Package } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -20,6 +22,8 @@ interface ProductWizardProps {
   initial?: CmsProductDetailPayload;
   mode: "create" | "edit";
 }
+
+type Step = 1 | 2 | 3 | 4;
 
 function slugify(text: string): string {
   return text
@@ -40,14 +44,13 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
       status: "ACTIVE",
       badge: "",
       description: "",
-      thumbnail_url: "",
+      cover_image_url: "",
+      additional_images: [],
       video_url: "",
       launch_date: new Date().toISOString().split("T")[0],
-      spec_tags: [],
     };
   }
 
-  const specs = detail.product.specifications;
   return {
     name: detail.product.name,
     slug: detail.product.slug,
@@ -56,11 +59,21 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
     status: detail.product.status,
     badge: detail.product.badge ?? "",
     description: detail.product.description,
-    thumbnail_url: detail.product.thumbnail_url,
+    cover_image_url: detail.product.thumbnail_url,
+    additional_images: [],
     video_url: detail.product.video_url ?? "",
     launch_date: detail.product.launch_date.split("T")[0],
-    spec_tags: Object.entries(specs).map(([k, v]) => `${k}: ${String(v)}`),
   };
+}
+
+function buildInitialSpecs(detail?: CmsProductDetailPayload): ProductSpec[] {
+  if (!detail) return [];
+  return Object.entries(detail.product.specifications).map(([k, v], i) => ({
+    id: `spec-init-${i}`,
+    attribute: k,
+    value: String(v),
+    order: i + 1,
+  }));
 }
 
 function buildInitialBlocks(detail?: CmsProductDetailPayload): DraftBlock[] {
@@ -80,25 +93,27 @@ function buildInitialBlocks(detail?: CmsProductDetailPayload): DraftBlock[] {
   }));
 }
 
+const STEP_LABELS: Record<Step, string> = {
+  1: "Dados gerais",
+  2: "Especificações técnicas",
+  3: "Arquivos",
+  4: "Customização",
+};
+
 export function ProductWizard({ initial, mode }: ProductWizardProps) {
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<Step>(1);
   const [info, setInfo] = useState<ProductInfo>(buildInitialInfo(initial));
+  const [specs, setSpecs] = useState<ProductSpec[]>(buildInitialSpecs(initial));
   const [blocks, setBlocks] = useState<DraftBlock[]>(
     buildInitialBlocks(initial),
   );
+  const [files, setFiles] = useState(initial?.files ?? []);
   const [saved, setSaved] = useState(false);
 
-  const steps: AdminStep[] = [
-    {
-      label: "Informações",
-      status: step > 1 ? "done" : step === 1 ? "active" : "pending",
-    },
-    {
-      label: "Conteúdo",
-      status: step > 2 ? "done" : step === 2 ? "active" : "pending",
-    },
-    { label: "Arquivos", status: step === 3 ? "active" : "pending" },
-  ];
+  const steps: AdminStep[] = [1, 2, 3, 4].map((n) => ({
+    label: STEP_LABELS[n as Step],
+    status: step > n ? "done" : step === n ? "active" : "pending",
+  }));
 
   function updateInfo(key: keyof ProductInfo, value: string | string[]) {
     setInfo((prev) => {
@@ -110,6 +125,10 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     });
   }
 
+  function removeFile(id: string) {
+    setFiles((prev) => prev.filter((f) => f.id !== id));
+  }
+
   function handlePublish() {
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
@@ -117,6 +136,76 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
 
   const title =
     mode === "create" ? "Novo Produto" : `Editar: ${info.name || "Produto"}`;
+
+  const category = CATALOG_CATEGORIES.find((c) => c.id === info.category_id);
+  const subcategory = CATALOG_SUBCATEGORIES.find(
+    (s) => s.id === info.subcategory_id,
+  );
+
+  const previewAside = (
+    <div className="space-y-4">
+      <AdminFormSection title="Prévia">
+        <div className="overflow-hidden rounded-md border border-border bg-muted">
+          {info.cover_image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={info.cover_image_url}
+              alt={info.name}
+              className="h-36 w-full object-cover"
+            />
+          ) : (
+            <div className="flex h-36 items-center justify-center">
+              <Package className="size-10 text-muted-foreground/40" />
+            </div>
+          )}
+        </div>
+        <dl className="mt-3 space-y-2 text-xs">
+          <div className="flex justify-between gap-2">
+            <dt className="shrink-0 text-muted-foreground">Nome</dt>
+            <dd className="truncate font-medium text-foreground">
+              {info.name || "—"}
+            </dd>
+          </div>
+          <div className="flex justify-between gap-2">
+            <dt className="shrink-0 text-muted-foreground">Status</dt>
+            <dd className="font-medium text-foreground">
+              {info.status === "ACTIVE" ? "Ativo" : "Descontinuado"}
+            </dd>
+          </div>
+          {category && (
+            <div className="flex justify-between gap-2">
+              <dt className="shrink-0 text-muted-foreground">Categoria</dt>
+              <dd className="truncate font-medium text-foreground">
+                {category.name}
+              </dd>
+            </div>
+          )}
+          {subcategory && (
+            <div className="flex justify-between gap-2">
+              <dt className="shrink-0 text-muted-foreground">Linha</dt>
+              <dd className="truncate font-medium text-foreground">
+                {subcategory.name}
+              </dd>
+            </div>
+          )}
+          <div className="flex justify-between gap-2">
+            <dt className="shrink-0 text-muted-foreground">Specs</dt>
+            <dd className="font-medium text-foreground">{specs.length}</dd>
+          </div>
+          <div className="flex justify-between gap-2">
+            <dt className="shrink-0 text-muted-foreground">Blocos</dt>
+            <dd className="font-medium text-foreground">{blocks.length}</dd>
+          </div>
+          <div className="flex justify-between gap-2">
+            <dt className="shrink-0 text-muted-foreground">Slug</dt>
+            <dd className="truncate font-mono text-foreground">
+              {info.slug || "—"}
+            </dd>
+          </div>
+        </dl>
+      </AdminFormSection>
+    </div>
+  );
 
   return (
     <div className="flex flex-col gap-5">
@@ -131,156 +220,84 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
         </Link>
       </AdminPanel>
 
-      <AdminWizardPage
-        steps={steps}
-        aside={
-          <div className="space-y-4">
-            <AdminFormSection title="Navegação">
-              <div className="space-y-2">
-                {step > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => setStep((s) => (s - 1) as 1 | 2 | 3)}
-                    className="flex w-full items-center justify-center gap-2 rounded-md border border-border py-2 text-sm font-medium text-foreground hover:bg-muted"
-                  >
-                    <ArrowLeft className="size-4" />
-                    Passo anterior
-                  </button>
-                )}
-                {step < 3 ? (
-                  <button
-                    type="button"
-                    onClick={() => setStep((s) => (s + 1) as 2 | 3)}
-                    className="flex w-full items-center justify-center gap-2 rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
-                  >
-                    Próximo passo
-                    <ArrowRight className="size-4" />
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handlePublish}
-                    className="w-full rounded-md bg-brand py-2 text-sm font-semibold text-white transition-opacity hover:opacity-80"
-                  >
-                    {saved
-                      ? "Salvo!"
-                      : mode === "create"
-                        ? "Publicar produto"
-                        : "Salvar alterações"}
-                  </button>
-                )}
-              </div>
-            </AdminFormSection>
-
-            <AdminFormSection title="Resumo">
-              <dl className="space-y-2 text-xs">
-                <div className="flex justify-between gap-2">
-                  <dt className="shrink-0 text-muted-foreground">Status</dt>
-                  <dd className="font-medium text-foreground">
-                    {info.status === "ACTIVE" ? "Ativo" : "Descontinuado"}
-                  </dd>
-                </div>
-                {info.category_id && (
-                  <div className="flex justify-between gap-2">
-                    <dt className="shrink-0 text-muted-foreground">
-                      Categoria
-                    </dt>
-                    <dd className="truncate font-medium text-foreground">
-                      {CATALOG_CATEGORIES.find((c) => c.id === info.category_id)
-                        ?.name ?? "—"}
-                    </dd>
-                  </div>
-                )}
-                {info.subcategory_id && (
-                  <div className="flex justify-between gap-2">
-                    <dt className="shrink-0 text-muted-foreground">
-                      Subcategoria
-                    </dt>
-                    <dd className="truncate font-medium text-foreground">
-                      {CATALOG_SUBCATEGORIES.find(
-                        (s) => s.id === info.subcategory_id,
-                      )?.name ?? "—"}
-                    </dd>
-                  </div>
-                )}
-                {info.badge && (
-                  <div className="flex justify-between gap-2">
-                    <dt className="shrink-0 text-muted-foreground">Badge</dt>
-                    <dd className="font-medium text-foreground">
-                      {info.badge}
-                    </dd>
-                  </div>
-                )}
-                <div className="flex justify-between gap-2">
-                  <dt className="shrink-0 text-muted-foreground">Blocos</dt>
-                  <dd className="font-medium text-foreground">
-                    {blocks.length}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-2">
-                  <dt className="shrink-0 text-muted-foreground">Slug</dt>
-                  <dd className="truncate font-mono text-foreground">
-                    {info.slug || "—"}
-                  </dd>
-                </div>
-              </dl>
-            </AdminFormSection>
-          </div>
-        }
-      >
+      <AdminWizardPage steps={steps} aside={previewAside}>
         {step === 1 && <ProductWizardStep1 info={info} onChange={updateInfo} />}
 
         {step === 2 && (
-          <AdminFormSection
-            title="Blocos de conteúdo"
-            description="Adicione e organize os blocos de conteúdo da página do produto."
-          >
-            <AdminBlockBuilder value={blocks} onChange={setBlocks} />
-          </AdminFormSection>
+          <ProductWizardStepSpecs specs={specs} onChange={setSpecs} />
         )}
 
         {step === 3 && (
-          <>
+          <ProductWizardStepFiles files={files} onRemove={removeFile} />
+        )}
+
+        {step === 4 && (
+          <div className="space-y-6">
             <AdminFormSection
-              title="Upload de arquivos"
-              description="Manuais, catálogos, certificados e imagens adicionais."
+              title="Blocos de conteúdo"
+              description="Adicione e organize os blocos de conteúdo da página do produto."
             >
-              <AdminFileUpload
-                multiple
-                accept=".pdf,image/*"
-                label="Clique ou arraste arquivos para o produto"
-                description="PDF (manuais, catálogos) ou imagens"
-              />
+              <AdminBlockBuilder value={blocks} onChange={setBlocks} />
             </AdminFormSection>
 
-            {initial && initial.files.length > 0 && (
-              <AdminFormSection title="Arquivos existentes">
-                <ul className="space-y-2">
-                  {initial.files.map((file) => (
-                    <li
-                      key={file.id}
-                      className="flex items-center justify-between rounded-md border border-border bg-card px-3 py-2"
-                    >
-                      <div>
-                        <p className="text-sm font-medium text-foreground">
-                          {file.name ?? file.file_url.split("/").pop()}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {file.type} · v{file.version} ·{" "}
-                          {file.is_active ? "Ativo" : "Inativo"}
-                        </p>
-                      </div>
-                      <button className="text-xs font-medium text-muted-foreground hover:text-foreground">
-                        Remover
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </AdminFormSection>
-            )}
-          </>
+            <ProductWizardStepPublish
+              info={info}
+              specs={specs}
+              onInfoChange={(key, value) => updateInfo(key, value)}
+            />
+          </div>
         )}
       </AdminWizardPage>
+
+      {/* Bottom action bar */}
+      <AdminPanel className="flex items-center justify-between px-5 py-3">
+        <div className="flex items-center gap-2">
+          {step > 1 && (
+            <button
+              type="button"
+              onClick={() => setStep((s) => (s - 1) as Step)}
+              className="flex items-center gap-1.5 rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+            >
+              <ArrowLeft className="size-4" />
+              Anterior
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-muted-foreground">
+            Etapa {step} de 4 — {STEP_LABELS[step]}
+          </span>
+
+          {step < 4 ? (
+            <button
+              type="button"
+              onClick={() => setStep((s) => (s + 1) as Step)}
+              className="flex items-center gap-1.5 rounded-md bg-foreground px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+            >
+              Próxima etapa
+              <ArrowRight className="size-4" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handlePublish}
+              className="flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-80"
+            >
+              {saved ? (
+                <>
+                  <Check className="size-4" />
+                  Salvo!
+                </>
+              ) : mode === "create" ? (
+                "Publicar produto"
+              ) : (
+                "Salvar alterações"
+              )}
+            </button>
+          )}
+        </div>
+      </AdminPanel>
     </div>
   );
 }

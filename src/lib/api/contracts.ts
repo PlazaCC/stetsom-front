@@ -333,7 +333,9 @@ export type SupportPayload = {
 export type DashboardMetric = {
   id: string;
   label: string;
-  value: string;
+  value: string | number;
+  sub?: string;
+  thumbnail_url?: string;
   variation?: string;
 };
 
@@ -344,20 +346,47 @@ export type AdminActivity = {
   timestamp: ISODateString;
 };
 
+export type ScheduleItem = {
+  id: string;
+  label: string;
+  date: ISODateString;
+  type: "banner" | "product" | "other";
+};
+
+export type QuickAction = {
+  id: string;
+  label: string;
+  href: string;
+  icon: string;
+};
+
 export type AdminDashboardPayload = {
   title: string;
   subtitle: string;
   metrics: DashboardMetric[];
   recentActivities: AdminActivity[];
+  scheduleItems: ScheduleItem[];
+  quickActions: QuickAction[];
 };
 
 export type CmsProductRow = {
   id: string;
   slug: string;
   name: string;
+  thumbnail_url: string;
   category: string;
+  subcategory?: string;
+  languages: Locale[];
   status: ProductStatus;
+  is_published: boolean;
   updated_at: ISODateString;
+};
+
+export type ProductSpec = {
+  id: string;
+  attribute: string;
+  value: string;
+  order: number;
 };
 
 export type CmsProductsPayload = {
@@ -443,23 +472,26 @@ export type UpdateAdminUserInput = {
   is_active?: boolean;
 };
 
-export type BannerStatus = "ACTIVE" | "INACTIVE";
+export type BannerStatus = "ACTIVE" | "INACTIVE" | "SCHEDULED";
 
 export type Banner = {
   id: string;
-  title: string;
-  subtitle?: string;
-  image_url: string;
+  name: string;
+  product_id?: string;
+  desktop_image_url: string;
+  mobile_image_url?: string;
   link_url?: string;
-  link_label?: string;
   status: BannerStatus;
+  locale: Locale;
+  display_from?: ISODateString;
+  display_until?: ISODateString;
   order: number;
   created_at: ISODateString;
   updated_at: ISODateString;
   created_by: string;
 };
 
-export type LibraryAssetType = "IMAGE" | "PDF" | "VIDEO" | "OTHER";
+export type LibraryAssetType = "IMAGE" | "PDF" | "VIDEO" | "MODEL3D" | "OTHER";
 
 export type LibraryAsset = {
   id: string;
@@ -470,6 +502,8 @@ export type LibraryAsset = {
   width?: number;
   height?: number;
   alt?: string;
+  product_id?: string;
+  revision?: number;
   created_at: ISODateString;
   created_by: string;
 };
@@ -481,6 +515,7 @@ export type ContactMessage = {
   phone?: string;
   subject: string;
   message: string;
+  department: string;
   is_read: boolean;
   created_at: ISODateString;
 };
@@ -497,7 +532,9 @@ export type AuditEntry = {
   id: string;
   user_id: string;
   user_name: string;
+  user_avatar?: string;
   action: AuditAction;
+  action_sentence: string;
   entity: string;
   entity_id?: string;
   entity_label?: string;

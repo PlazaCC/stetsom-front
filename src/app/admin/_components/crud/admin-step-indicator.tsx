@@ -28,22 +28,18 @@ export function AdminStepIndicator({
             backgroundColor:
               step.status === "pending"
                 ? "var(--cms-step-pending)"
-                : step.status === "done"
-                  ? "oklch(0.97 0.05 162)"
-                  : "var(--cms-active-item)",
+                : "oklch(0.97 0.05 162)",
           }}
         >
           <span
             className={cn(
               "flex size-7 items-center justify-center rounded-full text-sm font-semibold",
-              step.status === "done"
+              step.status === "done" || step.status === "active"
                 ? "bg-cms-step-done text-white"
-                : step.status === "active"
-                  ? "bg-brand text-white"
-                  : "bg-cms-step-pending text-muted-foreground",
+                : "bg-cms-step-pending text-muted-foreground",
             )}
           >
-            {step.status === "done" ? (
+            {step.status === "done" || step.status === "active" ? (
               <Check className="size-4" />
             ) : (
               <span>{index + 1}</span>

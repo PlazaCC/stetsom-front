@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Upload, X } from "lucide-react";
+import { Upload, X, type LucideIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
 interface AdminFileUploadProps {
@@ -11,6 +11,7 @@ interface AdminFileUploadProps {
   label?: string;
   description?: string;
   className?: string;
+  icon?: LucideIcon;
 }
 
 export function AdminFileUpload({
@@ -20,6 +21,7 @@ export function AdminFileUpload({
   label = "Clique para fazer upload ou arraste o arquivo",
   description,
   className,
+  icon: Icon = Upload,
 }: AdminFileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -55,7 +57,7 @@ export function AdminFileUpload({
         }}
         onClick={() => inputRef.current?.click()}
       >
-        <Upload className="size-8 text-muted-foreground" />
+        <Icon className="size-8 text-muted-foreground" />
         <div>
           <p className="text-sm font-medium text-foreground">{label}</p>
           {description && (

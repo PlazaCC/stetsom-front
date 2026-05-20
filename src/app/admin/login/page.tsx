@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdminLogin } from "@/hooks/use-admin";
+import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -8,6 +9,7 @@ export default function AdminLoginPage() {
   const login = useAdminLogin();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -30,10 +32,10 @@ export default function AdminLoginPage() {
           </div>
 
           <h1 className="mb-1 font-mono text-2xl font-bold text-foreground">
-            Acesso Administrativo
+            Bem-vindo de volta!
           </h1>
           <p className="mb-8 text-sm text-muted-foreground">
-            Entre com suas credenciais para continuar.
+            Insira suas credenciais para acessar o painel.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -62,15 +64,37 @@ export default function AdminLoginPage() {
               >
                 Senha
               </label>
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand"
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded-md border border-border bg-card px-3 py-2 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? (
+                    <EyeOff className="size-4" />
+                  ) : (
+                    <Eye className="size-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="text-xs text-brand hover:underline"
+              >
+                Esqueci minha senha
+              </button>
             </div>
 
             {login.isError && (
@@ -86,7 +110,7 @@ export default function AdminLoginPage() {
               disabled={login.isPending}
               className="mt-2 w-full rounded-md bg-foreground py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {login.isPending ? "Entrando..." : "Entrar"}
+              {login.isPending ? "Verificando..." : "Avançar"}
             </button>
           </form>
         </div>

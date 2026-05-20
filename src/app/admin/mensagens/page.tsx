@@ -6,14 +6,18 @@ import {
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminDrawer } from "@/app/admin/_components/crud/admin-drawer";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
+import { AdminActionBar } from "@/app/admin/_components/crud/admin-action-bar";
 import type { ContactMessage } from "@/lib/api/contracts";
-import { MOCK_CMS_MESSAGES } from "@/lib/mock/admin-cms";
-import { Bell } from "lucide-react";
+import { MOCK_CMS_MESSAGES, MOCK_DEPARTMENTS } from "@/lib/mock/admin-cms";
+import { Mail, Settings } from "lucide-react";
 import { useState } from "react";
+
+type Tab = "contatos" | "departamentos";
 
 export default function AdminMensagensPage() {
   const [messages, setMessages] = useState<ContactMessage[]>(MOCK_CMS_MESSAGES);
   const [selected, setSelected] = useState<ContactMessage | undefined>();
+  const [activeTab, setActiveTab] = useState<Tab>("contatos");
 
   function markAsRead(id: string) {
     setMessages((prev) =>
@@ -28,7 +32,7 @@ export default function AdminMensagensPage() {
 
   const unread = messages.filter((m) => !m.is_read).length;
 
-  const columns: AdminTableColumn<ContactMessage>[] = [
+  const contactColumns: AdminTableColumn<ContactMessage>[] = [
     {
       key: "status",
       header: "",
@@ -40,7 +44,7 @@ export default function AdminMensagensPage() {
     },
     {
       key: "name",
-      header: "Remetente",
+      header: "Nome",
       render: (m) => (
         <div>
           <p className="font-medium text-foreground">{m.name}</p>
@@ -49,22 +53,24 @@ export default function AdminMensagensPage() {
       ),
     },
     {
-      key: "subject",
-      header: "Assunto",
-      render: (m) => <span className="text-foreground">{m.subject}</span>,
-    },
-    {
       key: "created_at",
-      header: "Recebida",
+      header: "Data do contato",
       render: (m) => (
         <span className="text-xs text-muted-foreground">
           {new Date(m.created_at).toLocaleDateString("pt-BR", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
           })}
+        </span>
+      ),
+    },
+    {
+      key: "department",
+      header: "Setor responsável",
+      render: (m) => (
+        <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium text-foreground">
+          {m.department}
         </span>
       ),
     },
@@ -87,28 +93,99 @@ export default function AdminMensagensPage() {
   return (
     <>
       <AdminListPage
-        title="Central de Mensagens"
-        icon={Bell}
+        title="Central de contato"
+        icon={Mail}
+        action={
+          <AdminActionBar>
+            <button className="flex items-center gap-1.5 rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted">
+              <Settings className="size-4" />
+              Configurar encaminhamento
+            </button>
+          </AdminActionBar>
+        }
         toolbar={
-          unread > 0 ? (
-            <p className="text-xs text-muted-foreground">
-              <span className="font-semibold text-brand">{unread}</span>{" "}
-              {unread === 1 ? "mensagem não lida" : "mensagens não lidas"}
-            </p>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              Todas as mensagens foram lidas.
-            </p>
-          )
+          <div className="flex items-center gap-4">
+            <div className="flex border-b border-border">
+              {(["contatos", "departamentos"] as Tab[]).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-4 py-2 text-sm font-medium capitalize transition-colors ${
+                    activeTab === tab
+                      ? "border-b-2 border-brand text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {tab === "contatos" ? "Contatos" : "Departamentos"}
+                </button>
+              ))}
+            </div>
+            {activeTab === "contatos" && unread > 0 && (
+              <span className="text-xs text-muted-foreground">
+                <span className="font-semibold text-brand">{unread}</span>{" "}
+                {unread === 1 ? "não lida" : "não lidas"}
+              </span>
+            )}
+          </div>
         }
       >
-        <AdminDataTable
-          columns={columns}
-          data={messages}
-          keyExtractor={(m) => m.id}
-          emptyTitle="Nenhuma mensagem"
-          emptyDescription="As mensagens enviadas pelo site aparecerão aqui."
-        />
+        {activeTab === "contatos" ? (
+          <AdminDataTable
+            columns={contactColumns}
+            data={messages}
+            keyExtractor={(m) => m.id}
+            emptyTitle="Nenhuma mensagem"
+            emptyDescription="As mensagens enviadas pelo site aparecerão aqui."
+          />
+        ) : (
+          <div className="overflow-hidden rounded-[16px] border border-border bg-card">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-muted/50">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
+                    Departamento
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
+                    Mensagens recebidas
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
+                    Não lidas
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {MOCK_DEPARTMENTS.map((dept) => {
+                  const deptMessages = messages.filter(
+                    (m) => m.department === dept,
+                  );
+                  const deptUnread = deptMessages.filter(
+                    (m) => !m.is_read,
+                  ).length;
+                  return (
+                    <tr key={dept} className="hover:bg-muted/30">
+                      <td className="px-4 py-3 font-medium text-foreground">
+                        {dept}
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground">
+                        {deptMessages.length}
+                      </td>
+                      <td className="px-4 py-3">
+                        {deptUnread > 0 ? (
+                          <span className="font-semibold text-brand">
+                            {deptUnread}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">0</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </AdminListPage>
 
       <AdminDrawer
@@ -119,9 +196,7 @@ export default function AdminMensagensPage() {
         {selected && (
           <div className="space-y-5">
             <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground">
-                Remetente
-              </p>
+              <p className="text-xs font-medium text-muted-foreground">Nome</p>
               <p className="text-sm font-semibold text-foreground">
                 {selected.name}
               </p>
@@ -135,6 +210,15 @@ export default function AdminMensagensPage() {
 
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground">
+                Setor responsável
+              </p>
+              <p className="text-sm font-medium text-foreground">
+                {selected.department}
+              </p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-muted-foreground">
                 Assunto
               </p>
               <p className="text-sm font-semibold text-foreground">
@@ -144,7 +228,7 @@ export default function AdminMensagensPage() {
 
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground">
-                Recebida em
+                Data do contato
               </p>
               <p className="text-xs text-foreground">
                 {new Date(selected.created_at).toLocaleString("pt-BR")}
@@ -155,7 +239,7 @@ export default function AdminMensagensPage() {
               <p className="text-xs font-medium text-muted-foreground">
                 Mensagem
               </p>
-              <p className="whitespace-pre-wrap text-sm text-foreground leading-relaxed">
+              <p className="whitespace-pre-wrap leading-relaxed text-sm text-foreground">
                 {selected.message}
               </p>
             </div>

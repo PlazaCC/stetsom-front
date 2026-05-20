@@ -17,6 +17,7 @@ import type {
 import { HttpError } from "@/lib/api/route-utils";
 import {
   createCategoryLookup,
+  createSubcategoryLookup,
   toCmsProductRow,
   toProductCardItem,
 } from "@/lib/api/mappers";
@@ -348,8 +349,11 @@ export function createMockCmsProvider(): CmsProvider {
       const pageSize = clampPageSize(query.pageSize);
       const filtered = filterCmsProducts(query);
       const categoryLookup = createCategoryLookup(CATALOG_CATEGORIES);
+      const subcatLookup = createSubcategoryLookup(
+        getCatalogSubcategoriesForLocale(),
+      );
       const items = filtered.map((product) =>
-        toCmsProductRow(product, categoryLookup),
+        toCmsProductRow(product, categoryLookup, subcatLookup),
       );
 
       const paginated = paginate(items, page, pageSize);

@@ -1,4 +1,4 @@
-﻿{
+{
   "v": 1,
   "project": "stetsom-front",
   "log": [
@@ -1991,6 +1991,37 @@
       ],
       "rationale": "User requested design audit of CMS screens: dashboard used hardcoded zinc/white tokens; banners had no create/edit form; product wizard lacked subcategory_id and badge fields; MOCK_CMS_PRODUCTS_DETAIL had wrong IDs and only 1 entry",
       "outcome": "Dashboard uses semantic tokens; banner drawer adds full create/edit flow with image preview; wizard Step 1 adds subcategory (dynamic) and badge; mock has 3 products with correct IDs; tsc 0 errors, lint 0 errors"
+    },
+    {
+      "ts": "2026-05-20T00:00:00Z",
+      "agent": "claude-sonnet-4-6",
+      "type": "feat",
+      "summary": "Full CMS admin audit: 4-step product wizard, block modal, banners full-page, biblioteca tabs, mensagens redesign, historico, dashboard, sidebar",
+      "files": [
+        "src/lib/api/contracts.ts",
+        "src/lib/api/mappers.ts",
+        "src/lib/api/providers/mock-provider.ts",
+        "src/lib/mock/admin-cms.ts",
+        "src/app/admin/page.tsx",
+        "src/app/admin/login/page.tsx",
+        "src/app/admin/produtos/page.tsx",
+        "src/app/admin/banners/page.tsx",
+        "src/app/admin/biblioteca/page.tsx",
+        "src/app/admin/mensagens/page.tsx",
+        "src/app/admin/historico/page.tsx",
+        "src/app/admin/paginas/page.tsx",
+        "src/app/admin/_components/admin-sidebar.tsx",
+        "src/app/admin/_components/product-wizard.tsx",
+        "src/app/admin/_components/product-wizard-step1.tsx",
+        "src/app/admin/_components/product-wizard-step-specs.tsx",
+        "src/app/admin/_components/product-wizard-step-files.tsx",
+        "src/app/admin/_components/product-wizard-step-publish.tsx",
+        "src/app/admin/_components/crud/admin-block-builder.tsx",
+        "src/app/admin/_components/crud/admin-file-upload.tsx",
+        "src/app/admin/_components/crud/admin-step-indicator.tsx"
+      ],
+      "rationale": "Full CMS audit and correction pass: all 53+ divergences from Figma implemented. 4-step wizard, block type modal dialog, banners full-page form, biblioteca 3 tabs, mensagens Central de contato with Departamentos tab, historico action sentence format, dashboard metrics/quickactions/schedule, sidebar reorganized per Figma.",
+      "outcome": "All CMS admin screens match Figma design. tsc: 0 errors. lint: 0 errors (1 pre-existing warning)."
     }
   ]
 }

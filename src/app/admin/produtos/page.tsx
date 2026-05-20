@@ -8,30 +8,38 @@ import {
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import { useCmsProducts } from "@/hooks/use-cms";
-import type { ProductStatus } from "@/lib/api/contracts";
+import type { CmsProductRow, ProductStatus } from "@/lib/api/contracts";
 import { Package, Plus } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-
-type ProductRow = {
-  id: string;
-  name: string;
-  category: string;
-  status: ProductStatus;
-  updated_at: string;
-};
 
 const STATUS_LABELS: Record<ProductStatus, string> = {
   ACTIVE: "Ativo",
   DISCONTINUED: "Descontinuado",
 };
 
+function LocaleFlags({ locales }: { locales: string[] }) {
+  const flagMap: Record<string, string> = {
+    "pt-BR": "🇧🇷",
+    en: "🇺🇸",
+    es: "🇲🇽",
+  };
+  return (
+    <span className="flex gap-0.5">
+      {locales.map((l) => (
+        <span key={l} title={l}>
+          {flagMap[l] ?? l}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export default function AdminProdutos() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | ProductStatus>(
     "ALL",
   );
-
   const [page, setPage] = useState(1);
   const pageSize = 12;
 
@@ -42,25 +50,56 @@ export default function AdminProdutos() {
     pageSize,
   });
 
-  const rows = useMemo<ProductRow[]>(
+  const rows = useMemo<CmsProductRow[]>(
     () => cmsProducts.data?.items ?? [],
     [cmsProducts.data?.items],
   );
 
-  const columns: AdminTableColumn<ProductRow>[] = [
+  const columns: AdminTableColumn<CmsProductRow>[] = [
+    {
+      key: "thumb",
+      header: "",
+      className: "w-12",
+      render: (row) => (
+        <div className="size-10 overflow-hidden rounded-md bg-muted">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={row.thumbnail_url}
+            alt={row.name}
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = "none";
+            }}
+          />
+        </div>
+      ),
+    },
     {
       key: "name",
       header: "Nome",
       render: (row) => (
-        <span className="font-medium text-foreground">{row.name}</span>
+        <div>
+          <p className="font-medium text-foreground">{row.name}</p>
+          <p className="text-xs text-muted-foreground">{row.slug}</p>
+        </div>
       ),
     },
     {
       key: "category",
-      header: "Categoria",
+      header: "Categoria / Linha",
       render: (row) => (
-        <span className="text-muted-foreground">{row.category}</span>
+        <div>
+          <p className="text-sm text-foreground">{row.category}</p>
+          {row.subcategory && (
+            <p className="text-xs text-muted-foreground">{row.subcategory}</p>
+          )}
+        </div>
       ),
+    },
+    {
+      key: "languages",
+      header: "Idiomas",
+      render: (row) => <LocaleFlags locales={row.languages} />,
     },
     {
       key: "status",
@@ -78,10 +117,27 @@ export default function AdminProdutos() {
       ),
     },
     {
-      key: "updated_at",
-      header: "Atualizado em",
+      key: "is_published",
+      header: "Publicação",
       render: (row) => (
-        <span className="text-muted-foreground">{row.updated_at}</span>
+        <span
+          className={
+            row.is_published
+              ? "rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700"
+              : "rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
+          }
+        >
+          {row.is_published ? "Publicado" : "Rascunho"}
+        </span>
+      ),
+    },
+    {
+      key: "updated_at",
+      header: "Atualizado",
+      render: (row) => (
+        <span className="text-xs text-muted-foreground">
+          {new Date(row.updated_at).toLocaleDateString("pt-BR")}
+        </span>
       ),
     },
     {

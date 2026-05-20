@@ -1,8 +1,16 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { GripVertical, Plus, Trash2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import {
+  FileText,
+  GripVertical,
+  Image,
+  Plus,
+  Trash2,
+  Video,
+  X,
+} from "lucide-react";
+import { useState } from "react";
 import { AdminInput, AdminSelect } from "./admin-input";
 import { AdminRichText } from "./admin-rich-text";
 
@@ -25,6 +33,18 @@ const BLOCK_LABELS: Record<BlockType, string> = {
   TEXT: "Texto",
   IMAGE: "Imagem",
   VIDEO: "Vídeo",
+};
+
+const BLOCK_DESCRIPTIONS: Record<BlockType, string> = {
+  TEXT: "Título e parágrafo com alinhamento configurável.",
+  IMAGE: "Uma ou mais imagens com legenda e layout.",
+  VIDEO: "Incorpore um vídeo do YouTube ou Vimeo.",
+};
+
+const BLOCK_ICONS: Record<BlockType, React.ElementType> = {
+  TEXT: FileText,
+  IMAGE: Image,
+  VIDEO: Video,
 };
 
 function generateId(): string {
@@ -157,26 +177,73 @@ function VideoBlockForm({
   );
 }
 
+function BlockTypeModal({
+  onSelect,
+  onClose,
+}: {
+  onSelect: (type: BlockType) => void;
+  onClose: () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-sm overflow-hidden rounded-[16px] border border-border bg-card shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-border px-5 py-4">
+          <h3 className="text-sm font-semibold text-foreground">
+            Selecionar tipo de bloco
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+
+        <div className="divide-y divide-border">
+          {(["TEXT", "IMAGE", "VIDEO"] as BlockType[]).map((type) => {
+            const Icon = BLOCK_ICONS[type];
+            return (
+              <button
+                key={type}
+                type="button"
+                onClick={() => onSelect(type)}
+                className="flex w-full items-center gap-4 px-5 py-4 text-left transition-colors hover:bg-muted"
+              >
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-md border border-border bg-background">
+                  <Icon className="size-5 text-muted-foreground" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    {BLOCK_LABELS[type]}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {BLOCK_DESCRIPTIONS[type]}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function AdminBlockBuilder({
   value,
   onChange,
   className,
 }: AdminBlockBuilderProps) {
-  const [showTypeMenu, setShowTypeMenu] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!showTypeMenu) return;
-    function handleClickOutside(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setShowTypeMenu(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showTypeMenu]);
 
   function addBlock(type: BlockType) {
     const next: DraftBlock = {
@@ -186,7 +253,7 @@ export function AdminBlockBuilder({
       order: value.length + 1,
     };
     onChange([...value, next]);
-    setShowTypeMenu(false);
+    setShowModal(false);
   }
 
   function removeBlock(id: string) {
@@ -217,100 +284,96 @@ export function AdminBlockBuilder({
   }
 
   return (
-    <div className={cn("space-y-3", className)}>
-      {value.length === 0 && (
-        <div className="flex items-center justify-center rounded-lg border border-dashed border-border py-10">
-          <p className="text-sm text-muted-foreground">
-            Nenhum bloco adicionado. Clique em &ldquo;Adicionar bloco&rdquo;.
-          </p>
-        </div>
-      )}
+    <>
+      <div className={cn("space-y-3", className)}>
+        {value.length === 0 && (
+          <div className="flex items-center justify-center rounded-lg border border-dashed border-border py-10">
+            <p className="text-sm text-muted-foreground">
+              Nenhum bloco adicionado. Clique em &ldquo;Adicionar bloco&rdquo;.
+            </p>
+          </div>
+        )}
 
-      {value.map((block) => (
-        <div
-          key={block.id}
-          draggable
-          onDragStart={() => setDraggedId(block.id)}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setOverId(block.id);
-          }}
-          onDrop={() => handleDrop(block.id)}
-          onDragEnd={() => {
-            setDraggedId(null);
-            setOverId(null);
-          }}
-          className={cn(
-            "rounded-[16px] border border-border bg-card transition-opacity",
-            draggedId === block.id && "opacity-40",
-            overId === block.id && draggedId !== block.id && "border-brand",
-          )}
-        >
-          <div className="flex items-center gap-3 border-b border-border px-4 py-3">
-            <GripVertical className="size-4 cursor-grab shrink-0 text-muted-foreground active:cursor-grabbing" />
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              {BLOCK_LABELS[block.type]}
-            </span>
-            <span className="ml-auto text-xs text-muted-foreground">
-              #{block.order}
-            </span>
-            <button
-              type="button"
-              onClick={() => removeBlock(block.id)}
-              className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+        {value.map((block) => {
+          const Icon = BLOCK_ICONS[block.type];
+          return (
+            <div
+              key={block.id}
+              draggable
+              onDragStart={() => setDraggedId(block.id)}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setOverId(block.id);
+              }}
+              onDrop={() => handleDrop(block.id)}
+              onDragEnd={() => {
+                setDraggedId(null);
+                setOverId(null);
+              }}
+              className={cn(
+                "rounded-[16px] border border-border bg-card transition-opacity",
+                draggedId === block.id && "opacity-40",
+                overId === block.id && draggedId !== block.id && "border-brand",
+              )}
             >
-              <Trash2 className="size-4" />
-            </button>
-          </div>
+              <div className="flex items-center gap-3 border-b border-border px-4 py-3">
+                <GripVertical className="size-4 shrink-0 cursor-grab text-muted-foreground active:cursor-grabbing" />
+                <Icon className="size-4 shrink-0 text-muted-foreground" />
+                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {BLOCK_LABELS[block.type]}
+                </span>
+                <span className="ml-auto text-xs text-muted-foreground">
+                  #{block.order}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeBlock(block.id)}
+                  className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
 
-          <div className="p-4">
-            {block.type === "TEXT" && (
-              <TextBlockForm
-                data={block.data}
-                onChange={(d) => updateBlockData(block.id, d)}
-              />
-            )}
-            {block.type === "IMAGE" && (
-              <ImageBlockForm
-                data={block.data}
-                onChange={(d) => updateBlockData(block.id, d)}
-              />
-            )}
-            {block.type === "VIDEO" && (
-              <VideoBlockForm
-                data={block.data}
-                onChange={(d) => updateBlockData(block.id, d)}
-              />
-            )}
-          </div>
-        </div>
-      ))}
+              <div className="p-4">
+                {block.type === "TEXT" && (
+                  <TextBlockForm
+                    data={block.data}
+                    onChange={(d) => updateBlockData(block.id, d)}
+                  />
+                )}
+                {block.type === "IMAGE" && (
+                  <ImageBlockForm
+                    data={block.data}
+                    onChange={(d) => updateBlockData(block.id, d)}
+                  />
+                )}
+                {block.type === "VIDEO" && (
+                  <VideoBlockForm
+                    data={block.data}
+                    onChange={(d) => updateBlockData(block.id, d)}
+                  />
+                )}
+              </div>
+            </div>
+          );
+        })}
 
-      <div className="relative" ref={menuRef}>
         <button
           type="button"
-          onClick={() => setShowTypeMenu((v) => !v)}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-2 rounded-md border border-dashed border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-brand hover:text-brand"
         >
           <Plus className="size-4" />
           Adicionar bloco
         </button>
-
-        {showTypeMenu && (
-          <div className="absolute left-0 top-full z-10 mt-1 w-48 rounded-lg border border-border bg-card shadow-md">
-            {(["TEXT", "IMAGE", "VIDEO"] as BlockType[]).map((type) => (
-              <button
-                key={type}
-                type="button"
-                onClick={() => addBlock(type)}
-                className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-muted first:rounded-t-lg last:rounded-b-lg"
-              >
-                {BLOCK_LABELS[type]}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
-    </div>
+
+      {showModal && (
+        <BlockTypeModal
+          onSelect={addBlock}
+          onClose={() => setShowModal(false)}
+        />
+      )}
+    </>
   );
 }
