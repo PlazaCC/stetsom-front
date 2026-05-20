@@ -72,31 +72,3 @@ export function OurHistory({ section }: Readonly<OurHistoryProps>) {
     </section>
   );
 }
-
-// interface StatsGridProps {
-//   stats: SiteHomePayload["history"]["stats"];
-// }
-
-// function StatsGrid({ stats }: Readonly<StatsGridProps>) {
-//   return (
-//     <div className="mt-8 grid grid-cols-2 border border-white/20">
-//       {stats.map((stat) => (
-//         <div key={stat.label} className="border border-white/20 px-4 py-4">
-//           <p className="font-sans-condensed text-display-sm font-black leading-none text-white">
-//             {stat.value.endsWith("+") ? (
-//               <>
-//                 {stat.value.slice(0, -1)}
-//                 <span className="text-brand">+</span>
-//               </>
-//             ) : (
-//               stat.value
-//             )}
-//           </p>
-//           <p className="mt-1 font-sans text-xs font-medium uppercase text-text-subtle-dark">
-//             {stat.label}
-//           </p>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }

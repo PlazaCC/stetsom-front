@@ -1,17 +1,17 @@
 "use client";
 
 import { Container } from "@/components/ui/container";
-import ProductCard from "@/components/ui/product-card";
+import { ProductCard } from "@/components/ui/product-card";
 import { SectionLabel } from "@/components/ui/section-label";
+import { Link } from "@/i18n/navigation";
 import type {
   FeaturedTab,
   ProductCardItem,
   SiteHomePayload,
 } from "@/lib/api/contracts";
-import Image from "next/image";
-import { Link } from "@/i18n/navigation";
-import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
+import { useMemo, useState } from "react";
 import { FeaturedTabStrip } from "./featured-tab-strip";
 
 interface FeaturedProductsProps {

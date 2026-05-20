@@ -1,5 +1,5 @@
 import { Container } from "@/components/ui/container";
-import ProductCard from "@/components/ui/product-card";
+import { ProductCard } from "@/components/ui/product-card";
 import type {
   ProductBlock,
   ProductCardItem,

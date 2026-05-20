@@ -1,23 +1,23 @@
 "use client";
 
 import { Container } from "@/components/ui/container";
-import ProductCard from "@/components/ui/product-card";
+import { ProductCard } from "@/components/ui/product-card";
 import {
   useCatalogCategories,
   useCatalogPage,
   useCatalogProducts,
 } from "@/hooks/use-catalog";
 import { useCatalogFilters } from "@/hooks/use-catalog-filters";
-import { createCategoryLookup, toProductCardItem } from "@/lib/api/mappers";
 import type { Category } from "@/lib/api/contracts";
+import { createCategoryLookup, toProductCardItem } from "@/lib/api/mappers";
 import { PRODUCT_LINES } from "@/lib/mock/catalog";
 import { cn } from "@/lib/utils";
-import { CatalogMobileFilter } from "./catalog-mobile-filter";
-import { CatalogSidebar } from "./catalog-sidebar";
 import { ArrowLeftRight, Search, SlidersHorizontal } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useMemo } from "react";
-import { useTranslations, useLocale } from "next-intl";
+import { CatalogMobileFilter } from "./catalog-mobile-filter";
+import { CatalogSidebar } from "./catalog-sidebar";
 
 interface CategoryOption {
   name: string;

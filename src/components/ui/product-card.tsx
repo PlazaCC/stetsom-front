@@ -10,7 +10,7 @@ interface ProductCardProps {
   href?: string;
 }
 
-export default function ProductCard({
+export function ProductCard({
   name,
   category,
   spec,

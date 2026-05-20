@@ -2141,6 +2141,22 @@
       ],
       "rationale": "User requested fixing all findings from the branch review, including important and minor priority issues.",
       "outcome": "Admin product edit and pages routes now follow server-component conventions, dialog/sidebar styling uses semantic CMS tokens, and banner status badges were aligned with CMS tokenized colors."
+    },
+    {
+      "ts": "2026-05-20T17:36:25Z",
+      "agent": "gpt-5.3-codex",
+      "type": "fix",
+      "summary": "Finalize remaining review cleanups for history and product card exports",
+      "files": [
+        "src/app/[locale]/(site)/_components/our-history.tsx",
+        "src/components/ui/product-card.tsx",
+        "src/app/[locale]/(site)/_components/featured-products.tsx",
+        "src/app/[locale]/(site)/produtos/_components/catalog-content.tsx",
+        "src/app/[locale]/(site)/produtos/[slug]/_components/product-detail-content.tsx",
+        "docs/ia/context.json"
+      ],
+      "rationale": "User requested applying all detected corrections, including the remaining minor issues from the latest review pass.",
+      "outcome": "Removed dead commented code from history section and migrated ProductCard to named export with all consumer imports updated, keeping lint and typecheck green."
     }
   ]
 }
