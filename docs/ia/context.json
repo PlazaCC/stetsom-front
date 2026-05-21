@@ -2343,6 +2343,32 @@
             ],
             "rationale": "Code review identified: direct mock/catalog imports in admin UI components, uncontrolled time input, emoji flags violating no-emoji rule, redundant barrel exports in admin-cms.ts, and undocumented non-URL-safe base64 in mock token",
             "outcome": "Subcategories now served via /api/catalog/subcategories with getCatalogSubcategories() in provider contract; wizard uses useCatalogCategories+useCatalogSubcategories hooks; launch_time field added to ProductInfo and controlled; locale labels use text (PT/EN/ES) instead of emoji; barrel exports removed from admin-cms.ts; mock token comment clarifies base64url limitation"
+        },
+        {
+            "ts": "2026-05-20T14:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "docs",
+            "summary": "Add README to src/lib/mock documenting mock purpose, structure and orval migration path",
+            "files": [
+                "src/lib/mock/README.md"
+            ],
+            "rationale": "User requested documentation clarifying that mocks exist to mirror the future Fastify OpenAPI contract and explaining how orval will replace contracts.ts when the backend is ready",
+            "outcome": "Developers now have a clear reference for why mocks exist, how they relate to contracts.ts/provider pattern, and the exact steps to integrate orval when the Fastify API ships"
+        },
+        {
+            "ts": "2026-05-20T14:30:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Apply code-review fixes: tag-input key, upload icon, cn() badges, statusBadge consolidation",
+            "files": [
+                "src/app/admin/_components/crud/admin-tag-input.tsx",
+                "src/app/admin/page.tsx",
+                "src/app/admin/banners/_components/banners-content.tsx",
+                "src/app/admin/produtos/page.tsx",
+                "src/app/admin/usuarios/page.tsx"
+            ],
+            "rationale": "Code review identified: array-index React key bug in tag input, wrong icon for upload action, template literal instead of cn(), duplicated base classes in status badges",
+            "outcome": "tag-input uses key={tag} and removes by value; upload quick action shows Upload icon; all status badges use cn() with shared base classes; tsc and lint pass clean"
         }
     ]
 }

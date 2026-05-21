@@ -9,6 +9,7 @@ import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import { useCmsProducts } from "@/hooks/use-cms";
 import type { CmsProductRow, ProductStatus } from "@/lib/api/contracts";
+import { cn } from "@/lib/utils";
 import { Package, Plus } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -111,11 +112,12 @@ export default function AdminProdutos() {
       header: "Status",
       render: (row) => (
         <span
-          className={
+          className={cn(
+            "rounded-full border px-2 py-0.5 text-xs font-medium",
             row.status === "ACTIVE"
-              ? "rounded-full border border-cms-step-done bg-cms-step-done px-2 py-0.5 text-xs font-medium text-white"
-              : "rounded-full border border-cms-step-pending bg-cms-step-pending px-2 py-0.5 text-xs font-medium text-muted-foreground"
-          }
+              ? "border-cms-step-done bg-cms-step-done text-white"
+              : "border-cms-step-pending bg-cms-step-pending text-muted-foreground",
+          )}
         >
           {STATUS_LABELS[row.status]}
         </span>
@@ -126,11 +128,12 @@ export default function AdminProdutos() {
       header: "Publicação",
       render: (row) => (
         <span
-          className={
+          className={cn(
+            "rounded-full border px-2 py-0.5 text-xs font-medium",
             row.is_published
-              ? "rounded-full border border-cms-active-item bg-cms-active-item px-2 py-0.5 text-xs font-medium text-foreground"
-              : "rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
-          }
+              ? "border-cms-active-item bg-cms-active-item text-foreground"
+              : "border-border bg-muted text-muted-foreground",
+          )}
         >
           {row.is_published ? "Publicado" : "Rascunho"}
         </span>

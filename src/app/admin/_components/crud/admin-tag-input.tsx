@@ -27,8 +27,8 @@ export function AdminTagInput({
     setInput("");
   }
 
-  function removeTag(index: number) {
-    onChange(tags.filter((_, i) => i !== index));
+  function removeTag(tag: string) {
+    onChange(tags.filter((t) => t !== tag));
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -36,7 +36,7 @@ export function AdminTagInput({
       e.preventDefault();
       addTag(input);
     } else if (e.key === "Backspace" && !input && tags.length > 0) {
-      removeTag(tags.length - 1);
+      removeTag(tags[tags.length - 1]);
     }
   }
 
@@ -48,9 +48,9 @@ export function AdminTagInput({
         className,
       )}
     >
-      {tags.map((tag, i) => (
+      {tags.map((tag) => (
         <span
-          key={i}
+          key={tag}
           className="flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-foreground"
         >
           {tag}
@@ -58,7 +58,7 @@ export function AdminTagInput({
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              removeTag(i);
+              removeTag(tag);
             }}
             className="text-muted-foreground hover:text-foreground"
           >

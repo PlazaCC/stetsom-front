@@ -4,6 +4,7 @@ import { AdminActionBar } from "@/app/admin/_components/crud/admin-action-bar";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminStatusToggle } from "@/app/admin/_components/crud/admin-status-toggle";
 import type { Banner } from "@/lib/api/contracts";
+import { cn } from "@/lib/utils";
 import { Image, Plus } from "lucide-react";
 import { useState } from "react";
 import {
@@ -204,7 +205,10 @@ export function BannersContent({
                         />
                       )}
                       <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusBadgeClass(banner.status)}`}
+                        className={cn(
+                          "rounded-full px-2 py-0.5 text-xs font-medium",
+                          statusBadgeClass(banner.status),
+                        )}
                       >
                         {statusLabel(banner.status)}
                       </span>

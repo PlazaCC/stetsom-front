@@ -1,13 +1,13 @@
 "use client";
 
 import { useAdminDashboard } from "@/hooks/use-admin";
-import { Image, Mail, Package, Plus } from "lucide-react";
+import { Image, Mail, Package, Plus, Upload } from "lucide-react";
 import Link from "next/link";
 
 const QUICK_ICONS: Record<string, React.ElementType> = {
   package: Package,
   image: Image,
-  upload: Package,
+  upload: Upload,
   mail: Mail,
 };
 

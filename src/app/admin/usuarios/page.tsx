@@ -19,6 +19,7 @@ import type {
   UpdateAdminUserInput,
   UserRole,
 } from "@/lib/api/contracts";
+import { cn } from "@/lib/utils";
 import { Plus, Users } from "lucide-react";
 import { useState } from "react";
 
@@ -37,13 +38,16 @@ function RoleBadge({ role }: { role: UserRole }) {
 }
 
 function StatusBadge({ active }: { active: boolean }) {
-  return active ? (
-    <span className="rounded-full border border-cms-step-done bg-cms-step-done px-2 py-0.5 text-xs font-medium text-white">
-      Ativo
-    </span>
-  ) : (
-    <span className="rounded-full border border-cms-step-pending bg-cms-step-pending px-2 py-0.5 text-xs font-medium text-muted-foreground">
-      Inativo
+  return (
+    <span
+      className={cn(
+        "rounded-full border px-2 py-0.5 text-xs font-medium",
+        active
+          ? "border-cms-step-done bg-cms-step-done text-white"
+          : "border-cms-step-pending bg-cms-step-pending text-muted-foreground",
+      )}
+    >
+      {active ? "Ativo" : "Inativo"}
     </span>
   );
 }
