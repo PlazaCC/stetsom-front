@@ -35,7 +35,7 @@ function slugify(text: string): string {
   return text
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/[̀-ͯ]̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 }
@@ -187,6 +187,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   }
 
   function handlePublish() {
+    // TODO(task-17): submit to provider.createCmsProduct / updateCmsProduct when API is ready.
+    // Currently shows a transient "Salvo!" indicator without persisting data.
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   }

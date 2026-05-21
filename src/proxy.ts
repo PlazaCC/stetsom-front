@@ -14,7 +14,8 @@ export function proxy(request: NextRequest) {
     const isLoginPage = pathname === "/admin/login";
     if (!isLoginPage) {
       const token = request.cookies.get("admin_token");
-      // MOCK: validate basic token structure (3-part JWT-like); real backend will verify signature with jose
+      // MOCK: validates only 3-part structure (not signature) — intentionally weak for dev.
+      // TODO(task-16-auth): replace with jose JWT verification (HMAC-SHA256) when Fastify auth is integrated.
       const isValidToken =
         token && token.value.split(".").length === 3 && token.value.length > 10;
       if (!isValidToken) {

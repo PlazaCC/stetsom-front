@@ -2369,6 +2369,19 @@
             ],
             "rationale": "Code review identified: array-index React key bug in tag input, wrong icon for upload action, template literal instead of cn(), duplicated base classes in status badges",
             "outcome": "tag-input uses key={tag} and removes by value; upload quick action shows Upload icon; all status badges use cn() with shared base classes; tsc and lint pass clean"
+        },
+        {
+            "ts": "2026-05-20T00:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "chore",
+            "summary": "Apply code-review fixes: TODO comments, slugify regex escape, PT-BR admin decision",
+            "files": [
+                "src/proxy.ts",
+                "src/app/admin/_components/product-wizard.tsx",
+                "src/app/admin/login/page.tsx"
+            ],
+            "rationale": "Post code-review corrections: document mock token weakness with task reference, clarify handlePublish stub, replace literal Unicode chars with escape sequences in slugify regex, document PT-BR-only decision for admin CMS",
+            "outcome": "All four review items resolved; TSC and ESLint still pass"
         }
     ]
 }

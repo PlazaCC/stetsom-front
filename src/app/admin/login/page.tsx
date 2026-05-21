@@ -1,5 +1,6 @@
 "use client";
 
+// Admin CMS is PT-BR only (internal tool). Strings are intentionally not i18n'd.
 import { useAdminLogin } from "@/hooks/use-admin";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
