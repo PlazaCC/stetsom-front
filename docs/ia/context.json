@@ -16,6 +16,32 @@
             "outcome": "Changelog file created with v1 schema. Rule updated to enforce mandatory append on every AI-driven change."
         },
         {
+            "ts": "2026-05-18T20:40:00Z",
+            "agent": "gpt-5.2-codex",
+            "type": "feat",
+            "summary": "Prepare social feed cards for Instagram fields",
+            "files": [
+                "src/lib/api/contracts.ts",
+                "src/app/[locale]/(site)/_components/social-feed.tsx",
+                "src/lib/mock/site.ts",
+                "src/lib/mock/site-i18n.ts"
+            ],
+            "rationale": "User requested Instagram API-aligned fields and mocked content for the social feed cards.",
+            "outcome": "Social feed now consumes Instagram-style post data, renders caption/username/date, and mocks are localized for EN/ES."
+        },
+        {
+            "ts": "2026-05-18T20:55:00Z",
+            "agent": "gpt-5.2-codex",
+            "type": "feat",
+            "summary": "Align social feed copy with reference image",
+            "files": [
+                "src/lib/mock/site.ts",
+                "src/lib/mock/site-i18n.ts"
+            ],
+            "rationale": "User requested copy to match the provided Social Feed heading and subtitle in all locales.",
+            "outcome": "Social feed handle, title, and subtitle now match the reference in PT, EN, and ES."
+        },
+        {
             "ts": "2026-05-12T06:39:54Z",
             "agent": "gpt-5.3-codex",
             "type": "chore",
@@ -192,7 +218,7 @@
                 "docs/ia/AI-DRIVEN-WORKFLOW.md"
             ],
             "rationale": "User requested skill renames to remove poc- prefix and creation of deliver orchestrator skill for full-cycle delivery",
-            "outcome": "Skills discoverable by cleaner names; deliver skill chains next-taskâ†’create-prâ†’code-review automatically"
+            "outcome": "Skills discoverable by cleaner names; deliver skill chains next-taskÃ¢â€ â€™create-prÃ¢â€ â€™code-review automatically"
         },
         {
             "ts": "2025-07-14T01:00:00Z",
@@ -219,7 +245,18 @@
                 "src/lib/mock/catalog.ts"
             ],
             "rationale": "Task-12 acceptance criteria require valid spec keys in Portuguese, badge fields on Product type, and at least one VIDEO block for product with video_url",
-            "outcome": "Mock catalog has correct Portuguese spec key names, LANÃ‡AMENTO/DESTAQUE badges on 4 products, and VIDEO block for prod-st-4000eq-4c satisfying all 6 acceptance criteria"
+            "outcome": "Mock catalog has correct Portuguese spec key names, LANÃƒâ€¡AMENTO/DESTAQUE badges on 4 products, and VIDEO block for prod-st-4000eq-4c satisfying all 6 acceptance criteria"
+        },
+        {
+            "ts": "2026-05-18T20:25:00Z",
+            "agent": "gpt-5.2-codex",
+            "type": "feat",
+            "summary": "Use Swiper for SocialFeed drag carousel",
+            "files": [
+                "src/app/[locale]/(site)/_components/social-feed.tsx"
+            ],
+            "rationale": "User requested Swiper JS with drag interaction and no navigation buttons.",
+            "outcome": "SocialFeed now renders a drag-only Swiper carousel without pagination or nav controls."
         },
         {
             "ts": "2026-05-15T00:00:00Z",
@@ -231,7 +268,7 @@
                 ".claude/skills/create-pr/SKILL.md"
             ],
             "rationale": "User requested skill improvement to automate task lifecycle management after PR creation",
-            "outcome": "create-pr skill now includes Step 5 â€” marks related task as DONE and appends changelog entry post-PR"
+            "outcome": "create-pr skill now includes Step 5 Ã¢â‚¬â€ marks related task as DONE and appends changelog entry post-PR"
         },
         {
             "ts": "2026-05-15T03:00:00Z",
@@ -262,7 +299,7 @@
             "ts": "2026-05-12T14:32:00Z",
             "agent": "claude-sonnet-4-6",
             "type": "feat",
-            "summary": "Align Header with Figma fidelity â€” typography, pill button, mobile border",
+            "summary": "Align Header with Figma fidelity Ã¢â‚¬â€ typography, pill button, mobile border",
             "files": [
                 "src/components/ui/header.tsx"
             ],
@@ -311,8 +348,8 @@
                 ".claude/rules/tailwind-v4.md",
                 ".agents/rules/tailwind-v4.md"
             ],
-            "rationale": "User requested token system to follow shadcn pattern: remap existing semantic tokens (--muted-foreground, --card, --muted) to Stetsom values; move inline @theme tokens to :root â†’ var() pattern; add typography/spacing utilities. No new arbitrary color tokens created.",
-            "outcome": "Zero hardcoded color classes remain in src/. shadcn tokens remapped: --muted-foreground=#565656, --card=#F8F8F8, --muted=#F0F0F0. Custom tokens follow :rootâ†’@theme pattern. Typography tokens text-2xs/text-button-md/text-display-* and spacing gap-logo-nav available. pnpm tsc passes."
+            "rationale": "User requested token system to follow shadcn pattern: remap existing semantic tokens (--muted-foreground, --card, --muted) to Stetsom values; move inline @theme tokens to :root Ã¢â€ â€™ var() pattern; add typography/spacing utilities. No new arbitrary color tokens created.",
+            "outcome": "Zero hardcoded color classes remain in src/. shadcn tokens remapped: --muted-foreground=#565656, --card=#F8F8F8, --muted=#F0F0F0. Custom tokens follow :rootÃ¢â€ â€™@theme pattern. Typography tokens text-2xs/text-button-md/text-display-* and spacing gap-logo-nav available. pnpm tsc passes."
         },
         {
             "ts": "2026-05-12T16:00:00Z",
@@ -330,7 +367,7 @@
                 "src/app/(site)/suporte/page.tsx",
                 "src/app/(site)/_components/social-medias.tsx"
             ],
-            "rationale": "User requested all VS Code IntelliSense canonical-class suggestions be applied (e.g. h-[45px]â†’h-11.25, px-[170px]â†’px-42.5) and eslint-plugin-tailwindcss removed as it crashed on pnpm due to worker-thread resolution failure with Tailwind v4",
+            "rationale": "User requested all VS Code IntelliSense canonical-class suggestions be applied (e.g. h-[45px]Ã¢â€ â€™h-11.25, px-[170px]Ã¢â€ â€™px-42.5) and eslint-plugin-tailwindcss removed as it crashed on pnpm due to worker-thread resolution failure with Tailwind v4",
             "outcome": "No arbitrary dimension values remain in source files. eslint.config.mjs cleaned of broken plugin import. pnpm tsc and pnpm lint pass on source files."
         },
         {
@@ -576,7 +613,7 @@
                 "docs/ia/tasks/task-09-sobre-factory-social-medias.md"
             ],
             "rationale": "Task-09 required: create NossaFabrica component with factory image and radial gradient overlay; implement scroll controls (ChevronLeft/Right) with smooth scrolling in MidiasSociais; integrate section into Sobre page.",
-            "outcome": "Created NossaFabrica with fill_OJJ5Q1_b3596ec5.png image and radial-gradient overlay matching Figma spec; converted MidiasSociais to client component with useRef-based smooth scroll at Â±300px per click; added section to page after MidiasSociais; all 5 acceptance criteria met; pnpm tsc and lint pass."
+            "outcome": "Created NossaFabrica with fill_OJJ5Q1_b3596ec5.png image and radial-gradient overlay matching Figma spec; converted MidiasSociais to client component with useRef-based smooth scroll at Ã‚Â±300px per click; added section to page after MidiasSociais; all 5 acceptance criteria met; pnpm tsc and lint pass."
         },
         {
             "ts": "2026-05-13T04:54:09Z",
@@ -601,7 +638,7 @@
                 "src/app/not-found.tsx",
                 "docs/ia/tasks/task-11-404-not-found-page.md"
             ],
-            "rationale": "Task-11 required creating src/app/not-found.tsx faithful to Figma node 1200:7086 â€” bg-off-white content section, decorative 404 watermark at 8% opacity, Barlow Condensed Black title, Barlow Medium subtitle, and brand-red CTA button linking to home.",
+            "rationale": "Task-11 required creating src/app/not-found.tsx faithful to Figma node 1200:7086 Ã¢â‚¬â€ bg-off-white content section, decorative 404 watermark at 8% opacity, Barlow Condensed Black title, Barlow Medium subtitle, and brand-red CTA button linking to home.",
             "outcome": "not-found.tsx renders at any invalid route with Header + Footer included; decorative 404 span at opacity-[0.08]; title in font-sans-condensed font-black uppercase at 50px; subtitle in text-text-subtle-dark; button navigates to /; all 7 acceptance criteria met; tsc and lint pass."
         },
         {
@@ -709,7 +746,7 @@
             "ts": "2026-05-14T14:00:00Z",
             "agent": "claude-sonnet-4-6",
             "type": "style",
-            "summary": "Design fidelity audit â€” fix all token divergences across 12 files",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ fix all token divergences across 12 files",
             "files": [
                 "src/components/ui/header.tsx",
                 "src/components/ui/product-card.tsx",
@@ -725,14 +762,14 @@
                 "src/app/(site)/produtos/page.tsx",
                 "docs/ia/context.json"
             ],
-            "rationale": "Full design fidelity audit: font-weight divergences (font-bold/font-medium â†’ font-black in Barlow Condensed uppercase contexts), color token divergences (bg-white â†’ bg-card, bg-zinc-200 â†’ bg-muted, text-zinc-400 â†’ text-icon-muted, hover:bg-zinc-800 â†’ hover:bg-surface-elevated), semantic border tokens applied where applicable, and canonical Tailwind sizing for map height.",
+            "rationale": "Full design fidelity audit: font-weight divergences (font-bold/font-medium Ã¢â€ â€™ font-black in Barlow Condensed uppercase contexts), color token divergences (bg-white Ã¢â€ â€™ bg-card, bg-zinc-200 Ã¢â€ â€™ bg-muted, text-zinc-400 Ã¢â€ â€™ text-icon-muted, hover:bg-zinc-800 Ã¢â€ â€™ hover:bg-surface-elevated), semantic border tokens applied where applicable, and canonical Tailwind sizing for map height.",
             "outcome": "All Barlow Condensed uppercase headings now use font-black; background surfaces use semantic tokens; hover/placeholder colors use design system tokens; product and support pages now follow Stetsom Tailwind token conventions."
         },
         {
             "ts": "2026-05-14T13:15:00Z",
             "agent": "claude-sonnet-4-6",
             "type": "fix",
-            "summary": "Design fidelity audit â€” 8 corrections across header, suporte, sobre, novidades",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ 8 corrections across header, suporte, sobre, novidades",
             "files": [
                 "src/components/ui/header.tsx",
                 "src/app/(site)/suporte/page.tsx",
@@ -790,7 +827,7 @@
             "ts": "2026-05-15T14:00:00Z",
             "agent": "claude-sonnet-4-6",
             "type": "fix",
-            "summary": "Design fidelity audit â€” 12 corrections across 8 files covering HIGH/MED/LOW divergences",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ 12 corrections across 8 files covering HIGH/MED/LOW divergences",
             "files": [
                 "src/app/(site)/_components/galeria-dark.tsx",
                 "src/app/(site)/_components/nossa-fabrica.tsx",
@@ -801,7 +838,7 @@
                 "src/app/(site)/produtos/page.tsx",
                 "src/app/(site)/produtos/[slug]/page.tsx"
             ],
-            "rationale": "Full-site design fidelity audit against fresh Figma baseline exports (12 frames). HIGH: GaleriaDark had 6 empty placeholders â†’ real brand images; NossaFabrica desktop had placeholder text â†’ Image+address content; Suporte section 4 was wrong layout (map+FAQ categories) â†’ POSTOS AUTORIZADOS section; Suporte contact was single-column form â†’ 2-column with contact info. MED: leading-[74px] â†’ leading-18.5 in suporte/produtos heroes; h-[358px]/w-[447px]/max-w-[476px] â†’ canonical in produto-selecionado; NossasBases bg-off-white â†’ bg-white; Produtos category tabs now show thumbnail images. LOW: Novidades bg-card â†’ bg-white; NossaHistoria adds stats grid (35+/200+/60+/1M+); Produtos mobile adds Comparar button.",
+            "rationale": "Full-site design fidelity audit against fresh Figma baseline exports (12 frames). HIGH: GaleriaDark had 6 empty placeholders Ã¢â€ â€™ real brand images; NossaFabrica desktop had placeholder text Ã¢â€ â€™ Image+address content; Suporte section 4 was wrong layout (map+FAQ categories) Ã¢â€ â€™ POSTOS AUTORIZADOS section; Suporte contact was single-column form Ã¢â€ â€™ 2-column with contact info. MED: leading-[74px] Ã¢â€ â€™ leading-18.5 in suporte/produtos heroes; h-[358px]/w-[447px]/max-w-[476px] Ã¢â€ â€™ canonical in produto-selecionado; NossasBases bg-off-white Ã¢â€ â€™ bg-white; Produtos category tabs now show thumbnail images. LOW: Novidades bg-card Ã¢â€ â€™ bg-white; NossaHistoria adds stats grid (35+/200+/60+/1M+); Produtos mobile adds Comparar button.",
             "outcome": "All 12 divergences resolved. tsc --noEmit and lint pass with zero errors. 12 Figma baseline PNGs refreshed in .raw/figma-design/."
         },
         {
@@ -905,7 +942,7 @@
                 ".claude/rules/figma-to-code.md",
                 ".agents/rules/figma-to-code.md"
             ],
-            "rationale": "docs/ia/figma/ had 1.8MB of raw Figma dumps (context.json 1.5MB, design-system.json 172KB, asset-candidates 59KB) that were too heavy and confusing for agents. User requested a clean rebuild: extract fresh Figma data via Framelink MCP, distill into code-first tables (Figma style â†’ CSS var â†’ Tailwind class), map every component to its React file, remove all raw dumps.",
+            "rationale": "docs/ia/figma/ had 1.8MB of raw Figma dumps (context.json 1.5MB, design-system.json 172KB, asset-candidates 59KB) that were too heavy and confusing for agents. User requested a clean rebuild: extract fresh Figma data via Framelink MCP, distill into code-first tables (Figma style Ã¢â€ â€™ CSS var Ã¢â€ â€™ Tailwind class), map every component to its React file, remove all raw dumps.",
             "outcome": "Folder reduced from 1.8MB (8 files) to ~60KB (4 files). DESIGN_SYSTEM.md has full color/typography/spacing/effects tables with direct Tailwind class mapping. PAGES.md maps every page section to its Figma node ID and React component file. COMPONENTS.md maps every Figma component to its React implementation. meta.json is now minimal JSON only. Rules updated to reference new file names."
         },
         {
@@ -925,20 +962,20 @@
             "ts": "2026-05-14T23:50:00Z",
             "agent": "claude-sonnet-4-6",
             "type": "fix",
-            "summary": "Fix typography token precedence in @theme inline â€” move --text-* declarations to end of block",
+            "summary": "Fix typography token precedence in @theme inline Ã¢â‚¬â€ move --text-* declarations to end of block",
             "files": [
                 "src/app/globals.css",
                 ".claude/rules/styling-practices.md",
                 ".agents/rules/styling-practices.md"
             ],
-            "rationale": "shadcn/tailwind.css and tw-animate-css can define --text-* variables in their own @theme blocks; since multiple @theme blocks are merged, last declaration wins â€” project typography tokens must be declared last to not be overridden.",
+            "rationale": "shadcn/tailwind.css and tw-animate-css can define --text-* variables in their own @theme blocks; since multiple @theme blocks are merged, last declaration wins Ã¢â‚¬â€ project typography tokens must be declared last to not be overridden.",
             "outcome": "text-display-sm, text-section-title and other custom font-size tokens now correctly apply; styling-practices rule documents the required declaration order to prevent future regressions."
         },
         {
             "ts": "2026-05-14T23:58:00Z",
             "agent": "claude-sonnet-4-6",
             "type": "fix",
-            "summary": "Design fidelity audit â€” complete remaining 7 divergences from interrupted session",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ complete remaining 7 divergences from interrupted session",
             "files": [
                 "src/app/(site)/produtos/[slug]/page.tsx",
                 "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
@@ -949,14 +986,14 @@
                 "src/lib/api/contracts.ts",
                 "src/lib/mock/support.ts"
             ],
-            "rationale": "Completed the pending items from the interrupted /design-fidelity-audit session. HIGH: [slug]/page.tsx hero bg changed from bg-card (#F4F4F4) to bg-[#F8F8F8] per PAGES.md; inline manual link changed from text-zinc-50 to text-white; product-detail-tabs.tsx reordered blocks before specs to match Figma. H4: suporte/page.tsx sections reordered to Figma spec (Docs â†’ FAQ â†’ Contato), Postos Autorizados removed (not in PAGES.md), DocumentaÃ§Ã£o refactored to DOWNLOAD DE MATERIAIS with ProductFile[] schema. MED: thumbnails and download button border-zinc-300â†’zinc-200; our-foundations.tsx py-20â†’py-12. LOW: download button font-blackâ†’font-semibold; our-history.tsx stats text-3xlâ†’text-display-sm.",
+            "rationale": "Completed the pending items from the interrupted /design-fidelity-audit session. HIGH: [slug]/page.tsx hero bg changed from bg-card (#F4F4F4) to bg-[#F8F8F8] per PAGES.md; inline manual link changed from text-zinc-50 to text-white; product-detail-tabs.tsx reordered blocks before specs to match Figma. H4: suporte/page.tsx sections reordered to Figma spec (Docs Ã¢â€ â€™ FAQ Ã¢â€ â€™ Contato), Postos Autorizados removed (not in PAGES.md), DocumentaÃƒÂ§ÃƒÂ£o refactored to DOWNLOAD DE MATERIAIS with ProductFile[] schema. MED: thumbnails and download button border-zinc-300Ã¢â€ â€™zinc-200; our-foundations.tsx py-20Ã¢â€ â€™py-12. LOW: download button font-blackÃ¢â€ â€™font-semibold; our-history.tsx stats text-3xlÃ¢â€ â€™text-display-sm.",
             "outcome": "7 divergences fixed across 8 files. [slug]/page.tsx: 5 corrections (H1 bg, H2 text, M1 border, M2 border, L1 weight). product-detail-tabs.tsx: blocks rendered before specs (H3). suporte section order corrected to Figma spec (H4). Postos Autorizados removed. Documentation refactored to file list with ProductFile schema. Mock aligned to backend type. tsc --noEmit and pnpm lint both exit 0."
         },
         {
             "ts": "2026-05-14T22:30:00Z",
             "agent": "claude-sonnet-4-6",
             "type": "fix",
-            "summary": "Design fidelity audit Phase 5 â€” implement all 9 divergences (HIGH/MED/LOW/DOCS)",
+            "summary": "Design fidelity audit Phase 5 Ã¢â‚¬â€ implement all 9 divergences (HIGH/MED/LOW/DOCS)",
             "files": [
                 "src/app/(site)/_components/our-history.tsx",
                 "src/app/(site)/sobre/page.tsx",
@@ -965,8 +1002,8 @@
                 "src/app/(site)/produtos/[slug]/page.tsx",
                 "docs/ia/figma/PAGES.md"
             ],
-            "rationale": "Full-site design fidelity audit against Figma baseline: HIGH â€” our-history.tsx image was inside Container adding left padding; Figma requires flush-left image (no left padding, right padding only at 170px). MED â€” sobre page had DarkGallery before OurFoundations (wrong order). MED â€” suporte sections were in wrong order (Documentation â†’ Postos â†’ Contact â†’ FAQ) and Documentation/Contact used bg-card instead of bg-white. MED â€” not-found.tsx h1 used text-footer (Footer bg color) instead of text-brand-dark; missing CTA button. MED â€” product detail thumbnails were h-16 w-18 (non-square) instead of ~76px square. LOW â€” product spec tags used rounded-full border-zinc-300 instead of rounded-[12px] border-muted. DOCS â€” PAGES.md incorrectly mapped Home section 4 to QualitySection and Sobre section 7 to OurHistory.",
-            "outcome": "our-history.tsx restructured to flush-left desktop layout (w-182.75 = 731px image, pl-22.75 = 91px gap, pr-42.5 = 170px right padding). sobre/page.tsx swapped OurFoundations before DarkGallery. suporte/page.tsx reordered to Contact â†’ Postos â†’ Documentation â†’ FAQ with bg-white on Contact and Documentation. not-found.tsx h1 uses text-brand-dark; brand CTA button added via buttonVariants+Link. produto slug thumbnails h-19 w-19 (square 76px). spec tags rounded-[12px] border-muted. PAGES.md corrected for home section 4 (OurHistory) and sobre section 7 (OurFoundations). pnpm tsc --noEmit and pnpm lint both exit 0."
+            "rationale": "Full-site design fidelity audit against Figma baseline: HIGH Ã¢â‚¬â€ our-history.tsx image was inside Container adding left padding; Figma requires flush-left image (no left padding, right padding only at 170px). MED Ã¢â‚¬â€ sobre page had DarkGallery before OurFoundations (wrong order). MED Ã¢â‚¬â€ suporte sections were in wrong order (Documentation Ã¢â€ â€™ Postos Ã¢â€ â€™ Contact Ã¢â€ â€™ FAQ) and Documentation/Contact used bg-card instead of bg-white. MED Ã¢â‚¬â€ not-found.tsx h1 used text-footer (Footer bg color) instead of text-brand-dark; missing CTA button. MED Ã¢â‚¬â€ product detail thumbnails were h-16 w-18 (non-square) instead of ~76px square. LOW Ã¢â‚¬â€ product spec tags used rounded-full border-zinc-300 instead of rounded-[12px] border-muted. DOCS Ã¢â‚¬â€ PAGES.md incorrectly mapped Home section 4 to QualitySection and Sobre section 7 to OurHistory.",
+            "outcome": "our-history.tsx restructured to flush-left desktop layout (w-182.75 = 731px image, pl-22.75 = 91px gap, pr-42.5 = 170px right padding). sobre/page.tsx swapped OurFoundations before DarkGallery. suporte/page.tsx reordered to Contact Ã¢â€ â€™ Postos Ã¢â€ â€™ Documentation Ã¢â€ â€™ FAQ with bg-white on Contact and Documentation. not-found.tsx h1 uses text-brand-dark; brand CTA button added via buttonVariants+Link. produto slug thumbnails h-19 w-19 (square 76px). spec tags rounded-[12px] border-muted. PAGES.md corrected for home section 4 (OurHistory) and sobre section 7 (OurFoundations). pnpm tsc --noEmit and pnpm lint both exit 0."
         },
         {
             "ts": "2026-05-14T00:00:00Z",
@@ -983,7 +1020,7 @@
             "ts": "2026-05-14T20:00:00Z",
             "agent": "opencode-big-pickle",
             "type": "fix",
-            "summary": "Design fidelity audit â€” 8 corrections across 8 files (source: local)",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ 8 corrections across 8 files (source: local)",
             "files": [
                 "src/components/ui/product-card.tsx",
                 "src/components/ui/footer.tsx",
@@ -995,13 +1032,13 @@
                 "src/app/(site)/produtos/page.tsx"
             ],
             "rationale": "Periodic design fidelity audit against local Figma reference docs (DESIGN_SYSTEM.md + PAGES.md)",
-            "outcome": "HIGH: CompanyTimeline kept bg-brand-dark (reverted incorrect bg-white change); PAGES.md corrected to bg-brand-dark. RedBanner bg-brandâ†’bg-bar-accent; ProdutoSelecionado outer bg-[#F8F8F8] removed to prevent bleed into tabs. MED: ProductCard rounded-lgâ†’rounded-[16px]; Footer lg:px-25â†’lg:px-42.5; Produtos grid section bg-off-whiteâ†’bg-white; Produtos category tabs bg-card/border-borderâ†’bg-white/border-zinc-200. LOW: TimelineProgressBar hardcoded rgbâ†’fill-brand/fill-zinc-600 tokens. tsc --noEmit and lint both exit 0."
+            "outcome": "HIGH: CompanyTimeline kept bg-brand-dark (reverted incorrect bg-white change); PAGES.md corrected to bg-brand-dark. RedBanner bg-brandÃ¢â€ â€™bg-bar-accent; ProdutoSelecionado outer bg-[#F8F8F8] removed to prevent bleed into tabs. MED: ProductCard rounded-lgÃ¢â€ â€™rounded-[16px]; Footer lg:px-25Ã¢â€ â€™lg:px-42.5; Produtos grid section bg-off-whiteÃ¢â€ â€™bg-white; Produtos category tabs bg-card/border-borderÃ¢â€ â€™bg-white/border-zinc-200. LOW: TimelineProgressBar hardcoded rgbÃ¢â€ â€™fill-brand/fill-zinc-600 tokens. tsc --noEmit and lint both exit 0."
         },
         {
             "ts": "2026-05-14T15:30:00Z",
             "agent": "opencode-big-pickle",
             "type": "fix",
-            "summary": "Design fidelity audit â€” 13 corrections across 8 pages (source: local)",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ 13 corrections across 8 pages (source: local)",
             "files": [
                 "src/app/globals.css",
                 "src/components/ui/button.tsx",
@@ -1013,14 +1050,14 @@
                 "src/app/(site)/suporte/_components/contact-form.tsx",
                 "docs/ia/context.json"
             ],
-            "rationale": "Periodic design fidelity audit against local Figma reference (meta.json + existing baselines). No DESIGN_SYSTEM_REFERENCE.md or PAGES_REFERENCE.md available â€” analysis based on meta.json, globals.css, and code comparison to Figma token mapping from AGENTS.md.",
-            "outcome": "13 divergences resolved: 1 foundation token fix (--surface-elevated oklch(0.22â†’0.12) to match #1F1F1F), 2 shared component fixes (button rounded-[4px]â†’rounded-sm, product-card border-zinc/bg-zincâ†’border-border/bg-muted/rounded-2xl), 10 page section fixes (produto-selecionado bg-[#F8F8F8]â†’bg-card, all border-zinc-* and border-zinc-*â†’border-border, not-found watermark text-[#878787]â†’text-watermark-text, contact-form inputs border-zinc-300â†’border-border). tsc --noEmit and lint both exit 0."
+            "rationale": "Periodic design fidelity audit against local Figma reference (meta.json + existing baselines). No DESIGN_SYSTEM_REFERENCE.md or PAGES_REFERENCE.md available Ã¢â‚¬â€ analysis based on meta.json, globals.css, and code comparison to Figma token mapping from AGENTS.md.",
+            "outcome": "13 divergences resolved: 1 foundation token fix (--surface-elevated oklch(0.22Ã¢â€ â€™0.12) to match #1F1F1F), 2 shared component fixes (button rounded-[4px]Ã¢â€ â€™rounded-sm, product-card border-zinc/bg-zincÃ¢â€ â€™border-border/bg-muted/rounded-2xl), 10 page section fixes (produto-selecionado bg-[#F8F8F8]Ã¢â€ â€™bg-card, all border-zinc-* and border-zinc-*Ã¢â€ â€™border-border, not-found watermark text-[#878787]Ã¢â€ â€™text-watermark-text, contact-form inputs border-zinc-300Ã¢â€ â€™border-border). tsc --noEmit and lint both exit 0."
         },
         {
             "ts": "2026-05-14T14:00:00Z",
             "agent": "opencode-big-pickle",
             "type": "fix",
-            "summary": "Design fidelity audit â€” 8 corrections across 5 files (source: local)",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ 8 corrections across 5 files (source: local)",
             "files": [
                 "src/components/ui/button.tsx",
                 "src/app/not-found.tsx",
@@ -1036,7 +1073,7 @@
             "ts": "2026-05-15T02:36:00Z",
             "agent": "claude-sonnet-4-6",
             "type": "fix",
-            "summary": "Design fidelity audit â€” 5 corrections across 4 files (source: local)",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ 5 corrections across 4 files (source: local)",
             "files": [
                 "src/components/ui/product-card.tsx",
                 "src/components/ui/button.tsx",
@@ -1044,21 +1081,21 @@
                 "src/app/not-found.tsx"
             ],
             "rationale": "Periodic design fidelity audit against local Figma reference docs (DESIGN_SYSTEM.md + PAGES.md + COMPONENTS.md)",
-            "outcome": "MED: ProductCard rounded-2xlâ†’rounded-[16px]; FeaturedProducts spotlight rounded-lgâ†’rounded-[16px]. LOW: Button brand/brand-dark rounded-smâ†’rounded-[4px]; 404 subtitle removed extra font-medium. tsc --noEmit and lint both exit 0."
+            "outcome": "MED: ProductCard rounded-2xlÃ¢â€ â€™rounded-[16px]; FeaturedProducts spotlight rounded-lgÃ¢â€ â€™rounded-[16px]. LOW: Button brand/brand-dark rounded-smÃ¢â€ â€™rounded-[4px]; 404 subtitle removed extra font-medium. tsc --noEmit and lint both exit 0."
         },
         {
             "ts": "2026-05-15T03:00:00Z",
             "agent": "claude-sonnet-4-6",
             "type": "fix",
-            "summary": "Design fidelity audit â€” Sobre page section order + backgrounds, RedBanner tracking, Timeline gradient",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ Sobre page section order + backgrounds, RedBanner tracking, Timeline gradient",
             "files": [
                 "src/app/(site)/sobre/page.tsx",
                 "src/app/(site)/_components/red-banner.tsx",
                 "src/app/(site)/_components/company-timeline.tsx",
                 "src/app/(site)/_components/our-factory.tsx"
             ],
-            "rationale": "Deep-dive design fidelity audit using Figma MCP live node data â€” second pass catching Sobre section order, background gradients, and RedBanner typography/spacing divergences",
-            "outcome": "MED: Sobre section order fixed to Figma layout (removed QualitySection, moved OurFoundations after SocialFeed, merged CareersCTA into OurFactory eliminating white break before footer); Timeline added radial gradient overlay matching DarkGallery pattern; RedBanner font-weight 900â†’400 + tracking-[0.05em] + gap 24â†’36px per Figma. tsc --noEmit and lint both exit 0."
+            "rationale": "Deep-dive design fidelity audit using Figma MCP live node data Ã¢â‚¬â€ second pass catching Sobre section order, background gradients, and RedBanner typography/spacing divergences",
+            "outcome": "MED: Sobre section order fixed to Figma layout (removed QualitySection, moved OurFoundations after SocialFeed, merged CareersCTA into OurFactory eliminating white break before footer); Timeline added radial gradient overlay matching DarkGallery pattern; RedBanner font-weight 900Ã¢â€ â€™400 + tracking-[0.05em] + gap 24Ã¢â€ â€™36px per Figma. tsc --noEmit and lint both exit 0."
         },
         {
             "ts": "2026-05-15T04:00:00Z",
@@ -1076,14 +1113,14 @@
                 ".agents/skills/design-fidelity-audit/SKILL.md",
                 "docs/ia/context.json"
             ],
-            "rationale": "Local style-definition files (DESIGN_SYSTEM.md, PAGES.md, COMPONENTS.md, assets-manifest.json) drifted from live Figma. Replaced with FIGMA_GRAPH.md â€” a keyword/nodeID graph for AI-to-MCP navigation. meta.json enriched with keywords and per-page section trees. Audit skills (both runtimes) stripped of source:local branch â€” MCP is now the only data source.",
-            "outcome": "4 stale files deleted, FIGMA_GRAPH.md created with full nodeâ†’keywordâ†’relationship graph, meta.json enriched with keywords and pageSections. Both skill files now reference FIGMA_GRAPH.md for node discovery, removed all local/mcp bifurcation. tsc and lint pass."
+            "rationale": "Local style-definition files (DESIGN_SYSTEM.md, PAGES.md, COMPONENTS.md, assets-manifest.json) drifted from live Figma. Replaced with FIGMA_GRAPH.md Ã¢â‚¬â€ a keyword/nodeID graph for AI-to-MCP navigation. meta.json enriched with keywords and per-page section trees. Audit skills (both runtimes) stripped of source:local branch Ã¢â‚¬â€ MCP is now the only data source.",
+            "outcome": "4 stale files deleted, FIGMA_GRAPH.md created with full nodeÃ¢â€ â€™keywordÃ¢â€ â€™relationship graph, meta.json enriched with keywords and pageSections. Both skill files now reference FIGMA_GRAPH.md for node discovery, removed all local/mcp bifurcation. tsc and lint pass."
         },
         {
             "ts": "2026-05-15T03:15:00Z",
             "agent": "opencode-big-pickle",
             "type": "fix",
-            "summary": "Design fidelity audit â€” 20 corrections across 12 files (source: local)",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ 20 corrections across 12 files (source: local)",
             "files": [
                 "src/components/ui/product-card.tsx",
                 "src/components/ui/button.tsx",
@@ -1101,13 +1138,13 @@
                 "docs/ia/context.json"
             ],
             "rationale": "Periodic design fidelity audit against local Figma reference (meta.json + fresh baselines). 12/12 baselines confirmed from today.",
-            "outcome": "20 corrections: shared components (product-card border-zinc-200â†’border-border, button rounded-[4px]â†’rounded-sm, header/footer logo aspect ratio fix + sizes props); page sections (catalog-sidebar zinc colorsâ†’tokens, featured-tab-strip border-zinc-200â†’border-border, featured-products border-zinc-200â†’border-border, faq-accordion border-zinc-200â†’border-border, our-history/our-factory added sizes props, sobre/suporte/produtos heroes added sizes='100vw'). tsc --noEmit and lint both exit 0."
+            "outcome": "20 corrections: shared components (product-card border-zinc-200Ã¢â€ â€™border-border, button rounded-[4px]Ã¢â€ â€™rounded-sm, header/footer logo aspect ratio fix + sizes props); page sections (catalog-sidebar zinc colorsÃ¢â€ â€™tokens, featured-tab-strip border-zinc-200Ã¢â€ â€™border-border, featured-products border-zinc-200Ã¢â€ â€™border-border, faq-accordion border-zinc-200Ã¢â€ â€™border-border, our-history/our-factory added sizes props, sobre/suporte/produtos heroes added sizes='100vw'). tsc --noEmit and lint both exit 0."
         },
         {
             "ts": "2026-05-15T03:30:00Z",
             "agent": "opencode-big-pickle",
             "type": "fix",
-            "summary": "Design fidelity audit â€” 10 corrections across 7 pages (source: MCP live Figma)",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ 10 corrections across 7 pages (source: MCP live Figma)",
             "files": [
                 "src/app/globals.css",
                 "src/components/ui/button.tsx",
@@ -1118,27 +1155,27 @@
                 "src/app/(site)/produtos/[slug]/page.tsx",
                 "docs/ia/context.json"
             ],
-            "rationale": "Full-site design fidelity audit against Figma MCP live data + .raw/figma-design/ baseline exports (12 frames). HIGH: featured-tab-strip tabs redesigned from underline to pill-segmented control (#F1F1F1 container, white active tab + shadow); 404 SVG watermark hardcoded color replaced with text-watermark-text token. MED: section-label label weight 500â†’400 (Figma Regular); button sm px-4â†’px-2.5 (Figma 10px); featured-tab-strip tab label text-lg(18px)â†’text-sm(14px), CTA font-blackâ†’font-medium; product-card rounded-2xlâ†’rounded-card(16px) via new token. LOW: globals.css watermark-text rgbâ†’(184,184,184) exact #B8B8B8; bar-accent rgb(220,38,38)â†’#E8132A brand red.",
+            "rationale": "Full-site design fidelity audit against Figma MCP live data + .raw/figma-design/ baseline exports (12 frames). HIGH: featured-tab-strip tabs redesigned from underline to pill-segmented control (#F1F1F1 container, white active tab + shadow); 404 SVG watermark hardcoded color replaced with text-watermark-text token. MED: section-label label weight 500Ã¢â€ â€™400 (Figma Regular); button sm px-4Ã¢â€ â€™px-2.5 (Figma 10px); featured-tab-strip tab label text-lg(18px)Ã¢â€ â€™text-sm(14px), CTA font-blackÃ¢â€ â€™font-medium; product-card rounded-2xlÃ¢â€ â€™rounded-card(16px) via new token. LOW: globals.css watermark-text rgbÃ¢â€ â€™(184,184,184) exact #B8B8B8; bar-accent rgb(220,38,38)Ã¢â€ â€™#E8132A brand red.",
             "outcome": "Visual implementation aligned with Figma MCP live data for all 6 pages. tsc --noEmit and lint both exit 0."
         },
         {
             "ts": "2026-05-15T03:00:00Z",
             "agent": "opencode-big-pickle",
             "type": "fix",
-            "summary": "Design fidelity audit â€” Suporte page section order + Postos Autorizados + pixel-perfect corrections",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ Suporte page section order + Postos Autorizados + pixel-perfect corrections",
             "files": [
                 "src/app/(site)/suporte/page.tsx",
                 "src/lib/mock/support.ts",
                 "docs/ia/context.json"
             ],
             "rationale": "Full-site design fidelity audit against Figma MCP live data + .raw/figma-design/suporte/ (local: MCP live Figma). Found section order wrong, Postos Autorizados section missing, FAQ merged wrong sections, cards/bg tokens incorrect.",
-            "outcome": "HIGH: Added Postos Autorizados section (search + service center list + map) between Downloads and FAQ; fixed section order (Heroâ†’Cardsâ†’Downloadsâ†’Postosâ†’FAQâ†’Contatoâ†’Footer); Support Cards now use bg-white + border-b-brand on third card. MED: FAQ layout redesigned to row (description+button left, accordion right) with missing description text; FAQ label/title updated to DÃšVIDAS/PERGUNTAS FREQUENTES. LOW: Hero gradient updated to match Figma radial+linear overlay. tsc --noEmit and lint both exit 0."
+            "outcome": "HIGH: Added Postos Autorizados section (search + service center list + map) between Downloads and FAQ; fixed section order (HeroÃ¢â€ â€™CardsÃ¢â€ â€™DownloadsÃ¢â€ â€™PostosÃ¢â€ â€™FAQÃ¢â€ â€™ContatoÃ¢â€ â€™Footer); Support Cards now use bg-white + border-b-brand on third card. MED: FAQ layout redesigned to row (description+button left, accordion right) with missing description text; FAQ label/title updated to DÃƒÅ¡VIDAS/PERGUNTAS FREQUENTES. LOW: Hero gradient updated to match Figma radial+linear overlay. tsc --noEmit and lint both exit 0."
         },
         {
             "ts": "2026-05-15T03:05:00Z",
             "agent": "opencode-big-pickle",
             "type": "fix",
-            "summary": "Design fidelity audit â€” Produtos page: 19 corrections across 5 files (source: MCP live Figma)",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ Produtos page: 19 corrections across 5 files (source: MCP live Figma)",
             "files": [
                 "src/app/globals.css",
                 "src/components/ui/product-card.tsx",
@@ -1147,14 +1184,14 @@
                 "src/app/(site)/produtos/_components/catalog-mobile-filter.tsx",
                 "docs/ia/context.json"
             ],
-            "rationale": "Full-site design fidelity audit against Figma MCP live data for /produtos page. HIGH: watermark 150pxâ†’263px, label font-blackâ†’font-medium, sidebar 'Ordenar por' redesigned from condensed black 34px to Barlow Medium 16px, 'Filtros' from 34px bold to 18px bold, sidebar sections switched from card containers to plain separator-line layout matching Figma. MED: hero mobile height 200â†’288px, title 32pxâ†’48px, category tab icons 28x28â†’40x40 active/28x28 inactive with red-tint bg, card gap 12pxâ†’20px mobile/16pxâ†’32px desktop, product-card border-radius 16pxâ†’10px. LOW: catalog-mobile-filter zinc tokens replaced with border-border.1: bar-accent #E8132Aâ†’#DC2626 per Figma red bar color.",
+            "rationale": "Full-site design fidelity audit against Figma MCP live data for /produtos page. HIGH: watermark 150pxÃ¢â€ â€™263px, label font-blackÃ¢â€ â€™font-medium, sidebar 'Ordenar por' redesigned from condensed black 34px to Barlow Medium 16px, 'Filtros' from 34px bold to 18px bold, sidebar sections switched from card containers to plain separator-line layout matching Figma. MED: hero mobile height 200Ã¢â€ â€™288px, title 32pxÃ¢â€ â€™48px, category tab icons 28x28Ã¢â€ â€™40x40 active/28x28 inactive with red-tint bg, card gap 12pxÃ¢â€ â€™20px mobile/16pxÃ¢â€ â€™32px desktop, product-card border-radius 16pxÃ¢â€ â€™10px. LOW: catalog-mobile-filter zinc tokens replaced with border-border.1: bar-accent #E8132AÃ¢â€ â€™#DC2626 per Figma red bar color.",
             "outcome": "Visual implementation aligned with Figma MCP live data for the /produtos page. tsc --noEmit and lint both exit 0."
         },
         {
             "ts": "2026-05-15T00:35:00Z",
             "agent": "opencode-big-pickle",
             "type": "fix",
-            "summary": "Refatorado ProductDetailTabs (tab switcher) para StickySectionNav + ProductDetailContent (seÃ§Ãµes no fluxo com navegaÃ§Ã£o sticky por Ã¢ncoras)",
+            "summary": "Refatorado ProductDetailTabs (tab switcher) para StickySectionNav + ProductDetailContent (seÃƒÂ§ÃƒÂµes no fluxo com navegaÃƒÂ§ÃƒÂ£o sticky por ÃƒÂ¢ncoras)",
             "files": [
                 "src/app/(site)/produtos/[slug]/page.tsx",
                 "src/app/(site)/produtos/[slug]/_components/product-detail-tabs.tsx",
@@ -1162,8 +1199,8 @@
                 "src/app/(site)/produtos/[slug]/_components/sticky-section-nav.tsx",
                 "docs/ia/context.json"
             ],
-            "rationale": "Design fidelity â€” Figma mostra seÃ§Ãµes no fluxo com sticky nav, nÃ£o tabs. Barra secundÃ¡ria sticky (top-22) com IntersectionObserver para scroll spy, Ã¢ncoras suaves para cada seÃ§Ã£o.",
-            "outcome": "Tab switcher removido. SeÃ§Ãµes VisÃ£o Geral, EspecificaÃ§Ãµes e Confira TambÃ©m renderizadas sequencialmente com navegaÃ§Ã£o sticky. tsc --noEmit e lint exit 0."
+            "rationale": "Design fidelity Ã¢â‚¬â€ Figma mostra seÃƒÂ§ÃƒÂµes no fluxo com sticky nav, nÃƒÂ£o tabs. Barra secundÃƒÂ¡ria sticky (top-22) com IntersectionObserver para scroll spy, ÃƒÂ¢ncoras suaves para cada seÃƒÂ§ÃƒÂ£o.",
+            "outcome": "Tab switcher removido. SeÃƒÂ§ÃƒÂµes VisÃƒÂ£o Geral, EspecificaÃƒÂ§ÃƒÂµes e Confira TambÃƒÂ©m renderizadas sequencialmente com navegaÃƒÂ§ÃƒÂ£o sticky. tsc --noEmit e lint exit 0."
         },
         {
             "ts": "2026-05-15T18:00:00Z",
@@ -1223,7 +1260,7 @@
                 ".claude/rules/mock-data-constants.md",
                 ".agents/rules/mock-data-constants.md"
             ],
-            "rationale": "Code review identified key={i} (array index) in red-banner and faq-accordion â€” should use stable content keys. Indentation inconsistency in AccordionItem. Rules files were pending creation after previous session ended.",
+            "rationale": "Code review identified key={i} (array index) in red-banner and faq-accordion Ã¢â‚¬â€ should use stable content keys. Indentation inconsistency in AccordionItem. Rules files were pending creation after previous session ended.",
             "outcome": "red-banner uses key={milestone}; faq-accordion uses key={q} with corrected indentation; mock-data-constants rule dual-installed in both agent runtimes with full decision tree"
         },
         {
@@ -1245,7 +1282,7 @@
             "ts": "2026-05-15T12:00:00Z",
             "agent": "claude-sonnet-4-6",
             "type": "docs",
-            "summary": "Update all Figma node IDs across docs/ia/figma/ and task files â€” new file structure with node prefix 1071/1195/1090",
+            "summary": "Update all Figma node IDs across docs/ia/figma/ and task files Ã¢â‚¬â€ new file structure with node prefix 1071/1195/1090",
             "files": [
                 "docs/ia/figma/meta.json",
                 "docs/ia/figma/FIGMA_GRAPH.md",
@@ -1273,7 +1310,7 @@
                 ".claude/skills/design-fidelity-audit/SKILL.md",
                 ".agents/skills/design-fidelity-audit/SKILL.md"
             ],
-            "rationale": "User requested removal of the 'source: local|mcp' input â€” local docs are now understood as navigation maps (not alternative data sources), and all design values come from live Figma MCP. Node IDs in Phase 0b and Phase 3 tables were stale (1200:XXXX series).",
+            "rationale": "User requested removal of the 'source: local|mcp' input Ã¢â‚¬â€ local docs are now understood as navigation maps (not alternative data sources), and all design values come from live Figma MCP. Node IDs in Phase 0b and Phase 3 tables were stale (1200:XXXX series).",
             "outcome": "Skill no longer has source selector. argument-hint simplified. All node IDs updated to new series (1071/1195/1090). Phase 3 mock audit tables reference new section node IDs from meta.json. Changelog template cleaned of 'source:' field."
         },
         {
@@ -1291,7 +1328,7 @@
             "ts": "2026-05-15T23:30:00Z",
             "agent": "claude-sonnet-4-6",
             "type": "fix",
-            "summary": "Full-site design fidelity audit â€” 12 corrections across 10 files (ALL priorities)",
+            "summary": "Full-site design fidelity audit Ã¢â‚¬â€ 12 corrections across 10 files (ALL priorities)",
             "files": [
                 "src/app/(site)/page.tsx",
                 "src/app/(site)/suporte/page.tsx",
@@ -1306,13 +1343,13 @@
                 "docs/ia/figma/FIGMA_GRAPH.md"
             ],
             "rationale": "Full-site audit via MCP (nodes 1071:10435, 1071:10483, 1071:10564) + baseline images revealed 12 divergences. HIGH: OurFoundations rendered in home but absent from Figma; suporte card titles/descriptions wrong (Figma shows Manuais & Downloads / Postos Autorizados / Fale Conosco); icon mapping broken for new IDs. MED: suporte standalone Postos section not in Figma; suporte section order wrong vs Figma; FAQ search section missing; meta.json home section 5/6 keywords swapped. LOW: SiteHomePayload.bases and SiteAboutPayload.quality are dead fields; Instagram in FOOTER_SOCIALS removed per Figma baseline (3 icons only); quality-section.tsx decoupled from removed type.",
-            "outcome": "OurFoundations removed from home page; FaqSearch client component created for suporte; suporte page reordered to Heroâ†’Cardsâ†’Downloadsâ†’FaqSearchâ†’Contactâ†’FaqAccordion; all 3 support card IDs/titles/descriptions/icons updated to match Figma; bases removed from SiteHomePayload; quality removed from SiteAboutPayload; HOME_BASES and ABOUT_QUALITY_SECTION removed from site.ts; FOOTER_SOCIALS trimmed to 3 items; meta.json and FIGMA_GRAPH.md section 5/6 keywords corrected. tsc --noEmit and lint exit 0."
+            "outcome": "OurFoundations removed from home page; FaqSearch client component created for suporte; suporte page reordered to HeroÃ¢â€ â€™CardsÃ¢â€ â€™DownloadsÃ¢â€ â€™FaqSearchÃ¢â€ â€™ContactÃ¢â€ â€™FaqAccordion; all 3 support card IDs/titles/descriptions/icons updated to match Figma; bases removed from SiteHomePayload; quality removed from SiteAboutPayload; HOME_BASES and ABOUT_QUALITY_SECTION removed from site.ts; FOOTER_SOCIALS trimmed to 3 items; meta.json and FIGMA_GRAPH.md section 5/6 keywords corrected. tsc --noEmit and lint exit 0."
         },
         {
             "ts": "2026-05-15T14:00:00Z",
             "agent": "claude-sonnet-4-6",
             "type": "fix",
-            "summary": "Design fidelity audit â€” 13 corrections across 12 files (sobre quality, suporte postos, catalog categories)",
+            "summary": "Design fidelity audit Ã¢â‚¬â€ 13 corrections across 12 files (sobre quality, suporte postos, catalog categories)",
             "files": [
                 "src/lib/api/contracts.ts",
                 "src/lib/mock/site.ts",
@@ -1391,7 +1428,7 @@
                 "public/figma-assets/raw/fill_3FJG3P_64a33e19.png"
             ],
             "rationale": "Full-site design-fidelity-audit pass: dark-gallery.tsx had zero imports and 6 hardcoded wrong images. catalog-content.tsx CATEGORY_IMAGE_BY_NAME used catalog hero, timeline and unknown images for product categories instead of the 3 real Figma product imageRefs. our-factory.tsx MAP_IMAGE referenced the suporte map image instead of the factory team photo (fill_KULSWW). Footer typography diverged from Figma: column headers were font-sans-condensed text-sm vs Barlow Medium 20px; links were text-sm vs 18px with underline. not-found.tsx at app root caused Header+Footer duplication when triggered from (site) routes.",
-            "outcome": "Deleted dark-gallery.tsx and 7 orphaned assets (27 â†’ 20 files in figma-assets/raw). CATEGORY_IMAGE_BY_NAME now uses correct Figma product imageRefs. OurFactory MAP_IMAGE uses fill_KULSWW_74ec6dcf.png. Footer column headers: font-sans text-xl font-medium. Footer nav links: text-lg underline. Created (site)/not-found.tsx without duplicate layout elements. tsc exit 0, lint exit 0."
+            "outcome": "Deleted dark-gallery.tsx and 7 orphaned assets (27 Ã¢â€ â€™ 20 files in figma-assets/raw). CATEGORY_IMAGE_BY_NAME now uses correct Figma product imageRefs. OurFactory MAP_IMAGE uses fill_KULSWW_74ec6dcf.png. Footer column headers: font-sans text-xl font-medium. Footer nav links: text-lg underline. Created (site)/not-found.tsx without duplicate layout elements. tsc exit 0, lint exit 0."
         },
         {
             "ts": "2026-05-15T22:00:00Z",
@@ -1406,7 +1443,7 @@
                 "src/app/(site)/suporte/page.tsx",
                 "src/app/(site)/produtos/[slug]/_components/product-detail-content.tsx"
             ],
-            "rationale": "Design-fidelity-audit invocation 2: user confirmed 5 priorities from screenshot comparison. P1: Figma MCP nodes 1071:11488+1071:11522 confirmed label 'QUEM SOMOS', value descriptions, social title 'NOSSA FAMÃLIA', and timeline years 1989/1999/2002/2007/2014 (mock had wrong years 2007/2014/2026 and wrong shortTitles). P2: SupportPayload lacked contactInfo and documentationCategories â€” added to contracts + mock. P3: timeline FIGMA_SITE_ASSETS keys renamed timeline2007â†’2002/timeline2014â†’2007/timeline2026â†’2014 matching confirmed Figma years. P4: suporte sections reordered Heroâ†’Cardsâ†’FaleConoscoâ†’Downloadsâ†’Postosâ†’FAQ; contact info cards added; category sidebar+search added to downloads. P5: ProductSpecifications type expanded to support SpecMultiColumnValue {ohm1,ohm2}; st-4000eq specs enriched with 12 rows including multi-column power/gain values; renderer shows column headers when multi-column specs present.",
+            "rationale": "Design-fidelity-audit invocation 2: user confirmed 5 priorities from screenshot comparison. P1: Figma MCP nodes 1071:11488+1071:11522 confirmed label 'QUEM SOMOS', value descriptions, social title 'NOSSA FAMÃƒÂLIA', and timeline years 1989/1999/2002/2007/2014 (mock had wrong years 2007/2014/2026 and wrong shortTitles). P2: SupportPayload lacked contactInfo and documentationCategories Ã¢â‚¬â€ added to contracts + mock. P3: timeline FIGMA_SITE_ASSETS keys renamed timeline2007Ã¢â€ â€™2002/timeline2014Ã¢â€ â€™2007/timeline2026Ã¢â€ â€™2014 matching confirmed Figma years. P4: suporte sections reordered HeroÃ¢â€ â€™CardsÃ¢â€ â€™FaleConoscoÃ¢â€ â€™DownloadsÃ¢â€ â€™PostosÃ¢â€ â€™FAQ; contact info cards added; category sidebar+search added to downloads. P5: ProductSpecifications type expanded to support SpecMultiColumnValue {ohm1,ohm2}; st-4000eq specs enriched with 12 rows including multi-column power/gain values; renderer shows column headers when multi-column specs present.",
             "outcome": "All mock texts match Figma MCP live data. Timeline years corrected (1989/1999/2002/2007/2014). Suporte page now shows Fale Conosco (with 3 contact info cards + form) before Downloads (with category sidebar + search). Product specs table renders 1 Ohm/2 Ohms columns. tsc --noEmit and lint exit 0."
         },
         {
@@ -1438,8 +1475,8 @@
                 ".raw/figma-design/404/desktop.png",
                 ".raw/figma-design/404/mobile.png"
             ],
-            "rationale": "Deep design-fidelity-audit (5 phases): MCP-confirmed Figma categories (8 items: Novidades+Amplificadores+Processadores+Crossovers+Controles+Fontes e carregadores+Mesas de som+AcessÃ³rios) replacing 7-category mock. Fixed massive ASCII-only mock content (Potenciaâ†’PotÃªncia, fabricacaoâ†’fabricaÃ§Ã£o, audioâ†’Ã¡udio, ~40 corrections across site.ts/catalog.ts). Hero slide titles updated to match Figma ('SINTA O VERDADEIRO PODER DO GRAVE'). Sobre order corrected to match Figma baseline (Foundations before Social). QualitySection now renders 1989/FUNDAÃ‡ÃƒO badge overlay over image. POSTOS_LOCATIONS hardcoded in suporte/page.tsx moved to ServiceCenter contract type + SUPPORT_SERVICE_CENTERS mock. PRODUCT_MENU_CATEGORIES synced with new CATALOG_CATEGORIES slugs (cat-fontes-carregadores). --bar-accent token corrected from rgb(220,38,38) to brand rgb(232,19,42).",
-            "outcome": "All mock content now matches Figma MCP live data with full Portuguese accentuation. Sobre section order matches baseline. Quality section has 1989/FUNDAÃ‡ÃƒO badge. Service centers data-driven from mock. 12 Figma baselines re-exported. tsc --noEmit and lint exit 0."
+            "rationale": "Deep design-fidelity-audit (5 phases): MCP-confirmed Figma categories (8 items: Novidades+Amplificadores+Processadores+Crossovers+Controles+Fontes e carregadores+Mesas de som+AcessÃƒÂ³rios) replacing 7-category mock. Fixed massive ASCII-only mock content (PotenciaÃ¢â€ â€™PotÃƒÂªncia, fabricacaoÃ¢â€ â€™fabricaÃƒÂ§ÃƒÂ£o, audioÃ¢â€ â€™ÃƒÂ¡udio, ~40 corrections across site.ts/catalog.ts). Hero slide titles updated to match Figma ('SINTA O VERDADEIRO PODER DO GRAVE'). Sobre order corrected to match Figma baseline (Foundations before Social). QualitySection now renders 1989/FUNDAÃƒâ€¡ÃƒÆ’O badge overlay over image. POSTOS_LOCATIONS hardcoded in suporte/page.tsx moved to ServiceCenter contract type + SUPPORT_SERVICE_CENTERS mock. PRODUCT_MENU_CATEGORIES synced with new CATALOG_CATEGORIES slugs (cat-fontes-carregadores). --bar-accent token corrected from rgb(220,38,38) to brand rgb(232,19,42).",
+            "outcome": "All mock content now matches Figma MCP live data with full Portuguese accentuation. Sobre section order matches baseline. Quality section has 1989/FUNDAÃƒâ€¡ÃƒÆ’O badge. Service centers data-driven from mock. 12 Figma baselines re-exported. tsc --noEmit and lint exit 0."
         },
         {
             "ts": "2026-05-15T23:00:00Z",
@@ -1455,8 +1492,8 @@
                 "src/app/(site)/suporte/page.tsx",
                 "src/app/(site)/suporte/_components/contact-form.tsx"
             ],
-            "rationale": "Design-fidelity-audit invocation 3: 17 screenshots identified divergences. P1: spec tags rendered [object Object] for SpecMultiColumnValue â€” added isMultiColumn guard + formatSpecTag helper + correct metric extraction from Portuguese keys. P2: QualitySection used bg-brand-dark (dark) vs Figma off-white; footer showed Â©2026 vs Â©2025 and had Instagram (4 icons) vs 3; catalog hero 'NOSSOS PRODUTOS' vs Figma 'NOSSO PRODUTOS'. P3: Header had 'Garantia' button vs Figma language selector (BR flag + PT + chevron); category section was horizontal tab strip vs Figma card grid; suporte sections were Downloadsâ†’Postos vs Figma Postosâ†’Downloads. P4: ContactForm missing SETOR select, 2-col nome+phone, privacy checkbox, full-width red submit; postos items had 1 phone vs Figma 2; download items used filled button vs text link with V2 badge.",
-            "outcome": "Spec tags no longer show [object Object]; QualitySection renders with off-white background; footer has Â©2025 and 3 social icons; header shows language selector; category section is a grid of cards with label; suporte sections reordered; contact form has all Figma fields; postos show 2 phones; downloads show text link + V2 badge. tsc --noEmit and lint exit 0."
+            "rationale": "Design-fidelity-audit invocation 3: 17 screenshots identified divergences. P1: spec tags rendered [object Object] for SpecMultiColumnValue Ã¢â‚¬â€ added isMultiColumn guard + formatSpecTag helper + correct metric extraction from Portuguese keys. P2: QualitySection used bg-brand-dark (dark) vs Figma off-white; footer showed Ã‚Â©2026 vs Ã‚Â©2025 and had Instagram (4 icons) vs 3; catalog hero 'NOSSOS PRODUTOS' vs Figma 'NOSSO PRODUTOS'. P3: Header had 'Garantia' button vs Figma language selector (BR flag + PT + chevron); category section was horizontal tab strip vs Figma card grid; suporte sections were DownloadsÃ¢â€ â€™Postos vs Figma PostosÃ¢â€ â€™Downloads. P4: ContactForm missing SETOR select, 2-col nome+phone, privacy checkbox, full-width red submit; postos items had 1 phone vs Figma 2; download items used filled button vs text link with V2 badge.",
+            "outcome": "Spec tags no longer show [object Object]; QualitySection renders with off-white background; footer has Ã‚Â©2025 and 3 social icons; header shows language selector; category section is a grid of cards with label; suporte sections reordered; contact form has all Figma fields; postos show 2 phones; downloads show text link + V2 badge. tsc --noEmit and lint exit 0."
         },
         {
             "ts": "2026-05-16T14:30:00Z",
@@ -1497,7 +1534,7 @@
                 "src/app/(site)/page.tsx",
                 "src/app/(site)/sobre/page.tsx"
             ],
-            "rationale": "Code review identified faq.tsx was modified in the branch (import fix) but missed the defaultâ†’named export conversion required by react-components.md; sobre/page.tsx was missing blank line after imports",
+            "rationale": "Code review identified faq.tsx was modified in the branch (import fix) but missed the defaultÃ¢â€ â€™named export conversion required by react-components.md; sobre/page.tsx was missing blank line after imports",
             "outcome": "Faq now uses named export; page.tsx updated to { Faq } import; sobre/page.tsx has blank line separator. tsc and lint pass."
         },
         {
@@ -1518,7 +1555,7 @@
                 "src/app/(site)/_components/careers-cta.tsx",
                 "src/app/(site)/_components/our-factory.tsx"
             ],
-            "rationale": "Global simplification pass per user /simplify request: removed legacy hero.tsx, unused isStringArray export, unused clearCmsProviderCache, unused motion dep; simplified Container (useRenderâ†’plain div); extracted local StatsGrid in OurHistory; consolidated 4 CTA callsites into CTAButton component fixing pre-existing invalid <a><button> nesting",
+            "rationale": "Global simplification pass per user /simplify request: removed legacy hero.tsx, unused isStringArray export, unused clearCmsProviderCache, unused motion dep; simplified Container (useRenderÃ¢â€ â€™plain div); extracted local StatsGrid in OurHistory; consolidated 4 CTA callsites into CTAButton component fixing pre-existing invalid <a><button> nesting",
             "outcome": "Smaller surface area: 1 file deleted, 1 dep removed, 2 dead exports gone, ~50 lines of duplicated JSX consolidated. Visual output unchanged; DOM structure of CTAs now valid HTML (anchor with button classes instead of nested anchor+button)."
         },
         {
@@ -1546,8 +1583,8 @@
             "files": [
                 "src/components/ui/header.tsx"
             ],
-            "rationale": "Full mobile review identified the hamburger button as a non-functional placeholder (no state, no handler, no drawer component). Mobile search icon was also decorative only. Both are critical mobile gaps: users on mobile had no way to navigate or search. Figma does not specify a drawer design (task-02 marked it 'implementaÃ§Ã£o futura') so design was derived from the established design system (dark bg-brand-dark, Barlow Condensed uppercase nav, brand red active state).",
-            "outcome": "Mobile menu: CSS slide-in drawer from left, bg-brand-dark, Logo (variant=dark), Produtos accordion with PRODUCT_MENU_CATEGORIES, Sobre nÃ³s and Suporte links with active pathname styling, language selector in footer. Backdrop (bg-black/50) with click-to-close. ESC key closes both menu and search. Scroll lock on body while menu open. Mobile search: auto-focus input replaces header content on click, submits to /produtos?q=. tsc --noEmit and lint exit 0."
+            "rationale": "Full mobile review identified the hamburger button as a non-functional placeholder (no state, no handler, no drawer component). Mobile search icon was also decorative only. Both are critical mobile gaps: users on mobile had no way to navigate or search. Figma does not specify a drawer design (task-02 marked it 'implementaÃƒÂ§ÃƒÂ£o futura') so design was derived from the established design system (dark bg-brand-dark, Barlow Condensed uppercase nav, brand red active state).",
+            "outcome": "Mobile menu: CSS slide-in drawer from left, bg-brand-dark, Logo (variant=dark), Produtos accordion with PRODUCT_MENU_CATEGORIES, Sobre nÃƒÂ³s and Suporte links with active pathname styling, language selector in footer. Backdrop (bg-black/50) with click-to-close. ESC key closes both menu and search. Scroll lock on body while menu open. Mobile search: auto-focus input replaces header content on click, submits to /produtos?q=. tsc --noEmit and lint exit 0."
         },
         {
             "ts": "2026-05-16T22:00:00Z",
@@ -1786,6 +1823,591 @@
             ],
             "rationale": "Fourth code-review pass identified: hardcoded PT-BR fallback in useState, redundant typeof checks on statically-typed discriminated union fields, and unstable key={item.q} instead of key={item.id}",
             "outcome": "useState fallback now uses t(allCategories); VIDEO/HTML/MODEL3D block.data fields accessed directly without typeof guards; FAQ items keyed by stable id. tsc and lint pass."
+        },
+        {
+            "ts": "2026-05-18T18:20:00Z",
+            "agent": "gpt-5.2-codex",
+            "type": "fix",
+            "summary": "Use shadcn accordion chevrons in FAQ accordion",
+            "files": [
+                "src/app/[locale]/(site)/_components/faq-accordion.tsx"
+            ],
+            "rationale": "User requested the FAQ accordion to rely on the shadcn Accordion base and use chevron up/down icons instead of plus/minus glyphs.",
+            "outcome": "FaqAccordion now uses AccordionTrigger with built-in chevrons and removes custom +/âˆ’ icons while keeping the same text styling."
+        },
+        {
+            "ts": "2026-05-18T18:27:00Z",
+            "agent": "gpt-5.2-codex",
+            "type": "fix",
+            "summary": "Set accordion chevrons to brand color",
+            "files": [
+                "src/components/ui/accordion.tsx"
+            ],
+            "rationale": "User requested the accordion chevrons use the brand color instead of the muted foreground token.",
+            "outcome": "Accordion trigger icons now render with the brand color token."
+        },
+        {
+            "ts": "2026-05-19T00:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "chore",
+            "summary": "Add Prettier config, .prettierignore, .gitattributes to standardize formatting and eliminate CRLF/LF diffs",
+            "files": [
+                ".prettierrc",
+                ".prettierignore",
+                ".gitattributes",
+                "package.json"
+            ],
+            "rationale": "Two devs had different Prettier configs (one had none), causing quote/semicolon/indentation diffs in every PR. Added shared .prettierrc (double quotes, semi, trailing commas, printWidth 80, endOfLine lf) and .gitattributes (text=auto eol=lf) to normalize line endings across Windows/macOS. .prettierignore scoped to src/ only to avoid touching docs, .agents/, .claude/ and root config files.",
+            "outcome": "pnpm format now formats only src/ TypeScript/CSS/JSON files consistently. lint-staged runs prettier before eslint on pre-commit. .gitattributes ensures all text files store as LF in the repo."
+        },
+        {
+            "ts": "2026-05-19T00:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "chore",
+            "summary": "Add ui-component-styling and component-architecture rules (dual-install)",
+            "files": [
+                ".claude/rules/ui-component-styling.md",
+                ".claude/rules/component-architecture.md",
+                ".agents/rules/ui-component-styling.md",
+                ".agents/rules/component-architecture.md"
+            ],
+            "rationale": "Project had style and componentization inconsistencies generated by AI agents: mixed leading values, gradient patterns, no static-vs-dynamic principle, no component folder structure guideline, !important usage, and subcomponents embedded in large files",
+            "outcome": "Two new rules now guide agents on: leading scale, gradient unification, section spacing, CVA variants, icon sizes, component folder placement (ui/ vs components/ vs _components/), dummy component principle, composable pattern, file size limits, and !important prohibition"
+        },
+        {
+            "ts": "2026-05-19T14:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "feat",
+            "summary": "Implement Auth JWT + User Management for CMS Admin (task-16)",
+            "files": [
+                "src/lib/api/contracts.ts",
+                "src/lib/api/endpoints.ts",
+                "src/lib/api/provider-contract.ts",
+                "src/lib/api/providers/mock-provider.ts",
+                "src/lib/api/providers/remote-provider.ts",
+                "src/lib/api/server.ts",
+                "src/lib/api/client.ts",
+                "src/lib/mock/admin-cms.ts",
+                "src/app/api/auth/login/route.ts",
+                "src/app/api/auth/logout/route.ts",
+                "src/app/api/admin/users/route.ts",
+                "src/app/api/admin/users/[id]/route.ts",
+                "src/proxy.ts",
+                "src/hooks/use-admin.ts",
+                "src/app/admin/layout.tsx",
+                "src/app/admin/login/page.tsx",
+                "src/app/admin/usuarios/page.tsx",
+                "src/app/admin/produtos/page.tsx",
+                "docs/ia/tasks/task-16-auth-user-management.md"
+            ],
+            "rationale": "task-16 requires JWT auth with httpOnly cookie, auth guard in proxy, and user management UI following the full provider/mock/contract chain",
+            "outcome": "Admin routes protected by cookie guard; /admin/login page for auth; /admin/usuarios page with user table, create/edit modal, and activate/deactivate toggle"
+        },
+        {
+            "ts": "2026-05-20T00:30:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Fix Missing html/body error by moving root HTML shell to app/layout.tsx",
+            "files": [
+                "src/app/layout.tsx",
+                "src/app/[locale]/layout.tsx",
+                "src/app/admin/layout.tsx"
+            ],
+            "rationale": "Admin routes bypass [locale]/layout.tsx (where html/body lived), causing Missing html/body error. Moved html/body/fonts to app/layout.tsx (true root); locale layout now only wraps with NextIntlClientProvider+QueryProvider",
+            "outcome": "All routes (public and admin) share a single html/body from app/layout.tsx; [locale]/layout.tsx provides i18n context; admin/layout.tsx provides admin sidebar"
+        },
+        {
+            "ts": "2026-05-20T14:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "docs",
+            "summary": "Create task-17: CMS Theme Foundation + CRUD Component System",
+            "files": [
+                "docs/ia/tasks/task-17-cms-theme-crud-foundation.md",
+                "docs/ia/tasks/TASKS.md"
+            ],
+            "rationale": "Brainstorm completo com inspeÃ§Ã£o via Figma MCP revelou tokens, layouts e padrÃµes CRUD do CMS; task criada para isolar tema do CMS e construir primitivos reutilizÃ¡veis",
+            "outcome": "Task-17 rastreada no backlog, branch feat/cms-theme-crud-foundation criado, pronto para /next-task"
+        },
+        {
+            "ts": "2026-05-20T15:30:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "feat",
+            "summary": "Implement CMS theme foundation + CRUD component system (task-17)",
+            "files": [
+                "src/app/globals.css",
+                "src/app/admin/admin.css",
+                "src/app/admin/layout.tsx",
+                "src/app/admin/login/page.tsx",
+                "src/app/admin/produtos/page.tsx",
+                "src/app/admin/usuarios/page.tsx",
+                "src/app/admin/_components/admin-sidebar.tsx",
+                "src/app/admin/_components/admin-panel.tsx",
+                "src/app/admin/_components/admin-page-header.tsx",
+                "src/app/admin/_components/crud/admin-list-page.tsx",
+                "src/app/admin/_components/crud/admin-action-bar.tsx",
+                "src/app/admin/_components/crud/admin-data-table.tsx",
+                "src/app/admin/_components/crud/admin-search-input.tsx",
+                "src/app/admin/_components/crud/admin-empty-state.tsx",
+                "src/app/admin/_components/crud/admin-form-page.tsx",
+                "src/app/admin/_components/crud/admin-form-section.tsx",
+                "src/app/admin/_components/crud/admin-wizard-page.tsx",
+                "src/app/admin/_components/crud/admin-step-indicator.tsx",
+                "src/app/admin/_components/crud/admin-file-upload.tsx",
+                "src/app/admin/_components/crud/admin-confirm-dialog.tsx",
+                "docs/ia/figma/meta.json",
+                "docs/ia/tasks/task-17-cms-theme-crud-foundation.md"
+            ],
+            "rationale": "Isolate CMS theme from public site using .cms CSS selector scope; build CRUD primitives so every new admin screen is a composition, not raw code",
+            "outcome": "Admin panel uses #E8ECFB bg, #FAFAFA panels, 240px sidebar with shadow, and 10 CRUD primitives covering list/wizard/form/detail patterns; tsc and lint pass"
+        },
+        {
+            "ts": "2026-05-20T17:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "refactor",
+            "summary": "QA pass: create AdminInput components, modularize wizard step, audit design consistency",
+            "files": [
+                "src/app/admin/_components/crud/admin-input.tsx",
+                "src/app/admin/_components/crud/admin-block-builder.tsx",
+                "src/app/admin/_components/product-wizard.tsx",
+                "src/app/admin/_components/product-wizard-step1.tsx",
+                "src/app/admin/configuracoes/page.tsx",
+                "src/app/admin/usuarios/page.tsx"
+            ],
+            "rationale": "User requested QA + simplify pass: eliminate inputClass/labelClass duplication across 5 files, modularize 370-line wizard, fix drag-end and click-outside bugs",
+            "outcome": "AdminInput/Label/Select/Textarea shared components eliminate repeated style constants; ProductWizardStep1 extracted from ProductWizard; tsc 0 errors, lint 0 errors"
+        },
+        {
+            "ts": "2026-05-20T18:30:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "feat",
+            "summary": "Design-fidelity audit CMS: fix dashboard tokens, add banner CRUD drawer, expand wizard fields, fix mocks",
+            "files": [
+                "src/app/admin/page.tsx",
+                "src/app/admin/banners/page.tsx",
+                "src/app/admin/biblioteca/page.tsx",
+                "src/app/admin/_components/product-wizard-step1.tsx",
+                "src/app/admin/_components/product-wizard.tsx",
+                "src/lib/mock/admin-cms.ts"
+            ],
+            "rationale": "User requested design audit of CMS screens: dashboard used hardcoded zinc/white tokens; banners had no create/edit form; product wizard lacked subcategory_id and badge fields; MOCK_CMS_PRODUCTS_DETAIL had wrong IDs and only 1 entry",
+            "outcome": "Dashboard uses semantic tokens; banner drawer adds full create/edit flow with image preview; wizard Step 1 adds subcategory (dynamic) and badge; mock has 3 products with correct IDs; tsc 0 errors, lint 0 errors"
+        },
+        {
+            "ts": "2026-05-20T00:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "feat",
+            "summary": "Full CMS admin audit: 4-step product wizard, block modal, banners full-page, biblioteca tabs, mensagens redesign, historico, dashboard, sidebar",
+            "files": [
+                "src/lib/api/contracts.ts",
+                "src/lib/api/mappers.ts",
+                "src/lib/api/providers/mock-provider.ts",
+                "src/lib/mock/admin-cms.ts",
+                "src/app/admin/page.tsx",
+                "src/app/admin/login/page.tsx",
+                "src/app/admin/produtos/page.tsx",
+                "src/app/admin/banners/page.tsx",
+                "src/app/admin/biblioteca/page.tsx",
+                "src/app/admin/mensagens/page.tsx",
+                "src/app/admin/historico/page.tsx",
+                "src/app/admin/paginas/page.tsx",
+                "src/app/admin/_components/admin-sidebar.tsx",
+                "src/app/admin/_components/product-wizard.tsx",
+                "src/app/admin/_components/product-wizard-step1.tsx",
+                "src/app/admin/_components/product-wizard-step-specs.tsx",
+                "src/app/admin/_components/product-wizard-step-files.tsx",
+                "src/app/admin/_components/product-wizard-step-publish.tsx",
+                "src/app/admin/_components/crud/admin-block-builder.tsx",
+                "src/app/admin/_components/crud/admin-file-upload.tsx",
+                "src/app/admin/_components/crud/admin-step-indicator.tsx"
+            ],
+            "rationale": "Full CMS audit and correction pass: all 53+ divergences from Figma implemented. 4-step wizard, block type modal dialog, banners full-page form, biblioteca 3 tabs, mensagens Central de contato with Departamentos tab, historico action sentence format, dashboard metrics/quickactions/schedule, sidebar reorganized per Figma.",
+            "outcome": "All CMS admin screens match Figma design. tsc: 0 errors. lint: 0 errors (1 pre-existing warning)."
+        },
+        {
+            "ts": "2026-05-20T19:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "chore",
+            "summary": "Add screen-audit skill (dual-install) and register in CLAUDE.md",
+            "files": [
+                ".claude/skills/screen-audit/SKILL.md",
+                ".agents/skills/screen-audit/SKILL.md",
+                "CLAUDE.md"
+            ],
+            "rationale": "User requested a reusable skill that performs the same structured audit/analysis used to generate the CMS divergence matrix, with flexible scope input",
+            "outcome": "screen-audit skill installed in both .claude/skills/ and .agents/skills/, registered in CLAUDE.md skills table"
+        },
+        {
+            "ts": "2026-05-20T14:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "refactor",
+            "summary": "Audit e modularizaÃ§Ã£o completa dos mocks â€” single source of truth + 6 novos endpoints CMS",
+            "files": [
+                "src/lib/mock/cms-banners.ts",
+                "src/lib/mock/cms-audit.ts",
+                "src/lib/mock/cms-config.ts",
+                "src/lib/mock/cms-library.ts",
+                "src/lib/mock/cms-messages.ts",
+                "src/lib/mock/cms-users.ts",
+                "src/lib/mock/admin-cms.ts",
+                "src/lib/mock/catalog.ts",
+                "src/lib/mock/support.ts",
+                "src/lib/mock/navigation.ts",
+                "src/lib/api/mappers.ts",
+                "src/lib/api/provider-contract.ts",
+                "src/lib/api/providers/mock-provider.ts",
+                "src/lib/api/providers/remote-provider.ts",
+                "src/app/admin/produtos/[id]/page.tsx"
+            ],
+            "rationale": "admin-cms.ts era monolÃ­tico com dead code e dados duplicados do catalog.ts; audit detectou 17 divergÃªncias: specs em PT/mixed-case, product_id invÃ¡lidos, categorias invÃ¡lidas, hrefs fictÃ­cios, timestamp nÃ£o-determinÃ­stico e 6 endpoints CMS faltando no contrato",
+            "outcome": "catalog.ts Ã© single source of truth; admin-cms.ts virou barrel + buildCmsProductDetail(); 6 mÃ³dulos cms-* criados; specs padronizadas em snake_case inglÃªs; tsc e lint passam sem erros"
+        },
+        {
+            "ts": "2026-05-20T22:05:00Z",
+            "agent": "gpt-5.3-codex",
+            "type": "fix",
+            "summary": "Replace specs matrix with active variation model in CMS and product detail",
+            "files": [
+                "src/lib/api/contracts.ts",
+                "src/lib/api/mappers.ts",
+                "src/lib/mock/catalog.ts",
+                "src/app/admin/_components/product-wizard.tsx",
+                "src/app/admin/_components/product-wizard-step-specs.tsx",
+                "src/app/[locale]/(site)/produtos/[slug]/page.tsx",
+                "src/app/[locale]/(site)/produtos/[slug]/_components/product-detail-content.tsx",
+                "src/i18n/messages/pt-BR.json",
+                "src/i18n/messages/en.json",
+                "src/i18n/messages/es.json",
+                "docs/ia/context.json"
+            ],
+            "rationale": "User clarified that Figma expects per-variation editing with a selected variation tab and add/remove controls, not multi-column table editing.",
+            "outcome": "Specs now belong to each variation, highlights are global by attribute, CMS step 2 uses variation tabs with add/remove (minimum one), and product detail page supports variation selection with single Attribute/Value rendering."
+        },
+        {
+            "ts": "2026-05-20T21:20:00Z",
+            "agent": "gpt-5.3-codex",
+            "type": "feat",
+            "summary": "Migrate product specs to rows with variations and highlight flags",
+            "files": [
+                "src/lib/api/contracts.ts",
+                "src/lib/api/mappers.ts",
+                "src/lib/mock/catalog.ts",
+                "src/app/[locale]/(site)/produtos/[slug]/page.tsx",
+                "src/app/[locale]/(site)/produtos/[slug]/_components/product-detail-content.tsx",
+                "src/app/admin/_components/product-wizard.tsx",
+                "src/app/admin/_components/product-wizard-step-specs.tsx",
+                "docs/ia/context.json"
+            ],
+            "rationale": "Needed to replace flat specifications and 2-column impedance assumptions with a scalable model that supports N variation columns and explicit highlight selection from CMS.",
+            "outcome": "Product contract now uses specs+variations, catalog mocks are adapted via legacy-to-row mapper, product detail renders badges/highlights from row data, and admin step 2 supports dynamic variation columns plus highlight checkbox."
+        },
+        {
+            "ts": "2026-05-20T17:04:42Z",
+            "agent": "gpt-5.3-codex",
+            "type": "fix",
+            "summary": "Align task-18 status and remove inline step indicator background",
+            "files": [
+                "docs/ia/tasks/TASKS.md",
+                "src/app/admin/_components/crud/admin-step-indicator.tsx",
+                "docs/ia/context.json"
+            ],
+            "rationale": "User requested applying all review fixes across priorities, including task-state mismatch and minor styling consistency issue.",
+            "outcome": "Task backlog now matches task-18 status (REVIEW), and step indicator now uses semantic CMS token classes instead of inline hardcoded background style."
+        },
+        {
+            "ts": "2026-05-20T17:13:37Z",
+            "agent": "gpt-5.3-codex",
+            "type": "fix",
+            "summary": "Replace admin login hardcoded panel colors with semantic tokens",
+            "files": [
+                "src/app/admin/login/page.tsx",
+                "docs/ia/context.json"
+            ],
+            "rationale": "Code review identified hardcoded color values in the admin login brand panel, which violated the token-first styling rules.",
+            "outcome": "Admin login brand panel now uses semantic Tailwind token classes for both base background and overlay gradient, removing static inline color styles."
+        },
+        {
+            "ts": "2026-05-20T17:25:13Z",
+            "agent": "gpt-5.3-codex",
+            "type": "fix",
+            "summary": "Apply all review fixes across admin pages and CMS tokens",
+            "files": [
+                "src/app/admin/produtos/[id]/page.tsx",
+                "src/app/admin/paginas/page.tsx",
+                "src/app/admin/_components/crud/admin-confirm-dialog.tsx",
+                "src/app/admin/_components/admin-sidebar.tsx",
+                "src/app/admin/banners/page.tsx",
+                "src/app/globals.css",
+                "docs/ia/context.json"
+            ],
+            "rationale": "User requested fixing all findings from the branch review, including important and minor priority issues.",
+            "outcome": "Admin product edit and pages routes now follow server-component conventions, dialog/sidebar styling uses semantic CMS tokens, and banner status badges were aligned with CMS tokenized colors."
+        },
+        {
+            "ts": "2026-05-20T17:36:25Z",
+            "agent": "gpt-5.3-codex",
+            "type": "fix",
+            "summary": "Finalize remaining review cleanups for history and product card exports",
+            "files": [
+                "src/app/[locale]/(site)/_components/our-history.tsx",
+                "src/components/ui/product-card.tsx",
+                "src/app/[locale]/(site)/_components/featured-products.tsx",
+                "src/app/[locale]/(site)/produtos/_components/catalog-content.tsx",
+                "src/app/[locale]/(site)/produtos/[slug]/_components/product-detail-content.tsx",
+                "docs/ia/context.json"
+            ],
+            "rationale": "User requested applying all detected corrections, including the remaining minor issues from the latest review pass.",
+            "outcome": "Removed dead commented code from history section and migrated ProductCard to named export with all consumer imports updated, keeping lint and typecheck green."
+        },
+        {
+            "ts": "2026-05-20T17:46:40Z",
+            "agent": "gpt-5.3-codex",
+            "type": "fix",
+            "summary": "Fix social feed overflow and mobile header wrapping",
+            "files": [
+                "src/app/[locale]/(site)/_components/social-feed.tsx",
+                "docs/ia/context.json"
+            ],
+            "rationale": "User reported that the social media sections were breaking the layout with horizontal overflow and requested verification for mobile behavior too.",
+            "outcome": "SocialFeed now clips horizontal overflow, uses responsive header alignment on small screens, and slide sizing adapts safely without page-width overflow in reused home/about sections."
+        },
+        {
+            "ts": "2026-05-20T17:49:53Z",
+            "agent": "gpt-5.3-codex",
+            "type": "fix",
+            "summary": "Resolve remaining review issues in CMS and messages tab classes",
+            "files": [
+                "src/app/cms/page.tsx",
+                "src/app/admin/mensagens/page.tsx",
+                "docs/ia/context.json"
+            ],
+            "rationale": "User requested fixing all identified issues across priorities from the latest branch review.",
+            "outcome": "CMS page now uses semantic design tokens instead of hardcoded palette classes, and admin messages tab button class merging now uses cn for consistency."
+        },
+        {
+            "ts": "2026-05-20T17:58:42Z",
+            "agent": "gpt-5.3-codex",
+            "type": "fix",
+            "summary": "Apply final all-priority token and overlay review fixes",
+            "files": [
+                "src/app/admin/produtos/page.tsx",
+                "src/app/admin/usuarios/page.tsx",
+                "src/app/admin/_components/crud/admin-block-builder.tsx",
+                "src/app/[locale]/(site)/_components/hero-carousel.tsx",
+                "src/app/[locale]/(site)/_components/featured-products.tsx",
+                "src/app/admin/_components/crud/admin-status-toggle.tsx",
+                "docs/ia/context.json"
+            ],
+            "rationale": "User requested implementing all remaining corrections from all review priorities in a single pass.",
+            "outcome": "Admin status badges and overlays now use semantic CMS tokens, hero overlay no longer relies on inline raw rgba style, and minor white-background utilities were replaced with semantic token classes."
+        },
+        {
+            "ts": "2026-05-20T18:20:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Fix all code-review findings: contract mismatch, sidebar nav, arbitrary px, dead alias, missing type attributes",
+            "files": [
+                "src/app/admin/_components/crud/admin-block-builder.tsx",
+                "src/app/admin/_components/admin-sidebar.tsx",
+                "src/app/admin/layout.tsx",
+                "src/app/admin/login/page.tsx",
+                "src/app/admin/_components/crud/admin-form-page.tsx",
+                "src/app/admin/_components/crud/admin-wizard-page.tsx",
+                "src/app/admin/_components/crud/admin-drawer.tsx",
+                "src/app/admin/_components/crud/admin-rich-text.tsx",
+                "src/app/admin/usuarios/page.tsx",
+                "src/app/[locale]/(site)/_components/hero-carousel.tsx",
+                "docs/ia/context.json"
+            ],
+            "rationale": "User requested fixing all findings from code-review across all priorities: ImageBlockData contract mismatch, missing UsuÃ¡rios sidebar link, arbitrary px values violating tailwind-canonical, dead safeSlides alias, and missing type=button attributes.",
+            "outcome": "ImageBlockForm now stores images as string[], /admin/usuarios is reachable from sidebar, all [Npx] px values replaced with canonical Tailwind classes, safeSlides alias removed, and action buttons have explicit type attributes."
+        },
+        {
+            "ts": "2026-05-20T20:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Address code-review findings: proxy auth guard, provider pattern, env password, type=button",
+            "files": [
+                "src/proxy.ts",
+                "src/lib/api/endpoints.ts",
+                "src/lib/api/client.ts",
+                "src/hooks/use-admin.ts",
+                "src/lib/mock/cms-users.ts",
+                ".env.local.example",
+                "src/app/api/admin/banners/route.ts",
+                "src/app/api/admin/library/route.ts",
+                "src/app/api/admin/messages/route.ts",
+                "src/app/api/admin/audit/route.ts",
+                "src/app/api/admin/config/route.ts",
+                "src/app/admin/banners/page.tsx",
+                "src/app/admin/biblioteca/page.tsx",
+                "src/app/admin/configuracoes/page.tsx",
+                "src/app/admin/historico/page.tsx",
+                "src/app/admin/mensagens/page.tsx",
+                "src/app/admin/produtos/[id]/page.tsx"
+            ],
+            "rationale": "Code review identified admin routes not included in proxy.ts matcher (auth guard never ran), direct mock imports in admin pages bypassing provider pattern, missing type=button on buttons, and plain-text dev password",
+            "outcome": "Admin routes now protected server-side by cookie check in middleware; all admin pages use hooks+API routes+provider instead of direct mock imports; MOCK_AUTH_PASSWORD reads from env with fallback"
+        },
+        {
+            "ts": "2026-05-20T21:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Apply code-review fixes: layout RSC refactor, button types, admin-input cleanup, banners modularization",
+            "files": [
+                "src/app/admin/layout.tsx",
+                "src/app/admin/_components/admin-shell.tsx",
+                "src/app/admin/_components/crud/admin-drawer.tsx",
+                "src/app/admin/_components/crud/admin-input.tsx",
+                "src/app/admin/usuarios/page.tsx",
+                "src/app/admin/banners/page.tsx",
+                "src/app/admin/banners/_components/banner-form.tsx",
+                "src/app/admin/banners/_components/banners-content.tsx"
+            ],
+            "rationale": "Code review findings: admin layout was entirely client due to inline AdminShell; buttons lacked type=button causing accidental form submit; redundant className props in admin-input interfaces; banners/page.tsx exceeded 150-line threshold at 518 lines",
+            "outcome": "AdminLayout is now a Server Component; AdminShell extracted to client-only file; all interactive buttons have explicit type; banners page split into banner-form.tsx + banners-content.tsx + thin page.tsx"
+        },
+        {
+            "ts": "2026-05-20T21:30:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Fix missing type=button in biblioteca PhotoCard and move axios/dotenv to devDependencies",
+            "files": [
+                "src/app/admin/biblioteca/page.tsx",
+                "package.json"
+            ],
+            "rationale": "Code review minor findings: handleCopy button lacked explicit type attribute; axios and dotenv only used in orval.config.ts (dev tooling) but were listed in production dependencies",
+            "outcome": "All buttons in admin panel now have explicit type; package.json correctly separates runtime from dev-only dependencies"
+        },
+        {
+            "ts": "2026-05-20T22:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Fix CI pnpm version conflict by removing version key from pnpm/action-setup",
+            "files": [
+                ".github/workflows/ci.yml"
+            ],
+            "rationale": "pnpm/action-setup@v4 was specifying version: 10 but package.json already declares packageManager: pnpm@11.1.3 — two sources conflicted causing ERR_PNPM_BAD_PM_VERSION",
+            "outcome": "CI now reads pnpm version exclusively from package.json packageManager field, resolving the install step failure"
+        },
+        {
+            "ts": "2026-05-20T00:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Apply all code-review fixes: proxy auth for API routes, mock email, banners user id, regex, type guards, rename AdminRichText",
+            "files": [
+                "src/proxy.ts",
+                "src/lib/mock/cms-users.ts",
+                "src/app/admin/banners/_components/banners-content.tsx",
+                "src/app/admin/_components/product-wizard.tsx",
+                "src/app/admin/_components/crud/admin-text-editor.tsx",
+                "src/app/admin/_components/crud/admin-block-builder.tsx"
+            ],
+            "rationale": "Code review identified: /api/admin/* routes bypassing auth guard in proxy.ts, personal email in mock data, hardcoded user id in banner creation, unsafe type assertions, literal diacritics regex, misleading component name",
+            "outcome": "Admin API routes now return 401 without cookie; mock email is generic; banner created_by uses mock constant; block data type guards are safe; regex uses unicode escape; AdminTextEditor replaces AdminRichText"
+        },
+        {
+            "ts": "2026-05-20T12:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Apply code-review fixes: token validation, mock import, Tab type, key stability, type=button, cn()",
+            "files": [
+                "src/proxy.ts",
+                "src/app/admin/banners/_components/banners-content.tsx",
+                "src/app/admin/biblioteca/page.tsx",
+                "src/app/admin/_components/crud/admin-file-upload.tsx",
+                "src/app/admin/produtos/page.tsx"
+            ],
+            "rationale": "Code review found: proxy checked cookie existence only (bypass risk), client component imported mock array directly, Tab discriminators in Portuguese, list key used index, button missing type=button, conditional classes used template literal instead of cn()",
+            "outcome": "Auth guard validates 3-part JWT structure; banners-content no longer bundles mock users array; Tab type uses English identifiers; file list keys are stable; button is explicit; cn() used for tab active state"
+        },
+        {
+            "ts": "2026-05-20T14:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Apply code-review fixes: subcategories API layer, wizard props, time input, locale labels, barrel exports",
+            "files": [
+                "src/lib/api/provider-contract.ts",
+                "src/lib/api/providers/mock-provider.ts",
+                "src/lib/api/providers/remote-provider.ts",
+                "src/lib/api/server.ts",
+                "src/lib/api/client.ts",
+                "src/lib/api/endpoints.ts",
+                "src/hooks/use-catalog.ts",
+                "src/app/api/catalog/subcategories/route.ts",
+                "src/app/admin/_components/product-wizard.tsx",
+                "src/app/admin/_components/product-wizard-step1.tsx",
+                "src/app/admin/_components/product-wizard-step-publish.tsx",
+                "src/app/admin/produtos/page.tsx",
+                "src/app/admin/banners/_components/banners-content.tsx",
+                "src/lib/mock/admin-cms.ts"
+            ],
+            "rationale": "Code review identified: direct mock/catalog imports in admin UI components, uncontrolled time input, emoji flags violating no-emoji rule, redundant barrel exports in admin-cms.ts, and undocumented non-URL-safe base64 in mock token",
+            "outcome": "Subcategories now served via /api/catalog/subcategories with getCatalogSubcategories() in provider contract; wizard uses useCatalogCategories+useCatalogSubcategories hooks; launch_time field added to ProductInfo and controlled; locale labels use text (PT/EN/ES) instead of emoji; barrel exports removed from admin-cms.ts; mock token comment clarifies base64url limitation"
+        },
+        {
+            "ts": "2026-05-20T14:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "docs",
+            "summary": "Add README to src/lib/mock documenting mock purpose, structure and orval migration path",
+            "files": [
+                "src/lib/mock/README.md"
+            ],
+            "rationale": "User requested documentation clarifying that mocks exist to mirror the future Fastify OpenAPI contract and explaining how orval will replace contracts.ts when the backend is ready",
+            "outcome": "Developers now have a clear reference for why mocks exist, how they relate to contracts.ts/provider pattern, and the exact steps to integrate orval when the Fastify API ships"
+        },
+        {
+            "ts": "2026-05-20T14:30:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Apply code-review fixes: tag-input key, upload icon, cn() badges, statusBadge consolidation",
+            "files": [
+                "src/app/admin/_components/crud/admin-tag-input.tsx",
+                "src/app/admin/page.tsx",
+                "src/app/admin/banners/_components/banners-content.tsx",
+                "src/app/admin/produtos/page.tsx",
+                "src/app/admin/usuarios/page.tsx"
+            ],
+            "rationale": "Code review identified: array-index React key bug in tag input, wrong icon for upload action, template literal instead of cn(), duplicated base classes in status badges",
+            "outcome": "tag-input uses key={tag} and removes by value; upload quick action shows Upload icon; all status badges use cn() with shared base classes; tsc and lint pass clean"
+        },
+        {
+            "ts": "2026-05-20T00:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "chore",
+            "summary": "Apply code-review fixes: TODO comments, slugify regex escape, PT-BR admin decision",
+            "files": [
+                "src/proxy.ts",
+                "src/app/admin/_components/product-wizard.tsx",
+                "src/app/admin/login/page.tsx"
+            ],
+            "rationale": "Post code-review corrections: document mock token weakness with task reference, clarify handlePublish stub, replace literal Unicode chars with escape sequences in slugify regex, document PT-BR-only decision for admin CMS",
+            "outcome": "All four review items resolved; TSC and ESLint still pass"
+        },
+        {
+            "ts": "2026-05-21T02:10:26Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Fix broken slugify regex in product-wizard — extra chars outside char class caused accents to not be stripped",
+            "files": [
+                "src/app/admin/_components/product-wizard.tsx"
+            ],
+            "rationale": "Regex /[̀-ͯ]̀-ͯ]/g had extra combining chars outside the character class; test proved \"São\" → \"sa-o\" instead of \"sao\"",
+            "outcome": "slugify now correctly converts \"São Paulo ST-4000EQ\" → \"sao-paulo-st-4000eq\" for auto-generated slugs in create mode"
+        },
+        {
+            "ts": "2026-05-21T02:15:57Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Fix all code-review issues: Escape key on dialogs, removeFile notify, aria-labels, env example",
+            "files": [
+                "src/app/admin/_components/crud/admin-confirm-dialog.tsx",
+                "src/app/admin/_components/crud/admin-file-upload.tsx",
+                "src/app/admin/_components/crud/admin-tag-input.tsx",
+                "src/app/admin/_components/crud/admin-block-builder.tsx",
+                ".env.local.example"
+            ],
+            "rationale": "Code-review identified: no Escape handler on modals (WCAG), removeFile not notifying parent, icon-only buttons without aria-label, actual password in .example file",
+            "outcome": "AdminConfirmDialog closes on Escape + has role/aria-modal; removeFile calls onUpload with updated list; all icon buttons have aria-label; .env.local.example uses placeholder"
         }
     ]
 }

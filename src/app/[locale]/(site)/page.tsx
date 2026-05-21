@@ -1,12 +1,12 @@
-import { getSiteHomePayload } from '@/lib/api/server'
-import { Faq } from './_components/faq'
-import { FeaturedProducts } from './_components/featured-products'
-import HeroCarousel from './_components/hero-carousel'
-import { OurHistory } from './_components/our-history'
-import { SocialFeed } from './_components/social-feed'
+import { getSiteHomePayload } from "@/lib/api/server";
+import { Faq } from "./_components/faq";
+import { FeaturedProducts } from "./_components/featured-products";
+import HeroCarousel from "./_components/hero-carousel";
+import { OurHistory } from "./_components/our-history";
+import { SocialFeed } from "./_components/social-feed";
 
 export default async function Home() {
-  const homePayload = await getSiteHomePayload()
+  const homePayload = await getSiteHomePayload();
 
   return (
     <>
@@ -21,5 +21,5 @@ export default async function Home() {
       <SocialFeed section={homePayload.social} />
       <Faq items={homePayload.faq} section={homePayload.faqSection} />
     </>
-  )
+  );
 }

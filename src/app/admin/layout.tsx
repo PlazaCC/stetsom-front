@@ -1,18 +1,15 @@
-import QueryProvider from '@/components/query-provider'
+import QueryProvider from "@/components/query-provider";
+import "./admin.css";
+import { AdminShell } from "./_components/admin-shell";
 
-interface AdminLayoutProps {
-  children: React.ReactNode
-}
-
-export default function AdminLayout({ children }: Readonly<AdminLayoutProps>) {
+export default function AdminLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <QueryProvider>
-      <div className='flex min-h-screen'>
-        <aside className='w-64 shrink-0 border-r bg-sidebar text-sidebar-foreground'>
-          <nav className='p-4' />
-        </aside>
-        <main className='flex-1 p-6'>{children}</main>
+      <div className="cms">
+        <AdminShell>{children}</AdminShell>
       </div>
     </QueryProvider>
-  )
+  );
 }

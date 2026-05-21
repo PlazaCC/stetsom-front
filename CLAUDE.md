@@ -41,6 +41,7 @@ Skills in `.claude/skills/` are auto-discovered by the harness. Quick reference:
 | `modularize` | `/modularize` | Refactor large components into focused modules |
 | `design-fidelity-audit` | `/design-fidelity-audit` | Full-site Figma fidelity pass |
 | `refine-design` | `/refine-design` | Single-component Figma alignment |
+| `screen-audit` | `/screen-audit` | Audit screens/flows vs Figma — matrix + plan before any code |
 | `graphify` | `/graphify` | (Re)generate the codebase knowledge graph |
 
 Full delivery workflow: `docs/ia/AI-DRIVEN-WORKFLOW.md`  

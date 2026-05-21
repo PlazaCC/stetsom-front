@@ -1,6 +1,6 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -63,6 +63,13 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
+  /* CMS color tokens — accessible as bg-cms-active-item, bg-cms-step-done, etc. */
+  --color-cms-active-item: var(--cms-active-item);
+  --color-cms-step-done: var(--cms-step-done);
+  --color-cms-step-pending: var(--cms-step-pending);
+  --color-cms-overlay: var(--cms-overlay);
+  --shadow-cms-sidebar: var(--cms-sidebar-shadow);
+
   /* Typography — declared last to override any conflicting @theme definitions from imported CSS (shadcn, tw-animate) */
   --text-2xs: 0.6875rem;
   --text-button-md: 0.8125rem;
@@ -75,6 +82,16 @@
 
 :root {
   --footer: rgb(17, 17, 17);
+  /* CMS design tokens (raw values — remapped via .cms {} in admin.css) */
+  --cms-bg: oklch(0.94 0.019 261);
+  --cms-bg-alt: oklch(0.96 0.008 258);
+  --cms-panel: oklch(0.98 0 0);
+  --cms-border: oklch(0.9 0.002 264);
+  --cms-active-item: oklch(0.95 0.028 249);
+  --cms-step-done: oklch(0.648 0.15 162);
+  --cms-step-pending: oklch(0.968 0.001 286);
+  --cms-overlay: oklch(0.648 0.001 286 / 0.4);
+  --cms-sidebar-shadow: 0px 0px 8.8px 0px rgb(0 0 0 / 0.2);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(0.975 0 0);
@@ -200,22 +217,42 @@
 
 @layer utilities {
   .bg-gradient-dark-overlay {
-    background: linear-gradient(to bottom, rgba(27, 26, 44, 0.5), rgba(22, 16, 16, 0.5));
+    background: linear-gradient(
+      to bottom,
+      rgba(27, 26, 44, 0.5),
+      rgba(22, 16, 16, 0.5)
+    );
   }
 
   .bg-radial-dark {
-    background: radial-gradient(circle at 99% 114%, rgba(27, 26, 44, 1) 0%, rgba(28, 24, 24, 1) 100%);
+    background: radial-gradient(
+      circle at 99% 114%,
+      rgba(27, 26, 44, 1) 0%,
+      rgba(28, 24, 24, 1) 100%
+    );
   }
 
   .bg-radial-dark-alt {
-    background: radial-gradient(circle at 99% 114%, rgba(27, 26, 44, 1) 0%, rgba(22, 16, 16, 1) 100%);
+    background: radial-gradient(
+      circle at 99% 114%,
+      rgba(27, 26, 44, 1) 0%,
+      rgba(22, 16, 16, 1) 100%
+    );
   }
 
   .bg-gradient-fade-black {
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 72%, rgba(0, 0, 0, 1) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 72%,
+      rgba(0, 0, 0, 1) 100%
+    );
   }
 
   .bg-product-hero {
-    background: radial-gradient(circle at 50% 50%, rgb(238, 8, 0) 45%, rgb(0, 0, 0) 100%);
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgb(238, 8, 0) 45%,
+      rgb(0, 0, 0) 100%
+    );
   }
 }

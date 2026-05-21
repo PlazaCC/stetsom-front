@@ -8,13 +8,34 @@
     "search": "Search",
     "navAriaLabel": "Navigation menu",
     "categoryMenu": {
-      "amplifiers": { "label": "Amplifiers", "description": "High-power amplifiers for automotive audio systems." },
-      "processors": { "label": "Processors", "description": "High-performance signal processors for automotive applications." },
-      "crossovers": { "label": "Crossovers", "description": "Crossover filters for multi-way automotive speaker systems." },
-      "controls": { "label": "Controllers", "description": "Remote controls and peripherals for Stetsom amplifiers." },
-      "powerSupplies": { "label": "Power Supplies", "description": "Power supplies and chargers for demanding automotive systems." },
-      "mixers": { "label": "Mixers", "description": "Mixing consoles for professionals and enthusiasts." },
-      "accessories": { "label": "Accessories", "description": "Accessories for system customization and performance." }
+      "amplifiers": {
+        "label": "Amplifiers",
+        "description": "High-power amplifiers for automotive audio systems."
+      },
+      "processors": {
+        "label": "Processors",
+        "description": "High-performance signal processors for automotive applications."
+      },
+      "crossovers": {
+        "label": "Crossovers",
+        "description": "Crossover filters for multi-way automotive speaker systems."
+      },
+      "controls": {
+        "label": "Controllers",
+        "description": "Remote controls and peripherals for Stetsom amplifiers."
+      },
+      "powerSupplies": {
+        "label": "Power Supplies",
+        "description": "Power supplies and chargers for demanding automotive systems."
+      },
+      "mixers": {
+        "label": "Mixers",
+        "description": "Mixing consoles for professionals and enthusiasts."
+      },
+      "accessories": {
+        "label": "Accessories",
+        "description": "Accessories for system customization and performance."
+      }
     }
   },
   "Header": {
@@ -73,6 +94,7 @@
     "filesAvailable": "{count, plural, one {# file available} other {# files available}}",
     "manual": "Access product manual",
     "downloadPhotos": "Download photos",
+    "variations": "Product variations",
     "breadcrumbHome": "Home",
     "breadcrumbProducts": "Products",
     "powerRMS": "RMS Power",

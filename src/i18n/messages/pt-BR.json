@@ -8,13 +8,34 @@
     "search": "Buscar",
     "navAriaLabel": "Menu de navegação",
     "categoryMenu": {
-      "amplifiers": { "label": "Amplificadores", "description": "Amplificadores de alta potência para sistemas automotivos." },
-      "processors": { "label": "Processadores", "description": "Processadores de alta performance para aplicações automotivas." },
-      "crossovers": { "label": "Crossovers", "description": "Crossovers para divisão de frequências em sistemas multivia." },
-      "controls": { "label": "Controles", "description": "Controles remotos e periféricos para amplificadores Stetsom." },
-      "powerSupplies": { "label": "Fontes e carregadores", "description": "Fontes e carregadores para sistemas automotivos exigentes." },
-      "mixers": { "label": "Mesas de som", "description": "Mesas de som e mixers para profissionais e entusiastas." },
-      "accessories": { "label": "Acessórios", "description": "Acessórios para personalização e desempenho do sistema." }
+      "amplifiers": {
+        "label": "Amplificadores",
+        "description": "Amplificadores de alta potência para sistemas automotivos."
+      },
+      "processors": {
+        "label": "Processadores",
+        "description": "Processadores de alta performance para aplicações automotivas."
+      },
+      "crossovers": {
+        "label": "Crossovers",
+        "description": "Crossovers para divisão de frequências em sistemas multivia."
+      },
+      "controls": {
+        "label": "Controles",
+        "description": "Controles remotos e periféricos para amplificadores Stetsom."
+      },
+      "powerSupplies": {
+        "label": "Fontes e carregadores",
+        "description": "Fontes e carregadores para sistemas automotivos exigentes."
+      },
+      "mixers": {
+        "label": "Mesas de som",
+        "description": "Mesas de som e mixers para profissionais e entusiastas."
+      },
+      "accessories": {
+        "label": "Acessórios",
+        "description": "Acessórios para personalização e desempenho do sistema."
+      }
     }
   },
   "Header": {
@@ -73,6 +94,7 @@
     "filesAvailable": "{count, plural, one {# arquivo disponível} other {# arquivos disponíveis}}",
     "manual": "Acessar manual do produto",
     "downloadPhotos": "Download de fotos",
+    "variations": "Variações do produto",
     "breadcrumbHome": "Início",
     "breadcrumbProducts": "Produtos",
     "powerRMS": "Potência RMS",

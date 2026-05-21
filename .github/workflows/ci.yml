@@ -17,13 +17,11 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -37,6 +35,3 @@ jobs:
 
       - name: Build
         run: pnpm build
-
-      # Rotinas de teste (ex: pnpm test) e cobertura foram omitidas
-      # pois ainda não há um test runner configurado no projeto (per CLAUDE.md)

@@ -8,13 +8,34 @@
     "search": "Buscar",
     "navAriaLabel": "Menú de navegación",
     "categoryMenu": {
-      "amplifiers": { "label": "Amplificadores", "description": "Amplificadores de alta potencia para sistemas automotivos." },
-      "processors": { "label": "Procesadores", "description": "Procesadores de alta performance para aplicaciones automotivas." },
-      "crossovers": { "label": "Crossovers", "description": "Crossovers para división de frecuencias en sistemas multivia." },
-      "controls": { "label": "Controles", "description": "Controles remotos y periféricos para amplificadores Stetsom." },
-      "powerSupplies": { "label": "Fuentes y cargadores", "description": "Fuentes de alimentación y cargadores para sistemas automotivos exigentes." },
-      "mixers": { "label": "Mesas de sonido", "description": "Mesas de sonido y mezcladoras para profesionales y entusiastas." },
-      "accessories": { "label": "Accesorios", "description": "Accesorios para personalización y rendimiento del sistema." }
+      "amplifiers": {
+        "label": "Amplificadores",
+        "description": "Amplificadores de alta potencia para sistemas automotivos."
+      },
+      "processors": {
+        "label": "Procesadores",
+        "description": "Procesadores de alta performance para aplicaciones automotivas."
+      },
+      "crossovers": {
+        "label": "Crossovers",
+        "description": "Crossovers para división de frecuencias en sistemas multivia."
+      },
+      "controls": {
+        "label": "Controles",
+        "description": "Controles remotos y periféricos para amplificadores Stetsom."
+      },
+      "powerSupplies": {
+        "label": "Fuentes y cargadores",
+        "description": "Fuentes de alimentación y cargadores para sistemas automotivos exigentes."
+      },
+      "mixers": {
+        "label": "Mesas de sonido",
+        "description": "Mesas de sonido y mezcladoras para profesionales y entusiastas."
+      },
+      "accessories": {
+        "label": "Accesorios",
+        "description": "Accesorios para personalización y rendimiento del sistema."
+      }
     }
   },
   "Header": {
@@ -73,6 +94,7 @@
     "filesAvailable": "{count, plural, one {# archivo disponible} other {# archivos disponibles}}",
     "manual": "Acceder al manual del producto",
     "downloadPhotos": "Descargar fotos",
+    "variations": "Variaciones del producto",
     "breadcrumbHome": "Inicio",
     "breadcrumbProducts": "Productos",
     "powerRMS": "Potencia RMS",

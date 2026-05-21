@@ -1,0 +1,20 @@
+/*
+ * CMS-scoped theme overrides.
+ * Applied via className="cms" on the admin layout root.
+ * Remaps shadcn tokens so bg-background, bg-card, border-border, etc.
+ * resolve to CMS values inside the admin, without affecting the public site.
+ */
+.cms {
+  --background: var(--cms-bg);
+  --card: var(--cms-panel);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: var(--cms-panel);
+  --border: var(--cms-border);
+  --input: var(--cms-border);
+  --muted: var(--cms-bg-alt);
+  --sidebar: var(--cms-panel);
+  --sidebar-border: var(--cms-border);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-accent: var(--cms-active-item);
+  --sidebar-accent-foreground: oklch(0.145 0 0);
+}

@@ -1,119 +1,151 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useState } from "react";
+import { useTranslations } from "next-intl";
 
-const SECTOR_KEYS = ['technical', 'warranty', 'commercial', 'partnerships', 'other'] as const
+const SECTOR_KEYS = [
+  "technical",
+  "warranty",
+  "commercial",
+  "partnerships",
+  "other",
+] as const;
 
 export function ContactForm() {
-  const t = useTranslations('Support.contact')
-  const [sent, setSent] = useState(false)
+  const t = useTranslations("Support.contact");
+  const [sent, setSent] = useState(false);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setSent(true)
+    e.preventDefault();
+    setSent(true);
   }
 
   if (sent) {
     return (
-      <div className='max-w-120 rounded border border-border bg-off-white p-8 text-center'>
-        <p className='font-sans-condensed text-section-title font-black uppercase text-brand-dark'>{t('successTitle')}</p>
-        <p className='mt-2 text-sm text-text-subtle'>{t('successDescription')}</p>
+      <div className="max-w-120 rounded border border-border bg-off-white p-8 text-center">
+        <p className="font-sans-condensed text-section-title font-black uppercase text-brand-dark">
+          {t("successTitle")}
+        </p>
+        <p className="mt-2 text-sm text-text-subtle">
+          {t("successDescription")}
+        </p>
         <button
-          type='button'
+          type="button"
           onClick={() => setSent(false)}
-          className='mt-4 font-sans text-sm text-brand underline underline-offset-2'>
-          {t('sendAnother')}
+          className="mt-4 font-sans text-sm text-brand underline underline-offset-2"
+        >
+          {t("sendAnother")}
         </button>
       </div>
-    )
+    );
   }
 
   return (
-    <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div>
-        <label htmlFor='setor' className='mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground'>
-          {t('sectorLabel')}
+        <label
+          htmlFor="setor"
+          className="mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground"
+        >
+          {t("sectorLabel")}
         </label>
         <select
-          id='setor'
-          name='setor'
+          id="setor"
+          name="setor"
           required
-          className='w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark focus:outline-none focus:ring-1 focus:ring-brand'>
-          <option value=''>{t('sectorPlaceholder')}</option>
+          className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark focus:outline-none focus:ring-1 focus:ring-brand"
+        >
+          <option value="">{t("sectorPlaceholder")}</option>
           {SECTOR_KEYS.map((key) => (
-            <option key={key} value={key}>{t(`sectors.${key}`)}</option>
+            <option key={key} value={key}>
+              {t(`sectors.${key}`)}
+            </option>
           ))}
         </select>
       </div>
 
-      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor='name' className='mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground'>
-            {t('nameLabel')}
+          <label
+            htmlFor="name"
+            className="mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground"
+          >
+            {t("nameLabel")}
           </label>
           <input
-            type='text'
-            id='name'
-            name='name'
+            type="text"
+            id="name"
+            name="name"
             required
-            placeholder={t('namePlaceholder')}
-            className='w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand'
+            placeholder={t("namePlaceholder")}
+            className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand"
           />
         </div>
         <div>
-          <label htmlFor='phone' className='mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground'>
-            {t('phoneLabel')}
+          <label
+            htmlFor="phone"
+            className="mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground"
+          >
+            {t("phoneLabel")}
           </label>
           <input
-            type='tel'
-            id='phone'
-            name='phone'
-            placeholder={t('phonePlaceholder')}
-            className='w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand'
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder={t("phonePlaceholder")}
+            className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand"
           />
         </div>
       </div>
 
       <div>
-        <label htmlFor='email' className='mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground'>
-          {t('emailLabel')}
+        <label
+          htmlFor="email"
+          className="mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground"
+        >
+          {t("emailLabel")}
         </label>
         <input
-          type='email'
-          id='email'
-          name='email'
+          type="email"
+          id="email"
+          name="email"
           required
-          placeholder={t('emailPlaceholder')}
-          className='w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand'
+          placeholder={t("emailPlaceholder")}
+          className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand"
         />
       </div>
 
       <div>
-        <label htmlFor='message' className='mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground'>
-          {t('messageLabel')}
+        <label
+          htmlFor="message"
+          className="mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground"
+        >
+          {t("messageLabel")}
         </label>
         <textarea
-          id='message'
-          name='message'
+          id="message"
+          name="message"
           rows={5}
           required
-          placeholder={t('messagePlaceholder')}
-          className='w-full resize-none border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand'
+          placeholder={t("messagePlaceholder")}
+          className="w-full resize-none border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand"
         />
       </div>
 
-      <label className='flex cursor-pointer items-start gap-3'>
+      <label className="flex cursor-pointer items-start gap-3">
         <input
-          type='checkbox'
-          name='privacy'
+          type="checkbox"
+          name="privacy"
           required
-          className='mt-0.5 h-4 w-4 shrink-0 accent-brand'
+          className="mt-0.5 h-4 w-4 shrink-0 accent-brand"
         />
-        <span className='font-sans text-xs text-text-subtle leading-relaxed'>
-          {t.rich('privacyText', {
+        <span className="font-sans text-xs text-text-subtle leading-relaxed">
+          {t.rich("privacyText", {
             privacyLink: (chunks) => (
-              <a href='#' className='font-medium text-brand underline underline-offset-2 hover:text-brand/80'>
+              <a
+                href="#"
+                className="font-medium text-brand underline underline-offset-2 hover:text-brand/80"
+              >
                 {chunks}
               </a>
             ),
@@ -122,14 +154,24 @@ export function ContactForm() {
       </label>
 
       <button
-        type='submit'
-        className='flex w-full items-center justify-center gap-2 bg-brand px-6 py-3.5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-white transition-colors hover:bg-brand/90'>
-        {t('submit')}
-        <svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'>
-          <line x1='5' y1='12' x2='19' y2='12' />
-          <polyline points='12 5 19 12 12 19' />
+        type="submit"
+        className="flex w-full items-center justify-center gap-2 bg-brand px-6 py-3.5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-white transition-colors hover:bg-brand/90"
+      >
+        {t("submit")}
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
         </svg>
       </button>
     </form>
-  )
+  );
 }

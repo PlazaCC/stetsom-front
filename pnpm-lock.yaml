@@ -14,9 +14,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.99.2
         version: 5.100.10(react@19.2.4)
-      axios:
-        specifier: ^1.16.1
-        version: 1.16.1
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -26,9 +23,6 @@ importers:
       dompurify:
         specifier: ^3.4.3
         version: 3.4.3
-      dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
       lucide-react:
         specifier: ^1.8.0
         version: 1.14.0(react@19.2.4)
@@ -81,6 +75,12 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.2.3(@types/react@19.2.14)
+      axios:
+        specifier: ^1.16.1
+        version: 1.16.1
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
       eslint:
         specifier: ^9
         version: 9.39.4(jiti@2.7.0)
@@ -98,7 +98,10 @@ importers:
         version: 2.14.6(@types/node@20.19.41)(typescript@5.9.3)
       orval:
         specifier: ^8.10.0
-        version: 8.10.0(@faker-js/faker@10.4.0)(typescript@5.9.3)
+        version: 8.10.0(@faker-js/faker@10.4.0)(prettier@3.8.3)(typescript@5.9.3)
+      prettier:
+        specifier: ^3.5.3
+        version: 3.8.3
       tailwindcss:
         specifier: ^4
         version: 4.3.0
@@ -3172,6 +3175,11 @@ packages:
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
+
+  prettier@3.8.3:
+    resolution: {integrity: sha512-7igPTM53cGHMW8xWuVTydi2KO233VFiTNyF5hLJqpilHfmn8C8gPf+PS7dUT64YcXFbiMGZxS9pCSxL/Dxm/Jw==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   pretty-ms@9.3.0:
     resolution: {integrity: sha512-gjVS5hOP+M3wMm5nmNOucbIrqudzs9v/57bWRHQWLYklXqoXKrVfYW2W9+glfGsqtPgpiz5WwyEEB+ksXIx3gQ==}
@@ -6836,7 +6844,7 @@ snapshots:
       string-width: 7.2.0
       strip-ansi: 7.2.0
 
-  orval@8.10.0(@faker-js/faker@10.4.0)(typescript@5.9.3):
+  orval@8.10.0(@faker-js/faker@10.4.0)(prettier@3.8.3)(typescript@5.9.3):
     dependencies:
       '@commander-js/extra-typings': 14.0.0(commander@14.0.3)
       '@orval/angular': 8.10.0(@faker-js/faker@10.4.0)(typescript@5.9.3)
@@ -6867,6 +6875,8 @@ snapshots:
       typedoc: 0.28.19(typescript@5.9.3)
       typedoc-plugin-coverage: 4.0.3(typedoc@0.28.19(typescript@5.9.3))
       typedoc-plugin-markdown: 4.11.0(typedoc@0.28.19(typescript@5.9.3))
+    optionalDependencies:
+      prettier: 3.8.3
     transitivePeerDependencies:
       - '@faker-js/faker'
       - supports-color
@@ -6959,6 +6969,8 @@ snapshots:
   powershell-utils@0.1.0: {}
 
   prelude-ls@1.2.1: {}
+
+  prettier@3.8.3: {}
 
   pretty-ms@9.3.0:
     dependencies:

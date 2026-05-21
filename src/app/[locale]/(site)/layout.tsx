@@ -1,12 +1,16 @@
-import Header from '@/components/ui/header'
-import Footer from '@/components/ui/footer'
+import Header from "@/components/ui/header";
+import Footer from "@/components/ui/footer";
 
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
+export default function SiteLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
       <Header />
-      <main className='flex-1'>{children}</main>
+      <main className="flex-1">{children}</main>
       <Footer />
     </>
-  )
+  );
 }
