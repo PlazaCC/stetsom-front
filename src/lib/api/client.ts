@@ -18,6 +18,7 @@ import type {
   LoginCredentials,
   PaginatedResponse,
   Product,
+  Subcategory,
   UpdateAdminUserInput,
 } from "@/lib/api/contracts";
 import { INTERNAL_API_ENDPOINTS } from "@/lib/api/endpoints";
@@ -42,6 +43,13 @@ export async function fetchCatalogCategories(locale?: string) {
   const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
   return fetchJson<Category[]>(
     `${INTERNAL_API_ENDPOINTS.catalogCategories}${suffix}`,
+  );
+}
+
+export async function fetchCatalogSubcategories(locale?: string) {
+  const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
+  return fetchJson<Subcategory[]>(
+    `${INTERNAL_API_ENDPOINTS.catalogSubcategories}${suffix}`,
   );
 }
 

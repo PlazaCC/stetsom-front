@@ -22,6 +22,7 @@ import type {
   ProductDetailPayload,
   SiteAboutPayload,
   SiteHomePayload,
+  Subcategory,
   SupportPayload,
   UpdateAdminUserInput,
 } from "@/lib/api/contracts";
@@ -37,6 +38,7 @@ export interface CmsProvider {
     locale?: string,
   ): Promise<ProductDetailPayload | null>;
   getCatalogCategories(locale?: string): Promise<Category[]>;
+  getCatalogSubcategories(locale?: string): Promise<Subcategory[]>;
   getSiteHomePayload(locale?: string): Promise<SiteHomePayload>;
   getSiteAboutPayload(locale?: string): Promise<SiteAboutPayload>;
   getSupportPayload(locale?: string): Promise<SupportPayload>;

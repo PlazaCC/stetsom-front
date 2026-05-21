@@ -16,7 +16,10 @@ import type {
   CmsProductDetailPayload,
   ProductVariation,
 } from "@/lib/api/contracts";
-import { CATALOG_CATEGORIES, CATALOG_SUBCATEGORIES } from "@/lib/mock/catalog";
+import {
+  useCatalogCategories,
+  useCatalogSubcategories,
+} from "@/hooks/use-catalog";
 import { ArrowLeft, ArrowRight, Check, Package } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -32,7 +35,7 @@ function slugify(text: string): string {
   return text
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 }
@@ -51,6 +54,7 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
       additional_images: [],
       video_url: "",
       launch_date: new Date().toISOString().split("T")[0],
+      launch_time: "00:00",
     };
   }
 
@@ -66,6 +70,7 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
     additional_images: [],
     video_url: detail.product.video_url ?? "",
     launch_date: detail.product.launch_date.split("T")[0],
+    launch_time: "00:00",
   };
 }
 
@@ -157,6 +162,11 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const [files, setFiles] = useState(initial?.files ?? []);
   const [saved, setSaved] = useState(false);
 
+  const categoriesQuery = useCatalogCategories();
+  const subcategoriesQuery = useCatalogSubcategories();
+  const categories = categoriesQuery.data ?? [];
+  const subcategories = subcategoriesQuery.data ?? [];
+
   const steps: AdminStep[] = [1, 2, 3, 4].map((n) => ({
     label: STEP_LABELS[n as Step],
     status: step > n ? "done" : step === n ? "active" : "pending",
@@ -184,10 +194,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const title =
     mode === "create" ? "Novo Produto" : `Editar: ${info.name || "Produto"}`;
 
-  const category = CATALOG_CATEGORIES.find((c) => c.id === info.category_id);
-  const subcategory = CATALOG_SUBCATEGORIES.find(
-    (s) => s.id === info.subcategory_id,
-  );
+  const category = categories.find((c) => c.id === info.category_id);
+  const subcategory = subcategories.find((s) => s.id === info.subcategory_id);
   const activeVariation =
     variations.find((variation) => variation.id === activeVariationId) ??
     variations[0];
@@ -274,7 +282,14 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
       </AdminPanel>
 
       <AdminWizardPage steps={steps} aside={previewAside}>
-        {step === 1 && <ProductWizardStep1 info={info} onChange={updateInfo} />}
+        {step === 1 && (
+          <ProductWizardStep1
+            info={info}
+            categories={categories}
+            subcategories={subcategories}
+            onChange={updateInfo}
+          />
+        )}
 
         {step === 2 && (
           <ProductWizardStepSpecs
@@ -303,6 +318,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
             <ProductWizardStepPublish
               info={info}
               specs={activeSpecs}
+              categoryName={category?.name}
+              subcategoryName={subcategory?.name}
               onInfoChange={(key, value) => updateInfo(key, value)}
             />
           </div>

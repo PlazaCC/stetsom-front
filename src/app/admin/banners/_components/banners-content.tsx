@@ -187,10 +187,10 @@ export function BannersContent({
                   </td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">
                     {banner.locale === "pt-BR"
-                      ? "🇧🇷 PT"
+                      ? "PT"
                       : banner.locale === "en"
-                        ? "🇺🇸 EN"
-                        : "🇪🇸 ES"}
+                        ? "EN"
+                        : "ES"}
                   </td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">
                     {formatDateRange(banner.display_from, banner.display_until)}

@@ -2,6 +2,7 @@ export const INTERNAL_API_ENDPOINTS = {
   catalogPage: "/api/catalog/page",
   catalogProducts: "/api/catalog/products",
   catalogCategories: "/api/catalog/categories",
+  catalogSubcategories: "/api/catalog/subcategories",
   siteHome: "/api/site/home",
   siteAbout: "/api/site/about",
   support: "/api/support",

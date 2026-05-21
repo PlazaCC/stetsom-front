@@ -18,17 +18,22 @@ const STATUS_LABELS: Record<ProductStatus, string> = {
   DISCONTINUED: "Descontinuado",
 };
 
+const LOCALE_LABEL: Record<string, string> = {
+  "pt-BR": "PT",
+  en: "EN",
+  es: "ES",
+};
+
 function LocaleFlags({ locales }: { locales: string[] }) {
-  const flagMap: Record<string, string> = {
-    "pt-BR": "🇧🇷",
-    en: "🇺🇸",
-    es: "🇲🇽",
-  };
   return (
-    <span className="flex gap-0.5">
+    <span className="flex gap-1">
       {locales.map((l) => (
-        <span key={l} title={l}>
-          {flagMap[l] ?? l}
+        <span
+          key={l}
+          title={l}
+          className="rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground"
+        >
+          {LOCALE_LABEL[l] ?? l}
         </span>
       ))}
     </span>

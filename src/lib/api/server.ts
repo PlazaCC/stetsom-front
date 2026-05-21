@@ -72,6 +72,10 @@ export async function getCatalogCategories(locale?: string) {
   return getCmsProvider().getCatalogCategories(locale);
 }
 
+export async function getCatalogSubcategories(locale?: string) {
+  return getCmsProvider().getCatalogSubcategories(locale);
+}
+
 export async function getSiteHomePayload() {
   const locale = await tryGetLocale();
   return getCmsProvider().getSiteHomePayload(locale);

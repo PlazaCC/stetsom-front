@@ -10,13 +10,6 @@ import {
   CATALOG_SUBCATEGORIES,
 } from "@/lib/mock/catalog";
 
-export * from "./cms-audit";
-export * from "./cms-banners";
-export * from "./cms-config";
-export * from "./cms-library";
-export * from "./cms-messages";
-export * from "./cms-users";
-
 const ASSETS = {
   primary: "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
 } as const;

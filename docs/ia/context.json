@@ -2319,6 +2319,30 @@
             ],
             "rationale": "Code review found: proxy checked cookie existence only (bypass risk), client component imported mock array directly, Tab discriminators in Portuguese, list key used index, button missing type=button, conditional classes used template literal instead of cn()",
             "outcome": "Auth guard validates 3-part JWT structure; banners-content no longer bundles mock users array; Tab type uses English identifiers; file list keys are stable; button is explicit; cn() used for tab active state"
+        },
+        {
+            "ts": "2026-05-20T14:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Apply code-review fixes: subcategories API layer, wizard props, time input, locale labels, barrel exports",
+            "files": [
+                "src/lib/api/provider-contract.ts",
+                "src/lib/api/providers/mock-provider.ts",
+                "src/lib/api/providers/remote-provider.ts",
+                "src/lib/api/server.ts",
+                "src/lib/api/client.ts",
+                "src/lib/api/endpoints.ts",
+                "src/hooks/use-catalog.ts",
+                "src/app/api/catalog/subcategories/route.ts",
+                "src/app/admin/_components/product-wizard.tsx",
+                "src/app/admin/_components/product-wizard-step1.tsx",
+                "src/app/admin/_components/product-wizard-step-publish.tsx",
+                "src/app/admin/produtos/page.tsx",
+                "src/app/admin/banners/_components/banners-content.tsx",
+                "src/lib/mock/admin-cms.ts"
+            ],
+            "rationale": "Code review identified: direct mock/catalog imports in admin UI components, uncontrolled time input, emoji flags violating no-emoji rule, redundant barrel exports in admin-cms.ts, and undocumented non-URL-safe base64 in mock token",
+            "outcome": "Subcategories now served via /api/catalog/subcategories with getCatalogSubcategories() in provider contract; wizard uses useCatalogCategories+useCatalogSubcategories hooks; launch_time field added to ProductInfo and controlled; locale labels use text (PT/EN/ES) instead of emoji; barrel exports removed from admin-cms.ts; mock token comment clarifies base64url limitation"
         }
     ]
 }

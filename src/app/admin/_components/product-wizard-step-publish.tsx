@@ -7,24 +7,22 @@ import {
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import type { ProductInfo } from "@/app/admin/_components/product-wizard-step1";
 import type { ProductSpec } from "@/lib/api/contracts";
-import { CATALOG_CATEGORIES, CATALOG_SUBCATEGORIES } from "@/lib/mock/catalog";
 
 interface ProductWizardStepPublishProps {
   info: ProductInfo;
   specs: ProductSpec[];
+  categoryName: string | undefined;
+  subcategoryName: string | undefined;
   onInfoChange: (key: keyof ProductInfo, value: string) => void;
 }
 
 export function ProductWizardStepPublish({
   info,
   specs,
+  categoryName,
+  subcategoryName,
   onInfoChange,
 }: ProductWizardStepPublishProps) {
-  const category = CATALOG_CATEGORIES.find((c) => c.id === info.category_id);
-  const subcategory = CATALOG_SUBCATEGORIES.find(
-    (s) => s.id === info.subcategory_id,
-  );
-
   return (
     <div className="space-y-6">
       <AdminFormSection
@@ -42,7 +40,11 @@ export function ProductWizardStepPublish({
           </div>
           <div>
             <AdminLabel>Horário (opcional)</AdminLabel>
-            <AdminInput type="time" defaultValue="00:00" />
+            <AdminInput
+              type="time"
+              value={info.launch_time}
+              onChange={(e) => onInfoChange("launch_time", e.target.value)}
+            />
           </div>
         </div>
       </AdminFormSection>
@@ -89,11 +91,11 @@ export function ProductWizardStepPublish({
           </div>
           <div>
             <dt className="text-xs text-muted-foreground">Categoria</dt>
-            <dd className="text-foreground">{category?.name ?? "—"}</dd>
+            <dd className="text-foreground">{categoryName ?? "—"}</dd>
           </div>
           <div>
             <dt className="text-xs text-muted-foreground">Linha</dt>
-            <dd className="text-foreground">{subcategory?.name ?? "—"}</dd>
+            <dd className="text-foreground">{subcategoryName ?? "—"}</dd>
           </div>
           <div>
             <dt className="text-xs text-muted-foreground">Especificações</dt>
@@ -107,7 +109,7 @@ export function ProductWizardStepPublish({
             <dt className="text-xs text-muted-foreground">Idiomas</dt>
             <dd className="flex gap-2">
               <span className="rounded bg-muted px-2 py-0.5 text-xs font-medium">
-                🇧🇷 PT-BR
+                PT-BR
               </span>
             </dd>
           </div>

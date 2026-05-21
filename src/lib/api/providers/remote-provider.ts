@@ -22,6 +22,7 @@ import type {
   ProductDetailPayload,
   SiteAboutPayload,
   SiteHomePayload,
+  Subcategory,
   SupportPayload,
   UpdateAdminUserInput,
 } from "@/lib/api/contracts";
@@ -96,6 +97,14 @@ export function createRemoteCmsProvider(): CmsProvider {
       return fetchJson<Category[]>(
         remoteBaseUrl,
         `/catalog/categories${suffix}`,
+      );
+    },
+
+    async getCatalogSubcategories(locale?: string) {
+      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
+      return fetchJson<Subcategory[]>(
+        remoteBaseUrl,
+        `/catalog/subcategories${suffix}`,
       );
     },
 

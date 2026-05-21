@@ -7,8 +7,7 @@ import {
   AdminTextarea,
 } from "@/app/admin/_components/crud/admin-input";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import type { ProductStatus } from "@/lib/api/contracts";
-import { CATALOG_CATEGORIES, CATALOG_SUBCATEGORIES } from "@/lib/mock/catalog";
+import type { Category, ProductStatus, Subcategory } from "@/lib/api/contracts";
 import { ImagePlus, X } from "lucide-react";
 
 export interface ProductInfo {
@@ -23,10 +22,13 @@ export interface ProductInfo {
   additional_images: string[];
   video_url: string;
   launch_date: string;
+  launch_time: string;
 }
 
 interface ProductWizardStep1Props {
   info: ProductInfo;
+  categories: Category[];
+  subcategories: Subcategory[];
   onChange: (key: keyof ProductInfo, value: string | string[]) => void;
 }
 
@@ -81,9 +83,11 @@ function ImageSlot({
 
 export function ProductWizardStep1({
   info,
+  categories,
+  subcategories,
   onChange,
 }: ProductWizardStep1Props) {
-  const subcategories = CATALOG_SUBCATEGORIES.filter(
+  const filteredSubcategories = subcategories.filter(
     (s) => s.category_id === info.category_id,
   );
 
@@ -184,7 +188,7 @@ export function ProductWizardStep1({
                 }}
               >
                 <option value="">Selecione...</option>
-                {CATALOG_CATEGORIES.map((cat) => (
+                {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
                   </option>
@@ -197,12 +201,16 @@ export function ProductWizardStep1({
               <AdminSelect
                 value={info.subcategory_id}
                 onChange={(e) => onChange("subcategory_id", e.target.value)}
-                disabled={!info.category_id || subcategories.length === 0}
+                disabled={
+                  !info.category_id || filteredSubcategories.length === 0
+                }
               >
                 <option value="">
-                  {subcategories.length === 0 ? "Nenhuma" : "Selecione..."}
+                  {filteredSubcategories.length === 0
+                    ? "Nenhuma"
+                    : "Selecione..."}
                 </option>
-                {subcategories.map((sub) => (
+                {filteredSubcategories.map((sub) => (
                   <option key={sub.id} value={sub.id}>
                     {sub.name}
                   </option>

@@ -4,6 +4,7 @@ import {
   fetchCatalogCategories,
   fetchCatalogPage,
   fetchCatalogProducts,
+  fetchCatalogSubcategories,
 } from "@/lib/api/client";
 import type { CatalogProductsQuery } from "@/lib/api/contracts";
 import { useQuery } from "@tanstack/react-query";
@@ -19,6 +20,13 @@ export function useCatalogCategories(locale?: string) {
   return useQuery({
     queryKey: ["catalog", "categories", locale ?? ""],
     queryFn: () => fetchCatalogCategories(locale),
+  });
+}
+
+export function useCatalogSubcategories(locale?: string) {
+  return useQuery({
+    queryKey: ["catalog", "subcategories", locale ?? ""],
+    queryFn: () => fetchCatalogSubcategories(locale),
   });
 }
 

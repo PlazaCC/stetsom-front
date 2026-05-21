@@ -298,6 +298,12 @@ export function createMockCmsProvider(): CmsProvider {
       );
     },
 
+    async getCatalogSubcategories(locale?: string) {
+      return getCatalogSubcategoriesForLocale(locale).sort(
+        (a, b) => a.order - b.order,
+      );
+    },
+
     async getSiteHomePayload(locale?: string): Promise<SiteHomePayload> {
       return {
         hero: getHomeHeroSlides(locale),
@@ -386,7 +392,11 @@ export function createMockCmsProvider(): CmsProvider {
 
       const expiresAt = new Date(Date.now() + 8 * 3600 * 1000).toISOString();
 
-      // MOCK ONLY: unsigned JWT — backend will use jose with a proper secret
+      // MOCK ONLY: unsigned, non-URL-safe base64 token.
+      // Uses standard base64 (may contain +/=/), not base64url.
+      // proxy.ts validates only the 3-part structure (split(".").length === 3),
+      // so this works in mock but do not attempt to decode parts as base64url.
+      // Backend will use jose with HMAC-SHA256 and proper base64url encoding.
       const header = Buffer.from(
         JSON.stringify({ alg: "HS256", typ: "JWT" }),
       ).toString("base64");
