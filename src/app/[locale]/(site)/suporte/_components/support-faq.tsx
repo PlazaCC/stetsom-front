@@ -23,9 +23,7 @@ export async function SupportFAQ({ faq }: Readonly<SupportFAQProps>) {
         <div className="flex flex-col lg:flex-row lg:gap-24">
           <div className="shrink-0 lg:w-80">
             <SectionLabel label={faq.label} title={faq.title} />
-            <p className="mt-2 text-base leading-relaxed text-text-subtle">
-              {t("noAnswer")}
-            </p>
+            <p className="mt-2 text-base text-text-subtle">{t("noAnswer")}</p>
             <Button variant="brand-dark" size="md" className="mt-6">
               {faq.supportButtonLabel}
             </Button>

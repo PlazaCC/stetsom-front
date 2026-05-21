@@ -33,7 +33,7 @@ export function OurFactory({ jobsCta }: OurFactoryProps) {
                   title={jobsCta.title}
                   dark
                 />
-                <p className="text-base text-text-subtle-dark mt-6 leading-[1.7] mb-8">
+                <p className="text-base text-text-subtle-dark mt-6 mb-8">
                   {jobsCta.description}
                 </p>
                 <CTAButton
@@ -52,7 +52,7 @@ export function OurFactory({ jobsCta }: OurFactoryProps) {
                 <h2 className="font-sans-condensed font-black text-display-xl uppercase leading-tight text-white">
                   Nossa Fábrica
                 </h2>
-                <p className="font-sans text-base text-text-subtle-dark leading-relaxed mt-6">
+                <p className="font-sans text-base text-text-subtle-dark mt-6">
                   Localizada no coração de São Paulo, nossa fábrica é equipada
                   com tecnologia de ponta para a manufatura de amplificadores de
                   classe mundial.

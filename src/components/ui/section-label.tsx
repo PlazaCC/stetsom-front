@@ -43,7 +43,7 @@ export function SectionLabel({
       {subtitle && (
         <p
           className={cn(
-            "font-medium text-base leading-relaxed mt-1",
+            "font-medium text-base mt-1",
             dark ? "text-text-subtle-dark" : "text-text-subtle",
           )}
         >

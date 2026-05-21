@@ -177,6 +177,9 @@
   html {
     @apply font-sans;
   }
+  p {
+    @apply leading-snug;
+  }
 }
 
 .hero-carousel-pagination {

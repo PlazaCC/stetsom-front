@@ -17,7 +17,7 @@ export function FaqAccordion({ items }: { items: FAQItem[] }) {
             <span className="font-medium">{q}</span>
           </AccordionTrigger>
           <AccordionContent>
-            <p className="text-sm leading-relaxed text-text-subtle">{a}</p>
+            <p className="text-sm text-text-subtle">{a}</p>
           </AccordionContent>
         </AccordionItem>
       ))}

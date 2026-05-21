@@ -96,7 +96,7 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
               {(slide.label || slide.title) && (
                 <div className="pointer-events-none absolute bottom-0 left-0 z-20 px-6 pb-12 sm:px-8 lg:px-42.5">
                   {slide.label && (
-                    <p className="font-sans-condensed font-medium text-sm leading-none uppercase text-brand">
+                    <p className="font-sans-condensed font-medium text-sm uppercase text-brand">
                       {slide.label}
                     </p>
                   )}

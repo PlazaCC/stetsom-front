@@ -7,7 +7,6 @@ import { CompanyTimeline } from "../_components/company-timeline";
 import { OurFactory } from "../_components/our-factory";
 import { OurFoundations } from "../_components/our-foundations";
 import { QualitySection } from "../_components/quality-section";
-import { RedBanner } from "../_components/red-banner";
 import { SocialFeed } from "../_components/social-feed";
 
 export default async function SobrePage() {
@@ -53,7 +52,7 @@ export default async function SobrePage() {
                     );
                   })}
               </h1>
-              <p className="mt-4 max-w-125 text-base leading-relaxed text-text-subtle-dark">
+              <p className="mt-4 max-w-125 text-base text-text-subtle-dark">
                 {t("heroDescription")}
               </p>
             </div>
@@ -68,7 +67,7 @@ export default async function SobrePage() {
                     key={stat.label}
                     className="border border-white/20 px-4 py-4"
                   >
-                    <p className="font-sans-condensed text-display-sm font-black leading-none text-white">
+                    <p className="font-sans-condensed text-display-sm font-black text-white">
                       {stat.value.replace("+", "")}
                       <span className="text-brand">+</span>
                     </p>
@@ -83,7 +82,6 @@ export default async function SobrePage() {
         </Container>
       </section>
 
-      <RedBanner milestones={aboutPayload.milestones} />
       <QualitySection
         section={aboutPayload.quality}
         values={aboutPayload.values}

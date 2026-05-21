@@ -55,7 +55,7 @@ export function QualitySection({
           <div>
             <SectionLabel label={section.label} title={section.title} />
 
-            <p className="text-base text-text-subtle mt-6 leading-[1.7]">
+            <p className="text-base text-text-subtle mt-6">
               {section.description}
             </p>
 
@@ -65,14 +65,17 @@ export function QualitySection({
 
                 return (
                   <div key={value.id} className="flex gap-4">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold">
-                      <Icon className="h-4 w-4 text-brand" aria-hidden="true" />
+                    <div className="flex h-8 w-8 shrink-0 bg-muted items-center justify-center rounded-md font-bold">
+                      <Icon
+                        className="h-6 w-6 text-brand "
+                        aria-hidden="true"
+                      />
                     </div>
                     <div>
-                      <h3 className="font-sans-condensed font-black text-base uppercase text-brand-dark mb-2">
+                      <h3 className="font-sans-condensed font-black text-lg uppercase text-brand-dark mb-1">
                         {value.title}
                       </h3>
-                      <p className="text-sm text-text-subtle leading-relaxed">
+                      <p className="text-base text-text-subtle">
                         {value.description}
                       </p>
                     </div>
