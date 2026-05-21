@@ -56,6 +56,7 @@ export function AdminTagInput({
           {tag}
           <button
             type="button"
+            aria-label={`Remover tag ${tag}`}
             onClick={(e) => {
               e.stopPropagation();
               removeTag(tag);

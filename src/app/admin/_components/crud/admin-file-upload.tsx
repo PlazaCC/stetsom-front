@@ -35,7 +35,11 @@ export function AdminFileUpload({
   }
 
   function removeFile(index: number) {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setFiles((prev) => {
+      const next = prev.filter((_, i) => i !== index);
+      onUpload?.(next);
+      return next;
+    });
   }
 
   return (
@@ -86,6 +90,7 @@ export function AdminFileUpload({
               </span>
               <button
                 type="button"
+                aria-label="Remover arquivo"
                 onClick={() => removeFile(index)}
                 className="ml-2 shrink-0 text-muted-foreground hover:text-foreground"
               >

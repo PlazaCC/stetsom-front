@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 
 interface AdminConfirmDialogProps {
   open: boolean;
@@ -25,10 +26,22 @@ export function AdminConfirmDialog({
   onConfirm,
   onCancel,
 }: AdminConfirmDialogProps) {
+  useEffect(() => {
+    if (!open) return;
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onCancel();
+    }
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [open, onCancel]);
+
   if (!open) return null;
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-dialog-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay"
       onClick={onCancel}
     >
@@ -36,7 +49,12 @@ export function AdminConfirmDialog({
         className="w-full max-w-sm rounded-[16px] border border-border bg-card p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="font-mono text-lg font-bold text-foreground">{title}</h2>
+        <h2
+          id="confirm-dialog-title"
+          className="font-mono text-lg font-bold text-foreground"
+        >
+          {title}
+        </h2>
         {description && (
           <p className="mt-2 text-sm text-muted-foreground">{description}</p>
         )}

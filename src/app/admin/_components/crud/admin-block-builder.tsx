@@ -204,6 +204,7 @@ function BlockTypeModal({
           </h3>
           <button
             type="button"
+            aria-label="Fechar"
             onClick={onClose}
             className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
           >
@@ -332,6 +333,7 @@ export function AdminBlockBuilder({
                 </span>
                 <button
                   type="button"
+                  aria-label="Remover bloco"
                   onClick={() => removeBlock(block.id)}
                   className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
                 >

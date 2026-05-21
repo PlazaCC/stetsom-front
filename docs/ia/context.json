@@ -2382,6 +2382,32 @@
             ],
             "rationale": "Post code-review corrections: document mock token weakness with task reference, clarify handlePublish stub, replace literal Unicode chars with escape sequences in slugify regex, document PT-BR-only decision for admin CMS",
             "outcome": "All four review items resolved; TSC and ESLint still pass"
+        },
+        {
+            "ts": "2026-05-21T02:10:26Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Fix broken slugify regex in product-wizard — extra chars outside char class caused accents to not be stripped",
+            "files": [
+                "src/app/admin/_components/product-wizard.tsx"
+            ],
+            "rationale": "Regex /[̀-ͯ]̀-ͯ]/g had extra combining chars outside the character class; test proved \"São\" → \"sa-o\" instead of \"sao\"",
+            "outcome": "slugify now correctly converts \"São Paulo ST-4000EQ\" → \"sao-paulo-st-4000eq\" for auto-generated slugs in create mode"
+        },
+        {
+            "ts": "2026-05-21T02:15:57Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Fix all code-review issues: Escape key on dialogs, removeFile notify, aria-labels, env example",
+            "files": [
+                "src/app/admin/_components/crud/admin-confirm-dialog.tsx",
+                "src/app/admin/_components/crud/admin-file-upload.tsx",
+                "src/app/admin/_components/crud/admin-tag-input.tsx",
+                "src/app/admin/_components/crud/admin-block-builder.tsx",
+                ".env.local.example"
+            ],
+            "rationale": "Code-review identified: no Escape handler on modals (WCAG), removeFile not notifying parent, icon-only buttons without aria-label, actual password in .example file",
+            "outcome": "AdminConfirmDialog closes on Escape + has role/aria-modal; removeFile calls onUpload with updated list; all icon buttons have aria-label; .env.local.example uses placeholder"
         }
     ]
 }
