@@ -2304,6 +2304,21 @@
             ],
             "rationale": "Code review identified: /api/admin/* routes bypassing auth guard in proxy.ts, personal email in mock data, hardcoded user id in banner creation, unsafe type assertions, literal diacritics regex, misleading component name",
             "outcome": "Admin API routes now return 401 without cookie; mock email is generic; banner created_by uses mock constant; block data type guards are safe; regex uses unicode escape; AdminTextEditor replaces AdminRichText"
+        },
+        {
+            "ts": "2026-05-20T12:00:00Z",
+            "agent": "claude-sonnet-4-6",
+            "type": "fix",
+            "summary": "Apply code-review fixes: token validation, mock import, Tab type, key stability, type=button, cn()",
+            "files": [
+                "src/proxy.ts",
+                "src/app/admin/banners/_components/banners-content.tsx",
+                "src/app/admin/biblioteca/page.tsx",
+                "src/app/admin/_components/crud/admin-file-upload.tsx",
+                "src/app/admin/produtos/page.tsx"
+            ],
+            "rationale": "Code review found: proxy checked cookie existence only (bypass risk), client component imported mock array directly, Tab discriminators in Portuguese, list key used index, button missing type=button, conditional classes used template literal instead of cn()",
+            "outcome": "Auth guard validates 3-part JWT structure; banners-content no longer bundles mock users array; Tab type uses English identifiers; file list keys are stable; button is explicit; cn() used for tab active state"
         }
     ]
 }

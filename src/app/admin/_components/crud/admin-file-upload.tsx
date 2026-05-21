@@ -78,7 +78,7 @@ export function AdminFileUpload({
         <ul className="space-y-2">
           {files.map((file, index) => (
             <li
-              key={index}
+              key={`${file.name}-${index}`}
               className="flex items-center justify-between rounded-md border border-border bg-card px-3 py-2"
             >
               <span className="truncate text-sm text-foreground">

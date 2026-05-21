@@ -14,7 +14,10 @@ export function proxy(request: NextRequest) {
     const isLoginPage = pathname === "/admin/login";
     if (!isLoginPage) {
       const token = request.cookies.get("admin_token");
-      if (!token) {
+      // MOCK: validate basic token structure (3-part JWT-like); real backend will verify signature with jose
+      const isValidToken =
+        token && token.value.split(".").length === 3 && token.value.length > 10;
+      if (!isValidToken) {
         if (isAdminApi) {
           return NextResponse.json(
             {

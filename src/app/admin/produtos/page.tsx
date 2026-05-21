@@ -162,7 +162,10 @@ export default function AdminProdutos() {
       icon={Package}
       action={
         <AdminActionBar>
-          <button className="rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted">
+          <button
+            type="button"
+            className="rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+          >
             Importar planilha
           </button>
           <Link

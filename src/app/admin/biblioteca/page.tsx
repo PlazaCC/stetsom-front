@@ -7,17 +7,18 @@ import { AdminPagination } from "@/app/admin/_components/crud/admin-pagination";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import { useAdminLibrary } from "@/hooks/use-admin";
 import type { LibraryAsset } from "@/lib/api/contracts";
+import { cn } from "@/lib/utils";
 import { Archive, Check, FileText, Image, type LucideIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
 const PAGE_SIZE = 6;
 
-type Tab = "fotos" | "manuais" | "3d";
+type Tab = "photos" | "manuals" | "3d-models";
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: "fotos", label: "Fotos" },
-  { id: "manuais", label: "Manuais" },
-  { id: "3d", label: "Arquivos 3D" },
+  { id: "photos", label: "Fotos" },
+  { id: "manuals", label: "Manuais" },
+  { id: "3d-models", label: "Arquivos 3D" },
 ];
 
 function formatBytes(bytes: number): string {
@@ -148,7 +149,7 @@ function FileTable({ assets }: { assets: LibraryAsset[] }) {
 }
 
 export default function AdminBibliotecaPage() {
-  const [activeTab, setActiveTab] = useState<Tab>("fotos");
+  const [activeTab, setActiveTab] = useState<Tab>("photos");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const libraryQuery = useAdminLibrary();
@@ -159,9 +160,9 @@ export default function AdminBibliotecaPage() {
     return allAssets.filter((asset) => {
       const matchesSearch = !q || asset.name.toLowerCase().includes(q);
       const matchesTab =
-        activeTab === "fotos"
+        activeTab === "photos"
           ? asset.type === "IMAGE"
-          : activeTab === "manuais"
+          : activeTab === "manuals"
             ? asset.type === "PDF"
             : asset.type === "MODEL3D";
       return matchesSearch && matchesTab;
@@ -188,19 +189,19 @@ export default function AdminBibliotecaPage() {
     Tab,
     { accept: string; label: string; description: string; icon: LucideIcon }
   > = {
-    fotos: {
+    photos: {
       accept: "image/*",
       label: "Clique ou arraste imagens para a biblioteca",
       description: "PNG, JPG, WebP são aceitos",
       icon: Image,
     },
-    manuais: {
+    manuals: {
       accept: ".pdf",
       label: "Clique ou arraste PDFs para a biblioteca",
       description: "Apenas arquivos PDF",
       icon: FileText,
     },
-    "3d": {
+    "3d-models": {
       accept: ".glb,.gltf,.obj,.fbx",
       label: "Clique ou arraste modelos 3D para a biblioteca",
       description: "GLB, GLTF, OBJ ou FBX",
@@ -235,11 +236,12 @@ export default function AdminBibliotecaPage() {
             key={tab.id}
             type="button"
             onClick={() => handleTab(tab.id)}
-            className={`px-4 py-2.5 text-sm font-medium transition-colors ${
+            className={cn(
+              "px-4 py-2.5 text-sm font-medium transition-colors",
               activeTab === tab.id
                 ? "border-b-2 border-brand text-foreground"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
+                : "text-muted-foreground hover:text-foreground",
+            )}
           >
             {tab.label}
           </button>
@@ -256,7 +258,7 @@ export default function AdminBibliotecaPage() {
         />
       </AdminFormSection>
 
-      {activeTab === "fotos" ? (
+      {activeTab === "photos" ? (
         paginatedAssets.length === 0 ? (
           <div className="flex items-center justify-center rounded-lg border border-dashed border-border py-12">
             <p className="text-sm text-muted-foreground">
