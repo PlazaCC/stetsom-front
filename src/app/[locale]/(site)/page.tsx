@@ -1,9 +1,9 @@
-import { getSiteHomePayload } from '@/lib/api/server';
-import { Faq } from './_components/faq';
-import { FeaturedProducts } from './_components/featured-products';
-import HeroCarousel from './_components/hero-carousel';
-import { OurHistory } from './_components/our-history';
-import { SocialFeed } from './_components/social-feed';
+import { getSiteHomePayload } from "@/lib/api/server";
+import { Faq } from "./_components/faq";
+import { FeaturedProducts } from "./_components/featured-products";
+import HeroCarousel from "./_components/hero-carousel";
+import { OurHistory } from "./_components/our-history";
+import { SocialFeed } from "./_components/social-feed";
 
 export default async function Home() {
   const homePayload = await getSiteHomePayload();

@@ -1,10 +1,10 @@
-import { getSupportPayload } from '@/lib/api/server';
-import { SupportCards } from './_components/support-cards';
-import { SupportContact } from './_components/support-contact';
-import { SupportDocumentation } from './_components/support-documentation';
-import { SupportFAQ } from './_components/support-faq';
-import { SupportHero } from './_components/support-hero';
-import { SupportServiceCenters } from './_components/support-service-centers';
+import { getSupportPayload } from "@/lib/api/server";
+import { SupportCards } from "./_components/support-cards";
+import { SupportContact } from "./_components/support-contact";
+import { SupportDocumentation } from "./_components/support-documentation";
+import { SupportFAQ } from "./_components/support-faq";
+import { SupportHero } from "./_components/support-hero";
+import { SupportServiceCenters } from "./_components/support-service-centers";
 
 export default async function SuportePage() {
   const supportPayload = await getSupportPayload();

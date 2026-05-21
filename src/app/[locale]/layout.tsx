@@ -15,10 +15,10 @@ export async function generateMetadata({
   params,
 }: LocaleLayoutProps): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'Meta' });
+  const t = await getTranslations({ locale, namespace: "Meta" });
   return {
-    title: t('homeTitle'),
-    description: t('homeDescription'),
+    title: t("homeTitle"),
+    description: t("homeDescription"),
   };
 }
 

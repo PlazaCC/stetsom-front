@@ -14,7 +14,7 @@ const ASSETS = {
   primary: "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
 } as const;
 
-const NOW = '2026-05-12T00:00:00.000Z';
+const NOW = "2026-05-12T00:00:00.000Z";
 
 export function buildCmsProductDetail(
   id: string,
@@ -78,9 +78,9 @@ export const ADMIN_DASHBOARD_PAYLOAD: AdminDashboardPayload = {
       timestamp: NOW,
     },
     {
-      id: 'activity-3',
-      title: 'Status alterado',
-      description: 'ST-350.4 MINI marcado como descontinuado.',
+      id: "activity-3",
+      title: "Status alterado",
+      description: "ST-350.4 MINI marcado como descontinuado.",
       timestamp: NOW,
     },
   ],

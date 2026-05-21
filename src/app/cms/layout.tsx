@@ -1,4 +1,4 @@
-import QueryProvider from '@/components/query-provider';
+import QueryProvider from "@/components/query-provider";
 
 export default function CMSLayout({
   children,

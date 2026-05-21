@@ -1,5 +1,5 @@
-import type { ApiErrorPayload, ProductStatus } from '@/lib/api/contracts';
-import { NextResponse } from 'next/server';
+import type { ApiErrorPayload, ProductStatus } from "@/lib/api/contracts";
+import { NextResponse } from "next/server";
 
 export class HttpError extends Error {
   readonly status: number;
@@ -31,7 +31,7 @@ export function parsePositiveInt(
 
 export function parseStatus(
   value: string | null,
-): ProductStatus | 'ALL' | undefined {
+): ProductStatus | "ALL" | undefined {
   if (!value) {
     return undefined;
   }
@@ -39,9 +39,9 @@ export function parseStatus(
   const normalized = value.toUpperCase();
 
   if (
-    normalized === 'ACTIVE' ||
-    normalized === 'DISCONTINUED' ||
-    normalized === 'ALL'
+    normalized === "ACTIVE" ||
+    normalized === "DISCONTINUED" ||
+    normalized === "ALL"
   ) {
     return normalized;
   }
@@ -63,8 +63,8 @@ export function toErrorResponse(error: unknown) {
 
   const payload: ApiErrorPayload = {
     error: {
-      code: 'INTERNAL_SERVER_ERROR',
-      message: 'Unexpected server error',
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Unexpected server error",
     },
   };
 

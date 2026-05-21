@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 interface SectionLabelProps {
   label: string;
@@ -16,15 +16,15 @@ export function SectionLabel({
   className,
 }: SectionLabelProps) {
   return (
-    <div className={cn('flex flex-col gap-1', className)}>
-      <div className='flex items-center gap-2'>
+    <div className={cn("flex flex-col gap-1", className)}>
+      <div className="flex items-center gap-2">
         <div
-          className={cn('w-6 h-px shrink-0', dark ? 'bg-brand' : 'bg-brand')}
+          className={cn("w-6 h-px shrink-0", dark ? "bg-brand" : "bg-brand")}
         />
         <span
           className={cn(
-            'font-sans-condensed font-normal text-base uppercase leading-none',
-            dark ? 'text-brand' : 'text-brand',
+            "font-sans-condensed font-normal text-base uppercase leading-none",
+            dark ? "text-brand" : "text-brand",
           )}
         >
           {label}
@@ -33,8 +33,8 @@ export function SectionLabel({
       {title && (
         <div
           className={cn(
-            'font-sans-condensed font-black text-display-sm uppercase leading-none mt-0.5 whitespace-pre-line',
-            dark ? 'text-white' : 'text-brand-dark',
+            "font-sans-condensed font-black text-display-sm uppercase leading-none mt-0.5 whitespace-pre-line",
+            dark ? "text-white" : "text-brand-dark",
           )}
         >
           {title}
@@ -43,8 +43,8 @@ export function SectionLabel({
       {subtitle && (
         <p
           className={cn(
-            'font-medium text-base mt-1',
-            dark ? 'text-text-subtle-dark' : 'text-text-subtle',
+            "font-medium text-base mt-1",
+            dark ? "text-text-subtle-dark" : "text-text-subtle",
           )}
         >
           {subtitle}

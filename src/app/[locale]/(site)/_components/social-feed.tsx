@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
@@ -6,9 +6,9 @@ import Image from "next/image";
 import "swiper/css";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { Container } from '@/components/ui/container';
-import { SectionLabel } from '@/components/ui/section-label';
-import type { SocialFeedSection } from '@/lib/api/contracts';
+import { Container } from "@/components/ui/container";
+import { SectionLabel } from "@/components/ui/section-label";
+import type { SocialFeedSection } from "@/lib/api/contracts";
 
 interface SocialFeedProps {
   section: SocialFeedSection;
@@ -17,7 +17,7 @@ interface SocialFeedProps {
 export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
   const locale = useLocale();
   const dateFormatter = new Intl.DateTimeFormat(locale, {
-    dateStyle: 'medium',
+    dateStyle: "medium",
   });
 
   return (
@@ -38,7 +38,7 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
           </Link>
         </div>
         <Swiper
-          slidesPerView='auto'
+          slidesPerView="auto"
           spaceBetween={24}
           grabCursor
           className="w-full overflow-hidden"
@@ -58,8 +58,8 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
                       src={post.media_url}
                       muted
                       playsInline
-                      preload='metadata'
-                      className='h-full w-full object-cover'
+                      preload="metadata"
+                      className="h-full w-full object-cover"
                       style={{ opacity: post.opacity ?? 1 }}
                     />
                   ) : (
@@ -67,21 +67,21 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
                       src={post.media_url}
                       alt={post.caption}
                       fill
-                      className='object-cover'
+                      className="object-cover"
                       style={{ opacity: post.opacity ?? 1 }}
                     />
                   )}
                 </div>
-                <div className='flex flex-col gap-1'>
-                  <span className='text-2xs font-sans-condensed font-semibold uppercase text-muted-foreground'>
+                <div className="flex flex-col gap-1">
+                  <span className="text-2xs font-sans-condensed font-semibold uppercase text-muted-foreground">
                     @{post.username}
                   </span>
-                  <span className='text-sm text-foreground'>
+                  <span className="text-sm text-foreground">
                     {post.caption}
                   </span>
                   <time
                     dateTime={post.timestamp}
-                    className='text-2xs text-muted-foreground'
+                    className="text-2xs text-muted-foreground"
                   >
                     {dateFormatter.format(new Date(post.timestamp))}
                   </time>

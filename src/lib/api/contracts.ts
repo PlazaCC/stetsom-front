@@ -1,15 +1,15 @@
-export type Locale = 'pt-BR' | 'en' | 'es';
+export type Locale = "pt-BR" | "en" | "es";
 
 export type ISODateString = string;
 
-export type ProductStatus = 'ACTIVE' | 'DISCONTINUED';
+export type ProductStatus = "ACTIVE" | "DISCONTINUED";
 
 export type ProductFileType =
-  | 'MANUAL'
-  | 'CATALOG'
-  | 'CERTIFICATE'
-  | 'IMAGE'
-  | 'OTHER';
+  | "MANUAL"
+  | "CATALOG"
+  | "CERTIFICATE"
+  | "IMAGE"
+  | "OTHER";
 
 export type ProductSpec = {
   id: string;
@@ -67,13 +67,13 @@ export type Product = {
 export type ImageBlockData = {
   images: string[];
   caption?: string;
-  layout?: 'default' | 'grid' | 'carousel' | 'single';
+  layout?: "default" | "grid" | "carousel" | "single";
 };
 
 export type TextBlockData = {
   title?: string;
   content: string;
-  align?: 'left' | 'center' | 'right';
+  align?: "left" | "center" | "right";
 };
 
 export type VideoBlockData = {
@@ -103,11 +103,11 @@ type ProductBlockBase = {
 };
 
 export type ProductBlock =
-  | (ProductBlockBase & { type: 'IMAGE'; data: ImageBlockData })
-  | (ProductBlockBase & { type: 'TEXT'; data: TextBlockData })
-  | (ProductBlockBase & { type: 'VIDEO'; data: VideoBlockData })
-  | (ProductBlockBase & { type: 'HTML'; data: HtmlBlockData })
-  | (ProductBlockBase & { type: 'MODEL3D'; data: Model3dBlockData });
+  | (ProductBlockBase & { type: "IMAGE"; data: ImageBlockData })
+  | (ProductBlockBase & { type: "TEXT"; data: TextBlockData })
+  | (ProductBlockBase & { type: "VIDEO"; data: VideoBlockData })
+  | (ProductBlockBase & { type: "HTML"; data: HtmlBlockData })
+  | (ProductBlockBase & { type: "MODEL3D"; data: Model3dBlockData });
 
 export type ProductFile = {
   id: string;
@@ -173,7 +173,7 @@ export type FeaturedTab = {
   categorySlug?: string;
 };
 
-export type SocialMediaType = 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM';
+export type SocialMediaType = "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
 
 export type SocialMediaPost = {
   id: string;
@@ -206,7 +206,7 @@ export type TimelineEvent = {
 
 export type AboutValue = {
   id: string;
-  icon: 'zap' | 'shield-check' | 'rocket';
+  icon: "zap" | "shield-check" | "rocket";
   title: string;
   description: string;
 };
@@ -403,7 +403,7 @@ export type CmsProductsPayload = {
 export type CatalogProductsQuery = {
   q?: string;
   category?: string;
-  status?: ProductStatus | 'ALL';
+  status?: ProductStatus | "ALL";
   page?: number;
   pageSize?: number;
   locale?: string;
@@ -411,7 +411,7 @@ export type CatalogProductsQuery = {
 
 export type CmsProductsQuery = {
   q?: string;
-  status?: ProductStatus | 'ALL';
+  status?: ProductStatus | "ALL";
   page?: number;
   pageSize?: number;
 };

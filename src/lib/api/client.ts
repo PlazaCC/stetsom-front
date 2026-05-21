@@ -27,9 +27,9 @@ import { buildSearchParams } from "@/lib/api/query-utils";
 async function fetchJson<T>(path: string): Promise<T> {
   const response = await fetch(path, {
     headers: {
-      Accept: 'application/json',
+      Accept: "application/json",
     },
-    cache: 'no-store',
+    cache: "no-store",
   });
 
   if (!response.ok) {
@@ -40,7 +40,7 @@ async function fetchJson<T>(path: string): Promise<T> {
 }
 
 export async function fetchCatalogCategories(locale?: string) {
-  const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : '';
+  const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
   return fetchJson<Category[]>(
     `${INTERNAL_API_ENDPOINTS.catalogCategories}${suffix}`,
   );
@@ -54,7 +54,7 @@ export async function fetchCatalogSubcategories(locale?: string) {
 }
 
 export async function fetchCatalogPage(locale?: string) {
-  const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : '';
+  const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
   return fetchJson<CatalogPagePayload>(
     `${INTERNAL_API_ENDPOINTS.catalogPage}${suffix}`,
   );

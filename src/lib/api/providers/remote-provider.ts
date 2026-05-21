@@ -29,7 +29,7 @@ import type {
 import type { CmsProvider } from "@/lib/api/provider-contract";
 import { buildSearchParams } from "@/lib/api/query-utils";
 
-const DEFAULT_REMOTE_BASE = 'http://localhost:3333';
+const DEFAULT_REMOTE_BASE = "http://localhost:3333";
 
 async function fetchJson<T>(
   baseUrl: string,
@@ -42,7 +42,7 @@ async function fetchJson<T>(
       Accept: "application/json",
       ...init?.headers,
     },
-    cache: 'no-store',
+    cache: "no-store",
   });
 
   if (!response.ok) {
@@ -57,11 +57,11 @@ async function fetchJson<T>(
 
 export function createRemoteCmsProvider(): CmsProvider {
   const remoteBaseUrl =
-    process.env.CMS_API_BASE_URL?.replace(/\/$/, '') ?? DEFAULT_REMOTE_BASE;
+    process.env.CMS_API_BASE_URL?.replace(/\/$/, "") ?? DEFAULT_REMOTE_BASE;
 
   return {
     async getCatalogPagePayload(locale?: string) {
-      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : '';
+      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
       return fetchJson<CatalogPagePayload>(
         remoteBaseUrl,
         `/catalog/page${suffix}`,
@@ -85,7 +85,7 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async getCatalogProductDetail(slug: string, locale?: string) {
-      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : '';
+      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
       return fetchJson<ProductDetailPayload>(
         remoteBaseUrl,
         `/catalog/products/${slug}${suffix}`,
@@ -93,7 +93,7 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async getCatalogCategories(locale?: string) {
-      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : '';
+      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
       return fetchJson<Category[]>(
         remoteBaseUrl,
         `/catalog/categories${suffix}`,
@@ -109,24 +109,24 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async getSiteHomePayload(locale?: string) {
-      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : '';
+      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
       return fetchJson<SiteHomePayload>(remoteBaseUrl, `/site/home${suffix}`);
     },
 
     async getSiteAboutPayload(locale?: string) {
-      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : '';
+      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
       return fetchJson<SiteAboutPayload>(remoteBaseUrl, `/site/about${suffix}`);
     },
 
     async getSupportPayload(locale?: string) {
-      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : '';
+      const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
       return fetchJson<SupportPayload>(remoteBaseUrl, `/support${suffix}`);
     },
 
     async getAdminDashboardPayload() {
       return fetchJson<AdminDashboardPayload>(
         remoteBaseUrl,
-        '/admin/dashboard',
+        "/admin/dashboard",
       );
     },
 

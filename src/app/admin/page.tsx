@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useAdminDashboard } from "@/hooks/use-admin";
 import { Image, Mail, Package, Plus, Upload } from "lucide-react";

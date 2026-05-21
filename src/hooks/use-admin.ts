@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   createAdminUser,
@@ -24,7 +24,7 @@ import { useRouter } from "next/navigation";
 
 export function useAdminDashboard() {
   return useQuery({
-    queryKey: ['admin', 'dashboard'],
+    queryKey: ["admin", "dashboard"],
     queryFn: fetchAdminDashboard,
   });
 }

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useState } from "react";
 
 export function useCatalogFilters() {
   const searchParams = useSearchParams();
@@ -10,8 +10,8 @@ export function useCatalogFilters() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const activeCategory = searchParams.get('category') || 'todos';
-  const search = searchParams.get('q') || '';
+  const activeCategory = searchParams.get("category") || "todos";
+  const search = searchParams.get("q") || "";
 
   const pushParams = useCallback(
     (updater: (p: URLSearchParams) => void) => {
@@ -26,8 +26,8 @@ export function useCatalogFilters() {
   const setActiveCategory = useCallback(
     (slug: string) => {
       pushParams((p) => {
-        if (slug === 'todos') p.delete('category');
-        else p.set('category', slug);
+        if (slug === "todos") p.delete("category");
+        else p.set("category", slug);
       });
     },
     [pushParams],
@@ -36,8 +36,8 @@ export function useCatalogFilters() {
   const setSearch = useCallback(
     (q: string) => {
       pushParams((p) => {
-        if (q) p.set('q', q);
-        else p.delete('q');
+        if (q) p.set("q", q);
+        else p.delete("q");
       });
     },
     [pushParams],
