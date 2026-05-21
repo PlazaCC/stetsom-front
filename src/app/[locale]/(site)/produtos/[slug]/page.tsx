@@ -21,7 +21,7 @@ function toImageList(data: Record<string, unknown>): string[] {
   }
 
   return images.filter(
-    (item): item is string => typeof item === "string" && item.length > 0,
+    (item): item is string => typeof item === 'string' && item.length > 0,
   );
 }
 
@@ -30,7 +30,7 @@ export default async function ProdutoDetalhePage(props: ProductPageProps) {
   const { variation } = await props.searchParams;
   const [payload, t] = await Promise.all([
     getCatalogProductDetail(slug),
-    getTranslations("ProductDetail"),
+    getTranslations('ProductDetail'),
   ]);
 
   if (!payload) {
@@ -39,7 +39,7 @@ export default async function ProdutoDetalhePage(props: ProductPageProps) {
 
   const { product, category, blocks, files, relatedProducts } = payload;
   const galleryImagesFromBlocks = blocks.flatMap((block) =>
-    block.type === "IMAGE" ? toImageList(block.data) : [],
+    block.type === 'IMAGE' ? toImageList(block.data) : [],
   );
   const galleryImages = (
     galleryImagesFromBlocks.length
@@ -62,8 +62,8 @@ export default async function ProdutoDetalhePage(props: ProductPageProps) {
     .slice(0, 3);
 
   const breadcrumbItems: BreadcrumbItem[] = [
-    { label: t("breadcrumbHome"), href: "/" },
-    { label: t("breadcrumbProducts"), href: "/produtos" },
+    { label: t('breadcrumbHome'), href: '/' },
+    { label: t('breadcrumbProducts'), href: '/produtos' },
     {
       label: category.name,
       href: `/produtos?category=${encodeURIComponent(category.slug)}`,
@@ -74,61 +74,61 @@ export default async function ProdutoDetalhePage(props: ProductPageProps) {
   return (
     <>
       {/* PRODUCT PREVIEW — image left + info right */}
-      <section className="bg-card py-6 lg:py-8">
+      <section className='bg-card py-6 lg:py-8'>
         <Container>
           <Breadcrumb items={breadcrumbItems} />
 
-          <div className="mt-6 flex flex-col lg:flex-row lg:gap-12 lg:items-start">
+          <div className='mt-6 flex flex-col lg:flex-row lg:gap-12 lg:items-start'>
             {/* Left: main image */}
-            <div className="flex flex-col gap-4 lg:w-111.75 shrink-0">
-              <div className="relative w-full aspect-[4/3] lg:h-89.5 border border-border rounded-2xl overflow-hidden bg-card flex items-center justify-center">
+            <div className='flex flex-col gap-4 lg:w-111.75 shrink-0'>
+              <div className='relative w-full aspect-[4/3] lg:h-89.5 border border-border rounded-2xl overflow-hidden bg-card flex items-center justify-center'>
                 <Image
                   src={product.thumbnail_url}
                   alt={product.name}
                   fill
                   priority
-                  sizes="(max-width: 1024px) 100vw, 447px"
-                  className="object-contain p-6"
+                  sizes='(max-width: 1024px) 100vw, 447px'
+                  className='object-contain p-6'
                 />
               </div>
 
-              <div className="flex items-center gap-3 overflow-x-auto pb-1">
+              <div className='flex items-center gap-3 overflow-x-auto pb-1'>
                 {galleryImages.map((image, index) => (
                   <button
                     key={`${image}-${index}`}
-                    type="button"
-                    className="relative h-19 w-19 shrink-0 overflow-hidden rounded border border-border bg-card"
+                    type='button'
+                    className='relative h-19 w-19 shrink-0 overflow-hidden rounded border border-border bg-card'
                   >
                     <Image
                       src={image}
-                      alt={t("thumbnail", {
+                      alt={t('thumbnail', {
                         name: product.name,
                         index: index + 1,
                       })}
                       fill
-                      sizes="72px"
-                      className="object-cover"
+                      sizes='72px'
+                      className='object-cover'
                     />
                   </button>
                 ))}
               </div>
 
               {files.length > 0 && (
-                <p className="text-2xs font-sans uppercase text-muted-foreground tracking-wide">
-                  {t("filesAvailable", { count: files.length })}
+                <p className='text-2xs font-sans uppercase text-muted-foreground tracking-wide'>
+                  {t('filesAvailable', { count: files.length })}
                 </p>
               )}
             </div>
 
             {/* Right: product info */}
-            <div className="flex-1 mt-6 lg:mt-0 lg:max-w-119">
-              <p className="font-sans-condensed text-2xs font-black uppercase text-brand">
+            <div className='flex-1 mt-6 lg:mt-0 lg:max-w-119'>
+              <p className='font-sans-condensed text-2xs font-black uppercase text-brand'>
                 {category.name}
               </p>
-              <h1 className="mt-2 font-sans-condensed text-4xl lg:text-display-sm font-black uppercase leading-none text-brand-dark">
+              <h1 className='mt-2 font-sans-condensed text-4xl lg:text-display-sm font-black uppercase leading-none text-brand-dark'>
                 {product.name}
               </h1>
-              <p className="mt-4 text-sm lg:text-base text-text-subtle">
+              <p className='mt-4 text-sm lg:text-base text-text-subtle'>
                 {product.description}
               </p>
 
@@ -178,20 +178,20 @@ export default async function ProdutoDetalhePage(props: ProductPageProps) {
                 ))}
               </div>
 
-              <div className="mt-5 flex flex-wrap gap-3">
+              <div className='mt-5 flex flex-wrap gap-3'>
                 {manualFile && (
                   <Link
                     href={manualFile.file_url}
-                    className="inline-flex h-10 items-center rounded-sm bg-brand px-5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-white transition-colors hover:bg-brand/90"
+                    className='inline-flex h-10 items-center rounded-sm bg-brand px-5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-white transition-colors hover:bg-brand/90'
                   >
-                    {t("manual")}
+                    {t('manual')}
                   </Link>
                 )}
                 <button
-                  type="button"
-                  className="inline-flex h-10 items-center rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold uppercase tracking-[0.8px] text-brand-dark"
+                  type='button'
+                  className='inline-flex h-10 items-center rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold uppercase tracking-[0.8px] text-brand-dark'
                 >
-                  {t("downloadPhotos")}
+                  {t('downloadPhotos')}
                 </button>
               </div>
             </div>

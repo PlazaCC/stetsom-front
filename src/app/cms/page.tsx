@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useCmsProducts } from "@/hooks/use-cms";
-import type { ProductStatus } from "@/lib/api/contracts";
-import { useMemo, useState } from "react";
+import { useCmsProducts } from '@/hooks/use-cms';
+import type { ProductStatus } from '@/lib/api/contracts';
+import { useMemo, useState } from 'react';
 
 type ProductOverride = {
   name: string;
@@ -10,13 +10,13 @@ type ProductOverride = {
 };
 
 export default function CMSHome() {
-  const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"ALL" | ProductStatus>(
-    "ALL",
+  const [query, setQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'ALL' | ProductStatus>(
+    'ALL',
   );
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [draftName, setDraftName] = useState("");
-  const [draftStatus, setDraftStatus] = useState<ProductStatus>("ACTIVE");
+  const [draftName, setDraftName] = useState('');
+  const [draftStatus, setDraftStatus] = useState<ProductStatus>('ACTIVE');
   const [overrides, setOverrides] = useState<Record<string, ProductOverride>>(
     {},
   );
@@ -49,8 +49,8 @@ export default function CMSHome() {
 
   function cancelEdit() {
     setEditingId(null);
-    setDraftName("");
-    setDraftStatus("ACTIVE");
+    setDraftName('');
+    setDraftStatus('ACTIVE');
   }
 
   function saveEdit(id: string) {
@@ -78,9 +78,9 @@ export default function CMSHome() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       <header>
-        <h1 className="font-sans-condensed text-4xl font-black uppercase text-brand-dark">
+        <h1 className='font-sans-condensed text-4xl font-black uppercase text-brand-dark'>
           {cmsProducts.data.title}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -99,13 +99,13 @@ export default function CMSHome() {
         <select
           value={statusFilter}
           onChange={(event) =>
-            setStatusFilter(event.target.value as "ALL" | ProductStatus)
+            setStatusFilter(event.target.value as 'ALL' | ProductStatus)
           }
           className="h-10 rounded border border-input px-3 text-sm outline-none"
         >
-          <option value="ALL">Todos os status</option>
-          <option value="ACTIVE">Ativo</option>
-          <option value="DISCONTINUED">Descontinuado</option>
+          <option value='ALL'>Todos os status</option>
+          <option value='ACTIVE'>Ativo</option>
+          <option value='DISCONTINUED'>Descontinuado</option>
         </select>
 
         <span className="text-xs uppercase text-muted-foreground md:ml-auto">
@@ -117,11 +117,11 @@ export default function CMSHome() {
         <table className="w-full text-left text-sm">
           <thead className="bg-muted text-xs uppercase text-muted-foreground">
             <tr>
-              <th className="px-4 py-3">Nome</th>
-              <th className="px-4 py-3">Categoria</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Atualizado em</th>
-              <th className="px-4 py-3 text-right">Acoes</th>
+              <th className='px-4 py-3'>Nome</th>
+              <th className='px-4 py-3'>Categoria</th>
+              <th className='px-4 py-3'>Status</th>
+              <th className='px-4 py-3'>Atualizado em</th>
+              <th className='px-4 py-3 text-right'>Acoes</th>
             </tr>
           </thead>
           <tbody>
@@ -138,7 +138,7 @@ export default function CMSHome() {
                         className="h-9 w-full rounded border border-input px-2 text-sm outline-none"
                       />
                     ) : (
-                      <p className="font-medium text-brand-dark">{row.name}</p>
+                      <p className='font-medium text-brand-dark'>{row.name}</p>
                     )}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
@@ -153,8 +153,8 @@ export default function CMSHome() {
                         }
                         className="h-9 rounded border border-input px-2 text-sm outline-none"
                       >
-                        <option value="ACTIVE">Ativo</option>
-                        <option value="DISCONTINUED">Descontinuado</option>
+                        <option value='ACTIVE'>Ativo</option>
+                        <option value='DISCONTINUED'>Descontinuado</option>
                       </select>
                     ) : (
                       <span
@@ -173,10 +173,10 @@ export default function CMSHome() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     {isEditing ? (
-                      <div className="inline-flex gap-2">
+                      <div className='inline-flex gap-2'>
                         <button
                           onClick={() => saveEdit(row.id)}
-                          className="rounded bg-brand px-3 py-1.5 text-xs font-semibold uppercase text-white"
+                          className='rounded bg-brand px-3 py-1.5 text-xs font-semibold uppercase text-white'
                         >
                           Salvar
                         </button>

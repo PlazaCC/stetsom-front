@@ -4,7 +4,7 @@ export function buildSearchParams(
   const search = new URLSearchParams();
 
   Object.entries(params).forEach(([key, value]) => {
-    if (value === undefined || value === "") {
+    if (value === undefined || value === '') {
       return;
     }
 
@@ -12,5 +12,5 @@ export function buildSearchParams(
   });
 
   const query = search.toString();
-  return query ? `?${query}` : "";
+  return query ? `?${query}` : '';
 }

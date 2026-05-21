@@ -2,9 +2,9 @@ import type {
   CatalogProductsQuery,
   CmsProductsQuery,
   ProductStatus,
-} from "@/lib/api/contracts";
-import { getCmsProvider } from "@/lib/api/provider";
-import { getLocale } from "next-intl/server";
+} from '@/lib/api/contracts';
+import { getCmsProvider } from '@/lib/api/provider';
+import { getLocale } from 'next-intl/server';
 
 function normalizePage(value: number | undefined): number {
   if (!value || Number.isNaN(value) || value < 1) {
@@ -23,13 +23,13 @@ function normalizePageSize(value: number | undefined): number {
 }
 
 function normalizeStatus(
-  value: ProductStatus | "ALL" | undefined,
-): ProductStatus | "ALL" | undefined {
+  value: ProductStatus | 'ALL' | undefined,
+): ProductStatus | 'ALL' | undefined {
   if (!value) {
     return undefined;
   }
 
-  if (value === "ACTIVE" || value === "DISCONTINUED" || value === "ALL") {
+  if (value === 'ACTIVE' || value === 'DISCONTINUED' || value === 'ALL') {
     return value;
   }
 

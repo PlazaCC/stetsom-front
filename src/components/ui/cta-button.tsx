@@ -1,13 +1,13 @@
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { ArrowRight, ExternalLink } from "lucide-react";
-import Link from "next/link";
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { ArrowRight, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
 
 interface CTAButtonProps {
   href: string;
   label: string;
-  variant?: "brand" | "brand-dark";
-  size?: "sm" | "md";
+  variant?: 'brand' | 'brand-dark';
+  size?: 'sm' | 'md';
   external?: boolean;
   className?: string;
 }
@@ -15,14 +15,14 @@ interface CTAButtonProps {
 export function CTAButton({
   href,
   label,
-  variant = "brand",
-  size = "md",
+  variant = 'brand',
+  size = 'md',
   external = false,
   className,
 }: Readonly<CTAButtonProps>) {
   const classes = cn(
     buttonVariants({ variant, size }),
-    "inline-flex items-center gap-2",
+    'inline-flex items-center gap-2',
     className,
   );
 
@@ -30,8 +30,8 @@ export function CTAButton({
     return (
       <a
         href={href}
-        target="_blank"
-        rel="noopener noreferrer"
+        target='_blank'
+        rel='noopener noreferrer'
         className={classes}
       >
         {label}
@@ -43,7 +43,7 @@ export function CTAButton({
   return (
     <Link href={href} className={classes}>
       {label}
-      <ArrowRight className="size-4" strokeWidth={2.5} />
+      <ArrowRight className='size-4' strokeWidth={2.5} />
     </Link>
   );
 }

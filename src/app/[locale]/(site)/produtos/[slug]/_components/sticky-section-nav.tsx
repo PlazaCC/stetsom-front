@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { cn } from "@/lib/utils";
-import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
 
-const SECTION_IDS = ["overview", "specifications", "related"] as const;
+const SECTION_IDS = ['overview', 'specifications', 'related'] as const;
 
 export function StickySectionNav() {
-  const t = useTranslations("ProductDetail");
-  const [activeSection, setActiveSection] = useState<string>("overview");
+  const t = useTranslations('ProductDetail');
+  const [activeSection, setActiveSection] = useState<string>('overview');
 
   const sections = [
-    { id: "overview", label: t("overview") },
-    { id: "specifications", label: t("specifications") },
-    { id: "related", label: t("related") },
+    { id: 'overview', label: t('overview') },
+    { id: 'specifications', label: t('specifications') },
+    { id: 'related', label: t('related') },
   ] as const;
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export function StickySectionNav() {
           }
         }
       },
-      { rootMargin: "-112px 0px -60% 0px", threshold: 0 },
+      { rootMargin: '-112px 0px -60% 0px', threshold: 0 },
     );
 
     for (const id of SECTION_IDS) {
@@ -37,8 +37,8 @@ export function StickySectionNav() {
   }, []);
 
   return (
-    <div className="sticky top-22 z-40 w-full border-t border-zinc-200 bg-white">
-      <div className="flex justify-center gap-5 px-5 py-4 lg:px-42.5">
+    <div className='sticky top-22 z-40 w-full border-t border-zinc-200 bg-white'>
+      <div className='flex justify-center gap-5 px-5 py-4 lg:px-42.5'>
         {sections.map(({ id, label }) => (
           <a
             key={id}
@@ -47,13 +47,13 @@ export function StickySectionNav() {
               e.preventDefault();
               document
                 .getElementById(id)
-                ?.scrollIntoView({ behavior: "smooth" });
+                ?.scrollIntoView({ behavior: 'smooth' });
             }}
             className={cn(
-              "border-b-2 pb-1 font-sans text-base font-medium uppercase tracking-wide transition-colors",
+              'border-b-2 pb-1 font-sans text-base font-medium uppercase tracking-wide transition-colors',
               activeSection === id
-                ? "border-brand-dark text-brand-dark"
-                : "border-transparent text-muted-foreground hover:text-brand-dark",
+                ? 'border-brand-dark text-brand-dark'
+                : 'border-transparent text-muted-foreground hover:text-brand-dark',
             )}
           >
             {label}

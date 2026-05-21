@@ -37,8 +37,8 @@ function toPowerSpec(product: Product): string {
 }
 
 function badgeByStatus(status: ProductStatus): string | null {
-  if (status === "DISCONTINUED") {
-    return "Descontinuado";
+  if (status === 'DISCONTINUED') {
+    return 'Descontinuado';
   }
 
   return null;
@@ -54,7 +54,7 @@ export function toProductCardItem(
     id: product.id,
     slug: product.slug,
     name: product.name,
-    category: category?.name ?? "Produto",
+    category: category?.name ?? 'Produto',
     spec: toPowerSpec(product),
     badge:
       product.badge !== undefined

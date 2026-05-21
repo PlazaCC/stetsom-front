@@ -1,8 +1,8 @@
-import { HttpError, toErrorResponse } from "@/lib/api/route-utils";
-import { getCatalogProductDetail } from "@/lib/api/server";
-import { NextRequest, NextResponse } from "next/server";
+import { HttpError, toErrorResponse } from '@/lib/api/route-utils';
+import { getCatalogProductDetail } from '@/lib/api/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   _request: NextRequest,
@@ -13,7 +13,7 @@ export async function GET(
     const payload = await getCatalogProductDetail(slug);
 
     if (!payload) {
-      throw new HttpError(404, "NOT_FOUND", "Product not found");
+      throw new HttpError(404, 'NOT_FOUND', 'Product not found');
     }
 
     return NextResponse.json(payload);

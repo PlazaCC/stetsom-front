@@ -40,13 +40,13 @@ import {
   FEATURED_PRODUCT_SLUGS,
   SPOTLIGHT_PRODUCT_SLUG,
   getCatalogPagePayloadForLocale,
-} from "@/lib/mock/catalog";
+} from '@/lib/mock/catalog';
 import {
   getCatalogBlocksForLocale,
   getCatalogCategoriesForLocale,
   getCatalogProductsForLocale,
   getCatalogSubcategoriesForLocale,
-} from "@/lib/mock/catalog-i18n";
+} from '@/lib/mock/catalog-i18n';
 import {
   getAboutBases,
   getAboutHeroSection,
@@ -63,8 +63,8 @@ import {
   getHomeHistorySection,
   getMilestonePattern,
   getSocialSection,
-} from "@/lib/mock/site-i18n";
-import { getSupportPayloadForLocale } from "@/lib/mock/support-i18n";
+} from '@/lib/mock/site-i18n';
+import { getSupportPayloadForLocale } from '@/lib/mock/support-i18n';
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE = 12;
@@ -86,7 +86,7 @@ function clampPageSize(value: number | undefined): number {
 }
 
 function normalizeSearch(value: string | undefined): string {
-  return (value ?? "").trim().toLowerCase();
+  return (value ?? '').trim().toLowerCase();
 }
 
 function paginate<T>(
@@ -109,7 +109,7 @@ function paginate<T>(
 }
 
 function isLocale(v: string): v is Locale {
-  return v === "pt-BR" || v === "en" || v === "es";
+  return v === 'pt-BR' || v === 'en' || v === 'es';
 }
 
 function isVisibleInLocale(product: Product, locale?: string): boolean {
@@ -144,7 +144,7 @@ function filterProducts(
       !categoryQuery || category?.slug.toLowerCase() === categoryQuery;
 
     const matchesStatus =
-      !status || status === "ALL" || product.status === status;
+      !status || status === 'ALL' || product.status === status;
 
     return matchesLocale && matchesSearch && matchesCategory && matchesStatus;
   });
@@ -161,7 +161,7 @@ function filterCmsProducts(query: CmsProductsQuery): Product[] {
       product.slug.toLowerCase().includes(q);
 
     const matchesStatus =
-      !status || status === "ALL" || product.status === status;
+      !status || status === 'ALL' || product.status === status;
 
     return matchesSearch && matchesStatus;
   });
@@ -202,10 +202,10 @@ function getRelatedProducts(product: Product, locale?: string) {
     (item) =>
       item.id !== product.id &&
       item.category_id === product.category_id &&
-      item.status === "ACTIVE",
+      item.status === 'ACTIVE',
   );
   const fallback = products.filter(
-    (item) => item.id !== product.id && item.status === "ACTIVE",
+    (item) => item.id !== product.id && item.status === 'ACTIVE',
   );
   const selectedProducts: Product[] = [];
   const selectedIds = new Set<string>();
@@ -337,17 +337,17 @@ export function createMockCmsProvider(): CmsProvider {
     },
 
     async getAdminDashboardPayload() {
-      const activeProducts = productStatusCount("ACTIVE");
-      const discontinuedProducts = productStatusCount("DISCONTINUED");
+      const activeProducts = productStatusCount('ACTIVE');
+      const discontinuedProducts = productStatusCount('DISCONTINUED');
 
       return {
         ...ADMIN_DASHBOARD_PAYLOAD,
         metrics: ADMIN_DASHBOARD_PAYLOAD.metrics.map((metric) => {
-          if (metric.id === "metric-active-products") {
+          if (metric.id === 'metric-active-products') {
             return { ...metric, value: String(activeProducts) };
           }
 
-          if (metric.id === "metric-discontinued-products") {
+          if (metric.id === 'metric-discontinued-products') {
             return { ...metric, value: String(discontinuedProducts) };
           }
 
@@ -372,8 +372,8 @@ export function createMockCmsProvider(): CmsProvider {
 
       // Admin CMS strings are not part of the public i18n system — admin has no locale routing.
       return {
-        title: "CMS de Produtos",
-        subtitle: "Gerencie status, catalogo e atualizacoes do portfolio.",
+        title: 'CMS de Produtos',
+        subtitle: 'Gerencie status, catalogo e atualizacoes do portfolio.',
         ...paginated,
       };
     },

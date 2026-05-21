@@ -1,8 +1,8 @@
-import { toErrorResponse } from "@/lib/api/route-utils";
-import { getSiteAboutPayload } from "@/lib/api/server";
-import { NextResponse } from "next/server";
+import { toErrorResponse } from '@/lib/api/route-utils';
+import { getSiteAboutPayload } from '@/lib/api/server';
+import { NextResponse } from 'next/server';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
