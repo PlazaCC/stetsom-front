@@ -1,12 +1,12 @@
 # Product Data Schema
 
-**Autores:** Plaza Creative Collective  
-**Data:** 10/04/2026  
+**Autores:** Plaza Creative Collective
+**Data:** 10/04/2026
 **Status:** Ativo — passível de expansão
 
 ---
 
-> **Nota de versionamento:** Este documento representa o design original do schema de dados do CMS Stetsom. À medida que o projeto evolui — especialmente durante a fase de mocks e integração com o backend real — campos, entidades e validações podem ser adicionados, revisados ou removidos. Sempre que uma mudança for necessária, atualize este documento e registre a alteração em `docs/ia/context.json`. O contrato TypeScript vigente em `src/lib/api/contracts.ts` é a fonte de verdade para o frontend.
+> **Nota de versionamento:** Este documento representa o design original do schema de dados do CMS Stetsom. À medida que o projeto evolui — especialmente durante a fase de mocks e integração com o backend real — campos, entidades e validações podem ser adicionados, revisados ou removidos. Sempre que uma mudança for necessária, atualize este documento. O contrato TypeScript vigente em `src/lib/api/contracts.ts` é a fonte de verdade para o frontend.
 
 ---
 

@@ -9,7 +9,6 @@ import {
 } from "@/hooks/use-catalog";
 import { useCatalogFilters } from "@/hooks/use-catalog-filters";
 import type { Category } from "@/lib/api/contracts";
-import { createCategoryLookup, toProductCardItem } from "@/lib/api/mappers";
 import { PRODUCT_LINES } from "@/lib/mock/catalog";
 import { cn } from "@/lib/utils";
 import { ArrowLeftRight, Search, SlidersHorizontal } from "lucide-react";
@@ -86,10 +85,6 @@ export function CatalogContent() {
     () => buildSlugImageMap(categories),
     [categories],
   );
-  const categoryLookup = useMemo(
-    () => createCategoryLookup(categories),
-    [categories],
-  );
 
   const activeCategorySlug =
     activeCategory === "todos" ? undefined : activeCategory;
@@ -104,11 +99,8 @@ export function CatalogContent() {
   });
 
   const productCards = useMemo(
-    () =>
-      (productsQuery.data?.items ?? []).map((p) =>
-        toProductCardItem(p, categoryLookup),
-      ),
-    [productsQuery.data?.items, categoryLookup],
+    () => productsQuery.data?.items ?? [],
+    [productsQuery.data?.items],
   );
   const typeFilterOptions = useMemo(
     () => categoryOptions.filter((c) => c.slug !== "todos"),

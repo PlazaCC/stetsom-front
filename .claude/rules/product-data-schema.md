@@ -49,7 +49,7 @@ applyTo: 'src/lib/api/contracts.ts'
 - `blocks` must be ordered by `order` and `order` must be unique per product; render according to ascending `order`.
 - Each product must have at least one active block for display (image/text/video as applicable).
 - `files.version` increments per product+type; keep versions consistent in mocks and provider.
-- If the schema changes, update `src/lib/api/contracts.ts` and append a changelog entry to `docs/ia/context.json`.
+- If the schema changes, update `src/lib/api/contracts.ts`.
 
 **Where to edit**
 

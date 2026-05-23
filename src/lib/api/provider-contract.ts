@@ -2,9 +2,9 @@ import type {
   AdminDashboardPayload,
   AdminUser,
   AdminUsersPayload,
-  AuditEntry,
+  AuditPayload,
   AuthPayload,
-  Banner,
+  BannersPayload,
   CatalogPagePayload,
   CatalogProductsQuery,
   Category,
@@ -12,13 +12,13 @@ import type {
   CmsProductDetailPayload,
   CmsProductsPayload,
   CmsProductsQuery,
-  ContactMessage,
+  ContactMessagesPayload,
   CreateAdminUserInput,
-  LibraryAsset,
   LibraryAssetType,
+  LibraryPayload,
   LoginCredentials,
   PaginatedResponse,
-  Product,
+  ProductCardItem,
   ProductDetailPayload,
   SiteAboutPayload,
   SiteHomePayload,
@@ -32,7 +32,7 @@ export interface CmsProvider {
   getCatalogProducts(
     query: CatalogProductsQuery,
     locale?: string,
-  ): Promise<PaginatedResponse<Product>>;
+  ): Promise<PaginatedResponse<ProductCardItem>>;
   getCatalogProductDetail(
     slug: string,
     locale?: string,
@@ -50,11 +50,11 @@ export interface CmsProvider {
   createAdminUser(input: CreateAdminUserInput): Promise<AdminUser>;
   updateAdminUser(id: string, input: UpdateAdminUserInput): Promise<AdminUser>;
   getCmsProductDetail(id: string): Promise<CmsProductDetailPayload | null>;
-  getBanners(): Promise<Banner[]>;
+  getBanners(): Promise<BannersPayload>;
   getLibraryAssets(params?: {
     type?: LibraryAssetType;
-  }): Promise<LibraryAsset[]>;
-  getContactMessages(): Promise<ContactMessage[]>;
-  getAuditLog(): Promise<AuditEntry[]>;
+  }): Promise<LibraryPayload>;
+  getContactMessages(): Promise<ContactMessagesPayload>;
+  getAuditLog(): Promise<AuditPayload>;
   getCmsConfig(): Promise<CmsConfig>;
 }

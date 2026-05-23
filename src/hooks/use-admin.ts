@@ -85,6 +85,7 @@ export function useAdminBanners() {
   return useQuery({
     queryKey: ["admin", "banners"],
     queryFn: fetchAdminBanners,
+    select: (payload) => payload.items,
   });
 }
 
@@ -92,6 +93,7 @@ export function useAdminLibrary(type?: LibraryAssetType) {
   return useQuery({
     queryKey: ["admin", "library", type ?? "all"],
     queryFn: () => fetchAdminLibrary(type),
+    select: (payload) => payload.items,
   });
 }
 
@@ -99,6 +101,7 @@ export function useAdminMessages() {
   return useQuery({
     queryKey: ["admin", "messages"],
     queryFn: fetchAdminMessages,
+    select: (payload) => payload.items,
   });
 }
 
@@ -106,6 +109,7 @@ export function useAdminAuditLog() {
   return useQuery({
     queryKey: ["admin", "audit"],
     queryFn: fetchAdminAuditLog,
+    select: (payload) => payload.items,
   });
 }
 

@@ -2408,6 +2408,25 @@
             ],
             "rationale": "Code-review identified: no Escape handler on modals (WCAG), removeFile not notifying parent, icon-only buttons without aria-label, actual password in .example file",
             "outcome": "AdminConfirmDialog closes on Escape + has role/aria-modal; removeFile calls onUpload with updated list; all icon buttons have aria-label; .env.local.example uses placeholder"
+        },
+        {
+            "ts": "2026-05-23T00:00:00Z",
+            "agent": "gpt-5.3-codex",
+            "type": "refactor",
+            "summary": "Align frontend mock/remote API layer with current backend contracts and wrapper payloads",
+            "files": [
+                "src/lib/api/contracts.ts",
+                "src/lib/api/provider-contract.ts",
+                "src/lib/api/client.ts",
+                "src/lib/api/providers/mock-provider.ts",
+                "src/lib/api/providers/remote-provider.ts",
+                "src/hooks/use-admin.ts",
+                "src/app/[locale]/(site)/produtos/_components/catalog-content.tsx",
+                "src/app/api/auth/login/route.ts",
+                "docs/ia/context.json"
+            ],
+            "rationale": "The user requested implementation of the mock rewrite plan based on the current Fastify backend architecture while preserving existing mock data mass.",
+            "outcome": "Catalog products now return ProductCardItem pagination, login uses accessToken/refreshToken shape, CMS admin list endpoints are wrapper-based (items + total), remote provider paths are aligned to /api/* routes, and frontend consumers were adapted through hooks and auth cookie updates."
         }
     ]
 }
