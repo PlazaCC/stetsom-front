@@ -349,26 +349,6 @@ Re-download all page frames to update the `.raw/figma-design/` baseline. Same pr
 
 ---
 
-### Phase 9 — Changelog
-
-Append a single entry to `docs/ia/context.json`. Read the file first, then push to the `log` array:
-
-```json
-{
-  "ts": "<ISO8601 UTC>",
-  "agent": "claude-sonnet-4-6",
-  "type": "fix",
-  "summary": "Design fidelity audit — <N> corrections across <M> files",
-  "files": ["<list of modified files>"],
-  "rationale": "Periodic design fidelity audit against Figma MCP live data + .raw/figma-design/ baselines",
-  "outcome": "Visual implementation aligned with Figma for all <M> pages. tsc and lint pass."
-}
-```
-
-**Never rewrite `context.json` from memory — always read first, then append.**
-
----
-
 ## Quick Reference — File Locations
 
 ```
@@ -388,7 +368,6 @@ src/lib/mock/site.ts                ← Mock site data
 src/lib/mock/support.ts             ← Mock support data
 src/lib/mock/navigation.ts          ← Mock navigation data
 .raw/figma-design/                  ← Baseline PNG exports (ground truth for visual comparison)
-docs/ia/context.json                ← Cross-agent changelog
 ```
 
 ---
@@ -406,4 +385,3 @@ docs/ia/context.json                ← Cross-agent changelog
 | 6 — Corrections                 | Varies — 2–4 phases                         |
 | 7 — Validation                  | 2 commands (tsc + lint)                     |
 | 8 — Re-export                   | 6 download batches                          |
-| 9 — Changelog                   | 1 read + 1 write                            |
