@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
     const response = NextResponse.json(payload);
 
-    response.cookies.set("admin_token", payload.token, {
+    response.cookies.set("admin_token", payload.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

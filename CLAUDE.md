@@ -22,8 +22,8 @@ A codebase knowledge graph lives in `graphify-out/`. **Read it before exploring 
 - `graphify-out/GRAPH_REPORT.md` — community map, god nodes, knowledge gaps (start here)
 - `graphify-out/graph.html` — interactive visualization (open in browser)
 
-Last run: 2026-05-12 · 58 files · 172 nodes · 32 communities  
-Key insight: `cn()` is the central utility (41 edges, present in virtually every component).  
+Last run: 2026-05-12 · 58 files · 172 nodes · 32 communities
+Key insight: `cn()` is the central utility (41 edges, present in virtually every component).
 Regenerate with `/graphify` after major structural changes.
 
 ## Skills
@@ -44,14 +44,12 @@ Skills in `.claude/skills/` are auto-discovered by the harness. Quick reference:
 | `screen-audit` | `/screen-audit` | Audit screens/flows vs Figma — matrix + plan before any code |
 | `graphify` | `/graphify` | (Re)generate the codebase knowledge graph |
 
-Full delivery workflow: `docs/ia/AI-DRIVEN-WORKFLOW.md`  
+Full delivery workflow: `docs/ia/AI-DRIVEN-WORKFLOW.md`
 Task backlog: `docs/ia/tasks/TASKS.md`
 
 ## Multi-Agent Coordination
 
 Both Claude Code (CLI) and VSCode Copilot Chat agents operate in this repo.
-
-**REQUIRED — changelog rule:** Any agent that edits files **must** append one entry to `docs/ia/context.json` before finishing. This is the coordination layer between agents. Schema and rules: `.claude/rules/llm-owned-context-json.md`.
 
 - Claude Code rules: `.claude/rules/` (auto-loaded by harness)
 - VSCode agent skills: `.agents/skills/`

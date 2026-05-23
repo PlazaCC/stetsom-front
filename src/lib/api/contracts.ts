@@ -111,7 +111,7 @@ export type ProductBlock =
 
 export type ProductFile = {
   id: string;
-  product_id: string;
+  product_id: string | null;
   file_url: string;
   type: ProductFileType;
   version: number;
@@ -450,9 +450,8 @@ export type LoginCredentials = {
 };
 
 export type AuthPayload = {
-  token: string;
-  user: Pick<AdminUser, "id" | "name" | "email" | "role">;
-  expires_at: ISODateString;
+  accessToken: string;
+  refreshToken: string;
 };
 
 export type AdminUsersPayload = {
@@ -481,6 +480,10 @@ export type Banner = {
   product_id?: string;
   desktop_image_url: string;
   mobile_image_url?: string;
+  alt?: string;
+  href?: string;
+  label?: string;
+  title?: string;
   link_url?: string;
   status: BannerStatus;
   locale: Locale;
@@ -509,6 +512,16 @@ export type LibraryAsset = {
   created_by: string;
 };
 
+export type BannersPayload = {
+  items: Banner[];
+  total: number;
+};
+
+export type LibraryPayload = {
+  items: LibraryAsset[];
+  total: number;
+};
+
 export type ContactMessage = {
   id: string;
   name: string;
@@ -519,6 +532,11 @@ export type ContactMessage = {
   department: string;
   is_read: boolean;
   created_at: ISODateString;
+};
+
+export type ContactMessagesPayload = {
+  items: ContactMessage[];
+  total: number;
 };
 
 export type AuditAction =
@@ -540,6 +558,11 @@ export type AuditEntry = {
   entity_id?: string;
   entity_label?: string;
   created_at: ISODateString;
+};
+
+export type AuditPayload = {
+  items: AuditEntry[];
+  total: number;
 };
 
 export type CmsConfig = {

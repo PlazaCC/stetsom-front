@@ -2,22 +2,22 @@ import type {
   AdminDashboardPayload,
   AdminUser,
   AdminUsersPayload,
-  AuditEntry,
+  AuditPayload,
   AuthPayload,
-  Banner,
+  BannersPayload,
   CatalogPagePayload,
   CatalogProductsQuery,
   Category,
   CmsConfig,
   CmsProductsPayload,
   CmsProductsQuery,
-  ContactMessage,
+  ContactMessagesPayload,
   CreateAdminUserInput,
-  LibraryAsset,
   LibraryAssetType,
+  LibraryPayload,
   LoginCredentials,
   PaginatedResponse,
-  Product,
+  ProductCardItem,
   Subcategory,
   UpdateAdminUserInput,
 } from "@/lib/api/contracts";
@@ -70,7 +70,7 @@ export async function fetchCatalogProducts(query: CatalogProductsQuery) {
     locale: query.locale,
   });
 
-  return fetchJson<PaginatedResponse<Product>>(
+  return fetchJson<PaginatedResponse<ProductCardItem>>(
     `${INTERNAL_API_ENDPOINTS.catalogProducts}${suffix}`,
   );
 }
@@ -148,22 +148,24 @@ export async function updateAdminUser(id: string, input: UpdateAdminUserInput) {
 }
 
 export async function fetchAdminBanners() {
-  return fetchJson<Banner[]>(INTERNAL_API_ENDPOINTS.adminBanners);
+  return fetchJson<BannersPayload>(INTERNAL_API_ENDPOINTS.adminBanners);
 }
 
 export async function fetchAdminLibrary(type?: LibraryAssetType) {
   const suffix = type ? `?type=${encodeURIComponent(type)}` : "";
-  return fetchJson<LibraryAsset[]>(
+  return fetchJson<LibraryPayload>(
     `${INTERNAL_API_ENDPOINTS.adminLibrary}${suffix}`,
   );
 }
 
 export async function fetchAdminMessages() {
-  return fetchJson<ContactMessage[]>(INTERNAL_API_ENDPOINTS.adminMessages);
+  return fetchJson<ContactMessagesPayload>(
+    INTERNAL_API_ENDPOINTS.adminMessages,
+  );
 }
 
 export async function fetchAdminAuditLog() {
-  return fetchJson<AuditEntry[]>(INTERNAL_API_ENDPOINTS.adminAudit);
+  return fetchJson<AuditPayload>(INTERNAL_API_ENDPOINTS.adminAudit);
 }
 
 export async function fetchAdminConfig() {

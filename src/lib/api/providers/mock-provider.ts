@@ -15,7 +15,6 @@ import type {
   SiteHomePayload,
   UpdateAdminUserInput,
 } from "@/lib/api/contracts";
-import { HttpError } from "@/lib/api/route-utils";
 import {
   createCategoryLookup,
   createSubcategoryLookup,
@@ -23,23 +22,18 @@ import {
   toProductCardItem,
 } from "@/lib/api/mappers";
 import type { CmsProvider } from "@/lib/api/provider-contract";
+import { HttpError } from "@/lib/api/route-utils";
 import {
   ADMIN_DASHBOARD_PAYLOAD,
   buildCmsProductDetail,
 } from "@/lib/mock/admin-cms";
-import { MOCK_CMS_AUDIT_LOG } from "@/lib/mock/cms-audit";
-import { MOCK_CMS_BANNERS } from "@/lib/mock/cms-banners";
-import { MOCK_CMS_CONFIG } from "@/lib/mock/cms-config";
-import { MOCK_CMS_LIBRARY_ASSETS } from "@/lib/mock/cms-library";
-import { MOCK_CMS_MESSAGES } from "@/lib/mock/cms-messages";
-import { MOCK_ADMIN_USERS, MOCK_AUTH_PASSWORD } from "@/lib/mock/cms-users";
 import {
   CATALOG_CATEGORIES,
   CATALOG_PRODUCT_FILES,
   CATALOG_PRODUCTS,
   FEATURED_PRODUCT_SLUGS,
-  SPOTLIGHT_PRODUCT_SLUG,
   getCatalogPagePayloadForLocale,
+  SPOTLIGHT_PRODUCT_SLUG,
 } from "@/lib/mock/catalog";
 import {
   getCatalogBlocksForLocale,
@@ -47,6 +41,12 @@ import {
   getCatalogProductsForLocale,
   getCatalogSubcategoriesForLocale,
 } from "@/lib/mock/catalog-i18n";
+import { MOCK_CMS_AUDIT_LOG } from "@/lib/mock/cms-audit";
+import { MOCK_CMS_BANNERS } from "@/lib/mock/cms-banners";
+import { MOCK_CMS_CONFIG } from "@/lib/mock/cms-config";
+import { MOCK_CMS_LIBRARY_ASSETS } from "@/lib/mock/cms-library";
+import { MOCK_CMS_MESSAGES } from "@/lib/mock/cms-messages";
+import { MOCK_ADMIN_USERS, MOCK_AUTH_PASSWORD } from "@/lib/mock/cms-users";
 import {
   getAboutBases,
   getAboutHeroSection,
@@ -281,8 +281,13 @@ export function createMockCmsProvider(): CmsProvider {
       const pageSize = clampPageSize(query.pageSize);
       const products = getCatalogProductsForLocale(locale);
       const filtered = filterProducts(products, query, locale);
+      const categories = getCatalogCategoriesForLocale(locale);
+      const categoryLookup = createCategoryLookup(categories);
+      const cards = filtered.map((product) =>
+        toProductCardItem(product, categoryLookup),
+      );
 
-      return paginate(filtered, page, pageSize);
+      return paginate(cards, page, pageSize);
     },
 
     async getCatalogProductDetail(slug, locale) {
@@ -390,8 +395,6 @@ export function createMockCmsProvider(): CmsProvider {
         );
       }
 
-      const expiresAt = new Date(Date.now() + 8 * 3600 * 1000).toISOString();
-
       // MOCK ONLY: unsigned, non-URL-safe base64 token.
       // Uses standard base64 (may contain +/=/), not base64url.
       // proxy.ts validates only the 3-part structure (split(".").length === 3),
@@ -409,16 +412,11 @@ export function createMockCmsProvider(): CmsProvider {
         }),
       ).toString("base64");
       const token = `${header}.${payload}.mock-signature`;
+      const refreshToken = `${header}.${payload}.mock-refresh-signature`;
 
       return {
-        token,
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
-        expires_at: expiresAt,
+        accessToken: token,
+        refreshToken,
       };
     },
 
@@ -480,20 +478,35 @@ export function createMockCmsProvider(): CmsProvider {
     },
 
     async getBanners() {
-      return [...MOCK_CMS_BANNERS];
+      return {
+        items: [...MOCK_CMS_BANNERS],
+        total: MOCK_CMS_BANNERS.length,
+      };
     },
 
     async getLibraryAssets(params?: { type?: LibraryAssetType }) {
-      if (!params?.type) return [...MOCK_CMS_LIBRARY_ASSETS];
-      return MOCK_CMS_LIBRARY_ASSETS.filter((a) => a.type === params.type);
+      const items = !params?.type
+        ? [...MOCK_CMS_LIBRARY_ASSETS]
+        : MOCK_CMS_LIBRARY_ASSETS.filter((a) => a.type === params.type);
+
+      return {
+        items,
+        total: items.length,
+      };
     },
 
     async getContactMessages() {
-      return [...MOCK_CMS_MESSAGES];
+      return {
+        items: [...MOCK_CMS_MESSAGES],
+        total: MOCK_CMS_MESSAGES.length,
+      };
     },
 
     async getAuditLog() {
-      return [...MOCK_CMS_AUDIT_LOG];
+      return {
+        items: [...MOCK_CMS_AUDIT_LOG],
+        total: MOCK_CMS_AUDIT_LOG.length,
+      };
     },
 
     async getCmsConfig() {

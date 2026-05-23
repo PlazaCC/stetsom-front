@@ -88,4 +88,4 @@ O fluxo de integração será:
 - UUIDs, datas ISO 8601, slugs URL-safe e URLs absolutas/relativas à raiz do site
 - Cada produto deve ter ao menos um `ProductBlock` com `order` sequencial e único
 - Não hardcode lógica de negócio nos fixtures — ela fica no `mock-provider.ts`
-- Se o schema mudar, atualize `contracts.ts` primeiro, depois os fixtures, depois o `context.json`
+- Se o schema mudar, atualize `contracts.ts` primeiro, depois os fixtures
