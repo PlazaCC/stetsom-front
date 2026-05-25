@@ -14,22 +14,9 @@ import type {
   LoginCredentials,
   UpdateAdminUserInput,
 } from "@/lib/api/contracts";
+import { proxyFetch } from "@/lib/api/fetch-utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-
-async function proxyFetch<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(path, {
-    ...init,
-    headers: { Accept: "application/json", ...(init?.headers ?? {}) },
-    cache: "no-store",
-  });
-  if (!res.ok) {
-    const body = await res.json().catch(() => null);
-    const message = body?.error?.message ?? `Request failed (${res.status})`;
-    throw new Error(message);
-  }
-  return res.json() as Promise<T>;
-}
 
 export function useAdminDashboard() {
   return useQuery({

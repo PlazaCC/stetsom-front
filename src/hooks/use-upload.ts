@@ -41,6 +41,13 @@ function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
+const IN_PROGRESS_STATUSES: UploadStage[] = [
+  "idle",
+  "presigning",
+  "uploading",
+  "registering",
+];
+
 async function readImageDimensions(
   file: File,
 ): Promise<{ width: number; height: number } | null> {
@@ -189,9 +196,7 @@ export function useLibraryUpload() {
   }
 
   const isUploading = entries.some((e) =>
-    (
-      ["idle", "presigning", "uploading", "registering"] as UploadStage[]
-    ).includes(e.status),
+    IN_PROGRESS_STATUSES.includes(e.status),
   );
 
   const doneCount = entries.filter((e) => e.status === "done").length;

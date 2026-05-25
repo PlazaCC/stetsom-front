@@ -8,13 +8,9 @@ import type {
   ProductCardItem,
   Subcategory,
 } from "@/lib/api/contracts";
+import { proxyFetch } from "@/lib/api/fetch-utils";
+import { buildSearchParams } from "@/lib/api/query-utils";
 import { useQuery } from "@tanstack/react-query";
-
-async function proxyFetch<T>(path: string): Promise<T> {
-  const res = await fetch(path, { cache: "no-store" });
-  if (!res.ok) throw new Error(`Request failed (${res.status})`);
-  return res.json() as Promise<T>;
-}
 
 export function useCatalogPage(locale?: string) {
   const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
@@ -43,19 +39,8 @@ export function useCatalogSubcategories(locale?: string) {
   });
 }
 
-function buildParams(
-  params: Record<string, string | number | undefined>,
-): string {
-  const search = new URLSearchParams();
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== "") search.set(key, String(value));
-  });
-  const query = search.toString();
-  return query ? `?${query}` : "";
-}
-
 export function useCatalogProducts(query: CatalogProductsQuery) {
-  const path = `/api/proxy/catalog/products${buildParams({
+  const path = `/api/proxy/catalog/products${buildSearchParams({
     q: query.q,
     category: query.category,
     status: query.status,
