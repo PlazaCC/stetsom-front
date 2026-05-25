@@ -5,7 +5,6 @@ import type {
   LibraryAsset,
   UploadPresignResponse,
 } from "@/lib/api/contracts";
-import { INTERNAL_API_ENDPOINTS } from "@/lib/api/endpoints";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -89,7 +88,7 @@ export function useLibraryUpload() {
     try {
       patch(id, { status: "presigning", progress: 10 });
 
-      const presignRes = await fetch(INTERNAL_API_ENDPOINTS.upload, {
+      const presignRes = await fetch("/api/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -139,7 +138,7 @@ export function useLibraryUpload() {
         ...(dims ?? {}),
       };
 
-      const completeRes = await fetch(INTERNAL_API_ENDPOINTS.uploadComplete, {
+      const completeRes = await fetch("/api/upload/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(completeBody),

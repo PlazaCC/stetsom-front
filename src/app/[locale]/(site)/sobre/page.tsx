@@ -1,6 +1,6 @@
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
-import { getSiteAboutPayload } from "@/lib/api/server";
+import { getCmsProvider } from "@/lib/api/provider";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { CompanyTimeline } from "../_components/company-timeline";
@@ -11,7 +11,7 @@ import { SocialFeed } from "../_components/social-feed";
 
 export default async function SobrePage() {
   const [aboutPayload, t] = await Promise.all([
-    getSiteAboutPayload(),
+    getCmsProvider().getSiteAboutPayload(),
     getTranslations("About"),
   ]);
 
