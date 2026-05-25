@@ -119,8 +119,6 @@ export function useLibraryUpload() {
       });
 
       if (!putRes.ok) {
-        const errBody = await putRes.text().catch(() => "");
-        console.error("[use-upload] S3 PUT falhou:", putRes.status, errBody);
         throw new Error(`Upload para o storage falhou (HTTP ${putRes.status})`);
       }
 

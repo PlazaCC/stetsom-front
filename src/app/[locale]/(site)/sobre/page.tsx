@@ -2,7 +2,7 @@ import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
 import { getCmsProvider } from "@/lib/api/provider";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { CompanyTimeline } from "../_components/company-timeline";
 import { OurFactory } from "../_components/our-factory";
 import { OurFoundations } from "../_components/our-foundations";
@@ -11,7 +11,7 @@ import { SocialFeed } from "../_components/social-feed";
 
 export default async function SobrePage() {
   const [aboutPayload, t] = await Promise.all([
-    getCmsProvider().getSiteAboutPayload(),
+    getCmsProvider().getSiteAboutPayload(await getLocale()),
     getTranslations("About"),
   ]);
 

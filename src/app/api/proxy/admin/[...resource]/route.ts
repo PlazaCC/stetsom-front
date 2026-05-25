@@ -14,6 +14,9 @@ const VALID_TYPES: LibraryAssetType[] = [
   "PDF",
   "VIDEO",
   "MODEL3D",
+  "MANUAL",
+  "CATALOG",
+  "CERTIFICATE",
   "OTHER",
 ];
 
