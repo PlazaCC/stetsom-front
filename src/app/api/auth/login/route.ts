@@ -14,6 +14,43 @@ const IS_PRODUCTION = process.env.NODE_ENV === "production";
 const CMS_API_BASE_URL =
   process.env.CMS_API_BASE_URL?.replace(/\/$/, "") ?? "http://localhost:3333";
 
+type UpstreamErrorPayload = {
+  error?: {
+    code?: string;
+    message?: string;
+  };
+};
+
+async function readUpstreamAuthError(
+  response: Response,
+): Promise<{ code: string; message: string }> {
+  const isUnauthorized = response.status === 401;
+  const defaultCode = isUnauthorized ? "UNAUTHORIZED" : "AUTH_UPSTREAM_ERROR";
+  const defaultMessage = isUnauthorized
+    ? "Credenciais inválidas."
+    : "Falha ao autenticar no servidor.";
+
+  const contentType = response.headers.get("content-type") ?? "";
+
+  if (contentType.includes("application/json")) {
+    try {
+      const data = (await response.json()) as UpstreamErrorPayload;
+      return {
+        code: data.error?.code ?? defaultCode,
+        message: data.error?.message ?? defaultMessage,
+      };
+    } catch {
+      return { code: defaultCode, message: defaultMessage };
+    }
+  }
+
+  const text = await response.text().catch(() => "");
+  return {
+    code: defaultCode,
+    message: text.trim() || defaultMessage,
+  };
+}
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as LoginCredentials;
@@ -26,15 +63,10 @@ export async function POST(request: Request) {
     });
 
     if (!upstream.ok) {
-      const data = (await upstream.json()) as { error?: { message?: string } };
+      const errorPayload = await readUpstreamAuthError(upstream);
       return NextResponse.json(
-        {
-          error: {
-            code: "UNAUTHORIZED",
-            message: data.error?.message ?? "Credenciais inválidas.",
-          },
-        },
-        { status: 401 },
+        { error: errorPayload },
+        { status: upstream.status },
       );
     }
 
