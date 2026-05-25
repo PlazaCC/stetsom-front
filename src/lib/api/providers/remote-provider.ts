@@ -75,12 +75,11 @@ export function createRemoteCmsProvider(): CmsProvider {
     // ── Público ─────────────────────────────────────────────────────────
 
     async getCatalogPagePayload(locale?: string) {
-      void locale;
-      return fetchJson<CatalogPagePayload>(base, "/api/site/catalog");
+      const suffix = buildSearchParams({ locale });
+      return fetchJson<CatalogPagePayload>(base, `/api/site/catalog${suffix}`);
     },
 
     async getCatalogProducts(query: CatalogProductsQuery, locale?: string) {
-      void locale;
       const suffix = buildSearchParams({
         q: query.q,
         category: query.category,
@@ -127,18 +126,18 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async getSiteHomePayload(locale?: string) {
-      void locale;
-      return fetchJson<SiteHomePayload>(base, "/api/site/home");
+      const suffix = buildSearchParams({ locale });
+      return fetchJson<SiteHomePayload>(base, `/api/site/home${suffix}`);
     },
 
     async getSiteAboutPayload(locale?: string) {
-      void locale;
-      return fetchJson<SiteAboutPayload>(base, "/api/site/about");
+      const suffix = buildSearchParams({ locale });
+      return fetchJson<SiteAboutPayload>(base, `/api/site/about${suffix}`);
     },
 
     async getSupportPayload(locale?: string) {
-      void locale;
-      return fetchJson<SupportPayload>(base, "/api/site/support");
+      const suffix = buildSearchParams({ locale });
+      return fetchJson<SupportPayload>(base, `/api/site/support${suffix}`);
     },
 
     // ── Auth ─────────────────────────────────────────────────────────────
