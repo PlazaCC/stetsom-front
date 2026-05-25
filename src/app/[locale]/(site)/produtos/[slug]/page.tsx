@@ -133,7 +133,7 @@ export default async function ProdutoDetalhePage(props: ProductPageProps) {
               </p>
 
               {/* Spec tags */}
-              <ul className="mt-4 flex flex-wrap gap-2">
+              {/* <ul className="mt-4 flex flex-wrap gap-2">
                 {activeSpecs.map((spec) => (
                   <li
                     key={spec.id}
@@ -142,7 +142,7 @@ export default async function ProdutoDetalhePage(props: ProductPageProps) {
                     {formatSpecKey(spec.attribute)}: {spec.value}
                   </li>
                 ))}
-              </ul>
+              </ul> */}
 
               {sortedVariations.length > 1 && (
                 <div className="mt-4 flex flex-wrap items-center gap-2">

@@ -3,6 +3,13 @@
 import { ChevronDown, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Switch } from "@/components/ui/switch";
+
 interface CategoryOption {
   name: string;
   slug: string;
@@ -57,31 +64,27 @@ export function CatalogSidebar({
         </button>
       </div>
 
-      <div className="border-t border-border pt-5">
-        <div className="flex items-center justify-between">
+      <Collapsible defaultOpen className="border-t border-border pt-5">
+        <CollapsibleTrigger className="group flex w-full items-center justify-between">
           <span className="font-sans font-bold text-lg text-foreground">
             {t("options")}
           </span>
-          <ChevronDown size={16} className="text-muted-foreground" />
-        </div>
-        <div className="mt-3 space-y-3">
-          <label className="flex items-center gap-3 text-base text-muted-foreground">
-            <input
-              type="checkbox"
-              className="size-4 rounded border-border accent-brand"
-              defaultChecked
-            />
-            {t("showDiscontinued")}
+          <ChevronDown
+            size={16}
+            className="text-muted-foreground transition-transform group-data-[state=open]:rotate-180"
+          />
+        </CollapsibleTrigger>
+        <CollapsibleContent className="mt-3 space-y-3">
+          <label className="flex items-center  gap-3 text-base text-muted-foreground">
+            <Switch />
+            <span>{t("showDiscontinued")}</span>
           </label>
-          <label className="flex items-center gap-3 text-base text-muted-foreground">
-            <input
-              type="checkbox"
-              className="size-4 rounded border-border accent-brand"
-            />
-            {t("exportProducts")}
+          <label className="flex items-center  gap-3 text-base text-muted-foreground">
+            <Switch />
+            <span>{t("exportProducts")}</span>
           </label>
-        </div>
-      </div>
+        </CollapsibleContent>
+      </Collapsible>
 
       <div className="border-t border-border pt-5">
         <div className="flex items-center justify-between">
@@ -100,14 +103,17 @@ export function CatalogSidebar({
         </div>
       </div>
 
-      <div className="border-t border-border pt-5">
-        <div className="flex items-center justify-between">
+      <Collapsible defaultOpen className="border-t border-border pt-5">
+        <CollapsibleTrigger className="group flex w-full items-center justify-between">
           <span className="font-sans font-bold text-lg text-foreground">
             {t("productType")}
           </span>
-          <ChevronDown size={16} className="text-muted-foreground" />
-        </div>
-        <div className="mt-3 flex flex-col gap-2">
+          <ChevronDown
+            size={16}
+            className="text-muted-foreground transition-transform group-data-[state=open]:rotate-180"
+          />
+        </CollapsibleTrigger>
+        <CollapsibleContent className="mt-3 flex flex-col gap-2">
           {typeFilterOptions.map((cat) => (
             <label
               key={cat.slug}
@@ -122,17 +128,20 @@ export function CatalogSidebar({
               {cat.name}
             </label>
           ))}
-        </div>
-      </div>
+        </CollapsibleContent>
+      </Collapsible>
 
-      <div className="border-t border-border pt-5">
-        <div className="flex items-center justify-between">
+      <Collapsible defaultOpen className="border-t border-border pt-5">
+        <CollapsibleTrigger className="group flex w-full items-center justify-between">
           <span className="font-sans font-bold text-lg text-foreground">
             {t("productLines")}
           </span>
-          <ChevronDown size={16} className="text-muted-foreground" />
-        </div>
-        <div className="mt-3 space-y-2 text-base text-muted-foreground">
+          <ChevronDown
+            size={16}
+            className="text-muted-foreground transition-transform group-data-[state=open]:rotate-180"
+          />
+        </CollapsibleTrigger>
+        <CollapsibleContent className="mt-3 space-y-2 text-base text-muted-foreground">
           {productLines.map((line, i) => (
             <label key={line} className="flex items-center gap-3">
               <input
@@ -143,8 +152,8 @@ export function CatalogSidebar({
               {line}
             </label>
           ))}
-        </div>
-      </div>
+        </CollapsibleContent>
+      </Collapsible>
     </aside>
   );
 }
