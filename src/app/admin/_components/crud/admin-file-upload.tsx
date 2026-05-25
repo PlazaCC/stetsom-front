@@ -5,12 +5,12 @@ import { Upload, X, type LucideIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
 interface AdminFileUploadProps {
-  /** Callback chamado ao selecionar/soltar arquivos */
+  /** Callback invoked when files are selected or dropped */
   onUpload?: (files: File[]) => void;
   /**
-   * Quando `true`, o componente limpa a lista interna imediatamente após chamar
-   * `onUpload` — ideal para upload automático onde o progresso é exibido externamente.
-   * Padrão: `false` (mantém os arquivos na lista para seleção manual).
+   * When `true`, clears the internal file list immediately after calling
+   * `onUpload` — ideal for automatic upload where progress is shown externally.
+   * Default: `false` (keeps files in the list for manual selection).
    */
   clearOnUpload?: boolean;
   accept?: string;
@@ -42,14 +42,12 @@ export function AdminFileUpload({
     const list = Array.from(incoming);
 
     if (clearOnUpload) {
-      // Upload imediato: não exibe a lista — o pai gerencia o progresso
       onUpload?.(list);
     } else {
       setFiles((prev) => (multiple ? [...prev, ...list] : list));
       onUpload?.(list);
     }
 
-    // Reset do input para aceitar o mesmo arquivo novamente
     if (inputRef.current) inputRef.current.value = "";
   }
 
@@ -80,8 +78,6 @@ export function AdminFileUpload({
           handleFiles(e.dataTransfer.files);
         }}
         onClick={(e) => {
-          // A <label> já ativa o <input> interno nativamente ao clicar.
-          // Quando desabilitado, bloqueamos esse comportamento padrão.
           if (disabled) e.preventDefault();
         }}
       >
@@ -103,7 +99,7 @@ export function AdminFileUpload({
         />
       </label>
 
-      {/* Lista interna — só exibida quando clearOnUpload=false */}
+      {/* Only show internal list when clearOnUpload is false */}
       {!clearOnUpload && files.length > 0 && (
         <ul className="space-y-2">
           {files.map((file, index) => (
