@@ -104,6 +104,10 @@ export async function getCmsProductsPayload(query: CmsProductsQuery) {
   });
 }
 
+export async function getCmsProductDetail(id: string) {
+  return getCmsProvider().getCmsProductDetail(id);
+}
+
 export async function getAdminUsersPayload() {
   return getCmsProvider().getAdminUsers();
 }

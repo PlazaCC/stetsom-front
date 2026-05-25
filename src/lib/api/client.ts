@@ -115,21 +115,21 @@ async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export async function fetchCatalogCategories(locale?: string) {
-  const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
+  const suffix = buildSearchParams({ locale });
   return fetchJson<Category[]>(
     `${INTERNAL_API_ENDPOINTS.catalogCategories}${suffix}`,
   );
 }
 
 export async function fetchCatalogSubcategories(locale?: string) {
-  const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
+  const suffix = buildSearchParams({ locale });
   return fetchJson<Subcategory[]>(
     `${INTERNAL_API_ENDPOINTS.catalogSubcategories}${suffix}`,
   );
 }
 
 export async function fetchCatalogPage(locale?: string) {
-  const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
+  const suffix = buildSearchParams({ locale });
   return fetchJson<CatalogPagePayload>(
     `${INTERNAL_API_ENDPOINTS.catalogPage}${suffix}`,
   );

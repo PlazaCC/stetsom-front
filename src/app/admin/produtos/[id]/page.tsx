@@ -1,5 +1,5 @@
 import { ProductWizard } from "@/app/admin/_components/product-wizard";
-import { getCmsProvider } from "@/lib/api/provider";
+import { getCmsProductDetail } from "@/lib/api/server";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -7,7 +7,7 @@ interface PageProps {
 
 export default async function AdminProdutoEditPage({ params }: PageProps) {
   const { id } = await params;
-  const detail = await getCmsProvider().getCmsProductDetail(id);
+  const detail = await getCmsProductDetail(id);
 
   if (!detail) {
     return (

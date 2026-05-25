@@ -495,7 +495,15 @@ export type Banner = {
   created_by: string;
 };
 
-export type LibraryAssetType = "IMAGE" | "PDF" | "VIDEO" | "MODEL3D" | "OTHER";
+export type LibraryAssetType =
+  | "IMAGE"
+  | "PDF"
+  | "VIDEO"
+  | "MODEL3D"
+  | "MANUAL"
+  | "CATALOG"
+  | "CERTIFICATE"
+  | "OTHER";
 
 export type LibraryAsset = {
   id: string;
