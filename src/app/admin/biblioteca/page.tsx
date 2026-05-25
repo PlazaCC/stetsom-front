@@ -6,9 +6,18 @@ import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminPagination } from "@/app/admin/_components/crud/admin-pagination";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import { useAdminLibrary } from "@/hooks/use-admin";
+import { useLibraryUpload, type UploadEntry } from "@/hooks/use-upload";
 import type { LibraryAsset } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
-import { Archive, Check, FileText, Image, type LucideIcon } from "lucide-react";
+import {
+  Archive,
+  Check,
+  FileText,
+  Image,
+  Loader2,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 
 const PAGE_SIZE = 6;
@@ -21,11 +30,111 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "3d-models", label: "Arquivos 3D" },
 ];
 
+// ── Utilitários ────────────────────────────────────────────────────────────────
+
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / 1048576).toFixed(1)} MB`;
 }
+
+// ── Progresso de upload ────────────────────────────────────────────────────────
+
+const STAGE_LABEL: Record<UploadEntry["status"], string> = {
+  idle: "Na fila…",
+  presigning: "Preparando…",
+  uploading: "Enviando…",
+  registering: "Registrando…",
+  done: "Concluído",
+  error: "Erro",
+};
+
+function UploadProgressList({
+  entries,
+  onClear,
+}: {
+  entries: UploadEntry[];
+  onClear: () => void;
+}) {
+  if (entries.length === 0) return null;
+
+  const allDone = entries.every(
+    (e) => e.status === "done" || e.status === "error",
+  );
+
+  return (
+    <div className="rounded-[16px] border border-border bg-card p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-sm font-medium text-foreground">
+          Uploads em andamento
+        </p>
+        {allDone && (
+          <button
+            type="button"
+            onClick={onClear}
+            className="text-xs text-muted-foreground hover:text-foreground"
+          >
+            Limpar
+          </button>
+        )}
+      </div>
+
+      <ul className="space-y-2">
+        {entries.map((entry) => (
+          <li key={entry.id} className="flex items-center gap-3">
+            {/* Ícone de status */}
+            <span className="shrink-0">
+              {entry.status === "done" ? (
+                <Check className="size-4 text-green-500" />
+              ) : entry.status === "error" ? (
+                <X className="size-4 text-destructive" />
+              ) : (
+                <Loader2 className="size-4 animate-spin text-brand" />
+              )}
+            </span>
+
+            {/* Nome e barra de progresso */}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center justify-between gap-2">
+                <span className="truncate text-sm text-foreground">
+                  {entry.fileName}
+                </span>
+                <span
+                  className={cn(
+                    "shrink-0 text-xs",
+                    entry.status === "done" && "text-green-500",
+                    entry.status === "error" && "text-destructive",
+                    !["done", "error"].includes(entry.status) &&
+                      "text-muted-foreground",
+                  )}
+                >
+                  {entry.status === "error"
+                    ? entry.error
+                    : STAGE_LABEL[entry.status]}
+                </span>
+              </div>
+
+              {/* Barra de progresso */}
+              {entry.status !== "error" && (
+                <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-muted">
+                  <div
+                    className={cn(
+                      "h-full rounded-full transition-all duration-500",
+                      entry.status === "done" ? "bg-green-500" : "bg-brand",
+                    )}
+                    style={{ width: `${entry.progress}%` }}
+                  />
+                </div>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// ── Cards de foto ──────────────────────────────────────────────────────────────
 
 function PhotoCard({ asset }: { asset: LibraryAsset }) {
   const [copied, setCopied] = useState(false);
@@ -36,13 +145,13 @@ function PhotoCard({ asset }: { asset: LibraryAsset }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
-      /* clipboard not available */
+      /* clipboard não disponível */
     }
   }
 
   return (
     <div className="group relative flex flex-col gap-3 rounded-[16px] border border-border bg-card p-4">
-      <div className="flex h-32 items-center justify-center overflow-hidden rounded-md bg-muted">
+      <div className="relative flex h-32 items-center justify-center overflow-hidden rounded-md bg-muted">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={asset.file_url}
@@ -81,6 +190,8 @@ function PhotoCard({ asset }: { asset: LibraryAsset }) {
     </div>
   );
 }
+
+// ── Tabela de arquivos ─────────────────────────────────────────────────────────
 
 function FileTable({ assets }: { assets: LibraryAsset[] }) {
   return (
@@ -148,23 +259,58 @@ function FileTable({ assets }: { assets: LibraryAsset[] }) {
   );
 }
 
+// ── Configuração por aba ───────────────────────────────────────────────────────
+
+const UPLOAD_CONFIG: Record<
+  Tab,
+  {
+    accept: string;
+    label: string;
+    description: string;
+    icon: LucideIcon;
+    libraryType: LibraryAsset["type"];
+  }
+> = {
+  photos: {
+    accept: "image/jpeg,image/png,image/webp,image/gif",
+    label: "Clique ou arraste imagens para a biblioteca",
+    description: "PNG, JPG, WebP, GIF — máx. 10 MB",
+    icon: Image,
+    libraryType: "IMAGE",
+  },
+  manuals: {
+    accept: "application/pdf",
+    label: "Clique ou arraste PDFs para a biblioteca",
+    description: "Apenas arquivos PDF — máx. 50 MB",
+    icon: FileText,
+    libraryType: "PDF",
+  },
+  "3d-models": {
+    accept: "model/gltf-binary,model/gltf+json,.glb,.gltf",
+    label: "Clique ou arraste modelos 3D para a biblioteca",
+    description: "GLB ou GLTF — máx. 100 MB",
+    icon: Archive,
+    libraryType: "MODEL3D",
+  },
+};
+
+// ── Página principal ───────────────────────────────────────────────────────────
+
 export default function AdminBibliotecaPage() {
   const [activeTab, setActiveTab] = useState<Tab>("photos");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
+
   const libraryQuery = useAdminLibrary();
+  const { upload, entries, isUploading, clearFinished } = useLibraryUpload();
 
   const filtered = useMemo(() => {
     const allAssets = libraryQuery.data ?? [];
     const q = query.trim().toLowerCase();
+    const config = UPLOAD_CONFIG[activeTab];
     return allAssets.filter((asset) => {
       const matchesSearch = !q || asset.name.toLowerCase().includes(q);
-      const matchesTab =
-        activeTab === "photos"
-          ? asset.type === "IMAGE"
-          : activeTab === "manuals"
-            ? asset.type === "PDF"
-            : asset.type === "MODEL3D";
+      const matchesTab = asset.type === config.libraryType;
       return matchesSearch && matchesTab;
     });
   }, [query, activeTab, libraryQuery.data]);
@@ -185,31 +331,7 @@ export default function AdminBibliotecaPage() {
     setQuery("");
   }
 
-  const uploadConfig: Record<
-    Tab,
-    { accept: string; label: string; description: string; icon: LucideIcon }
-  > = {
-    photos: {
-      accept: "image/*",
-      label: "Clique ou arraste imagens para a biblioteca",
-      description: "PNG, JPG, WebP são aceitos",
-      icon: Image,
-    },
-    manuals: {
-      accept: ".pdf",
-      label: "Clique ou arraste PDFs para a biblioteca",
-      description: "Apenas arquivos PDF",
-      icon: FileText,
-    },
-    "3d-models": {
-      accept: ".glb,.gltf,.obj,.fbx",
-      label: "Clique ou arraste modelos 3D para a biblioteca",
-      description: "GLB, GLTF, OBJ ou FBX",
-      icon: Archive,
-    },
-  };
-
-  const activeUpload = uploadConfig[activeTab];
+  const activeConfig = UPLOAD_CONFIG[activeTab];
 
   return (
     <AdminListPage
@@ -248,16 +370,24 @@ export default function AdminBibliotecaPage() {
         ))}
       </div>
 
+      {/* Zona de upload */}
       <AdminFormSection title="Fazer upload">
         <AdminFileUpload
           multiple
-          accept={activeUpload.accept}
-          label={activeUpload.label}
-          description={activeUpload.description}
-          icon={activeUpload.icon}
+          clearOnUpload
+          accept={activeConfig.accept}
+          label={activeConfig.label}
+          description={activeConfig.description}
+          icon={activeConfig.icon}
+          disabled={isUploading}
+          onUpload={upload}
         />
       </AdminFormSection>
 
+      {/* Progresso de uploads em andamento */}
+      <UploadProgressList entries={entries} onClear={clearFinished} />
+
+      {/* Grid de fotos ou tabela de arquivos */}
       {activeTab === "photos" ? (
         paginatedAssets.length === 0 ? (
           <div className="flex items-center justify-center rounded-lg border border-dashed border-border py-12">

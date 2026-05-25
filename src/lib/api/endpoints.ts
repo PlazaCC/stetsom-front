@@ -17,4 +17,6 @@ export const INTERNAL_API_ENDPOINTS = {
   cmsProducts: "/api/cms/products",
   authLogin: "/api/auth/login",
   authLogout: "/api/auth/logout",
+  upload: "/api/upload",
+  uploadComplete: "/api/upload/complete",
 } as const;

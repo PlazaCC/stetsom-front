@@ -1,6 +1,12 @@
 import type { ApiErrorPayload, ProductStatus } from "@/lib/api/contracts";
 import { NextResponse } from "next/server";
 
+export function getCmsApiBaseUrl(): string {
+  return (
+    process.env.CMS_API_BASE_URL?.replace(/\/$/, "") ?? "http://localhost:3333"
+  );
+}
+
 export class HttpError extends Error {
   readonly status: number;
   readonly code: string;

@@ -585,3 +585,30 @@ export type CmsProductDetailPayload = {
   category: Category;
   subcategory?: Subcategory;
 };
+
+// Upload — tipos espelhados do backend (src/schemas/index.ts)
+
+/** Resposta de POST /api/upload/ — URL assinada S3 + file_url permanente */
+export type UploadPresignResponse = {
+  uploadUrl: string;
+  file_url: string;
+  key: string;
+  method: "PUT";
+  expiresIn: number;
+  headers: Record<string, string>;
+  assetType: Exclude<LibraryAssetType, "OTHER">;
+  fileName: string;
+};
+
+/** Body de POST /api/upload/complete — registra asset já enviado ao S3 na biblioteca */
+export type CompleteUploadInput = {
+  name: string;
+  file_url: string;
+  type: LibraryAssetType;
+  size_bytes: number;
+  width?: number;
+  height?: number;
+  alt?: string;
+  product_id?: string;
+  revision?: number;
+};

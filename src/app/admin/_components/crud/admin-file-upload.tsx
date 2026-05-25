@@ -5,33 +5,52 @@ import { Upload, X, type LucideIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
 interface AdminFileUploadProps {
+  /** Callback chamado ao selecionar/soltar arquivos */
   onUpload?: (files: File[]) => void;
+  /**
+   * Quando `true`, o componente limpa a lista interna imediatamente após chamar
+   * `onUpload` — ideal para upload automático onde o progresso é exibido externamente.
+   * Padrão: `false` (mantém os arquivos na lista para seleção manual).
+   */
+  clearOnUpload?: boolean;
   accept?: string;
   multiple?: boolean;
   label?: string;
   description?: string;
   className?: string;
   icon?: LucideIcon;
+  disabled?: boolean;
 }
 
 export function AdminFileUpload({
   onUpload,
+  clearOnUpload = false,
   accept,
   multiple = false,
   label = "Clique para fazer upload ou arraste o arquivo",
   description,
   className,
   icon: Icon = Upload,
+  disabled = false,
 }: AdminFileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
 
   function handleFiles(incoming: FileList | null) {
-    if (!incoming) return;
+    if (!incoming || disabled) return;
     const list = Array.from(incoming);
-    setFiles((prev) => (multiple ? [...prev, ...list] : list));
-    onUpload?.(list);
+
+    if (clearOnUpload) {
+      // Upload imediato: não exibe a lista — o pai gerencia o progresso
+      onUpload?.(list);
+    } else {
+      setFiles((prev) => (multiple ? [...prev, ...list] : list));
+      onUpload?.(list);
+    }
+
+    // Reset do input para aceitar o mesmo arquivo novamente
+    if (inputRef.current) inputRef.current.value = "";
   }
 
   function removeFile(index: number) {
@@ -48,10 +67,11 @@ export function AdminFileUpload({
         className={cn(
           "flex cursor-pointer flex-col items-center justify-center gap-3 rounded-md border border-dashed border-border bg-card px-6 py-10 text-center transition-colors",
           isDragging && "border-brand bg-brand/5",
+          disabled && "cursor-not-allowed opacity-50",
         )}
         onDragOver={(e) => {
           e.preventDefault();
-          setIsDragging(true);
+          if (!disabled) setIsDragging(true);
         }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={(e) => {
@@ -59,7 +79,11 @@ export function AdminFileUpload({
           setIsDragging(false);
           handleFiles(e.dataTransfer.files);
         }}
-        onClick={() => inputRef.current?.click()}
+        onClick={(e) => {
+          // A <label> já ativa o <input> interno nativamente ao clicar.
+          // Quando desabilitado, bloqueamos esse comportamento padrão.
+          if (disabled) e.preventDefault();
+        }}
       >
         <Icon className="size-8 text-muted-foreground" />
         <div>
@@ -73,12 +97,14 @@ export function AdminFileUpload({
           type="file"
           accept={accept}
           multiple={multiple}
+          disabled={disabled}
           className="hidden"
           onChange={(e) => handleFiles(e.target.files)}
         />
       </label>
 
-      {files.length > 0 && (
+      {/* Lista interna — só exibida quando clearOnUpload=false */}
+      {!clearOnUpload && files.length > 0 && (
         <ul className="space-y-2">
           {files.map((file, index) => (
             <li
