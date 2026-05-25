@@ -86,13 +86,13 @@ O locale flui de cima para baixo sem context global:
 
 ## Status atual: API-first com fallback de mock
 
-O back-end Fastify está ativo e é o padrão do app. Os mocks continuam disponíveis para desenvolvimento local por meio de uma única variável de ambiente:
+O back-end Fastify é usado quando `CMS_API_BASE_URL` está definida. Sem ela, o mock é usado automaticamente:
 
 ```bash
-CMS_PROVIDER=mock
+# Sem CMS_API_BASE_URL → mock (padrão, sem rede)
+# CMS_API_BASE_URL=... → provider remoto
+# CMS_FORCE_BFF=1      → força remoto mesmo sem CMS_API_BASE_URL
 ```
-
-Sem essa variável (ou com qualquer outro valor), o provider remoto é usado.
 
 ### Arquitetura dos mocks
 ```
@@ -114,7 +114,7 @@ src/lib/mock/
 - Slugs e IDs nunca são traduzidos — são sempre em formato URL-safe inglês/neutro
 
 ### Relação entre remoto e mock
-- `src/lib/api/provider.ts` define o provider ativo (`mock` apenas quando `CMS_PROVIDER=mock`)
+- `src/lib/api/provider.ts` define o provider ativo (mock quando `CMS_API_BASE_URL` não está definida; remote quando está)
 - `remote-provider.ts` é a implementação padrão e deve permanecer alinhada ao OpenAPI do `stetsom-api`
 - Os arquivos de mock continuam como fallback e referência de contrato
 

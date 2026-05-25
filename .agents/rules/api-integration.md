@@ -6,11 +6,12 @@ Reference for integrating with **stetsom-api** (Fastify). Consult OpenAPI/MCP fo
 
 ## Provider Abstraction
 
-All API calls go through `getCmsProvider()` (`src/lib/api/provider.ts`). The provider is a singleton that switches implementations based on `CMS_PROVIDER`:
+All API calls go through `getCmsProvider()` (`src/lib/api/provider.ts`). The provider is a singleton that switches based on `CMS_API_BASE_URL`:
 
 ```
-CMS_PROVIDER=mock    → createMockCmsProvider()   (local fixtures, no network)
-(default/unset)      → createRemoteCmsProvider()  (stetsom-api via HTTP)
+CMS_API_BASE_URL set → createRemoteCmsProvider()  (stetsom-api via HTTP)
+(default/unset)      → createMockCmsProvider()    (local fixtures, no network)
+CMS_FORCE_BFF=1      → forces remote even without CMS_API_BASE_URL (for testing)
 ```
 
 **Rule:** never call `fetch()` directly in pages or hooks for data that belongs to the provider contract. Route handlers and `use-upload.ts` are the only exceptions (they need direct auth token forwarding or browser S3 access).

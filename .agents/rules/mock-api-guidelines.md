@@ -1,12 +1,12 @@
 ---
-description: 'Use when working with local mock data. Backend is active; mocks are fallback via CMS_PROVIDER=mock and must stay contract-compatible.'
+description: 'Use when working with local mock data. Mocks are auto-fallback when CMS_API_BASE_URL is unset and must stay contract-compatible.'
 applyTo: 'src/lib/mock/**/*'
 ---
 
 # Mock API Guidelines (fallback mode)
 
-- The app is API-first by default (`createRemoteCmsProvider`).
-- Use mocks only when `CMS_PROVIDER=mock` in local development.
+- The app uses `createMockCmsProvider()` by default when `CMS_API_BASE_URL` is not set.
+- Mocks are used automatically in local dev without a backend running.
 - Mock payloads MUST stay aligned with `src/lib/api/contracts.ts` and mirror backend responses.
 
 **Mock data quality**

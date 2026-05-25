@@ -20,12 +20,15 @@ CMS Provider  (src/lib/api/provider.ts)
 fixtures     stetsom-api (via BFF ou direto)
 ```
 
-A troca entre mock e real é feita por uma variável de ambiente:
+A troca entre mock e real é feita pela presença da variável `CMS_API_BASE_URL`:
 
 ```bash
 # .env.local
-CMS_PROVIDER=mock   # dados locais, sem rede
-# (não definir)     # provider remoto — padrão
+# Sem CMS_API_BASE_URL  → usa mock (dados locais, sem rede)
+# CMS_API_BASE_URL=...  → usa provider remoto (stetsom-api)
+
+# Para forçar o provider remoto mesmo sem CMS_API_BASE_URL:
+# CMS_FORCE_BFF=1
 ```
 
 ---
