@@ -28,6 +28,7 @@ import type {
 } from "@/lib/api/contracts";
 import type { CmsProvider } from "@/lib/api/provider-contract";
 import { buildSearchParams } from "@/lib/api/query-utils";
+import { HttpError } from "@/lib/api/route-utils";
 import { cookies } from "next/headers";
 
 const DEFAULT_BASE = "http://localhost:3333";
@@ -52,7 +53,7 @@ async function fetchJson<T>(
 
   if (!response.ok) {
     const body = await response.text();
-    throw new Error(`Remote API error (${response.status}): ${body}`);
+    throw new HttpError(response.status, "UPSTREAM_ERROR", body);
   }
 
   return (await response.json()) as T;
@@ -72,7 +73,7 @@ export function createRemoteCmsProvider(): CmsProvider {
   const base = process.env.CMS_API_BASE_URL?.replace(/\/$/, "") ?? DEFAULT_BASE;
 
   return {
-    // ── Público ─────────────────────────────────────────────────────────
+    // ── Public ──────────────────────────────────────────────────────────
 
     async getCatalogPagePayload(locale?: string) {
       const suffix = buildSearchParams({ locale });
@@ -95,11 +96,21 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async getCatalogProductDetail(slug: string, locale?: string) {
+      // TODO: backend does not support locale on this endpoint yet
       void locale;
-      return fetchJson<ProductDetailPayload>(base, `/api/products/${slug}`);
+      try {
+        return await fetchJson<ProductDetailPayload>(
+          base,
+          `/api/products/${slug}`,
+        );
+      } catch (err) {
+        if (err instanceof HttpError && err.status === 404) return null;
+        throw err;
+      }
     },
 
     async getCatalogCategories(locale?: string) {
+      // TODO: backend does not support locale on this endpoint yet
       void locale;
       const payload = await fetchJson<CategoryWithSubcategories[]>(
         base,
@@ -118,6 +129,7 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async getCatalogSubcategories(locale?: string) {
+      // TODO: backend does not support locale on this endpoint yet
       void locale;
       const payload = await fetchJson<CategoryWithSubcategories[]>(
         base,
@@ -185,11 +197,16 @@ export function createRemoteCmsProvider(): CmsProvider {
 
     async getCmsProductDetail(id: string) {
       const authHeaders = await getAuthHeaders();
-      return fetchJson<CmsProductDetailPayload>(
-        base,
-        `/api/products/admin/${id}`,
-        { headers: authHeaders },
-      );
+      try {
+        return await fetchJson<CmsProductDetailPayload>(
+          base,
+          `/api/products/admin/${id}`,
+          { headers: authHeaders },
+        );
+      } catch (err) {
+        if (err instanceof HttpError && err.status === 404) return null;
+        throw err;
+      }
     },
 
     async getAdminUsers() {

@@ -594,9 +594,9 @@ export type CmsProductDetailPayload = {
   subcategory?: Subcategory;
 };
 
-// Upload — tipos espelhados do backend (src/schemas/index.ts)
+// Upload — mirrored from backend (src/schemas/index.ts)
 
-/** Resposta de POST /api/upload/ — URL assinada S3 + file_url permanente */
+/** POST /api/upload/ response: signed S3 URL + permanent file_url */
 export type UploadPresignResponse = {
   uploadUrl: string;
   file_url: string;
@@ -608,7 +608,7 @@ export type UploadPresignResponse = {
   fileName: string;
 };
 
-/** Body de POST /api/upload/complete — registra asset já enviado ao S3 na biblioteca */
+/** POST /api/upload/complete body: register uploaded asset in library */
 export type CompleteUploadInput = {
   name: string;
   file_url: string;

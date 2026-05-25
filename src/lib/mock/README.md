@@ -45,7 +45,7 @@ Os arquivos `*.ts` (sem sufixo `-i18n`) contêm os dados brutos em **pt-BR como 
 src/lib/api/
   contracts.ts          ← tipos TypeScript (espelho do OpenAPI do Fastify)
   provider-contract.ts  ← interface CmsProvider (contrato de métodos)
-  provider.ts           ← seleciona mock ou remote via env CMS_PROVIDER
+  provider.ts           ← seleciona mock ou remote via CMS_API_BASE_URL
   providers/
     mock-provider.ts    ← implementação usando os fixtures deste diretório
     remote-provider.ts  ← implementação real (chama o Fastify diretamente)
@@ -54,12 +54,15 @@ src/lib/api/
 O `provider.ts` escolhe qual implementação usar:
 
 ```ts
-// .env.local
-CMS_PROVIDER=mock    // usa mock-provider.ts  ← padrão durante desenvolvimento
-CMS_PROVIDER=remote  // usa remote-provider.ts ← quando o Fastify estiver disponível
+// Comportamento automático:
+// - Se CMS_API_BASE_URL estiver definida → usa remote-provider.ts
+// - Se não → usa mock-provider.ts (padrão, sem rede)
+
+// Para forçar o remote mesmo sem CMS_API_BASE_URL (testes):
+// CMS_FORCE_BFF=1
 ```
 
-O frontend nunca importa os mocks diretamente — tudo passa pela interface `CmsProvider`. Trocar de mock para real é uma alteração de uma variável de ambiente.
+O frontend nunca importa os mocks diretamente — tudo passa pela interface `CmsProvider`. Trocar de mock para real é definir a variável `CMS_API_BASE_URL`.
 
 ---
 
@@ -74,7 +77,7 @@ O fluxo de integração será:
 2. Frontend roda:  pnpm generate:types
 3. Orval gera os tipos → comparar e sincronizar com contracts.ts
 4. Orval gera o cliente HTTP → usar como base para remote-provider.ts
-5. Definir CMS_PROVIDER=remote em produção
+5. Definir CMS_API_BASE_URL em produção
 6. Os mocks continuam existindo para desenvolvimento local e testes
 ```
 
