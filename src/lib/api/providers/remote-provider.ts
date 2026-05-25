@@ -82,12 +82,15 @@ export function createRemoteCmsProvider(): CmsProvider {
     process.env.CMS_API_BASE_URL?.replace(/\/$/, "") ?? DEFAULT_REMOTE_BASE;
 
   return {
+    // ── Site / público ──────────────────────────────────────────────────────
+
     async getCatalogPagePayload(locale?: string) {
       void locale;
       return fetchJson<CatalogPagePayload>(remoteBaseUrl, "/api/site/catalog");
     },
 
     async getCatalogProducts(query: CatalogProductsQuery, locale?: string) {
+      void locale;
       const suffix = buildSearchParams({
         q: query.q,
         category: query.category,
@@ -95,9 +98,6 @@ export function createRemoteCmsProvider(): CmsProvider {
         page: query.page,
         pageSize: query.pageSize,
       });
-
-      void locale;
-
       return fetchJson<PaginatedResponse<ProductCardItem>>(
         remoteBaseUrl,
         `/api/products${suffix}`,
@@ -114,31 +114,27 @@ export function createRemoteCmsProvider(): CmsProvider {
 
     async getCatalogCategories(locale?: string) {
       void locale;
-
       const payload = await fetchJson<CategoryWithSubcategories[]>(
         remoteBaseUrl,
-        "/api/categories",
+        "/api/categories/",
       );
-
-      return payload.map((category) => ({
-        id: category.id,
-        name: category.name,
-        slug: category.slug,
-        order: category.order,
-        created_at: category.created_at,
-        updated_at: category.updated_at,
+      return payload.map((c) => ({
+        id: c.id,
+        name: c.name,
+        slug: c.slug,
+        order: c.order,
+        created_at: c.created_at,
+        updated_at: c.updated_at,
       }));
     },
 
     async getCatalogSubcategories(locale?: string) {
       void locale;
-
       const payload = await fetchJson<CategoryWithSubcategories[]>(
         remoteBaseUrl,
-        "/api/categories",
+        "/api/categories/",
       );
-
-      return payload.flatMap((category) => category.subcategories);
+      return payload.flatMap((c) => c.subcategories);
     },
 
     async getSiteHomePayload(locale?: string) {
@@ -156,35 +152,7 @@ export function createRemoteCmsProvider(): CmsProvider {
       return fetchJson<SupportPayload>(remoteBaseUrl, "/api/site/support");
     },
 
-    async getAdminDashboardPayload() {
-      const authHeaders = await getAuthHeaders();
-
-      return fetchJson<AdminDashboardPayload>(
-        remoteBaseUrl,
-        "/api/cms/dashboard",
-        {
-          headers: authHeaders,
-        },
-      );
-    },
-
-    async getCmsProductsPayload(query: CmsProductsQuery) {
-      const authHeaders = await getAuthHeaders();
-      const suffix = buildSearchParams({
-        q: query.q,
-        status: query.status,
-        page: query.page,
-        pageSize: query.pageSize,
-      });
-
-      return fetchJson<CmsProductsPayload>(
-        remoteBaseUrl,
-        `/api/products/admin${suffix}`,
-        {
-          headers: authHeaders,
-        },
-      );
-    },
+    // ── Auth ────────────────────────────────────────────────────────────────
 
     async login(credentials: LoginCredentials) {
       return fetchJson<AuthPayload>(remoteBaseUrl, "/api/auth/login", {
@@ -195,23 +163,64 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async logout() {
-      await fetchJson<void>(remoteBaseUrl, "/api/auth/logout", {
+      const authHeaders = await getAuthHeaders();
+      await fetchJson<{ success: boolean }>(remoteBaseUrl, "/api/auth/logout", {
         method: "DELETE",
+        headers: authHeaders,
       });
     },
 
+    // ── Admin / Dashboard ───────────────────────────────────────────────────
+
+    async getAdminDashboardPayload() {
+      const authHeaders = await getAuthHeaders();
+      return fetchJson<AdminDashboardPayload>(
+        remoteBaseUrl,
+        "/api/dashboard/",
+        {
+          headers: authHeaders,
+        },
+      );
+    },
+
+    // ── Produtos (CMS) ──────────────────────────────────────────────────────
+
+    async getCmsProductsPayload(query: CmsProductsQuery) {
+      const authHeaders = await getAuthHeaders();
+      const suffix = buildSearchParams({
+        q: query.q,
+        status: query.status,
+        page: query.page,
+        pageSize: query.pageSize,
+      });
+      return fetchJson<CmsProductsPayload>(
+        remoteBaseUrl,
+        `/api/products/admin${suffix}`,
+        { headers: authHeaders },
+      );
+    },
+
+    async getCmsProductDetail(id: string) {
+      const authHeaders = await getAuthHeaders();
+      return fetchJson<CmsProductDetailPayload>(
+        remoteBaseUrl,
+        `/api/products/admin/${id}`,
+        { headers: authHeaders },
+      );
+    },
+
+    // ── Usuários ────────────────────────────────────────────────────────────
+
     async getAdminUsers() {
       const authHeaders = await getAuthHeaders();
-
-      return fetchJson<AdminUsersPayload>(remoteBaseUrl, "/api/cms/users", {
+      return fetchJson<AdminUsersPayload>(remoteBaseUrl, "/api/users/", {
         headers: authHeaders,
       });
     },
 
     async createAdminUser(input: CreateAdminUserInput): Promise<AdminUser> {
       const authHeaders = await getAuthHeaders();
-
-      return fetchJson<AdminUser>(remoteBaseUrl, "/api/cms/users", {
+      return fetchJson<AdminUser>(remoteBaseUrl, "/api/users/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -226,8 +235,7 @@ export function createRemoteCmsProvider(): CmsProvider {
       input: UpdateAdminUserInput,
     ): Promise<AdminUser> {
       const authHeaders = await getAuthHeaders();
-
-      return fetchJson<AdminUser>(remoteBaseUrl, `/api/cms/users/${id}`, {
+      return fetchJson<AdminUser>(remoteBaseUrl, `/api/users/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -237,63 +245,52 @@ export function createRemoteCmsProvider(): CmsProvider {
       });
     },
 
-    async getCmsProductDetail(id: string) {
-      const authHeaders = await getAuthHeaders();
-
-      return fetchJson<CmsProductDetailPayload>(
-        remoteBaseUrl,
-        `/api/products/admin/${id}`,
-        {
-          headers: authHeaders,
-        },
-      );
-    },
+    // ── Banners ─────────────────────────────────────────────────────────────
 
     async getBanners() {
       const authHeaders = await getAuthHeaders();
-
-      return fetchJson<BannersPayload>(remoteBaseUrl, "/api/cms/banners", {
+      return fetchJson<BannersPayload>(remoteBaseUrl, "/api/banners/", {
         headers: authHeaders,
       });
     },
+
+    // ── Biblioteca ──────────────────────────────────────────────────────────
 
     async getLibraryAssets(params?: { type?: LibraryAssetType }) {
       const authHeaders = await getAuthHeaders();
       const suffix = buildSearchParams({ type: params?.type });
-
-      return fetchJson<LibraryPayload>(
-        remoteBaseUrl,
-        `/api/cms/library${suffix}`,
-        {
-          headers: authHeaders,
-        },
-      );
-    },
-
-    async getContactMessages() {
-      const authHeaders = await getAuthHeaders();
-
-      return fetchJson<ContactMessagesPayload>(
-        remoteBaseUrl,
-        "/api/cms/messages",
-        {
-          headers: authHeaders,
-        },
-      );
-    },
-
-    async getAuditLog() {
-      const authHeaders = await getAuthHeaders();
-
-      return fetchJson<AuditPayload>(remoteBaseUrl, "/api/cms/audit", {
+      return fetchJson<LibraryPayload>(remoteBaseUrl, `/api/library${suffix}`, {
         headers: authHeaders,
       });
     },
 
+    // ── Mensagens ───────────────────────────────────────────────────────────
+
+    async getContactMessages() {
+      const authHeaders = await getAuthHeaders();
+      return fetchJson<ContactMessagesPayload>(
+        remoteBaseUrl,
+        "/api/messages/",
+        {
+          headers: authHeaders,
+        },
+      );
+    },
+
+    // ── Auditoria ───────────────────────────────────────────────────────────
+
+    async getAuditLog() {
+      const authHeaders = await getAuthHeaders();
+      return fetchJson<AuditPayload>(remoteBaseUrl, "/api/audit/", {
+        headers: authHeaders,
+      });
+    },
+
+    // ── Configuração ────────────────────────────────────────────────────────
+
     async getCmsConfig() {
       const authHeaders = await getAuthHeaders();
-
-      return fetchJson<CmsConfig>(remoteBaseUrl, "/api/cms/config", {
+      return fetchJson<CmsConfig>(remoteBaseUrl, "/api/config/", {
         headers: authHeaders,
       });
     },
