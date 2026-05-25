@@ -86,6 +86,7 @@ export function createRemoteCmsProvider(): CmsProvider {
         status: query.status,
         page: query.page,
         pageSize: query.pageSize,
+        locale,
       });
       return fetchJson<PaginatedResponse<ProductCardItem>>(
         base,
