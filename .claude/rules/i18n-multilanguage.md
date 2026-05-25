@@ -1,5 +1,5 @@
 ---
-description: 'Use when adding UI text, translations, locale routing, language switching, or any user-facing string. Covers next-intl v4 usage, locale threading, mock data globalization, and the current backend-less architecture.'
+description: 'Use when adding UI text, translations, locale routing, language switching, or any user-facing string. Covers next-intl v4 usage, locale threading, and API-first architecture with mock fallback.'
 applyTo: 'src/**/*.{ts,tsx}'
 ---
 
@@ -84,9 +84,15 @@ O locale flui de cima para baixo sem context global:
 
 ---
 
-## Status atual: back-end simulado com mocks
+## Status atual: API-first com fallback de mock
 
-**O back-end Fastify ainda não existe.** Todo dado da API é gerado localmente no código.
+O back-end Fastify está ativo e é o padrão do app. Os mocks continuam disponíveis para desenvolvimento local por meio de uma única variável de ambiente:
+
+```bash
+CMS_PROVIDER=mock
+```
+
+Sem essa variável (ou com qualquer outro valor), o provider remoto é usado.
 
 ### Arquitetura dos mocks
 ```
@@ -107,10 +113,10 @@ src/lib/mock/
 - Nomes de produtos (brand names como "ST-4000EQ") não são traduzidos
 - Slugs e IDs nunca são traduzidos — são sempre em formato URL-safe inglês/neutro
 
-### Quando o back-end real chegar
-- Trocar o provider em `src/lib/api/provider.ts` de `createMockCmsProvider` para `createRemoteCmsProvider`
-- O `remote-provider.ts` já envia `?locale=xx` em todos os endpoints
-- Os arquivos de mock ficam intactos — servem como contrato e referência
+### Relação entre remoto e mock
+- `src/lib/api/provider.ts` define o provider ativo (`mock` apenas quando `CMS_PROVIDER=mock`)
+- `remote-provider.ts` é a implementação padrão e deve permanecer alinhada ao OpenAPI do `stetsom-api`
+- Os arquivos de mock continuam como fallback e referência de contrato
 
 ---
 

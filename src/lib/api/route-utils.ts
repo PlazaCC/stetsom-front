@@ -1,10 +1,58 @@
 import type { ApiErrorPayload, ProductStatus } from "@/lib/api/contracts";
 import { NextResponse } from "next/server";
 
+type ErrorPayload = {
+  error?: {
+    code?: string;
+    message?: string;
+  };
+};
+
 export function getCmsApiBaseUrl(): string {
   return (
     process.env.CMS_API_BASE_URL?.replace(/\/$/, "") ?? "http://localhost:3333"
   );
+}
+
+export function unauthorizedResponse(message = "Não autenticado.") {
+  const payload: ApiErrorPayload = {
+    error: {
+      code: "UNAUTHORIZED",
+      message,
+    },
+  };
+
+  return NextResponse.json(payload, { status: 401 });
+}
+
+export async function readUpstreamError(
+  response: Response,
+  fallbackCode: string,
+  fallbackMessage: string,
+) {
+  const contentType = response.headers.get("content-type") ?? "";
+
+  if (contentType.includes("application/json")) {
+    try {
+      const body = (await response.json()) as ErrorPayload;
+      return {
+        code: body.error?.code ?? fallbackCode,
+        message: body.error?.message ?? fallbackMessage,
+      };
+    } catch {
+      return {
+        code: fallbackCode,
+        message: fallbackMessage,
+      };
+    }
+  }
+
+  const text = await response.text().catch(() => "");
+
+  return {
+    code: fallbackCode,
+    message: text.trim() || fallbackMessage,
+  };
 }
 
 export class HttpError extends Error {

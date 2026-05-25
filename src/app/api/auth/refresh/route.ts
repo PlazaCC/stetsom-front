@@ -1,12 +1,15 @@
-import { toErrorResponse } from "@/lib/api/route-utils";
-import { NextResponse } from "next/server";
+import {
+  getCmsApiBaseUrl,
+  readUpstreamError,
+  toErrorResponse,
+  unauthorizedResponse,
+} from "@/lib/api/route-utils";
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
-const CMS_API_BASE_URL =
-  process.env.CMS_API_BASE_URL?.replace(/\/$/, "") ?? "http://localhost:3333";
 
 export async function POST() {
   try {
@@ -14,13 +17,12 @@ export async function POST() {
     const refreshToken = cookieStore.get("admin_refresh_token")?.value;
 
     if (!refreshToken) {
-      return NextResponse.json(
-        { error: { code: "UNAUTHORIZED", message: "Refresh token ausente." } },
-        { status: 401 },
-      );
+      return unauthorizedResponse("Refresh token ausente.");
     }
 
-    const upstream = await fetch(`${CMS_API_BASE_URL}/api/auth/refresh`, {
+    const base = getCmsApiBaseUrl();
+
+    const upstream = await fetch(`${base}/api/auth/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken }),
@@ -28,16 +30,13 @@ export async function POST() {
     });
 
     if (!upstream.ok) {
-      const body = (await upstream.json()) as { error?: { message?: string } };
-      return NextResponse.json(
-        {
-          error: {
-            code: "REFRESH_FAILED",
-            message: body.error?.message ?? "Sessão expirada.",
-          },
-        },
-        { status: 401 },
+      const error = await readUpstreamError(
+        upstream,
+        upstream.status === 401 ? "UNAUTHORIZED" : "REFRESH_FAILED",
+        "Sessão expirada.",
       );
+
+      return NextResponse.json({ error }, { status: upstream.status });
     }
 
     const { accessToken } = (await upstream.json()) as { accessToken: string };

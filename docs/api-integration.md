@@ -1,7 +1,7 @@
 # API Integration Guide
 
-**Status:** Ativo  
-**Fonte de verdade para tipos:** `src/lib/api/contracts.ts`  
+**Status:** Ativo
+**Fonte de verdade para tipos:** `src/lib/api/contracts.ts`
 **Especificação de endpoints:** OpenAPI via MCP (`mcp__stetsom-api-installation__search-openapi-operations`)
 
 > Este documento cobre padrões, decisões arquiteturais e regras de integração — não lista endpoints. Para endpoints e schemas específicos, consulte o OpenAPI, que reflete o estado atual da API e pode mudar a qualquer momento.
@@ -37,11 +37,12 @@ Os route handlers em `src/app/api/` são uma camada BFF mínima. Eles existem po
 **O que um route handler deve fazer:**
 - Ler o cookie `admin_token` e adicionar `Authorization: Bearer <token>`
 - Parsear e validar query params
-- Chamar `getCmsProvider().metodo()` e retornar o resultado
+- Para rotas de dados, chamar `getCmsProvider().metodo()` e retornar o resultado
+- Para rotas de auth/upload, fazer forward direto para o `stetsom-api` preservando status e contrato de erro
 
 **O que um route handler não deve fazer:**
 - Conter lógica de negócio
-- Transformar dados (use `src/lib/api/mappers.ts` para isso)
+- Transformar payloads de domínio no próprio route handler
 - Fazer múltiplas chamadas para compor uma resposta
 
 ---

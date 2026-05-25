@@ -286,5 +286,5 @@ Skill entrypoints are installed in `.agents/skills/` (VSCode) and `.claude/skill
 
 - **Backend:** Fastify API (separate repo) + Prisma ORM + Cloudflare R2 storage.
 - **Admin UI:** Mantine UI is planned for the CMS panel (not shadcn).
-- No BFF layer — frontend talks directly to Fastify API.
+- Thin BFF layer in `src/app/api/*` for auth cookies, token forwarding, and upload orchestration. Data access still follows `CmsProvider` (`remote` by default, `mock` only with `CMS_PROVIDER=mock`).
 - See `docs/rfcs/stetsom-rfc-1.md` for full rationale.

@@ -1,5 +1,5 @@
 ---
-description: 'Use when creating or validating product API payloads, mocks, or mappers. Covers Product, Category, Subcategory, ProductBlock and ProductFile fields and constraints.'
+description: 'Use when creating or validating product API payloads, mocks, or mappers. Covers Product (variation-based), ProductBlock, ProductFile, and detail payload constraints.'
 applyTo: 'src/lib/api/contracts.ts'
 ---
 
@@ -14,12 +14,21 @@ applyTo: 'src/lib/api/contracts.ts'
   - `status`: 'ACTIVE' | 'DISCONTINUED'
   - `launch_date`: ISO 8601 date string
   - `description`: string
-  - `specifications`: object (key → value; stable keys)
+  - `variations`: `ProductVariation[]`
+  - `highlight_attributes`: `string[]`
   - `thumbnail_url`: string (absolute or site-root-relative URL)
   - `video_url?`: string (optional video URL)
+  - `badge?`: `string | null`
+  - `markets?`: locale array (`pt-BR` | `en` | `es`)
   - `created_at`: ISO 8601 date string
   - `updated_at`: ISO 8601 date string
   - `created_by`: string (user id)
+
+- **ProductVariation**:
+  - `id`, `label`, `order`, `specs`
+
+- **ProductSpec**:
+  - `id`, `attribute`, `value`, `order`
 
 - **Category**:
   - `id`, `name`, `slug`, `order`, `created_at`, `updated_at`
@@ -32,10 +41,10 @@ applyTo: 'src/lib/api/contracts.ts'
   - Example `data` shapes: IMAGE -> `{ images: string[], caption?: string, layout?: string }`; TEXT -> `{ title?: string, content: string, align?: string }`.
 
 - **ProductFile**:
-  - `id`, `product_id`, `file_url`, `type` (MANUAL|CATALOG|CERTIFICATE|IMAGE|OTHER), `version` (number), `is_active` (boolean), `created_at`, `updated_at`
+  - `id`, `product_id` (nullable), `file_url`, `type` (MANUAL|CATALOG|CERTIFICATE|IMAGE|OTHER), `version` (number), `is_active` (boolean), optional metadata (`name`, `fileSize`), `created_at`, `updated_at`
 
 - **Product detail response shape**:
-  - `{ product: Product, blocks: ProductBlock[], files: ProductFile[], category: Category, subcategory?: Subcategory }`
+  - `{ product: Product, blocks: ProductBlock[], files: ProductFile[], category: Category, subcategory?: Subcategory, relatedProducts: ProductCardItem[] }`
 
 **Rules / Guidelines**
 
@@ -44,7 +53,8 @@ applyTo: 'src/lib/api/contracts.ts'
 - Dates must be ISO 8601 strings when serialized via JSON.
 - IDs must be UUID strings; `slug` must be lowercase and URL-safe.
 - Image/file URLs should be absolute or start with `/` (site-root-relative).
-- `specifications` keys must be stable across products and mocks (use Portuguese keys only if the backend contract requires them).
+- Specs are variation-based (`variations[].specs[]`) and ordered by `order`; do not reintroduce flat `specifications` objects.
+- `highlight_attributes` should reference attributes present in the selected variation specs.
 - `status` accepts only `ACTIVE` or `DISCONTINUED`.
 - `blocks` must be ordered by `order` and `order` must be unique per product; render according to ascending `order`.
 - Each product must have at least one active block for display (image/text/video as applicable).

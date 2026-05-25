@@ -1,5 +1,10 @@
 import type { CompleteUploadInput, LibraryAsset } from "@/lib/api/contracts";
-import { getCmsApiBaseUrl, toErrorResponse } from "@/lib/api/route-utils";
+import {
+  getCmsApiBaseUrl,
+  readUpstreamError,
+  toErrorResponse,
+  unauthorizedResponse,
+} from "@/lib/api/route-utils";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -11,10 +16,7 @@ export async function POST(request: Request) {
     const token = cookieStore.get("admin_token")?.value;
 
     if (!token) {
-      return NextResponse.json(
-        { error: { code: "UNAUTHORIZED", message: "Não autenticado." } },
-        { status: 401 },
-      );
+      return unauthorizedResponse();
     }
 
     const body = (await request.json()) as CompleteUploadInput;
@@ -32,8 +34,13 @@ export async function POST(request: Request) {
     });
 
     if (!upstream.ok) {
-      const data = (await upstream.json()) as Record<string, unknown>;
-      return NextResponse.json(data, { status: upstream.status });
+      const error = await readUpstreamError(
+        upstream,
+        "UPLOAD_COMPLETE_FAILED",
+        "Falha ao registrar upload.",
+      );
+
+      return NextResponse.json({ error }, { status: upstream.status });
     }
 
     const data = (await upstream.json()) as { asset: LibraryAsset };

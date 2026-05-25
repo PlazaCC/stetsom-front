@@ -23,9 +23,10 @@ Next.js route handlers under `src/app/api/` are a thin BFF. Their sole responsib
 
 1. **Read auth token from the `admin_token` cookie** and forward as `Authorization: Bearer <token>`
 2. **Parse and validate query params** before forwarding to the provider
-3. **Forward the provider response** as-is (no transformation in route handlers)
+3. **For data routes:** call `getCmsProvider()` and return provider output as-is
+4. **For auth/upload routes:** forward directly to `stetsom-api` preserving status and error contract
 
-Route handlers must not contain business logic. Transformation belongs in `src/lib/api/mappers.ts` or the provider itself.
+Route handlers must not contain business logic.
 
 ---
 
