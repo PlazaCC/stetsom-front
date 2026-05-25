@@ -3,7 +3,6 @@ import type {
   AdminUser,
   AdminUsersPayload,
   AuditPayload,
-  AuthPayload,
   BannersPayload,
   CatalogPagePayload,
   CatalogProductsQuery,
@@ -24,16 +23,92 @@ import type {
 import { INTERNAL_API_ENDPOINTS } from "@/lib/api/endpoints";
 import { buildSearchParams } from "@/lib/api/query-utils";
 
-async function fetchJson<T>(path: string): Promise<T> {
-  const response = await fetch(path, {
+type ApiErrorPayload = {
+  error?: {
+    message?: string;
+  };
+};
+
+type LoginAdminResponse = {
+  ok: true;
+};
+
+function isProtectedAdminPath(path: string): boolean {
+  return path.startsWith("/api/admin/") || path.startsWith("/api/cms/");
+}
+
+async function readErrorMessage(
+  response: Response,
+  fallback: string,
+): Promise<string> {
+  const contentType = response.headers.get("content-type") ?? "";
+
+  if (contentType.includes("application/json")) {
+    try {
+      const data = (await response.json()) as ApiErrorPayload;
+      if (data.error?.message) {
+        return data.error.message;
+      }
+    } catch {
+      return fallback;
+    }
+
+    return fallback;
+  }
+
+  const text = await response.text().catch(() => "");
+  return text.trim() || fallback;
+}
+
+async function refreshAdminSession(): Promise<boolean> {
+  try {
+    const response = await fetch(INTERNAL_API_ENDPOINTS.authRefresh, {
+      method: "POST",
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function requestWithAuthRetry(
+  path: string,
+  init?: RequestInit,
+): Promise<Response> {
+  const requestInit: RequestInit = {
+    ...init,
     headers: {
       Accept: "application/json",
+      ...(init?.headers ?? {}),
     },
     cache: "no-store",
-  });
+  };
+
+  const response = await fetch(path, requestInit);
+
+  if (response.status !== 401 || !isProtectedAdminPath(path)) {
+    return response;
+  }
+
+  const refreshed = await refreshAdminSession();
+  if (!refreshed) {
+    return response;
+  }
+
+  return fetch(path, requestInit);
+}
+
+async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await requestWithAuthRetry(path, init);
 
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
+    const message = await readErrorMessage(
+      response,
+      `Request failed with status ${response.status}`,
+    );
+    throw new Error(message);
   }
 
   return (await response.json()) as T;
@@ -101,50 +176,52 @@ export async function fetchAdminUsers() {
 export async function loginAdmin(credentials: LoginCredentials) {
   const response = await fetch(INTERNAL_API_ENDPOINTS.authLogin, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    cache: "no-store",
     body: JSON.stringify(credentials),
   });
 
   if (!response.ok) {
-    const data = (await response.json()) as { error?: { message?: string } };
-    throw new Error(data.error?.message ?? "Falha ao autenticar.");
+    const message = await readErrorMessage(response, "Falha ao autenticar.");
+    throw new Error(message);
   }
 
-  return (await response.json()) as AuthPayload;
+  return (await response.json()) as LoginAdminResponse;
 }
 
 export async function logoutAdmin() {
-  await fetch(INTERNAL_API_ENDPOINTS.authLogout, { method: "POST" });
+  const response = await fetch(INTERNAL_API_ENDPOINTS.authLogout, {
+    method: "POST",
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const message = await readErrorMessage(
+      response,
+      "Falha ao encerrar sessão.",
+    );
+    throw new Error(message);
+  }
 }
 
 export async function createAdminUser(input: CreateAdminUserInput) {
-  const response = await fetch(INTERNAL_API_ENDPOINTS.adminUsers, {
+  return fetchJson<AdminUser>(INTERNAL_API_ENDPOINTS.adminUsers, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   });
-
-  if (!response.ok) {
-    const data = (await response.json()) as { error?: { message?: string } };
-    throw new Error(data.error?.message ?? "Falha ao criar usuário.");
-  }
-
-  return (await response.json()) as AdminUser;
 }
 
 export async function updateAdminUser(id: string, input: UpdateAdminUserInput) {
-  const response = await fetch(`${INTERNAL_API_ENDPOINTS.adminUsers}/${id}`, {
+  return fetchJson<AdminUser>(`${INTERNAL_API_ENDPOINTS.adminUsers}/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   });
-
-  if (!response.ok) {
-    const data = (await response.json()) as { error?: { message?: string } };
-    throw new Error(data.error?.message ?? "Falha ao atualizar usuário.");
-  }
-
-  return (await response.json()) as AdminUser;
 }
 
 export async function fetchAdminBanners() {

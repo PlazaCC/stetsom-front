@@ -1,10 +1,28 @@
+import { jwtVerify } from "jose";
 import createMiddleware from "next-intl/middleware";
 import { type NextRequest, NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
 
 const handleLocale = createMiddleware(routing);
 
-export function proxy(request: NextRequest) {
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_ACCESS_SECRET;
+  if (!secret) {
+    throw new Error("JWT_ACCESS_SECRET não está configurado.");
+  }
+  return new TextEncoder().encode(secret);
+}
+
+async function verifyAdminToken(token: string): Promise<boolean> {
+  try {
+    await jwtVerify(token, getJwtSecret());
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isAdminUi = pathname.startsWith("/admin");
@@ -12,13 +30,12 @@ export function proxy(request: NextRequest) {
 
   if (isAdminUi || isAdminApi) {
     const isLoginPage = pathname === "/admin/login";
+
     if (!isLoginPage) {
       const token = request.cookies.get("admin_token");
-      // MOCK: validates only 3-part structure (not signature) — intentionally weak for dev.
-      // TODO(task-16-auth): replace with jose JWT verification (HMAC-SHA256) when Fastify auth is integrated.
-      const isValidToken =
-        token && token.value.split(".").length === 3 && token.value.length > 10;
-      if (!isValidToken) {
+      const isValid = token ? await verifyAdminToken(token.value) : false;
+
+      if (!isValid) {
         if (isAdminApi) {
           return NextResponse.json(
             {
@@ -33,6 +50,7 @@ export function proxy(request: NextRequest) {
         return NextResponse.redirect(new URL("/admin/login", request.url));
       }
     }
+
     return NextResponse.next();
   }
 

@@ -16,5 +16,8 @@ export const INTERNAL_API_ENDPOINTS = {
   adminConfig: "/api/admin/config",
   cmsProducts: "/api/cms/products",
   authLogin: "/api/auth/login",
+  authRefresh: "/api/auth/refresh",
   authLogout: "/api/auth/logout",
+  upload: "/api/upload",
+  uploadComplete: "/api/upload/complete",
 } as const;
