@@ -46,6 +46,26 @@ export function unauthorizedResponse(message = "Não autenticado.") {
   return NextResponse.json(payload, { status: 401 });
 }
 
+export function getProxyUpstreamPath(
+  routeMap: Record<string, string>,
+  resource: string[],
+) {
+  const upstreamPath = routeMap[resource[0]];
+  if (!upstreamPath) {
+    throw new HttpError(404, "NOT_FOUND", "Recurso não encontrado.");
+  }
+
+  return upstreamPath;
+}
+
+export function ensureFound<T>(value: T | null | undefined): T {
+  if (value == null) {
+    throw new HttpError(404, "NOT_FOUND", "Recurso não encontrado.");
+  }
+
+  return value;
+}
+
 export async function readUpstreamError(
   response: Response,
   fallbackCode: string,

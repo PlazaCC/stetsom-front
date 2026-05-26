@@ -85,7 +85,7 @@ export function useLibraryUpload() {
     );
   }
 
-  async function processFile(entry: UploadEntry, file: File): Promise<void> {
+  async function processFile(entry: UploadEntry, file: File): Promise<boolean> {
     const { id } = entry;
 
     if (!ALLOWED_MIMES.has(file.type)) {
@@ -93,7 +93,7 @@ export function useLibraryUpload() {
         status: "error",
         error: `Tipo "${file.type}" não permitido.`,
       });
-      return;
+      return false;
     }
 
     try {
@@ -166,13 +166,13 @@ export function useLibraryUpload() {
       const { asset } = (await completeRes.json()) as { asset: LibraryAsset };
 
       patch(id, { status: "done", progress: 100, asset });
-
-      void queryClient.invalidateQueries({ queryKey: ["admin", "library"] });
+      return true;
     } catch (err) {
       patch(id, {
         status: "error",
         error: err instanceof Error ? err.message : "Erro desconhecido.",
       });
+      return false;
     }
   }
 
@@ -192,21 +192,26 @@ export function useLibraryUpload() {
     const CONCURRENCY = 3;
     let idx = 0;
 
+    let anySuccess = false;
     const workers = new Array(Math.min(CONCURRENCY, files.length))
       .fill(0)
       .map(async () => {
         while (true) {
           const i = idx++;
-          if (i >= files.length) return;
+          if (i >= files.length) return false;
           const file = files[i];
           const entry = newEntries[i];
           if (!file || !entry) continue;
           // Await each file processing to keep per-file error handling linear
-          await processFile(entry, file);
+          const success = await processFile(entry, file);
+          if (success) anySuccess = true;
         }
       });
 
     await Promise.all(workers);
+    if (anySuccess) {
+      void queryClient.invalidateQueries({ queryKey: ["admin", "library"] });
+    }
   }
 
   function clearFinished() {

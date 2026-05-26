@@ -8,8 +8,9 @@ import { getCmsProvider } from "@/lib/api/provider";
 import type { CmsProvider } from "@/lib/api/provider-contract";
 import {
   HttpError,
+  ensureFound,
+  getProxyUpstreamPath,
   isMockMode,
-  notFoundResponse,
   toErrorResponse,
   unauthorizedResponse,
 } from "@/lib/api/route-utils";
@@ -25,6 +26,12 @@ export const dynamic = "force-dynamic";
 async function getAdminToken(): Promise<string | null> {
   const store = await cookies();
   return store.get("admin_token")?.value ?? null;
+}
+
+async function ensureAdminToken(): Promise<string | null> {
+  const token = await getAdminToken();
+  if (!token) return null;
+  return (await verifyAdminToken(token)) ? token : null;
 }
 
 // -- Param helpers --
@@ -109,29 +116,27 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ resource: string[] }> },
 ) {
-  const token = await getAdminToken();
+  const token = await ensureAdminToken();
   if (!token) return unauthorizedResponse();
-  const isValid = await verifyAdminToken(token);
-  if (!isValid) return unauthorizedResponse();
 
   try {
     const { resource } = await params;
 
     if (!isMockMode()) {
-      const upstreamPath = ADMIN_ROUTE_MAP[resource[0]];
-      if (!upstreamPath) return notFoundResponse();
+      const upstreamPath = getProxyUpstreamPath(ADMIN_ROUTE_MAP, resource);
       return forwardRequest(request, upstreamPath, resource, token);
     }
 
     const handler = MOCK_GET[resource[0]];
-    if (!handler) return notFoundResponse();
-
-    const result = await handler(
-      getCmsProvider(),
-      resource,
-      request.nextUrl.searchParams,
+    const result = ensureFound(
+      handler
+        ? await handler(
+            getCmsProvider(),
+            resource,
+            request.nextUrl.searchParams,
+          )
+        : null,
     );
-    if (result === null) return notFoundResponse();
     return NextResponse.json(result);
   } catch (error) {
     return toErrorResponse(error);
@@ -142,22 +147,20 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ resource: string[] }> },
 ) {
-  const token = await getAdminToken();
+  const token = await ensureAdminToken();
   if (!token) return unauthorizedResponse();
-  const isValid = await verifyAdminToken(token);
-  if (!isValid) return unauthorizedResponse();
 
   try {
     const { resource } = await params;
 
     if (!isMockMode()) {
-      const upstreamPath = ADMIN_ROUTE_MAP[resource[0]];
-      if (!upstreamPath) return notFoundResponse();
+      const upstreamPath = getProxyUpstreamPath(ADMIN_ROUTE_MAP, resource);
       return forwardRequest(request, upstreamPath, resource, token);
     }
 
     const handler = MOCK_POST[resource[0]];
-    if (!handler) return notFoundResponse();
+    if (!handler)
+      throw new HttpError(404, "NOT_FOUND", "Recurso não encontrado.");
 
     const body = await request.json();
     const result = await handler(getCmsProvider(), body);
@@ -171,22 +174,20 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ resource: string[] }> },
 ) {
-  const token = await getAdminToken();
+  const token = await ensureAdminToken();
   if (!token) return unauthorizedResponse();
-  const isValid = await verifyAdminToken(token);
-  if (!isValid) return unauthorizedResponse();
 
   try {
     const { resource } = await params;
 
     if (!isMockMode()) {
-      const upstreamPath = ADMIN_ROUTE_MAP[resource[0]];
-      if (!upstreamPath) return notFoundResponse();
+      const upstreamPath = getProxyUpstreamPath(ADMIN_ROUTE_MAP, resource);
       return forwardRequest(request, upstreamPath, resource, token);
     }
 
     const handler = MOCK_PATCH[resource[0]];
-    if (!handler) return notFoundResponse();
+    if (!handler)
+      throw new HttpError(404, "NOT_FOUND", "Recurso não encontrado.");
 
     const body = await request.json();
     const result = await handler(getCmsProvider(), resource, body);

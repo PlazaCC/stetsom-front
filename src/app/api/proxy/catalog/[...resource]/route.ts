@@ -1,9 +1,10 @@
-import type { CmsProvider } from "@/lib/api/provider-contract";
 import { CATALOG_ROUTE_MAP, forwardRequest } from "@/lib/api/bff-forward";
 import { getCmsProvider } from "@/lib/api/provider";
+import type { CmsProvider } from "@/lib/api/provider-contract";
 import {
+  ensureFound,
+  getProxyUpstreamPath,
   isMockMode,
-  notFoundResponse,
   toErrorResponse,
 } from "@/lib/api/route-utils";
 import { type NextRequest, NextResponse } from "next/server";
@@ -74,16 +75,14 @@ export async function GET(
         return NextResponse.json(result);
       }
 
-      const upstreamPath = CATALOG_ROUTE_MAP[resource[0]];
-      if (!upstreamPath) return notFoundResponse();
+      const upstreamPath = getProxyUpstreamPath(CATALOG_ROUTE_MAP, resource);
       return forwardRequest(request, upstreamPath, resource);
     }
 
     const handler = MOCK_GET[resource[0]];
-    if (!handler) return notFoundResponse();
-
-    const result = await handler(getCmsProvider(), resource, sp);
-    if (result === null) return notFoundResponse();
+    const result = ensureFound(
+      handler ? await handler(getCmsProvider(), resource, sp) : null,
+    );
     return NextResponse.json(result);
   } catch (error) {
     return toErrorResponse(error);

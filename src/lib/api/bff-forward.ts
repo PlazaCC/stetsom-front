@@ -70,20 +70,20 @@ export async function forwardRequest(
   const incomingContentType = request.headers.get("content-type");
   if (incomingContentType) headers["Content-Type"] = incomingContentType;
 
-  // Build body respecting content-type (text for JSON, ArrayBuffer for binaries)
+  // Build body respecting content-type. If Content-Type is absent, preserve raw bytes
+  // and fall back to text only when necessary.
   let body: BodyInit | undefined;
   if (request.method !== "GET" && request.method !== "HEAD") {
-    if (
-      incomingContentType &&
-      incomingContentType.includes("application/json")
-    ) {
+    if (incomingContentType?.includes("application/json")) {
       body = await request.text();
     } else {
-      // For form-data / binary bodies keep raw bytes
       try {
         body = await request.arrayBuffer();
       } catch {
-        // Fallback to text representation if arrayBuffer() is not available
+        body = await request.text().catch(() => undefined);
+      }
+
+      if (body instanceof ArrayBuffer && body.byteLength === 0) {
         body = await request.text().catch(() => undefined);
       }
     }

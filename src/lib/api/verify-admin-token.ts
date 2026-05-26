@@ -14,7 +14,12 @@ function getJwtSecret(): Uint8Array | null {
 export async function verifyAdminToken(token: string): Promise<boolean> {
   if (isMockMode()) {
     const parts = token.split(".");
-    return parts.length === 3 && parts[0].length > 0 && parts[1].length > 0;
+    return (
+      parts.length === 3 &&
+      parts[0].length > 0 &&
+      parts[1].length > 0 &&
+      parts[2] === "mock-signature"
+    );
   }
 
   const secret = getJwtSecret();
