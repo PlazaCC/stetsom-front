@@ -1,10 +1,18 @@
 "use client";
 
-import { fetchCmsProducts } from "@/lib/api/client";
-import type { CmsProductsQuery } from "@/lib/api/contracts";
+import type { CmsProductsPayload, CmsProductsQuery } from "@/lib/api/contracts";
+import { proxyFetch } from "@/lib/api/fetch-utils";
+import { buildSearchParams } from "@/lib/api/query-utils";
 import { useQuery } from "@tanstack/react-query";
 
 export function useCmsProducts(query: CmsProductsQuery) {
+  const path = `/api/proxy/admin/products${buildSearchParams({
+    q: query.q,
+    status: query.status,
+    page: query.page,
+    pageSize: query.pageSize,
+  })}`;
+
   return useQuery({
     queryKey: [
       "cms",
@@ -14,6 +22,6 @@ export function useCmsProducts(query: CmsProductsQuery) {
       query.page ?? 1,
       query.pageSize ?? 12,
     ],
-    queryFn: () => fetchCmsProducts(query),
+    queryFn: () => proxyFetch<CmsProductsPayload>(path),
   });
 }

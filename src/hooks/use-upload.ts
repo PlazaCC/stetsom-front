@@ -5,11 +5,8 @@ import type {
   LibraryAsset,
   UploadPresignResponse,
 } from "@/lib/api/contracts";
-import { INTERNAL_API_ENDPOINTS } from "@/lib/api/endpoints";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-
-// ── Tipos ──────────────────────────────────────────────────────────────────────
 
 export type UploadStage =
   | "idle"
@@ -23,12 +20,11 @@ export type UploadEntry = {
   id: string;
   fileName: string;
   status: UploadStage;
-  progress: number; // 0-100
+  progress: number;
   error?: string;
   asset?: LibraryAsset;
 };
 
-// Mimes aceitos pelo backend — espelhado de upload-validator.ts
 const ALLOWED_MIMES = new Set([
   "image/jpeg",
   "image/png",
@@ -41,13 +37,21 @@ const ALLOWED_MIMES = new Set([
   "model/gltf+json",
 ]);
 
-// ── Utilitários ────────────────────────────────────────────────────────────────
-
 function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-/** Lê dimensões de imagem no browser sem servidor */
+/**
+ * Statuses that indicate an active upload operation.
+ * "idle" is excluded intentionally — it represents entries queued but not yet
+ * started, and should not block new `upload()` calls.
+ */
+const ACTIVE_STATUSES: UploadStage[] = [
+  "presigning",
+  "uploading",
+  "registering",
+];
+
 async function readImageDimensions(
   file: File,
 ): Promise<{ width: number; height: number } | null> {
@@ -71,18 +75,6 @@ async function readImageDimensions(
   });
 }
 
-// ── Hook ───────────────────────────────────────────────────────────────────────
-
-/**
- * Orquestra o upload de 3 etapas para a biblioteca de mídia:
- *
- * 1. POST /api/upload          → obter URL pré-assinada do S3 (via BFF)
- * 2. PUT  {uploadUrl}          → enviar binário direto ao S3 pelo browser
- * 3. POST /api/upload/complete → registrar metadados na biblioteca (via BFF)
- *
- * Requisito: bucket S3 com CORS configurado (AllowedMethods: PUT).
- * O backend gera URLs com ContentType assinado (X-Amz-SignedHeaders=content-type;host).
- */
 export function useLibraryUpload() {
   const queryClient = useQueryClient();
   const [entries, setEntries] = useState<UploadEntry[]>([]);
@@ -93,23 +85,21 @@ export function useLibraryUpload() {
     );
   }
 
-  async function processFile(entry: UploadEntry, file: File): Promise<void> {
+  async function processFile(entry: UploadEntry, file: File): Promise<boolean> {
     const { id } = entry;
 
-    // Validação cliente antes de chamar o servidor
     if (!ALLOWED_MIMES.has(file.type)) {
       patch(id, {
         status: "error",
         error: `Tipo "${file.type}" não permitido.`,
       });
-      return;
+      return false;
     }
 
     try {
-      // Etapa 1 — Presign
       patch(id, { status: "presigning", progress: 10 });
 
-      const presignRes = await fetch(INTERNAL_API_ENDPOINTS.upload, {
+      const presignRes = await fetch("/api/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -131,25 +121,20 @@ export function useLibraryUpload() {
 
       const presign = (await presignRes.json()) as UploadPresignResponse;
 
-      // Etapa 2 — PUT direto ao S3 pelo browser
       patch(id, { status: "uploading", progress: 40 });
 
       const putRes = await fetch(presign.uploadUrl, {
         method: "PUT",
-        // Content-Type está incluso em X-Amz-SignedHeaders — deve ser enviado
         headers: presign.headers,
         body: file,
       });
 
       if (!putRes.ok) {
-        const errBody = await putRes.text().catch(() => "");
-        console.error("[use-upload] S3 PUT falhou:", putRes.status, errBody);
         throw new Error(`Upload para o storage falhou (HTTP ${putRes.status})`);
       }
 
       patch(id, { progress: 80 });
 
-      // Etapa 3 — Registrar na biblioteca
       patch(id, { status: "registering", progress: 85 });
 
       const dims = await readImageDimensions(file);
@@ -162,7 +147,7 @@ export function useLibraryUpload() {
         ...(dims ?? {}),
       };
 
-      const completeRes = await fetch(INTERNAL_API_ENDPOINTS.uploadComplete, {
+      const completeRes = await fetch("/api/upload/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(completeBody),
@@ -181,18 +166,16 @@ export function useLibraryUpload() {
       const { asset } = (await completeRes.json()) as { asset: LibraryAsset };
 
       patch(id, { status: "done", progress: 100, asset });
-
-      // Invalida cache da biblioteca para refletir o novo asset
-      void queryClient.invalidateQueries({ queryKey: ["admin", "library"] });
+      return true;
     } catch (err) {
       patch(id, {
         status: "error",
         error: err instanceof Error ? err.message : "Erro desconhecido.",
       });
+      return false;
     }
   }
 
-  /** Inicia o upload de uma lista de arquivos (sequencial para evitar rate limit) */
   async function upload(files: File[]): Promise<void> {
     if (files.length === 0) return;
 
@@ -205,23 +188,39 @@ export function useLibraryUpload() {
 
     setEntries((prev) => [...prev, ...newEntries]);
 
-    for (let i = 0; i < files.length; i++) {
-      await processFile(newEntries[i], files[i]);
+    // Run uploads with limited concurrency to improve throughput and UX.
+    const CONCURRENCY = 3;
+    let idx = 0;
+
+    let anySuccess = false;
+    const workers = new Array(Math.min(CONCURRENCY, files.length))
+      .fill(0)
+      .map(async () => {
+        while (true) {
+          const i = idx++;
+          if (i >= files.length) return false;
+          const file = files[i];
+          const entry = newEntries[i];
+          if (!file || !entry) continue;
+          // Await each file processing to keep per-file error handling linear
+          const success = await processFile(entry, file);
+          if (success) anySuccess = true;
+        }
+      });
+
+    await Promise.all(workers);
+    if (anySuccess) {
+      void queryClient.invalidateQueries({ queryKey: ["admin", "library"] });
     }
   }
 
-  /** Remove entradas concluídas (done ou error) */
   function clearFinished() {
     setEntries((prev) =>
       prev.filter((e) => e.status !== "done" && e.status !== "error"),
     );
   }
 
-  const isUploading = entries.some((e) =>
-    (
-      ["idle", "presigning", "uploading", "registering"] as UploadStage[]
-    ).includes(e.status),
-  );
+  const isUploading = entries.some((e) => ACTIVE_STATUSES.includes(e.status));
 
   const doneCount = entries.filter((e) => e.status === "done").length;
   const errorCount = entries.filter((e) => e.status === "error").length;

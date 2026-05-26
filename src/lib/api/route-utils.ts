@@ -1,10 +1,99 @@
-import type { ApiErrorPayload, ProductStatus } from "@/lib/api/contracts";
+import type { ApiErrorPayload } from "@/lib/api/contracts";
 import { NextResponse } from "next/server";
 
+type ErrorPayload = {
+  error?: {
+    code?: string;
+    message?: string;
+  };
+};
+
 export function getCmsApiBaseUrl(): string {
-  return (
-    process.env.CMS_API_BASE_URL?.replace(/\/$/, "") ?? "http://localhost:3333"
-  );
+  const raw = process.env.CMS_API_BASE_URL;
+  if (!raw) return "http://localhost:3333";
+
+  const trimmed = raw.replace(/\/$/, "");
+  try {
+    const parsed = new URL(trimmed);
+    if (!/^https?:$/.test(parsed.protocol)) {
+      throw new Error("Invalid protocol");
+    }
+    return trimmed;
+  } catch {
+    throw new Error(`CMS_API_BASE_URL inválido: ${raw}`);
+  }
+}
+
+export function isMockMode(): boolean {
+  return !process.env.CMS_API_BASE_URL && process.env.CMS_FORCE_BFF !== "1";
+}
+
+export function notFoundResponse(message = "Recurso não encontrado.") {
+  const payload: ApiErrorPayload = {
+    error: { code: "NOT_FOUND", message },
+  };
+  return NextResponse.json(payload, { status: 404 });
+}
+
+export function unauthorizedResponse(message = "Não autenticado.") {
+  const payload: ApiErrorPayload = {
+    error: {
+      code: "UNAUTHORIZED",
+      message,
+    },
+  };
+
+  return NextResponse.json(payload, { status: 401 });
+}
+
+export function getProxyUpstreamPath(
+  routeMap: Record<string, string>,
+  resource: string[],
+) {
+  const upstreamPath = routeMap[resource[0]];
+  if (!upstreamPath) {
+    throw new HttpError(404, "NOT_FOUND", "Recurso não encontrado.");
+  }
+
+  return upstreamPath;
+}
+
+export function ensureFound<T>(value: T | null | undefined): T {
+  if (value == null) {
+    throw new HttpError(404, "NOT_FOUND", "Recurso não encontrado.");
+  }
+
+  return value;
+}
+
+export async function readUpstreamError(
+  response: Response,
+  fallbackCode: string,
+  fallbackMessage: string,
+) {
+  const contentType = response.headers.get("content-type") ?? "";
+
+  if (contentType.includes("application/json")) {
+    try {
+      const body = (await response.json()) as ErrorPayload;
+      return {
+        code: body.error?.code ?? fallbackCode,
+        message: body.error?.message ?? fallbackMessage,
+      };
+    } catch {
+      return {
+        code: fallbackCode,
+        message: fallbackMessage,
+      };
+    }
+  }
+
+  const text = await response.text().catch(() => "");
+
+  return {
+    code: fallbackCode,
+    message: text.trim() || fallbackMessage,
+  };
 }
 
 export class HttpError extends Error {
@@ -16,43 +105,6 @@ export class HttpError extends Error {
     this.status = status;
     this.code = code;
   }
-}
-
-export function parsePositiveInt(
-  value: string | null,
-  fallback: number,
-): number {
-  if (!value) {
-    return fallback;
-  }
-
-  const parsed = Number(value);
-
-  if (!Number.isFinite(parsed) || parsed < 1) {
-    return fallback;
-  }
-
-  return Math.floor(parsed);
-}
-
-export function parseStatus(
-  value: string | null,
-): ProductStatus | "ALL" | undefined {
-  if (!value) {
-    return undefined;
-  }
-
-  const normalized = value.toUpperCase();
-
-  if (
-    normalized === "ACTIVE" ||
-    normalized === "DISCONTINUED" ||
-    normalized === "ALL"
-  ) {
-    return normalized;
-  }
-
-  return undefined;
 }
 
 export function toErrorResponse(error: unknown) {

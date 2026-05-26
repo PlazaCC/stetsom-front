@@ -5,16 +5,22 @@ import { createRemoteCmsProvider } from "@/lib/api/providers/remote-provider";
 let providerCache: CmsProvider | null = null;
 
 /**
- * Retorna o CMS provider ativo.
+ * Returns the active CMS provider.
  *
- * - `CMS_PROVIDER=mock`  → dados locais (dev sem backend)
- * - qualquer outro valor → provider remoto (stetsom-api)
+ * - `CMS_API_BASE_URL` set → remote (stetsom-api)
+ * - `CMS_FORCE_BFF=1`     → remote even without base URL (for testing, will break)
+ * - otherwise              → mock (local data, no network)
  */
 export function getCmsProvider(): CmsProvider {
   if (providerCache) return providerCache;
+
+  const hasBaseUrl = !!process.env.CMS_API_BASE_URL;
+  const forceBff = process.env.CMS_FORCE_BFF === "1";
+
   providerCache =
-    process.env.CMS_PROVIDER === "mock"
-      ? createMockCmsProvider()
-      : createRemoteCmsProvider();
+    hasBaseUrl || forceBff
+      ? createRemoteCmsProvider()
+      : createMockCmsProvider();
+
   return providerCache;
 }

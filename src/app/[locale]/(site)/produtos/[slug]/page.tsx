@@ -1,7 +1,7 @@
 import { type BreadcrumbItem, Breadcrumb } from "@/components/ui/breadcrumb";
 import { Container } from "@/components/ui/container";
 import { Link } from "@/i18n/navigation";
-import { getCatalogProductDetail } from "@/lib/api/server";
+import { getCmsProvider } from "@/lib/api/provider";
 import { formatSpecKey } from "@/lib/utils/product";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
@@ -26,10 +26,10 @@ function toImageList(data: Record<string, unknown>): string[] {
 }
 
 export default async function ProdutoDetalhePage(props: ProductPageProps) {
-  const { slug } = await props.params;
+  const { slug, locale } = await props.params;
   const { variation } = await props.searchParams;
   const [payload, t] = await Promise.all([
-    getCatalogProductDetail(slug),
+    getCmsProvider().getCatalogProductDetail(slug, locale),
     getTranslations("ProductDetail"),
   ]);
 

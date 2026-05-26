@@ -45,6 +45,7 @@ export interface CmsProvider {
   getAdminDashboardPayload(): Promise<AdminDashboardPayload>;
   getCmsProductsPayload(query: CmsProductsQuery): Promise<CmsProductsPayload>;
   login(credentials: LoginCredentials): Promise<AuthPayload>;
+  refreshToken(token: string): Promise<AuthPayload>;
   logout(): Promise<void>;
   getAdminUsers(): Promise<AdminUsersPayload>;
   createAdminUser(input: CreateAdminUserInput): Promise<AdminUser>;

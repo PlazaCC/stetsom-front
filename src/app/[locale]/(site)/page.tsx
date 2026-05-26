@@ -1,4 +1,5 @@
-import { getSiteHomePayload } from "@/lib/api/server";
+import { getCmsProvider } from "@/lib/api/provider";
+import { getLocale } from "next-intl/server";
 import { Faq } from "./_components/faq";
 import { FeaturedProducts } from "./_components/featured-products";
 import HeroCarousel from "./_components/hero-carousel";
@@ -6,7 +7,9 @@ import { OurHistory } from "./_components/our-history";
 import { SocialFeed } from "./_components/social-feed";
 
 export default async function Home() {
-  const homePayload = await getSiteHomePayload();
+  const homePayload = await getCmsProvider().getSiteHomePayload(
+    await getLocale(),
+  );
 
   return (
     <>

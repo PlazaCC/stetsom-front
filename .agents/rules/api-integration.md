@@ -6,11 +6,12 @@ Reference for integrating with **stetsom-api** (Fastify). Consult OpenAPI/MCP fo
 
 ## Provider Abstraction
 
-All API calls go through `getCmsProvider()` (`src/lib/api/provider.ts`). The provider is a singleton that switches implementations based on `CMS_PROVIDER`:
+All API calls go through `getCmsProvider()` (`src/lib/api/provider.ts`). The provider is a singleton that switches based on `CMS_API_BASE_URL`:
 
 ```
-CMS_PROVIDER=mock    → createMockCmsProvider()   (local fixtures, no network)
-(default/unset)      → createRemoteCmsProvider()  (stetsom-api via HTTP)
+CMS_API_BASE_URL set → createRemoteCmsProvider()  (stetsom-api via HTTP)
+(default/unset)      → createMockCmsProvider()    (local fixtures, no network)
+CMS_FORCE_BFF=1      → forces remote even without CMS_API_BASE_URL (for testing)
 ```
 
 **Rule:** never call `fetch()` directly in pages or hooks for data that belongs to the provider contract. Route handlers and `use-upload.ts` are the only exceptions (they need direct auth token forwarding or browser S3 access).
@@ -23,9 +24,10 @@ Next.js route handlers under `src/app/api/` are a thin BFF. Their sole responsib
 
 1. **Read auth token from the `admin_token` cookie** and forward as `Authorization: Bearer <token>`
 2. **Parse and validate query params** before forwarding to the provider
-3. **Forward the provider response** as-is (no transformation in route handlers)
+3. **For data routes:** call `getCmsProvider()` and return provider output as-is
+4. **For auth/upload routes:** forward directly to `stetsom-api` preserving status and error contract
 
-Route handlers must not contain business logic. Transformation belongs in `src/lib/api/mappers.ts` or the provider itself.
+Route handlers must not contain business logic.
 
 ---
 
@@ -178,6 +180,22 @@ Site endpoints return `503` (not `404`) when a content dependency is unavailable
 `AuditEntry.action` is one of: `CREATE | UPDATE | DELETE | LOGIN | LOGOUT | PUBLISH`
 
 `action_sentence` is a pre-formatted human-readable string — render it directly without reformatting. Filter by `entity` query param to scope the log to a specific resource type.
+
+---
+
+## Admin Route Auth Guard
+
+**Every** admin route handler MUST call `getAdminToken()` as its **first** statement and return `unauthorizedResponse()` when the result is `null`:
+
+```ts
+export async function GET(request: NextRequest, ...) {
+  const token = await getAdminToken();
+  if (!token) return unauthorizedResponse();
+  // ...
+}
+```
+
+**Why:** The Next.js proxy (`proxy.ts`) no longer covers `/api/*` routes in its matcher — route-level auth is the **sole security boundary** for API routes. A handler that omits this guard is publicly accessible. There is no fallback layer.
 
 ---
 

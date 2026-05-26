@@ -44,13 +44,13 @@ const SUPPORT_CARDS_EN: SupportCard[] = [
   },
 ];
 
+// IDs match DocFile['type'] values returned by the API (MANUAL/CATALOG/CERTIFICATE/IMAGE).
+// Labels mirror getDocCategoryLabel() in src/domains/site/constants/doc-category-labels.ts.
 const SUPPORT_DOC_CATEGORIES_EN: DocumentationCategory[] = [
   { id: "MANUAL", label: "Manuals" },
-  { id: "logos", label: "Logos" },
   { id: "CATALOG", label: "Product Catalogs" },
-  { id: "IMAGE", label: "Product Photos" },
-  { id: "cds-fotos", label: "CDs and Stetsom Photos" },
-  { id: "wallpapers", label: "Wallpapers and Banners" },
+  { id: "CERTIFICATE", label: "Certificates" },
+  { id: "IMAGE", label: "Photos & Logos" },
 ];
 
 const SUPPORT_CONTACT_EN: SupportPayload["contact"] = {
@@ -133,13 +133,13 @@ const SUPPORT_CARDS_ES: SupportCard[] = [
   },
 ];
 
+// IDs match DocFile['type'] values returned by the API (MANUAL/CATALOG/CERTIFICATE/IMAGE).
+// Labels mirror getDocCategoryLabel() in src/domains/site/constants/doc-category-labels.ts.
 const SUPPORT_DOC_CATEGORIES_ES: DocumentationCategory[] = [
   { id: "MANUAL", label: "Manuales" },
-  { id: "logos", label: "Logos" },
   { id: "CATALOG", label: "Catálogos de productos" },
-  { id: "IMAGE", label: "Fotos de productos" },
-  { id: "cds-fotos", label: "CDs y Fotos Stetsom" },
-  { id: "wallpapers", label: "Wallpapers y banners" },
+  { id: "CERTIFICATE", label: "Certificados" },
+  { id: "IMAGE", label: "Fotos y logos" },
 ];
 
 const SUPPORT_CONTACT_ES: SupportPayload["contact"] = {

@@ -366,7 +366,7 @@ const SITE_SOCIAL_SECTION_ES: SocialFeedSection = {
   posts: [
     {
       ...SITE_SOCIAL_SECTION.posts[0],
-      caption: "Instalacion premium con la linea Stetsom Digital Bass.",
+      caption: "Instalación premium con la línea Stetsom Digital Bass.",
     },
     {
       ...SITE_SOCIAL_SECTION.posts[1],
@@ -383,7 +383,7 @@ const SITE_SOCIAL_SECTION_ES: SocialFeedSection = {
     },
     {
       ...SITE_SOCIAL_SECTION.posts[4],
-      caption: "Adelanto de la nueva linea con diseno agresivo.",
+      caption: "Adelanto de la nueva línea con diseño agresivo.",
     },
   ],
 };

@@ -5,19 +5,12 @@ import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-sectio
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminPagination } from "@/app/admin/_components/crud/admin-pagination";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
+import { UploadProgressList } from "@/components/upload-progress-list";
 import { useAdminLibrary } from "@/hooks/use-admin";
-import { useLibraryUpload, type UploadEntry } from "@/hooks/use-upload";
+import { useLibraryUpload } from "@/hooks/use-upload";
 import type { LibraryAsset } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
-import {
-  Archive,
-  Check,
-  FileText,
-  Image,
-  Loader2,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { Archive, Check, FileText, Image, type LucideIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
 const PAGE_SIZE = 6;
@@ -36,102 +29,6 @@ function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / 1048576).toFixed(1)} MB`;
-}
-
-// ── Progresso de upload ────────────────────────────────────────────────────────
-
-const STAGE_LABEL: Record<UploadEntry["status"], string> = {
-  idle: "Na fila…",
-  presigning: "Preparando…",
-  uploading: "Enviando…",
-  registering: "Registrando…",
-  done: "Concluído",
-  error: "Erro",
-};
-
-function UploadProgressList({
-  entries,
-  onClear,
-}: {
-  entries: UploadEntry[];
-  onClear: () => void;
-}) {
-  if (entries.length === 0) return null;
-
-  const allDone = entries.every(
-    (e) => e.status === "done" || e.status === "error",
-  );
-
-  return (
-    <div className="rounded-[16px] border border-border bg-card p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <p className="text-sm font-medium text-foreground">
-          Uploads em andamento
-        </p>
-        {allDone && (
-          <button
-            type="button"
-            onClick={onClear}
-            className="text-xs text-muted-foreground hover:text-foreground"
-          >
-            Limpar
-          </button>
-        )}
-      </div>
-
-      <ul className="space-y-2">
-        {entries.map((entry) => (
-          <li key={entry.id} className="flex items-center gap-3">
-            {/* Ícone de status */}
-            <span className="shrink-0">
-              {entry.status === "done" ? (
-                <Check className="size-4 text-green-500" />
-              ) : entry.status === "error" ? (
-                <X className="size-4 text-destructive" />
-              ) : (
-                <Loader2 className="size-4 animate-spin text-brand" />
-              )}
-            </span>
-
-            {/* Nome e barra de progresso */}
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center justify-between gap-2">
-                <span className="truncate text-sm text-foreground">
-                  {entry.fileName}
-                </span>
-                <span
-                  className={cn(
-                    "shrink-0 text-xs",
-                    entry.status === "done" && "text-green-500",
-                    entry.status === "error" && "text-destructive",
-                    !["done", "error"].includes(entry.status) &&
-                      "text-muted-foreground",
-                  )}
-                >
-                  {entry.status === "error"
-                    ? entry.error
-                    : STAGE_LABEL[entry.status]}
-                </span>
-              </div>
-
-              {/* Barra de progresso */}
-              {entry.status !== "error" && (
-                <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-muted">
-                  <div
-                    className={cn(
-                      "h-full rounded-full transition-all duration-500",
-                      entry.status === "done" ? "bg-green-500" : "bg-brand",
-                    )}
-                    style={{ width: `${entry.progress}%` }}
-                  />
-                </div>
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
 }
 
 // ── Cards de foto ──────────────────────────────────────────────────────────────

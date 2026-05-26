@@ -28,6 +28,7 @@ import type {
 } from "@/lib/api/contracts";
 import type { CmsProvider } from "@/lib/api/provider-contract";
 import { buildSearchParams } from "@/lib/api/query-utils";
+import { HttpError } from "@/lib/api/route-utils";
 import { cookies } from "next/headers";
 
 const DEFAULT_BASE = "http://localhost:3333";
@@ -52,7 +53,7 @@ async function fetchJson<T>(
 
   if (!response.ok) {
     const body = await response.text();
-    throw new Error(`Remote API error (${response.status}): ${body}`);
+    throw new HttpError(response.status, "UPSTREAM_ERROR", body);
   }
 
   return (await response.json()) as T;
@@ -72,21 +73,21 @@ export function createRemoteCmsProvider(): CmsProvider {
   const base = process.env.CMS_API_BASE_URL?.replace(/\/$/, "") ?? DEFAULT_BASE;
 
   return {
-    // ── Público ─────────────────────────────────────────────────────────
+    // ── Public ──────────────────────────────────────────────────────────
 
     async getCatalogPagePayload(locale?: string) {
-      void locale;
-      return fetchJson<CatalogPagePayload>(base, "/api/site/catalog");
+      const suffix = buildSearchParams({ locale });
+      return fetchJson<CatalogPagePayload>(base, `/api/site/catalog${suffix}`);
     },
 
     async getCatalogProducts(query: CatalogProductsQuery, locale?: string) {
-      void locale;
       const suffix = buildSearchParams({
         q: query.q,
         category: query.category,
         status: query.status,
         page: query.page,
         pageSize: query.pageSize,
+        locale,
       });
       return fetchJson<PaginatedResponse<ProductCardItem>>(
         base,
@@ -95,15 +96,23 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async getCatalogProductDetail(slug: string, locale?: string) {
-      void locale;
-      return fetchJson<ProductDetailPayload>(base, `/api/products/${slug}`);
+      const suffix = buildSearchParams({ locale });
+      try {
+        return await fetchJson<ProductDetailPayload>(
+          base,
+          `/api/products/${slug}${suffix}`,
+        );
+      } catch (err) {
+        if (err instanceof HttpError && err.status === 404) return null;
+        throw err;
+      }
     },
 
     async getCatalogCategories(locale?: string) {
-      void locale;
+      const suffix = buildSearchParams({ locale });
       const payload = await fetchJson<CategoryWithSubcategories[]>(
         base,
-        "/api/categories/",
+        `/api/categories${suffix}`,
       );
       return payload.map(
         ({ id, name, slug, order, created_at, updated_at }) => ({
@@ -118,27 +127,27 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async getCatalogSubcategories(locale?: string) {
-      void locale;
+      const suffix = buildSearchParams({ locale });
       const payload = await fetchJson<CategoryWithSubcategories[]>(
         base,
-        "/api/categories/",
+        `/api/categories${suffix}`,
       );
       return payload.flatMap((c) => c.subcategories);
     },
 
     async getSiteHomePayload(locale?: string) {
-      void locale;
-      return fetchJson<SiteHomePayload>(base, "/api/site/home");
+      const suffix = buildSearchParams({ locale });
+      return fetchJson<SiteHomePayload>(base, `/api/site/home${suffix}`);
     },
 
     async getSiteAboutPayload(locale?: string) {
-      void locale;
-      return fetchJson<SiteAboutPayload>(base, "/api/site/about");
+      const suffix = buildSearchParams({ locale });
+      return fetchJson<SiteAboutPayload>(base, `/api/site/about${suffix}`);
     },
 
     async getSupportPayload(locale?: string) {
-      void locale;
-      return fetchJson<SupportPayload>(base, "/api/site/support");
+      const suffix = buildSearchParams({ locale });
+      return fetchJson<SupportPayload>(base, `/api/site/support${suffix}`);
     },
 
     // ── Auth ─────────────────────────────────────────────────────────────
@@ -152,10 +161,24 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async logout() {
-      const authHeaders = await getAuthHeaders();
-      await fetchJson<{ success: boolean }>(base, "/api/auth/logout", {
-        method: "DELETE",
-        headers: authHeaders,
+      // Logout is stateless — token expiry is the real security boundary.
+      // Notify the backend best-effort; do not let a network failure block logout.
+      try {
+        const authHeaders = await getAuthHeaders();
+        await fetchJson<{ success: boolean }>(base, "/api/auth/logout", {
+          method: "DELETE",
+          headers: authHeaders,
+        });
+      } catch {
+        // Intentional: upstream failures must not prevent cookie clearing.
+      }
+    },
+
+    async refreshToken(token: string): Promise<AuthPayload> {
+      return fetchJson<AuthPayload>(base, "/api/auth/refresh", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken: token }),
       });
     },
 
@@ -185,11 +208,16 @@ export function createRemoteCmsProvider(): CmsProvider {
 
     async getCmsProductDetail(id: string) {
       const authHeaders = await getAuthHeaders();
-      return fetchJson<CmsProductDetailPayload>(
-        base,
-        `/api/products/admin/${id}`,
-        { headers: authHeaders },
-      );
+      try {
+        return await fetchJson<CmsProductDetailPayload>(
+          base,
+          `/api/products/admin/${id}`,
+          { headers: authHeaders },
+        );
+      } catch (err) {
+        if (err instanceof HttpError && err.status === 404) return null;
+        throw err;
+      }
     },
 
     async getAdminUsers() {

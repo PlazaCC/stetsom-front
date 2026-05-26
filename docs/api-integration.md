@@ -1,7 +1,7 @@
 # API Integration Guide
 
-**Status:** Ativo  
-**Fonte de verdade para tipos:** `src/lib/api/contracts.ts`  
+**Status:** Ativo
+**Fonte de verdade para tipos:** `src/lib/api/contracts.ts`
 **Especificação de endpoints:** OpenAPI via MCP (`mcp__stetsom-api-installation__search-openapi-operations`)
 
 > Este documento cobre padrões, decisões arquiteturais e regras de integração — não lista endpoints. Para endpoints e schemas específicos, consulte o OpenAPI, que reflete o estado atual da API e pode mudar a qualquer momento.
@@ -20,12 +20,15 @@ CMS Provider  (src/lib/api/provider.ts)
 fixtures     stetsom-api (via BFF ou direto)
 ```
 
-A troca entre mock e real é feita por uma variável de ambiente:
+A troca entre mock e real é feita pela presença da variável `CMS_API_BASE_URL`:
 
 ```bash
 # .env.local
-CMS_PROVIDER=mock   # dados locais, sem rede
-# (não definir)     # provider remoto — padrão
+# Sem CMS_API_BASE_URL  → usa mock (dados locais, sem rede)
+# CMS_API_BASE_URL=...  → usa provider remoto (stetsom-api)
+
+# Para forçar o provider remoto mesmo sem CMS_API_BASE_URL:
+# CMS_FORCE_BFF=1
 ```
 
 ---
@@ -37,11 +40,12 @@ Os route handlers em `src/app/api/` são uma camada BFF mínima. Eles existem po
 **O que um route handler deve fazer:**
 - Ler o cookie `admin_token` e adicionar `Authorization: Bearer <token>`
 - Parsear e validar query params
-- Chamar `getCmsProvider().metodo()` e retornar o resultado
+- Para rotas de dados, chamar `getCmsProvider().metodo()` e retornar o resultado
+- Para rotas de auth/upload, fazer forward direto para o `stetsom-api` preservando status e contrato de erro
 
 **O que um route handler não deve fazer:**
 - Conter lógica de negócio
-- Transformar dados (use `src/lib/api/mappers.ts` para isso)
+- Transformar payloads de domínio no próprio route handler
 - Fazer múltiplas chamadas para compor uma resposta
 
 ---
@@ -258,8 +262,11 @@ Para filtrar por entidade específica, use o query param `?entity=<nome>`.
 | `src/lib/api/provider-contract.ts` | Interface `CmsProvider` |
 | `src/lib/api/providers/remote-provider.ts` | Implementação HTTP |
 | `src/lib/api/providers/mock-provider.ts` | Implementação com fixtures |
-| `src/lib/api/server.ts` | Wrappers para Server Components (RSC) |
-| `src/lib/api/client.ts` | Funções fetch para TanStack Query (client) |
+| `src/app/api/proxy/admin/[...resource]/route.ts` | Proxy BFF para rotas admin (via CmsProvider) |
+| `src/app/api/proxy/catalog/[...resource]/route.ts` | Proxy BFF para rotas públicas de catálogo |
+| `src/app/api/auth/login/route.ts` | BFF login (troca credenciais por cookies HttpOnly) |
+| `src/app/api/auth/logout/route.ts` | BFF logout (limpa cookies) |
+| `src/app/api/auth/refresh/route.ts` | BFF refresh token |
 | `src/lib/api/route-utils.ts` | Helpers compartilhados para Route Handlers |
 | `src/hooks/use-admin.ts` | Hooks TanStack Query para admin |
 | `src/hooks/use-upload.ts` | Orquestração do upload 3 etapas |
