@@ -5,6 +5,9 @@ import { routing } from "./i18n/routing";
 
 const handleLocale = createMiddleware(routing);
 
+const IS_MOCK =
+  !process.env.CMS_API_BASE_URL && process.env.CMS_FORCE_BFF !== "1";
+
 function getJwtSecret(): Uint8Array {
   const secret = process.env.JWT_ACCESS_SECRET;
   if (!secret) {
@@ -14,6 +17,11 @@ function getJwtSecret(): Uint8Array {
 }
 
 async function verifyAdminToken(token: string): Promise<boolean> {
+  if (IS_MOCK) {
+    const parts = token.split(".");
+    return parts.length === 3 && parts[0].length > 0 && parts[1].length > 0;
+  }
+
   try {
     await jwtVerify(token, getJwtSecret());
     return true;

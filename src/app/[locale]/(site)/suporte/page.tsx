@@ -11,8 +11,8 @@ export default async function SuportePage() {
   const supportPayload = await getCmsProvider().getSupportPayload(
     await getLocale(),
   );
-  const categories = supportPayload.documentationCategories ?? [];
-  const serviceCenters = supportPayload.serviceCenters ?? [];
+  const categories = supportPayload.documentationCategories;
+  const serviceCenters = supportPayload.serviceCenters;
 
   return (
     <div>

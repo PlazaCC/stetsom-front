@@ -1,5 +1,6 @@
 import type {
   AdminUser,
+  AuthPayload,
   CatalogPagePayload,
   CatalogProductsQuery,
   CmsProductsQuery,
@@ -422,6 +423,36 @@ export function createMockCmsProvider(): CmsProvider {
 
     async logout() {
       // No-op for mock — cookie is cleared by the API route
+    },
+
+    async refreshToken(token: string): Promise<AuthPayload> {
+      const decoded = JSON.parse(
+        Buffer.from(token.split(".")[1]!, "base64").toString(),
+      ) as { sub: string; email: string; role: string; exp: number };
+
+      const user = MOCK_ADMIN_USERS.find((u) => u.id === decoded.sub);
+      if (!user) {
+        throw new HttpError(
+          401,
+          "INVALID_TOKEN",
+          "Token inválido ou expirado.",
+        );
+      }
+
+      const header = Buffer.from(
+        JSON.stringify({ alg: "HS256", typ: "JWT" }),
+      ).toString("base64");
+      const payload = Buffer.from(
+        JSON.stringify({
+          sub: user.id,
+          email: user.email,
+          role: user.role,
+          exp: Date.now() + 8 * 3600000,
+        }),
+      ).toString("base64");
+      const newAccessToken = `${header}.${payload}.mock-signature`;
+
+      return { accessToken: newAccessToken, refreshToken: token };
     },
 
     async getAdminUsers() {

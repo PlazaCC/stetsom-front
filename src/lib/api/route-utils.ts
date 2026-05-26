@@ -14,6 +14,10 @@ export function getCmsApiBaseUrl(): string {
   );
 }
 
+export function isMockMode(): boolean {
+  return !process.env.CMS_API_BASE_URL && process.env.CMS_FORCE_BFF !== "1";
+}
+
 export function unauthorizedResponse(message = "Não autenticado.") {
   const payload: ApiErrorPayload = {
     error: {

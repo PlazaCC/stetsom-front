@@ -321,14 +321,14 @@ export type SupportPayload = {
   };
   cards: SupportCard[];
   documentationFiles: ProductFile[];
-  documentationCategories?: DocumentationCategory[];
+  documentationCategories: DocumentationCategory[];
   contact: {
     label: string;
     title: string;
     description: string;
   };
-  contactInfo?: SupportContactInfo;
-  serviceCenters?: ServiceCenter[];
+  contactInfo: SupportContactInfo;
+  serviceCenters: ServiceCenter[];
   faq: {
     label: string;
     title: string;

@@ -1,5 +1,7 @@
+import { getCmsProvider } from "@/lib/api/provider";
 import {
   getCmsApiBaseUrl,
+  isMockMode,
   readUpstreamError,
   toErrorResponse,
   unauthorizedResponse,
@@ -20,8 +22,20 @@ export async function POST() {
       return unauthorizedResponse("Refresh token ausente.");
     }
 
-    const base = getCmsApiBaseUrl();
+    if (isMockMode()) {
+      const payload = await getCmsProvider().refreshToken(refreshToken);
+      const response = NextResponse.json({ ok: true });
+      response.cookies.set("admin_token", payload.accessToken, {
+        httpOnly: true,
+        secure: IS_PRODUCTION,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60 * 8,
+      });
+      return response;
+    }
 
+    const base = getCmsApiBaseUrl();
     const upstream = await fetch(`${base}/api/auth/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -42,7 +56,6 @@ export async function POST() {
     const { accessToken } = (await upstream.json()) as { accessToken: string };
 
     const response = NextResponse.json({ ok: true });
-
     response.cookies.set("admin_token", accessToken, {
       httpOnly: true,
       secure: IS_PRODUCTION,

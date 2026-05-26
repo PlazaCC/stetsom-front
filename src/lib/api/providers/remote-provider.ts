@@ -96,12 +96,11 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async getCatalogProductDetail(slug: string, locale?: string) {
-      // TODO: backend does not support locale on this endpoint yet
-      void locale;
+      const suffix = buildSearchParams({ locale });
       try {
         return await fetchJson<ProductDetailPayload>(
           base,
-          `/api/products/${slug}`,
+          `/api/products/${slug}${suffix}`,
         );
       } catch (err) {
         if (err instanceof HttpError && err.status === 404) return null;
@@ -110,11 +109,10 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async getCatalogCategories(locale?: string) {
-      // TODO: backend does not support locale on this endpoint yet
-      void locale;
+      const suffix = buildSearchParams({ locale });
       const payload = await fetchJson<CategoryWithSubcategories[]>(
         base,
-        "/api/categories/",
+        `/api/categories/${suffix}`,
       );
       return payload.map(
         ({ id, name, slug, order, created_at, updated_at }) => ({
@@ -129,11 +127,10 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async getCatalogSubcategories(locale?: string) {
-      // TODO: backend does not support locale on this endpoint yet
-      void locale;
+      const suffix = buildSearchParams({ locale });
       const payload = await fetchJson<CategoryWithSubcategories[]>(
         base,
-        "/api/categories/",
+        `/api/categories/${suffix}`,
       );
       return payload.flatMap((c) => c.subcategories);
     },
@@ -168,6 +165,14 @@ export function createRemoteCmsProvider(): CmsProvider {
       await fetchJson<{ success: boolean }>(base, "/api/auth/logout", {
         method: "DELETE",
         headers: authHeaders,
+      });
+    },
+
+    async refreshToken(token: string): Promise<AuthPayload> {
+      return fetchJson<AuthPayload>(base, "/api/auth/refresh", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken: token }),
       });
     },
 
