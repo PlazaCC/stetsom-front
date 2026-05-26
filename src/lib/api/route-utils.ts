@@ -9,9 +9,19 @@ type ErrorPayload = {
 };
 
 export function getCmsApiBaseUrl(): string {
-  return (
-    process.env.CMS_API_BASE_URL?.replace(/\/$/, "") ?? "http://localhost:3333"
-  );
+  const raw = process.env.CMS_API_BASE_URL;
+  if (!raw) return "http://localhost:3333";
+
+  const trimmed = raw.replace(/\/$/, "");
+  try {
+    const parsed = new URL(trimmed);
+    if (!/^https?:$/.test(parsed.protocol)) {
+      throw new Error("Invalid protocol");
+    }
+    return trimmed;
+  } catch {
+    throw new Error(`CMS_API_BASE_URL inválido: ${raw}`);
+  }
 }
 
 export function isMockMode(): boolean {

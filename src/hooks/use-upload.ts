@@ -188,14 +188,25 @@ export function useLibraryUpload() {
 
     setEntries((prev) => [...prev, ...newEntries]);
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const entry = newEntries[i];
-      // Both arrays are derived from the same `files` list, so indices always
-      // align — guard is for TypeScript strict array-access safety only.
-      if (!file || !entry) continue;
-      await processFile(entry, file);
-    }
+    // Run uploads with limited concurrency to improve throughput and UX.
+    const CONCURRENCY = 3;
+    let idx = 0;
+
+    const workers = new Array(Math.min(CONCURRENCY, files.length))
+      .fill(0)
+      .map(async () => {
+        while (true) {
+          const i = idx++;
+          if (i >= files.length) return;
+          const file = files[i];
+          const entry = newEntries[i];
+          if (!file || !entry) continue;
+          // Await each file processing to keep per-file error handling linear
+          await processFile(entry, file);
+        }
+      });
+
+    await Promise.all(workers);
   }
 
   function clearFinished() {

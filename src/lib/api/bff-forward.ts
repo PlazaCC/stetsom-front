@@ -1,4 +1,4 @@
-import { getCmsApiBaseUrl } from "@/lib/api/route-utils";
+import { getCmsApiBaseUrl, readUpstreamError } from "@/lib/api/route-utils";
 import { type NextRequest, NextResponse } from "next/server";
 
 /** Admin resource segment → upstream API path */
@@ -65,18 +65,36 @@ export async function forwardRequest(
 
   const headers: Record<string, string> = { Accept: "application/json" };
   if (token) headers.Authorization = `Bearer ${token}`;
-  if (request.method !== "GET") headers["Content-Type"] = "application/json";
+
+  // Preserve incoming Content-Type when present (critical for multipart/binary)
+  const incomingContentType = request.headers.get("content-type");
+  if (incomingContentType) headers["Content-Type"] = incomingContentType;
+
+  // Build body respecting content-type (text for JSON, ArrayBuffer for binaries)
+  let body: BodyInit | undefined;
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    if (
+      incomingContentType &&
+      incomingContentType.includes("application/json")
+    ) {
+      body = await request.text();
+    } else {
+      // For form-data / binary bodies keep raw bytes
+      try {
+        body = await request.arrayBuffer();
+      } catch {
+        // Fallback to text representation if arrayBuffer() is not available
+        body = await request.text().catch(() => undefined);
+      }
+    }
+  }
 
   const upstream = await fetch(upstreamUrl.toString(), {
     method: request.method,
     headers,
-    body: request.method !== "GET" ? await request.text() : undefined,
+    body,
     cache: "no-store",
   });
-
-  const data = await upstream.json().catch(() => ({
-    error: { code: "UPSTREAM_ERROR", message: "Invalid upstream response." },
-  }));
 
   const responseHeaders: Record<string, string> = {};
   for (const name of FORWARDED_RESPONSE_HEADERS) {
@@ -84,7 +102,47 @@ export async function forwardRequest(
     if (value) responseHeaders[name] = value;
   }
 
-  return NextResponse.json(data, {
+  // Handle no-content responses explicitly
+  if (upstream.status === 204 || upstream.status === 205) {
+    return new NextResponse(null, {
+      status: upstream.status,
+      headers: responseHeaders,
+    });
+  }
+
+  const upstreamContentType = upstream.headers.get("content-type") ?? "";
+
+  // Successful JSON responses
+  if (upstream.ok && upstreamContentType.includes("application/json")) {
+    const data = await upstream.json().catch(() => ({
+      error: { code: "UPSTREAM_ERROR", message: "Invalid upstream response." },
+    }));
+
+    return NextResponse.json(data, {
+      status: upstream.status,
+      headers: responseHeaders,
+    });
+  }
+
+  // Successful non-JSON responses: stream body through
+  if (upstream.ok) {
+    const headersWithType = { ...responseHeaders } as Record<string, string>;
+    if (upstreamContentType)
+      headersWithType["content-type"] = upstreamContentType;
+    return new NextResponse(upstream.body, {
+      status: upstream.status,
+      headers: headersWithType,
+    });
+  }
+
+  // Error responses: read upstream error payload when possible
+  const err = await readUpstreamError(
+    upstream,
+    "UPSTREAM_ERROR",
+    "Upstream returned error",
+  );
+  const payload = { error: { code: err.code, message: err.message } };
+  return NextResponse.json(payload, {
     status: upstream.status,
     headers: responseHeaders,
   });

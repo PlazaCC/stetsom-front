@@ -1,11 +1,11 @@
+import { ADMIN_ROUTE_MAP, forwardRequest } from "@/lib/api/bff-forward";
 import type {
   CreateAdminUserInput,
   LibraryAssetType,
   UpdateAdminUserInput,
 } from "@/lib/api/contracts";
-import type { CmsProvider } from "@/lib/api/provider-contract";
-import { ADMIN_ROUTE_MAP, forwardRequest } from "@/lib/api/bff-forward";
 import { getCmsProvider } from "@/lib/api/provider";
+import type { CmsProvider } from "@/lib/api/provider-contract";
 import {
   HttpError,
   isMockMode,
@@ -13,6 +13,7 @@ import {
   toErrorResponse,
   unauthorizedResponse,
 } from "@/lib/api/route-utils";
+import { verifyAdminToken } from "@/lib/api/verify-admin-token";
 import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -110,6 +111,8 @@ export async function GET(
 ) {
   const token = await getAdminToken();
   if (!token) return unauthorizedResponse();
+  const isValid = await verifyAdminToken(token);
+  if (!isValid) return unauthorizedResponse();
 
   try {
     const { resource } = await params;
@@ -141,6 +144,8 @@ export async function POST(
 ) {
   const token = await getAdminToken();
   if (!token) return unauthorizedResponse();
+  const isValid = await verifyAdminToken(token);
+  if (!isValid) return unauthorizedResponse();
 
   try {
     const { resource } = await params;
@@ -168,6 +173,8 @@ export async function PATCH(
 ) {
   const token = await getAdminToken();
   if (!token) return unauthorizedResponse();
+  const isValid = await verifyAdminToken(token);
+  if (!isValid) return unauthorizedResponse();
 
   try {
     const { resource } = await params;
