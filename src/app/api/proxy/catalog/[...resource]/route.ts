@@ -17,7 +17,9 @@ function parseStatus(v: string | null): "ACTIVE" | "DISCONTINUED" | undefined {
 }
 
 function parseNum(v: string | null): number | undefined {
-  return v ? Number(v) : undefined;
+  if (!v) return undefined;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : undefined;
 }
 
 // -- Mock handler map --

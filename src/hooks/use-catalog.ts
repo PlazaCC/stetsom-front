@@ -13,29 +13,26 @@ import { buildSearchParams } from "@/lib/api/query-utils";
 import { useQuery } from "@tanstack/react-query";
 
 export function useCatalogPage(locale?: string) {
-  const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
+  const path = `/api/proxy/catalog/page${buildSearchParams({ locale })}`;
   return useQuery({
     queryKey: ["catalog", "page", locale ?? ""],
-    queryFn: () =>
-      proxyFetch<CatalogPagePayload>(`/api/proxy/catalog/page${suffix}`),
+    queryFn: () => proxyFetch<CatalogPagePayload>(path),
   });
 }
 
 export function useCatalogCategories(locale?: string) {
-  const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
+  const path = `/api/proxy/catalog/categories${buildSearchParams({ locale })}`;
   return useQuery({
     queryKey: ["catalog", "categories", locale ?? ""],
-    queryFn: () =>
-      proxyFetch<Category[]>(`/api/proxy/catalog/categories${suffix}`),
+    queryFn: () => proxyFetch<Category[]>(path),
   });
 }
 
 export function useCatalogSubcategories(locale?: string) {
-  const suffix = locale ? `?locale=${encodeURIComponent(locale)}` : "";
+  const path = `/api/proxy/catalog/subcategories${buildSearchParams({ locale })}`;
   return useQuery({
     queryKey: ["catalog", "subcategories", locale ?? ""],
-    queryFn: () =>
-      proxyFetch<Subcategory[]>(`/api/proxy/catalog/subcategories${suffix}`),
+    queryFn: () => proxyFetch<Subcategory[]>(path),
   });
 }
 

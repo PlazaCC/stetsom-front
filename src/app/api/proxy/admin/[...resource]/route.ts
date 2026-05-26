@@ -20,10 +20,10 @@ export const dynamic = "force-dynamic";
 
 // -- Auth guard --
 
-async function requireAdminAuth() {
+/** Returns the admin token value, or null if absent. Single cookies() read per request. */
+async function getAdminToken(): Promise<string | null> {
   const store = await cookies();
-  if (!store.get("admin_token")?.value) return unauthorizedResponse();
-  return null;
+  return store.get("admin_token")?.value ?? null;
 }
 
 // -- Param helpers --
@@ -50,7 +50,9 @@ function parseStatus(v: string | null): "ACTIVE" | "DISCONTINUED" | undefined {
 }
 
 function parseNum(v: string | null): number | undefined {
-  return v ? Number(v) : undefined;
+  if (!v) return undefined;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : undefined;
 }
 
 // -- Mock handler maps --
@@ -106,8 +108,8 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ resource: string[] }> },
 ) {
-  const authErr = await requireAdminAuth();
-  if (authErr) return authErr;
+  const token = await getAdminToken();
+  if (!token) return unauthorizedResponse();
 
   try {
     const { resource } = await params;
@@ -115,7 +117,6 @@ export async function GET(
     if (!isMockMode()) {
       const upstreamPath = ADMIN_ROUTE_MAP[resource[0]];
       if (!upstreamPath) return notFoundResponse();
-      const token = (await cookies()).get("admin_token")!.value;
       return forwardRequest(request, upstreamPath, resource, token);
     }
 
@@ -138,8 +139,8 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ resource: string[] }> },
 ) {
-  const authErr = await requireAdminAuth();
-  if (authErr) return authErr;
+  const token = await getAdminToken();
+  if (!token) return unauthorizedResponse();
 
   try {
     const { resource } = await params;
@@ -147,7 +148,6 @@ export async function POST(
     if (!isMockMode()) {
       const upstreamPath = ADMIN_ROUTE_MAP[resource[0]];
       if (!upstreamPath) return notFoundResponse();
-      const token = (await cookies()).get("admin_token")!.value;
       return forwardRequest(request, upstreamPath, resource, token);
     }
 
@@ -166,8 +166,8 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ resource: string[] }> },
 ) {
-  const authErr = await requireAdminAuth();
-  if (authErr) return authErr;
+  const token = await getAdminToken();
+  if (!token) return unauthorizedResponse();
 
   try {
     const { resource } = await params;
@@ -175,7 +175,6 @@ export async function PATCH(
     if (!isMockMode()) {
       const upstreamPath = ADMIN_ROUTE_MAP[resource[0]];
       if (!upstreamPath) return notFoundResponse();
-      const token = (await cookies()).get("admin_token")!.value;
       return forwardRequest(request, upstreamPath, resource, token);
     }
 

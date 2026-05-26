@@ -25,7 +25,12 @@ async function verifyAdminToken(token: string): Promise<boolean> {
   try {
     await jwtVerify(token, getJwtSecret());
     return true;
-  } catch {
+  } catch (err) {
+    if (err instanceof Error && err.message.includes("JWT_ACCESS_SECRET")) {
+      console.error(
+        "[proxy] JWT_ACCESS_SECRET não configurado — todos os tokens de admin serão rejeitados.",
+      );
+    }
     return false;
   }
 }

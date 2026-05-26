@@ -20,13 +20,23 @@ export const CATALOG_ROUTE_MAP: Record<string, string> = {
   categories: "/api/categories/",
 };
 
+/** Upstream response headers forwarded to the BFF client (observability + rate-limiting). */
+const FORWARDED_RESPONSE_HEADERS = [
+  "x-request-id",
+  "x-ratelimit-limit",
+  "x-ratelimit-remaining",
+  "x-ratelimit-reset",
+] as const;
+
 /**
  * Forwards a BFF request to the upstream API.
  *
+ * - Rejects path traversal (`..` / `.`) in sub-segments
  * - Appends sub-segments (`resource[1..]`) to `basePath`
  * - Preserves original search params
  * - Injects `Authorization: Bearer <token>` when provided
  * - Pipes body unchanged for non-GET requests
+ * - Forwards selected upstream response headers for observability
  */
 export async function forwardRequest(
   request: NextRequest,
@@ -34,7 +44,18 @@ export async function forwardRequest(
   resource: string[],
   token?: string,
 ): Promise<NextResponse> {
-  const subPath = resource.slice(1).join("/");
+  const subSegments = resource.slice(1);
+
+  if (subSegments.some((s) => s === ".." || s === ".")) {
+    return NextResponse.json(
+      {
+        error: { code: "BAD_REQUEST", message: "Caminho de recurso inválido." },
+      },
+      { status: 400 },
+    );
+  }
+
+  const subPath = subSegments.join("/");
   const upstreamPath = subPath
     ? `${basePath.replace(/\/$/, "")}/${subPath}`
     : basePath;
@@ -57,5 +78,14 @@ export async function forwardRequest(
     error: { code: "UPSTREAM_ERROR", message: "Invalid upstream response." },
   }));
 
-  return NextResponse.json(data, { status: upstream.status });
+  const responseHeaders: Record<string, string> = {};
+  for (const name of FORWARDED_RESPONSE_HEADERS) {
+    const value = upstream.headers.get(name);
+    if (value) responseHeaders[name] = value;
+  }
+
+  return NextResponse.json(data, {
+    status: upstream.status,
+    headers: responseHeaders,
+  });
 }

@@ -1,4 +1,5 @@
 import type { AuthPayload, LoginCredentials } from "@/lib/api/contracts";
+import { setAuthCookies } from "@/lib/api/auth-cookies";
 import { getCmsProvider } from "@/lib/api/provider";
 import {
   getCmsApiBaseUrl,
@@ -9,26 +10,6 @@ import {
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
-
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
-
-function setAuthCookies(response: NextResponse, payload: AuthPayload) {
-  response.cookies.set("admin_token", payload.accessToken, {
-    httpOnly: true,
-    secure: IS_PRODUCTION,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 8,
-  });
-
-  response.cookies.set("admin_refresh_token", payload.refreshToken, {
-    httpOnly: true,
-    secure: IS_PRODUCTION,
-    sameSite: "lax",
-    path: "/api/auth/refresh",
-    maxAge: 60 * 60 * 24 * 7,
-  });
-}
 
 export async function POST(request: Request) {
   try {
@@ -51,16 +32,12 @@ export async function POST(request: Request) {
 
     if (!upstream.ok) {
       const isUnauthorized = upstream.status === 401;
-      const errorPayload = await readUpstreamError(
+      const error = await readUpstreamError(
         upstream,
         isUnauthorized ? "UNAUTHORIZED" : "AUTH_UPSTREAM_ERROR",
         isUnauthorized ? "Credenciais inválidas." : "Falha ao autenticar.",
       );
-
-      return NextResponse.json(
-        { error: errorPayload },
-        { status: upstream.status },
-      );
+      return NextResponse.json({ error }, { status: upstream.status });
     }
 
     const payload = (await upstream.json()) as AuthPayload;

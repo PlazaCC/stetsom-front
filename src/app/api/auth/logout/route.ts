@@ -1,3 +1,4 @@
+import { clearAuthCookies } from "@/lib/api/auth-cookies";
 import { getCmsProvider } from "@/lib/api/provider";
 import {
   getCmsApiBaseUrl,
@@ -8,26 +9,6 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
-
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
-
-function clearAuthCookies(response: NextResponse) {
-  response.cookies.set("admin_token", "", {
-    httpOnly: true,
-    secure: IS_PRODUCTION,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 0,
-  });
-
-  response.cookies.set("admin_refresh_token", "", {
-    httpOnly: true,
-    secure: IS_PRODUCTION,
-    sameSite: "lax",
-    path: "/api/auth/refresh",
-    maxAge: 0,
-  });
-}
 
 export async function POST() {
   try {
@@ -50,7 +31,7 @@ export async function POST() {
           cache: "no-store",
         });
       } catch {
-        // Best-effort upstream notification.
+        // Best-effort upstream notification; do not block cookie clearing.
       }
     }
 

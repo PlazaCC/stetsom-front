@@ -183,6 +183,22 @@ Site endpoints return `503` (not `404`) when a content dependency is unavailable
 
 ---
 
+## Admin Route Auth Guard
+
+**Every** admin route handler MUST call `getAdminToken()` as its **first** statement and return `unauthorizedResponse()` when the result is `null`:
+
+```ts
+export async function GET(request: NextRequest, ...) {
+  const token = await getAdminToken();
+  if (!token) return unauthorizedResponse();
+  // ...
+}
+```
+
+**Why:** The Next.js proxy (`proxy.ts`) no longer covers `/api/*` routes in its matcher — route-level auth is the **sole security boundary** for API routes. A handler that omits this guard is publicly accessible. There is no fallback layer.
+
+---
+
 ## Type Source of Truth
 
 `src/lib/api/contracts.ts` is the canonical TypeScript type file for all API shapes. Rules:

@@ -1,3 +1,4 @@
+import { rotateAccessTokenCookie } from "@/lib/api/auth-cookies";
 import { getCmsProvider } from "@/lib/api/provider";
 import {
   getCmsApiBaseUrl,
@@ -11,8 +12,6 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
-
 export async function POST() {
   try {
     const cookieStore = await cookies();
@@ -25,13 +24,7 @@ export async function POST() {
     if (isMockMode()) {
       const payload = await getCmsProvider().refreshToken(refreshToken);
       const response = NextResponse.json({ ok: true });
-      response.cookies.set("admin_token", payload.accessToken, {
-        httpOnly: true,
-        secure: IS_PRODUCTION,
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60 * 60 * 8,
-      });
+      rotateAccessTokenCookie(response, payload.accessToken);
       return response;
     }
 
@@ -49,21 +42,12 @@ export async function POST() {
         upstream.status === 401 ? "UNAUTHORIZED" : "REFRESH_FAILED",
         "Sessão expirada.",
       );
-
       return NextResponse.json({ error }, { status: upstream.status });
     }
 
     const { accessToken } = (await upstream.json()) as { accessToken: string };
-
     const response = NextResponse.json({ ok: true });
-    response.cookies.set("admin_token", accessToken, {
-      httpOnly: true,
-      secure: IS_PRODUCTION,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 8,
-    });
-
+    rotateAccessTokenCookie(response, accessToken);
     return response;
   } catch (error) {
     return toErrorResponse(error);
