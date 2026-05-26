@@ -396,14 +396,12 @@ export function createMockCmsProvider(): CmsProvider {
         );
       }
 
-      // MOCK ONLY: unsigned, non-URL-safe base64 token.
-      // Uses standard base64 (may contain +/=/), not base64url.
-      // proxy.ts validates only the 3-part structure (split(".").length === 3),
-      // so this works in mock but do not attempt to decode parts as base64url.
-      // Backend will use jose with HMAC-SHA256 and proper base64url encoding.
+      // MOCK ONLY: unsigned Base64URL JWT-like token (no signature verification).
+      // Use base64url encoding so the mock refresh logic can decode payloads
+      // the same way production tokens are handled.
       const header = Buffer.from(
         JSON.stringify({ alg: "HS256", typ: "JWT" }),
-      ).toString("base64");
+      ).toString("base64url");
       const payload = Buffer.from(
         JSON.stringify({
           sub: user.id,
@@ -411,7 +409,7 @@ export function createMockCmsProvider(): CmsProvider {
           role: user.role,
           exp: Date.now() + 8 * 3600000,
         }),
-      ).toString("base64");
+      ).toString("base64url");
       const token = `${header}.${payload}.mock-signature`;
       const refreshToken = `${header}.${payload}.mock-refresh-signature`;
 
