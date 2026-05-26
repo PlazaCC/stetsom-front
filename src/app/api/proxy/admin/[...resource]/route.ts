@@ -4,10 +4,24 @@ import type {
   UpdateAdminUserInput,
 } from "@/lib/api/contracts";
 import { getCmsProvider } from "@/lib/api/provider";
-import { toErrorResponse } from "@/lib/api/route-utils";
+import { toErrorResponse, unauthorizedResponse } from "@/lib/api/route-utils";
+import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
+
+/**
+ * Verifica se a requisição tem um `admin_token` válido no cookie.
+ * Retorna `unauthorizedResponse()` se ausente, `null` se autenticado.
+ *
+ * Em remote mode a validação real do JWT ocorre no upstream; aqui apenas
+ * garantimos que o cookie existe antes de encaminhar a chamada.
+ */
+async function requireAdminAuth() {
+  const store = await cookies();
+  if (!store.get("admin_token")?.value) return unauthorizedResponse();
+  return null;
+}
 
 const VALID_TYPES: LibraryAssetType[] = [
   "IMAGE",
@@ -30,6 +44,9 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ resource: string[] }> },
 ) {
+  const authErr = await requireAdminAuth();
+  if (authErr) return authErr;
+
   try {
     const { resource } = await params;
     const provider = getCmsProvider();
@@ -80,7 +97,7 @@ export async function GET(
 
       default:
         return NextResponse.json(
-          { error: "Unknown resource" },
+          { error: { code: "NOT_FOUND", message: "Unknown resource." } },
           { status: 404 },
         );
     }
@@ -93,6 +110,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ resource: string[] }> },
 ) {
+  const authErr = await requireAdminAuth();
+  if (authErr) return authErr;
+
   try {
     const { resource } = await params;
     const provider = getCmsProvider();
@@ -106,7 +126,7 @@ export async function POST(
 
       default:
         return NextResponse.json(
-          { error: "Unknown resource" },
+          { error: { code: "NOT_FOUND", message: "Unknown resource." } },
           { status: 404 },
         );
     }
@@ -119,10 +139,16 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ resource: string[] }> },
 ) {
+  const authErr = await requireAdminAuth();
+  if (authErr) return authErr;
+
   try {
     const { resource } = await params;
     if (resource[0] !== "users" || !resource[1]) {
-      return NextResponse.json({ error: "Unknown resource" }, { status: 404 });
+      return NextResponse.json(
+        { error: { code: "NOT_FOUND", message: "Unknown resource." } },
+        { status: 404 },
+      );
     }
 
     const provider = getCmsProvider();

@@ -41,8 +41,12 @@ function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-const IN_PROGRESS_STATUSES: UploadStage[] = [
-  "idle",
+/**
+ * Statuses that indicate an active upload operation.
+ * "idle" is excluded intentionally — it represents entries queued but not yet
+ * started, and should not block new `upload()` calls.
+ */
+const ACTIVE_STATUSES: UploadStage[] = [
   "presigning",
   "uploading",
   "registering",
@@ -185,7 +189,12 @@ export function useLibraryUpload() {
     setEntries((prev) => [...prev, ...newEntries]);
 
     for (let i = 0; i < files.length; i++) {
-      await processFile(newEntries[i], files[i]);
+      const file = files[i];
+      const entry = newEntries[i];
+      // Both arrays are derived from the same `files` list, so indices always
+      // align — guard is for TypeScript strict array-access safety only.
+      if (!file || !entry) continue;
+      await processFile(entry, file);
     }
   }
 
@@ -195,9 +204,7 @@ export function useLibraryUpload() {
     );
   }
 
-  const isUploading = entries.some((e) =>
-    IN_PROGRESS_STATUSES.includes(e.status),
-  );
+  const isUploading = entries.some((e) => ACTIVE_STATUSES.includes(e.status));
 
   const doneCount = entries.filter((e) => e.status === "done").length;
   const errorCount = entries.filter((e) => e.status === "error").length;

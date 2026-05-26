@@ -24,7 +24,7 @@ const CATALOG_ASSETS = {
 
 export const CATALOG_PAGE_PAYLOAD: CatalogPagePayload = {
   heroLabel: "CATÁLOGO COMPLETO",
-  heroTitle: "NOSSO\nPRODUTOS",
+  heroTitle: "NOSSOS\nPRODUTOS",
   heroImage: CATALOG_ASSETS.hero,
   heroImageAlt: "Catálogo Stetsom",
   heroWatermark: "PRO",

@@ -1,6 +1,10 @@
-import type { UploadPresignResponse } from "@/lib/api/contracts";
+import type {
+  LibraryAssetType,
+  UploadPresignResponse,
+} from "@/lib/api/contracts";
 import {
   getCmsApiBaseUrl,
+  isMockMode,
   readUpstreamError,
   toErrorResponse,
   unauthorizedResponse,
@@ -9,6 +13,18 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
+
+/** Derives the library asset type from MIME type for the mock presign response. */
+function mimeToAssetType(
+  mime: string,
+): Exclude<LibraryAssetType, "OTHER" | "MANUAL" | "CATALOG" | "CERTIFICATE"> {
+  if (mime.startsWith("image/")) return "IMAGE";
+  if (mime.startsWith("video/")) return "VIDEO";
+  if (mime === "application/pdf") return "PDF";
+  if (mime === "model/gltf-binary" || mime === "model/gltf+json")
+    return "MODEL3D";
+  return "IMAGE";
+}
 
 export async function POST(request: Request) {
   try {
@@ -20,8 +36,29 @@ export async function POST(request: Request) {
     }
 
     const body = (await request.json()) as Record<string, unknown>;
-    const base = getCmsApiBaseUrl();
 
+    // ── Mock mode: return a fake presign pointing to the local mock-s3 sink ──
+    if (isMockMode()) {
+      const fileName = String(body.fileName ?? "file");
+      const mimeType = String(body.mimeType ?? "image/jpeg");
+      const mockKey = `mock/${Date.now()}-${fileName}`;
+
+      const mockPresign: UploadPresignResponse = {
+        uploadUrl: "/api/upload/mock-s3",
+        file_url: `https://assets.stetsom.com.br/${mockKey}`,
+        key: mockKey,
+        method: "PUT",
+        expiresIn: 900,
+        headers: { "Content-Type": mimeType },
+        assetType: mimeToAssetType(mimeType),
+        fileName,
+      };
+
+      return NextResponse.json(mockPresign);
+    }
+
+    // ── Remote mode: forward to backend for a real S3 presigned URL ──
+    const base = getCmsApiBaseUrl();
     const upstream = await fetch(`${base}/api/upload/`, {
       method: "POST",
       headers: {

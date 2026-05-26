@@ -27,7 +27,7 @@ export function UploadProgressList({
   );
 
   return (
-    <div className="rounded-[16px] border border-border bg-card p-4">
+    <div className="rounded-2xl border border-border bg-card p-4">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-sm font-medium text-foreground">
           Uploads em andamento

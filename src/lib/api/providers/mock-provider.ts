@@ -426,9 +426,25 @@ export function createMockCmsProvider(): CmsProvider {
     },
 
     async refreshToken(token: string): Promise<AuthPayload> {
-      const decoded = JSON.parse(
-        Buffer.from(token.split(".")[1]!, "base64").toString(),
-      ) as { sub: string; email: string; role: string; exp: number };
+      // Mock tokens are plain Base64URL JWTs — validate structure before decode.
+      const parts = token.split(".");
+      if (parts.length !== 3) {
+        throw new HttpError(401, "INVALID_TOKEN", "Token inválido.");
+      }
+
+      let decoded: { sub: string; email: string; role: string; exp: number };
+      try {
+        decoded = JSON.parse(
+          Buffer.from(parts[1], "base64url").toString("utf-8"),
+        ) as { sub: string; email: string; role: string; exp: number };
+      } catch {
+        throw new HttpError(401, "INVALID_TOKEN", "Token inválido.");
+      }
+
+      // Reject expired tokens so mock behaviour matches production.
+      if (typeof decoded.exp === "number" && decoded.exp < Date.now()) {
+        throw new HttpError(401, "TOKEN_EXPIRED", "Token expirado.");
+      }
 
       const user = MOCK_ADMIN_USERS.find((u) => u.id === decoded.sub);
       if (!user) {
@@ -441,15 +457,15 @@ export function createMockCmsProvider(): CmsProvider {
 
       const header = Buffer.from(
         JSON.stringify({ alg: "HS256", typ: "JWT" }),
-      ).toString("base64");
+      ).toString("base64url");
       const payload = Buffer.from(
         JSON.stringify({
           sub: user.id,
           email: user.email,
           role: user.role,
-          exp: Date.now() + 8 * 3600000,
+          exp: Date.now() + 8 * 3600_000,
         }),
-      ).toString("base64");
+      ).toString("base64url");
       const newAccessToken = `${header}.${payload}.mock-signature`;
 
       return { accessToken: newAccessToken, refreshToken: token };

@@ -112,7 +112,7 @@ export function createRemoteCmsProvider(): CmsProvider {
       const suffix = buildSearchParams({ locale });
       const payload = await fetchJson<CategoryWithSubcategories[]>(
         base,
-        `/api/categories/${suffix}`,
+        `/api/categories${suffix}`,
       );
       return payload.map(
         ({ id, name, slug, order, created_at, updated_at }) => ({
@@ -130,7 +130,7 @@ export function createRemoteCmsProvider(): CmsProvider {
       const suffix = buildSearchParams({ locale });
       const payload = await fetchJson<CategoryWithSubcategories[]>(
         base,
-        `/api/categories/${suffix}`,
+        `/api/categories${suffix}`,
       );
       return payload.flatMap((c) => c.subcategories);
     },
@@ -161,11 +161,17 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     async logout() {
-      const authHeaders = await getAuthHeaders();
-      await fetchJson<{ success: boolean }>(base, "/api/auth/logout", {
-        method: "DELETE",
-        headers: authHeaders,
-      });
+      // Logout is stateless — token expiry is the real security boundary.
+      // Notify the backend best-effort; do not let a network failure block logout.
+      try {
+        const authHeaders = await getAuthHeaders();
+        await fetchJson<{ success: boolean }>(base, "/api/auth/logout", {
+          method: "DELETE",
+          headers: authHeaders,
+        });
+      } catch {
+        // Intentional: upstream failures must not prevent cookie clearing.
+      }
     },
 
     async refreshToken(token: string): Promise<AuthPayload> {

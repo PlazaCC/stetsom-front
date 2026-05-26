@@ -1,6 +1,7 @@
 import type { CompleteUploadInput, LibraryAsset } from "@/lib/api/contracts";
 import {
   getCmsApiBaseUrl,
+  isMockMode,
   readUpstreamError,
   toErrorResponse,
   unauthorizedResponse,
@@ -20,8 +21,30 @@ export async function POST(request: Request) {
     }
 
     const body = (await request.json()) as CompleteUploadInput;
-    const base = getCmsApiBaseUrl();
 
+    // ── Mock mode: return a synthetic asset without hitting the backend ──
+    if (isMockMode()) {
+      const now = new Date().toISOString();
+      const mockAsset: LibraryAsset = {
+        id: `mock-${Date.now()}`,
+        name: body.name,
+        file_url: body.file_url,
+        type: body.type,
+        size_bytes: body.size_bytes,
+        width: body.width,
+        height: body.height,
+        alt: body.alt,
+        product_id: body.product_id,
+        revision: body.revision,
+        created_at: now,
+        created_by: "mock-user",
+      };
+
+      return NextResponse.json({ asset: mockAsset }, { status: 201 });
+    }
+
+    // ── Remote mode: register the uploaded asset in the library ──
+    const base = getCmsApiBaseUrl();
     const upstream = await fetch(`${base}/api/upload/complete`, {
       method: "POST",
       headers: {
