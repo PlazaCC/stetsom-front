@@ -3,27 +3,32 @@ import type {
   LibraryAssetType,
   UpdateAdminUserInput,
 } from "@/lib/api/contracts";
+import type { CmsProvider } from "@/lib/api/provider-contract";
+import { ADMIN_ROUTE_MAP, forwardRequest } from "@/lib/api/bff-forward";
 import { getCmsProvider } from "@/lib/api/provider";
-import { toErrorResponse, unauthorizedResponse } from "@/lib/api/route-utils";
+import {
+  HttpError,
+  isMockMode,
+  notFoundResponse,
+  toErrorResponse,
+  unauthorizedResponse,
+} from "@/lib/api/route-utils";
 import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-/**
- * Verifica se a requisição tem um `admin_token` válido no cookie.
- * Retorna `unauthorizedResponse()` se ausente, `null` se autenticado.
- *
- * Em remote mode a validação real do JWT ocorre no upstream; aqui apenas
- * garantimos que o cookie existe antes de encaminhar a chamada.
- */
+// -- Auth guard --
+
 async function requireAdminAuth() {
   const store = await cookies();
   if (!store.get("admin_token")?.value) return unauthorizedResponse();
   return null;
 }
 
-const VALID_TYPES: LibraryAssetType[] = [
+// -- Param helpers --
+
+const VALID_ASSET_TYPES = new Set<LibraryAssetType>([
   "IMAGE",
   "PDF",
   "VIDEO",
@@ -32,13 +37,70 @@ const VALID_TYPES: LibraryAssetType[] = [
   "CATALOG",
   "CERTIFICATE",
   "OTHER",
-];
+]);
 
 function parseAssetType(value: string | null): LibraryAssetType | undefined {
   if (!value) return undefined;
   const upper = value.toUpperCase() as LibraryAssetType;
-  return VALID_TYPES.includes(upper) ? upper : undefined;
+  return VALID_ASSET_TYPES.has(upper) ? upper : undefined;
 }
+
+function parseStatus(v: string | null): "ACTIVE" | "DISCONTINUED" | undefined {
+  return v === "ACTIVE" || v === "DISCONTINUED" ? v : undefined;
+}
+
+function parseNum(v: string | null): number | undefined {
+  return v ? Number(v) : undefined;
+}
+
+// -- Mock handler maps --
+
+type MockGetHandler = (
+  p: CmsProvider,
+  r: string[],
+  sp: URLSearchParams,
+) => Promise<unknown>;
+type MockPostHandler = (p: CmsProvider, body: unknown) => Promise<unknown>;
+type MockPatchHandler = (
+  p: CmsProvider,
+  r: string[],
+  body: unknown,
+) => Promise<unknown>;
+
+const MOCK_GET: Record<string, MockGetHandler> = {
+  dashboard: (p) => p.getAdminDashboardPayload(),
+  users: (p) => p.getAdminUsers(),
+  banners: (p) => p.getBanners(),
+  library: (p, _, sp) => {
+    const type = parseAssetType(sp.get("type"));
+    return p.getLibraryAssets(type ? { type } : undefined);
+  },
+  messages: (p) => p.getContactMessages(),
+  audit: (p) => p.getAuditLog(),
+  config: (p) => p.getCmsConfig(),
+  products: (p, r, sp) =>
+    r[1]
+      ? p.getCmsProductDetail(r[1])
+      : p.getCmsProductsPayload({
+          q: sp.get("q") ?? undefined,
+          status: parseStatus(sp.get("status")),
+          page: parseNum(sp.get("page")),
+          pageSize: parseNum(sp.get("pageSize")),
+        }),
+};
+
+const MOCK_POST: Record<string, MockPostHandler> = {
+  users: (p, body) => p.createAdminUser(body as CreateAdminUserInput),
+};
+
+const MOCK_PATCH: Record<string, MockPatchHandler> = {
+  users: (p, r, body) => {
+    if (!r[1]) throw new HttpError(404, "NOT_FOUND", "Resource ID required.");
+    return p.updateAdminUser(r[1], body as UpdateAdminUserInput);
+  },
+};
+
+// -- Route handlers --
 
 export async function GET(
   request: NextRequest,
@@ -49,65 +111,31 @@ export async function GET(
 
   try {
     const { resource } = await params;
-    const provider = getCmsProvider();
-    const sp = request.nextUrl.searchParams;
 
-    switch (resource[0]) {
-      case "dashboard":
-        return NextResponse.json(await provider.getAdminDashboardPayload());
-
-      case "users":
-        return NextResponse.json(await provider.getAdminUsers());
-
-      case "banners":
-        return NextResponse.json(await provider.getBanners());
-
-      case "library": {
-        const type = parseAssetType(sp.get("type"));
-        const assets = await provider.getLibraryAssets(
-          type ? { type } : undefined,
-        );
-        return NextResponse.json(assets);
-      }
-
-      case "messages":
-        return NextResponse.json(await provider.getContactMessages());
-
-      case "audit":
-        return NextResponse.json(await provider.getAuditLog());
-
-      case "config":
-        return NextResponse.json(await provider.getCmsConfig());
-
-      case "products": {
-        const q = sp.get("q") ?? undefined;
-        const rawStatus = sp.get("status");
-        const status =
-          rawStatus === "ACTIVE" || rawStatus === "DISCONTINUED"
-            ? rawStatus
-            : undefined;
-        const page = sp.get("page") ? Number(sp.get("page")) : undefined;
-        const pageSize = sp.get("pageSize")
-          ? Number(sp.get("pageSize"))
-          : undefined;
-        return NextResponse.json(
-          await provider.getCmsProductsPayload({ q, status, page, pageSize }),
-        );
-      }
-
-      default:
-        return NextResponse.json(
-          { error: { code: "NOT_FOUND", message: "Unknown resource." } },
-          { status: 404 },
-        );
+    if (!isMockMode()) {
+      const upstreamPath = ADMIN_ROUTE_MAP[resource[0]];
+      if (!upstreamPath) return notFoundResponse();
+      const token = (await cookies()).get("admin_token")!.value;
+      return forwardRequest(request, upstreamPath, resource, token);
     }
+
+    const handler = MOCK_GET[resource[0]];
+    if (!handler) return notFoundResponse();
+
+    const result = await handler(
+      getCmsProvider(),
+      resource,
+      request.nextUrl.searchParams,
+    );
+    if (result === null) return notFoundResponse();
+    return NextResponse.json(result);
   } catch (error) {
     return toErrorResponse(error);
   }
 }
 
 export async function POST(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ resource: string[] }> },
 ) {
   const authErr = await requireAdminAuth();
@@ -115,28 +143,27 @@ export async function POST(
 
   try {
     const { resource } = await params;
-    const provider = getCmsProvider();
 
-    switch (resource[0]) {
-      case "users": {
-        const body = (await request.json()) as CreateAdminUserInput;
-        const user = await provider.createAdminUser(body);
-        return NextResponse.json(user, { status: 201 });
-      }
-
-      default:
-        return NextResponse.json(
-          { error: { code: "NOT_FOUND", message: "Unknown resource." } },
-          { status: 404 },
-        );
+    if (!isMockMode()) {
+      const upstreamPath = ADMIN_ROUTE_MAP[resource[0]];
+      if (!upstreamPath) return notFoundResponse();
+      const token = (await cookies()).get("admin_token")!.value;
+      return forwardRequest(request, upstreamPath, resource, token);
     }
+
+    const handler = MOCK_POST[resource[0]];
+    if (!handler) return notFoundResponse();
+
+    const body = await request.json();
+    const result = await handler(getCmsProvider(), body);
+    return NextResponse.json(result, { status: 201 });
   } catch (error) {
     return toErrorResponse(error);
   }
 }
 
 export async function PATCH(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ resource: string[] }> },
 ) {
   const authErr = await requireAdminAuth();
@@ -144,17 +171,20 @@ export async function PATCH(
 
   try {
     const { resource } = await params;
-    if (resource[0] !== "users" || !resource[1]) {
-      return NextResponse.json(
-        { error: { code: "NOT_FOUND", message: "Unknown resource." } },
-        { status: 404 },
-      );
+
+    if (!isMockMode()) {
+      const upstreamPath = ADMIN_ROUTE_MAP[resource[0]];
+      if (!upstreamPath) return notFoundResponse();
+      const token = (await cookies()).get("admin_token")!.value;
+      return forwardRequest(request, upstreamPath, resource, token);
     }
 
-    const provider = getCmsProvider();
-    const body = (await request.json()) as UpdateAdminUserInput;
-    const user = await provider.updateAdminUser(resource[1], body);
-    return NextResponse.json(user);
+    const handler = MOCK_PATCH[resource[0]];
+    if (!handler) return notFoundResponse();
+
+    const body = await request.json();
+    const result = await handler(getCmsProvider(), resource, body);
+    return NextResponse.json(result);
   } catch (error) {
     return toErrorResponse(error);
   }

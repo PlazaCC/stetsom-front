@@ -18,6 +18,13 @@ export function isMockMode(): boolean {
   return !process.env.CMS_API_BASE_URL && process.env.CMS_FORCE_BFF !== "1";
 }
 
+export function notFoundResponse(message = "Recurso não encontrado.") {
+  const payload: ApiErrorPayload = {
+    error: { code: "NOT_FOUND", message },
+  };
+  return NextResponse.json(payload, { status: 404 });
+}
+
 export function unauthorizedResponse(message = "Não autenticado.") {
   const payload: ApiErrorPayload = {
     error: {
