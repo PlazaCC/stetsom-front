@@ -8,8 +8,14 @@ function getJwtSecret(): Uint8Array | null {
 }
 
 /**
- * Verify an admin JWT. In mock mode we accept a simple 3-part token shape.
- * In non-mock mode we validate using `jose` and the `JWT_ACCESS_SECRET`.
+ * Verify an admin JWT.
+ *
+ * Mock mode accepts a simple development-only token shape with a
+ * deterministic `mock-signature`. This is strictly for local/dev usage and
+ * should never be relied on in staging/production.
+ *
+ * Non-mock mode validates tokens using `jose` and the configured
+ * `JWT_ACCESS_SECRET`.
  */
 export async function verifyAdminToken(token: string): Promise<boolean> {
   if (isMockMode()) {
