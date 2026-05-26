@@ -37,59 +37,66 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
             {section.ctaLabel} ›
           </Link>
         </div>
-        <Swiper
-          slidesPerView="auto"
-          spaceBetween={24}
-          grabCursor
-          className="w-full overflow-hidden"
-        >
-          {section.posts.map((post) => (
-            <SwiperSlide
-              key={post.id}
-              className="w-[calc(100vw-2.5rem)] max-w-62.5 sm:w-62.5"
-            >
-              <Link
-                href={post.permalink}
-                className="flex w-full flex-col gap-3"
+        {section.posts.length === 0 && (
+          <p className="text-center text-sm text-muted-foreground">
+            Nenhuma postagem disponível no momento.
+          </p>
+        )}
+        {section.posts.length > 0 && (
+          <Swiper
+            slidesPerView="auto"
+            spaceBetween={24}
+            grabCursor
+            className="w-full overflow-hidden"
+          >
+            {section.posts.map((post) => (
+              <SwiperSlide
+                key={post.id}
+                className="w-[calc(100vw-2.5rem)] max-w-62.5 sm:w-62.5"
               >
-                <div className="relative aspect-square w-full shrink-0 overflow-hidden rounded-sm">
-                  {post.media_type === "VIDEO" ? (
-                    <video
-                      src={post.media_url}
-                      muted
-                      playsInline
-                      preload="metadata"
-                      className="h-full w-full object-cover"
-                      style={{ opacity: post.opacity ?? 1 }}
-                    />
-                  ) : (
-                    <Image
-                      src={post.media_url}
-                      alt={post.caption}
-                      fill
-                      className="object-cover"
-                      style={{ opacity: post.opacity ?? 1 }}
-                    />
-                  )}
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="text-2xs font-sans-condensed font-semibold uppercase text-muted-foreground">
-                    @{post.username}
-                  </span>
-                  <span className="text-sm text-foreground">
-                    {post.caption}
-                  </span>
-                  <time
-                    dateTime={post.timestamp}
-                    className="text-2xs text-muted-foreground"
-                  >
-                    {dateFormatter.format(new Date(post.timestamp))}
-                  </time>
-                </div>
-              </Link>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+                <Link
+                  href={post.permalink}
+                  className="flex w-full flex-col gap-3"
+                >
+                  <div className="relative aspect-square w-full shrink-0 overflow-hidden rounded-sm">
+                    {post.media_type === "VIDEO" ? (
+                      <video
+                        src={post.media_url}
+                        muted
+                        playsInline
+                        preload="metadata"
+                        className="h-full w-full object-cover"
+                        style={{ opacity: post.opacity ?? 1 }}
+                      />
+                    ) : (
+                      <Image
+                        src={post.media_url}
+                        alt={post.caption}
+                        fill
+                        className="object-cover"
+                        style={{ opacity: post.opacity ?? 1 }}
+                      />
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-2xs font-sans-condensed font-semibold uppercase text-muted-foreground">
+                      @{post.username}
+                    </span>
+                    <span className="text-sm text-foreground">
+                      {post.caption}
+                    </span>
+                    <time
+                      dateTime={post.timestamp}
+                      className="text-2xs text-muted-foreground"
+                    >
+                      {dateFormatter.format(new Date(post.timestamp))}
+                    </time>
+                  </div>
+                </Link>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
       </Container>
     </section>
   );
