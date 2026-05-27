@@ -16,6 +16,7 @@ import type {
   CmsProductMutationResult,
   CmsProductsPayload,
   CmsProductsQuery,
+  ContactFormInput,
   ContactMessagesPayload,
   CreateAdminUserInput,
   CreateBannerInput,
@@ -157,6 +158,14 @@ export function createRemoteCmsProvider(): CmsProvider {
     async getSupportPayload(locale?: string) {
       const suffix = buildSearchParams({ locale });
       return fetchJson<SupportPayload>(base, `/api/pages/support${suffix}`);
+    },
+
+    async submitContact(input: ContactFormInput): Promise<void> {
+      await fetchJson(base, "/api/contact/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+      });
     },
 
     // ── Auth ─────────────────────────────────────────────────────────────

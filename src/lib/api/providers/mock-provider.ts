@@ -6,6 +6,7 @@ import type {
   CatalogProductsQuery,
   CmsProductMutationResult,
   CmsProductsQuery,
+  ContactFormInput,
   CreateAdminUserInput,
   CreateBannerInput,
   CreateCmsProductInput,
@@ -363,6 +364,11 @@ export function createMockCmsProvider(): CmsProvider {
       return getSupportPayloadForLocale(locale);
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async submitContact(_input: ContactFormInput): Promise<void> {
+      await new Promise((r) => setTimeout(r, 600));
+    },
+
     async getAdminDashboardPayload() {
       const activeProducts = productStatusCount("ACTIVE");
       const discontinuedProducts = productStatusCount("DISCONTINUED");
@@ -544,9 +550,13 @@ export function createMockCmsProvider(): CmsProvider {
     },
 
     async getBanners() {
+      if (!_mockBannersSeeded) {
+        _mockBanners.push(...MOCK_CMS_BANNERS);
+        _mockBannersSeeded = true;
+      }
       return {
-        items: [...MOCK_CMS_BANNERS],
-        total: MOCK_CMS_BANNERS.length,
+        items: [..._mockBanners],
+        total: _mockBanners.length,
       };
     },
 

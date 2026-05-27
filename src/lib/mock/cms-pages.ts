@@ -564,12 +564,12 @@ const PAGE_LABELS: Record<string, string> = {
 
 /** Lista de páginas com data de última atualização */
 function getLatestUpdatedAt(sections: PageSection[]): string {
-  return sections.reduce(
-    (latest, s) =>
-      new Date(s.updated_at).getTime() > new Date(latest).getTime()
-        ? s.updated_at
-        : latest,
-    NOW,
+  const validDates = sections
+    .map((s) => s.updated_at)
+    .filter((d): d is string => d !== null);
+  if (validDates.length === 0) return NOW;
+  return validDates.reduce((latest, d) =>
+    new Date(d).getTime() > new Date(latest).getTime() ? d : latest,
   );
 }
 

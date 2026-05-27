@@ -26,7 +26,7 @@ async function apiPatch<T>(path: string, body: unknown): Promise<T> {
 }
 
 async function apiDelete(path: string): Promise<void> {
-  const res = await fetch(path, { method: "DELETE", cache: "no-store" });
+  const res = await fetch(path, { method: "DELETE" });
   if (!res.ok && res.status !== 204) {
     const body = await res.json().catch(() => null);
     const message: string =

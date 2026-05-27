@@ -2,6 +2,16 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { getCmsProvider } from "@/lib/api/provider";
+import type { ContactDepartment } from "@/lib/api/contracts";
+
+const DEPARTMENT_MAP: Record<string, ContactDepartment> = {
+  technical: "suporte_tecnico",
+  warranty: "produto",
+  commercial: "comercial",
+  partnerships: "parcerias",
+  other: "outro",
+};
 
 const SECTOR_KEYS = [
   "technical",
@@ -14,10 +24,32 @@ const SECTOR_KEYS = [
 export function ContactForm() {
   const t = useTranslations("Support.contact");
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSent(true);
+    setSending(true);
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const sector = (data.get("setor") as string) || "other";
+    const department = DEPARTMENT_MAP[sector] ?? "outro";
+    const name = (data.get("name") as string) || "";
+
+    try {
+      await getCmsProvider().submitContact({
+        name,
+        email: (data.get("email") as string) || "",
+        phone: (data.get("phone") as string) || undefined,
+        subject: `Contato via site - ${name}`,
+        message: (data.get("message") as string) || "",
+        department,
+      });
+      setSent(true);
+    } catch {
+    } finally {
+      setSending(false);
+    }
   }
 
   if (sent) {
@@ -155,9 +187,10 @@ export function ContactForm() {
 
       <button
         type="submit"
-        className="flex w-full items-center justify-center gap-2 bg-brand px-6 py-3.5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-white transition-colors hover:bg-brand/90"
+        disabled={sending}
+        className="flex w-full items-center justify-center gap-2 bg-brand px-6 py-3.5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-white transition-colors hover:bg-brand/90 disabled:opacity-50"
       >
-        {t("submit")}
+        {sending ? t("sending") : t("submit")}
         <svg
           width="14"
           height="14"

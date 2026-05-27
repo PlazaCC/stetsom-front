@@ -16,6 +16,7 @@ import type {
   CmsProductMutationResult,
   CmsProductsPayload,
   CmsProductsQuery,
+  ContactFormInput,
   ContactMessagesPayload,
   CreateAdminUserInput,
   CreateBannerInput,
@@ -52,6 +53,7 @@ export interface CmsProvider {
   getSiteHomePayload(locale?: string): Promise<SiteHomePayload>;
   getSiteAboutPayload(locale?: string): Promise<SiteAboutPayload>;
   getSupportPayload(locale?: string): Promise<SupportPayload>;
+  submitContact(input: ContactFormInput): Promise<void>;
 
   // ── Auth ─────────────────────────────────────────────────────────────────────
   login(credentials: LoginCredentials): Promise<AuthPayload>;

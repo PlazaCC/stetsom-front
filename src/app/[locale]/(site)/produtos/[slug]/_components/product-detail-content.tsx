@@ -16,7 +16,7 @@ interface ProductDetailContentProps {
   thumbnailUrl: string;
   specs: ProductSpec[];
   blocks: ProductBlock[];
-  relatedProducts: ProductCardItem[];
+  relatedProducts?: ProductCardItem[];
 }
 
 export async function ProductDetailContent({
@@ -128,7 +128,7 @@ export async function ProductDetailContent({
           <h2 className="mt-4 font-sans-condensed text-display-sm font-black uppercase leading-none text-brand-dark">
             {t("related")}
           </h2>
-          {relatedProducts.length > 0 ? (
+          {relatedProducts && relatedProducts.length > 0 ? (
             <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-5">
               {relatedProducts.slice(0, 6).map((p) => (
                 <ProductCard

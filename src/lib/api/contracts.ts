@@ -128,7 +128,7 @@ export type ProductDetailPayload = {
   files: ProductFile[];
   category: Category;
   subcategory?: Subcategory;
-  relatedProducts: ProductCardItem[];
+  relatedProducts?: ProductCardItem[];
 };
 
 export type ProductCardItem = {
@@ -677,7 +677,7 @@ export type PageSection = {
   is_editable: boolean;
   /** Shape varies by type — see form renderers in admin/paginas/_components/. */
   data: Record<string, unknown>;
-  updated_at: ISODateString;
+  updated_at: ISODateString | null;
 };
 
 export type AdminPagesPayload = {
@@ -685,7 +685,7 @@ export type AdminPagesPayload = {
     id: PageId;
     label: string;
     sections_count: number;
-    updated_at: ISODateString;
+    updated_at: ISODateString | null;
   }>;
 };
 
@@ -705,7 +705,7 @@ export type UploadPresignResponse = {
   method: "PUT";
   expiresIn: number;
   headers: Record<string, string>;
-  assetType: Exclude<LibraryAssetType, "OTHER">;
+  assetType: LibraryAssetType;
   fileName: string;
 };
 
@@ -720,4 +720,21 @@ export type CompleteUploadInput = {
   alt?: string;
   product_id?: string;
   revision?: number;
+};
+
+export type ContactDepartment =
+  | "suporte_tecnico"
+  | "comercial"
+  | "produto"
+  | "marketing"
+  | "parcerias"
+  | "outro";
+
+export type ContactFormInput = {
+  name: string;
+  email: string;
+  phone?: string;
+  subject: string;
+  message: string;
+  department: ContactDepartment;
 };
