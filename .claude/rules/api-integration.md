@@ -45,7 +45,7 @@ Route handlers must not contain business logic.
 - Client components trigger auth actions through the BFF route handlers, not directly
 - Logout is stateless (`DELETE /api/auth/logout`) — the backend does not invalidate JWTs server-side; token expiry is the security boundary
 
-**Public routes** (no auth needed): all `/api/site/*`, `/api/categories/`, `/api/products/` (listing), `/api/products/:slug` (detail), `/api/contact/`
+**Public routes** (no auth needed): all `/api/pages/*`, `/api/categories/`, `/api/products/` (listing), `/api/products/:slug` (detail), `/api/contact/`
 
 **Protected routes** (require `Authorization: Bearer`): all `/api/dashboard/`, `/api/users/`, `/api/banners/`, `/api/library/`, `/api/messages/`, `/api/audit/`, `/api/config/`, `/api/upload/*`, `/api/products/admin*`
 
@@ -167,7 +167,7 @@ Three roles — access control is enforced server-side; the frontend only uses r
 
 ## Site Payload Pattern
 
-Site pages (`/api/site/home`, `/api/site/about`, `/api/site/catalog`, `/api/site/support`) return **full page payloads** — a single request returns all data needed to render the entire page. This is intentional (avoids waterfall requests from RSC pages).
+Site pages (`/api/pages/home`, `/api/pages/about`, `/api/pages/catalog`, `/api/pages/support`) return **full page payloads** — a single request returns all data needed to render the entire page. This is intentional (avoids waterfall requests from RSC pages).
 
 **Rule:** do not break these into multiple smaller fetches. Each payload is cached at the CDN/ISR layer on the backend side.
 

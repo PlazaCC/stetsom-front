@@ -45,7 +45,7 @@ Route handlers must not contain business logic.
 - Client components trigger auth actions through the BFF route handlers, not directly
 - Logout is stateless (`DELETE /api/auth/logout`) — the backend does not invalidate JWTs server-side; token expiry is the security boundary
 
-**Public routes** (no auth needed): all `/api/site/*`, `/api/categories/`, `/api/products/` (listing), `/api/products/:slug` (detail), `/api/contact/`
+**Public routes** (no auth needed): all `/api/pages/*`, `/api/categories/`, `/api/products/` (listing), `/api/products/:slug` (detail), `/api/contact/`
 
 **Protected routes** (require `Authorization: Bearer`): all `/api/dashboard/`, `/api/users/`, `/api/banners/`, `/api/library/`, `/api/messages/`, `/api/audit/`, `/api/config/`, `/api/upload/*`, `/api/products/admin*`
 

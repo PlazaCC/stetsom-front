@@ -72,7 +72,7 @@ Os route handlers em `src/app/api/` são uma camada BFF mínima. Eles existem po
 
 - **`admin_token` é `HttpOnly`** — inacessível via `document.cookie` ou JavaScript. Toda leitura é feita em server-side (Route Handlers, Server Components).
 - **Logout é stateless** — `DELETE /api/auth/logout` não invalida o JWT no servidor. O token expira pelo TTL configurado (`JWT_ACCESS_EXPIRES`). Ao fazer logout, descarte os tokens no cliente e limpe o cookie.
-- **Rotas públicas** não precisam de token: `/api/site/*`, `/api/categories/`, `/api/products/` (listagem e detalhe), `/api/contact/`.
+- **Rotas públicas** não precisam de token: `/api/pages/*`, `/api/categories/`, `/api/products/` (listagem e detalhe), `/api/contact/`.
 - **Rotas protegidas** exigem token: tudo sob `/api/dashboard/`, `/api/users/`, `/api/banners/`, `/api/library/`, `/api/messages/`, `/api/audit/`, `/api/config/`, `/api/upload/*`, `/api/products/admin*`.
 
 ---
@@ -210,7 +210,7 @@ A URL presignada já inclui a assinatura AWS (parâmetro `X-Amz-Signature`). O S
 
 ## 7. Page Payloads
 
-As rotas de site (`/api/site/home`, `/api/site/about`, `/api/site/catalog`, `/api/site/support`) retornam **payloads completos** — um único request contém todos os dados necessários para renderizar a página inteira.
+As rotas de site (`/api/pages/home`, `/api/pages/about`, `/api/pages/catalog`, `/api/pages/support`) retornam **payloads completos** — um único request contém todos os dados necessários para renderizar a página inteira.
 
 Essa é uma decisão arquitetural intencional: páginas RSC não devem fazer múltiplos fetches em cascata (waterfall). O backend compõe o payload e o frontend renderiza.
 
