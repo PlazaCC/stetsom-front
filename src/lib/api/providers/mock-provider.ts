@@ -87,6 +87,7 @@ import {
   getHomeFaqSection,
   getHomeFeaturedSection,
   getHomeFeaturedTabs,
+  getHomeHeroSlides,
   getHomeHistorySection,
   getMilestonePattern,
   getSocialSection,
@@ -429,10 +430,12 @@ export function createMockCmsProvider(): CmsProvider {
 
     async getSiteHomePayload(locale?: string): Promise<SiteHomePayload> {
       const sectionData = await resolveSectionData("home");
+      const banners = getActiveBannersForLocale(MOCK_CMS_BANNERS, locale)
+        .sort((a, b) => a.order - b.order)
+        .map(bannerToHeroSlide);
+
       const base: SiteHomePayload = {
-        hero: getActiveBannersForLocale(MOCK_CMS_BANNERS, locale)
-          .sort((a, b) => a.order - b.order)
-          .map(bannerToHeroSlide),
+        hero: banners.length > 0 ? banners : getHomeHeroSlides(locale),
         heroCarousel: {
           autoplay: true,
           interval: 5000,
