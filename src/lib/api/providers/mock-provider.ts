@@ -1,13 +1,19 @@
 import type {
   AdminUser,
   AuthPayload,
+  Banner,
   CatalogPagePayload,
   CatalogProductsQuery,
+  CmsProductMutationResult,
   CmsProductsQuery,
   CreateAdminUserInput,
+  CreateBannerInput,
+  CreateCmsProductInput,
   LibraryAssetType,
   Locale,
   LoginCredentials,
+  PageId,
+  PageSection,
   PaginatedResponse,
   Product,
   ProductDetailPayload,
@@ -15,6 +21,7 @@ import type {
   SiteAboutPayload,
   SiteHomePayload,
   UpdateAdminUserInput,
+  UpdateCmsProductInput,
 } from "@/lib/api/contracts";
 import {
   createCategoryLookup,
@@ -66,6 +73,20 @@ import {
   getSocialSection,
 } from "@/lib/mock/site-i18n";
 import { getSupportPayloadForLocale } from "@/lib/mock/support-i18n";
+
+// ── In-memory stores (reset on server restart) ────────────────────────────────
+// These allow create/update/delete operations to work end-to-end in mock mode.
+
+const _draftProducts = new Map<string, Product>();
+const _mockBanners = [...([] as Banner[])]; // populated lazily from MOCK_CMS_BANNERS
+let _mockBannersSeeded = false;
+const _mockPageSections = new Map<string, PageSection>(); // keyed by section.id
+let _mockCmsConfigDraft: Record<string, unknown> | null = null;
+const _mockReadMessages = new Set<string>();
+
+function isoNow(): string {
+  return new Date().toISOString();
+}
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE = 12;
@@ -555,7 +576,230 @@ export function createMockCmsProvider(): CmsProvider {
     },
 
     async getCmsConfig() {
+      if (_mockCmsConfigDraft) {
+        return { ...MOCK_CMS_CONFIG, ..._mockCmsConfigDraft };
+      }
       return { ...MOCK_CMS_CONFIG };
+    },
+
+    // ── Products (Write) ──────────────────────────────────────────────────────
+
+    async createCmsProduct(
+      input: CreateCmsProductInput,
+    ): Promise<CmsProductMutationResult> {
+      const id = `prod-draft-${Date.now()}`;
+      const now = isoNow();
+      const product: Product = {
+        id,
+        name: input.name,
+        slug: input.slug,
+        category_id: input.category_id,
+        subcategory_id: input.subcategory_id,
+        status: input.status,
+        badge: input.badge ?? null,
+        description: input.description,
+        thumbnail_url: input.thumbnail_url,
+        video_url: input.video_url ?? undefined,
+        launch_date: input.launch_date,
+        variations: input.variations.map((v, i) => ({
+          ...v,
+          id: `var-${id}-${i}`,
+        })),
+        highlight_attributes: input.highlight_attributes,
+        created_at: now,
+        updated_at: now,
+        created_by: "mock-user",
+      };
+      _draftProducts.set(id, product);
+      return { id, slug: input.slug, status: input.status };
+    },
+
+    async updateCmsProduct(
+      id: string,
+      input: UpdateCmsProductInput,
+    ): Promise<CmsProductMutationResult> {
+      // Look in draft store first, then fall back to static catalog
+      const existing =
+        _draftProducts.get(id) ?? CATALOG_PRODUCTS.find((p) => p.id === id);
+      if (!existing) {
+        throw new HttpError(404, "NOT_FOUND", `Produto ${id} não encontrado.`);
+      }
+      const updated: Product = {
+        ...existing,
+        ...(input.name !== undefined && { name: input.name }),
+        ...(input.slug !== undefined && { slug: input.slug }),
+        ...(input.category_id !== undefined && {
+          category_id: input.category_id,
+        }),
+        ...(input.subcategory_id !== undefined && {
+          subcategory_id: input.subcategory_id,
+        }),
+        ...(input.status !== undefined && { status: input.status }),
+        ...(input.badge !== undefined && { badge: input.badge }),
+        ...(input.description !== undefined && {
+          description: input.description,
+        }),
+        ...(input.thumbnail_url !== undefined && {
+          thumbnail_url: input.thumbnail_url,
+        }),
+        ...(input.video_url !== undefined && {
+          video_url: input.video_url ?? undefined,
+        }),
+        ...(input.launch_date !== undefined && {
+          launch_date: input.launch_date,
+        }),
+        ...(input.variations !== undefined && {
+          variations: input.variations.map((v, i) => ({
+            ...v,
+            id: `var-${id}-${i}`,
+          })),
+        }),
+        ...(input.highlight_attributes !== undefined && {
+          highlight_attributes: input.highlight_attributes,
+        }),
+        updated_at: isoNow(),
+      };
+      _draftProducts.set(id, updated);
+      return { id, slug: updated.slug, status: updated.status };
+    },
+
+    async deleteCmsProduct(id: string): Promise<void> {
+      _draftProducts.delete(id);
+      // For static catalog products in mock, deletion is a no-op (no persistent store)
+    },
+
+    // ── Banners (Write) ───────────────────────────────────────────────────────
+
+    async createBanner(input: CreateBannerInput): Promise<Banner> {
+      if (!_mockBannersSeeded) {
+        _mockBanners.push(...MOCK_CMS_BANNERS);
+        _mockBannersSeeded = true;
+      }
+      const now = isoNow();
+      const banner: Banner = {
+        id: `banner-${Date.now()}`,
+        name: input.name,
+        desktop_image_url: input.desktop_image_url,
+        mobile_image_url: input.mobile_image_url,
+        alt: input.alt,
+        href: input.href,
+        label: input.label,
+        title: input.title,
+        link_url: input.link_url,
+        status: input.status,
+        locale: input.locale,
+        display_from: input.display_from,
+        display_until: input.display_until,
+        order: input.order ?? _mockBanners.length + 1,
+        product_id: input.product_id,
+        created_at: now,
+        updated_at: now,
+        created_by: "mock-user",
+      };
+      _mockBanners.push(banner);
+      return banner;
+    },
+
+    async updateBanner(
+      id: string,
+      input: Partial<CreateBannerInput>,
+    ): Promise<Banner> {
+      if (!_mockBannersSeeded) {
+        _mockBanners.push(...MOCK_CMS_BANNERS);
+        _mockBannersSeeded = true;
+      }
+      const index = _mockBanners.findIndex((b) => b.id === id);
+      if (index === -1) {
+        throw new HttpError(404, "NOT_FOUND", `Banner ${id} não encontrado.`);
+      }
+      const updated: Banner = {
+        ..._mockBanners[index],
+        ...input,
+        updated_at: isoNow(),
+      };
+      _mockBanners[index] = updated;
+      return updated;
+    },
+
+    async deleteBanner(id: string): Promise<void> {
+      if (!_mockBannersSeeded) {
+        _mockBanners.push(...MOCK_CMS_BANNERS);
+        _mockBannersSeeded = true;
+      }
+      const index = _mockBanners.findIndex((b) => b.id === id);
+      if (index === -1) return;
+      _mockBanners.splice(index, 1);
+    },
+
+    // ── Messages ──────────────────────────────────────────────────────────────
+
+    async markMessageRead(id: string, isRead: boolean): Promise<void> {
+      if (isRead) {
+        _mockReadMessages.add(id);
+      } else {
+        _mockReadMessages.delete(id);
+      }
+    },
+
+    // ── Config (Write) ────────────────────────────────────────────────────────
+
+    async updateCmsConfig(input) {
+      _mockCmsConfigDraft = { ...(_mockCmsConfigDraft ?? {}), ...input };
+      return {
+        ...MOCK_CMS_CONFIG,
+        ..._mockCmsConfigDraft,
+        updated_at: isoNow(),
+      };
+    },
+
+    // ── Pages (Institutional) ─────────────────────────────────────────────────
+
+    async getAdminPages() {
+      const { MOCK_ADMIN_PAGES } = await import("@/lib/mock/cms-pages");
+      return MOCK_ADMIN_PAGES;
+    },
+
+    async getAdminPageSections(pageId: PageId) {
+      const { MOCK_PAGE_SECTIONS_BY_PAGE } =
+        await import("@/lib/mock/cms-pages");
+      const sections = MOCK_PAGE_SECTIONS_BY_PAGE[pageId] ?? [];
+      // Apply any in-memory edits
+      const resolved = sections.map((s) => _mockPageSections.get(s.id) ?? s);
+      return {
+        page_id: pageId,
+        label: {
+          home: "Home",
+          catalog: "Catálogo",
+          about: "Sobre",
+          support: "Suporte",
+        }[pageId],
+        sections: resolved,
+      };
+    },
+
+    async updatePageSection(
+      sectionId: string,
+      data: Record<string, unknown>,
+    ): Promise<PageSection> {
+      // Find the section from all pages
+      const { MOCK_ALL_PAGE_SECTIONS } = await import("@/lib/mock/cms-pages");
+      const base =
+        _mockPageSections.get(sectionId) ??
+        MOCK_ALL_PAGE_SECTIONS.find((s) => s.id === sectionId);
+      if (!base) {
+        throw new HttpError(
+          404,
+          "NOT_FOUND",
+          `Seção ${sectionId} não encontrada.`,
+        );
+      }
+      const updated: PageSection = {
+        ...base,
+        data: { ...base.data, ...data },
+        updated_at: isoNow(),
+      };
+      _mockPageSections.set(sectionId, updated);
+      return updated;
     },
   };
 }

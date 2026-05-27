@@ -2,7 +2,7 @@ export type Locale = "pt-BR" | "en" | "es";
 
 export type ISODateString = string;
 
-export type ProductStatus = "ACTIVE" | "DISCONTINUED";
+export type ProductStatus = "ACTIVE" | "DISCONTINUED" | "DRAFT";
 
 export type ProductFileType =
   | "MANUAL"
@@ -592,6 +592,106 @@ export type CmsProductDetailPayload = {
   files: ProductFile[];
   category: Category;
   subcategory?: Subcategory;
+};
+
+// ── CMS Mutations ────────────────────────────────────────────────────────────
+
+/** Input para criar ou atualizar um produto via CMS */
+export type CreateCmsProductInput = {
+  name: string;
+  slug: string;
+  category_id: string;
+  subcategory_id?: string;
+  /** DRAFT quando campos obrigatórios estiverem incompletos */
+  status: ProductStatus;
+  badge?: string | null;
+  description: string;
+  thumbnail_url: string;
+  video_url?: string | null;
+  launch_date: ISODateString;
+  variations: Array<Omit<ProductVariation, "id">>;
+  highlight_attributes: string[];
+  blocks: Array<
+    Omit<
+      ProductBlock,
+      "id" | "product_id" | "created_by" | "created_at" | "updated_at"
+    >
+  >;
+  /** URLs de assets já no storage para associar ao produto */
+  file_urls?: string[];
+};
+
+export type UpdateCmsProductInput = Partial<CreateCmsProductInput>;
+
+export type CmsProductMutationResult = {
+  id: string;
+  slug: string;
+  status: ProductStatus;
+};
+
+export type CreateBannerInput = {
+  name: string;
+  desktop_image_url: string;
+  mobile_image_url?: string;
+  alt?: string;
+  href?: string;
+  label?: string;
+  title?: string;
+  link_url?: string;
+  status: BannerStatus;
+  locale: Locale;
+  display_from?: ISODateString;
+  display_until?: ISODateString;
+  order?: number;
+  product_id?: string;
+};
+
+// ── Pages (Institutional Content) ────────────────────────────────────────────
+
+export type PageId = "home" | "catalog" | "about" | "support";
+
+export type PageSectionType =
+  | "HERO_CAROUSEL"
+  | "HERO_STATIC"
+  | "FAQ_ACCORDION"
+  | "STATS_ROW"
+  | "MILESTONES_MARQUEE"
+  | "SOCIAL_FEED"
+  | "VALUES_GRID"
+  | "TIMELINE_VERTICAL"
+  | "SUPPORT_CARDS"
+  | "SERVICE_CENTERS"
+  | "CONTACT_FORM_CONFIG"
+  | "DOWNLOAD_CATALOG"
+  | "FOUNDATIONS_GRID"
+  | "CATALOG_HERO"
+  | "PRODUCT_GRID";
+
+export type PageSection = {
+  id: string;
+  page_id: PageId;
+  name: string;
+  type: PageSectionType;
+  order: number;
+  /** false = seção estrutural não editável (ex.: header/footer) */
+  is_editable: boolean;
+  /** Shape varia por type — ver form renderers em admin/paginas/_components/ */
+  data: Record<string, unknown>;
+  updated_at: ISODateString;
+};
+
+export type AdminPagesPayload = {
+  pages: Array<{
+    id: PageId;
+    label: string;
+    updated_at: ISODateString;
+  }>;
+};
+
+export type AdminPageDetailPayload = {
+  page_id: PageId;
+  label: string;
+  sections: PageSection[];
 };
 
 // Upload — mirrored from backend (src/schemas/index.ts)

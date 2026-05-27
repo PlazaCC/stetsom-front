@@ -1,22 +1,30 @@
 import type {
   AdminDashboardPayload,
+  AdminPageDetailPayload,
+  AdminPagesPayload,
   AdminUser,
   AdminUsersPayload,
   AuditPayload,
   AuthPayload,
+  Banner,
   BannersPayload,
   CatalogPagePayload,
   CatalogProductsQuery,
   Category,
   CmsConfig,
   CmsProductDetailPayload,
+  CmsProductMutationResult,
   CmsProductsPayload,
   CmsProductsQuery,
   ContactMessagesPayload,
   CreateAdminUserInput,
+  CreateBannerInput,
+  CreateCmsProductInput,
   LibraryAssetType,
   LibraryPayload,
   LoginCredentials,
+  PageId,
+  PageSection,
   PaginatedResponse,
   ProductCardItem,
   ProductDetailPayload,
@@ -25,6 +33,7 @@ import type {
   Subcategory,
   SupportPayload,
   UpdateAdminUserInput,
+  UpdateCmsProductInput,
 } from "@/lib/api/contracts";
 import type { CmsProvider } from "@/lib/api/provider-contract";
 import { buildSearchParams } from "@/lib/api/query-utils";
@@ -282,6 +291,150 @@ export function createRemoteCmsProvider(): CmsProvider {
       return fetchJson<CmsConfig>(base, "/api/config/", {
         headers: authHeaders,
       });
+    },
+
+    // ── Products (Write) ──────────────────────────────────────────────────────
+
+    async createCmsProduct(
+      input: CreateCmsProductInput,
+    ): Promise<CmsProductMutationResult> {
+      const authHeaders = await getAuthHeaders();
+      return fetchJson<CmsProductMutationResult>(base, "/api/products/admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(authHeaders ?? {}) },
+        body: JSON.stringify(input),
+      });
+    },
+
+    async updateCmsProduct(
+      id: string,
+      input: UpdateCmsProductInput,
+    ): Promise<CmsProductMutationResult> {
+      const authHeaders = await getAuthHeaders();
+      return fetchJson<CmsProductMutationResult>(
+        base,
+        `/api/products/admin/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            ...(authHeaders ?? {}),
+          },
+          body: JSON.stringify(input),
+        },
+      );
+    },
+
+    async deleteCmsProduct(id: string): Promise<void> {
+      const authHeaders = await getAuthHeaders();
+      const res = await fetch(`${base}/api/products/admin/${id}`, {
+        method: "DELETE",
+        headers: authHeaders ?? {},
+        cache: "no-store",
+      });
+      if (!res.ok) {
+        const body = await res.text();
+        throw new HttpError(res.status, "UPSTREAM_ERROR", body);
+      }
+    },
+
+    // ── Banners (Write) ───────────────────────────────────────────────────────
+
+    async createBanner(input: CreateBannerInput): Promise<Banner> {
+      const authHeaders = await getAuthHeaders();
+      return fetchJson<Banner>(base, "/api/banners/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(authHeaders ?? {}) },
+        body: JSON.stringify(input),
+      });
+    },
+
+    async updateBanner(
+      id: string,
+      input: Partial<CreateBannerInput>,
+    ): Promise<Banner> {
+      const authHeaders = await getAuthHeaders();
+      return fetchJson<Banner>(base, `/api/banners/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...(authHeaders ?? {}) },
+        body: JSON.stringify(input),
+      });
+    },
+
+    async deleteBanner(id: string): Promise<void> {
+      const authHeaders = await getAuthHeaders();
+      const res = await fetch(`${base}/api/banners/${id}`, {
+        method: "DELETE",
+        headers: authHeaders ?? {},
+        cache: "no-store",
+      });
+      if (!res.ok) {
+        const body = await res.text();
+        throw new HttpError(res.status, "UPSTREAM_ERROR", body);
+      }
+    },
+
+    // ── Messages ──────────────────────────────────────────────────────────────
+
+    async markMessageRead(id: string, isRead: boolean): Promise<void> {
+      const authHeaders = await getAuthHeaders();
+      await fetchJson(base, `/api/messages/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...(authHeaders ?? {}) },
+        body: JSON.stringify({ is_read: isRead }),
+      });
+    },
+
+    // ── Config (Write) ────────────────────────────────────────────────────────
+
+    async updateCmsConfig(input: Partial<CmsConfig>): Promise<CmsConfig> {
+      const authHeaders = await getAuthHeaders();
+      return fetchJson<CmsConfig>(base, "/api/config/", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...(authHeaders ?? {}) },
+        body: JSON.stringify(input),
+      });
+    },
+
+    // ── Pages (Institutional) ─────────────────────────────────────────────────
+
+    async getAdminPages(): Promise<AdminPagesPayload> {
+      const authHeaders = await getAuthHeaders();
+      return fetchJson<AdminPagesPayload>(base, "/api/pages/admin", {
+        headers: authHeaders,
+      });
+    },
+
+    async getAdminPageSections(
+      pageId: PageId,
+    ): Promise<AdminPageDetailPayload> {
+      const authHeaders = await getAuthHeaders();
+      return fetchJson<AdminPageDetailPayload>(
+        base,
+        `/api/pages/admin/${pageId}`,
+        {
+          headers: authHeaders,
+        },
+      );
+    },
+
+    async updatePageSection(
+      sectionId: string,
+      data: Record<string, unknown>,
+    ): Promise<PageSection> {
+      const authHeaders = await getAuthHeaders();
+      return fetchJson<PageSection>(
+        base,
+        `/api/pages/admin/sections/${sectionId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            ...(authHeaders ?? {}),
+          },
+          body: JSON.stringify({ data }),
+        },
+      );
     },
   };
 }

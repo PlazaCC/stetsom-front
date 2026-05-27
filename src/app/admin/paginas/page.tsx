@@ -1,41 +1,34 @@
-import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
-import { FileText } from "lucide-react";
+"use client";
 
-const SITE_PAGES = [
-  {
-    id: "home",
-    label: "Home",
-    href: "/",
-    updated_at: "2026-05-19T00:00:00.000Z",
-  },
-  {
-    id: "produtos",
-    label: "Catálogo de produtos",
-    href: "/produtos",
-    updated_at: "2026-05-18T00:00:00.000Z",
-  },
-  {
-    id: "sobre",
-    label: "Sobre a Stetsom",
-    href: "/sobre",
-    updated_at: "2026-04-10T00:00:00.000Z",
-  },
-  {
-    id: "suporte",
-    label: "Suporte técnico",
-    href: "/suporte",
-    updated_at: "2026-05-01T00:00:00.000Z",
-  },
-];
+import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
+import { useAdminPages } from "@/hooks/use-admin-pages";
+import { FileText, ExternalLink } from "lucide-react";
+import Link from "next/link";
+
+const PAGE_HREFS: Record<string, string> = {
+  home: "/",
+  catalog: "/produtos",
+  about: "/sobre",
+  support: "/suporte",
+};
 
 export default function AdminPaginasPage() {
+  const { data, isLoading } = useAdminPages();
+
+  const pages = data?.pages ?? [
+    { id: "home", label: "Home", updated_at: "" },
+    { id: "catalog", label: "Catálogo de produtos", updated_at: "" },
+    { id: "about", label: "Sobre a Stetsom", updated_at: "" },
+    { id: "support", label: "Suporte técnico", updated_at: "" },
+  ];
+
   return (
     <AdminListPage
       title="Páginas"
       icon={FileText}
       toolbar={
         <p className="text-xs text-muted-foreground">
-          Gerencie o conteúdo das páginas institucionais do site.
+          Gerencie o conteúdo das seções das páginas institucionais do site.
         </p>
       }
     >
@@ -58,24 +51,55 @@ export default function AdminPaginasPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {SITE_PAGES.map((page) => (
-              <tr key={page.id} className="hover:bg-muted/30">
-                <td className="px-4 py-3 font-medium text-foreground">
-                  {page.label}
-                </td>
-                <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
-                  {page.href}
-                </td>
-                <td className="px-4 py-3 text-xs text-muted-foreground">
-                  {new Date(page.updated_at).toLocaleDateString("pt-BR")}
-                </td>
-                <td className="px-4 py-3 text-right">
-                  <button className="text-xs font-medium text-brand hover:underline">
-                    Editar
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {isLoading
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="px-4 py-3">
+                      <div className="h-4 w-40 rounded bg-muted" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="h-4 w-24 rounded bg-muted" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="h-4 w-28 rounded bg-muted" />
+                    </td>
+                    <td className="px-4 py-3" />
+                  </tr>
+                ))
+              : pages.map((page) => (
+                  <tr key={page.id} className="hover:bg-muted/30">
+                    <td className="px-4 py-3 font-medium text-foreground">
+                      {page.label}
+                    </td>
+                    <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
+                      {PAGE_HREFS[page.id] ?? `/${page.id}`}
+                    </td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">
+                      {page.updated_at
+                        ? new Date(page.updated_at).toLocaleDateString("pt-BR")
+                        : "—"}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-3">
+                        <a
+                          href={PAGE_HREFS[page.id] ?? `/${page.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                        >
+                          <ExternalLink className="size-3" />
+                          Ver
+                        </a>
+                        <Link
+                          href={`/admin/paginas/${page.id}`}
+                          className="text-xs font-medium text-brand hover:underline"
+                        >
+                          Editar
+                        </Link>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>

@@ -17,6 +17,7 @@ import { useMemo, useState } from "react";
 const STATUS_LABELS: Record<ProductStatus, string> = {
   ACTIVE: "Ativo",
   DISCONTINUED: "Descontinuado",
+  DRAFT: "Rascunho",
 };
 
 const LOCALE_LABEL: Record<string, string> = {
