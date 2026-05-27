@@ -86,7 +86,7 @@ export function createRemoteCmsProvider(): CmsProvider {
 
     async getCatalogPagePayload(locale?: string) {
       const suffix = buildSearchParams({ locale });
-      return fetchJson<CatalogPagePayload>(base, `/api/site/catalog${suffix}`);
+      return fetchJson<CatalogPagePayload>(base, `/api/pages/catalog${suffix}`);
     },
 
     async getCatalogProducts(query: CatalogProductsQuery, locale?: string) {
@@ -146,17 +146,17 @@ export function createRemoteCmsProvider(): CmsProvider {
 
     async getSiteHomePayload(locale?: string) {
       const suffix = buildSearchParams({ locale });
-      return fetchJson<SiteHomePayload>(base, `/api/site/home${suffix}`);
+      return fetchJson<SiteHomePayload>(base, `/api/pages/home${suffix}`);
     },
 
     async getSiteAboutPayload(locale?: string) {
       const suffix = buildSearchParams({ locale });
-      return fetchJson<SiteAboutPayload>(base, `/api/site/about${suffix}`);
+      return fetchJson<SiteAboutPayload>(base, `/api/pages/about${suffix}`);
     },
 
     async getSupportPayload(locale?: string) {
       const suffix = buildSearchParams({ locale });
-      return fetchJson<SupportPayload>(base, `/api/site/support${suffix}`);
+      return fetchJson<SupportPayload>(base, `/api/pages/support${suffix}`);
     },
 
     // ── Auth ─────────────────────────────────────────────────────────────
@@ -294,12 +294,17 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     // ── Products (Write) ──────────────────────────────────────────────────────
+    // Nota: o back-end (stetsom-api) registra os endpoints de escrita em:
+    //   POST   /api/products/         → criar produto
+    //   PATCH  /api/products/:id      → atualizar produto
+    //   DELETE /api/products/:id      → excluir produto
+    // (não em /api/products/admin — esse prefixo só existe nas rotas de leitura CMS)
 
     async createCmsProduct(
       input: CreateCmsProductInput,
     ): Promise<CmsProductMutationResult> {
       const authHeaders = await getAuthHeaders();
-      return fetchJson<CmsProductMutationResult>(base, "/api/products/admin", {
+      return fetchJson<CmsProductMutationResult>(base, "/api/products/", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(authHeaders ?? {}) },
         body: JSON.stringify(input),
@@ -311,23 +316,19 @@ export function createRemoteCmsProvider(): CmsProvider {
       input: UpdateCmsProductInput,
     ): Promise<CmsProductMutationResult> {
       const authHeaders = await getAuthHeaders();
-      return fetchJson<CmsProductMutationResult>(
-        base,
-        `/api/products/admin/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            ...(authHeaders ?? {}),
-          },
-          body: JSON.stringify(input),
+      return fetchJson<CmsProductMutationResult>(base, `/api/products/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(authHeaders ?? {}),
         },
-      );
+        body: JSON.stringify(input),
+      });
     },
 
     async deleteCmsProduct(id: string): Promise<void> {
       const authHeaders = await getAuthHeaders();
-      const res = await fetch(`${base}/api/products/admin/${id}`, {
+      const res = await fetch(`${base}/api/products/${id}`, {
         method: "DELETE",
         headers: authHeaders ?? {},
         cache: "no-store",

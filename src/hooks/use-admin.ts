@@ -148,3 +148,19 @@ export function useAdminConfig() {
     queryFn: () => proxyFetch<CmsConfig>("/api/proxy/admin/config"),
   });
 }
+
+export function useUpdateAdminConfig() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: Partial<CmsConfig>) =>
+      proxyFetch<CmsConfig>("/api/proxy/admin/config", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin", "config"] });
+    },
+  });
+}

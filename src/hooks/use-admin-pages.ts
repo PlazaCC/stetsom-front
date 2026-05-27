@@ -8,6 +8,7 @@ import type {
 } from "@/lib/api/contracts";
 import { proxyFetch } from "@/lib/api/fetch-utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export function useAdminPages() {
   return useQuery<AdminPagesPayload>({
@@ -37,6 +38,13 @@ export function useUpdatePageSection() {
       }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-page-sections"] });
+      qc.invalidateQueries({ queryKey: ["admin-pages"] });
+      toast.success("Seção salva com sucesso");
+    },
+    onError: (err: Error) => {
+      toast.error("Erro ao salvar seção", {
+        description: err.message || "Tente novamente.",
+      });
     },
   });
 }

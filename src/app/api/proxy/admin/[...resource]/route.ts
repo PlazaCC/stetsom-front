@@ -5,6 +5,7 @@ import type {
   CreateBannerInput,
   CreateCmsProductInput,
   LibraryAssetType,
+  PageId,
   UpdateAdminUserInput,
   UpdateCmsProductInput,
 } from "@/lib/api/contracts";
@@ -102,6 +103,8 @@ const MOCK_GET: Record<string, MockGetHandler> = {
           page: parseNum(sp.get("page")),
           pageSize: parseNum(sp.get("pageSize")),
         }),
+  pages: (p, r) =>
+    r[1] ? p.getAdminPageSections(r[1] as PageId) : p.getAdminPages(),
 };
 
 const MOCK_POST: Record<string, MockPostHandler> = {
@@ -130,6 +133,14 @@ const MOCK_PATCH: Record<string, MockPatchHandler> = {
     const { is_read } = body as { is_read: boolean };
     return p.markMessageRead(r[1], is_read);
   },
+  pages: (p, r, body) => {
+    // r = ["pages", "sections", ":sectionId"]
+    const sectionId = r[2];
+    if (!sectionId)
+      throw new HttpError(404, "NOT_FOUND", "Section ID required.");
+    const { data } = body as { data: Record<string, unknown> };
+    return p.updatePageSection(sectionId, data);
+  },
 };
 
 const MOCK_DELETE: Record<string, MockDeleteHandler> = {
@@ -156,8 +167,15 @@ export async function GET(
     const { resource } = await params;
 
     if (!isMockMode()) {
-      const upstreamPath = getProxyUpstreamPath(ADMIN_ROUTE_MAP, resource);
-      return forwardRequest(request, upstreamPath, resource, token);
+      const adjustedResource =
+        resource[0] === "products"
+          ? [resource[0], "admin", ...resource.slice(1)]
+          : resource;
+      const upstreamPath = getProxyUpstreamPath(
+        ADMIN_ROUTE_MAP,
+        adjustedResource,
+      );
+      return forwardRequest(request, upstreamPath, adjustedResource, token);
     }
 
     const handler = MOCK_GET[resource[0]];

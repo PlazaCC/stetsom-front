@@ -6,26 +6,31 @@ import {
   AdminInput,
   AdminLabel,
 } from "@/app/admin/_components/crud/admin-input";
-import { useAdminConfig } from "@/hooks/use-admin";
+import { useAdminConfig, useUpdateAdminConfig } from "@/hooks/use-admin";
 import type { CmsConfig } from "@/lib/api/contracts";
 import { Settings } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { AdminPageHeader } from "../_components/admin-page-header";
 import { AdminPanel } from "../_components/admin-panel";
 
 function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
   const [config, setConfig] = useState<CmsConfig>(initialConfig);
-  const [saved, setSaved] = useState(false);
+  const updateConfig = useUpdateAdminConfig();
 
   function handleChange(key: keyof CmsConfig, value: string) {
-    setSaved(false);
     setConfig((prev) => ({ ...prev, [key]: value }));
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    updateConfig.mutate(config, {
+      onSuccess: () => toast.success("Configurações salvas com sucesso"),
+      onError: (err) =>
+        toast.error("Erro ao salvar configurações", {
+          description: err.message,
+        }),
+    });
   }
 
   return (
@@ -41,9 +46,12 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
               <div className="mt-4">
                 <button
                   type="submit"
-                  className="w-full rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+                  disabled={updateConfig.isPending}
+                  className="w-full rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-50"
                 >
-                  {saved ? "Salvo!" : "Salvar configurações"}
+                  {updateConfig.isPending
+                    ? "Salvando..."
+                    : "Salvar configurações"}
                 </button>
               </div>
             </AdminFormSection>

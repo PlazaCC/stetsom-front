@@ -1,8 +1,4 @@
-/**
- * Mock data para o módulo de Páginas Institucionais do CMS.
- * Cada seção reflete o layout real das páginas públicas e é editável pelo admin.
- * Dados extraídos dos mocks existentes (site.ts, support.ts) para consistência.
- */
+/** Mock data for the CMS Institutional Pages module. Each section mirrors the real public page layout. */
 import type {
   AdminPageDetailPayload,
   AdminPagesPayload,
@@ -15,7 +11,7 @@ const NOW = "2026-05-19T00:00:00.000Z";
 
 const HOME_SECTIONS: PageSection[] = [
   {
-    id: "home-hero-carousel",
+    id: "home~hero-carousel",
     page_id: "home",
     name: "Hero Principal (Carousel)",
     type: "HERO_CAROUSEL",
@@ -55,7 +51,7 @@ const HOME_SECTIONS: PageSection[] = [
     updated_at: NOW,
   },
   {
-    id: "home-featured-products",
+    id: "home~featured-products",
     page_id: "home",
     name: "Produtos em Destaque",
     type: "PRODUCT_GRID",
@@ -88,7 +84,7 @@ const HOME_SECTIONS: PageSection[] = [
     updated_at: NOW,
   },
   {
-    id: "home-faq",
+    id: "home~faq",
     page_id: "home",
     name: "FAQ",
     type: "FAQ_ACCORDION",
@@ -126,7 +122,7 @@ const HOME_SECTIONS: PageSection[] = [
     updated_at: NOW,
   },
   {
-    id: "home-social-feed",
+    id: "home~social-feed",
     page_id: "home",
     name: "Feed do Instagram",
     type: "SOCIAL_FEED",
@@ -144,11 +140,11 @@ const HOME_SECTIONS: PageSection[] = [
   },
 ];
 
-// ── Catálogo ──────────────────────────────────────────────────────────────────
+// ── Catalog ────────────────────────────────────────────────────────────────────
 
 const CATALOG_SECTIONS: PageSection[] = [
   {
-    id: "catalog-hero",
+    id: "catalog~catalog-hero",
     page_id: "catalog",
     name: "Hero do Catálogo",
     type: "CATALOG_HERO",
@@ -163,13 +159,28 @@ const CATALOG_SECTIONS: PageSection[] = [
     },
     updated_at: NOW,
   },
+  {
+    id: "catalog~product-grid",
+    page_id: "catalog",
+    name: "Configuração de Grid de Produtos",
+    type: "PRODUCT_GRID",
+    order: 2,
+    is_editable: true,
+    data: {
+      label: "Nossos Produtos",
+      title: "CATÁLOGO COMPLETO",
+      columns: 3,
+      showFilters: true,
+    },
+    updated_at: NOW,
+  },
 ];
 
-// ── Sobre ─────────────────────────────────────────────────────────────────────
+// ── About ──────────────────────────────────────────────────────────────────────
 
 const ABOUT_SECTIONS: PageSection[] = [
   {
-    id: "about-hero",
+    id: "about~hero",
     page_id: "about",
     name: "Hero",
     type: "HERO_STATIC",
@@ -184,7 +195,7 @@ const ABOUT_SECTIONS: PageSection[] = [
     updated_at: NOW,
   },
   {
-    id: "about-stats",
+    id: "about~stats",
     page_id: "about",
     name: "Números da Empresa",
     type: "STATS_ROW",
@@ -201,7 +212,7 @@ const ABOUT_SECTIONS: PageSection[] = [
     updated_at: NOW,
   },
   {
-    id: "about-milestones",
+    id: "about~milestones",
     page_id: "about",
     name: "Marcos (Marquee)",
     type: "MILESTONES_MARQUEE",
@@ -220,7 +231,7 @@ const ABOUT_SECTIONS: PageSection[] = [
     updated_at: NOW,
   },
   {
-    id: "about-values",
+    id: "about~values",
     page_id: "about",
     name: "Valores da Empresa",
     type: "VALUES_GRID",
@@ -257,7 +268,7 @@ const ABOUT_SECTIONS: PageSection[] = [
     updated_at: NOW,
   },
   {
-    id: "about-timeline",
+    id: "about~timeline",
     page_id: "about",
     name: "Linha do Tempo",
     type: "TIMELINE_VERTICAL",
@@ -315,7 +326,7 @@ const ABOUT_SECTIONS: PageSection[] = [
     updated_at: NOW,
   },
   {
-    id: "about-foundations",
+    id: "about~foundations",
     page_id: "about",
     name: "Bases da Empresa",
     type: "FOUNDATIONS_GRID",
@@ -347,11 +358,11 @@ const ABOUT_SECTIONS: PageSection[] = [
   },
 ];
 
-// ── Suporte ───────────────────────────────────────────────────────────────────
+// ── Support ────────────────────────────────────────────────────────────────────
 
 const SUPPORT_SECTIONS: PageSection[] = [
   {
-    id: "support-hero",
+    id: "support~hero",
     page_id: "support",
     name: "Hero",
     type: "HERO_STATIC",
@@ -367,7 +378,7 @@ const SUPPORT_SECTIONS: PageSection[] = [
     updated_at: NOW,
   },
   {
-    id: "support-cards",
+    id: "support~support-cards",
     page_id: "support",
     name: "Canais de Atendimento",
     type: "SUPPORT_CARDS",
@@ -405,11 +416,11 @@ const SUPPORT_SECTIONS: PageSection[] = [
     updated_at: NOW,
   },
   {
-    id: "support-downloads",
+    id: "support~download-catalog",
     page_id: "support",
     name: "Downloads e Manuais",
     type: "DOWNLOAD_CATALOG",
-    order: 3,
+    order: 4,
     is_editable: true,
     data: {
       label: "Materiais Técnicos",
@@ -425,7 +436,7 @@ const SUPPORT_SECTIONS: PageSection[] = [
     updated_at: NOW,
   },
   {
-    id: "support-service-centers",
+    id: "support~service-centers",
     page_id: "support",
     name: "Postos Autorizados",
     type: "SERVICE_CENTERS",
@@ -458,11 +469,11 @@ const SUPPORT_SECTIONS: PageSection[] = [
     updated_at: NOW,
   },
   {
-    id: "support-contact-config",
+    id: "support~contact-config",
     page_id: "support",
     name: "Configuração do Formulário",
     type: "CONTACT_FORM_CONFIG",
-    order: 5,
+    order: 6,
     is_editable: true,
     data: {
       label: "Fale Conosco",
@@ -489,11 +500,11 @@ const SUPPORT_SECTIONS: PageSection[] = [
     updated_at: NOW,
   },
   {
-    id: "support-faq",
+    id: "support~faq",
     page_id: "support",
     name: "FAQ",
     type: "FAQ_ACCORDION",
-    order: 6,
+    order: 5,
     is_editable: true,
     data: {
       label: "Dúvidas Frequentes",
@@ -528,7 +539,7 @@ const SUPPORT_SECTIONS: PageSection[] = [
 
 // ── Exports ───────────────────────────────────────────────────────────────────
 
-/** Todas as seções de todas as páginas (índice global para lookups por id) */
+/** All sections from all pages (global index for id-based lookups). */
 export const MOCK_ALL_PAGE_SECTIONS: PageSection[] = [
   ...HOME_SECTIONS,
   ...CATALOG_SECTIONS,
@@ -536,7 +547,7 @@ export const MOCK_ALL_PAGE_SECTIONS: PageSection[] = [
   ...SUPPORT_SECTIONS,
 ];
 
-/** Seções agrupadas por pageId para getAdminPageSections */
+/** Sections grouped by pageId for getAdminPageSections. */
 export const MOCK_PAGE_SECTIONS_BY_PAGE: Record<string, PageSection[]> = {
   home: HOME_SECTIONS,
   catalog: CATALOG_SECTIONS,
@@ -545,30 +556,29 @@ export const MOCK_PAGE_SECTIONS_BY_PAGE: Record<string, PageSection[]> = {
 };
 
 const PAGE_LABELS: Record<string, string> = {
-  home: "Home",
-  catalog: "Catálogo de produtos",
-  about: "Sobre a Stetsom",
-  support: "Suporte técnico",
+  home: "Página Inicial",
+  catalog: "Catálogo",
+  about: "Sobre Nós",
+  support: "Suporte",
 };
 
 /** Lista de páginas com data de última atualização */
+function getLatestUpdatedAt(sections: PageSection[]): string {
+  return sections.reduce(
+    (latest, s) =>
+      new Date(s.updated_at).getTime() > new Date(latest).getTime()
+        ? s.updated_at
+        : latest,
+    NOW,
+  );
+}
+
 export const MOCK_ADMIN_PAGES: AdminPagesPayload = {
   pages: (["home", "catalog", "about", "support"] as const).map((id) => ({
     id,
     label: PAGE_LABELS[id],
-    updated_at:
-      Math.max(
-        ...(MOCK_PAGE_SECTIONS_BY_PAGE[id] ?? []).map((s) =>
-          new Date(s.updated_at).getTime(),
-        ),
-        0,
-      ) > 0
-        ? ((MOCK_PAGE_SECTIONS_BY_PAGE[id] ?? []).sort(
-            (a, b) =>
-              new Date(b.updated_at).getTime() -
-              new Date(a.updated_at).getTime(),
-          )[0]?.updated_at ?? NOW)
-        : NOW,
+    sections_count: (MOCK_PAGE_SECTIONS_BY_PAGE[id] ?? []).length,
+    updated_at: getLatestUpdatedAt(MOCK_PAGE_SECTIONS_BY_PAGE[id] ?? []),
   })),
 };
 

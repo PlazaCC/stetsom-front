@@ -673,9 +673,9 @@ export type PageSection = {
   name: string;
   type: PageSectionType;
   order: number;
-  /** false = seção estrutural não editável (ex.: header/footer) */
+  /** Structural section, not editable via CMS (e.g. header/footer). */
   is_editable: boolean;
-  /** Shape varia por type — ver form renderers em admin/paginas/_components/ */
+  /** Shape varies by type — see form renderers in admin/paginas/_components/. */
   data: Record<string, unknown>;
   updated_at: ISODateString;
 };
@@ -684,6 +684,7 @@ export type AdminPagesPayload = {
   pages: Array<{
     id: PageId;
     label: string;
+    sections_count: number;
     updated_at: ISODateString;
   }>;
 };

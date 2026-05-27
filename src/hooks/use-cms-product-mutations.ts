@@ -7,6 +7,7 @@ import type {
 } from "@/lib/api/contracts";
 import { proxyFetch } from "@/lib/api/fetch-utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 async function apiPost<T>(path: string, body: unknown): Promise<T> {
   return proxyFetch<T>(path, {
@@ -34,20 +35,21 @@ async function apiDelete(path: string): Promise<void> {
   }
 }
 
-/**
- * Mutations para create, update e delete de produtos via BFF proxy.
- * Invalida o cache de listagem após cada operação bem-sucedida.
- */
 export function useCmsProductMutations() {
   const qc = useQueryClient();
 
   const invalidateProducts = () =>
-    qc.invalidateQueries({ queryKey: ["cms-products"] });
+    qc.invalidateQueries({ queryKey: ["cms", "products"] });
 
   const create = useMutation({
     mutationFn: (input: CreateCmsProductInput) =>
       apiPost<CmsProductMutationResult>("/api/proxy/admin/products", input),
     onSuccess: invalidateProducts,
+    onError: (err: Error) => {
+      toast.error("Erro ao criar produto", {
+        description: err.message || "Tente novamente.",
+      });
+    },
   });
 
   const update = useMutation({
@@ -57,11 +59,21 @@ export function useCmsProductMutations() {
         input,
       ),
     onSuccess: invalidateProducts,
+    onError: (err: Error) => {
+      toast.error("Erro ao salvar produto", {
+        description: err.message || "Tente novamente.",
+      });
+    },
   });
 
   const remove = useMutation({
     mutationFn: (id: string) => apiDelete(`/api/proxy/admin/products/${id}`),
     onSuccess: invalidateProducts,
+    onError: (err: Error) => {
+      toast.error("Erro ao excluir produto", {
+        description: err.message || "Tente novamente.",
+      });
+    },
   });
 
   return { create, update, remove };

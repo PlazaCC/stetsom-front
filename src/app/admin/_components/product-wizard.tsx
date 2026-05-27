@@ -27,10 +27,11 @@ import {
   useCatalogSubcategories,
 } from "@/hooks/use-catalog";
 import { useCmsProductMutations } from "@/hooks/use-cms-product-mutations";
+import { useAdminToast } from "@/hooks/use-admin-toast";
 import { Package } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface ProductWizardProps {
   initial?: CmsProductDetailPayload;
@@ -128,10 +129,6 @@ function buildInitialBlocks(detail?: CmsProductDetailPayload): DraftBlock[] {
   });
 }
 
-/**
- * Determina o status a ser salvo com base nos campos preenchidos.
- * Se os campos obrigatórios para publicação estiverem ausentes, salva como DRAFT.
- */
 function resolveStatus(
   info: ProductInfo,
   blocks: DraftBlock[],
@@ -149,6 +146,7 @@ function buildPayload(
   info: ProductInfo,
   variations: ProductVariation[],
   blocks: DraftBlock[],
+  highlightAttributes: string[],
   status: ProductStatus,
 ): CreateCmsProductInput {
   return {
@@ -164,7 +162,7 @@ function buildPayload(
     launch_date: info.launch_date,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     variations: variations.map(({ id: _id, ...rest }) => rest),
-    highlight_attributes: [],
+    highlight_attributes: highlightAttributes,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
     blocks: blocks.map(({ id: _id, ...rest }) => rest) as any,
   };
@@ -180,6 +178,7 @@ const STEP_LABELS: Record<Step, string> = {
 export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const router = useRouter();
   const mutations = useCmsProductMutations();
+  const adminToast = useAdminToast();
 
   const [step, setStep] = useState<Step>(1);
   const [info, setInfo] = useState<ProductInfo>(buildInitialInfo(initial));
@@ -197,11 +196,10 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   );
   const [files, setFiles] = useState(initial?.files ?? []);
 
-  // Draft / persistence state
   const [productId, setProductId] = useState<string | null>(
     initial?.product.id ?? null,
   );
-  const [isDirty, setIsDirty] = useState(false);
+  const [isDirty, setIsDirty] = useState(mode === "edit");
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [publishedResult, setPublishedResult] =
     useState<CmsProductMutationResult | null>(null);
@@ -210,6 +208,16 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     mutations.create.isPending ||
     mutations.update.isPending ||
     mutations.remove.isPending;
+
+  useEffect(() => {
+    if (!isDirty) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isDirty]);
 
   const categoriesQuery = useCatalogCategories();
   const subcategoriesQuery = useCatalogSubcategories();
@@ -244,7 +252,13 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     const status =
       overrideStatus ??
       resolveStatus(info, blocks, info.status as ProductStatus);
-    const payload = buildPayload(info, variations, blocks, status);
+    const payload = buildPayload(
+      info,
+      variations,
+      blocks,
+      highlightAttributes,
+      status,
+    );
 
     let result: CmsProductMutationResult;
     if (productId) {
@@ -265,20 +279,24 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   async function handleSaveDraft() {
     try {
       await handleSave("DRAFT");
+      adminToast.draft(info.name || undefined);
     } catch {
-      // Error handling — silently catch; UX feedback via mutation state
+      adminToast.error("Erro ao salvar rascunho");
     }
   }
 
-  async function handleNext() {
-    if (isDirty) {
-      try {
-        await handleSave();
-      } catch {
-        // Non-blocking — allow navigation even if save fails
-      }
-    }
+  function handleNext() {
     setStep((s) => (s + 1) as Step);
+  }
+
+  function handleBack() {
+    if (
+      isDirty &&
+      !window.confirm("Você tem alterações não salvas. Deseja sair sem salvar?")
+    ) {
+      return;
+    }
+    setStep((s) => (s - 1) as Step);
   }
 
   async function handlePublish() {
@@ -286,16 +304,31 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
       const result = await handleSave(
         resolveStatus(info, blocks, info.status as ProductStatus),
       );
+      if (result.status === "DRAFT") {
+        adminToast.draft(info.name || undefined);
+      } else {
+        adminToast.success(
+          mode === "create"
+            ? "Produto criado com sucesso!"
+            : "Produto atualizado com sucesso!",
+          "As alterações já estão visíveis no catálogo.",
+        );
+      }
       setPublishedResult(result);
     } catch {
-      // Error state handled via mutations.create/update.isError
+      adminToast.error("Erro ao publicar produto");
     }
   }
 
   async function handleDelete() {
     if (!productId) return;
-    await mutations.remove.mutateAsync(productId);
-    router.push("/admin/produtos");
+    try {
+      await mutations.remove.mutateAsync(productId);
+      adminToast.deleted(info.name || undefined);
+      router.push("/admin/produtos");
+    } catch {
+      adminToast.error("Erro ao excluir produto");
+    }
   }
 
   const title =
@@ -465,18 +498,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
         )}
       </AdminWizardPage>
 
-      {/* Error feedback */}
-      {(mutations.create.isError || mutations.update.isError) && (
-        <AdminPanel className="px-5 py-3">
-          <p className="text-sm text-destructive">
-            {(mutations.create.error ?? mutations.update.error)?.message ??
-              "Ocorreu um erro ao salvar. Tente novamente."}
-          </p>
-        </AdminPanel>
-      )}
-
       <AdminSaveBar
-        onBack={step > 1 ? () => setStep((s) => (s - 1) as Step) : undefined}
+        onBack={step > 1 ? handleBack : undefined}
         onNext={step < 4 ? handleNext : undefined}
         onSaveDraft={handleSaveDraft}
         onPublish={step === 4 ? handlePublish : undefined}

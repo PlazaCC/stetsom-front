@@ -768,9 +768,9 @@ export function createMockCmsProvider(): CmsProvider {
       return {
         page_id: pageId,
         label: {
-          home: "Home",
+          home: "Página Inicial",
           catalog: "Catálogo",
-          about: "Sobre",
+          about: "Sobre Nós",
           support: "Suporte",
         }[pageId],
         sections: resolved,
@@ -781,7 +781,6 @@ export function createMockCmsProvider(): CmsProvider {
       sectionId: string,
       data: Record<string, unknown>,
     ): Promise<PageSection> {
-      // Find the section from all pages
       const { MOCK_ALL_PAGE_SECTIONS } = await import("@/lib/mock/cms-pages");
       const base =
         _mockPageSections.get(sectionId) ??
@@ -790,12 +789,19 @@ export function createMockCmsProvider(): CmsProvider {
         throw new HttpError(
           404,
           "NOT_FOUND",
-          `Seção ${sectionId} não encontrada.`,
+          `Section ${sectionId} not found.`,
+        );
+      }
+      if (!base.is_editable) {
+        throw new HttpError(
+          403,
+          "FORBIDDEN",
+          `Section "${base.name}" is structural and cannot be edited.`,
         );
       }
       const updated: PageSection = {
         ...base,
-        data: { ...base.data, ...data },
+        data,
         updated_at: isoNow(),
       };
       _mockPageSections.set(sectionId, updated);
