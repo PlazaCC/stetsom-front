@@ -24,15 +24,29 @@ interface ValuesData {
 interface Props {
   section: PageSection;
   onChange: (data: Record<string, unknown>) => void;
+  onFileChange?: (key: string, file: File | null) => void;
 }
 
-export function SectionFormValues({ section, onChange }: Props) {
+export function SectionFormValues({ section, onChange, onFileChange }: Props) {
   const raw = section.data as unknown as ValuesData;
   const [data, setData] = useState<ValuesData>({
     ...raw,
     values: raw.values ?? [],
   });
   const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  function handleFileChange(file: File | null) {
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      onFileChange?.("image", file);
+    } else {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+      onFileChange?.("image", null);
+    }
+  }
 
   function updateRoot(patch: Partial<ValuesData>) {
     const next = { ...data, ...patch };
@@ -101,14 +115,34 @@ export function SectionFormValues({ section, onChange }: Props) {
           />
         </FieldGroup>
         <div className="grid gap-3 sm:grid-cols-2">
-          <FieldGroup label="Imagem lateral (URL)">
+          <FieldGroup label="Imagem lateral (Upload)">
             <input
-              type="text"
-              value={data.image ?? ""}
-              onChange={(e) => updateRoot({ image: e.target.value })}
-              placeholder="/figma-assets/raw/..."
-              className={inputClass}
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0] ?? null;
+                handleFileChange(file);
+              }}
+              className={fileInputClass}
             />
+            {(previewUrl ?? data.image) && (
+              <div className="relative mt-2 overflow-hidden rounded-md border border-border">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={previewUrl ?? data.image}
+                  alt={data.imageAlt ?? "Preview"}
+                  className="h-20 w-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleFileChange(null)}
+                  className="absolute right-1 top-1 flex size-6 items-center justify-center rounded bg-black/50 text-xs text-white hover:bg-black/70"
+                  title="Remover imagem"
+                >
+                  <Trash2 className="size-3" />
+                </button>
+              </div>
+            )}
           </FieldGroup>
           <FieldGroup label="Alt da imagem">
             <input
@@ -247,4 +281,9 @@ function FieldGroup({
 const inputClass = cn(
   "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
   "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
+);
+
+const fileInputClass = cn(
+  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground file:mr-3 file:rounded file:border-0 file:bg-muted file:px-2.5 file:py-1 file:text-xs file:font-medium file:text-foreground",
+  "focus:outline-none focus:ring-1 focus:ring-brand",
 );

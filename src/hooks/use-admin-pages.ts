@@ -4,7 +4,8 @@ import type {
   AdminPageDetailPayload,
   AdminPagesPayload,
   PageId,
-  PageSection,
+  PageSectionWithUploads,
+  UpdatePageSectionInput,
 } from "@/lib/api/contracts";
 import { proxyFetch } from "@/lib/api/fetch-utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -30,12 +31,15 @@ export function useUpdatePageSection() {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) =>
-      proxyFetch<PageSection>(`/api/proxy/admin/pages/sections/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data }),
-      }),
+    mutationFn: (input: UpdatePageSectionInput & { id: string }) =>
+      proxyFetch<PageSectionWithUploads>(
+        `/api/proxy/admin/pages/sections/${input.id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+        },
+      ),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-page-sections"] });
       qc.invalidateQueries({ queryKey: ["admin-pages"] });

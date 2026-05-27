@@ -21,12 +21,14 @@ import type {
   CreateCmsProductInput,
   ProductStatus,
   ProductVariation,
+  ProductWithUpload,
 } from "@/lib/api/contracts";
 import {
   useCatalogCategories,
   useCatalogSubcategories,
 } from "@/hooks/use-catalog";
 import { useCmsProductMutations } from "@/hooks/use-cms-product-mutations";
+import { useInlineUpload } from "@/hooks/use-inline-upload";
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { Package } from "lucide-react";
 import Link from "next/link";
@@ -133,12 +135,10 @@ function resolveStatus(
   info: ProductInfo,
   blocks: DraftBlock[],
   desiredStatus: ProductStatus,
+  hasImage: boolean,
 ): ProductStatus {
   const hasRequired =
-    !!info.name &&
-    !!info.category_id &&
-    !!info.cover_image_url &&
-    blocks.length > 0;
+    !!info.name && !!info.category_id && hasImage && blocks.length > 0;
   return hasRequired ? desiredStatus : "DRAFT";
 }
 
@@ -148,8 +148,13 @@ function buildPayload(
   blocks: DraftBlock[],
   highlightAttributes: string[],
   status: ProductStatus,
+  coverImageFile: File | null,
 ): CreateCmsProductInput {
-  return {
+  const launchDate = info.launch_date
+    ? new Date(`${info.launch_date}T${info.launch_time}:00`).toISOString()
+    : new Date().toISOString();
+
+  const payload: CreateCmsProductInput = {
     name: info.name,
     slug: info.slug,
     category_id: info.category_id,
@@ -157,15 +162,24 @@ function buildPayload(
     status,
     badge: info.badge || null,
     description: info.description,
-    thumbnail_url: info.cover_image_url,
-    video_url: info.video_url || null,
-    launch_date: info.launch_date,
+    launch_date: launchDate,
+    video_url: info.video_url || undefined,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     variations: variations.map(({ id: _id, ...rest }) => rest),
     highlight_attributes: highlightAttributes,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
     blocks: blocks.map(({ id: _id, ...rest }) => rest) as any,
   };
+
+  if (coverImageFile) {
+    payload.thumbnail = {
+      fileName: coverImageFile.name,
+      mimeType: coverImageFile.type,
+      sizeBytes: coverImageFile.size,
+    };
+  }
+
+  return payload;
 }
 
 const STEP_LABELS: Record<Step, string> = {
@@ -178,6 +192,7 @@ const STEP_LABELS: Record<Step, string> = {
 export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const router = useRouter();
   const mutations = useCmsProductMutations();
+  const inlineUpload = useInlineUpload();
   const adminToast = useAdminToast();
 
   const [step, setStep] = useState<Step>(1);
@@ -195,6 +210,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     buildInitialBlocks(initial),
   );
   const [files, setFiles] = useState(initial?.files ?? []);
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
 
   const [productId, setProductId] = useState<string | null>(
     initial?.product.id ?? null,
@@ -207,7 +223,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const isSaving =
     mutations.create.isPending ||
     mutations.update.isPending ||
-    mutations.remove.isPending;
+    mutations.remove.isPending ||
+    inlineUpload.isUploading;
 
   useEffect(() => {
     if (!isDirty) return;
@@ -249,26 +266,44 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   async function handleSave(
     overrideStatus?: ProductStatus,
   ): Promise<CmsProductMutationResult> {
+    const hasImage = !!coverImageFile || !!initial?.product.thumbnail_url;
     const status =
       overrideStatus ??
-      resolveStatus(info, blocks, info.status as ProductStatus);
+      resolveStatus(info, blocks, info.status as ProductStatus, hasImage);
     const payload = buildPayload(
       info,
       variations,
       blocks,
       highlightAttributes,
       status,
+      coverImageFile,
     );
 
     let result: CmsProductMutationResult;
     if (productId) {
-      result = await mutations.update.mutateAsync({
+      const typedResult = await mutations.update.mutateAsync({
         id: productId,
         input: payload,
       });
+      result = typedResult as CmsProductMutationResult;
     } else {
-      result = await mutations.create.mutateAsync(payload);
+      const typedResult = (await mutations.create.mutateAsync(
+        payload,
+      )) as ProductWithUpload;
+      result = typedResult;
       setProductId(result.id);
+    }
+
+    if (coverImageFile) {
+      const withUploads = result as ProductWithUpload;
+      if (withUploads.uploads?.thumbnail) {
+        const fileMap = new Map<string, File>();
+        fileMap.set("thumbnail", coverImageFile);
+        await inlineUpload.upload(
+          { thumbnail: withUploads.uploads.thumbnail },
+          fileMap,
+        );
+      }
     }
 
     setLastSavedAt(new Date());
@@ -302,7 +337,12 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   async function handlePublish() {
     try {
       const result = await handleSave(
-        resolveStatus(info, blocks, info.status as ProductStatus),
+        resolveStatus(
+          info,
+          blocks,
+          info.status as ProductStatus,
+          !!coverImageFile || !!initial?.product.thumbnail_url,
+        ),
       );
       if (result.status === "DRAFT") {
         adminToast.draft(info.name || undefined);
@@ -460,6 +500,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
             categories={categories}
             subcategories={subcategories}
             onChange={updateInfo}
+            onCoverFile={setCoverImageFile}
           />
         )}
 

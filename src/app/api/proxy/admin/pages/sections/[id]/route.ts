@@ -1,3 +1,4 @@
+import type { UpdatePageSectionInput } from "@/lib/api/contracts";
 import { getCmsProvider } from "@/lib/api/provider";
 import { toErrorResponse, unauthorizedResponse } from "@/lib/api/route-utils";
 import { verifyAdminToken } from "@/lib/api/verify-admin-token";
@@ -22,11 +23,10 @@ export async function PATCH(
 
   try {
     const { id } = await params;
-    const body = await request.json();
-    const data = (body?.data ?? body) as Record<string, unknown>;
+    const body = (await request.json()) as UpdatePageSectionInput;
 
     const provider = getCmsProvider();
-    const result = await provider.updatePageSection(id, data);
+    const result = await provider.updatePageSection(id, body);
     return NextResponse.json(result);
   } catch (error) {
     return toErrorResponse(error);

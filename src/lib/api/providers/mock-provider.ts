@@ -2,9 +2,9 @@ import type {
   AdminUser,
   AuthPayload,
   Banner,
+  BannerWithUploads,
   CatalogPagePayload,
   CatalogProductsQuery,
-  CmsProductMutationResult,
   CmsProductsQuery,
   ContactFormInput,
   CreateAdminUserInput,
@@ -16,14 +16,17 @@ import type {
   LoginCredentials,
   PageId,
   PageSection,
+  PageSectionWithUploads,
   PaginatedResponse,
   Product,
   ProductDetailPayload,
   ProductStatus,
+  ProductWithUpload,
   SiteAboutPayload,
   SiteHomePayload,
   UpdateAdminUserInput,
   UpdateCmsProductInput,
+  UpdatePageSectionInput,
 } from "@/lib/api/contracts";
 import {
   createCategoryLookup,
@@ -623,7 +626,7 @@ export function createMockCmsProvider(): CmsProvider {
 
     async createCmsProduct(
       input: CreateCmsProductInput,
-    ): Promise<CmsProductMutationResult> {
+    ): Promise<ProductWithUpload> {
       const id = `prod-draft-${Date.now()}`;
       const now = isoNow();
       const product: Product = {
@@ -635,7 +638,7 @@ export function createMockCmsProvider(): CmsProvider {
         status: input.status,
         badge: input.badge ?? null,
         description: input.description,
-        thumbnail_url: input.thumbnail_url,
+        thumbnail_url: "/placeholder.png",
         video_url: input.video_url ?? undefined,
         launch_date: input.launch_date,
         variations: input.variations.map((v, i) => ({
@@ -648,13 +651,21 @@ export function createMockCmsProvider(): CmsProvider {
         created_by: "mock-user",
       };
       _draftProducts.set(id, product);
-      return { id, slug: input.slug, status: input.status };
+      const result = { id, slug: input.slug, status: input.status };
+      return {
+        ...result,
+        uploads: {
+          thumbnail: result.id
+            ? { uploadUrl: "", method: "PUT", headers: {} }
+            : undefined,
+        },
+      };
     },
 
     async updateCmsProduct(
       id: string,
       input: UpdateCmsProductInput,
-    ): Promise<CmsProductMutationResult> {
+    ): Promise<ProductWithUpload> {
       // Look in draft store first, then fall back to static catalog
       const existing =
         _draftProducts.get(id) ?? CATALOG_PRODUCTS.find((p) => p.id === id);
@@ -676,8 +687,8 @@ export function createMockCmsProvider(): CmsProvider {
         ...(input.description !== undefined && {
           description: input.description,
         }),
-        ...(input.thumbnail_url !== undefined && {
-          thumbnail_url: input.thumbnail_url,
+        ...(input.thumbnail !== undefined && {
+          thumbnail_url: "/placeholder.png",
         }),
         ...(input.video_url !== undefined && {
           video_url: input.video_url ?? undefined,
@@ -697,7 +708,12 @@ export function createMockCmsProvider(): CmsProvider {
         updated_at: isoNow(),
       };
       _draftProducts.set(id, updated);
-      return { id, slug: updated.slug, status: updated.status };
+      return {
+        id,
+        slug: updated.slug,
+        status: updated.status,
+        uploads: { thumbnail: { uploadUrl: "", method: "PUT", headers: {} } },
+      };
     },
 
     async deleteCmsProduct(id: string): Promise<void> {
@@ -707,7 +723,7 @@ export function createMockCmsProvider(): CmsProvider {
 
     // ── Banners (Write) ───────────────────────────────────────────────────────
 
-    async createBanner(input: CreateBannerInput): Promise<Banner> {
+    async createBanner(input: CreateBannerInput): Promise<BannerWithUploads> {
       if (!_mockBannersSeeded) {
         _mockBanners.push(...MOCK_CMS_BANNERS);
         _mockBannersSeeded = true;
@@ -716,8 +732,10 @@ export function createMockCmsProvider(): CmsProvider {
       const banner: Banner = {
         id: `banner-${Date.now()}`,
         name: input.name,
-        desktop_image_url: input.desktop_image_url,
-        mobile_image_url: input.mobile_image_url,
+        desktop_image_url: "/placeholder-desktop.png",
+        mobile_image_url: input.mobile_image
+          ? "/placeholder-mobile.png"
+          : undefined,
         alt: input.alt,
         href: input.href,
         label: input.label,
@@ -734,13 +752,19 @@ export function createMockCmsProvider(): CmsProvider {
         created_by: "mock-user",
       };
       _mockBanners.push(banner);
-      return banner;
+      return {
+        banner,
+        uploads: {
+          desktop: { uploadUrl: "", method: "PUT", headers: {} },
+          mobile: { uploadUrl: "", method: "PUT", headers: {} },
+        },
+      };
     },
 
     async updateBanner(
       id: string,
       input: Partial<CreateBannerInput>,
-    ): Promise<Banner> {
+    ): Promise<BannerWithUploads> {
       if (!_mockBannersSeeded) {
         _mockBanners.push(...MOCK_CMS_BANNERS);
         _mockBannersSeeded = true;
@@ -751,11 +775,38 @@ export function createMockCmsProvider(): CmsProvider {
       }
       const updated: Banner = {
         ..._mockBanners[index],
-        ...input,
+        ...(input.name !== undefined && { name: input.name }),
+        ...(input.product_id !== undefined && { product_id: input.product_id }),
+        ...(input.alt !== undefined && { alt: input.alt }),
+        ...(input.href !== undefined && { href: input.href }),
+        ...(input.label !== undefined && { label: input.label }),
+        ...(input.title !== undefined && { title: input.title }),
+        ...(input.link_url !== undefined && { link_url: input.link_url }),
+        ...(input.status !== undefined && { status: input.status }),
+        ...(input.locale !== undefined && { locale: input.locale }),
+        ...(input.display_from !== undefined && {
+          display_from: input.display_from,
+        }),
+        ...(input.display_until !== undefined && {
+          display_until: input.display_until,
+        }),
+        ...(input.order !== undefined && { order: input.order }),
+        ...(input.desktop_image !== undefined && {
+          desktop_image_url: "/placeholder-desktop.png",
+        }),
+        ...(input.mobile_image !== undefined
+          ? { mobile_image_url: "/placeholder-mobile.png" }
+          : {}),
         updated_at: isoNow(),
       };
       _mockBanners[index] = updated;
-      return updated;
+      return {
+        banner: updated,
+        uploads: {
+          desktop: { uploadUrl: "", method: "PUT", headers: {} },
+          mobile: { uploadUrl: "", method: "PUT", headers: {} },
+        },
+      };
     },
 
     async deleteBanner(id: string): Promise<void> {
@@ -816,8 +867,8 @@ export function createMockCmsProvider(): CmsProvider {
 
     async updatePageSection(
       sectionId: string,
-      data: Record<string, unknown>,
-    ): Promise<PageSection> {
+      input: UpdatePageSectionInput,
+    ): Promise<PageSectionWithUploads> {
       const { MOCK_ALL_PAGE_SECTIONS } = await import("@/lib/mock/cms-pages");
       const base =
         _mockPageSections.get(sectionId) ??
@@ -838,11 +889,11 @@ export function createMockCmsProvider(): CmsProvider {
       }
       const updated: PageSection = {
         ...base,
-        data,
+        data: input.data,
         updated_at: isoNow(),
       };
       _mockPageSections.set(sectionId, updated);
-      return updated;
+      return { section: updated };
     },
   };
 }

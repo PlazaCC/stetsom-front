@@ -1,8 +1,8 @@
 "use client";
 
 import type {
-  CmsProductMutationResult,
   CreateCmsProductInput,
+  ProductWithUpload,
   UpdateCmsProductInput,
 } from "@/lib/api/contracts";
 import { proxyFetch } from "@/lib/api/fetch-utils";
@@ -43,7 +43,7 @@ export function useCmsProductMutations() {
 
   const create = useMutation({
     mutationFn: (input: CreateCmsProductInput) =>
-      apiPost<CmsProductMutationResult>("/api/proxy/admin/products", input),
+      apiPost<ProductWithUpload>("/api/proxy/admin/products", input),
     onSuccess: invalidateProducts,
     onError: (err: Error) => {
       toast.error("Erro ao criar produto", {
@@ -54,10 +54,7 @@ export function useCmsProductMutations() {
 
   const update = useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateCmsProductInput }) =>
-      apiPatch<CmsProductMutationResult>(
-        `/api/proxy/admin/products/${id}`,
-        input,
-      ),
+      apiPatch<ProductWithUpload>(`/api/proxy/admin/products/${id}`, input),
     onSuccess: invalidateProducts,
     onError: (err: Error) => {
       toast.error("Erro ao salvar produto", {

@@ -8,6 +8,7 @@ import type {
   PageId,
   UpdateAdminUserInput,
   UpdateCmsProductInput,
+  UpdatePageSectionInput,
 } from "@/lib/api/contracts";
 import { getCmsProvider } from "@/lib/api/provider";
 import type { CmsProvider } from "@/lib/api/provider-contract";
@@ -135,11 +136,11 @@ const MOCK_PATCH: Record<string, MockPatchHandler> = {
   },
   pages: (p, r, body) => {
     // r = ["pages", "sections", ":sectionId"]
+    // body is UpdatePageSectionInput (data + _uploads)
     const sectionId = r[2];
     if (!sectionId)
       throw new HttpError(404, "NOT_FOUND", "Section ID required.");
-    const { data } = body as { data: Record<string, unknown> };
-    return p.updatePageSection(sectionId, data);
+    return p.updatePageSection(sectionId, body as UpdatePageSectionInput);
   },
 };
 

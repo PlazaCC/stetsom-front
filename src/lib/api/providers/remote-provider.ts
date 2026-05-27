@@ -6,14 +6,13 @@ import type {
   AdminUsersPayload,
   AuditPayload,
   AuthPayload,
-  Banner,
+  BannerWithUploads,
   BannersPayload,
   CatalogPagePayload,
   CatalogProductsQuery,
   Category,
   CmsConfig,
   CmsProductDetailPayload,
-  CmsProductMutationResult,
   CmsProductsPayload,
   CmsProductsQuery,
   ContactFormInput,
@@ -25,16 +24,18 @@ import type {
   LibraryPayload,
   LoginCredentials,
   PageId,
-  PageSection,
+  PageSectionWithUploads,
   PaginatedResponse,
   ProductCardItem,
   ProductDetailPayload,
+  ProductWithUpload,
   SiteAboutPayload,
   SiteHomePayload,
   Subcategory,
   SupportPayload,
   UpdateAdminUserInput,
   UpdateCmsProductInput,
+  UpdatePageSectionInput,
 } from "@/lib/api/contracts";
 import type { CmsProvider } from "@/lib/api/provider-contract";
 import { buildSearchParams } from "@/lib/api/query-utils";
@@ -311,9 +312,9 @@ export function createRemoteCmsProvider(): CmsProvider {
 
     async createCmsProduct(
       input: CreateCmsProductInput,
-    ): Promise<CmsProductMutationResult> {
+    ): Promise<ProductWithUpload> {
       const authHeaders = await getAuthHeaders();
-      return fetchJson<CmsProductMutationResult>(base, "/api/products/", {
+      return fetchJson<ProductWithUpload>(base, "/api/products/", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(authHeaders ?? {}) },
         body: JSON.stringify(input),
@@ -323,9 +324,9 @@ export function createRemoteCmsProvider(): CmsProvider {
     async updateCmsProduct(
       id: string,
       input: UpdateCmsProductInput,
-    ): Promise<CmsProductMutationResult> {
+    ): Promise<ProductWithUpload> {
       const authHeaders = await getAuthHeaders();
-      return fetchJson<CmsProductMutationResult>(base, `/api/products/${id}`, {
+      return fetchJson<ProductWithUpload>(base, `/api/products/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -350,9 +351,9 @@ export function createRemoteCmsProvider(): CmsProvider {
 
     // ── Banners (Write) ───────────────────────────────────────────────────────
 
-    async createBanner(input: CreateBannerInput): Promise<Banner> {
+    async createBanner(input: CreateBannerInput): Promise<BannerWithUploads> {
       const authHeaders = await getAuthHeaders();
-      return fetchJson<Banner>(base, "/api/banners/", {
+      return fetchJson<BannerWithUploads>(base, "/api/banners/", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(authHeaders ?? {}) },
         body: JSON.stringify(input),
@@ -362,9 +363,9 @@ export function createRemoteCmsProvider(): CmsProvider {
     async updateBanner(
       id: string,
       input: Partial<CreateBannerInput>,
-    ): Promise<Banner> {
+    ): Promise<BannerWithUploads> {
       const authHeaders = await getAuthHeaders();
-      return fetchJson<Banner>(base, `/api/banners/${id}`, {
+      return fetchJson<BannerWithUploads>(base, `/api/banners/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", ...(authHeaders ?? {}) },
         body: JSON.stringify(input),
@@ -430,10 +431,10 @@ export function createRemoteCmsProvider(): CmsProvider {
 
     async updatePageSection(
       sectionId: string,
-      data: Record<string, unknown>,
-    ): Promise<PageSection> {
+      input: UpdatePageSectionInput,
+    ): Promise<PageSectionWithUploads> {
       const authHeaders = await getAuthHeaders();
-      return fetchJson<PageSection>(
+      return fetchJson<PageSectionWithUploads>(
         base,
         `/api/pages/admin/sections/${sectionId}`,
         {
@@ -442,7 +443,7 @@ export function createRemoteCmsProvider(): CmsProvider {
             "Content-Type": "application/json",
             ...(authHeaders ?? {}),
           },
-          body: JSON.stringify({ data }),
+          body: JSON.stringify(input),
         },
       );
     },

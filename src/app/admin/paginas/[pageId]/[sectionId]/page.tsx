@@ -8,10 +8,11 @@ import {
   useAdminPageSections,
   useUpdatePageSection,
 } from "@/hooks/use-admin-pages";
-import type { PageId, PageSection } from "@/lib/api/contracts";
+import { useInlineUpload } from "@/hooks/use-inline-upload";
+import type { PageId, PageSection, UploadFileInput } from "@/lib/api/contracts";
 import { CheckCircle2, FileText } from "lucide-react";
 import Link from "next/link";
-import { use, useState } from "react";
+import { use, useRef, useState } from "react";
 
 interface PageParams {
   pageId: string;
@@ -33,13 +34,16 @@ export default function AdminSectionEditorPage({
   const { pageId, sectionId } = use(params);
   const { data, isLoading } = useAdminPageSections(pageId as PageId);
   const updateSection = useUpdatePageSection();
+  const inlineUpload = useInlineUpload();
 
   const [localData, setLocalData] = useState<Record<string, unknown> | null>(
     null,
   );
+  const [uploads, setUploads] = useState<Record<string, UploadFileInput>>({});
   const [isDirty, setIsDirty] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [success, setSuccess] = useState(false);
+  const fileMapRef = useRef<Map<string, File>>(new Map());
 
   const section = data?.sections.find((s) => s.id === sectionId);
 
@@ -48,9 +52,40 @@ export default function AdminSectionEditorPage({
     setIsDirty(true);
   }
 
+  function handleFileChange(fieldKey: string, file: File | null) {
+    if (file) {
+      fileMapRef.current.set(fieldKey, file);
+      setUploads((prev) => ({
+        ...prev,
+        [fieldKey]: {
+          fileName: file.name,
+          mimeType: file.type,
+          sizeBytes: file.size,
+        },
+      }));
+    } else {
+      fileMapRef.current.delete(fieldKey);
+      setUploads((prev) => {
+        const next = { ...prev };
+        delete next[fieldKey];
+        return next;
+      });
+    }
+    setIsDirty(true);
+  }
+
   async function handleSave() {
     if (!section || !localData) return;
-    await updateSection.mutateAsync({ id: sectionId, data: localData });
+    const result = await updateSection.mutateAsync({
+      id: sectionId,
+      data: localData,
+      _uploads: Object.keys(uploads).length > 0 ? uploads : undefined,
+    });
+
+    if (result.uploads && fileMapRef.current.size > 0) {
+      await inlineUpload.upload(result.uploads, fileMapRef.current);
+    }
+
     setSavedAt(new Date());
     setIsDirty(false);
     setSuccess(true);
@@ -135,7 +170,11 @@ export default function AdminSectionEditorPage({
         </div>
       )}
 
-      <SectionFormRenderer section={displaySection} onChange={handleChange} />
+      <SectionFormRenderer
+        section={displaySection}
+        onChange={handleChange}
+        onFileChange={handleFileChange}
+      />
 
       <AdminSaveBar
         onPublish={handleSave}

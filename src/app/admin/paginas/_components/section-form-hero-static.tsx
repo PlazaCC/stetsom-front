@@ -2,6 +2,7 @@
 
 import type { PageSection } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
+import { Trash2 } from "lucide-react";
 import { useState } from "react";
 
 interface HeroStaticData {
@@ -17,11 +18,29 @@ interface HeroStaticData {
 interface Props {
   section: PageSection;
   onChange: (data: Record<string, unknown>) => void;
+  onFileChange?: (key: string, file: File | null) => void;
 }
 
-export function SectionFormHeroStatic({ section, onChange }: Props) {
+export function SectionFormHeroStatic({
+  section,
+  onChange,
+  onFileChange,
+}: Props) {
   const raw = section.data as HeroStaticData;
   const [data, setData] = useState<HeroStaticData>(raw);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  function handleFileChange(file: File | null) {
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      onFileChange?.("image", file);
+    } else {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+      onFileChange?.("image", null);
+    }
+  }
 
   function update(patch: Partial<HeroStaticData>) {
     const next = { ...data, ...patch };
@@ -88,13 +107,15 @@ export function SectionFormHeroStatic({ section, onChange }: Props) {
       {(section.type === "HERO_STATIC" || section.type === "CATALOG_HERO") && (
         <SectionCard title="Imagem de fundo">
           <div className="space-y-3">
-            <FieldGroup label="URL da imagem">
+            <FieldGroup label="Upload da imagem">
               <input
-                type="text"
-                value={data.image ?? ""}
-                onChange={(e) => update({ image: e.target.value })}
-                placeholder="/figma-assets/raw/... ou https://..."
-                className={inputClass}
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] ?? null;
+                  handleFileChange(file);
+                }}
+                className={fileInputClass}
               />
             </FieldGroup>
             <FieldGroup label="Texto alternativo (alt)">
@@ -107,11 +128,11 @@ export function SectionFormHeroStatic({ section, onChange }: Props) {
               />
             </FieldGroup>
 
-            {data.image && (
-              <div className="overflow-hidden rounded-md border border-border">
+            {(previewUrl ?? data.image) && (
+              <div className="relative overflow-hidden rounded-md border border-border">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={data.image}
+                  src={previewUrl ?? data.image}
                   alt={data.imageAlt ?? "Preview"}
                   className="h-32 w-full object-cover"
                   onError={(e) => {
@@ -119,6 +140,14 @@ export function SectionFormHeroStatic({ section, onChange }: Props) {
                       "none";
                   }}
                 />
+                <button
+                  type="button"
+                  onClick={() => handleFileChange(null)}
+                  className="absolute right-1 top-1 flex size-6 items-center justify-center rounded bg-black/50 text-xs text-white hover:bg-black/70"
+                  title="Remover imagem"
+                >
+                  <Trash2 className="size-3" />
+                </button>
               </div>
             )}
           </div>
@@ -165,4 +194,9 @@ function FieldGroup({
 const inputClass = cn(
   "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
   "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
+);
+
+const fileInputClass = cn(
+  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground file:mr-3 file:rounded file:border-0 file:bg-muted file:px-2.5 file:py-1 file:text-xs file:font-medium file:text-foreground",
+  "focus:outline-none focus:ring-1 focus:ring-brand",
 );

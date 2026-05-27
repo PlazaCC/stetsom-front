@@ -3,7 +3,13 @@
 import { AdminActionBar } from "@/app/admin/_components/crud/admin-action-bar";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminStatusToggle } from "@/app/admin/_components/crud/admin-status-toggle";
-import type { Banner } from "@/lib/api/contracts";
+import type {
+  Banner,
+  BannerWithUploads,
+  CreateBannerInput,
+} from "@/lib/api/contracts";
+import { useBannerMutations } from "@/hooks/use-banner-mutations";
+import { useInlineUpload } from "@/hooks/use-inline-upload";
 import { cn } from "@/lib/utils";
 import { Image, Plus } from "lucide-react";
 import { useState } from "react";
@@ -22,20 +28,33 @@ export function BannersContent({
 }: {
   initialBanners: Banner[];
 }) {
-  const [banners, setBanners] = useState<Banner[]>(initialBanners);
+  const [banners] = useState<Banner[]>(initialBanners);
   const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [draft, setDraft] = useState<BannerDraft>(EMPTY_DRAFT);
+  const [desktopImageFile, setDesktopImageFile] = useState<File | null>(null);
+  const [mobileImageFile, setMobileImageFile] = useState<File | null>(null);
+
+  const mutations = useBannerMutations();
+  const inlineUpload = useInlineUpload();
 
   const isFormOpen = isCreating || editingBanner !== null;
+  const isSaving =
+    mutations.create.isPending ||
+    mutations.update.isPending ||
+    inlineUpload.isUploading;
 
   function openCreate() {
     setDraft(EMPTY_DRAFT);
+    setDesktopImageFile(null);
+    setMobileImageFile(null);
     setIsCreating(true);
   }
 
   function openEdit(banner: Banner) {
     setDraft(bannerToDraft(banner));
+    setDesktopImageFile(null);
+    setMobileImageFile(null);
     setEditingBanner(banner);
   }
 
@@ -48,58 +67,98 @@ export function BannersContent({
     setDraft((prev) => ({ ...prev, [key]: value }));
   }
 
-  function handleSave() {
-    const now = new Date().toISOString();
-    if (isCreating) {
-      const next: Banner = {
-        id: `banner-${Date.now()}`,
-        name: draft.name,
-        product_id: draft.product_id || undefined,
-        desktop_image_url: draft.desktop_image_url,
-        mobile_image_url: draft.mobile_image_url || undefined,
-        link_url: draft.link_url || undefined,
-        status: draft.status,
-        locale: draft.locale,
-        display_from: draft.display_from || undefined,
-        display_until: draft.display_until || undefined,
-        order: banners.length + 1,
-        created_at: now,
-        updated_at: now,
-        created_by: "mock-user-1",
+  function buildPayload(): CreateBannerInput {
+    const payload: CreateBannerInput = {
+      name: draft.name,
+      product_id: draft.product_id || undefined,
+      desktop_image: desktopImageFile
+        ? {
+            fileName: desktopImageFile.name,
+            mimeType: desktopImageFile.type,
+            sizeBytes: desktopImageFile.size,
+          }
+        : { fileName: "", mimeType: "", sizeBytes: 0 },
+      link_url: draft.link_url || undefined,
+      status: draft.status,
+      locale: draft.locale,
+      display_from: draft.display_from || undefined,
+      display_until: draft.display_until || undefined,
+    };
+
+    if (mobileImageFile) {
+      payload.mobile_image = {
+        fileName: mobileImageFile.name,
+        mimeType: mobileImageFile.type,
+        sizeBytes: mobileImageFile.size,
       };
-      setBanners((prev) => [...prev, next]);
-    } else if (editingBanner) {
-      setBanners((prev) =>
-        prev.map((b) =>
-          b.id === editingBanner.id
-            ? {
-                ...b,
-                name: draft.name,
-                product_id: draft.product_id || undefined,
-                desktop_image_url: draft.desktop_image_url,
-                mobile_image_url: draft.mobile_image_url || undefined,
-                link_url: draft.link_url || undefined,
-                status: draft.status,
-                locale: draft.locale,
-                display_from: draft.display_from || undefined,
-                display_until: draft.display_until || undefined,
-                updated_at: now,
-              }
-            : b,
-        ),
-      );
     }
+
+    return payload;
+  }
+
+  function buildUpdatePayload(): Partial<CreateBannerInput> {
+    const payload: Partial<CreateBannerInput> = {
+      name: draft.name,
+      product_id: draft.product_id || undefined,
+      link_url: draft.link_url || undefined,
+      status: draft.status,
+      locale: draft.locale,
+      display_from: draft.display_from || undefined,
+      display_until: draft.display_until || undefined,
+    };
+
+    if (desktopImageFile) {
+      payload.desktop_image = {
+        fileName: desktopImageFile.name,
+        mimeType: desktopImageFile.type,
+        sizeBytes: desktopImageFile.size,
+      };
+    }
+
+    if (mobileImageFile) {
+      payload.mobile_image = {
+        fileName: mobileImageFile.name,
+        mimeType: mobileImageFile.type,
+        sizeBytes: mobileImageFile.size,
+      };
+    }
+
+    return payload;
+  }
+
+  async function handleSave() {
+    let result: BannerWithUploads;
+
+    if (isCreating) {
+      const payload = buildPayload();
+      result = await mutations.create.mutateAsync(payload);
+    } else if (editingBanner) {
+      const payload = buildUpdatePayload();
+      result = await mutations.update.mutateAsync({
+        id: editingBanner.id,
+        input: payload,
+      });
+    } else {
+      return;
+    }
+
+    const fileMap = new Map<string, File>();
+    if (desktopImageFile && result.uploads?.desktop) {
+      fileMap.set("desktop", desktopImageFile);
+    }
+    if (mobileImageFile && result.uploads?.mobile) {
+      fileMap.set("mobile", mobileImageFile);
+    }
+
+    if (fileMap.size > 0 && result.uploads) {
+      await inlineUpload.upload(result.uploads, fileMap);
+    }
+
     closeForm();
   }
 
-  function toggleStatus(id: string) {
-    setBanners((prev) =>
-      prev.map((b) =>
-        b.id === id
-          ? { ...b, status: b.status === "ACTIVE" ? "INACTIVE" : "ACTIVE" }
-          : b,
-      ),
-    );
+  async function handleDelete(id: string) {
+    await mutations.remove.mutateAsync(id);
   }
 
   if (isFormOpen) {
@@ -110,6 +169,10 @@ export function BannersContent({
         onDraftChange={handleDraftChange}
         onSave={handleSave}
         onCancel={closeForm}
+        onDesktopFile={setDesktopImageFile}
+        onMobileFile={setMobileImageFile}
+        onClearDesktopFile={() => setDesktopImageFile(null)}
+        onClearMobileFile={() => setMobileImageFile(null)}
       />
     );
   }
@@ -123,7 +186,8 @@ export function BannersContent({
           <button
             type="button"
             onClick={openCreate}
-            className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+            disabled={isSaving}
+            className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-50"
           >
             <Plus className="size-4" />
             Novo banner
@@ -201,7 +265,16 @@ export function BannersContent({
                       {banner.status !== "SCHEDULED" && (
                         <AdminStatusToggle
                           active={banner.status === "ACTIVE"}
-                          onToggle={() => toggleStatus(banner.id)}
+                          onToggle={async () => {
+                            const newStatus =
+                              banner.status === "ACTIVE"
+                                ? ("INACTIVE" as const)
+                                : ("ACTIVE" as const);
+                            await mutations.update.mutateAsync({
+                              id: banner.id,
+                              input: { status: newStatus },
+                            });
+                          }}
                         />
                       )}
                       <span
@@ -214,13 +287,27 @@ export function BannersContent({
                       </span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-4 py-3 text-right space-x-2">
                     <button
                       type="button"
                       onClick={() => openEdit(banner)}
                       className="text-xs font-medium text-brand hover:underline"
                     >
                       Editar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (
+                          window.confirm(`Excluir banner "${banner.name}"?`)
+                        ) {
+                          handleDelete(banner.id);
+                        }
+                      }}
+                      disabled={mutations.remove.isPending}
+                      className="text-xs font-medium text-red-500 hover:underline disabled:opacity-50"
+                    >
+                      Excluir
                     </button>
                   </td>
                 </tr>

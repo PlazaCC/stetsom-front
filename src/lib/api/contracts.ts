@@ -606,8 +606,8 @@ export type CreateCmsProductInput = {
   status: ProductStatus;
   badge?: string | null;
   description: string;
-  thumbnail_url: string;
-  video_url?: string | null;
+  thumbnail?: UploadFileInput;
+  video_url?: string;
   launch_date: ISODateString;
   variations: Array<Omit<ProductVariation, "id">>;
   highlight_attributes: string[];
@@ -629,10 +629,19 @@ export type CmsProductMutationResult = {
   status: ProductStatus;
 };
 
+export type ProductWithUpload = {
+  id: string;
+  slug: string;
+  status: ProductStatus;
+  uploads: {
+    thumbnail?: UploadSlot;
+  };
+};
+
 export type CreateBannerInput = {
   name: string;
-  desktop_image_url: string;
-  mobile_image_url?: string;
+  desktop_image: UploadFileInput;
+  mobile_image?: UploadFileInput;
   alt?: string;
   href?: string;
   label?: string;
@@ -644,6 +653,14 @@ export type CreateBannerInput = {
   display_until?: ISODateString;
   order?: number;
   product_id?: string;
+};
+
+export type BannerWithUploads = {
+  banner: Banner;
+  uploads: {
+    desktop?: UploadSlot;
+    mobile?: UploadSlot;
+  };
 };
 
 // ── Pages (Institutional Content) ────────────────────────────────────────────
@@ -680,6 +697,16 @@ export type PageSection = {
   updated_at: ISODateString | null;
 };
 
+export type PageSectionWithUploads = {
+  section: PageSection;
+  uploads?: Record<string, UploadSlot>;
+};
+
+export type UpdatePageSectionInput = {
+  data: Record<string, unknown>;
+  _uploads?: Record<string, UploadFileInput>;
+};
+
 export type AdminPagesPayload = {
   pages: Array<{
     id: PageId;
@@ -696,6 +723,18 @@ export type AdminPageDetailPayload = {
 };
 
 // Upload — mirrored from backend (src/schemas/index.ts)
+
+export type UploadFileInput = {
+  fileName: string;
+  mimeType: string;
+  sizeBytes?: number;
+};
+
+export type UploadSlot = {
+  uploadUrl: string;
+  method: "PUT";
+  headers: Record<string, string>;
+};
 
 /** POST /api/upload/ response: signed S3 URL + permanent file_url */
 export type UploadPresignResponse = {

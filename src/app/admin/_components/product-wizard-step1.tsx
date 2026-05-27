@@ -30,6 +30,7 @@ interface ProductWizardStep1Props {
   categories: Category[];
   subcategories: Subcategory[];
   onChange: (key: keyof ProductInfo, value: string | string[]) => void;
+  onCoverFile?: (file: File) => void;
 }
 
 function ImageSlot({
@@ -37,12 +38,22 @@ function ImageSlot({
   label,
   onSet,
   onClear,
+  onUploadFile,
 }: {
   url: string;
   label: string;
   onSet: (url: string) => void;
   onClear?: () => void;
+  onUploadFile?: (file: File) => void;
 }) {
+  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const previewUrl = URL.createObjectURL(file);
+    onSet(previewUrl);
+    onUploadFile?.(file);
+  }
+
   return (
     <div className="relative flex aspect-square flex-col items-center justify-center gap-1 overflow-hidden rounded-md border border-dashed border-border bg-muted text-center">
       {url ? (
@@ -68,12 +79,11 @@ function ImageSlot({
           <ImagePlus className="size-5 text-muted-foreground" />
           <span className="text-xs text-muted-foreground">{label}</span>
           <input
-            type="text"
+            type="file"
+            accept="image/*"
             className="absolute inset-0 cursor-pointer opacity-0"
-            placeholder={label}
-            onChange={(e) => {
-              if (e.target.value) onSet(e.target.value);
-            }}
+            title={label}
+            onChange={handleFile}
           />
         </>
       )}
@@ -86,6 +96,7 @@ export function ProductWizardStep1({
   categories,
   subcategories,
   onChange,
+  onCoverFile,
 }: ProductWizardStep1Props) {
   const filteredSubcategories = subcategories.filter(
     (s) => s.category_id === info.category_id,
@@ -111,7 +122,7 @@ export function ProductWizardStep1({
     <div className="space-y-6">
       <AdminFormSection
         title="Fotos do produto"
-        description="Adicione a capa e imagens adicionais. A primeira imagem é usada como thumbnail no catálogo."
+        description="Selecione a capa e imagens adicionais. A primeira imagem é usada como thumbnail no catálogo."
       >
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
           <div className="col-span-2 row-span-2 sm:col-span-2">
@@ -121,6 +132,7 @@ export function ProductWizardStep1({
                 url={info.cover_image_url}
                 label="Foto principal"
                 onSet={(url) => onChange("cover_image_url", url)}
+                onUploadFile={onCoverFile}
                 onClear={
                   info.cover_image_url
                     ? () => onChange("cover_image_url", "")

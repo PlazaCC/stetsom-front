@@ -6,14 +6,13 @@ import type {
   AdminUsersPayload,
   AuditPayload,
   AuthPayload,
-  Banner,
+  BannerWithUploads,
   BannersPayload,
   CatalogPagePayload,
   CatalogProductsQuery,
   Category,
   CmsConfig,
   CmsProductDetailPayload,
-  CmsProductMutationResult,
   CmsProductsPayload,
   CmsProductsQuery,
   ContactFormInput,
@@ -25,16 +24,18 @@ import type {
   LibraryPayload,
   LoginCredentials,
   PageId,
-  PageSection,
+  PageSectionWithUploads,
   PaginatedResponse,
   ProductCardItem,
   ProductDetailPayload,
+  ProductWithUpload,
   SiteAboutPayload,
   SiteHomePayload,
   Subcategory,
   SupportPayload,
   UpdateAdminUserInput,
   UpdateCmsProductInput,
+  UpdatePageSectionInput,
 } from "@/lib/api/contracts";
 
 export interface CmsProvider {
@@ -68,13 +69,11 @@ export interface CmsProvider {
   getCmsProductDetail(id: string): Promise<CmsProductDetailPayload | null>;
 
   // ── Products (Write) ─────────────────────────────────────────────────────────
-  createCmsProduct(
-    input: CreateCmsProductInput,
-  ): Promise<CmsProductMutationResult>;
+  createCmsProduct(input: CreateCmsProductInput): Promise<ProductWithUpload>;
   updateCmsProduct(
     id: string,
     input: UpdateCmsProductInput,
-  ): Promise<CmsProductMutationResult>;
+  ): Promise<ProductWithUpload>;
   deleteCmsProduct(id: string): Promise<void>;
 
   // ── Users ────────────────────────────────────────────────────────────────────
@@ -84,8 +83,11 @@ export interface CmsProvider {
 
   // ── Banners ──────────────────────────────────────────────────────────────────
   getBanners(): Promise<BannersPayload>;
-  createBanner(input: CreateBannerInput): Promise<Banner>;
-  updateBanner(id: string, input: Partial<CreateBannerInput>): Promise<Banner>;
+  createBanner(input: CreateBannerInput): Promise<BannerWithUploads>;
+  updateBanner(
+    id: string,
+    input: Partial<CreateBannerInput>,
+  ): Promise<BannerWithUploads>;
   deleteBanner(id: string): Promise<void>;
 
   // ── Library ──────────────────────────────────────────────────────────────────
@@ -109,6 +111,6 @@ export interface CmsProvider {
   getAdminPageSections(pageId: PageId): Promise<AdminPageDetailPayload>;
   updatePageSection(
     sectionId: string,
-    data: Record<string, unknown>,
-  ): Promise<PageSection>;
+    input: UpdatePageSectionInput,
+  ): Promise<PageSectionWithUploads>;
 }

@@ -23,15 +23,39 @@ interface TimelineData {
 interface Props {
   section: PageSection;
   onChange: (data: Record<string, unknown>) => void;
+  onFileChange?: (key: string, file: File | null) => void;
 }
 
-export function SectionFormTimeline({ section, onChange }: Props) {
+export function SectionFormTimeline({
+  section,
+  onChange,
+  onFileChange,
+}: Props) {
   const raw = section.data as unknown as TimelineData;
   const [data, setData] = useState<TimelineData>({
     ...raw,
     events: raw.events ?? [],
   });
   const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
+
+  function handleFileChange(idx: number, file: File | null) {
+    const key = `events.${idx}.image`;
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrls((prev) => ({ ...prev, [key]: url }));
+      onFileChange?.(key, file);
+    } else {
+      const oldUrl = previewUrls[key];
+      if (oldUrl) URL.revokeObjectURL(oldUrl);
+      setPreviewUrls((prev) => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
+      onFileChange?.(key, null);
+    }
+  }
 
   function updateRoot(patch: Partial<TimelineData>) {
     const next = { ...data, ...patch };
@@ -211,16 +235,38 @@ export function SectionFormTimeline({ section, onChange }: Props) {
                         className={cn(inputClass, "h-auto py-2")}
                       />
                     </FieldGroup>
-                    <FieldGroup label="Imagem (URL)">
+                    <FieldGroup label="Imagem (Upload)">
                       <input
-                        type="text"
-                        value={event.image ?? ""}
-                        onChange={(e) =>
-                          updateEvent(origIdx, { image: e.target.value })
-                        }
-                        placeholder="/figma-assets/raw/..."
-                        className={inputClass}
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0] ?? null;
+                          handleFileChange(origIdx, file);
+                        }}
+                        className={fileInputClass}
                       />
+                      {(previewUrls[`events.${origIdx}.image`] ??
+                        event.image) && (
+                        <div className="relative mt-2 overflow-hidden rounded-md border border-border">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={
+                              previewUrls[`events.${origIdx}.image`] ??
+                              event.image
+                            }
+                            alt="Preview"
+                            className="h-20 w-full object-cover"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleFileChange(origIdx, null)}
+                            className="absolute right-1 top-1 flex size-6 items-center justify-center rounded bg-black/50 text-xs text-white hover:bg-black/70"
+                            title="Remover imagem"
+                          >
+                            <Trash2 className="size-3" />
+                          </button>
+                        </div>
+                      )}
                     </FieldGroup>
                   </div>
                 )}
@@ -256,4 +302,9 @@ function FieldGroup({
 const inputClass = cn(
   "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
   "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
+);
+
+const fileInputClass = cn(
+  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground file:mr-3 file:rounded file:border-0 file:bg-muted file:px-2.5 file:py-1 file:text-xs file:font-medium file:text-foreground",
+  "focus:outline-none focus:ring-1 focus:ring-brand",
 );

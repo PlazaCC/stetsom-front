@@ -20,13 +20,15 @@ import { AlertTriangle } from "lucide-react";
 interface SectionFormRendererProps {
   section: PageSection;
   onChange: (data: Record<string, unknown>) => void;
+  onFileChange?: (fieldKey: string, file: File | null) => void;
 }
 
 export function SectionFormRenderer({
   section,
   onChange,
+  onFileChange,
 }: SectionFormRendererProps) {
-  const props = { section, onChange };
+  const props = { section, onChange, onFileChange };
 
   switch (section.type) {
     case "HERO_CAROUSEL":
