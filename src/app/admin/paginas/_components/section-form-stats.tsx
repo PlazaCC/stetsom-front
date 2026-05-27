@@ -1,9 +1,9 @@
 "use client";
 
 import type { PageSection } from "@/lib/api/contracts";
-import { cn } from "@/lib/utils";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { FieldGroup, inputClass, EmptyState } from "./form-utils";
 
 interface StatItem {
   value: string;
@@ -57,11 +57,10 @@ export function SectionFormStats({ section, onChange }: Props) {
       </div>
 
       {stats.length === 0 && (
-        <div className="rounded-[12px] border border-dashed border-border bg-muted/30 px-4 py-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Nenhum número cadastrado.
-          </p>
-        </div>
+        <EmptyState
+          title="Nenhum número cadastrado."
+          description='Clique em "Adicionar número" para começar.'
+        />
       )}
 
       <div className="space-y-2">
@@ -70,10 +69,7 @@ export function SectionFormStats({ section, onChange }: Props) {
             key={idx}
             className="flex items-end gap-3 rounded-[12px] border border-border bg-card px-4 py-3"
           >
-            <div className="flex-1 space-y-1">
-              <label className="block text-xs font-medium text-muted-foreground">
-                Valor
-              </label>
+            <FieldGroup label="Valor" className="flex-1">
               <input
                 type="text"
                 value={stat.value}
@@ -81,11 +77,8 @@ export function SectionFormStats({ section, onChange }: Props) {
                 placeholder="ex: 35+"
                 className={inputClass}
               />
-            </div>
-            <div className="flex-1 space-y-1">
-              <label className="block text-xs font-medium text-muted-foreground">
-                Label
-              </label>
+            </FieldGroup>
+            <FieldGroup label="Label" className="flex-1">
               <input
                 type="text"
                 value={stat.label}
@@ -93,7 +86,7 @@ export function SectionFormStats({ section, onChange }: Props) {
                 placeholder="ex: Anos de história"
                 className={inputClass}
               />
-            </div>
+            </FieldGroup>
             <button
               type="button"
               onClick={() => removeStat(idx)}
@@ -111,8 +104,3 @@ export function SectionFormStats({ section, onChange }: Props) {
     </div>
   );
 }
-
-const inputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
-  "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
-);

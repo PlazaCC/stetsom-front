@@ -4,6 +4,12 @@ import type { PageSection } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
+import {
+  FieldGroup,
+  SectionCard,
+  inputClass,
+  fileInputClass,
+} from "./form-utils";
 
 interface HeroStaticData {
   label?: string;
@@ -156,47 +162,3 @@ export function SectionFormHeroStatic({
     </div>
   );
 }
-
-function SectionCard({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-[12px] border border-border bg-card p-4">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        {title}
-      </p>
-      {children}
-    </div>
-  );
-}
-
-function FieldGroup({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1">
-      <label className="block text-xs font-medium text-muted-foreground">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const inputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
-  "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
-);
-
-const fileInputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground file:mr-3 file:rounded file:border-0 file:bg-muted file:px-2.5 file:py-1 file:text-xs file:font-medium file:text-foreground",
-  "focus:outline-none focus:ring-1 focus:ring-brand",
-);

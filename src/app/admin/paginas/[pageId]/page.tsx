@@ -7,20 +7,7 @@ import type { PageId } from "@/lib/api/contracts";
 import { FileText, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { use } from "react";
-
-const PAGE_LABELS: Record<string, string> = {
-  home: "Home",
-  catalog: "Catálogo de produtos",
-  about: "Sobre a Stetsom",
-  support: "Suporte técnico",
-};
-
-const PAGE_PUBLIC_HREFS: Record<string, string> = {
-  home: "/",
-  catalog: "/produtos",
-  about: "/sobre",
-  support: "/suporte",
-};
+import { PAGE_LABELS, PAGE_PUBLIC_HREFS } from "../_components/page-constants";
 
 interface PageParams {
   pageId: string;

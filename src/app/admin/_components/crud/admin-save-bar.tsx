@@ -12,8 +12,10 @@ interface AdminSaveBarProps {
   isDirty?: boolean;
   draftSavedAt?: Date | null;
   publishLabel?: string;
+  saveDraftLabel?: string;
   nextLabel?: string;
   backLabel?: string;
+  draftSavedPrefix?: string;
   className?: string;
 }
 
@@ -32,9 +34,11 @@ export function AdminSaveBar({
   isLoading = false,
   isDirty = false,
   draftSavedAt,
-  publishLabel = "Publicar",
-  nextLabel = "Próximo",
-  backLabel = "Anterior",
+  publishLabel,
+  saveDraftLabel,
+  nextLabel,
+  backLabel,
+  draftSavedPrefix,
   className,
 }: AdminSaveBarProps) {
   return (
@@ -58,7 +62,7 @@ export function AdminSaveBar({
         )}
         {draftSavedAt && (
           <span className="text-xs text-muted-foreground">
-            Salvo às {formatTime(draftSavedAt)}
+            {draftSavedPrefix ?? "Saved at"} {formatTime(draftSavedAt)}
           </span>
         )}
       </div>
@@ -72,7 +76,7 @@ export function AdminSaveBar({
             disabled={isLoading}
             className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-60"
           >
-            Salvar rascunho
+            {saveDraftLabel ?? "Save draft"}
           </button>
         )}
 

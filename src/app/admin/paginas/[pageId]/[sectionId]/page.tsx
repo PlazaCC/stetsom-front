@@ -13,18 +13,12 @@ import type { PageId, PageSection, UploadFileInput } from "@/lib/api/contracts";
 import { CheckCircle2, FileText } from "lucide-react";
 import Link from "next/link";
 import { use, useRef, useState } from "react";
+import { PAGE_PUBLIC_HREFS } from "../../_components/page-constants";
 
 interface PageParams {
   pageId: string;
   sectionId: string;
 }
-
-const PAGE_PUBLIC_HREFS: Record<string, string> = {
-  home: "/",
-  catalog: "/produtos",
-  about: "/sobre",
-  support: "/suporte",
-};
 
 export default function AdminSectionEditorPage({
   params,
@@ -182,6 +176,7 @@ export default function AdminSectionEditorPage({
         isDirty={isDirty}
         draftSavedAt={savedAt}
         publishLabel="Salvar alterações"
+        draftSavedPrefix="Salvo às"
       />
     </AdminListPage>
   );

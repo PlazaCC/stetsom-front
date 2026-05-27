@@ -4,6 +4,13 @@ import type { PageSection } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import {
+  FieldGroup,
+  SectionCard,
+  inputClass,
+  fileInputClass,
+  EmptyState,
+} from "./form-utils";
 
 interface TimelineEvent {
   id: string;
@@ -95,11 +102,7 @@ export function SectionFormTimeline({
 
   return (
     <div className="space-y-4">
-      {/* Cabeçalho */}
-      <div className="rounded-[12px] border border-border bg-card p-4 space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Cabeçalho
-        </p>
+      <SectionCard title="Cabeçalho">
         <div className="grid gap-3 sm:grid-cols-2">
           <FieldGroup label="Label / Eyebrow">
             <input
@@ -120,9 +123,8 @@ export function SectionFormTimeline({
             />
           </FieldGroup>
         </div>
-      </div>
+      </SectionCard>
 
-      {/* Eventos */}
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-foreground">
           Marcos ({data.events.length})
@@ -138,11 +140,10 @@ export function SectionFormTimeline({
       </div>
 
       {data.events.length === 0 && (
-        <div className="rounded-[12px] border border-dashed border-border bg-muted/30 px-4 py-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Nenhum marco na linha do tempo.
-          </p>
-        </div>
+        <EmptyState
+          title="Nenhum marco na linha do tempo."
+          description='Clique em "Adicionar marco" para começar.'
+        />
       )}
 
       <div className="space-y-2">
@@ -281,30 +282,3 @@ export function SectionFormTimeline({
     </div>
   );
 }
-
-function FieldGroup({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1">
-      <label className="block text-xs font-medium text-muted-foreground">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const inputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
-  "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
-);
-
-const fileInputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground file:mr-3 file:rounded file:border-0 file:bg-muted file:px-2.5 file:py-1 file:text-xs file:font-medium file:text-foreground",
-  "focus:outline-none focus:ring-1 focus:ring-brand",
-);

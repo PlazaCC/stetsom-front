@@ -4,6 +4,7 @@ import type { PageSection } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { FieldGroup, inputClass, EmptyState } from "./form-utils";
 
 interface SupportCard {
   id: string;
@@ -89,11 +90,10 @@ export function SectionFormSupportCards({ section, onChange }: Props) {
       </div>
 
       {cards.length === 0 && (
-        <div className="rounded-[12px] border border-dashed border-border bg-muted/30 px-4 py-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Nenhum canal cadastrado.
-          </p>
-        </div>
+        <EmptyState
+          title="Nenhum canal cadastrado."
+          description='Clique em "Adicionar canal" para começar.'
+        />
       )}
 
       <div className="space-y-2">
@@ -205,25 +205,3 @@ export function SectionFormSupportCards({ section, onChange }: Props) {
     </div>
   );
 }
-
-function FieldGroup({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1">
-      <label className="block text-xs font-medium text-muted-foreground">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const inputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
-  "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
-);

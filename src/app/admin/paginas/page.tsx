@@ -4,23 +4,12 @@ import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { useAdminPages } from "@/hooks/use-admin-pages";
 import { FileText, ExternalLink } from "lucide-react";
 import Link from "next/link";
-
-const PAGE_HREFS: Record<string, string> = {
-  home: "/",
-  catalog: "/produtos",
-  about: "/sobre",
-  support: "/suporte",
-};
+import { PAGE_PUBLIC_HREFS } from "./_components/page-constants";
 
 export default function AdminPaginasPage() {
   const { data, isLoading } = useAdminPages();
 
-  const pages = data?.pages ?? [
-    { id: "home", label: "Home", updated_at: "" },
-    { id: "catalog", label: "Catálogo de produtos", updated_at: "" },
-    { id: "about", label: "Sobre a Stetsom", updated_at: "" },
-    { id: "support", label: "Suporte técnico", updated_at: "" },
-  ];
+  const pages = data?.pages ?? [];
 
   return (
     <AdminListPage
@@ -72,7 +61,7 @@ export default function AdminPaginasPage() {
                       {page.label}
                     </td>
                     <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
-                      {PAGE_HREFS[page.id] ?? `/${page.id}`}
+                      {PAGE_PUBLIC_HREFS[page.id] ?? `/${page.id}`}
                     </td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">
                       {page.updated_at
@@ -82,7 +71,7 @@ export default function AdminPaginasPage() {
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-3">
                         <a
-                          href={PAGE_HREFS[page.id] ?? `/${page.id}`}
+                          href={PAGE_PUBLIC_HREFS[page.id] ?? `/${page.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"

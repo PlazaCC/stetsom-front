@@ -4,6 +4,13 @@ import type { PageSection } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import {
+  FieldGroup,
+  SectionCard,
+  inputClass,
+  fileInputClass,
+  EmptyState,
+} from "./form-utils";
 
 interface ValueItem {
   id: string;
@@ -80,11 +87,7 @@ export function SectionFormValues({ section, onChange, onFileChange }: Props) {
 
   return (
     <div className="space-y-4">
-      {/* Textos da seção */}
-      <div className="rounded-[12px] border border-border bg-card p-4 space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Cabeçalho
-        </p>
+      <SectionCard title="Cabeçalho">
         <div className="grid gap-3 sm:grid-cols-2">
           <FieldGroup label="Label / Eyebrow">
             <input
@@ -105,7 +108,7 @@ export function SectionFormValues({ section, onChange, onFileChange }: Props) {
             />
           </FieldGroup>
         </div>
-        <FieldGroup label="Descrição">
+        <FieldGroup label="Descrição" className="mt-3">
           <textarea
             rows={2}
             value={data.description ?? ""}
@@ -114,7 +117,7 @@ export function SectionFormValues({ section, onChange, onFileChange }: Props) {
             className={cn(inputClass, "h-auto py-2")}
           />
         </FieldGroup>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <FieldGroup label="Imagem lateral (Upload)">
             <input
               type="file"
@@ -144,7 +147,7 @@ export function SectionFormValues({ section, onChange, onFileChange }: Props) {
               </div>
             )}
           </FieldGroup>
-          <FieldGroup label="Alt da imagem">
+          <FieldGroup label="Alt da imagem" className="mt-0">
             <input
               type="text"
               value={data.imageAlt ?? ""}
@@ -154,9 +157,8 @@ export function SectionFormValues({ section, onChange, onFileChange }: Props) {
             />
           </FieldGroup>
         </div>
-      </div>
+      </SectionCard>
 
-      {/* Valores */}
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-foreground">
           Valores ({data.values.length})
@@ -172,11 +174,10 @@ export function SectionFormValues({ section, onChange, onFileChange }: Props) {
       </div>
 
       {data.values.length === 0 && (
-        <div className="rounded-[12px] border border-dashed border-border bg-muted/30 px-4 py-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Nenhum valor cadastrado.
-          </p>
-        </div>
+        <EmptyState
+          title="Nenhum valor cadastrado."
+          description='Clique em "Adicionar valor" para começar.'
+        />
       )}
 
       <div className="space-y-2">
@@ -260,30 +261,3 @@ export function SectionFormValues({ section, onChange, onFileChange }: Props) {
     </div>
   );
 }
-
-function FieldGroup({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1">
-      <label className="block text-xs font-medium text-muted-foreground">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const inputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
-  "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
-);
-
-const fileInputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground file:mr-3 file:rounded file:border-0 file:bg-muted file:px-2.5 file:py-1 file:text-xs file:font-medium file:text-foreground",
-  "focus:outline-none focus:ring-1 focus:ring-brand",
-);

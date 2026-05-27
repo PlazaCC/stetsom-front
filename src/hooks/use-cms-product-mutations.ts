@@ -26,13 +26,7 @@ async function apiPatch<T>(path: string, body: unknown): Promise<T> {
 }
 
 async function apiDelete(path: string): Promise<void> {
-  const res = await fetch(path, { method: "DELETE" });
-  if (!res.ok && res.status !== 204) {
-    const body = await res.json().catch(() => null);
-    const message: string =
-      body?.error?.message ?? `Falha ao excluir (${res.status})`;
-    throw new Error(message);
-  }
+  await proxyFetch<unknown>(path, { method: "DELETE" });
 }
 
 export function useCmsProductMutations() {

@@ -14,6 +14,11 @@ interface Props {
   onChange: (data: Record<string, unknown>) => void;
 }
 
+const inputClass = cn(
+  "h-9 rounded-md border border-border bg-background px-3 text-sm text-foreground font-sans-condensed uppercase",
+  "placeholder:text-muted-foreground/60 placeholder:normal-case placeholder:font-sans focus:outline-none focus:ring-1 focus:ring-brand",
+);
+
 export function SectionFormMilestones({ section, onChange }: Props) {
   const raw = section.data as unknown as MilestonesData;
   const [items, setItems] = useState<string[]>(raw.items ?? []);
@@ -78,7 +83,6 @@ export function SectionFormMilestones({ section, onChange }: Props) {
           ))}
         </div>
 
-        {/* Adicionar novo */}
         <div className="flex items-center gap-2 pt-1">
           <input
             type="text"
@@ -101,8 +105,3 @@ export function SectionFormMilestones({ section, onChange }: Props) {
     </div>
   );
 }
-
-const inputClass = cn(
-  "h-9 rounded-md border border-border bg-background px-3 text-sm text-foreground font-sans-condensed uppercase",
-  "placeholder:text-muted-foreground/60 placeholder:normal-case placeholder:font-sans focus:outline-none focus:ring-1 focus:ring-brand",
-);

@@ -4,6 +4,7 @@ import type { PageSection } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
 import { Globe } from "lucide-react";
 import { useState } from "react";
+import { FieldGroup, inputClass, SectionCard } from "./form-utils";
 
 interface SocialFeedData {
   handle?: string;
@@ -39,10 +40,7 @@ export function SectionFormSocialFeed({ section, onChange }: Props) {
         </p>
       </div>
 
-      <div className="rounded-[12px] border border-border bg-card p-4 space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Perfil
-        </p>
+      <SectionCard title="Perfil">
         <FieldGroup label="Handle (@)">
           <input
             type="text"
@@ -52,22 +50,19 @@ export function SectionFormSocialFeed({ section, onChange }: Props) {
             className={inputClass}
           />
         </FieldGroup>
-        <FieldGroup label="Número de posts exibidos">
+        <FieldGroup label="Número de posts exibidos" className="mt-3">
           <input
             type="number"
             min={1}
             max={12}
             value={data.postsCount ?? 5}
             onChange={(e) => update({ postsCount: Number(e.target.value) })}
-            className={cn(inputClass, "max-w-32")}
+            className={cn("max-w-32", inputClass)}
           />
         </FieldGroup>
-      </div>
+      </SectionCard>
 
-      <div className="rounded-[12px] border border-border bg-card p-4 space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Textos
-        </p>
+      <SectionCard title="Textos">
         <FieldGroup label="Título da seção">
           <input
             type="text"
@@ -77,7 +72,7 @@ export function SectionFormSocialFeed({ section, onChange }: Props) {
             className={inputClass}
           />
         </FieldGroup>
-        <FieldGroup label="Subtítulo">
+        <FieldGroup label="Subtítulo" className="mt-3">
           <input
             type="text"
             value={data.subtitle ?? ""}
@@ -86,7 +81,7 @@ export function SectionFormSocialFeed({ section, onChange }: Props) {
             className={inputClass}
           />
         </FieldGroup>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <FieldGroup label="Label do botão">
             <input
               type="text"
@@ -106,29 +101,7 @@ export function SectionFormSocialFeed({ section, onChange }: Props) {
             />
           </FieldGroup>
         </div>
-      </div>
+      </SectionCard>
     </div>
   );
 }
-
-function FieldGroup({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1">
-      <label className="block text-xs font-medium text-muted-foreground">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const inputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
-  "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
-);

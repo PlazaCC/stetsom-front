@@ -1,9 +1,14 @@
 "use client";
 
 import type { PageSection } from "@/lib/api/contracts";
-import { cn } from "@/lib/utils";
 import { GripVertical, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import {
+  FieldGroup,
+  inputClass,
+  fileInputClass,
+  EmptyState,
+} from "./form-utils";
 
 interface HeroSlide {
   id: string;
@@ -17,6 +22,10 @@ interface HeroSlide {
 
 interface HeroCarouselData {
   slides: HeroSlide[];
+  autoplay?: boolean;
+  interval?: number;
+  effect?: "slide" | "fade";
+  maxSlides?: number;
 }
 
 interface Props {
@@ -44,6 +53,10 @@ export function SectionFormHeroCarousel({
 }: Props) {
   const raw = section.data as unknown as HeroCarouselData;
   const [slides, setSlides] = useState<HeroSlide[]>(raw.slides ?? []);
+  const [autoplay, setAutoplay] = useState(raw.autoplay ?? true);
+  const [interval, setInterval] = useState(raw.interval ?? 5000);
+  const [effect, setEffect] = useState<"slide" | "fade">(raw.effect ?? "slide");
+  const [maxSlides, setMaxSlides] = useState(raw.maxSlides ?? 5);
   const [openIdx, setOpenIdx] = useState<number | null>(
     slides.length > 0 ? 0 : null,
   );
@@ -71,32 +84,106 @@ export function SectionFormHeroCarousel({
     }
   }
 
-  function update(next: HeroSlide[]) {
-    setSlides(next);
-    onChange({ slides: next });
+  function emit(nextSlides: HeroSlide[]) {
+    setSlides(nextSlides);
+    onChange({
+      slides: nextSlides,
+      autoplay,
+      interval,
+      effect,
+      maxSlides,
+    });
   }
 
   function updateSlide(idx: number, patch: Partial<HeroSlide>) {
     const next = slides.map((s, i) => (i === idx ? { ...s, ...patch } : s));
-    update(next);
+    emit(next);
   }
 
   function addSlide() {
     const next = [...slides, newSlide()];
-    update(next);
+    emit(next);
     setOpenIdx(next.length - 1);
   }
 
   function removeSlide(idx: number) {
     const next = slides.filter((_, i) => i !== idx);
-    update(next);
+    emit(next);
     if (openIdx !== null && openIdx >= next.length) {
       setOpenIdx(next.length > 0 ? next.length - 1 : null);
     }
   }
 
+  function emitConfig(updates: Partial<HeroCarouselData>) {
+    const next = { slides, autoplay, interval, effect, maxSlides, ...updates };
+    onChange({
+      slides: next.slides ?? slides,
+      autoplay: next.autoplay,
+      interval: next.interval,
+      effect: next.effect,
+      maxSlides: next.maxSlides,
+    });
+  }
+
   return (
     <div className="space-y-4">
+      <div className="rounded-[12px] border border-border bg-card p-4 space-y-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Configuração do Carousel
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <label className="flex items-center gap-2 text-sm text-foreground">
+            <input
+              type="checkbox"
+              checked={autoplay}
+              onChange={(e) => {
+                setAutoplay(e.target.checked);
+                emitConfig({ autoplay: e.target.checked });
+              }}
+              className="accent-brand"
+            />
+            Autoplay
+          </label>
+          <FieldGroup label="Intervalo (ms)">
+            <input
+              type="number"
+              value={interval}
+              onChange={(e) => {
+                setInterval(Number(e.target.value));
+                emitConfig({ interval: Number(e.target.value) });
+              }}
+              className={inputClass}
+            />
+          </FieldGroup>
+          <FieldGroup label="Efeito">
+            <select
+              value={effect}
+              onChange={(e) => {
+                setEffect(e.target.value as "slide" | "fade");
+                emitConfig({ effect: e.target.value as "slide" | "fade" });
+              }}
+              className={inputClass}
+            >
+              <option value="slide">Slide</option>
+              <option value="fade">Fade</option>
+            </select>
+          </FieldGroup>
+          <FieldGroup label="Máx. slides">
+            <input
+              type="number"
+              min={1}
+              max={10}
+              value={maxSlides}
+              onChange={(e) => {
+                setMaxSlides(Number(e.target.value));
+                emitConfig({ maxSlides: Number(e.target.value) });
+              }}
+              className={inputClass}
+            />
+          </FieldGroup>
+        </div>
+      </div>
+
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-foreground">
           Slides ({slides.length})
@@ -112,14 +199,10 @@ export function SectionFormHeroCarousel({
       </div>
 
       {slides.length === 0 && (
-        <div className="rounded-[12px] border border-dashed border-border bg-muted/30 px-4 py-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Nenhum slide cadastrado.
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Clique em &quot;Adicionar slide&quot; para começar.
-          </p>
-        </div>
+        <EmptyState
+          title="Nenhum slide cadastrado."
+          description='Clique em "Adicionar slide" para começar.'
+        />
       )}
 
       <div className="space-y-2">
@@ -128,7 +211,6 @@ export function SectionFormHeroCarousel({
             key={slide.id}
             className="rounded-[12px] border border-border bg-card overflow-hidden"
           >
-            {/* Header do slide */}
             <div className="flex items-center gap-3 px-4 py-3">
               <GripVertical className="size-4 shrink-0 text-muted-foreground" />
               <button
@@ -153,7 +235,6 @@ export function SectionFormHeroCarousel({
               </button>
             </div>
 
-            {/* Campos expandidos */}
             {openIdx === idx && (
               <div className="border-t border-border px-4 pb-4 pt-3 space-y-3">
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -286,30 +367,3 @@ export function SectionFormHeroCarousel({
     </div>
   );
 }
-
-function FieldGroup({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1">
-      <label className="block text-xs font-medium text-muted-foreground">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const inputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
-  "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
-);
-
-const fileInputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground file:mr-3 file:rounded file:border-0 file:bg-muted file:px-2.5 file:py-1 file:text-xs file:font-medium file:text-foreground",
-  "focus:outline-none focus:ring-1 focus:ring-brand",
-);

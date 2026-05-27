@@ -1,9 +1,9 @@
 "use client";
 
 import type { PageSection } from "@/lib/api/contracts";
-import { cn } from "@/lib/utils";
 import { MapPin, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { FieldGroup, SectionCard, inputClass, EmptyState } from "./form-utils";
 
 interface ServiceCenter {
   id: string;
@@ -58,11 +58,7 @@ export function SectionFormServiceCenters({ section, onChange }: Props) {
 
   return (
     <div className="space-y-4">
-      {/* Cabeçalho */}
-      <div className="rounded-[12px] border border-border bg-card p-4 space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Cabeçalho
-        </p>
+      <SectionCard title="Cabeçalho">
         <div className="grid gap-3 sm:grid-cols-2">
           <FieldGroup label="Label / Eyebrow">
             <input
@@ -83,9 +79,8 @@ export function SectionFormServiceCenters({ section, onChange }: Props) {
             />
           </FieldGroup>
         </div>
-      </div>
+      </SectionCard>
 
-      {/* Postos */}
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-foreground">
           Postos autorizados ({data.centers.length})
@@ -101,11 +96,10 @@ export function SectionFormServiceCenters({ section, onChange }: Props) {
       </div>
 
       {data.centers.length === 0 && (
-        <div className="rounded-[12px] border border-dashed border-border bg-muted/30 px-4 py-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Nenhum posto cadastrado.
-          </p>
-        </div>
+        <EmptyState
+          title="Nenhum posto cadastrado."
+          description='Clique em "Adicionar posto" para começar.'
+        />
       )}
 
       <div className="space-y-2">
@@ -167,27 +161,3 @@ export function SectionFormServiceCenters({ section, onChange }: Props) {
     </div>
   );
 }
-
-function FieldGroup({
-  label,
-  children,
-  className,
-}: {
-  label: string;
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={cn("space-y-1", className)}>
-      <label className="block text-xs font-medium text-muted-foreground">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const inputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
-  "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
-);

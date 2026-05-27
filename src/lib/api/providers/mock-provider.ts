@@ -24,6 +24,7 @@ import type {
   ProductWithUpload,
   SiteAboutPayload,
   SiteHomePayload,
+  SupportPayload,
   UpdateAdminUserInput,
   UpdateCmsProductInput,
   UpdatePageSectionInput,
@@ -321,10 +322,50 @@ function getActiveBannersForLocale(
   );
 }
 
+async function resolveSectionData(
+  pageId: string,
+): Promise<Record<string, Record<string, unknown>>> {
+  const { MOCK_PAGE_SECTIONS_BY_PAGE } = await import("@/lib/mock/cms-pages");
+  const sections = MOCK_PAGE_SECTIONS_BY_PAGE[pageId] ?? [];
+  const resolved = sections.map((s) => _mockPageSections.get(s.id) ?? s);
+  const result: Record<string, Record<string, unknown>> = {};
+  for (const section of resolved) {
+    const slug = section.id.split("~")[1] ?? section.id;
+    result[slug] = section.data as Record<string, unknown>;
+  }
+  return result;
+}
+
+function overlay<T extends Record<string, unknown>>(
+  base: T,
+  overrides: Record<string, unknown>,
+): T {
+  const result = { ...base };
+  for (const key of Object.keys(overrides)) {
+    if (overrides[key] !== undefined) {
+      (result as Record<string, unknown>)[key] = overrides[key];
+    }
+  }
+  return result;
+}
+
 export function createMockCmsProvider(): CmsProvider {
   return {
     async getCatalogPagePayload(locale?: string): Promise<CatalogPagePayload> {
-      return getCatalogPagePayloadForLocale(locale);
+      const base = getCatalogPagePayloadForLocale(locale);
+      const sectionData = await resolveSectionData("catalog");
+
+      const heroData = sectionData["catalog-hero"];
+      if (heroData) {
+        const d = heroData as Record<string, unknown>;
+        base.heroLabel = (d.label as string) ?? base.heroLabel;
+        base.heroTitle = (d.title as string) ?? base.heroTitle;
+        base.heroImage = (d.image as string) ?? base.heroImage;
+        base.heroImageAlt = (d.imageAlt as string) ?? base.heroImageAlt;
+        base.heroWatermark = (d.watermark as string) ?? base.heroWatermark;
+      }
+
+      return base;
     },
 
     async getCatalogProducts(query, locale) {
@@ -361,7 +402,8 @@ export function createMockCmsProvider(): CmsProvider {
     },
 
     async getSiteHomePayload(locale?: string): Promise<SiteHomePayload> {
-      return {
+      const sectionData = await resolveSectionData("home");
+      const base: SiteHomePayload = {
         hero: getActiveBannersForLocale(MOCK_CMS_BANNERS, locale)
           .sort((a, b) => a.order - b.order)
           .map(bannerToHeroSlide),
@@ -374,10 +416,38 @@ export function createMockCmsProvider(): CmsProvider {
         faqSection: getHomeFaqSection(locale),
         social: getSocialSection(locale),
       };
+
+      const pgData = sectionData["featured-products"];
+      if (pgData) {
+        base.featured = overlay(
+          base.featured,
+          pgData as Record<string, unknown>,
+        );
+      }
+
+      const faqData = sectionData["faq"];
+      if (faqData) {
+        const d = faqData as Record<string, unknown>;
+        if (Array.isArray(d.items)) {
+          base.faq = d.items as SiteHomePayload["faq"];
+        }
+        base.faqSection = overlay(base.faqSection, d);
+      }
+
+      const socialData = sectionData["social-feed"];
+      if (socialData) {
+        base.social = overlay(
+          base.social,
+          socialData as Record<string, unknown>,
+        );
+      }
+
+      return base;
     },
 
     async getSiteAboutPayload(locale?: string): Promise<SiteAboutPayload> {
-      return {
+      const sectionData = await resolveSectionData("about");
+      const base: SiteAboutPayload = {
         hero: getAboutHeroSection(locale),
         stats: getCompanyStats(locale),
         milestones: getMilestonePattern(locale),
@@ -388,10 +458,110 @@ export function createMockCmsProvider(): CmsProvider {
         jobsCta: getAboutJobsCta(locale),
         social: getSocialSection(locale),
       };
+
+      const heroData = sectionData["hero"];
+      if (heroData) {
+        base.hero = overlay(base.hero, heroData);
+      }
+
+      const statsData = sectionData["stats"];
+      if (statsData) {
+        const d = statsData as Record<string, unknown>;
+        if (Array.isArray(d.stats)) {
+          base.stats = d.stats as SiteAboutPayload["stats"];
+        }
+      }
+
+      const milestonesData = sectionData["milestones"];
+      if (milestonesData) {
+        const d = milestonesData as Record<string, unknown>;
+        if (Array.isArray(d.items)) {
+          base.milestones = d.items as string[];
+        }
+      }
+
+      const valuesData = sectionData["values"];
+      if (valuesData) {
+        const d = valuesData as Record<string, unknown>;
+        base.quality = overlay(base.quality, d);
+        if (Array.isArray(d.values)) {
+          base.values = d.values as SiteAboutPayload["values"];
+        }
+      }
+
+      const timelineData = sectionData["timeline"];
+      if (timelineData) {
+        const d = timelineData as Record<string, unknown>;
+        if (Array.isArray(d.events)) {
+          base.timeline = d.events as SiteAboutPayload["timeline"];
+        }
+      }
+
+      const foundationsData = sectionData["foundations"];
+      if (foundationsData) {
+        const d = foundationsData as Record<string, unknown>;
+        if (Array.isArray(d.bases)) {
+          base.bases = d.bases as SiteAboutPayload["bases"];
+        }
+      }
+
+      return base;
     },
 
     async getSupportPayload(locale?: string) {
-      return getSupportPayloadForLocale(locale);
+      const base = getSupportPayloadForLocale(locale);
+      const sectionData = await resolveSectionData("support");
+
+      const heroData = sectionData["hero"];
+      if (heroData) {
+        base.hero = overlay(base.hero, heroData as Record<string, unknown>);
+      }
+
+      const cardsData = sectionData["support-cards"];
+      if (cardsData) {
+        const d = cardsData as Record<string, unknown>;
+        if (Array.isArray(d.cards)) {
+          base.cards = d.cards as SupportPayload["cards"];
+        }
+      }
+
+      const download = sectionData["download-catalog"];
+      if (download) {
+        const d = download as Record<string, unknown>;
+        if (Array.isArray(d.categories)) {
+          base.documentationCategories = (
+            d.categories as { id: string; label: string }[]
+          ).map((c) => ({ id: c.id, label: c.label }));
+        }
+      }
+
+      const centers = sectionData["service-centers"];
+      if (centers) {
+        const d = centers as Record<string, unknown>;
+        if (Array.isArray(d.centers)) {
+          base.serviceCenters = d.centers as SupportPayload["serviceCenters"];
+        }
+      }
+
+      const contactCfg = sectionData["contact-config"];
+      if (contactCfg) {
+        const d = contactCfg as Record<string, unknown>;
+        base.contact = overlay(base.contact, d);
+      }
+
+      const faqData = sectionData["faq"];
+      if (faqData) {
+        const d = faqData as Record<string, unknown>;
+        base.faq = overlay(
+          base.faq as unknown as Record<string, unknown>,
+          d,
+        ) as unknown as SupportPayload["faq"];
+        if (Array.isArray(d.items)) {
+          base.faq.items = d.items as SupportPayload["faq"]["items"];
+        }
+      }
+
+      return base;
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

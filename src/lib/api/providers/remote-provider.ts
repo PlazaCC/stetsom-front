@@ -304,11 +304,11 @@ export function createRemoteCmsProvider(): CmsProvider {
     },
 
     // ── Products (Write) ──────────────────────────────────────────────────────
-    // Nota: o back-end (stetsom-api) registra os endpoints de escrita em:
-    //   POST   /api/products/         → criar produto
-    //   PATCH  /api/products/:id      → atualizar produto
-    //   DELETE /api/products/:id      → excluir produto
-    // (não em /api/products/admin — esse prefixo só existe nas rotas de leitura CMS)
+    // The backend (stetsom-api) registers write endpoints at:
+    //   POST   /api/products/         → create product
+    //   PATCH  /api/products/:id      → update product
+    //   DELETE /api/products/:id      → delete product
+    // (not under /api/products/admin — that prefix only exists on CMS read routes)
 
     async createCmsProduct(
       input: CreateCmsProductInput,

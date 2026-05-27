@@ -167,8 +167,10 @@ function buildPayload(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     variations: variations.map(({ id: _id, ...rest }) => rest),
     highlight_attributes: highlightAttributes,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-    blocks: blocks.map(({ id: _id, ...rest }) => rest) as any,
+     
+    blocks: blocks.map(
+      ({ id: _id, ...rest }) => rest,
+    ) as unknown as CreateCmsProductInput["blocks"],
   };
 
   if (coverImageFile) {
@@ -552,6 +554,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
         }
         nextLabel="Próxima etapa"
         backLabel="Anterior"
+        saveDraftLabel="Salvar rascunho"
+        draftSavedPrefix="Salvo às"
       />
     </div>
   );

@@ -4,6 +4,7 @@ import type { PageSection } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { FieldGroup, inputClass, EmptyState } from "./form-utils";
 
 interface FaqItem {
   id: string;
@@ -60,7 +61,6 @@ export function SectionFormFaq({ section, onChange }: Props) {
 
   return (
     <div className="space-y-4">
-      {/* Textos da seção */}
       <div className="rounded-[12px] border border-border bg-card p-4 space-y-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Cabeçalho
@@ -121,7 +121,6 @@ export function SectionFormFaq({ section, onChange }: Props) {
         </div>
       </div>
 
-      {/* Lista de perguntas */}
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-foreground">
           Perguntas ({data.items.length})
@@ -202,43 +201,3 @@ export function SectionFormFaq({ section, onChange }: Props) {
     </div>
   );
 }
-
-function EmptyState({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="rounded-[12px] border border-dashed border-border bg-muted/30 px-4 py-8 text-center">
-      <p className="text-sm text-muted-foreground">{title}</p>
-      <p
-        className="mt-1 text-xs text-muted-foreground"
-        dangerouslySetInnerHTML={{ __html: description }}
-      />
-    </div>
-  );
-}
-
-function FieldGroup({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1">
-      <label className="block text-xs font-medium text-muted-foreground">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const inputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
-  "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
-);

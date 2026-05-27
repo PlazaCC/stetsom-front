@@ -4,6 +4,7 @@ import type { PageSection } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
 import { Mail, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { FieldGroup, SectionCard, inputClass, EmptyState } from "./form-utils";
 
 interface Department {
   id: string;
@@ -57,11 +58,7 @@ export function SectionFormContactConfig({ section, onChange }: Props) {
 
   return (
     <div className="space-y-4">
-      {/* Textos */}
-      <div className="rounded-[12px] border border-border bg-card p-4 space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Textos do formulário
-        </p>
+      <SectionCard title="Textos do formulário">
         <FieldGroup label="Label / Eyebrow">
           <input
             type="text"
@@ -71,7 +68,7 @@ export function SectionFormContactConfig({ section, onChange }: Props) {
             className={inputClass}
           />
         </FieldGroup>
-        <FieldGroup label="Título">
+        <FieldGroup label="Título" className="mt-3">
           <input
             type="text"
             value={data.title ?? ""}
@@ -80,7 +77,7 @@ export function SectionFormContactConfig({ section, onChange }: Props) {
             className={inputClass}
           />
         </FieldGroup>
-        <FieldGroup label="Descrição">
+        <FieldGroup label="Descrição" className="mt-3">
           <textarea
             rows={2}
             value={data.description ?? ""}
@@ -89,9 +86,8 @@ export function SectionFormContactConfig({ section, onChange }: Props) {
             className={cn(inputClass, "h-auto py-2")}
           />
         </FieldGroup>
-      </div>
+      </SectionCard>
 
-      {/* Departamentos */}
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-foreground">
@@ -112,11 +108,10 @@ export function SectionFormContactConfig({ section, onChange }: Props) {
       </div>
 
       {data.departments.length === 0 && (
-        <div className="rounded-[12px] border border-dashed border-border bg-muted/30 px-4 py-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Nenhum departamento cadastrado.
-          </p>
-        </div>
+        <EmptyState
+          title="Nenhum departamento cadastrado."
+          description='Clique em "Adicionar" para começar.'
+        />
       )}
 
       <div className="space-y-2">
@@ -126,10 +121,7 @@ export function SectionFormContactConfig({ section, onChange }: Props) {
             className="flex items-end gap-3 rounded-[12px] border border-border bg-card px-4 py-3"
           >
             <Mail className="mb-2 size-4 shrink-0 text-cyan-500" />
-            <div className="flex-1 space-y-1">
-              <label className="block text-xs font-medium text-muted-foreground">
-                Nome do departamento
-              </label>
+            <FieldGroup label="Nome do departamento" className="flex-1">
               <input
                 type="text"
                 value={dept.label}
@@ -137,11 +129,8 @@ export function SectionFormContactConfig({ section, onChange }: Props) {
                 placeholder="ex: Suporte Técnico"
                 className={inputClass}
               />
-            </div>
-            <div className="flex-1 space-y-1">
-              <label className="block text-xs font-medium text-muted-foreground">
-                E-mail destino
-              </label>
+            </FieldGroup>
+            <FieldGroup label="E-mail destino" className="flex-1">
               <input
                 type="email"
                 value={dept.email}
@@ -149,7 +138,7 @@ export function SectionFormContactConfig({ section, onChange }: Props) {
                 placeholder="suporte@stetsom.com.br"
                 className={inputClass}
               />
-            </div>
+            </FieldGroup>
             <button
               type="button"
               onClick={() => removeDept(idx)}
@@ -163,25 +152,3 @@ export function SectionFormContactConfig({ section, onChange }: Props) {
     </div>
   );
 }
-
-function FieldGroup({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1">
-      <label className="block text-xs font-medium text-muted-foreground">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const inputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
-  "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
-);

@@ -4,6 +4,7 @@ import type { PageSection } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { FieldGroup, inputClass, EmptyState } from "./form-utils";
 
 interface DownloadCategory {
   id: string;
@@ -55,7 +56,6 @@ export function SectionFormDownloadCatalog({ section, onChange }: Props) {
 
   return (
     <div className="space-y-4">
-      {/* Textos */}
       <div className="rounded-[12px] border border-border bg-card p-4 space-y-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Cabeçalho
@@ -89,7 +89,6 @@ export function SectionFormDownloadCatalog({ section, onChange }: Props) {
         </FieldGroup>
       </div>
 
-      {/* Categorias de filtro */}
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-foreground">
@@ -111,11 +110,10 @@ export function SectionFormDownloadCatalog({ section, onChange }: Props) {
       </div>
 
       {(data.categories ?? []).length === 0 && (
-        <div className="rounded-[12px] border border-dashed border-border bg-muted/30 px-4 py-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Nenhuma categoria de filtro configurada.
-          </p>
-        </div>
+        <EmptyState
+          title="Nenhuma categoria de filtro configurada."
+          description='Clique em "Adicionar categoria" para começar.'
+        />
       )}
 
       <div className="space-y-2">
@@ -124,10 +122,7 @@ export function SectionFormDownloadCatalog({ section, onChange }: Props) {
             key={cat.id}
             className="flex items-end gap-3 rounded-[12px] border border-border bg-card px-4 py-3"
           >
-            <div className="flex-1 space-y-1">
-              <label className="block text-xs font-medium text-muted-foreground">
-                Nome da categoria
-              </label>
+            <FieldGroup label="Nome da categoria" className="flex-1">
               <input
                 type="text"
                 value={cat.label}
@@ -135,7 +130,7 @@ export function SectionFormDownloadCatalog({ section, onChange }: Props) {
                 placeholder="ex: Manuais"
                 className={inputClass}
               />
-            </div>
+            </FieldGroup>
             <button
               type="button"
               onClick={() => removeCategory(idx)}
@@ -149,25 +144,3 @@ export function SectionFormDownloadCatalog({ section, onChange }: Props) {
     </div>
   );
 }
-
-function FieldGroup({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1">
-      <label className="block text-xs font-medium text-muted-foreground">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const inputClass = cn(
-  "h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground",
-  "placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-brand",
-);
