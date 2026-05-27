@@ -10,6 +10,7 @@ import type {
   CreateAdminUserInput,
   CreateBannerInput,
   CreateCmsProductInput,
+  HeroBannerSlide,
   LibraryAssetType,
   Locale,
   LoginCredentials,
@@ -68,7 +69,6 @@ import {
   getHomeFaqSection,
   getHomeFeaturedSection,
   getHomeFeaturedTabs,
-  getHomeHeroSlides,
   getHomeHistorySection,
   getMilestonePattern,
   getSocialSection,
@@ -293,6 +293,31 @@ function productStatusCount(status: ProductStatus): number {
   return CATALOG_PRODUCTS.filter((item) => item.status === status).length;
 }
 
+/**
+ * Maps a Banner to the HeroBannerSlide shape expected by hero carousels.
+ * Uses only banners visible for the given locale (ACTIVE status, locale match).
+ */
+function bannerToHeroSlide(banner: Banner): HeroBannerSlide {
+  return {
+    id: banner.id,
+    desktopImage: banner.desktop_image_url,
+    mobileImage: banner.mobile_image_url,
+    alt: banner.alt,
+    href: banner.link_url ?? banner.href,
+    label: banner.label,
+    title: banner.title,
+  };
+}
+
+function getActiveBannersForLocale(
+  banners: Banner[],
+  locale?: string,
+): Banner[] {
+  return banners.filter(
+    (b) => b.status === "ACTIVE" && (!locale || b.locale === locale),
+  );
+}
+
 export function createMockCmsProvider(): CmsProvider {
   return {
     async getCatalogPagePayload(locale?: string): Promise<CatalogPagePayload> {
@@ -334,7 +359,9 @@ export function createMockCmsProvider(): CmsProvider {
 
     async getSiteHomePayload(locale?: string): Promise<SiteHomePayload> {
       return {
-        hero: getHomeHeroSlides(locale),
+        hero: getActiveBannersForLocale(MOCK_CMS_BANNERS, locale)
+          .sort((a, b) => a.order - b.order)
+          .map(bannerToHeroSlide),
         featuredProducts: getFeaturedProducts(locale),
         spotlightProduct: getSpotlightProduct(locale),
         featuredTabs: getHomeFeaturedTabs(locale),
