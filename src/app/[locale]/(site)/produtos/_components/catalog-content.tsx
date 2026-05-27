@@ -15,6 +15,9 @@ import { ArrowLeftRight, Search, SlidersHorizontal } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useMemo } from "react";
+import "swiper/css";
+import { FreeMode } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { CatalogMobileFilter } from "./catalog-mobile-filter";
 import { CatalogSidebar } from "./catalog-sidebar";
 
@@ -278,8 +281,7 @@ export function CatalogContent() {
                       key={product.id}
                       name={product.name}
                       category={product.category}
-                      spec={product.spec}
-                      badge={product.badge}
+                      variations={product.variations}
                       img={product.img}
                       href={product.href}
                     />

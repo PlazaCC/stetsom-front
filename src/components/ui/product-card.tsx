@@ -1,60 +1,67 @@
+import { Link } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
-import Link from "next/link";
 
 interface ProductCardProps {
   name: string;
   category: string;
-  spec?: string | null;
-  badge?: string | null;
+  variations?: string[];
   img?: string;
   href?: string;
+  className?: string;
 }
 
 export function ProductCard({
   name,
   category,
-  spec,
-  badge,
+  variations = [],
   img,
   href = "/produtos",
+  className,
 }: ProductCardProps) {
+  const hasVariations = variations.length > 0;
+
   return (
     <Link
       href={href}
-      className="group flex flex-col bg-white border border-border hover:border-brand hover:shadow-md rounded-lg overflow-hidden transition-all"
+      className={cn(
+        "flex flex-col gap-3 rounded-[10px] bg-off-white p-4",
+        className,
+      )}
     >
-      <div className="bg-card h-32 md:h-36 lg:h-40 flex items-center justify-center p-4">
+      <div className="flex h-34.25 items-center justify-center rounded-[8px] bg-muted p-2.5">
         {img ? (
           <Image
             src={img}
             alt={name}
             width={160}
             height={130}
-            className="object-contain max-h-32.5"
+            className="h-25.25 w-35 object-contain"
           />
         ) : (
-          <div className="w-24 h-20 bg-muted rounded" />
+          <div className="h-25.25 w-35 rounded-[6px] bg-card" />
         )}
       </div>
-      <div className="p-3">
-        <div className="font-sans-condensed font-black text-2xs uppercase text-brand mb-1">
+      <div className="flex flex-col gap-1">
+        <span className="font-sans text-base leading-5 text-muted-foreground">
           {category}
-        </div>
-        <div className="font-sans-condensed font-black text-base uppercase text-brand-dark leading-tight">
+        </span>
+        <span className="font-sans text-lg font-bold leading-5 text-foreground">
           {name}
-        </div>
-        {spec && <div className="text-xs text-icon-muted mt-1.5">{spec}</div>}
-      </div>
-      <div className="border-t border-border px-3.5 py-2 flex justify-between items-center gap-2 mt-auto">
-        {badge && (
-          <span className="bg-brand text-white font-sans-condensed font-black text-2xs uppercase px-2.5 py-1">
-            {badge}
-          </span>
-        )}
-        <span className="font-sans-condensed text-button-md text-brand font-semibold flex-shrink-0">
-          Ver mais ›
         </span>
       </div>
+      {hasVariations ? (
+        <div className="flex flex-wrap gap-1.5">
+          {variations.map((variation) => (
+            <span
+              key={variation}
+              className="rounded-[8px] bg-variation-badge px-1.5 py-1 font-sans text-sm font-semibold leading-5 text-muted-foreground"
+            >
+              {variation}
+            </span>
+          ))}
+        </div>
+      ) : null}
     </Link>
   );
 }

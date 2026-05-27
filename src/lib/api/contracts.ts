@@ -136,8 +136,7 @@ export type ProductCardItem = {
   slug: string;
   name: string;
   category: string;
-  spec: string;
-  badge?: string | null;
+  variations: string[];
   img: string;
   href: string;
   status: ProductStatus;

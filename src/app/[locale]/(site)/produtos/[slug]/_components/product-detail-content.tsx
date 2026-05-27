@@ -1,5 +1,5 @@
 import { Container } from "@/components/ui/container";
-import { ProductCard } from "@/components/ui/product-card";
+import { SectionLabel } from "@/components/ui/section-label";
 import type {
   ProductBlock,
   ProductCardItem,
@@ -10,6 +10,7 @@ import { formatSpecKey } from "@/lib/utils/product";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { BlockRenderer } from "./block-renderer";
+import { RelatedProductsCarousel } from "./related-products-carousel";
 
 interface ProductDetailContentProps {
   productName: string;
@@ -77,15 +78,17 @@ export async function ProductDetailContent({
       </section>
 
       <section id="specifications" className="scroll-mt-38">
-        <div className="border-b border-zinc-200 px-5 py-3 lg:px-42.5">
-          <p className="font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground">
-            {t("techData")}
-          </p>
-        </div>
-        <div className="bg-off-white px-5 py-4 lg:px-42.5">
-          <h2 className="font-sans-condensed text-display-sm font-black uppercase leading-none text-brand-dark">
-            {t("techSpecifications")}
-          </h2>
+        <div className="bg-white px-5 py-4 lg:px-42.5">
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between lg:gap-8">
+            <SectionLabel
+              label={t("techData")}
+              title={t("techSpecifications")}
+              className="lg:max-w-120"
+            />
+            <p className="max-w-137.75 font-sans text-sm leading-5 text-text-subtle">
+              {t("techDescription")}
+            </p>
+          </div>
         </div>
         {hasSpecs ? (
           <div className="bg-white pb-9">
@@ -117,7 +120,7 @@ export async function ProductDetailContent({
 
       <section
         id="related"
-        className="scroll-mt-38 bg-off-white py-10 md:py-12 lg:py-16"
+        className="scroll-mt-38 bg-white py-10 md:py-12 lg:py-16"
       >
         <Container>
           <div className="border-b border-zinc-200 pb-3">

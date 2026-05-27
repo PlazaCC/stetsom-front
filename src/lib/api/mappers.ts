@@ -14,34 +14,28 @@ export function createCategoryLookup(
   return new Map(categories.map((category) => [category.id, category]));
 }
 
-function toPowerSpec(product: Product): string {
-  const defaultVariation = [...product.variations]
-    .sort((a, b) => a.order - b.order)
-    .at(0);
-
-  const powerSpec = defaultVariation?.specs.find(
-    (spec) => spec.attribute === "rms_power",
-  );
-  if (powerSpec) {
-    return powerSpec.value;
-  }
-
-  const sampleRateSpec = defaultVariation?.specs.find(
-    (spec) => spec.attribute === "sample_rate",
-  );
-  if (sampleRateSpec) {
-    return `DSP ${sampleRateSpec.value}`;
-  }
-
-  return "—";
-}
-
 function badgeByStatus(status: ProductStatus): string | null {
   if (status === "DISCONTINUED") {
     return "Descontinuado";
   }
 
   return null;
+}
+
+function toVariationBadges(product: Product): string[] {
+  const labels = [...product.variations]
+    .sort((a, b) => a.order - b.order)
+    .map((variation) => variation.label)
+    .filter(Boolean);
+
+  if (labels.length > 0) {
+    return labels;
+  }
+
+  const fallbackBadge =
+    product.badge !== undefined ? product.badge : badgeByStatus(product.status);
+
+  return fallbackBadge ? [fallbackBadge] : [];
 }
 
 export function toProductCardItem(
@@ -55,11 +49,7 @@ export function toProductCardItem(
     slug: product.slug,
     name: product.name,
     category: category?.name ?? "Produto",
-    spec: toPowerSpec(product),
-    badge:
-      product.badge !== undefined
-        ? product.badge
-        : badgeByStatus(product.status),
+    variations: toVariationBadges(product),
     img: product.thumbnail_url,
     href: `/produtos/${product.slug}`,
     status: product.status,
