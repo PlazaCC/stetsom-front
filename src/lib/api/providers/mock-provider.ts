@@ -1,20 +1,47 @@
+/*
+ * ⚠ MOCK PROVIDER — DEPRECATED ⚠
+ *
+ * This mock provider is being superseded by the remote CMS API (stetsom-api).
+ * All section editing, page config sync (sync_key), and public page delivery
+ * are now handled by the backend. This file remains only as a development
+ * fallback when CMS_API_BASE_URL is not set.
+ *
+ * DO NOT add new features to this file. Route new CMS functionality through
+ * the remote provider (remote-provider.ts) and the backend API exclusively.
+ *
+ * Scheduled for removal once backend integration is validated in production.
+ */
+
 import type {
   AdminUser,
   AuthPayload,
+  Banner,
+  BannerWithUploads,
   CatalogPagePayload,
   CatalogProductsQuery,
   CmsProductsQuery,
+  ContactFormInput,
   CreateAdminUserInput,
+  CreateBannerInput,
+  CreateCmsProductInput,
+  HeroBannerSlide,
   LibraryAssetType,
   Locale,
   LoginCredentials,
+  PageId,
+  PageSection,
+  PageSectionWithUploads,
   PaginatedResponse,
   Product,
   ProductDetailPayload,
   ProductStatus,
+  ProductWithUpload,
   SiteAboutPayload,
   SiteHomePayload,
+  SupportPayload,
   UpdateAdminUserInput,
+  UpdateCmsProductInput,
+  UpdatePageSectionInput,
 } from "@/lib/api/contracts";
 import {
   createCategoryLookup,
@@ -66,6 +93,20 @@ import {
   getSocialSection,
 } from "@/lib/mock/site-i18n";
 import { getSupportPayloadForLocale } from "@/lib/mock/support-i18n";
+
+// ── In-memory stores (reset on server restart) ────────────────────────────────
+// These allow create/update/delete operations to work end-to-end in mock mode.
+
+const _draftProducts = new Map<string, Product>();
+const _mockBanners = [...([] as Banner[])]; // populated lazily from MOCK_CMS_BANNERS
+let _mockBannersSeeded = false;
+const _mockPageSections = new Map<string, PageSection>(); // keyed by section.id
+let _mockCmsConfigDraft: Record<string, unknown> | null = null;
+const _mockReadMessages = new Set<string>();
+
+function isoNow(): string {
+  return new Date().toISOString();
+}
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE = 12;
@@ -271,10 +312,87 @@ function productStatusCount(status: ProductStatus): number {
   return CATALOG_PRODUCTS.filter((item) => item.status === status).length;
 }
 
+/**
+ * Maps a Banner to the HeroBannerSlide shape expected by hero carousels.
+ * Uses only banners visible for the given locale (ACTIVE status, locale match).
+ */
+function bannerToHeroSlide(banner: Banner): HeroBannerSlide {
+  return {
+    id: banner.id,
+    desktopImage: banner.desktop_image_url,
+    mobileImage: banner.mobile_image_url,
+    alt: banner.alt,
+    href: banner.link_url ?? banner.href,
+    label: banner.label,
+    title: banner.title,
+  };
+}
+
+function getActiveBannersForLocale(
+  banners: Banner[],
+  locale?: string,
+): Banner[] {
+  return banners.filter(
+    (b) => b.status === "ACTIVE" && (!locale || b.locale === locale),
+  );
+}
+
+async function resolveSectionData(
+  pageId: string,
+): Promise<Record<string, Record<string, unknown>>> {
+  const { MOCK_PAGE_SECTIONS_BY_PAGE } = await import("@/lib/mock/cms-pages");
+  const sections = MOCK_PAGE_SECTIONS_BY_PAGE[pageId] ?? [];
+  const resolved = sections.map((s) => _mockPageSections.get(s.id) ?? s);
+  const result: Record<string, Record<string, unknown>> = {};
+  for (const section of resolved) {
+    const slug = section.id.split("~")[1] ?? section.id;
+    result[slug] = section.data as Record<string, unknown>;
+  }
+  return result;
+}
+
+function overlay<T extends Record<string, unknown>>(
+  base: T,
+  overrides: Record<string, unknown>,
+): T {
+  const result = { ...base };
+  for (const key of Object.keys(overrides)) {
+    if (overrides[key] !== undefined) {
+      (result as Record<string, unknown>)[key] = overrides[key];
+    }
+  }
+  return result;
+}
+
 export function createMockCmsProvider(): CmsProvider {
   return {
     async getCatalogPagePayload(locale?: string): Promise<CatalogPagePayload> {
-      return getCatalogPagePayloadForLocale(locale);
+      const base = getCatalogPagePayloadForLocale(locale);
+      const sectionData = await resolveSectionData("catalog");
+
+      const heroData = sectionData["catalog-hero"];
+      if (heroData) {
+        const d = heroData as Record<string, unknown>;
+        base.heroLabel = (d.label as string) ?? base.heroLabel;
+        base.heroTitle = (d.title as string) ?? base.heroTitle;
+        base.heroImage = (d.image as string) ?? base.heroImage;
+        base.heroImageAlt = (d.imageAlt as string) ?? base.heroImageAlt;
+        base.heroWatermark = (d.watermark as string) ?? base.heroWatermark;
+      }
+
+      const gridData = sectionData["product-grid"];
+      if (gridData) {
+        const d = gridData as Record<string, unknown>;
+        base.productGrid = {
+          label: (d.label as string) ?? "Nossos Produtos",
+          title: (d.title as string) ?? "CATÁLOGO COMPLETO",
+          columns: typeof d.columns === "number" ? d.columns : 3,
+          showFilters:
+            d.showFilters !== undefined ? Boolean(d.showFilters) : true,
+        };
+      }
+
+      return base;
     },
 
     async getCatalogProducts(query, locale) {
@@ -311,8 +429,19 @@ export function createMockCmsProvider(): CmsProvider {
     },
 
     async getSiteHomePayload(locale?: string): Promise<SiteHomePayload> {
-      return {
-        hero: getHomeHeroSlides(locale),
+      const sectionData = await resolveSectionData("home");
+      const banners = getActiveBannersForLocale(MOCK_CMS_BANNERS, locale)
+        .sort((a, b) => a.order - b.order)
+        .map(bannerToHeroSlide);
+
+      const base: SiteHomePayload = {
+        hero: banners.length > 0 ? banners : getHomeHeroSlides(locale),
+        heroCarousel: {
+          autoplay: true,
+          interval: 5000,
+          effect: "slide",
+          maxSlides: 5,
+        },
         featuredProducts: getFeaturedProducts(locale),
         spotlightProduct: getSpotlightProduct(locale),
         featuredTabs: getHomeFeaturedTabs(locale),
@@ -322,10 +451,59 @@ export function createMockCmsProvider(): CmsProvider {
         faqSection: getHomeFaqSection(locale),
         social: getSocialSection(locale),
       };
+
+      const heroCarouselData = sectionData["hero-carousel"];
+      if (heroCarouselData) {
+        const d = heroCarouselData as Record<string, unknown>;
+        base.heroCarousel = {
+          autoplay:
+            d.autoplay !== undefined
+              ? Boolean(d.autoplay)
+              : base.heroCarousel.autoplay,
+          interval:
+            typeof d.interval === "number"
+              ? d.interval
+              : base.heroCarousel.interval,
+          effect:
+            typeof d.effect === "string" ? d.effect : base.heroCarousel.effect,
+          maxSlides:
+            typeof d.maxSlides === "number"
+              ? d.maxSlides
+              : base.heroCarousel.maxSlides,
+        };
+      }
+
+      const pgData = sectionData["featured-products"];
+      if (pgData) {
+        base.featured = overlay(
+          base.featured,
+          pgData as Record<string, unknown>,
+        );
+      }
+
+      const faqData = sectionData["faq"];
+      if (faqData) {
+        const d = faqData as Record<string, unknown>;
+        if (Array.isArray(d.items)) {
+          base.faq = d.items as SiteHomePayload["faq"];
+        }
+        base.faqSection = overlay(base.faqSection, d);
+      }
+
+      const socialData = sectionData["social-feed"];
+      if (socialData) {
+        base.social = overlay(
+          base.social,
+          socialData as Record<string, unknown>,
+        );
+      }
+
+      return base;
     },
 
     async getSiteAboutPayload(locale?: string): Promise<SiteAboutPayload> {
-      return {
+      const sectionData = await resolveSectionData("about");
+      const base: SiteAboutPayload = {
         hero: getAboutHeroSection(locale),
         stats: getCompanyStats(locale),
         milestones: getMilestonePattern(locale),
@@ -336,10 +514,115 @@ export function createMockCmsProvider(): CmsProvider {
         jobsCta: getAboutJobsCta(locale),
         social: getSocialSection(locale),
       };
+
+      const heroData = sectionData["hero"];
+      if (heroData) {
+        base.hero = overlay(base.hero, heroData);
+      }
+
+      const statsData = sectionData["stats"];
+      if (statsData) {
+        const d = statsData as Record<string, unknown>;
+        if (Array.isArray(d.stats)) {
+          base.stats = d.stats as SiteAboutPayload["stats"];
+        }
+      }
+
+      const milestonesData = sectionData["milestones"];
+      if (milestonesData) {
+        const d = milestonesData as Record<string, unknown>;
+        if (Array.isArray(d.items)) {
+          base.milestones = d.items as string[];
+        }
+      }
+
+      const valuesData = sectionData["values"];
+      if (valuesData) {
+        const d = valuesData as Record<string, unknown>;
+        base.quality = overlay(base.quality, d);
+        if (Array.isArray(d.values)) {
+          base.values = d.values as SiteAboutPayload["values"];
+        }
+      }
+
+      const timelineData = sectionData["timeline"];
+      if (timelineData) {
+        const d = timelineData as Record<string, unknown>;
+        if (Array.isArray(d.events)) {
+          base.timeline = d.events as SiteAboutPayload["timeline"];
+        }
+      }
+
+      const foundationsData = sectionData["foundations"];
+      if (foundationsData) {
+        const d = foundationsData as Record<string, unknown>;
+        if (Array.isArray(d.bases)) {
+          base.bases = d.bases as SiteAboutPayload["bases"];
+        }
+      }
+
+      return base;
     },
 
     async getSupportPayload(locale?: string) {
-      return getSupportPayloadForLocale(locale);
+      const base = getSupportPayloadForLocale(locale);
+      const sectionData = await resolveSectionData("support");
+
+      const heroData = sectionData["hero"];
+      if (heroData) {
+        base.hero = overlay(base.hero, heroData as Record<string, unknown>);
+      }
+
+      const cardsData = sectionData["support-cards"];
+      if (cardsData) {
+        const d = cardsData as Record<string, unknown>;
+        if (Array.isArray(d.cards)) {
+          base.cards = d.cards as SupportPayload["cards"];
+        }
+      }
+
+      const download = sectionData["download-catalog"];
+      if (download) {
+        const d = download as Record<string, unknown>;
+        if (Array.isArray(d.categories)) {
+          base.documentationCategories = (
+            d.categories as { id: string; label: string }[]
+          ).map((c) => ({ id: c.id, label: c.label }));
+        }
+      }
+
+      const centers = sectionData["service-centers"];
+      if (centers) {
+        const d = centers as Record<string, unknown>;
+        if (Array.isArray(d.centers)) {
+          base.serviceCenters = d.centers as SupportPayload["serviceCenters"];
+        }
+      }
+
+      const contactCfg = sectionData["contact-config"];
+      if (contactCfg) {
+        const d = contactCfg as Record<string, unknown>;
+        base.contact = overlay(base.contact, d);
+      }
+
+      const faqData = sectionData["faq"];
+      if (faqData) {
+        const d = faqData as Record<string, unknown>;
+        base.faq = overlay(
+          base.faq as unknown as Record<string, unknown>,
+          d,
+        ) as unknown as SupportPayload["faq"];
+        if (Array.isArray(d.items)) {
+          base.faq.items = d.items as SupportPayload["faq"]["items"];
+        }
+      }
+
+      return base;
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async submitContact(_input: ContactFormInput): Promise<void> {
+      await new Promise((r) => setTimeout(r, 600));
     },
 
     async getAdminDashboardPayload() {
@@ -523,9 +806,13 @@ export function createMockCmsProvider(): CmsProvider {
     },
 
     async getBanners() {
+      if (!_mockBannersSeeded) {
+        _mockBanners.push(...MOCK_CMS_BANNERS);
+        _mockBannersSeeded = true;
+      }
       return {
-        items: [...MOCK_CMS_BANNERS],
-        total: MOCK_CMS_BANNERS.length,
+        items: [..._mockBanners],
+        total: _mockBanners.length,
       };
     },
 
@@ -555,7 +842,284 @@ export function createMockCmsProvider(): CmsProvider {
     },
 
     async getCmsConfig() {
+      if (_mockCmsConfigDraft) {
+        return { ...MOCK_CMS_CONFIG, ..._mockCmsConfigDraft };
+      }
       return { ...MOCK_CMS_CONFIG };
+    },
+
+    // ── Products (Write) ──────────────────────────────────────────────────────
+
+    async createCmsProduct(
+      input: CreateCmsProductInput,
+    ): Promise<ProductWithUpload> {
+      const id = `prod-draft-${Date.now()}`;
+      const now = isoNow();
+      const product: Product = {
+        id,
+        name: input.name,
+        slug: input.slug,
+        category_id: input.category_id,
+        subcategory_id: input.subcategory_id,
+        status: input.status,
+        badge: input.badge ?? null,
+        description: input.description,
+        thumbnail_url: "/placeholder.png",
+        video_url: input.video_url ?? undefined,
+        launch_date: input.launch_date,
+        variations: input.variations.map((v, i) => ({
+          ...v,
+          id: `var-${id}-${i}`,
+        })),
+        highlight_attributes: input.highlight_attributes,
+        created_at: now,
+        updated_at: now,
+        created_by: "mock-user",
+      };
+      _draftProducts.set(id, product);
+      const result = { id, slug: input.slug, status: input.status };
+      return {
+        ...result,
+        uploads: {
+          thumbnail: result.id
+            ? { uploadUrl: "", method: "PUT", headers: {} }
+            : undefined,
+        },
+      };
+    },
+
+    async updateCmsProduct(
+      id: string,
+      input: UpdateCmsProductInput,
+    ): Promise<ProductWithUpload> {
+      // Look in draft store first, then fall back to static catalog
+      const existing =
+        _draftProducts.get(id) ?? CATALOG_PRODUCTS.find((p) => p.id === id);
+      if (!existing) {
+        throw new HttpError(404, "NOT_FOUND", `Produto ${id} não encontrado.`);
+      }
+      const updated: Product = {
+        ...existing,
+        ...(input.name !== undefined && { name: input.name }),
+        ...(input.slug !== undefined && { slug: input.slug }),
+        ...(input.category_id !== undefined && {
+          category_id: input.category_id,
+        }),
+        ...(input.subcategory_id !== undefined && {
+          subcategory_id: input.subcategory_id,
+        }),
+        ...(input.status !== undefined && { status: input.status }),
+        ...(input.badge !== undefined && { badge: input.badge }),
+        ...(input.description !== undefined && {
+          description: input.description,
+        }),
+        ...(input.thumbnail !== undefined && {
+          thumbnail_url: "/placeholder.png",
+        }),
+        ...(input.video_url !== undefined && {
+          video_url: input.video_url ?? undefined,
+        }),
+        ...(input.launch_date !== undefined && {
+          launch_date: input.launch_date,
+        }),
+        ...(input.variations !== undefined && {
+          variations: input.variations.map((v, i) => ({
+            ...v,
+            id: `var-${id}-${i}`,
+          })),
+        }),
+        ...(input.highlight_attributes !== undefined && {
+          highlight_attributes: input.highlight_attributes,
+        }),
+        updated_at: isoNow(),
+      };
+      _draftProducts.set(id, updated);
+      return {
+        id,
+        slug: updated.slug,
+        status: updated.status,
+        uploads: { thumbnail: { uploadUrl: "", method: "PUT", headers: {} } },
+      };
+    },
+
+    async deleteCmsProduct(id: string): Promise<void> {
+      _draftProducts.delete(id);
+      // For static catalog products in mock, deletion is a no-op (no persistent store)
+    },
+
+    // ── Banners (Write) ───────────────────────────────────────────────────────
+
+    async createBanner(input: CreateBannerInput): Promise<BannerWithUploads> {
+      if (!_mockBannersSeeded) {
+        _mockBanners.push(...MOCK_CMS_BANNERS);
+        _mockBannersSeeded = true;
+      }
+      const now = isoNow();
+      const banner: Banner = {
+        id: `banner-${Date.now()}`,
+        name: input.name,
+        desktop_image_url: "/placeholder-desktop.png",
+        mobile_image_url: input.mobile_image
+          ? "/placeholder-mobile.png"
+          : undefined,
+        alt: input.alt,
+        href: input.href,
+        label: input.label,
+        title: input.title,
+        link_url: input.link_url,
+        status: input.status,
+        locale: input.locale,
+        display_from: input.display_from,
+        display_until: input.display_until,
+        order: input.order ?? _mockBanners.length + 1,
+        product_id: input.product_id,
+        created_at: now,
+        updated_at: now,
+        created_by: "mock-user",
+      };
+      _mockBanners.push(banner);
+      return {
+        banner,
+        uploads: {
+          desktop: { uploadUrl: "", method: "PUT", headers: {} },
+          mobile: { uploadUrl: "", method: "PUT", headers: {} },
+        },
+      };
+    },
+
+    async updateBanner(
+      id: string,
+      input: Partial<CreateBannerInput>,
+    ): Promise<BannerWithUploads> {
+      if (!_mockBannersSeeded) {
+        _mockBanners.push(...MOCK_CMS_BANNERS);
+        _mockBannersSeeded = true;
+      }
+      const index = _mockBanners.findIndex((b) => b.id === id);
+      if (index === -1) {
+        throw new HttpError(404, "NOT_FOUND", `Banner ${id} não encontrado.`);
+      }
+      const updated: Banner = {
+        ..._mockBanners[index],
+        ...(input.name !== undefined && { name: input.name }),
+        ...(input.product_id !== undefined && { product_id: input.product_id }),
+        ...(input.alt !== undefined && { alt: input.alt }),
+        ...(input.href !== undefined && { href: input.href }),
+        ...(input.label !== undefined && { label: input.label }),
+        ...(input.title !== undefined && { title: input.title }),
+        ...(input.link_url !== undefined && { link_url: input.link_url }),
+        ...(input.status !== undefined && { status: input.status }),
+        ...(input.locale !== undefined && { locale: input.locale }),
+        ...(input.display_from !== undefined && {
+          display_from: input.display_from,
+        }),
+        ...(input.display_until !== undefined && {
+          display_until: input.display_until,
+        }),
+        ...(input.order !== undefined && { order: input.order }),
+        ...(input.desktop_image !== undefined && {
+          desktop_image_url: "/placeholder-desktop.png",
+        }),
+        ...(input.mobile_image !== undefined
+          ? { mobile_image_url: "/placeholder-mobile.png" }
+          : {}),
+        updated_at: isoNow(),
+      };
+      _mockBanners[index] = updated;
+      return {
+        banner: updated,
+        uploads: {
+          desktop: { uploadUrl: "", method: "PUT", headers: {} },
+          mobile: { uploadUrl: "", method: "PUT", headers: {} },
+        },
+      };
+    },
+
+    async deleteBanner(id: string): Promise<void> {
+      if (!_mockBannersSeeded) {
+        _mockBanners.push(...MOCK_CMS_BANNERS);
+        _mockBannersSeeded = true;
+      }
+      const index = _mockBanners.findIndex((b) => b.id === id);
+      if (index === -1) return;
+      _mockBanners.splice(index, 1);
+    },
+
+    // ── Messages ──────────────────────────────────────────────────────────────
+
+    async markMessageRead(id: string, isRead: boolean): Promise<void> {
+      if (isRead) {
+        _mockReadMessages.add(id);
+      } else {
+        _mockReadMessages.delete(id);
+      }
+    },
+
+    // ── Config (Write) ────────────────────────────────────────────────────────
+
+    async updateCmsConfig(input) {
+      _mockCmsConfigDraft = { ...(_mockCmsConfigDraft ?? {}), ...input };
+      return {
+        ...MOCK_CMS_CONFIG,
+        ..._mockCmsConfigDraft,
+        updated_at: isoNow(),
+      };
+    },
+
+    // ── Pages (Institutional) ─────────────────────────────────────────────────
+
+    async getAdminPages() {
+      const { MOCK_ADMIN_PAGES } = await import("@/lib/mock/cms-pages");
+      return MOCK_ADMIN_PAGES;
+    },
+
+    async getAdminPageSections(pageId: PageId) {
+      const { MOCK_PAGE_SECTIONS_BY_PAGE } =
+        await import("@/lib/mock/cms-pages");
+      const sections = MOCK_PAGE_SECTIONS_BY_PAGE[pageId] ?? [];
+      // Apply any in-memory edits
+      const resolved = sections.map((s) => _mockPageSections.get(s.id) ?? s);
+      return {
+        page_id: pageId,
+        label: {
+          home: "Página Inicial",
+          catalog: "Catálogo",
+          about: "Sobre Nós",
+          support: "Suporte",
+        }[pageId],
+        sections: resolved,
+      };
+    },
+
+    async updatePageSection(
+      sectionId: string,
+      input: UpdatePageSectionInput,
+    ): Promise<PageSectionWithUploads> {
+      const { MOCK_ALL_PAGE_SECTIONS } = await import("@/lib/mock/cms-pages");
+      const base =
+        _mockPageSections.get(sectionId) ??
+        MOCK_ALL_PAGE_SECTIONS.find((s) => s.id === sectionId);
+      if (!base) {
+        throw new HttpError(
+          404,
+          "NOT_FOUND",
+          `Section ${sectionId} not found.`,
+        );
+      }
+      if (!base.is_editable) {
+        throw new HttpError(
+          403,
+          "FORBIDDEN",
+          `Section "${base.name}" is structural and cannot be edited.`,
+        );
+      }
+      const updated: PageSection = {
+        ...base,
+        data: input.data,
+        updated_at: isoNow(),
+      };
+      _mockPageSections.set(sectionId, updated);
+      return { section: updated };
     },
   };
 }

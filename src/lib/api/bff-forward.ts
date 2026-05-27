@@ -10,12 +10,13 @@ export const ADMIN_ROUTE_MAP: Record<string, string> = {
   messages: "/api/messages/",
   audit: "/api/audit/",
   config: "/api/config/",
-  products: "/api/products/admin",
+  products: "/api/products/",
+  pages: "/api/pages/admin",
 };
 
 /** Catalog resource segment → upstream API path */
 export const CATALOG_ROUTE_MAP: Record<string, string> = {
-  page: "/api/site/catalog",
+  page: "/api/pages/catalog",
   products: "/api/products/",
   categories: "/api/categories/",
 };

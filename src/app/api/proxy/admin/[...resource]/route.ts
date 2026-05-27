@@ -1,8 +1,14 @@
 import { ADMIN_ROUTE_MAP, forwardRequest } from "@/lib/api/bff-forward";
 import type {
+  CmsConfig,
   CreateAdminUserInput,
+  CreateBannerInput,
+  CreateCmsProductInput,
   LibraryAssetType,
+  PageId,
   UpdateAdminUserInput,
+  UpdateCmsProductInput,
+  UpdatePageSectionInput,
 } from "@/lib/api/contracts";
 import { getCmsProvider } from "@/lib/api/provider";
 import type { CmsProvider } from "@/lib/api/provider-contract";
@@ -76,6 +82,7 @@ type MockPatchHandler = (
   r: string[],
   body: unknown,
 ) => Promise<unknown>;
+type MockDeleteHandler = (p: CmsProvider, r: string[]) => Promise<unknown>;
 
 const MOCK_GET: Record<string, MockGetHandler> = {
   dashboard: (p) => p.getAdminDashboardPayload(),
@@ -97,16 +104,54 @@ const MOCK_GET: Record<string, MockGetHandler> = {
           page: parseNum(sp.get("page")),
           pageSize: parseNum(sp.get("pageSize")),
         }),
+  pages: (p, r) =>
+    r[1] ? p.getAdminPageSections(r[1] as PageId) : p.getAdminPages(),
 };
 
 const MOCK_POST: Record<string, MockPostHandler> = {
   users: (p, body) => p.createAdminUser(body as CreateAdminUserInput),
+  products: (p, body) => p.createCmsProduct(body as CreateCmsProductInput),
+  banners: (p, body) => p.createBanner(body as CreateBannerInput),
 };
 
 const MOCK_PATCH: Record<string, MockPatchHandler> = {
   users: (p, r, body) => {
     if (!r[1]) throw new HttpError(404, "NOT_FOUND", "Resource ID required.");
     return p.updateAdminUser(r[1], body as UpdateAdminUserInput);
+  },
+  products: (p, r, body) => {
+    if (!r[1]) throw new HttpError(404, "NOT_FOUND", "Resource ID required.");
+    return p.updateCmsProduct(r[1], body as UpdateCmsProductInput);
+  },
+  banners: (p, r, body) => {
+    if (!r[1]) throw new HttpError(404, "NOT_FOUND", "Resource ID required.");
+    return p.updateBanner(r[1], body as Partial<CreateBannerInput>);
+  },
+  config: (_, __, body) =>
+    getCmsProvider().updateCmsConfig(body as Partial<CmsConfig>),
+  messages: (p, r, body) => {
+    if (!r[1]) throw new HttpError(404, "NOT_FOUND", "Resource ID required.");
+    const { is_read } = body as { is_read: boolean };
+    return p.markMessageRead(r[1], is_read);
+  },
+  pages: (p, r, body) => {
+    // r = ["pages", "sections", ":sectionId"]
+    // body is UpdatePageSectionInput (data + _uploads)
+    const sectionId = r[2];
+    if (!sectionId)
+      throw new HttpError(404, "NOT_FOUND", "Section ID required.");
+    return p.updatePageSection(sectionId, body as UpdatePageSectionInput);
+  },
+};
+
+const MOCK_DELETE: Record<string, MockDeleteHandler> = {
+  products: (p, r) => {
+    if (!r[1]) throw new HttpError(404, "NOT_FOUND", "Resource ID required.");
+    return p.deleteCmsProduct(r[1]);
+  },
+  banners: (p, r) => {
+    if (!r[1]) throw new HttpError(404, "NOT_FOUND", "Resource ID required.");
+    return p.deleteBanner(r[1]);
   },
 };
 
@@ -123,8 +168,15 @@ export async function GET(
     const { resource } = await params;
 
     if (!isMockMode()) {
-      const upstreamPath = getProxyUpstreamPath(ADMIN_ROUTE_MAP, resource);
-      return forwardRequest(request, upstreamPath, resource, token);
+      const adjustedResource =
+        resource[0] === "products"
+          ? [resource[0], "admin", ...resource.slice(1)]
+          : resource;
+      const upstreamPath = getProxyUpstreamPath(
+        ADMIN_ROUTE_MAP,
+        adjustedResource,
+      );
+      return forwardRequest(request, upstreamPath, adjustedResource, token);
     }
 
     const handler = MOCK_GET[resource[0]];
@@ -192,6 +244,32 @@ export async function PATCH(
     const body = await request.json();
     const result = await handler(getCmsProvider(), resource, body);
     return NextResponse.json(result);
+  } catch (error) {
+    return toErrorResponse(error);
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ resource: string[] }> },
+) {
+  const token = await ensureAdminToken();
+  if (!token) return unauthorizedResponse();
+
+  try {
+    const { resource } = await params;
+
+    if (!isMockMode()) {
+      const upstreamPath = getProxyUpstreamPath(ADMIN_ROUTE_MAP, resource);
+      return forwardRequest(request, upstreamPath, resource, token);
+    }
+
+    const handler = MOCK_DELETE[resource[0]];
+    if (!handler)
+      throw new HttpError(404, "NOT_FOUND", "Recurso não encontrado.");
+
+    await handler(getCmsProvider(), resource);
+    return new NextResponse(null, { status: 204 });
   } catch (error) {
     return toErrorResponse(error);
   }

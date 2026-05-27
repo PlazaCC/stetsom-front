@@ -2,7 +2,7 @@ export type Locale = "pt-BR" | "en" | "es";
 
 export type ISODateString = string;
 
-export type ProductStatus = "ACTIVE" | "DISCONTINUED";
+export type ProductStatus = "ACTIVE" | "DISCONTINUED" | "DRAFT";
 
 export type ProductFileType =
   | "MANUAL"
@@ -128,7 +128,7 @@ export type ProductDetailPayload = {
   files: ProductFile[];
   category: Category;
   subcategory?: Subcategory;
-  relatedProducts: ProductCardItem[];
+  relatedProducts?: ProductCardItem[];
 };
 
 export type ProductCardItem = {
@@ -149,6 +149,12 @@ export type CatalogPagePayload = {
   heroImage: string;
   heroImageAlt: string;
   heroWatermark: string;
+  productGrid?: {
+    label: string;
+    title: string;
+    columns: number;
+    showFilters: boolean;
+  };
 };
 
 export type HeroBannerSlide = {
@@ -222,8 +228,16 @@ export type CompanyStat = {
   label: string;
 };
 
+export type HeroCarouselConfig = {
+  autoplay: boolean;
+  interval: number;
+  effect: string;
+  maxSlides: number;
+};
+
 export type SiteHomePayload = {
   hero: HeroBannerSlide[];
+  heroCarousel: HeroCarouselConfig;
   featuredProducts: ProductCardItem[];
   spotlightProduct: ProductCardItem;
   featuredTabs: FeaturedTab[];
@@ -594,7 +608,147 @@ export type CmsProductDetailPayload = {
   subcategory?: Subcategory;
 };
 
+// ── CMS Mutations ────────────────────────────────────────────────────────────
+
+/** Input para criar ou atualizar um produto via CMS */
+export type CreateCmsProductInput = {
+  name: string;
+  slug: string;
+  category_id: string;
+  subcategory_id?: string;
+  /** DRAFT quando campos obrigatórios estiverem incompletos */
+  status: ProductStatus;
+  badge?: string | null;
+  description: string;
+  thumbnail?: UploadFileInput;
+  video_url?: string;
+  launch_date: ISODateString;
+  variations: Array<Omit<ProductVariation, "id">>;
+  highlight_attributes: string[];
+  blocks: Array<
+    Omit<
+      ProductBlock,
+      "id" | "product_id" | "created_by" | "created_at" | "updated_at"
+    >
+  >;
+  /** URLs de assets já no storage para associar ao produto */
+  file_urls?: string[];
+};
+
+export type UpdateCmsProductInput = Partial<CreateCmsProductInput>;
+
+export type CmsProductMutationResult = {
+  id: string;
+  slug: string;
+  status: ProductStatus;
+};
+
+export type ProductWithUpload = {
+  id: string;
+  slug: string;
+  status: ProductStatus;
+  uploads: {
+    thumbnail?: UploadSlot;
+  };
+};
+
+export type CreateBannerInput = {
+  name: string;
+  desktop_image: UploadFileInput;
+  mobile_image?: UploadFileInput;
+  alt?: string;
+  href?: string;
+  label?: string;
+  title?: string;
+  link_url?: string;
+  status: BannerStatus;
+  locale: Locale;
+  display_from?: ISODateString;
+  display_until?: ISODateString;
+  order?: number;
+  product_id?: string;
+};
+
+export type BannerWithUploads = {
+  banner: Banner;
+  uploads: {
+    desktop?: UploadSlot;
+    mobile?: UploadSlot;
+  };
+};
+
+// ── Pages (Institutional Content) ────────────────────────────────────────────
+
+export type PageId = "home" | "catalog" | "about" | "support";
+
+export type PageSectionType =
+  | "HERO_CAROUSEL"
+  | "HERO_STATIC"
+  | "FAQ_ACCORDION"
+  | "STATS_ROW"
+  | "MILESTONES_MARQUEE"
+  | "SOCIAL_FEED"
+  | "VALUES_GRID"
+  | "TIMELINE_VERTICAL"
+  | "SUPPORT_CARDS"
+  | "SERVICE_CENTERS"
+  | "CONTACT_FORM_CONFIG"
+  | "DOWNLOAD_CATALOG"
+  | "FOUNDATIONS_GRID"
+  | "CATALOG_HERO"
+  | "PRODUCT_GRID";
+
+export type PageSection = {
+  id: string;
+  page_id: PageId;
+  name: string;
+  type: PageSectionType;
+  order: number;
+  /** Structural section, not editable via CMS (e.g. header/footer). */
+  is_editable: boolean;
+  /** Shape varies by type — see form renderers in admin/paginas/_components/. */
+  data: Record<string, unknown>;
+  updated_at: ISODateString | null;
+};
+
+export type PageSectionWithUploads = {
+  section: PageSection;
+  uploads?: Record<string, UploadSlot>;
+};
+
+export type UpdatePageSectionInput = {
+  data: Record<string, unknown>;
+  _uploads?: Record<string, UploadFileInput>;
+};
+
+export type AdminPagesPayload = {
+  pages: Array<{
+    id: PageId;
+    label: string;
+    sections_count: number;
+    updated_at: ISODateString | null;
+  }>;
+};
+
+export type AdminPageDetailPayload = {
+  page_id: PageId;
+  label: string;
+  sections: PageSection[];
+};
+
 // Upload — mirrored from backend (src/schemas/index.ts)
+
+export type UploadFileInput = {
+  fileName: string;
+  mimeType: string;
+  sizeBytes?: number;
+};
+
+export type UploadSlot = {
+  uploadUrl: string;
+  method: "PUT";
+  headers: Record<string, string>;
+};
 
 /** POST /api/upload/ response: signed S3 URL + permanent file_url */
 export type UploadPresignResponse = {
@@ -604,7 +758,7 @@ export type UploadPresignResponse = {
   method: "PUT";
   expiresIn: number;
   headers: Record<string, string>;
-  assetType: Exclude<LibraryAssetType, "OTHER">;
+  assetType: LibraryAssetType;
   fileName: string;
 };
 
@@ -619,4 +773,21 @@ export type CompleteUploadInput = {
   alt?: string;
   product_id?: string;
   revision?: number;
+};
+
+export type ContactDepartment =
+  | "suporte_tecnico"
+  | "comercial"
+  | "produto"
+  | "marketing"
+  | "parcerias"
+  | "outro";
+
+export type ContactFormInput = {
+  name: string;
+  email: string;
+  phone?: string;
+  subject: string;
+  message: string;
+  department: ContactDepartment;
 };

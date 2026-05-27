@@ -116,6 +116,8 @@ export function CatalogContent() {
     heroImageAlt: t("heroImageAlt"),
     heroWatermark: "PRO",
   };
+  const productGrid = hero.productGrid;
+  const showFilters = productGrid?.showFilters ?? true;
 
   return (
     <div>
@@ -157,71 +159,75 @@ export function CatalogContent() {
         <div className="absolute left-0 top-0 w-3.5 h-full bg-bar-accent" />
       </section>
 
-      <section className="bg-white border-b border-border py-8">
-        <Container>
-          <p className="mb-5 font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground">
-            {t("categories")}
-          </p>
-          <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8">
-            {categoryOptions.map((cat) => {
-              const imageSrc = categoryImageBySlug[cat.slug];
-              const isActive = activeCategory === cat.slug;
-              return (
-                <button
-                  key={cat.slug}
-                  onClick={() => setActiveCategory(cat.slug)}
-                  className={cn(
-                    "flex flex-col items-center gap-2 rounded p-2 text-center transition-colors",
-                    isActive ? "bg-brand/10" : "hover:bg-muted",
-                  )}
-                >
-                  <div
+      {showFilters && (
+        <section className="bg-white border-b border-border py-8">
+          <Container>
+            <p className="mb-5 font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground">
+              {t("categories")}
+            </p>
+            <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8">
+              {categoryOptions.map((cat) => {
+                const imageSrc = categoryImageBySlug[cat.slug];
+                const isActive = activeCategory === cat.slug;
+                return (
+                  <button
+                    key={cat.slug}
+                    onClick={() => setActiveCategory(cat.slug)}
                     className={cn(
-                      "flex aspect-square w-full items-center justify-center overflow-hidden rounded",
-                      isActive ? "bg-brand/10" : "bg-muted",
+                      "flex flex-col items-center gap-2 rounded p-2 text-center transition-colors",
+                      isActive ? "bg-brand/10" : "hover:bg-muted",
                     )}
                   >
-                    {imageSrc ? (
-                      <Image
-                        src={imageSrc}
-                        alt=""
-                        width={48}
-                        height={48}
-                        className="h-10 w-10 object-contain"
-                      />
-                    ) : (
-                      <span className="font-sans-condensed text-xs font-black uppercase text-muted-foreground">
-                        {cat.name.slice(0, 2)}
-                      </span>
-                    )}
-                  </div>
-                  <span
-                    className={cn(
-                      "font-sans text-2xs font-medium leading-tight",
-                      isActive ? "text-brand" : "text-muted-foreground",
-                    )}
-                  >
-                    {cat.name}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </Container>
-      </section>
+                    <div
+                      className={cn(
+                        "flex aspect-square w-full items-center justify-center overflow-hidden rounded",
+                        isActive ? "bg-brand/10" : "bg-muted",
+                      )}
+                    >
+                      {imageSrc ? (
+                        <Image
+                          src={imageSrc}
+                          alt=""
+                          width={48}
+                          height={48}
+                          className="h-10 w-10 object-contain"
+                        />
+                      ) : (
+                        <span className="font-sans-condensed text-xs font-black uppercase text-muted-foreground">
+                          {cat.name.slice(0, 2)}
+                        </span>
+                      )}
+                    </div>
+                    <span
+                      className={cn(
+                        "font-sans text-2xs font-medium leading-tight",
+                        isActive ? "text-brand" : "text-muted-foreground",
+                      )}
+                    >
+                      {cat.name}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </Container>
+        </section>
+      )}
 
       <section className="bg-white pt-6 pb-12">
         <Container>
           <div className="flex gap-9">
-            <CatalogSidebar
-              search={search}
-              onSearchChange={setSearch}
-              activeCategory={activeCategory}
-              onCategoryChange={setActiveCategory}
-              onClear={clearFilters}
-              typeFilterOptions={typeFilterOptions}
-              productLines={PRODUCT_LINES}
-            />
+            {showFilters && (
+              <CatalogSidebar
+                search={search}
+                onSearchChange={setSearch}
+                activeCategory={activeCategory}
+                onCategoryChange={setActiveCategory}
+                onClear={clearFilters}
+                typeFilterOptions={typeFilterOptions}
+                productLines={PRODUCT_LINES}
+              />
+            )}
 
             <div className="flex-1 min-w-0">
               <div className="flex gap-3 mb-4 lg:hidden">

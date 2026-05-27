@@ -4,6 +4,7 @@ import { getCmsProvider } from "@/lib/api/provider";
 import Image from "next/image";
 import { getLocale, getTranslations } from "next-intl/server";
 import { CompanyTimeline } from "../_components/company-timeline";
+import { MilestonesMarquee } from "../_components/milestones-marquee";
 import { OurFactory } from "../_components/our-factory";
 import { OurFoundations } from "../_components/our-foundations";
 import { QualitySection } from "../_components/quality-section";
@@ -81,6 +82,8 @@ export default async function SobrePage() {
           </div>
         </Container>
       </section>
+
+      <MilestonesMarquee items={aboutPayload.milestones} />
 
       <QualitySection
         section={aboutPayload.quality}

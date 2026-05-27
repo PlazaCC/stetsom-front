@@ -9,7 +9,8 @@ import {
   AdminSelect,
 } from "@/app/admin/_components/crud/admin-input";
 import type { Banner, BannerStatus, Locale } from "@/lib/api/contracts";
-import { ArrowLeft, Image } from "lucide-react";
+import { ArrowLeft, Image, X } from "lucide-react";
+import { useRef } from "react";
 
 export interface BannerDraft {
   name: string;
@@ -76,12 +77,85 @@ export function formatDateRange(from?: string, until?: string): string {
   return `Até ${fmt(until!)}`;
 }
 
+function ImageUploadSlot({
+  url,
+  label,
+  accept = "image/*",
+  onFile,
+  onClear,
+}: {
+  url: string;
+  label: string;
+  accept?: string;
+  onFile: (file: File) => void;
+  onClear?: () => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    onFile(file);
+  }
+
+  return (
+    <div className="relative flex flex-col items-center justify-center gap-2 overflow-hidden rounded-md border border-dashed border-border bg-muted p-4">
+      {url ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={url}
+            alt={label}
+            className="h-28 w-full rounded object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = "none";
+            }}
+          />
+          {onClear && (
+            <button
+              type="button"
+              onClick={onClear}
+              className="absolute right-1 top-1 flex size-5 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+            >
+              <X className="size-3" />
+            </button>
+          )}
+        </>
+      ) : (
+        <div
+          className="flex cursor-pointer flex-col items-center gap-1"
+          onClick={() => inputRef.current?.click()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
+          }}
+          role="button"
+          tabIndex={0}
+        >
+          <Image className="size-6 text-muted-foreground" />
+          <span className="text-xs text-muted-foreground">{label}</span>
+        </div>
+      )}
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        className="hidden"
+        onChange={handleFile}
+      />
+    </div>
+  );
+}
+
 interface BannerFormProps {
   draft: BannerDraft;
   isCreating: boolean;
   onDraftChange: (key: keyof BannerDraft, value: string) => void;
   onSave: () => void;
   onCancel: () => void;
+  onDesktopFile?: (file: File) => void;
+  onMobileFile?: (file: File) => void;
+  onClearDesktopFile?: () => void;
+  onClearMobileFile?: () => void;
 }
 
 export function BannerForm({
@@ -90,7 +164,13 @@ export function BannerForm({
   onDraftChange,
   onSave,
   onCancel,
+  onDesktopFile,
+  onMobileFile,
+  onClearDesktopFile,
+  onClearMobileFile,
 }: BannerFormProps) {
+  const hasImage = !!draft.desktop_image_url;
+
   return (
     <div className="flex flex-col gap-5">
       <AdminPanel className="flex items-center justify-between p-5">
@@ -199,25 +279,45 @@ export function BannerForm({
           </AdminFormSection>
 
           <AdminFormSection title="Imagens">
-            <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <AdminLabel>Imagem desktop *</AdminLabel>
-                <AdminInput
-                  value={draft.desktop_image_url}
-                  onChange={(e) =>
-                    onDraftChange("desktop_image_url", e.target.value)
+                <ImageUploadSlot
+                  url={draft.desktop_image_url}
+                  label="Clique para selecionar"
+                  onFile={(file) => {
+                    const previewUrl = URL.createObjectURL(file);
+                    onDraftChange("desktop_image_url", previewUrl);
+                    onDesktopFile?.(file);
+                  }}
+                  onClear={
+                    draft.desktop_image_url
+                      ? () => {
+                          onDraftChange("desktop_image_url", "");
+                          onClearDesktopFile?.();
+                        }
+                      : undefined
                   }
-                  placeholder="/uploads/banner-desktop.jpg"
                 />
               </div>
               <div>
                 <AdminLabel>Imagem mobile (opcional)</AdminLabel>
-                <AdminInput
-                  value={draft.mobile_image_url}
-                  onChange={(e) =>
-                    onDraftChange("mobile_image_url", e.target.value)
+                <ImageUploadSlot
+                  url={draft.mobile_image_url}
+                  label="Clique para selecionar"
+                  onFile={(file) => {
+                    const previewUrl = URL.createObjectURL(file);
+                    onDraftChange("mobile_image_url", previewUrl);
+                    onMobileFile?.(file);
+                  }}
+                  onClear={
+                    draft.mobile_image_url
+                      ? () => {
+                          onDraftChange("mobile_image_url", "");
+                          onClearMobileFile?.();
+                        }
+                      : undefined
                   }
-                  placeholder="/uploads/banner-mobile.jpg"
                 />
               </div>
             </div>
@@ -276,7 +376,7 @@ export function BannerForm({
         <button
           type="button"
           onClick={onSave}
-          disabled={!draft.name || !draft.desktop_image_url}
+          disabled={!draft.name || !hasImage}
           className="rounded-md bg-foreground px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-50"
         >
           {isCreating ? "Criar banner" : "Salvar alterações"}
