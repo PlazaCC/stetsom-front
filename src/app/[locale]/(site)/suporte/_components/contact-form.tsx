@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { getCmsProvider } from "@/lib/api/provider";
 import type { ContactDepartment } from "@/lib/api/contracts";
+import { submitContact } from "./actions";
 
 const DEPARTMENT_MAP: Record<string, ContactDepartment> = {
   technical: "suporte_tecnico",
@@ -37,7 +37,7 @@ export function ContactForm() {
     const name = (data.get("name") as string) || "";
 
     try {
-      await getCmsProvider().submitContact({
+      await submitContact({
         name,
         email: (data.get("email") as string) || "",
         phone: (data.get("phone") as string) || undefined,
