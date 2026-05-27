@@ -149,6 +149,12 @@ export type CatalogPagePayload = {
   heroImage: string;
   heroImageAlt: string;
   heroWatermark: string;
+  productGrid?: {
+    label: string;
+    title: string;
+    columns: number;
+    showFilters: boolean;
+  };
 };
 
 export type HeroBannerSlide = {
@@ -222,8 +228,16 @@ export type CompanyStat = {
   label: string;
 };
 
+export type HeroCarouselConfig = {
+  autoplay: boolean;
+  interval: number;
+  effect: string;
+  maxSlides: number;
+};
+
 export type SiteHomePayload = {
   hero: HeroBannerSlide[];
+  heroCarousel: HeroCarouselConfig;
   featuredProducts: ProductCardItem[];
   spotlightProduct: ProductCardItem;
   featuredTabs: FeaturedTab[];

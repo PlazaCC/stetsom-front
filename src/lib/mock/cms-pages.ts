@@ -1,4 +1,15 @@
-/** Mock data for the CMS Institutional Pages module. Each section mirrors the real public page layout. */
+/*
+ * ⚠ MOCK SECTION DATA — DEPRECATED ⚠
+ *
+ * Section data is now managed by the CMS API (stetsom-api) via PageConfig.
+ * This file provides fallback mock data only when CMS_API_BASE_URL is not set.
+ *
+ * DO NOT add new sections here. Define them in the backend:
+ *   stetsom-api → src/domains/pages/constants/page-sections.ts
+ *
+ * Scheduled for removal once backend integration is validated in production.
+ */
+
 import type {
   AdminPageDetailPayload,
   AdminPagesPayload,

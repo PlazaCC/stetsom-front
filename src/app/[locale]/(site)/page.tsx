@@ -13,7 +13,10 @@ export default async function Home() {
 
   return (
     <>
-      <HeroCarousel slides={homePayload.hero} />
+      <HeroCarousel
+        slides={homePayload.hero}
+        config={homePayload.heroCarousel}
+      />
       <FeaturedProducts
         featuredProducts={homePayload.featuredProducts}
         spotlightProduct={homePayload.spotlightProduct}

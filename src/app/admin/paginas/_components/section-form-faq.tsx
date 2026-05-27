@@ -144,60 +144,87 @@ export function SectionFormFaq({ section, onChange }: Props) {
 
       <div className="space-y-2">
         {data.items.map((item, idx) => (
-          <div
+          <FaqItemCard
             key={item.id}
-            className="rounded-[12px] border border-border bg-card overflow-hidden"
-          >
-            <div className="flex items-center gap-3 px-4 py-3">
-              <button
-                type="button"
-                onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
-                className="flex flex-1 items-center gap-2 text-left"
-              >
-                <ChevronDown
-                  className={cn(
-                    "size-4 shrink-0 text-muted-foreground transition-transform",
-                    openIdx === idx && "rotate-180",
-                  )}
-                />
-                <p className="text-sm font-medium text-foreground">
-                  {item.q || `Pergunta ${idx + 1}`}
-                </p>
-              </button>
-              <button
-                type="button"
-                onClick={() => removeItem(idx)}
-                className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-              >
-                <Trash2 className="size-3.5" />
-              </button>
-            </div>
-
-            {openIdx === idx && (
-              <div className="border-t border-border px-4 pb-4 pt-3 space-y-3">
-                <FieldGroup label="Pergunta *">
-                  <input
-                    type="text"
-                    value={item.q}
-                    onChange={(e) => updateItem(idx, { q: e.target.value })}
-                    placeholder="Qual a potência real dos amplificadores?"
-                    className={inputClass}
-                  />
-                </FieldGroup>
-                <FieldGroup label="Resposta *">
-                  <textarea
-                    rows={3}
-                    value={item.a}
-                    onChange={(e) => updateItem(idx, { a: e.target.value })}
-                    placeholder="A potência informada é sempre a potência RMS real..."
-                    className={cn(inputClass, "h-auto py-2")}
-                  />
-                </FieldGroup>
-              </div>
-            )}
-          </div>
+            item={item}
+            idx={idx}
+            isOpen={openIdx === idx}
+            onToggle={() => setOpenIdx(openIdx === idx ? null : idx)}
+            onUpdate={(patch) => updateItem(idx, patch)}
+            onRemove={() => removeItem(idx)}
+          />
         ))}
       </div>
+    </div>
+  );
+}
+
+interface FaqItemCardProps {
+  item: FaqItem;
+  idx: number;
+  isOpen: boolean;
+  onToggle: () => void;
+  onUpdate: (patch: Partial<FaqItem>) => void;
+  onRemove: () => void;
+}
+
+function FaqItemCard({
+  item,
+  idx,
+  isOpen,
+  onToggle,
+  onUpdate,
+  onRemove,
+}: FaqItemCardProps) {
+  return (
+    <div className="rounded-[12px] border border-border bg-card overflow-hidden">
+      <div className="flex items-center gap-3 px-4 py-3">
+        <button
+          type="button"
+          onClick={onToggle}
+          className="flex flex-1 items-center gap-2 text-left"
+        >
+          <ChevronDown
+            className={cn(
+              "size-4 shrink-0 text-muted-foreground transition-transform",
+              isOpen && "rotate-180",
+            )}
+          />
+          <p className="text-sm font-medium text-foreground">
+            {item.q || `Pergunta ${idx + 1}`}
+          </p>
+        </button>
+        <button
+          type="button"
+          onClick={onRemove}
+          className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+        >
+          <Trash2 className="size-3.5" />
+        </button>
+      </div>
+
+      {isOpen && (
+        <div className="border-t border-border px-4 pb-4 pt-3 space-y-3">
+          <FieldGroup label="Pergunta *">
+            <input
+              type="text"
+              value={item.q}
+              onChange={(e) => onUpdate({ q: e.target.value })}
+              placeholder="Qual a potência real dos amplificadores?"
+              className={inputClass}
+            />
+          </FieldGroup>
+          <FieldGroup label="Resposta *">
+            <textarea
+              rows={3}
+              value={item.a}
+              onChange={(e) => onUpdate({ a: e.target.value })}
+              placeholder="A potência informada é sempre a potência RMS real..."
+              className={cn(inputClass, "h-auto py-2")}
+            />
+          </FieldGroup>
+        </div>
+      )}
     </div>
   );
 }

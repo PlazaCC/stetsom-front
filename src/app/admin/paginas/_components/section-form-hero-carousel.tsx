@@ -207,163 +207,179 @@ export function SectionFormHeroCarousel({
 
       <div className="space-y-2">
         {slides.map((slide, idx) => (
-          <div
+          <SlideCard
             key={slide.id}
-            className="rounded-[12px] border border-border bg-card overflow-hidden"
-          >
-            <div className="flex items-center gap-3 px-4 py-3">
-              <GripVertical className="size-4 shrink-0 text-muted-foreground" />
-              <button
-                type="button"
-                onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
-                className="flex-1 text-left"
-              >
-                <p className="text-sm font-medium text-foreground">
-                  {slide.title || `Slide ${idx + 1}`}
-                </p>
-                {slide.label && (
-                  <p className="text-xs text-muted-foreground">{slide.label}</p>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => removeSlide(idx)}
-                className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-                title="Remover slide"
-              >
-                <Trash2 className="size-3.5" />
-              </button>
-            </div>
-
-            {openIdx === idx && (
-              <div className="border-t border-border px-4 pb-4 pt-3 space-y-3">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <FieldGroup label="Título *">
-                    <input
-                      type="text"
-                      value={slide.title}
-                      onChange={(e) =>
-                        updateSlide(idx, { title: e.target.value })
-                      }
-                      placeholder="TÍTULO EM MAIÚSCULAS"
-                      className={inputClass}
-                    />
-                  </FieldGroup>
-                  <FieldGroup label="Label / Subtítulo">
-                    <input
-                      type="text"
-                      value={slide.label}
-                      onChange={(e) =>
-                        updateSlide(idx, { label: e.target.value })
-                      }
-                      placeholder="ex: Stetsom Digital Bass"
-                      className={inputClass}
-                    />
-                  </FieldGroup>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <FieldGroup label="Imagem Desktop (Upload)">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0] ?? null;
-                        handleFileChange(idx, "desktopImage", file);
-                      }}
-                      className={fileInputClass}
-                    />
-                    {(previewUrls[`slides.${idx}.desktopImage`] ??
-                      slide.desktopImage) && (
-                      <div className="relative mt-2 overflow-hidden rounded-md border border-border">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={
-                            previewUrls[`slides.${idx}.desktopImage`] ??
-                            slide.desktopImage
-                          }
-                          alt="Preview"
-                          className="h-20 w-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleFileChange(idx, "desktopImage", null)
-                          }
-                          className="absolute right-1 top-1 flex size-6 items-center justify-center rounded bg-black/50 text-xs text-white hover:bg-black/70"
-                          title="Remover imagem"
-                        >
-                          <Trash2 className="size-3" />
-                        </button>
-                      </div>
-                    )}
-                  </FieldGroup>
-                  <FieldGroup label="Imagem Mobile (Upload)">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0] ?? null;
-                        handleFileChange(idx, "mobileImage", file);
-                      }}
-                      className={fileInputClass}
-                    />
-                    {(previewUrls[`slides.${idx}.mobileImage`] ??
-                      slide.mobileImage) && (
-                      <div className="relative mt-2 overflow-hidden rounded-md border border-border">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={
-                            previewUrls[`slides.${idx}.mobileImage`] ??
-                            slide.mobileImage
-                          }
-                          alt="Preview"
-                          className="h-20 w-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleFileChange(idx, "mobileImage", null)
-                          }
-                          className="absolute right-1 top-1 flex size-6 items-center justify-center rounded bg-black/50 text-xs text-white hover:bg-black/70"
-                          title="Remover imagem"
-                        >
-                          <Trash2 className="size-3" />
-                        </button>
-                      </div>
-                    )}
-                  </FieldGroup>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <FieldGroup label="Texto alternativo (alt)">
-                    <input
-                      type="text"
-                      value={slide.alt}
-                      onChange={(e) =>
-                        updateSlide(idx, { alt: e.target.value })
-                      }
-                      placeholder="Descrição da imagem para acessibilidade"
-                      className={inputClass}
-                    />
-                  </FieldGroup>
-                  <FieldGroup label="Link de destino">
-                    <input
-                      type="text"
-                      value={slide.href}
-                      onChange={(e) =>
-                        updateSlide(idx, { href: e.target.value })
-                      }
-                      placeholder="/produtos ou https://..."
-                      className={inputClass}
-                    />
-                  </FieldGroup>
-                </div>
-              </div>
-            )}
-          </div>
+            slide={slide}
+            idx={idx}
+            isOpen={openIdx === idx}
+            previewUrls={previewUrls}
+            onToggle={() => setOpenIdx(openIdx === idx ? null : idx)}
+            onUpdate={(patch) => updateSlide(idx, patch)}
+            onRemove={() => removeSlide(idx)}
+            onFileChange={(field, file) => handleFileChange(idx, field, file)}
+          />
         ))}
       </div>
+    </div>
+  );
+}
+
+interface SlideCardProps {
+  slide: HeroSlide;
+  idx: number;
+  isOpen: boolean;
+  previewUrls: Record<string, string>;
+  onToggle: () => void;
+  onUpdate: (patch: Partial<HeroSlide>) => void;
+  onRemove: () => void;
+  onFileChange: (
+    field: "desktopImage" | "mobileImage",
+    file: File | null,
+  ) => void;
+}
+
+function SlideCard({
+  slide,
+  idx,
+  isOpen,
+  previewUrls,
+  onToggle,
+  onUpdate,
+  onRemove,
+  onFileChange,
+}: SlideCardProps) {
+  const desktopSrc =
+    previewUrls[`slides.${idx}.desktopImage`] ?? slide.desktopImage;
+  const mobileSrc =
+    previewUrls[`slides.${idx}.mobileImage`] ?? slide.mobileImage;
+
+  return (
+    <div className="rounded-[12px] border border-border bg-card overflow-hidden">
+      <div className="flex items-center gap-3 px-4 py-3">
+        <GripVertical className="size-4 shrink-0 text-muted-foreground" />
+        <button type="button" onClick={onToggle} className="flex-1 text-left">
+          <p className="text-sm font-medium text-foreground">
+            {slide.title || `Slide ${idx + 1}`}
+          </p>
+          {slide.label && (
+            <p className="text-xs text-muted-foreground">{slide.label}</p>
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={onRemove}
+          className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+          title="Remover slide"
+        >
+          <Trash2 className="size-3.5" />
+        </button>
+      </div>
+
+      {isOpen && (
+        <div className="border-t border-border px-4 pb-4 pt-3 space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <FieldGroup label="Título *">
+              <input
+                type="text"
+                value={slide.title}
+                onChange={(e) => onUpdate({ title: e.target.value })}
+                placeholder="TÍTULO EM MAIÚSCULAS"
+                className={inputClass}
+              />
+            </FieldGroup>
+            <FieldGroup label="Label / Subtítulo">
+              <input
+                type="text"
+                value={slide.label}
+                onChange={(e) => onUpdate({ label: e.target.value })}
+                placeholder="ex: Stetsom Digital Bass"
+                className={inputClass}
+              />
+            </FieldGroup>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <FieldGroup label="Imagem Desktop (Upload)">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                  onFileChange("desktopImage", e.target.files?.[0] ?? null)
+                }
+                className={fileInputClass}
+              />
+              <ImagePreview
+                src={desktopSrc}
+                alt="Preview desktop"
+                onClear={() => onFileChange("desktopImage", null)}
+              />
+            </FieldGroup>
+            <FieldGroup label="Imagem Mobile (Upload)">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                  onFileChange("mobileImage", e.target.files?.[0] ?? null)
+                }
+                className={fileInputClass}
+              />
+              <ImagePreview
+                src={mobileSrc}
+                alt="Preview mobile"
+                onClear={() => onFileChange("mobileImage", null)}
+              />
+            </FieldGroup>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <FieldGroup label="Texto alternativo (alt)">
+              <input
+                type="text"
+                value={slide.alt}
+                onChange={(e) => onUpdate({ alt: e.target.value })}
+                placeholder="Descrição da imagem para acessibilidade"
+                className={inputClass}
+              />
+            </FieldGroup>
+            <FieldGroup label="Link de destino">
+              <input
+                type="text"
+                value={slide.href}
+                onChange={(e) => onUpdate({ href: e.target.value })}
+                placeholder="/produtos ou https://..."
+                className={inputClass}
+              />
+            </FieldGroup>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ImagePreview({
+  src,
+  alt,
+  onClear,
+}: {
+  src: string;
+  alt: string;
+  onClear: () => void;
+}) {
+  if (!src) return null;
+
+  return (
+    <div className="relative mt-2 overflow-hidden rounded-md border border-border">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt={alt} className="h-20 w-full object-cover" />
+      <button
+        type="button"
+        onClick={onClear}
+        className="absolute right-1 top-1 flex size-6 items-center justify-center rounded bg-black/50 text-xs text-white hover:bg-black/70"
+        title="Remover imagem"
+      >
+        <Trash2 className="size-3" />
+      </button>
     </div>
   );
 }

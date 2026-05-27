@@ -153,125 +153,20 @@ export function SectionFormTimeline({
           .map((event, sortedIdx) => {
             const origIdx = data.events.findIndex((e) => e.id === event.id);
             return (
-              <div
+              <TimelineEventCard
                 key={event.id}
-                className="rounded-[12px] border border-border bg-card overflow-hidden"
-              >
-                <div className="flex items-center gap-3 px-4 py-3">
-                  <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-xs font-mono text-muted-foreground">
-                    {event.year}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setOpenIdx(openIdx === sortedIdx ? null : sortedIdx)
-                    }
-                    className="flex flex-1 items-center gap-2 text-left"
-                  >
-                    <ChevronDown
-                      className={cn(
-                        "size-4 shrink-0 text-muted-foreground transition-transform",
-                        openIdx === sortedIdx && "rotate-180",
-                      )}
-                    />
-                    <p className="text-sm font-medium text-foreground">
-                      {event.title || `Marco ${sortedIdx + 1}`}
-                    </p>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => removeEvent(origIdx)}
-                    className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-                  >
-                    <Trash2 className="size-3.5" />
-                  </button>
-                </div>
-
-                {openIdx === sortedIdx && (
-                  <div className="border-t border-border px-4 pb-4 pt-3 space-y-3">
-                    <div className="grid gap-3 sm:grid-cols-3">
-                      <FieldGroup label="Ano *">
-                        <input
-                          type="number"
-                          value={event.year}
-                          onChange={(e) =>
-                            updateEvent(origIdx, {
-                              year: Number(e.target.value),
-                            })
-                          }
-                          className={inputClass}
-                        />
-                      </FieldGroup>
-                      <FieldGroup label="Título completo *">
-                        <input
-                          type="text"
-                          value={event.title}
-                          onChange={(e) =>
-                            updateEvent(origIdx, { title: e.target.value })
-                          }
-                          placeholder="Fundação da Stetsom"
-                          className={inputClass}
-                        />
-                      </FieldGroup>
-                      <FieldGroup label="Título curto">
-                        <input
-                          type="text"
-                          value={event.shortTitle}
-                          onChange={(e) =>
-                            updateEvent(origIdx, { shortTitle: e.target.value })
-                          }
-                          placeholder="Fundação"
-                          className={inputClass}
-                        />
-                      </FieldGroup>
-                    </div>
-                    <FieldGroup label="Descrição *">
-                      <textarea
-                        rows={2}
-                        value={event.description}
-                        onChange={(e) =>
-                          updateEvent(origIdx, { description: e.target.value })
-                        }
-                        placeholder="A Stetsom é fundada em São Paulo com foco em amplificadores automotivos."
-                        className={cn(inputClass, "h-auto py-2")}
-                      />
-                    </FieldGroup>
-                    <FieldGroup label="Imagem (Upload)">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0] ?? null;
-                          handleFileChange(origIdx, file);
-                        }}
-                        className={fileInputClass}
-                      />
-                      {(previewUrls[`events.${origIdx}.image`] ??
-                        event.image) && (
-                        <div className="relative mt-2 overflow-hidden rounded-md border border-border">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={
-                              previewUrls[`events.${origIdx}.image`] ??
-                              event.image
-                            }
-                            alt="Preview"
-                            className="h-20 w-full object-cover"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleFileChange(origIdx, null)}
-                            className="absolute right-1 top-1 flex size-6 items-center justify-center rounded bg-black/50 text-xs text-white hover:bg-black/70"
-                            title="Remover imagem"
-                          >
-                            <Trash2 className="size-3" />
-                          </button>
-                        </div>
-                      )}
-                    </FieldGroup>
-                  </div>
-                )}
-              </div>
+                event={event}
+                idx={origIdx}
+                sortedIdx={sortedIdx}
+                isOpen={openIdx === sortedIdx}
+                previewUrls={previewUrls}
+                onToggle={() =>
+                  setOpenIdx(openIdx === sortedIdx ? null : sortedIdx)
+                }
+                onUpdate={(patch) => updateEvent(origIdx, patch)}
+                onRemove={() => removeEvent(origIdx)}
+                onFileChange={(file) => handleFileChange(origIdx, file)}
+              />
             );
           })}
       </div>
@@ -279,6 +174,136 @@ export function SectionFormTimeline({
       <p className="text-xs text-muted-foreground">
         Os marcos são ordenados automaticamente por ano na página pública.
       </p>
+    </div>
+  );
+}
+
+interface TimelineEventCardProps {
+  event: TimelineEvent;
+  idx: number;
+  sortedIdx: number;
+  isOpen: boolean;
+  previewUrls: Record<string, string>;
+  onToggle: () => void;
+  onUpdate: (patch: Partial<TimelineEvent>) => void;
+  onRemove: () => void;
+  onFileChange: (file: File | null) => void;
+}
+
+function TimelineEventCard({
+  event,
+  sortedIdx,
+  isOpen,
+  previewUrls,
+  onToggle,
+  onUpdate,
+  onRemove,
+  onFileChange,
+}: TimelineEventCardProps) {
+  return (
+    <div className="rounded-[12px] border border-border bg-card overflow-hidden">
+      <div className="flex items-center gap-3 px-4 py-3">
+        <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-xs font-mono text-muted-foreground">
+          {event.year}
+        </span>
+        <button
+          type="button"
+          onClick={onToggle}
+          className="flex flex-1 items-center gap-2 text-left"
+        >
+          <ChevronDown
+            className={cn(
+              "size-4 shrink-0 text-muted-foreground transition-transform",
+              isOpen && "rotate-180",
+            )}
+          />
+          <p className="text-sm font-medium text-foreground">
+            {event.title || `Marco ${sortedIdx + 1}`}
+          </p>
+        </button>
+        <button
+          type="button"
+          onClick={onRemove}
+          className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+        >
+          <Trash2 className="size-3.5" />
+        </button>
+      </div>
+
+      {isOpen && (
+        <div className="border-t border-border px-4 pb-4 pt-3 space-y-3">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <FieldGroup label="Ano *">
+              <input
+                type="number"
+                value={event.year}
+                onChange={(e) => onUpdate({ year: Number(e.target.value) })}
+                className={inputClass}
+              />
+            </FieldGroup>
+            <FieldGroup label="Título completo *">
+              <input
+                type="text"
+                value={event.title}
+                onChange={(e) => onUpdate({ title: e.target.value })}
+                placeholder="Fundação da Stetsom"
+                className={inputClass}
+              />
+            </FieldGroup>
+            <FieldGroup label="Título curto">
+              <input
+                type="text"
+                value={event.shortTitle}
+                onChange={(e) => onUpdate({ shortTitle: e.target.value })}
+                placeholder="Fundação"
+                className={inputClass}
+              />
+            </FieldGroup>
+          </div>
+          <FieldGroup label="Descrição *">
+            <textarea
+              rows={2}
+              value={event.description}
+              onChange={(e) => onUpdate({ description: e.target.value })}
+              placeholder="A Stetsom é fundada em São Paulo com foco em amplificadores automotivos."
+              className={cn(inputClass, "h-auto py-2")}
+            />
+          </FieldGroup>
+          <FieldGroup label="Imagem (Upload)">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => onFileChange(e.target.files?.[0] ?? null)}
+              className={fileInputClass}
+            />
+            <ImagePreview
+              src={
+                previewUrls[`events.${sortedIdx}.image`] ?? event.image ?? ""
+              }
+              onClear={() => onFileChange(null)}
+            />
+          </FieldGroup>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ImagePreview({ src, onClear }: { src: string; onClear: () => void }) {
+  if (!src) return null;
+
+  return (
+    <div className="relative mt-2 overflow-hidden rounded-md border border-border">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt="Preview" className="h-20 w-full object-cover" />
+      <button
+        type="button"
+        onClick={onClear}
+        className="absolute right-1 top-1 flex size-6 items-center justify-center rounded bg-black/50 text-xs text-white hover:bg-black/70"
+        title="Remover imagem"
+      >
+        <Trash2 className="size-3" />
+      </button>
     </div>
   );
 }

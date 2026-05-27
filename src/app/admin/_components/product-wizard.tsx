@@ -167,10 +167,8 @@ function buildPayload(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     variations: variations.map(({ id: _id, ...rest }) => rest),
     highlight_attributes: highlightAttributes,
-     
-    blocks: blocks.map(
-      ({ id: _id, ...rest }) => rest,
-    ) as unknown as CreateCmsProductInput["blocks"],
+
+    blocks: blocks.map(toBlockInput),
   };
 
   if (coverImageFile) {
@@ -182,6 +180,13 @@ function buildPayload(
   }
 
   return payload;
+}
+
+function toBlockInput(
+  block: DraftBlock,
+): CreateCmsProductInput["blocks"][number] {
+  const { id: _id, ...fields } = block;
+  return fields as CreateCmsProductInput["blocks"][number];
 }
 
 const STEP_LABELS: Record<Step, string> = {

@@ -1,3 +1,17 @@
+/*
+ * ⚠ MOCK PROVIDER — DEPRECATED ⚠
+ *
+ * This mock provider is being superseded by the remote CMS API (stetsom-api).
+ * All section editing, page config sync (sync_key), and public page delivery
+ * are now handled by the backend. This file remains only as a development
+ * fallback when CMS_API_BASE_URL is not set.
+ *
+ * DO NOT add new features to this file. Route new CMS functionality through
+ * the remote provider (remote-provider.ts) and the backend API exclusively.
+ *
+ * Scheduled for removal once backend integration is validated in production.
+ */
+
 import type {
   AdminUser,
   AuthPayload,
@@ -365,6 +379,18 @@ export function createMockCmsProvider(): CmsProvider {
         base.heroWatermark = (d.watermark as string) ?? base.heroWatermark;
       }
 
+      const gridData = sectionData["product-grid"];
+      if (gridData) {
+        const d = gridData as Record<string, unknown>;
+        base.productGrid = {
+          label: (d.label as string) ?? "Nossos Produtos",
+          title: (d.title as string) ?? "CATÁLOGO COMPLETO",
+          columns: typeof d.columns === "number" ? d.columns : 3,
+          showFilters:
+            d.showFilters !== undefined ? Boolean(d.showFilters) : true,
+        };
+      }
+
       return base;
     },
 
@@ -407,6 +433,12 @@ export function createMockCmsProvider(): CmsProvider {
         hero: getActiveBannersForLocale(MOCK_CMS_BANNERS, locale)
           .sort((a, b) => a.order - b.order)
           .map(bannerToHeroSlide),
+        heroCarousel: {
+          autoplay: true,
+          interval: 5000,
+          effect: "slide",
+          maxSlides: 5,
+        },
         featuredProducts: getFeaturedProducts(locale),
         spotlightProduct: getSpotlightProduct(locale),
         featuredTabs: getHomeFeaturedTabs(locale),
@@ -416,6 +448,27 @@ export function createMockCmsProvider(): CmsProvider {
         faqSection: getHomeFaqSection(locale),
         social: getSocialSection(locale),
       };
+
+      const heroCarouselData = sectionData["hero-carousel"];
+      if (heroCarouselData) {
+        const d = heroCarouselData as Record<string, unknown>;
+        base.heroCarousel = {
+          autoplay:
+            d.autoplay !== undefined
+              ? Boolean(d.autoplay)
+              : base.heroCarousel.autoplay,
+          interval:
+            typeof d.interval === "number"
+              ? d.interval
+              : base.heroCarousel.interval,
+          effect:
+            typeof d.effect === "string" ? d.effect : base.heroCarousel.effect,
+          maxSlides:
+            typeof d.maxSlides === "number"
+              ? d.maxSlides
+              : base.heroCarousel.maxSlides,
+        };
+      }
 
       const pgData = sectionData["featured-products"];
       if (pgData) {

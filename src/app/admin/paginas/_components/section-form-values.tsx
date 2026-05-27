@@ -128,24 +128,10 @@ export function SectionFormValues({ section, onChange, onFileChange }: Props) {
               }}
               className={fileInputClass}
             />
-            {(previewUrl ?? data.image) && (
-              <div className="relative mt-2 overflow-hidden rounded-md border border-border">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={previewUrl ?? data.image}
-                  alt={data.imageAlt ?? "Preview"}
-                  className="h-20 w-full object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleFileChange(null)}
-                  className="absolute right-1 top-1 flex size-6 items-center justify-center rounded bg-black/50 text-xs text-white hover:bg-black/70"
-                  title="Remover imagem"
-                >
-                  <Trash2 className="size-3" />
-                </button>
-              </div>
-            )}
+            <ImagePreview
+              src={previewUrl ?? data.image ?? ""}
+              onClear={() => handleFileChange(null)}
+            />
           </FieldGroup>
           <FieldGroup label="Alt da imagem" className="mt-0">
             <input
@@ -182,82 +168,122 @@ export function SectionFormValues({ section, onChange, onFileChange }: Props) {
 
       <div className="space-y-2">
         {data.values.map((value, idx) => (
-          <div
+          <ValueCard
             key={value.id}
-            className="rounded-[12px] border border-border bg-card overflow-hidden"
-          >
-            <div className="flex items-center gap-3 px-4 py-3">
-              <button
-                type="button"
-                onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
-                className="flex flex-1 items-center gap-2 text-left"
-              >
-                <ChevronDown
-                  className={cn(
-                    "size-4 shrink-0 text-muted-foreground transition-transform",
-                    openIdx === idx && "rotate-180",
-                  )}
-                />
-                <p className="text-sm font-medium text-foreground">
-                  {value.title || `Valor ${idx + 1}`}
-                </p>
-                {value.icon && (
-                  <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
-                    {value.icon}
-                  </span>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => removeValue(idx)}
-                className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-              >
-                <Trash2 className="size-3.5" />
-              </button>
-            </div>
-
-            {openIdx === idx && (
-              <div className="border-t border-border px-4 pb-4 pt-3 space-y-3">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <FieldGroup label="Título *">
-                    <input
-                      type="text"
-                      value={value.title}
-                      onChange={(e) =>
-                        updateValue(idx, { title: e.target.value })
-                      }
-                      placeholder="ex: Inovação"
-                      className={inputClass}
-                    />
-                  </FieldGroup>
-                  <FieldGroup label="Ícone (Lucide name)">
-                    <input
-                      type="text"
-                      value={value.icon}
-                      onChange={(e) =>
-                        updateValue(idx, { icon: e.target.value })
-                      }
-                      placeholder="ex: zap, shield-check, rocket"
-                      className={inputClass}
-                    />
-                  </FieldGroup>
-                </div>
-                <FieldGroup label="Descrição *">
-                  <textarea
-                    rows={2}
-                    value={value.description}
-                    onChange={(e) =>
-                      updateValue(idx, { description: e.target.value })
-                    }
-                    placeholder="Tecnologia de ponta desenvolvida internamente."
-                    className={cn(inputClass, "h-auto py-2")}
-                  />
-                </FieldGroup>
-              </div>
-            )}
-          </div>
+            value={value}
+            idx={idx}
+            isOpen={openIdx === idx}
+            onToggle={() => setOpenIdx(openIdx === idx ? null : idx)}
+            onUpdate={(patch) => updateValue(idx, patch)}
+            onRemove={() => removeValue(idx)}
+          />
         ))}
       </div>
+    </div>
+  );
+}
+
+interface ValueCardProps {
+  value: ValueItem;
+  idx: number;
+  isOpen: boolean;
+  onToggle: () => void;
+  onUpdate: (patch: Partial<ValueItem>) => void;
+  onRemove: () => void;
+}
+
+function ValueCard({
+  value,
+  idx,
+  isOpen,
+  onToggle,
+  onUpdate,
+  onRemove,
+}: ValueCardProps) {
+  return (
+    <div className="rounded-[12px] border border-border bg-card overflow-hidden">
+      <div className="flex items-center gap-3 px-4 py-3">
+        <button
+          type="button"
+          onClick={onToggle}
+          className="flex flex-1 items-center gap-2 text-left"
+        >
+          <ChevronDown
+            className={cn(
+              "size-4 shrink-0 text-muted-foreground transition-transform",
+              isOpen && "rotate-180",
+            )}
+          />
+          <p className="text-sm font-medium text-foreground">
+            {value.title || `Valor ${idx + 1}`}
+          </p>
+          {value.icon && (
+            <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
+              {value.icon}
+            </span>
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={onRemove}
+          className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+        >
+          <Trash2 className="size-3.5" />
+        </button>
+      </div>
+
+      {isOpen && (
+        <div className="border-t border-border px-4 pb-4 pt-3 space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <FieldGroup label="Título *">
+              <input
+                type="text"
+                value={value.title}
+                onChange={(e) => onUpdate({ title: e.target.value })}
+                placeholder="ex: Inovação"
+                className={inputClass}
+              />
+            </FieldGroup>
+            <FieldGroup label="Ícone (Lucide name)">
+              <input
+                type="text"
+                value={value.icon}
+                onChange={(e) => onUpdate({ icon: e.target.value })}
+                placeholder="ex: zap, shield-check, rocket"
+                className={inputClass}
+              />
+            </FieldGroup>
+          </div>
+          <FieldGroup label="Descrição *">
+            <textarea
+              rows={2}
+              value={value.description}
+              onChange={(e) => onUpdate({ description: e.target.value })}
+              placeholder="Tecnologia de ponta desenvolvida internamente."
+              className={cn(inputClass, "h-auto py-2")}
+            />
+          </FieldGroup>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ImagePreview({ src, onClear }: { src: string; onClear: () => void }) {
+  if (!src) return null;
+
+  return (
+    <div className="relative mt-2 overflow-hidden rounded-md border border-border">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt="Preview" className="h-20 w-full object-cover" />
+      <button
+        type="button"
+        onClick={onClear}
+        className="absolute right-1 top-1 flex size-6 items-center justify-center rounded bg-black/50 text-xs text-white hover:bg-black/70"
+        title="Remover imagem"
+      >
+        <Trash2 className="size-3" />
+      </button>
     </div>
   );
 }
