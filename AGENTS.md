@@ -94,15 +94,19 @@ No config file — all configuration lives in `src/app/globals.css`:
 
 ```
 src/app/
-├── (site)/              ← Public site (no URL impact from group name)
-│   ├── layout.tsx       ← Wraps with <Header> + <Footer>
-│   ├── page.tsx         ← Home: imports from ./_components/
-│   ├── _components/     ← Co-located home sections (not shared)
-│   ├── produtos/
-│   ├── sobre/
-│   └── suporte/
-├── admin/               ← Future admin panel
-├── cms/                 ← Future CMS
+├── [locale]/                ← next-intl locale (pt-BR = no URL prefix)
+│   ├── layout.tsx           ← Fonts, providers, NextIntlClientProvider
+│   └── (site)/              ← Public site (no URL impact from group name)
+│       ├── layout.tsx       ← Wraps with <Header> + <Footer>
+│       ├── page.tsx         ← Home: imports from ./_components/
+│       ├── _components/     ← Co-located home sections (not shared)
+│       ├── produtos/
+│       ├── sobre/
+│       └── suporte/
+├── admin/                   ← Admin panel
+├── cms/                     ← CMS
+├── api/                     ← BFF route handlers
+├── layout.tsx               ← Root layout (globals.css + children only)
 └── globals.css
 ```
 
@@ -133,123 +137,96 @@ src/app/
 
 ## CMS Data Schema — Product Data Structures
 
-This site **consumes** data from the Stetsom CMS backend (Fastify API). The following entities are served to the frontend for display:
+This site **consumes** data from the Stetsom CMS backend (Fastify API).
+Canonical TS types: `src/lib/api/contracts.ts` · Full rules: `.claude/rules/product-data-schema.md`
 
-### Product
+### Product (variation-based — not flat key-value)
 
 ```ts
-interface Product {
-  id: string // uuid
-  name: string // Commercial name
-  slug: string // URL-friendly slug
+type Product = {
+  id: string                       // uuid
+  name: string                     // Commercial name
+  slug: string                     // URL-friendly slug
   category_id: string
   subcategory_id?: string
-  status: 'ACTIVE' | 'DISCONTINUED'
-  launch_date: Date
+  status: 'ACTIVE' | 'DISCONTINUED' | 'DRAFT'
+  launch_date: ISODateString
   description: string
-  specifications: Record<string, any> // Key-value specs (power, impedance, etc.)
-  thumbnail_url: string // Hero image
-  video_url?: string // YouTube/Vimeo
-  created_at: Date
-  updated_at: Date
-  created_by: string // User ID
+  variations: ProductVariation[]   // ← size/power variants with ordered specs
+  highlight_attributes: string[]   // spec attribute names to show in card/header
+  thumbnail_url: string
+  video_url?: string
+  badge?: string | null
+  markets?: Locale[]               // locales where product is visible; undefined = all
+  created_at: ISODateString
+  updated_at: ISODateString
+  created_by: string
+}
+
+type ProductVariation = {
+  id: string
+  label: string   // e.g. "220V"
+  order: number
+  specs: ProductSpec[]
+}
+
+type ProductSpec = {
+  id: string
+  attribute: string  // e.g. "Potência RMS"
+  value: string      // e.g. "3000W"
+  order: number
 }
 ```
 
 ### Category & Subcategory
 
 ```ts
-interface Category {
-  id: string
-  name: string
-  slug: string
-  order: number // Display order
-  created_at: Date
-  updated_at: Date
-}
-
-interface Subcategory {
-  id: string
-  category_id: string
-  name: string
-  slug: string
-  order: number
-  created_at: Date
-  updated_at: Date
-}
+type Category = { id: string; name: string; slug: string; order: number; created_at: ISODateString; updated_at: ISODateString }
+type Subcategory = { id: string; category_id: string; name: string; slug: string; order: number; created_at: ISODateString; updated_at: ISODateString }
 ```
 
-### ProductBlock (Page Builder)
-
-Modular content blocks for product pages. Types: `IMAGE`, `VIDEO`, `HTML`, `MODEL3D`, `TEXT`.
+### ProductBlock (discriminated union by `type`)
 
 ```ts
-interface ProductBlock {
-  id: string
-  product_id: string
-  type: 'IMAGE' | 'VIDEO' | 'HTML' | 'MODEL3D' | 'TEXT'
-  order: number // Display order
-  data: {
-    // Varies by type:
-    // IMAGE: { images: string[], caption: string, layout: string }
-    // VIDEO: { video_url: string, title: string, description: string }
-    // HTML: { html: string, css_class: string }
-    // MODEL3D: { file_url: string, background: string, scale: number }
-    // TEXT: { title: string, content: string, align: string }
-  }
-  created_by: string
-  created_at: Date
-  updated_at: Date
-}
+// Shared base
+type ProductBlockBase = { id: string; product_id: string; order: number; created_by: string; created_at: ISODateString; updated_at: ISODateString }
+
+type ProductBlock =
+  | (ProductBlockBase & { type: 'IMAGE';   data: { images: string[]; caption?: string; layout?: string } })
+  | (ProductBlockBase & { type: 'TEXT';    data: { title?: string; content: string; align?: string } })
+  | (ProductBlockBase & { type: 'VIDEO';   data: { video_url: string; title?: string; description?: string } })
+  | (ProductBlockBase & { type: 'HTML';    data: { html: string; css_class?: string } })
+  | (ProductBlockBase & { type: 'MODEL3D'; data: { file_url: string; background?: string; scale?: number } })
 ```
 
 ### ProductFile
 
-Downloadable assets (manuals, catalogs, certificates, etc).
-
 ```ts
-interface ProductFile {
+type ProductFile = {
   id: string
-  product_id: string
+  product_id: string | null  // null when file is in library but not yet attached
   file_url: string
   type: 'MANUAL' | 'CATALOG' | 'CERTIFICATE' | 'IMAGE' | 'OTHER'
-  version: number // Auto-incremented per type
+  version: number            // auto-increments per product+type combination
   is_active: boolean
-  created_at: Date
-  updated_at: Date
+  name?: string
+  fileSize?: string          // human-readable, e.g. "2.5 MB"
+  created_at: ISODateString
+  updated_at: ISODateString
 }
 ```
 
-### Data Relationships
-
-```
-Category (1) → (N) Subcategory
-Category (1) → (N) Product
-Subcategory (1) → (N) Product
-Product (1) → (N) ProductBlock
-Product (1) → (N) ProductFile
-```
-
-### Key Constraints & Validation
-
-- Product names are unique per category.
-- ProductBlock order must be sequential & unique per product.
-- Each product must have **at least one active block** (image, text, or video).
-- ProductFile version increments auto-magically per file type per product.
-- Soft deletes only: `deleted_at` column tracks removals (history preservation).
-
-### Consuming Data
-
-When fetching products from the API, expect this response shape:
+### Detail Response Shape
 
 ```ts
 // GET /api/products/:slug
-{
+type ProductDetailPayload = {
   product: Product
-  blocks: ProductBlock[]
+  blocks: ProductBlock[]   // sorted by order ASC
   files: ProductFile[]
   category: Category
   subcategory?: Subcategory
+  relatedProducts?: ProductCardItem[]
 }
 ```
 

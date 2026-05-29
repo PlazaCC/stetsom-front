@@ -11,7 +11,7 @@ applyTo: 'src/lib/api/contracts.ts'
   - `slug`: string (lowercase, hyphen-separated)
   - `category_id`: uuid string
   - `subcategory_id?`: uuid string
-  - `status`: 'ACTIVE' | 'DISCONTINUED'
+  - `status`: 'ACTIVE' | 'DISCONTINUED' | 'DRAFT'
   - `launch_date`: ISO 8601 date string
   - `description`: string
   - `variations`: `ProductVariation[]`
@@ -55,7 +55,7 @@ applyTo: 'src/lib/api/contracts.ts'
 - Image/file URLs should be absolute or start with `/` (site-root-relative).
 - Specs are variation-based (`variations[].specs[]`) and ordered by `order`; do not reintroduce flat `specifications` objects.
 - `highlight_attributes` should reference attributes present in the selected variation specs.
-- `status` accepts only `ACTIVE` or `DISCONTINUED`.
+- `status` accepts `ACTIVE`, `DISCONTINUED`, or `DRAFT` (draft = incomplete/unpublished).
 - `blocks` must be ordered by `order` and `order` must be unique per product; render according to ascending `order`.
 - Each product must have at least one active block for display (image/text/video as applicable).
 - `files.version` increments per product+type; keep versions consistent in mocks and provider.
