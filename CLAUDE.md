@@ -1,8 +1,62 @@
 # CLAUDE.md
 
 Claude Code-specific guidance for this repository.
+Full stack reference and data schemas: `AGENTS.md`
 
-@AGENTS.md
+## Stack
+
+| Layer           | Tech                  | Version   | Critical notes                                                              |
+| --------------- | --------------------- | --------- | --------------------------------------------------------------------------- |
+| Framework       | Next.js               | 16.2.4    | App Router, `src/app/` — breaking changes; read `node_modules/next/dist/docs/` |
+| UI              | React                 | 19.2.4    | Server Components by default; `params`/`searchParams` are Promises          |
+| Language        | TypeScript            | 5         | strict mode, `moduleResolution: bundler`                                    |
+| Styling         | Tailwind CSS          | v4        | PostCSS-based, **no `tailwind.config.*`** — tokens in `src/app/globals.css` |
+| UI Primitives   | @base-ui/react        | 1.4.1     | Used for navigation, composition                                            |
+| Components      | shadcn/ui             | base-nova | RSC enabled, CSS variables                                                  |
+| Icons           | lucide-react          | 1.8.0     |                                                                             |
+| Carousel        | swiper                | 12.1.4    | Hero carousel                                                               |
+| Data Fetching   | @tanstack/react-query | 5         | Via `QueryProvider` wrapper                                                 |
+| Animation       | motion                | 12        |                                                                             |
+| Package manager | pnpm                  | —         | `pnpm-workspace.yaml` present                                               |
+
+## Route Structure
+
+```
+src/app/
+├── [locale]/                ← next-intl locale (pt-BR = no URL prefix)
+│   ├── layout.tsx           ← Fonts, providers, NextIntlClientProvider
+│   └── (site)/              ← Public site (no URL impact from group name)
+│       ├── layout.tsx       ← Wraps with <Header> + <Footer>
+│       ├── page.tsx         ← Home: imports from ./_components/
+│       ├── _components/     ← Co-located home sections (not shared)
+│       ├── produtos/
+│       ├── sobre/
+│       └── suporte/
+├── admin/                   ← Admin panel
+├── cms/                     ← CMS
+├── layout.tsx               ← Root layout (globals.css + children only)
+└── globals.css
+```
+
+## UI Components (`src/components/ui/`)
+
+| File                  | Type   | Purpose                                          |
+| --------------------- | ------ | ------------------------------------------------ |
+| `header.tsx`          | Client | Sticky nav, desktop + mobile, uses `usePathname` |
+| `footer.tsx`          | Server | 4-column dark footer                             |
+| `container.tsx`       | Server | Max-width wrapper                                |
+| `navigation-menu.tsx` | Client | Built on `@base-ui/react/navigation-menu`        |
+| `section-label.tsx`   | Server | Section heading label                            |
+| `product-card.tsx`    | Server | Product card                                     |
+| `button.tsx`          | —      | shadcn button                                    |
+| `accordion.tsx`       | —      | shadcn accordion                                 |
+| `dropdown-menu.tsx`   | —      | shadcn dropdown                                  |
+
+## Generated Files — Do Not Edit
+
+- `types/routes.d.ts`
+- `types/cache-life.d.ts`
+- `types/validator.ts`
 
 ## Commands
 

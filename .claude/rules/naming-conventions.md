@@ -1,3 +1,8 @@
+---
+description: 'Use when creating or renaming any file, component, hook, type, or variable. Covers English-only identifiers, kebab-case filenames, PascalCase components, known violations tracker.'
+applyTo: 'src/**/*.{ts,tsx}'
+---
+
 # Naming Conventions
 
 All code-level identifiers MUST be in English. Portuguese is only acceptable in user-facing string content (labels, descriptions, placeholder text, button text).

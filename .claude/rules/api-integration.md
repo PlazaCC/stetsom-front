@@ -1,3 +1,8 @@
+---
+description: 'Use when implementing API calls, BFF routes, auth flows, upload logic, or error handling. Covers provider abstraction, auth pattern, error contract, pagination styles, upload 3-step flow, admin auth guard.'
+applyTo: 'src/**/*.{ts,tsx,js}'
+---
+
 # API Integration — Patterns & Rules
 
 Reference for integrating with **stetsom-api** (Fastify). Consult OpenAPI/MCP for current endpoint paths and field names — this document covers stable architectural decisions.
