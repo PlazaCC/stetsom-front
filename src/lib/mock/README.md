@@ -74,7 +74,7 @@ O fluxo de integração será:
 
 ```
 1. Backend publica spec OpenAPI (openapi.yaml ou /docs/yaml)
-2. Frontend roda:  pnpm generate:types
+2. Frontend roda:  pnpm api:generate
 3. Orval gera os tipos → comparar e sincronizar com contracts.ts
 4. Orval gera o cliente HTTP → usar como base para remote-provider.ts
 5. Definir CMS_API_BASE_URL em produção

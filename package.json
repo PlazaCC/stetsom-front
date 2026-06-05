@@ -9,7 +9,9 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "prepare": "husky",
-    "generate:types": "orval"
+    "generate:types": "orval",
+    "api:generate": "orval",
+    "api:watch": "orval --watch"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

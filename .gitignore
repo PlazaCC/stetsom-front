@@ -54,5 +54,9 @@ package-lock.json
 .playwright-test/
 .playwright-mcp/
 
-#generated api
-src/api
+# Orval API client (src/api/stetsom)
+# Currently committing generated code (reproducible CI builds, larger diffs).
+# To ignore it instead (cleaner diffs, CI must run `pnpm api:generate`), uncomment below.
+# Never ignore all of src/api — hand-written files (mutator, etc.) are required.
+# src/api/stetsom/model/
+# src/api/stetsom/endpoints/
