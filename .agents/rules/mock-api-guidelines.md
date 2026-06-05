@@ -5,19 +5,26 @@ applyTo: 'src/lib/mock/**/*'
 
 # Mock API Guidelines (fallback mode)
 
-- The app uses `createMockCmsProvider()` by default when `CMS_API_BASE_URL` is not set.
-- Mocks are used automatically in local dev without a backend running.
-- Mock payloads MUST stay aligned with `src/lib/api/contracts.ts` and mirror backend responses.
+## Two Patterns Coexist
 
-**Mock data quality**
+| Pattern | Used for | Type source |
+|---|---|---|
+| Mock provider (`createMockCmsProvider`) | Public site RSC pages (no auth needed) | Orval models in `src/api/stetsom/model/` |
+| Orval React Query hooks + BFF | Admin/CMS client components | Orval models in `src/api/stetsom/model/` |
 
-- Use realistic values: UUIDs, ISO 8601 dates, canonical slugs, and valid URLs.
-- Keep representative `ProductBlock` combinations (TEXT/IMAGE/VIDEO where applicable) with unique sequential `order`.
-- Keep file semantics coherent (`version`, `is_active`, `type`, optional metadata).
+Both patterns share the same Orval-generated types as their contract.
 
-**Implementation notes**
+## Mock Fallback (public site)
 
-- Keep fixtures typed in `src/lib/mock/*` and consumed by `src/lib/api/providers/mock-provider.ts`.
-- Update `contracts.ts` first when schema changes, then update mocks and consumers.
-- Never introduce mock-only fields in UI code paths; if a field does not exist in contracts, do not use it.
-- Use mocks as a compatibility safety net, not as the primary source of behavior.
+- Active when `CMS_API_BASE_URL` is unset (default for local dev without backend)
+- Fixtures: `src/lib/mock/*.ts` → consumed by `src/lib/api/providers/mock-provider.ts`
+- Mock payloads must conform to Orval-generated types — import from `@/api/stetsom/model`
+
+## Data Quality Rules
+
+- Use realistic values: UUIDs, ISO 8601 dates, canonical slugs, valid URLs
+- Multilingual fields must use `I18nString` format: `{ pt: '...', en?: '...', es?: '...' }` (key is `pt`, not `pt-BR`)
+- `ProductBlock` combos: include TEXT/IMAGE/VIDEO where applicable with unique sequential `order`
+- `ProductFile`: keep `version`, `is_active`, and `type` semantics coherent
+- Never introduce mock-only fields in UI code paths — if a field is not in the Orval model, don't use it
+- Use mocks as a compatibility safety net, not the primary source of behavior
