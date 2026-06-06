@@ -16,20 +16,23 @@ import { ProductWizardStepSuccess } from "@/app/admin/_components/product-wizard
 import type { ProductInfo } from "@/app/admin/_components/product-wizard-step1";
 import { ProductWizardStep1 } from "@/app/admin/_components/product-wizard-step1";
 import type {
-  CmsProductDetailPayload,
-  CmsProductMutationResult,
-  CreateCmsProductInput,
-  ProductStatus,
-  ProductVariation,
-  ProductWithUpload,
-} from "@/lib/api/contracts";
+  WizardProductVariation,
+  WizardProductFile,
+} from "@/app/admin/_components/product-wizard-types";
+import Image from "next/image";
 import {
-  useCatalogCategories,
-  useCatalogSubcategories,
-} from "@/hooks/use-catalog";
-import { useCmsProductMutations } from "@/hooks/use-cms-product-mutations";
+  useGetApiCategories,
+  postApiProducts,
+  patchApiProductsId,
+  deleteApiProductsId,
+} from "@/api/stetsom";
+import type {
+  PostApiProductsBody,
+  CmsProductDetailPayload,
+} from "@/api/stetsom/model";
 import { useInlineUpload } from "@/hooks/use-inline-upload";
 import { useAdminToast } from "@/hooks/use-admin-toast";
+import { useMutation } from "@tanstack/react-query";
 import { Package } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -40,13 +43,19 @@ interface ProductWizardProps {
   mode: "create" | "edit";
 }
 
+interface ProductMutationResult {
+  id: string;
+  slug: string;
+  status: string;
+}
+
 type Step = 1 | 2 | 3 | 4;
 
 function slugify(text: string): string {
   return text
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 }
@@ -58,7 +67,7 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
       slug: "",
       category_id: "",
       subcategory_id: "",
-      status: "ACTIVE",
+      status: "DRAFT",
       badge: "",
       description: "",
       cover_image_url: "",
@@ -70,34 +79,48 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
   }
 
   return {
-    name: detail.product.name,
-    slug: detail.product.slug,
+    name: detail.product.name?.pt ?? "",
+    slug: detail.product.slug?.pt ?? "",
     category_id: detail.product.category_id,
-    subcategory_id: detail.product.subcategory_id ?? "",
-    status: detail.product.status,
-    badge: detail.product.badge ?? "",
-    description: detail.product.description,
-    cover_image_url: detail.product.thumbnail_url,
+    subcategory_id: detail.product.line_id ?? "",
+    status: detail.product.is_discontinued
+      ? "DISCONTINUED"
+      : detail.product.status === "DRAFT"
+        ? "DRAFT"
+        : "ACTIVE",
+    badge: "",
+    description: detail.product.description?.pt ?? "",
+    cover_image_url: detail.product.images?.[0]?.image_url ?? "",
     additional_images: [],
-    video_url: detail.product.video_url ?? "",
-    launch_date: detail.product.launch_date.split("T")[0],
+    video_url: "",
+    launch_date: detail.product.launch_date?.split("T")[0] ?? "",
     launch_time: "00:00",
   };
 }
 
 function buildInitialVariations(
   detail?: CmsProductDetailPayload,
-): ProductVariation[] {
+): WizardProductVariation[] {
   if (!detail) {
     return [{ id: "variation-default", label: "1 Ohm", order: 1, specs: [] }];
   }
 
-  const variations = [...detail.product.variations].sort(
+  const variants = [...detail.product.variants].sort(
     (a, b) => a.order - b.order,
   );
 
-  return variations.length > 0
-    ? variations
+  return variants.length > 0
+    ? variants.map((v) => ({
+        id: v.variant_id,
+        label: v.name,
+        order: v.order,
+        specs: v.attributes.map((a) => ({
+          id: `attr-${a.attribute_id}`,
+          attribute: a.attribute_name?.pt ?? "",
+          value: a.value?.pt ?? "",
+          order: a.order,
+        })),
+      }))
     : [{ id: "variation-default", label: "Padrão", order: 1, specs: [] }];
 }
 
@@ -107,25 +130,17 @@ function buildInitialHighlights(detail?: CmsProductDetailPayload): string[] {
 
 function buildInitialBlocks(detail?: CmsProductDetailPayload): DraftBlock[] {
   if (!detail) return [];
-  return detail.blocks.map((b) => {
-    if (b.type === "IMAGE") {
-      const d = b.data as Record<string, unknown>;
-      const images = Array.isArray(d.images) ? (d.images as string[]) : [];
-      return {
-        id: b.id,
-        type: "IMAGE" as const,
-        data: {
-          images: images[0] ?? "",
-          caption: typeof d.caption === "string" ? d.caption : "",
-          layout: typeof d.layout === "string" ? d.layout : "default",
-        },
-        order: b.order,
-      };
-    }
+  return detail.product.page_blocks.map((b) => {
+    const d = b.data as Record<string, unknown>;
+    const images = Array.isArray(d.images) ? (d.images as string[]) : [];
     return {
-      id: b.id,
-      type: b.type as "TEXT" | "VIDEO",
-      data: b.data as Record<string, unknown>,
+      id: b.block_id,
+      type: b.type as DraftBlock["type"],
+      data: {
+        images: images[0] ?? "",
+        caption: typeof d.caption === "string" ? d.caption : "",
+        layout: typeof d.layout === "string" ? d.layout : "default",
+      } as Record<string, unknown>,
       order: b.order,
     };
   });
@@ -134,9 +149,9 @@ function buildInitialBlocks(detail?: CmsProductDetailPayload): DraftBlock[] {
 function resolveStatus(
   info: ProductInfo,
   blocks: DraftBlock[],
-  desiredStatus: ProductStatus,
+  desiredStatus: string,
   hasImage: boolean,
-): ProductStatus {
+): string {
   const hasRequired =
     !!info.name && !!info.category_id && hasImage && blocks.length > 0;
   return hasRequired ? desiredStatus : "DRAFT";
@@ -144,49 +159,38 @@ function resolveStatus(
 
 function buildPayload(
   info: ProductInfo,
-  variations: ProductVariation[],
+  variations: WizardProductVariation[],
   blocks: DraftBlock[],
   highlightAttributes: string[],
-  status: ProductStatus,
-  coverImageFile: File | null,
-): CreateCmsProductInput {
+  status: string,
+): PostApiProductsBody {
   const launchDate = info.launch_date
     ? new Date(`${info.launch_date}T${info.launch_time}:00`).toISOString()
     : new Date().toISOString();
 
-  const payload: CreateCmsProductInput = {
-    name: info.name,
-    slug: info.slug,
+  return {
+    name: { pt: info.name },
+    slug: { pt: info.slug },
+    description: info.description ? { pt: info.description } : undefined,
     category_id: info.category_id,
-    subcategory_id: info.subcategory_id || undefined,
-    status,
-    badge: info.badge || null,
-    description: info.description,
+    line_id: info.subcategory_id || null,
+    status: status === "ACTIVE" ? "PUBLISHED" : "DRAFT",
+    is_discontinued: status === "DISCONTINUED",
     launch_date: launchDate,
-    video_url: info.video_url || undefined,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    variations: variations.map(({ id: _id, ...rest }) => rest),
     highlight_attributes: highlightAttributes,
-
-    blocks: blocks.map(toBlockInput),
+    variants: variations.map((v) => ({
+      variant_id: v.id.startsWith("variation-") ? undefined : v.id,
+      name: v.label,
+      order: v.order,
+      attributes: v.specs.map((s) => ({
+        attribute_id: "",
+        value: { pt: s.value },
+        order: s.order,
+        highlighted: highlightAttributes.includes(s.attribute),
+      })),
+    })),
+    available_locales: ["pt"],
   };
-
-  if (coverImageFile) {
-    payload.thumbnail = {
-      fileName: coverImageFile.name,
-      mimeType: coverImageFile.type,
-      sizeBytes: coverImageFile.size,
-    };
-  }
-
-  return payload;
-}
-
-function toBlockInput(
-  block: DraftBlock,
-): CreateCmsProductInput["blocks"][number] {
-  const { id: _id, ...fields } = block;
-  return fields as CreateCmsProductInput["blocks"][number];
 }
 
 const STEP_LABELS: Record<Step, string> = {
@@ -198,13 +202,12 @@ const STEP_LABELS: Record<Step, string> = {
 
 export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const router = useRouter();
-  const mutations = useCmsProductMutations();
   const inlineUpload = useInlineUpload();
   const adminToast = useAdminToast();
 
   const [step, setStep] = useState<Step>(1);
   const [info, setInfo] = useState<ProductInfo>(buildInitialInfo(initial));
-  const [variations, setVariations] = useState<ProductVariation[]>(
+  const [variations, setVariations] = useState<WizardProductVariation[]>(
     buildInitialVariations(initial),
   );
   const [activeVariationId, setActiveVariationId] = useState<string>(
@@ -216,7 +219,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const [blocks, setBlocks] = useState<DraftBlock[]>(
     buildInitialBlocks(initial),
   );
-  const [files, setFiles] = useState(initial?.files ?? []);
+  const [files, setFiles] = useState<WizardProductFile[]>([]);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
 
   const [productId, setProductId] = useState<string | null>(
@@ -225,12 +228,44 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const [isDirty, setIsDirty] = useState(mode === "edit");
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [publishedResult, setPublishedResult] =
-    useState<CmsProductMutationResult | null>(null);
+    useState<ProductMutationResult | null>(null);
+
+  const categoriesQuery = useGetApiCategories({});
+  const rawCategories = categoriesQuery.data ?? [];
+
+  const categories = rawCategories.map((cat) => ({
+    id: cat.id,
+    name: cat.name.pt,
+    slug: cat.slug.pt,
+    order: cat.order,
+  }));
+
+  const subcategories = rawCategories.flatMap((cat) =>
+    cat.lines.map((line) => ({
+      id: line.line_id,
+      name: line.name.pt,
+      slug: line.slug.pt,
+      category_id: cat.id,
+    })),
+  );
+
+  const createMutation = useMutation({
+    mutationFn: (body: PostApiProductsBody) => postApiProducts(body),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, body }: { id: string; body: PostApiProductsBody }) =>
+      patchApiProductsId(id, body),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteApiProductsId(id),
+  });
 
   const isSaving =
-    mutations.create.isPending ||
-    mutations.update.isPending ||
-    mutations.remove.isPending ||
+    createMutation.isPending ||
+    updateMutation.isPending ||
+    deleteMutation.isPending ||
     inlineUpload.isUploading;
 
   useEffect(() => {
@@ -242,11 +277,6 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
   }, [isDirty]);
-
-  const categoriesQuery = useCatalogCategories();
-  const subcategoriesQuery = useCatalogSubcategories();
-  const categories = categoriesQuery.data ?? [];
-  const subcategories = subcategoriesQuery.data ?? [];
 
   const steps: AdminStep[] = [1, 2, 3, 4].map((n) => ({
     label: STEP_LABELS[n as Step],
@@ -264,58 +294,35 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     setIsDirty(true);
   }
 
-  function removeFile(id: string) {
-    setFiles((prev) => prev.filter((f) => f.id !== id));
+  function removeFile(fileId: string) {
+    setFiles((prev) => prev.filter((f) => f.id !== fileId));
     setIsDirty(true);
   }
 
-  /** Salva os dados atuais no backend. Retorna o resultado da mutation. */
   async function handleSave(
-    overrideStatus?: ProductStatus,
-  ): Promise<CmsProductMutationResult> {
-    const hasImage = !!coverImageFile || !!initial?.product.thumbnail_url;
+    overrideStatus?: string,
+  ): Promise<ProductMutationResult> {
+    const hasImage = !!coverImageFile || !!initial?.product.images?.length;
     const status =
-      overrideStatus ??
-      resolveStatus(info, blocks, info.status as ProductStatus, hasImage);
+      overrideStatus ?? resolveStatus(info, blocks, info.status, hasImage);
     const payload = buildPayload(
       info,
       variations,
       blocks,
       highlightAttributes,
       status,
-      coverImageFile,
     );
 
-    let result: CmsProductMutationResult;
     if (productId) {
-      const typedResult = await mutations.update.mutateAsync({
-        id: productId,
-        input: payload,
-      });
-      result = typedResult as CmsProductMutationResult;
+      await updateMutation.mutateAsync({ id: productId, body: payload });
     } else {
-      const typedResult = (await mutations.create.mutateAsync(
-        payload,
-      )) as ProductWithUpload;
-      result = typedResult;
+      const result = await createMutation.mutateAsync(payload);
       setProductId(result.id);
-    }
-
-    if (coverImageFile) {
-      const withUploads = result as ProductWithUpload;
-      if (withUploads.uploads?.thumbnail) {
-        const fileMap = new Map<string, File>();
-        fileMap.set("thumbnail", coverImageFile);
-        await inlineUpload.upload(
-          { thumbnail: withUploads.uploads.thumbnail },
-          fileMap,
-        );
-      }
     }
 
     setLastSavedAt(new Date());
     setIsDirty(false);
-    return result;
+    return { id: productId ?? "", slug: info.slug, status };
   }
 
   async function handleSaveDraft() {
@@ -347,8 +354,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
         resolveStatus(
           info,
           blocks,
-          info.status as ProductStatus,
-          !!coverImageFile || !!initial?.product.thumbnail_url,
+          info.status,
+          !!coverImageFile || !!initial?.product.images?.length,
         ),
       );
       if (result.status === "DRAFT") {
@@ -370,7 +377,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   async function handleDelete() {
     if (!productId) return;
     try {
-      await mutations.remove.mutateAsync(productId);
+      await deleteMutation.mutateAsync(productId);
       adminToast.deleted(info.name || undefined);
       router.push("/admin/produtos");
     } catch {
@@ -387,7 +394,6 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     variations.find((v) => v.id === activeVariationId) ?? variations[0];
   const activeSpecs = activeVariation?.specs ?? [];
 
-  // Show success screen after publish
   if (publishedResult) {
     return (
       <ProductWizardStepSuccess
@@ -403,12 +409,14 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
       <AdminFormSection title="Prévia">
         <div className="overflow-hidden rounded-md border border-border bg-muted">
           {info.cover_image_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={info.cover_image_url}
-              alt={info.name}
-              className="h-36 w-full object-cover"
-            />
+            <div className="relative h-36 w-full">
+              <Image
+                src={info.cover_image_url}
+                alt={info.name}
+                fill
+                className="object-cover"
+              />
+            </div>
           ) : (
             <div className="flex h-36 items-center justify-center">
               <Package className="size-10 text-muted-foreground/40" />
@@ -467,7 +475,6 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
         </dl>
       </AdminFormSection>
 
-      {/* Draft indicator */}
       {productId && (
         <div className="rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
           {isDirty ? "✎ Alterações não salvas" : "✓ Salvo"}
@@ -488,7 +495,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
               confirmDescription="O produto será removido permanentemente. Esta ação não pode ser desfeita."
               confirmLabel="Sim, excluir"
               onConfirm={handleDelete}
-              isLoading={mutations.remove.isPending}
+              isLoading={deleteMutation.isPending}
             />
           )}
           <Link

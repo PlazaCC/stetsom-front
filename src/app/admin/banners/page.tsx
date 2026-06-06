@@ -1,12 +1,12 @@
 "use client";
 
-import { useAdminBanners } from "@/hooks/use-admin";
+import { useGetApiBanners } from "@/api/stetsom";
 import { BannersContent } from "./_components/banners-content";
 
 export default function AdminBannersPage() {
-  const bannersQuery = useAdminBanners();
+  const { data, isLoading, dataUpdatedAt } = useGetApiBanners();
 
-  if (bannersQuery.isLoading || !bannersQuery.data) {
+  if (isLoading || !data) {
     return (
       <div className="flex items-center justify-center py-16">
         <div className="size-6 animate-spin rounded-full border-2 border-border border-t-brand" />
@@ -14,10 +14,5 @@ export default function AdminBannersPage() {
     );
   }
 
-  return (
-    <BannersContent
-      key={bannersQuery.dataUpdatedAt}
-      initialBanners={bannersQuery.data}
-    />
-  );
+  return <BannersContent key={dataUpdatedAt} initialBanners={data} />;
 }

@@ -1,10 +1,19 @@
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
-import type { SupportPayload } from "@/lib/api/contracts";
 import Image from "next/image";
 
+type SupportHeroData = {
+  image: string;
+  badge?: string;
+  label?: string;
+  title: string;
+  subtitle?: string;
+  watermarkText?: string;
+  description?: string;
+};
+
 interface SupportHeroProps {
-  hero: SupportPayload["hero"];
+  hero: SupportHeroData;
 }
 
 export function SupportHero({ hero }: Readonly<SupportHeroProps>) {
@@ -24,7 +33,7 @@ export function SupportHero({ hero }: Readonly<SupportHeroProps>) {
       </span>
       <div className="absolute left-0 top-0 h-full w-3.5 bg-bar-accent" />
       <Container className="relative z-10">
-        <SectionLabel label={hero.label} />
+        <SectionLabel label={hero.label ?? ""} />
         <h1 className="mt-1 font-sans-condensed text-5xl font-black uppercase leading-none text-white lg:text-[90px] lg:leading-18.5">
           {hero.title.split("\n").map((line) => (
             <span key={line} className="block">

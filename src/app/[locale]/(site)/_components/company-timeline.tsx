@@ -1,13 +1,22 @@
 "use client";
 
 import { Container } from "@/components/ui/container";
-import type { TimelineEvent } from "@/lib/api/contracts";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
 import { TimelineCheckpoint } from "./timeline-checkpoint";
 import { TimelineProgressBar } from "./timeline-progress-bar";
+
+type TimelineEvent = {
+  id?: string;
+  year: string;
+  title: string;
+  shortTitle?: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+};
 
 interface CompanyTimelineProps {
   events: TimelineEvent[];
@@ -119,7 +128,7 @@ export function CompanyTimeline({
                       : (index / (events.length - 1)) * 100;
                   return (
                     <TimelineCheckpoint
-                      key={event.id}
+                      key={event.id ?? index}
                       event={event}
                       index={index}
                       isActive={index === activeIndex}
@@ -134,12 +143,18 @@ export function CompanyTimeline({
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="relative w-full aspect-video bg-surface-elevated rounded-sm overflow-hidden">
-              <Image
-                src={activeEvent.image}
-                alt={activeEvent.title}
-                fill
-                className="object-cover transition-opacity duration-500"
-              />
+              {activeEvent.image ? (
+                <Image
+                  src={activeEvent.image}
+                  alt={activeEvent.title}
+                  fill
+                  className="object-cover transition-opacity duration-500"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-text-subtle text-sm">
+                  Sem imagem
+                </div>
+              )}
             </div>
 
             <div className="transition-all duration-500 space-y-4">

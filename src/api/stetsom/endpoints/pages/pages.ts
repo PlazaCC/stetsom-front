@@ -20,6 +20,7 @@ import type {
 
 import type {
   ApiErrorPayload,
+  GetApiPagesSlug200,
   GetApiPagesSlugParams,
   PageBlock,
   PagePayload,
@@ -37,7 +38,7 @@ export const getApiPagesSlug = (
   params?: GetApiPagesSlugParams,
   signal?: AbortSignal,
 ) => {
-  return orvalClient<PagePayload>({
+  return orvalClient<GetApiPagesSlug200>({
     url: `/api/pages/${slug}`,
     method: "GET",
     params,

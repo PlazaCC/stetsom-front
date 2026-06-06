@@ -1,19 +1,23 @@
 "use client";
 
-import { useAdminLogout } from "@/hooks/use-admin";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import {
   Archive,
   BarChart2,
+  Building2,
   Clock,
   FileText,
   Home,
   Image,
+  LayoutTemplate,
+  ListChecks,
   LogOut,
   Mail,
   Package,
   Settings,
   Users,
+  Wrench,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -30,6 +34,10 @@ const MAIN_NAV: {
   { href: "/admin/paginas", label: "Páginas", icon: FileText },
   { href: "/admin/biblioteca", label: "Biblioteca", icon: Archive },
   { href: "/admin/banners", label: "Banners", icon: Image },
+  { href: "/admin/representantes", label: "Representantes", icon: Building2 },
+  { href: "/admin/assistencias", label: "Assist. Técnicas", icon: Wrench },
+  { href: "/admin/atributos", label: "Atributos", icon: ListChecks },
+  { href: "/admin/templates", label: "Templates", icon: LayoutTemplate },
 ];
 
 const BOTTOM_NAV: { href: string; label: string; icon: LucideIcon }[] = [
@@ -72,7 +80,12 @@ function NavItem({
 }
 
 export function AdminSidebar() {
-  const logout = useAdminLogout();
+  const router = useRouter();
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/admin/login");
+  }
 
   return (
     <aside className="shadow-cms-sidebar flex w-60 shrink-0 flex-col border-r border-border bg-card">
@@ -104,9 +117,8 @@ export function AdminSidebar() {
         </ul>
         <button
           type="button"
-          onClick={() => logout.mutate()}
-          disabled={logout.isPending}
-          className="mt-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-sm font-medium text-foreground/60 transition-colors hover:bg-muted hover:text-foreground disabled:opacity-60"
+          onClick={handleLogout}
+          className="mt-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-sm font-medium text-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
         >
           <LogOut className="size-4 shrink-0" />
           Sair

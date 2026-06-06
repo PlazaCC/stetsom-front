@@ -1,24 +1,34 @@
 "use client";
 
+import type { ProductCardItem } from "@/api/stetsom/model";
 import { Container } from "@/components/ui/container";
 import { ProductCard } from "@/components/ui/product-card";
 import { SectionLabel } from "@/components/ui/section-label";
 import { Link } from "@/i18n/navigation";
-import type {
-  FeaturedTab,
-  ProductCardItem,
-  SiteHomePayload,
-} from "@/lib/api/contracts";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { FeaturedTabStrip } from "./featured-tab-strip";
 
+type FeaturedTab = {
+  id: string;
+  label: string;
+  categorySlug?: string;
+};
+
+type FeaturedSection = {
+  label: string;
+  title: string;
+  spotlightTitle?: string;
+  ctaHref: string;
+  ctaLabel: string;
+};
+
 interface FeaturedProductsProps {
   featuredProducts: ProductCardItem[];
   spotlightProduct: ProductCardItem;
   tabs: FeaturedTab[];
-  section: SiteHomePayload["featured"];
+  section: FeaturedSection;
 }
 
 export function FeaturedProducts({
@@ -90,13 +100,15 @@ export function FeaturedProducts({
             href={spotlightProduct.href}
             className="relative flex h-80 items-center justify-center overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-brand sm:h-95 lg:h-111.75"
           >
-            <Image
-              src={spotlightProduct.img}
-              alt={spotlightProduct.name}
-              width={300}
-              height={300}
-              className="max-h-55 max-w-[75%] object-contain shadow-[0_8px_24px_rgba(0,0,0,0.15)] sm:max-h-65 lg:max-h-75"
-            />
+            {spotlightProduct.thumbnail_url ? (
+              <Image
+                src={spotlightProduct.thumbnail_url}
+                alt={spotlightProduct.name}
+                width={300}
+                height={300}
+                className="max-h-55 max-w-[75%] object-contain shadow-[0_8px_24px_rgba(0,0,0,0.15)] sm:max-h-65 lg:max-h-75"
+              />
+            ) : null}
             <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/65 to-transparent px-4 pb-4 pt-12 sm:px-5">
               <div className="font-sans-condensed text-xs font-black uppercase text-brand">
                 {spotlightProduct.category}
@@ -113,7 +125,13 @@ export function FeaturedProducts({
               </p>
             ) : (
               filteredProducts.map((p) => (
-                <ProductCard key={p.id} {...p} href={p.href} />
+                <ProductCard
+                  key={p.id}
+                  name={p.name}
+                  category={p.category}
+                  img={p.thumbnail_url ?? undefined}
+                  href={p.href}
+                />
               ))
             )}
           </div>

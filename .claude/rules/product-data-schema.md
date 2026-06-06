@@ -7,6 +7,19 @@ applyTo: 'src/**/*.{ts,tsx}'
 
 All types import from `@/api/stetsom/model`. Never define API shapes inline — always import from the barrel.
 
+## CMS vs Public API
+
+O backend Stetsom atua como BFF completo e faz **toda** a resolução de locale. A distinção entre contextos:
+
+| Contexto | Rotas | Locale | Campos i18n |
+|----------|-------|--------|-------------|
+| **CMS** (admin) | `/api/admin/*`, `/api/products/admin/*`, `/api/cms/*` | Retorna **todos os idiomas** (`I18nString`) | `name: { pt, en, es }` |
+| **Público** (site) | `/api/products/*`, `/api/categories/*`, `/api/pages/*`, `/api/banners/active` | Aceita `?locale=` e retorna **string plana** | `name: "Amplificador"` |
+
+**Regra:** O schema público usa `Public*` tipos com `z.string()`. O schema de CMS usa `I18nStringSchema`. O mapper público (`toDetailPublic`, `toCategoryPayload` quando chamado com locale, `toCard`, `toRow`) resolve todos os campos i18n com `pickLocale()` antes de retornar.
+
+**No frontend:** páginas públicas NUNCA chamam `pickLocale`/`resolveLocale`. O backend já retorna strings planas. O único utilitário necessário é `toApiLocale()` para converter `pt-BR` → `pt` no parâmetro `?locale=`.
+
 ## I18nString
 
 Multilingual fields use `I18nString`: `{ pt: string, en?: string, es?: string }`.
@@ -17,7 +30,7 @@ Multilingual fields use `I18nString`: `{ pt: string, en?: string, es?: string }`
 
 **Product**
 - `id`, `sku?`, `name: I18nString`, `slug: I18nString`, `description?: I18nString | null`
-- `status: 'ACTIVE' | 'DISCONTINUED' | 'DRAFT'`
+- `status: 'PUBLISHED' | 'DRAFT' | 'SCHEDULED'`
 - `is_discontinued`, `is_featured`, `is_spotlight` (booleans)
 - `available_locales: string[]`, `launch_date?: string` (ISO 8601)
 - `category_id`, `line_id?`, `template_id?`
@@ -31,7 +44,7 @@ Multilingual fields use `I18nString`: `{ pt: string, en?: string, es?: string }`
 
 **ProductBlock**: `{ block_id, type: 'IMAGE'|'VIDEO'|'HTML'|'MODEL3D'|'TEXT', order, data: ProductBlockData }`
 
-**ProductFile**: `{ id, file_url, type: 'MANUAL'|'CATALOG'|'CERTIFICATE'|'IMAGE'|'OTHER', version, is_active, ... }`
+**ProductFile**: `{ file_id, library_id, is_active, locale?, created_at }` — `type?: string | null` is BFF-resolved from `library_assets.type` (June 2026: type/filename/size removed from embedded subdoc). Filter by `type === "MANUAL"` to find manual downloads.
 
 **Category**: `{ id, name: I18nString, slug: I18nString, lines: Line[], order, created_at, updated_at }`
 

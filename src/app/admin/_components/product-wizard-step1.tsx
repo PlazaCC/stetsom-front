@@ -7,7 +7,18 @@ import {
   AdminTextarea,
 } from "@/app/admin/_components/crud/admin-input";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import type { Category, ProductStatus, Subcategory } from "@/lib/api/contracts";
+import type { WizardProductStatus } from "@/app/admin/_components/product-wizard-types";
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
+interface Subcategory {
+  id: string;
+  name: string;
+  slug: string;
+  category_id: string;
+}
 import { ImagePlus, X } from "lucide-react";
 
 export interface ProductInfo {
@@ -15,7 +26,7 @@ export interface ProductInfo {
   slug: string;
   category_id: string;
   subcategory_id: string;
-  status: ProductStatus;
+  status: WizardProductStatus;
   badge: string;
   description: string;
   cover_image_url: string;

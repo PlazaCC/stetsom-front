@@ -7,11 +7,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
-import type { SupportPayload } from "@/lib/api/contracts";
 import { getTranslations } from "next-intl/server";
 
+type FAQItem = { id: string; q: string; a: string };
+
 interface SupportFAQProps {
-  faq: SupportPayload["faq"];
+  faq: {
+    items: FAQItem[];
+    label?: string;
+    title?: string;
+    supportButtonLabel?: string;
+  };
 }
 
 export async function SupportFAQ({ faq }: Readonly<SupportFAQProps>) {
@@ -22,7 +28,7 @@ export async function SupportFAQ({ faq }: Readonly<SupportFAQProps>) {
       <Container>
         <div className="flex flex-col lg:flex-row lg:gap-24">
           <div className="shrink-0 lg:w-80">
-            <SectionLabel label={faq.label} title={faq.title} />
+            <SectionLabel label={faq.label ?? ""} title={faq.title ?? ""} />
             <p className="mt-2 text-base text-text-subtle">{t("noAnswer")}</p>
             <Button variant="brand-dark" size="md" className="mt-6">
               {faq.supportButtonLabel}
@@ -32,7 +38,7 @@ export async function SupportFAQ({ faq }: Readonly<SupportFAQProps>) {
             <Accordion className="space-y-3">
               {faq.items.map((item, index) => (
                 <AccordionItem
-                  key={item.id}
+                  key={item.id ?? `faq-${index}`}
                   value={`item-${index}`}
                   className="rounded border border-border px-6 py-4"
                 >

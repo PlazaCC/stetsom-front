@@ -37,7 +37,7 @@ export const getApiUsers = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<AdminUsersPayload>({
-    url: `/api/users/`,
+    url: `/api/users`,
     method: "GET",
     params,
     signal,
@@ -45,7 +45,7 @@ export const getApiUsers = (
 };
 
 export const getGetApiUsersQueryKey = (params?: GetApiUsersParams) => {
-  return [`/api/users/`, ...(params ? [params] : [])] as const;
+  return [`/api/users`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiUsersQueryOptions = <
@@ -173,7 +173,7 @@ export const postApiUsers = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<AdminUser>({
-    url: `/api/users/`,
+    url: `/api/users`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
     data: postApiUsersBody,
@@ -184,7 +184,7 @@ export const postApiUsers = (
 export const getPostApiUsersQueryKey = (
   postApiUsersBody?: PostApiUsersBody,
 ) => {
-  return ["POST", `/api/users/`, postApiUsersBody] as const;
+  return ["POST", `/api/users`, postApiUsersBody] as const;
 };
 
 export const getPostApiUsersQueryOptions = <

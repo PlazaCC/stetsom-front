@@ -32,14 +32,14 @@ import { orvalClient } from "../../orval-client";
  */
 export const getApiAttributes = (signal?: AbortSignal) => {
   return orvalClient<Attribute[]>({
-    url: `/api/attributes/`,
+    url: `/api/attributes`,
     method: "GET",
     signal,
   });
 };
 
 export const getGetApiAttributesQueryKey = () => {
-  return [`/api/attributes/`] as const;
+  return [`/api/attributes`] as const;
 };
 
 export const getGetApiAttributesQueryOptions = <
@@ -176,7 +176,7 @@ export const postApiAttributes = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<Attribute>({
-    url: `/api/attributes/`,
+    url: `/api/attributes`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
     data: postApiAttributesBody,
@@ -187,7 +187,7 @@ export const postApiAttributes = (
 export const getPostApiAttributesQueryKey = (
   postApiAttributesBody?: PostApiAttributesBody,
 ) => {
-  return ["POST", `/api/attributes/`, postApiAttributesBody] as const;
+  return ["POST", `/api/attributes`, postApiAttributesBody] as const;
 };
 
 export const getPostApiAttributesQueryOptions = <

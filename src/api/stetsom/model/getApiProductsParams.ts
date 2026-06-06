@@ -23,4 +23,6 @@ export type GetApiProductsParams = {
   category?: string;
   status?: (typeof GetApiProductsStatus)[keyof typeof GetApiProductsStatus];
   locale?: LocaleInput;
+  is_featured?: boolean;
+  is_spotlight?: boolean;
 };

@@ -1,16 +1,31 @@
 import { Container } from "@/components/ui/container";
-import type { SupportPayload } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
 import { ArrowUpRight, Download, FileText, Mail, MapPin } from "lucide-react";
 
-const CARD_ICONS = {
-  "manuais-downloads": Download,
-  "postos-autorizados": MapPin,
-  "fale-conosco": Mail,
-} as const;
+type SupportCard = {
+  title: string;
+  description: string;
+};
+
+const ICON_BY_TITLE: Record<string, React.ElementType> = {
+  manuais: Download,
+  download: Download,
+  posto: MapPin,
+  autorizados: MapPin,
+  fale: Mail,
+  contato: Mail,
+};
 
 interface SupportCardsProps {
-  cards: SupportPayload["cards"];
+  cards: SupportCard[];
+}
+
+function pickIcon(title: string): React.ElementType {
+  const lower = title.toLowerCase();
+  for (const [key, icon] of Object.entries(ICON_BY_TITLE)) {
+    if (lower.includes(key)) return icon;
+  }
+  return FileText;
 }
 
 export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
@@ -19,12 +34,11 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
       <Container>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {cards.map((card, index) => {
-            const Icon =
-              CARD_ICONS[card.id as keyof typeof CARD_ICONS] ?? FileText;
+            const Icon = pickIcon(card.title);
 
             return (
               <div
-                key={card.id}
+                key={index}
                 className={cn(
                   "flex min-h-52 flex-col border border-border bg-white p-4",
                   index === cards.length - 1 && "border-b-brand",

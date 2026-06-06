@@ -9,6 +9,8 @@
 export interface ProductImageInput {
   image_id: string;
   library_id: string;
+  /** @nullable */
+  image_url?: string | null;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991

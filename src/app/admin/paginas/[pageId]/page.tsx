@@ -2,8 +2,7 @@
 
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminSectionTemplateCard } from "@/app/admin/_components/crud/admin-section-template-card";
-import { useAdminPageSections } from "@/hooks/use-admin-pages";
-import type { PageId } from "@/lib/api/contracts";
+import { useGetApiPagesSlugCms } from "@/api/stetsom";
 import { FileText, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { use } from "react";
@@ -19,10 +18,10 @@ export default function AdminPageSectionsPage({
   params: Promise<PageParams>;
 }) {
   const { pageId } = use(params);
-  const { data, isLoading } = useAdminPageSections(pageId as PageId);
+  const { data: page, isLoading } = useGetApiPagesSlugCms(pageId);
 
-  const sections = data?.sections ?? [];
-  const label = data?.label ?? PAGE_LABELS[pageId] ?? pageId;
+  const blocks = page?.blocks ?? [];
+  const label = page?.title?.pt ?? PAGE_LABELS[pageId] ?? pageId;
   const publicHref = PAGE_PUBLIC_HREFS[pageId] ?? `/${pageId}`;
 
   return (
@@ -47,7 +46,6 @@ export default function AdminPageSectionsPage({
         </div>
       }
     >
-      {/* Back link */}
       <div className="mb-2">
         <Link
           href="/admin/paginas"
@@ -66,20 +64,27 @@ export default function AdminPageSectionsPage({
             />
           ))}
         </div>
-      ) : sections.length === 0 ? (
+      ) : blocks.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           Nenhuma seção encontrada para esta página.
         </p>
       ) : (
         <div className="space-y-3">
-          {sections
+          {blocks
             .slice()
             .sort((a, b) => a.order - b.order)
-            .map((section) => (
+            .map((block) => (
               <AdminSectionTemplateCard
-                key={section.id}
-                section={section}
-                editHref={`/admin/paginas/${pageId}/${section.id}`}
+                key={block.block_id}
+                section={{
+                  id: block.block_id,
+                  type: block.type,
+                  name: block.type,
+                  order: block.order,
+                  updated_at: page?.updated_at,
+                  is_editable: true,
+                }}
+                editHref={`/admin/paginas/${pageId}/${block.block_id}`}
               />
             ))}
         </div>

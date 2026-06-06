@@ -27,14 +27,14 @@ import { orvalClient } from "../../orval-client";
  */
 export const getApiDashboard = (signal?: AbortSignal) => {
   return orvalClient<AdminDashboardPayload>({
-    url: `/api/dashboard/`,
+    url: `/api/dashboard`,
     method: "GET",
     signal,
   });
 };
 
 export const getGetApiDashboardQueryKey = () => {
-  return [`/api/dashboard/`] as const;
+  return [`/api/dashboard`] as const;
 };
 
 export const getGetApiDashboardQueryOptions = <

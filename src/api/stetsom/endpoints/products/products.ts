@@ -24,6 +24,7 @@ import type {
   CmsProductsPayload,
   GetApiProductsAdminParams,
   GetApiProductsParams,
+  GetApiProductsSlug200,
   GetApiProductsSlugParams,
   PatchApiProductsId200,
   PatchApiProductsIdBlocksBlockIdBody,
@@ -38,7 +39,6 @@ import type {
   PostApiProductsIdImagesBody,
   ProductBlock,
   ProductCatalogResponse,
-  ProductDetailPayload,
   ProductFile,
   ProductImage,
 } from "../../model";
@@ -53,7 +53,7 @@ export const getApiProducts = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<ProductCatalogResponse>({
-    url: `/api/products/`,
+    url: `/api/products`,
     method: "GET",
     params,
     signal,
@@ -61,7 +61,7 @@ export const getApiProducts = (
 };
 
 export const getGetApiProductsQueryKey = (params?: GetApiProductsParams) => {
-  return [`/api/products/`, ...(params ? [params] : [])] as const;
+  return [`/api/products`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiProductsQueryOptions = <
@@ -189,7 +189,7 @@ export const postApiProducts = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<PostApiProducts201>({
-    url: `/api/products/`,
+    url: `/api/products`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
     data: postApiProductsBody,
@@ -200,7 +200,7 @@ export const postApiProducts = (
 export const getPostApiProductsQueryKey = (
   postApiProductsBody?: PostApiProductsBody,
 ) => {
-  return ["POST", `/api/products/`, postApiProductsBody] as const;
+  return ["POST", `/api/products`, postApiProductsBody] as const;
 };
 
 export const getPostApiProductsQueryOptions = <
@@ -352,7 +352,7 @@ export const getApiProductsSlug = (
   params?: GetApiProductsSlugParams,
   signal?: AbortSignal,
 ) => {
-  return orvalClient<ProductDetailPayload>({
+  return orvalClient<GetApiProductsSlug200>({
     url: `/api/products/${slug}`,
     method: "GET",
     params,

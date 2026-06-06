@@ -1,5 +1,6 @@
 import { ProductWizard } from "@/app/admin/_components/product-wizard";
-import { getCmsProvider } from "@/lib/api/provider";
+import { serverOrvalClient } from "@/api/stetsom/orval-server";
+import type { CmsProductDetailPayload } from "@/api/stetsom/model";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -7,7 +8,10 @@ interface PageProps {
 
 export default async function AdminProdutoEditPage({ params }: PageProps) {
   const { id } = await params;
-  const detail = await getCmsProvider().getCmsProductDetail(id);
+  const detail = await serverOrvalClient<CmsProductDetailPayload>({
+    method: "GET",
+    url: `/api/products/admin/${id}`,
+  }).catch(() => null);
 
   if (!detail) {
     return (

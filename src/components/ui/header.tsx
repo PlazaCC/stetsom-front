@@ -1,12 +1,13 @@
 "use client";
 
-import { NAV_LINKS } from "@/lib/mock/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { Link, usePathname } from "@/i18n/navigation";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
-import { Logo } from "./logo";
-import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import { FormEvent, useEffect, useState } from "react";
 import { Container } from "./container";
+import { LanguageSwitcher } from "./language-switcher";
+import { Logo } from "./logo";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -15,9 +16,6 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "./navigation-menu";
-import { FormEvent, useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { LanguageSwitcher } from "./language-switcher";
 
 const CATEGORY_NAV_ITEMS = [
   {
@@ -119,17 +117,13 @@ export default function Header() {
 
                 <NavigationMenuItem>
                   <NavigationMenuLink
-                    render={
-                      <MenuLink href={NAV_LINKS[1].href} label={t("about")} />
-                    }
+                    render={<MenuLink href="/sobre" label={t("about")} />}
                   />
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
                   <NavigationMenuLink
-                    render={
-                      <MenuLink href={NAV_LINKS[2].href} label={t("support")} />
-                    }
+                    render={<MenuLink href="/suporte" label={t("support")} />}
                   />
                 </NavigationMenuItem>
               </NavigationMenuList>
@@ -276,8 +270,8 @@ function MobileDrawer({ open, onClose }: MobileDrawerProps) {
 
         {/* Sobre nós e Suporte */}
         {[
-          { href: NAV_LINKS[1].href, label: t("about") },
-          { href: NAV_LINKS[2].href, label: t("support") },
+          { href: "/sobre", label: t("about") },
+          { href: "/suporte", label: t("support") },
         ].map((link) => (
           <Link
             key={link.href}

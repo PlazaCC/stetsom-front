@@ -12,7 +12,7 @@ export interface CmsProductRowInput {
   slug: string;
   name: string;
   /** @nullable */
-  thumbnail_library_id: string | null;
+  thumbnail_url: string | null;
   category: string;
   line?: string;
   languages: string[];

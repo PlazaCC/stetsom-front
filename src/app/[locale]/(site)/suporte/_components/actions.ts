@@ -1,8 +1,12 @@
 "use server";
 
-import { getCmsProvider } from "@/lib/api/provider";
-import type { ContactFormInput } from "@/lib/api/contracts";
+import type { PostApiContactBody } from "@/api/stetsom/model";
+import { serverOrvalClient } from "@/api/stetsom/orval-server";
 
-export async function submitContact(input: ContactFormInput) {
-  await getCmsProvider().submitContact(input);
+export async function submitContact(input: PostApiContactBody) {
+  await serverOrvalClient({
+    method: "POST",
+    url: "/api/contact/",
+    data: input,
+  });
 }

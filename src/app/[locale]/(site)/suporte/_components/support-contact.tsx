@@ -1,6 +1,5 @@
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
-import type { SupportPayload } from "@/lib/api/contracts";
 import { Mail, Phone } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { ContactForm } from "./contact-form";
@@ -11,9 +10,21 @@ const CONTACT_INFO_ICONS = {
   whatsapp: Phone,
 } as const;
 
+type SupportContactData = {
+  label?: string;
+  title?: string;
+  description?: string;
+};
+
+type ContactInfoData = {
+  phone?: string;
+  email?: string;
+  whatsapp?: string;
+};
+
 interface SupportContactProps {
-  contact: SupportPayload["contact"];
-  contactInfo?: SupportPayload["contactInfo"];
+  contact: SupportContactData;
+  contactInfo?: ContactInfoData;
 }
 
 export async function SupportContact({
@@ -47,7 +58,10 @@ export async function SupportContact({
       <Container>
         <div className="flex flex-col lg:flex-row lg:items-start lg:gap-16">
           <div className="flex shrink-0 flex-col gap-6 lg:w-90">
-            <SectionLabel label={contact.label} title={contact.title} />
+            <SectionLabel
+              label={contact.label ?? ""}
+              title={contact.title ?? ""}
+            />
             <p className="text-base text-text-subtle">{contact.description}</p>
 
             {infoItems.length > 0 && (

@@ -1,14 +1,23 @@
 import { Container } from "@/components/ui/container";
 import { CTAButton } from "@/components/ui/cta-button";
 import { SectionLabel } from "@/components/ui/section-label";
-import type { SiteAboutPayload } from "@/lib/api/contracts";
 import Image from "next/image";
 
 const FACTORY_IMAGE = "/figma-assets/raw/fill_OJJ5Q1_b3596ec5.png";
 const MAP_IMAGE = "/figma-assets/raw/fill_KULSWW_74ec6dcf.png";
 
+type JobsCtaSection = {
+  image?: string;
+  imageAlt?: string;
+  label?: string;
+  title?: string;
+  description?: string;
+  buttonText?: string;
+  buttonHref?: string;
+};
+
 interface OurFactoryProps {
-  jobsCta?: SiteAboutPayload["jobsCta"];
+  jobsCta?: JobsCtaSection;
 }
 
 export function OurFactory({ jobsCta }: OurFactoryProps) {
@@ -29,16 +38,16 @@ export function OurFactory({ jobsCta }: OurFactoryProps) {
             {jobsCta && (
               <>
                 <SectionLabel
-                  label={jobsCta.label}
-                  title={jobsCta.title}
+                  label={jobsCta.label ?? ""}
+                  title={jobsCta.title ?? ""}
                   dark
                 />
                 <p className="text-base text-text-subtle-dark mt-6 mb-8">
                   {jobsCta.description}
                 </p>
                 <CTAButton
-                  href={jobsCta.buttonHref}
-                  label={jobsCta.buttonLabel}
+                  href={jobsCta.buttonHref ?? "#"}
+                  label={jobsCta.buttonText ?? ""}
                   variant="brand"
                   size="md"
                   external

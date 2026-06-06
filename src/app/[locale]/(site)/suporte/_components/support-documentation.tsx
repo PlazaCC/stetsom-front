@@ -1,14 +1,24 @@
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
-import type { SupportPayload } from "@/lib/api/contracts";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Download, FileText, Search } from "lucide-react";
-import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 
+type DocCategory = { id: string; title: string; label: string; slug: string };
+type DocFile = {
+  id: string;
+  name?: string;
+  file_url: string;
+  type: string;
+  version: number;
+  fileSize?: string;
+  category_slug?: string;
+};
+
 interface SupportDocumentationProps {
-  categories: NonNullable<SupportPayload["documentationCategories"]>;
-  files: SupportPayload["documentationFiles"];
+  categories: DocCategory[];
+  files: DocFile[];
 }
 
 export async function SupportDocumentation({

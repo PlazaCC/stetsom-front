@@ -5,8 +5,8 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
-import { useAdminAuditLog } from "@/hooks/use-admin";
-import type { AuditEntry } from "@/lib/api/contracts";
+import { useGetApiAudit } from "@/api/stetsom";
+import type { AuditEntry } from "@/api/stetsom/model";
 import { Clock } from "lucide-react";
 
 const columns: AdminTableColumn<AuditEntry>[] = [
@@ -49,8 +49,8 @@ const columns: AdminTableColumn<AuditEntry>[] = [
 ];
 
 export default function AdminHistoricoPage() {
-  const audit = useAdminAuditLog();
-  const entries = audit.data ?? [];
+  const audit = useGetApiAudit();
+  const entries = audit.data?.items ?? [];
 
   return (
     <AdminListPage

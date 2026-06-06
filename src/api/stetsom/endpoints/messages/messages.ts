@@ -35,7 +35,7 @@ export const getApiMessages = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<ContactMessagesPayload>({
-    url: `/api/messages/`,
+    url: `/api/messages`,
     method: "GET",
     params,
     signal,
@@ -43,7 +43,7 @@ export const getApiMessages = (
 };
 
 export const getGetApiMessagesQueryKey = (params?: GetApiMessagesParams) => {
-  return [`/api/messages/`, ...(params ? [params] : [])] as const;
+  return [`/api/messages`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiMessagesQueryOptions = <

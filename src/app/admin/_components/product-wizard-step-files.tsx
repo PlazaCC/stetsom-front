@@ -2,16 +2,16 @@
 
 import { AdminFileUpload } from "@/app/admin/_components/crud/admin-file-upload";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import type { ProductFile } from "@/lib/api/contracts";
+import type { WizardProductFile } from "@/app/admin/_components/product-wizard-types";
 import { FileText, Shield, X } from "lucide-react";
 
 interface ProductWizardStepFilesProps {
-  files: ProductFile[];
+  files: WizardProductFile[];
   onRemove: (id: string) => void;
 }
 
-function fileTypeLabel(type: ProductFile["type"]): string {
-  const labels: Record<ProductFile["type"], string> = {
+function fileTypeLabel(type: WizardProductFile["type"]): string {
+  const labels: Record<WizardProductFile["type"], string> = {
     MANUAL: "Manual",
     CATALOG: "Catálogo",
     CERTIFICATE: "Certificado",
@@ -79,7 +79,7 @@ function FileRow({
   file,
   onRemove,
 }: {
-  file: ProductFile;
+  file: WizardProductFile;
   onRemove: (id: string) => void;
 }) {
   return (

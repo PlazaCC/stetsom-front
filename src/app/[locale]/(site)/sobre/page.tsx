@@ -1,8 +1,19 @@
+import type { PagePayload } from "@/api/stetsom/model";
+import { serverOrvalClient } from "@/api/stetsom/orval-server";
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
-import { getCmsProvider } from "@/lib/api/provider";
-import Image from "next/image";
+import { toApiLocale } from "@/lib/api/i18n-utils";
+import {
+  getPageBlock,
+  type AboutFactoryBlockData,
+  type AboutHeroBlockData,
+  type AboutQualityBlockData,
+  type AboutSocialBlockData,
+  type AboutTimelineBlockData,
+  type AboutValuesBlockData,
+} from "@/lib/page-blocks";
 import { getLocale, getTranslations } from "next-intl/server";
+import Image from "next/image";
 import { CompanyTimeline } from "../_components/company-timeline";
 import { MilestonesMarquee } from "../_components/milestones-marquee";
 import { OurFactory } from "../_components/our-factory";
@@ -11,31 +22,58 @@ import { QualitySection } from "../_components/quality-section";
 import { SocialFeed } from "../_components/social-feed";
 
 export default async function SobrePage() {
-  const [aboutPayload, t] = await Promise.all([
-    getCmsProvider().getSiteAboutPayload(await getLocale()),
+  const locale = await getLocale();
+  const apiLocale = toApiLocale(locale);
+
+  const [pageRes, t] = await Promise.all([
+    serverOrvalClient<PagePayload>({
+      method: "GET",
+      url: "/api/pages/about",
+      params: { locale: apiLocale },
+    }).catch(
+      () =>
+        ({
+          id: "",
+          slug: "about",
+          title: { pt: "" },
+          blocks: [],
+          updated_at: "",
+        }) as PagePayload,
+    ),
     getTranslations("About"),
   ]);
+
+  const blocks = pageRes.blocks ?? [];
+  const heroData = getPageBlock<AboutHeroBlockData>(blocks, "hero");
+  const qualityData = getPageBlock<AboutQualityBlockData>(blocks, "quality");
+  const valuesData = getPageBlock<AboutValuesBlockData>(blocks, "values");
+  const timelineData = getPageBlock<AboutTimelineBlockData>(blocks, "timeline");
+  const socialData = getPageBlock<AboutSocialBlockData>(blocks, "social");
+  const factoryData = getPageBlock<AboutFactoryBlockData>(blocks, "jobs-cta");
 
   return (
     <div>
       <section className="relative bg-brand-dark h-109.75 overflow-hidden flex items-center">
-        <Image
-          src={aboutPayload.hero.image}
-          alt={aboutPayload.hero.imageAlt}
-          fill
-          className="object-cover opacity-35"
-          sizes="100vw"
-          priority
-        />
+        {heroData.url && (
+          <Image
+            src={heroData.url}
+            alt={heroData.imageAlt ?? "Stetsom"}
+            fill
+            className="object-cover opacity-35"
+            sizes="100vw"
+            priority
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-dark-overlay" />
+
         <Container className="z-10">
           <div className="grid gap-10 lg:grid-cols-[1fr_428px] lg:items-end">
             <div>
-              <SectionLabel label={aboutPayload.hero.label} />
+              <SectionLabel label={heroData.label ?? ""} />
               <h1 className="font-sans-condensed font-black text-5xl leading-none uppercase text-white mt-1 lg:text-display-2xl">
-                {aboutPayload.hero.title
+                {(heroData.title ?? "")
                   .split("\n")
-                  .map((line, lineIdx, allLines) => {
+                  .map((line: string, lineIdx: number, allLines: string[]) => {
                     if (lineIdx === allLines.length - 1) {
                       const words = line.split(" ");
                       const lastWord = words.pop();
@@ -58,42 +96,94 @@ export default async function SobrePage() {
               </p>
             </div>
 
-            <div className="relative border-t border-white/20 pt-5">
-              <span className="pointer-events-none absolute right-0 -top-24 font-sans-condensed text-[112px] font-black leading-none text-white/10">
-                1989
-              </span>
-              <div className="grid grid-cols-2 border border-white/20">
-                {aboutPayload.stats.map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="border border-white/20 px-4 py-4"
-                  >
-                    <p className="font-sans-condensed text-display-sm font-black text-white">
-                      {stat.value.replace("+", "")}
-                      <span className="text-brand">+</span>
-                    </p>
-                    <p className="mt-1 text-sm font-sans font-medium uppercase text-text-subtle-dark">
-                      {stat.label}
-                    </p>
-                  </div>
-                ))}
+            {heroData.stats?.length ? (
+              <div className="relative border-t border-white/20 pt-5">
+                <span className="pointer-events-none absolute right-0 -top-24 font-sans-condensed text-[112px] font-black leading-none text-white/10">
+                  1989
+                </span>
+                <div className="grid grid-cols-2 border border-white/20">
+                  {heroData.stats.map((stat) => (
+                    <div
+                      key={stat.label}
+                      className="border border-white/20 px-4 py-4"
+                    >
+                      <p className="font-sans-condensed text-display-sm font-black text-white">
+                        {stat.value.replace("+", "")}
+                        <span className="text-brand">+</span>
+                      </p>
+                      <p className="mt-1 text-sm font-sans font-medium uppercase text-text-subtle-dark">
+                        {stat.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </Container>
       </section>
 
-      <MilestonesMarquee items={aboutPayload.milestones} />
+      {heroData.milestones?.length ? (
+        <MilestonesMarquee items={heroData.milestones} />
+      ) : null}
 
-      <QualitySection
-        section={aboutPayload.quality}
-        values={aboutPayload.values}
-        foundingLabel={t("foundingLabel")}
+      {qualityData.image_url && (
+        <QualitySection
+          section={{
+            label: qualityData.label ?? "",
+            title: qualityData.title ?? "",
+            description: qualityData.description ?? "",
+            image: qualityData.image_url,
+            imageAlt: qualityData.imageAlt ?? "Qualidade Stetsom",
+          }}
+          values={
+            (valuesData.items ?? []) as Array<{
+              id: string;
+              icon: "zap" | "shield-check" | "rocket";
+              title: string;
+              description: string;
+            }>
+          }
+          foundingLabel={t("foundingLabel")}
+        />
+      )}
+      {timelineData.events?.length ? (
+        <CompanyTimeline
+          events={timelineData.events.map((e) => ({
+            year: String(e.year),
+            title: e.title,
+            description: e.description,
+            image: e.image_url,
+            imageAlt: e.imageAlt,
+          }))}
+        />
+      ) : null}
+      {valuesData.bases?.length ? (
+        <OurFoundations bases={valuesData.bases} />
+      ) : null}
+      {socialData.handle && (
+        <SocialFeed
+          section={{
+            handle: socialData.handle,
+            title: socialData.title ?? "",
+            subtitle: socialData.subtitle,
+            ctaHref: socialData.ctaHref ?? "#",
+            ctaLabel: socialData.ctaLabel ?? "Ver mais",
+            posts: socialData.posts ?? [],
+          }}
+        />
+      )}
+      <OurFactory
+        jobsCta={{
+          image: factoryData.image_url,
+          imageAlt: factoryData.imageAlt,
+          label: factoryData.label,
+          title: factoryData.title,
+          description: factoryData.description,
+          buttonText: factoryData.buttonLabel ?? "",
+          buttonHref: factoryData.buttonHref,
+        }}
       />
-      <CompanyTimeline events={aboutPayload.timeline} />
-      <OurFoundations bases={aboutPayload.bases} />
-      <SocialFeed section={aboutPayload.social} />
-      <OurFactory jobsCta={aboutPayload.jobsCta} />
     </div>
   );
 }

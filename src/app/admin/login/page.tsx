@@ -1,20 +1,42 @@
 "use client";
 
 // Admin CMS is PT-BR only (internal tool). Strings are intentionally not i18n'd.
-import { useAdminLogin } from "@/hooks/use-admin";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function AdminLoginPage() {
-  const login = useAdminLogin();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    login.mutate({ email, password });
+    setIsPending(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body?.error?.message ?? "Credenciais inválidas.");
+      }
+
+      router.push("/admin");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao autenticar.");
+    } finally {
+      setIsPending(false);
+    }
   }
 
   return (
@@ -98,20 +120,14 @@ export default function AdminLoginPage() {
               </button>
             </div>
 
-            {login.isError && (
-              <p className="text-sm text-destructive">
-                {login.error instanceof Error
-                  ? login.error.message
-                  : "Erro ao autenticar."}
-              </p>
-            )}
+            {error && <p className="text-sm text-destructive">{error}</p>}
 
             <button
               type="submit"
-              disabled={login.isPending}
+              disabled={isPending}
               className="mt-2 w-full rounded-md bg-foreground py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {login.isPending ? "Verificando..." : "Avançar"}
+              {isPending ? "Verificando..." : "Avançar"}
             </button>
           </form>
         </div>

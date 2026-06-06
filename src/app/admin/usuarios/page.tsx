@@ -12,14 +12,15 @@ import {
   AdminSelect,
 } from "@/app/admin/_components/crud/admin-input";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
-import { useAdminUserMutations, useAdminUsers } from "@/hooks/use-admin";
+import { useGetApiUsers, postApiUsers, patchApiUsersId } from "@/api/stetsom";
 import type {
   AdminUser,
-  CreateAdminUserInput,
-  UpdateAdminUserInput,
+  PostApiUsersBody,
+  PatchApiUsersIdBody,
   UserRole,
-} from "@/lib/api/contracts";
+} from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
+import { useMutation } from "@tanstack/react-query";
 import { Plus, Users } from "lucide-react";
 import { useState } from "react";
 
@@ -55,7 +56,7 @@ function StatusBadge({ active }: { active: boolean }) {
 interface UserFormProps {
   user?: AdminUser;
   onClose: () => void;
-  onSave: (data: CreateAdminUserInput | UpdateAdminUserInput) => void;
+  onSave: (data: PostApiUsersBody | PatchApiUsersIdBody) => void;
   isPending: boolean;
 }
 
@@ -68,9 +69,9 @@ function UserForm({ user, onClose, onSave, isPending }: UserFormProps) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (user) {
-      onSave({ name, role } satisfies UpdateAdminUserInput);
+      onSave({ name, role } satisfies PatchApiUsersIdBody);
     } else {
-      onSave({ name, email, password, role } satisfies CreateAdminUserInput);
+      onSave({ name, email, password, role } satisfies PostApiUsersBody);
     }
   }
 
@@ -147,8 +148,14 @@ function UserForm({ user, onClose, onSave, isPending }: UserFormProps) {
 }
 
 export default function AdminUsuariosPage() {
-  const users = useAdminUsers();
-  const { create, update } = useAdminUserMutations();
+  const users = useGetApiUsers();
+  const createMutation = useMutation({
+    mutationFn: (body: PostApiUsersBody) => postApiUsers(body),
+  });
+  const updateMutation = useMutation({
+    mutationFn: ({ id, body }: { id: string; body: PatchApiUsersIdBody }) =>
+      patchApiUsersId(id, body),
+  });
   const [formOpen, setFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | undefined>();
   const [toggleTarget, setToggleTarget] = useState<AdminUser | undefined>();
@@ -168,14 +175,14 @@ export default function AdminUsuariosPage() {
     setEditingUser(undefined);
   }
 
-  function handleSave(data: CreateAdminUserInput | UpdateAdminUserInput) {
+  function handleSave(data: PostApiUsersBody | PatchApiUsersIdBody) {
     if (editingUser) {
-      update.mutate(
-        { id: editingUser.id, input: data as UpdateAdminUserInput },
+      updateMutation.mutate(
+        { id: editingUser.id, body: data as PatchApiUsersIdBody },
         { onSuccess: closeForm },
       );
     } else {
-      create.mutate(data as CreateAdminUserInput, { onSuccess: closeForm });
+      createMutation.mutate(data as PostApiUsersBody, { onSuccess: closeForm });
     }
   }
 
@@ -270,7 +277,7 @@ export default function AdminUsuariosPage() {
           user={editingUser}
           onClose={closeForm}
           onSave={handleSave}
-          isPending={create.isPending || update.isPending}
+          isPending={createMutation.isPending || updateMutation.isPending}
         />
       )}
 
@@ -282,13 +289,13 @@ export default function AdminUsuariosPage() {
         description={`${toggleTarget?.name} ${toggleTarget?.is_active ? "não terá mais acesso ao painel" : "poderá acessar o painel novamente"}.`}
         confirmLabel={toggleTarget?.is_active ? "Desativar" : "Ativar"}
         destructive={toggleTarget?.is_active}
-        isPending={update.isPending}
+        isPending={updateMutation.isPending}
         onConfirm={() => {
           if (!toggleTarget) return;
-          update.mutate(
+          updateMutation.mutate(
             {
               id: toggleTarget.id,
-              input: { is_active: !toggleTarget.is_active },
+              body: { is_active: !toggleTarget.is_active },
             },
             { onSuccess: () => setToggleTarget(undefined) },
           );

@@ -26,11 +26,11 @@ import { orvalClient } from "../../orval-client";
  * @summary Get global company settings
  */
 export const getApiConfig = (signal?: AbortSignal) => {
-  return orvalClient<CmsConfig>({ url: `/api/config/`, method: "GET", signal });
+  return orvalClient<CmsConfig>({ url: `/api/config`, method: "GET", signal });
 };
 
 export const getGetApiConfigQueryKey = () => {
-  return [`/api/config/`] as const;
+  return [`/api/config`] as const;
 };
 
 export const getGetApiConfigQueryOptions = <
@@ -151,7 +151,7 @@ export const patchApiConfig = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<CmsConfig>({
-    url: `/api/config/`,
+    url: `/api/config`,
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     data: patchApiConfigBody,
@@ -162,7 +162,7 @@ export const patchApiConfig = (
 export const getPatchApiConfigQueryKey = (
   patchApiConfigBody?: PatchApiConfigBody,
 ) => {
-  return ["PATCH", `/api/config/`, patchApiConfigBody] as const;
+  return ["PATCH", `/api/config`, patchApiConfigBody] as const;
 };
 
 export const getPatchApiConfigQueryOptions = <

@@ -6,11 +6,11 @@ import {
 } from "@/app/admin/_components/crud/admin-input";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import type { ProductInfo } from "@/app/admin/_components/product-wizard-step1";
-import type { ProductSpec } from "@/lib/api/contracts";
+import type { WizardProductSpec } from "@/app/admin/_components/product-wizard-types";
 
 interface ProductWizardStepPublishProps {
   info: ProductInfo;
-  specs: ProductSpec[];
+  specs: WizardProductSpec[];
   categoryName: string | undefined;
   subcategoryName: string | undefined;
   onInfoChange: (key: keyof ProductInfo, value: string) => void;

@@ -36,7 +36,7 @@ export const getApiTechnicalAssistances = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<TechnicalAssistance[]>({
-    url: `/api/technical-assistances/`,
+    url: `/api/technical-assistances`,
     method: "GET",
     params,
     signal,
@@ -46,7 +46,7 @@ export const getApiTechnicalAssistances = (
 export const getGetApiTechnicalAssistancesQueryKey = (
   params?: GetApiTechnicalAssistancesParams,
 ) => {
-  return [`/api/technical-assistances/`, ...(params ? [params] : [])] as const;
+  return [`/api/technical-assistances`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiTechnicalAssistancesQueryOptions = <
@@ -198,7 +198,7 @@ export const postApiTechnicalAssistances = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<TechnicalAssistance>({
-    url: `/api/technical-assistances/`,
+    url: `/api/technical-assistances`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
     data: postApiTechnicalAssistancesBody,
@@ -211,7 +211,7 @@ export const getPostApiTechnicalAssistancesQueryKey = (
 ) => {
   return [
     "POST",
-    `/api/technical-assistances/`,
+    `/api/technical-assistances`,
     postApiTechnicalAssistancesBody,
   ] as const;
 };

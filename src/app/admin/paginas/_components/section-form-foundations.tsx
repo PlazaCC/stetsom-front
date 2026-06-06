@@ -1,6 +1,6 @@
 "use client";
 
-import type { PageSection } from "@/lib/api/contracts";
+import type { PageSection } from "./section-form-types";
 import { cn } from "@/lib/utils";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";

@@ -37,7 +37,7 @@ export const postApiUpload = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<UploadPresignResponse>({
-    url: `/api/upload/`,
+    url: `/api/upload`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
     data: postApiUploadBody,
@@ -48,7 +48,7 @@ export const postApiUpload = (
 export const getPostApiUploadQueryKey = (
   postApiUploadBody?: PostApiUploadBody,
 ) => {
-  return ["POST", `/api/upload/`, postApiUploadBody] as const;
+  return ["POST", `/api/upload`, postApiUploadBody] as const;
 };
 
 export const getPostApiUploadQueryOptions = <

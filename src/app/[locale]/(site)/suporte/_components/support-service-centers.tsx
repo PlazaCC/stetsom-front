@@ -1,13 +1,15 @@
+import type { TechnicalAssistance } from "@/api/stetsom/model";
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
-import type { SupportPayload } from "@/lib/api/contracts";
 import { MapPin } from "lucide-react";
-import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import Image from "next/image";
+
+const DEFAULT_MAP_IMAGE = "/figma-assets/raw/fill_KULSWW_74ec6dcf.png";
 
 interface SupportServiceCentersProps {
-  serviceCenters: NonNullable<SupportPayload["serviceCenters"]>;
-  mapImage: SupportPayload["mapImage"];
+  serviceCenters: TechnicalAssistance[];
+  mapImage?: string;
 }
 
 export async function SupportServiceCenters({
@@ -40,9 +42,9 @@ export async function SupportServiceCenters({
               </button>
             </div>
             <div className="flex flex-col gap-2">
-              {serviceCenters.map((posto) => (
+              {(serviceCenters ?? []).map((posto, idx) => (
                 <div
-                  key={posto.id}
+                  key={posto.id ?? `posto-${idx}`}
                   className="flex flex-col gap-0.5 border border-border bg-white px-4 py-3"
                 >
                   <p className="font-sans text-sm font-semibold text-brand-dark">
@@ -68,7 +70,7 @@ export async function SupportServiceCenters({
 
           <div className="relative flex-1 overflow-hidden rounded-2xl bg-muted lg:min-h-114.25">
             <Image
-              src={mapImage}
+              src={mapImage ?? DEFAULT_MAP_IMAGE}
               alt={t("mapAlt")}
               fill
               className="object-cover opacity-60"

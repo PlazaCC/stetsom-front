@@ -1,7 +1,10 @@
 "use client";
 
 import { AdminSuccessPage } from "@/app/admin/_components/crud/admin-success-page";
-import type { CmsProductMutationResult } from "@/lib/api/contracts";
+interface CmsProductMutationResult {
+  status: string;
+  slug: string;
+}
 import { CheckCircle2, FilePen } from "lucide-react";
 
 interface ProductWizardStepSuccessProps {

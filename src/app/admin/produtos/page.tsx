@@ -7,17 +7,17 @@ import {
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
-import { useCmsProducts } from "@/hooks/use-cms";
-import type { CmsProductRow, ProductStatus } from "@/lib/api/contracts";
+import { useGetApiProductsAdmin } from "@/api/stetsom";
+import type { CmsProductRow, CmsProductRowStatus } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
 import { Package, Plus } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-const STATUS_LABELS: Record<ProductStatus, string> = {
-  ACTIVE: "Ativo",
-  DISCONTINUED: "Descontinuado",
+const STATUS_LABELS: Record<CmsProductRowStatus, string> = {
+  PUBLISHED: "Publicado",
   DRAFT: "Rascunho",
+  SCHEDULED: "Agendado",
 };
 
 const LOCALE_LABEL: Record<string, string> = {
@@ -44,15 +44,15 @@ function LocaleFlags({ locales }: { locales: string[] }) {
 
 export default function AdminProdutos() {
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"ALL" | ProductStatus>(
+  const [statusFilter, setStatusFilter] = useState<"ALL" | CmsProductRowStatus>(
     "ALL",
   );
   const [page, setPage] = useState(1);
   const pageSize = 12;
 
-  const cmsProducts = useCmsProducts({
+  const cmsProducts = useGetApiProductsAdmin({
     q: query || undefined,
-    status: statusFilter,
+    status: statusFilter === "ALL" ? undefined : statusFilter,
     page,
     pageSize,
   });
@@ -69,15 +69,17 @@ export default function AdminProdutos() {
       className: "w-12",
       render: (row) => (
         <div className="size-10 overflow-hidden rounded-md bg-muted">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={row.thumbnail_url}
-            alt={row.name}
-            className="h-full w-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
-          />
+          {row.thumbnail_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={row.thumbnail_url}
+              alt={row.name}
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = "none";
+              }}
+            />
+          ) : null}
         </div>
       ),
     },
@@ -93,12 +95,12 @@ export default function AdminProdutos() {
     },
     {
       key: "category",
-      header: "Categoria / Linha",
+      header: "Categoria",
       render: (row) => (
         <div>
           <p className="text-sm text-foreground">{row.category}</p>
-          {row.subcategory && (
-            <p className="text-xs text-muted-foreground">{row.subcategory}</p>
+          {row.line && (
+            <p className="text-xs text-muted-foreground">{row.line}</p>
           )}
         </div>
       ),
@@ -115,7 +117,7 @@ export default function AdminProdutos() {
         <span
           className={cn(
             "rounded-full border px-2 py-0.5 text-xs font-medium",
-            row.status === "ACTIVE"
+            row.status === "PUBLISHED"
               ? "border-cms-step-done bg-cms-step-done text-white"
               : "border-cms-step-pending bg-cms-step-pending text-muted-foreground",
           )}
@@ -125,18 +127,18 @@ export default function AdminProdutos() {
       ),
     },
     {
-      key: "is_published",
-      header: "Publicação",
+      key: "is_discontinued",
+      header: "Descontinuado",
       render: (row) => (
         <span
           className={cn(
             "rounded-full border px-2 py-0.5 text-xs font-medium",
-            row.is_published
-              ? "border-cms-active-item bg-cms-active-item text-foreground"
-              : "border-border bg-muted text-muted-foreground",
+            row.is_discontinued
+              ? "border-border bg-muted text-muted-foreground"
+              : "border-cms-active-item bg-cms-active-item text-foreground",
           )}
         >
-          {row.is_published ? "Publicado" : "Rascunho"}
+          {row.is_discontinued ? "Sim" : "Não"}
         </span>
       ),
     },
@@ -164,6 +166,22 @@ export default function AdminProdutos() {
       ),
     },
   ];
+
+  if (cmsProducts.isError) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
+        <p className="text-sm font-medium text-destructive">
+          Sessão expirada ou sem permissão.
+        </p>
+        <Link
+          href="/admin/login"
+          className="text-sm text-brand underline underline-offset-4"
+        >
+          Fazer login novamente
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <AdminListPage
@@ -197,13 +215,13 @@ export default function AdminProdutos() {
           <select
             value={statusFilter}
             onChange={(e) =>
-              setStatusFilter(e.target.value as "ALL" | ProductStatus)
+              setStatusFilter(e.target.value as "ALL" | CmsProductRowStatus)
             }
             className="h-9 rounded-md border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-brand"
           >
             <option value="ALL">Todos os status</option>
-            <option value="ACTIVE">Ativo</option>
-            <option value="DISCONTINUED">Descontinuado</option>
+            <option value="PUBLISHED">Publicado</option>
+            <option value="DRAFT">Rascunho</option>
           </select>
           {cmsProducts.data && (
             <span className="ml-auto text-xs text-muted-foreground">

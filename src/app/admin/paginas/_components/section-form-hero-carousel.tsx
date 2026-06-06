@@ -1,6 +1,6 @@
 "use client";
 
-import type { PageSection } from "@/lib/api/contracts";
+import type { PageSection } from "./section-form-types";
 import { GripVertical, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {

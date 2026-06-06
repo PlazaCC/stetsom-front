@@ -5,10 +5,12 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { I18nString } from "./i18nString";
 import type { VariantAttrValue } from "./variantAttrValue";
 
 export interface VariantAttr {
   attribute_id: string;
+  attribute_name?: I18nString;
   value: VariantAttrValue;
   /**
    * @minimum -9007199254740991

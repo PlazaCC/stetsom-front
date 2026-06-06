@@ -10,6 +10,12 @@ import type { Locale } from "./locale";
 export interface ProductFile {
   file_id: string;
   library_id: string;
+  /** @nullable */
+  file_url?: string | null;
+  /** @nullable */
+  filename?: string | null;
+  /** @nullable */
+  type?: string | null;
   locale?: Locale;
   is_active: boolean;
   created_at: string;

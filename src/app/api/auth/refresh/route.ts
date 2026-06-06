@@ -1,8 +1,6 @@
 import { rotateAccessTokenCookie } from "@/lib/api/auth-cookies";
-import { getCmsProvider } from "@/lib/api/provider";
 import {
   getCmsApiBaseUrl,
-  isMockMode,
   readUpstreamError,
   toErrorResponse,
   unauthorizedResponse,
@@ -19,13 +17,6 @@ export async function POST() {
 
     if (!refreshToken) {
       return unauthorizedResponse("Refresh token ausente.");
-    }
-
-    if (isMockMode()) {
-      const payload = await getCmsProvider().refreshToken(refreshToken);
-      const response = NextResponse.json({ ok: true });
-      rotateAccessTokenCookie(response, payload.accessToken);
-      return response;
     }
 
     const base = getCmsApiBaseUrl();

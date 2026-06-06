@@ -7,8 +7,8 @@ import {
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminDrawer } from "@/app/admin/_components/crud/admin-drawer";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
-import { useAdminMessages } from "@/hooks/use-admin";
-import type { ContactMessage } from "@/lib/api/contracts";
+import { useGetApiMessages } from "@/api/stetsom";
+import type { ContactMessage } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
 import { Mail, Settings } from "lucide-react";
 import { useState } from "react";
@@ -24,17 +24,19 @@ const DEPARTMENTS: string[] = [
 ];
 
 export default function AdminMensagensPage() {
-  const messagesQuery = useAdminMessages();
+  const messagesQuery = useGetApiMessages();
   const [localOverrides, setLocalOverrides] = useState<
     Record<string, Partial<ContactMessage>>
   >({});
   const [selected, setSelected] = useState<ContactMessage | undefined>();
   const [activeTab, setActiveTab] = useState<Tab>("contatos");
 
-  const messages: ContactMessage[] = (messagesQuery.data ?? []).map((m) => ({
-    ...m,
-    ...localOverrides[m.id],
-  }));
+  const messages: ContactMessage[] = (messagesQuery.data?.items ?? []).map(
+    (m) => ({
+      ...m,
+      ...localOverrides[m.id],
+    }),
+  );
 
   function markAsRead(id: string) {
     setLocalOverrides((prev) => ({

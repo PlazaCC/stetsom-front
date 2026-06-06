@@ -1,4 +1,13 @@
-import type { PageSection, PageSectionType } from "@/lib/api/contracts";
+type PageSectionType = string;
+
+interface PageSection {
+  id: string;
+  type: PageSectionType;
+  name: string;
+  order: number;
+  updated_at?: string;
+  is_editable?: boolean;
+}
 import { cn } from "@/lib/utils";
 import {
   FileText,

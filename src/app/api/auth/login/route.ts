@@ -1,9 +1,7 @@
-import type { AuthPayload, LoginCredentials } from "@/lib/api/contracts";
+import type { PostApiAuthLoginBody, TokensResponse } from "@/api/stetsom/model";
 import { setAuthCookies } from "@/lib/api/auth-cookies";
-import { getCmsProvider } from "@/lib/api/provider";
 import {
   getCmsApiBaseUrl,
-  isMockMode,
   readUpstreamError,
   toErrorResponse,
 } from "@/lib/api/route-utils";
@@ -13,14 +11,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as LoginCredentials;
-
-    if (isMockMode()) {
-      const payload = await getCmsProvider().login(body);
-      const response = NextResponse.json({ ok: true });
-      setAuthCookies(response, payload);
-      return response;
-    }
+    const body = (await request.json()) as PostApiAuthLoginBody;
 
     const base = getCmsApiBaseUrl();
     const upstream = await fetch(`${base}/api/auth/login`, {
@@ -40,7 +31,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error }, { status: upstream.status });
     }
 
-    const payload = (await upstream.json()) as AuthPayload;
+    const payload = (await upstream.json()) as TokensResponse;
     const response = NextResponse.json({ ok: true });
     setAuthCookies(response, payload);
     return response;

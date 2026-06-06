@@ -1,20 +1,19 @@
-import { Container } from "@/components/ui/container";
-import { ProductCard } from "@/components/ui/product-card";
 import type {
   ProductBlock,
   ProductCardItem,
-  ProductSpec,
-} from "@/lib/api/contracts";
+  PublicVariantAttr,
+} from "@/api/stetsom/model";
+import { Container } from "@/components/ui/container";
+import { ProductCard } from "@/components/ui/product-card";
 import { cn } from "@/lib/utils";
-import { formatSpecKey } from "@/lib/utils/product";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { BlockRenderer } from "./block-renderer";
 
 interface ProductDetailContentProps {
   productName: string;
-  thumbnailUrl: string;
-  specs: ProductSpec[];
+  thumbnailUrl?: string | null;
+  attrs: PublicVariantAttr[];
   blocks: ProductBlock[];
   relatedProducts?: ProductCardItem[];
 }
@@ -22,13 +21,13 @@ interface ProductDetailContentProps {
 export async function ProductDetailContent({
   productName,
   thumbnailUrl,
-  specs,
+  attrs,
   blocks,
   relatedProducts,
 }: ProductDetailContentProps) {
-  const t = await getTranslations("ProductDetail");
-  const sortedSpecs = [...specs].sort((a, b) => a.order - b.order);
-  const hasSpecs = sortedSpecs.length > 0;
+  const [t] = await Promise.all([getTranslations("ProductDetail")]);
+  const sortedAttrs = [...attrs].sort((a, b) => a.order - b.order);
+  const hasAttrs = sortedAttrs.length > 0;
 
   return (
     <>
@@ -38,16 +37,18 @@ export async function ProductDetailContent({
           <div className="absolute inset-x-0 bottom-0 h-22 bg-gradient-to-t from-black/70 to-transparent" />
           <Container className="relative z-10 py-8 md:py-10 lg:py-14">
             <div className="mx-auto max-w-220">
-              <div className="relative h-74.75 w-full sm:h-80 md:h-92 lg:h-100">
-                <Image
-                  src={thumbnailUrl}
-                  alt={productName}
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 960px"
-                  className="object-contain drop-shadow-[0_28px_38px_rgba(0,0,0,0.35)]"
-                />
-              </div>
+              {thumbnailUrl && (
+                <div className="relative h-74.75 w-full sm:h-80 md:h-92 lg:h-100">
+                  <Image
+                    src={thumbnailUrl}
+                    alt={productName}
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 960px"
+                    className="object-contain drop-shadow-[0_28px_38px_rgba(0,0,0,0.35)]"
+                  />
+                </div>
+              )}
               <div className="mt-5 text-center">
                 <p className="font-sans-condensed text-4xl font-black uppercase text-white sm:text-5xl lg:text-display-lg">
                   {t("heroTagline1")}
@@ -65,10 +66,10 @@ export async function ProductDetailContent({
             <Container className="space-y-6 md:space-y-8">
               {blocks.map((block) => (
                 <BlockRenderer
-                  key={block.id}
+                  key={block.block_id}
                   block={block}
                   productName={productName}
-                  fallbackImage={thumbnailUrl}
+                  fallbackImage={thumbnailUrl ?? ""}
                 />
               ))}
             </Container>
@@ -87,22 +88,22 @@ export async function ProductDetailContent({
             {t("techSpecifications")}
           </h2>
         </div>
-        {hasSpecs ? (
+        {hasAttrs ? (
           <div className="bg-white pb-9">
             <div className="w-full overflow-x-auto">
-              {sortedSpecs.map((spec, i) => (
+              {sortedAttrs.map((attr, i) => (
                 <div
-                  key={spec.id}
+                  key={attr.attribute_id}
                   className={cn(
                     "flex items-center gap-8 px-5 py-4.5 lg:px-42.5",
                     i % 2 === 0 ? "bg-muted" : "bg-white",
                   )}
                 >
                   <span className="w-1/2 shrink-0 font-sans text-sm font-medium capitalize text-brand-dark">
-                    {formatSpecKey(spec.attribute)}
+                    {attr.attribute_name ?? attr.attribute_id}
                   </span>
                   <span className="font-sans text-sm text-text-subtle">
-                    {spec.value || "—"}
+                    {attr.value || "—"}
                   </span>
                 </div>
               ))}
@@ -135,9 +136,8 @@ export async function ProductDetailContent({
                   key={p.id}
                   name={p.name}
                   category={p.category}
-                  spec={p.spec}
-                  badge={p.badge}
-                  img={p.img}
+                  badge={p.is_discontinued ? "Discontinued" : undefined}
+                  img={p.thumbnail_url ?? undefined}
                   href={p.href}
                 />
               ))}

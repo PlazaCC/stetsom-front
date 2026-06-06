@@ -10,6 +10,12 @@ import type { LocaleInput } from "./localeInput";
 export interface ProductFileInput {
   file_id: string;
   library_id: string;
+  /** @nullable */
+  file_url?: string | null;
+  /** @nullable */
+  filename?: string | null;
+  /** @nullable */
+  type?: string | null;
   locale?: LocaleInput;
   is_active: boolean;
   created_at: string;

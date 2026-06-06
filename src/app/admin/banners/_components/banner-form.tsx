@@ -8,7 +8,7 @@ import {
   AdminLabel,
   AdminSelect,
 } from "@/app/admin/_components/crud/admin-input";
-import type { Banner, BannerStatus, Locale } from "@/lib/api/contracts";
+import type { Banner, BannerStatus } from "@/api/stetsom/model";
 import { ArrowLeft, Image, X } from "lucide-react";
 import { useRef } from "react";
 
@@ -19,7 +19,7 @@ export interface BannerDraft {
   mobile_image_url: string;
   link_url: string;
   status: BannerStatus;
-  locale: Locale;
+  locale: string;
   display_from: string;
   display_until: string;
 }
@@ -37,14 +37,19 @@ export const EMPTY_DRAFT: BannerDraft = {
 };
 
 export function bannerToDraft(b: Banner): BannerDraft {
+  const row = b as Banner & {
+    desktop_image_url?: string;
+    mobile_image_url?: string;
+    locale?: string;
+  };
   return {
     name: b.name,
     product_id: b.product_id ?? "",
-    desktop_image_url: b.desktop_image_url,
-    mobile_image_url: b.mobile_image_url ?? "",
+    desktop_image_url: row.desktop_image_url ?? "",
+    mobile_image_url: row.mobile_image_url ?? "",
     link_url: b.link_url ?? "",
     status: b.status,
-    locale: b.locale,
+    locale: row.locale ?? b.available_locales?.[0] ?? "pt-BR",
     display_from: b.display_from ? b.display_from.split("T")[0] : "",
     display_until: b.display_until ? b.display_until.split("T")[0] : "",
   };
@@ -131,6 +136,7 @@ function ImageUploadSlot({
           role="button"
           tabIndex={0}
         >
+          {/* eslint-disable-next-line jsx-a11y/alt-text */}
           <Image className="size-6 text-muted-foreground" />
           <span className="text-xs text-muted-foreground">{label}</span>
         </div>

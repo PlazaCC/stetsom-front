@@ -1,6 +1,6 @@
 "use client";
 
-import type { UploadSlot } from "@/lib/api/contracts";
+import type { UploadPresignResponse } from "@/api/stetsom/model";
 import { useState } from "react";
 
 export type InlineUploadEntry = {
@@ -15,7 +15,7 @@ export function useInlineUpload() {
   const [entries, setEntries] = useState<InlineUploadEntry[]>([]);
 
   function initEntries(
-    slots: Record<string, UploadSlot>,
+    slots: Record<string, UploadPresignResponse>,
     files: Map<string, File>,
   ) {
     const list: InlineUploadEntry[] = [];
@@ -42,14 +42,14 @@ export function useInlineUpload() {
 
   async function uploadSlot(
     key: string,
-    slot: UploadSlot,
+    slot: UploadPresignResponse,
     file: File,
   ): Promise<boolean> {
     try {
       patch(key, { status: "uploading", progress: 50 });
       const res = await fetch(slot.uploadUrl, {
         method: "PUT",
-        headers: slot.headers,
+        headers: slot.headers as Record<string, string>,
         body: file,
       });
       if (!res.ok) {
@@ -67,7 +67,7 @@ export function useInlineUpload() {
   }
 
   async function upload(
-    slots: Record<string, UploadSlot>,
+    slots: Record<string, UploadPresignResponse>,
     files: Map<string, File>,
   ): Promise<boolean> {
     const list = initEntries(slots, files);

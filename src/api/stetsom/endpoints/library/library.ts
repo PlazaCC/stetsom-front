@@ -38,7 +38,7 @@ export const getApiLibrary = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<LibraryPayload>({
-    url: `/api/library/`,
+    url: `/api/library`,
     method: "GET",
     params,
     signal,
@@ -46,7 +46,7 @@ export const getApiLibrary = (
 };
 
 export const getGetApiLibraryQueryKey = (params?: GetApiLibraryParams) => {
-  return [`/api/library/`, ...(params ? [params] : [])] as const;
+  return [`/api/library`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiLibraryQueryOptions = <

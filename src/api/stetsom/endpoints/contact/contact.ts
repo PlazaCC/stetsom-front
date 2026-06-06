@@ -34,7 +34,7 @@ export const postApiContact = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<PostApiContact200>({
-    url: `/api/contact/`,
+    url: `/api/contact`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
     data: postApiContactBody,
@@ -45,7 +45,7 @@ export const postApiContact = (
 export const getPostApiContactQueryKey = (
   postApiContactBody?: PostApiContactBody,
 ) => {
-  return ["POST", `/api/contact/`, postApiContactBody] as const;
+  return ["POST", `/api/contact`, postApiContactBody] as const;
 };
 
 export const getPostApiContactQueryOptions = <

@@ -30,7 +30,7 @@ export const getApiAudit = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<AuditPayload>({
-    url: `/api/audit/`,
+    url: `/api/audit`,
     method: "GET",
     params,
     signal,
@@ -38,7 +38,7 @@ export const getApiAudit = (
 };
 
 export const getGetApiAuditQueryKey = (params?: GetApiAuditParams) => {
-  return [`/api/audit/`, ...(params ? [params] : [])] as const;
+  return [`/api/audit`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiAuditQueryOptions = <

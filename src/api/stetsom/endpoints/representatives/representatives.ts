@@ -36,7 +36,7 @@ export const getApiRepresentatives = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<Representative[]>({
-    url: `/api/representatives/`,
+    url: `/api/representatives`,
     method: "GET",
     params,
     signal,
@@ -46,7 +46,7 @@ export const getApiRepresentatives = (
 export const getGetApiRepresentativesQueryKey = (
   params?: GetApiRepresentativesParams,
 ) => {
-  return [`/api/representatives/`, ...(params ? [params] : [])] as const;
+  return [`/api/representatives`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiRepresentativesQueryOptions = <
@@ -195,7 +195,7 @@ export const postApiRepresentatives = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<Representative>({
-    url: `/api/representatives/`,
+    url: `/api/representatives`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
     data: postApiRepresentativesBody,
@@ -206,7 +206,7 @@ export const postApiRepresentatives = (
 export const getPostApiRepresentativesQueryKey = (
   postApiRepresentativesBody?: PostApiRepresentativesBody,
 ) => {
-  return ["POST", `/api/representatives/`, postApiRepresentativesBody] as const;
+  return ["POST", `/api/representatives`, postApiRepresentativesBody] as const;
 };
 
 export const getPostApiRepresentativesQueryOptions = <

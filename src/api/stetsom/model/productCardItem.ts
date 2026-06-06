@@ -14,7 +14,7 @@ export interface ProductCardItem {
   name: string;
   category: string;
   /** @nullable */
-  thumbnail_library_id: string | null;
+  thumbnail_url: string | null;
   href: string;
   status: ProductCardItemStatus;
   is_discontinued: boolean;

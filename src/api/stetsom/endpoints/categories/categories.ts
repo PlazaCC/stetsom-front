@@ -39,7 +39,7 @@ export const getApiCategories = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<Category[]>({
-    url: `/api/categories/`,
+    url: `/api/categories`,
     method: "GET",
     params,
     signal,
@@ -49,7 +49,7 @@ export const getApiCategories = (
 export const getGetApiCategoriesQueryKey = (
   params?: GetApiCategoriesParams,
 ) => {
-  return [`/api/categories/`, ...(params ? [params] : [])] as const;
+  return [`/api/categories`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiCategoriesQueryOptions = <
@@ -198,7 +198,7 @@ export const postApiCategories = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<Category>({
-    url: `/api/categories/`,
+    url: `/api/categories`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
     data: postApiCategoriesBody,
@@ -209,7 +209,7 @@ export const postApiCategories = (
 export const getPostApiCategoriesQueryKey = (
   postApiCategoriesBody?: PostApiCategoriesBody,
 ) => {
-  return ["POST", `/api/categories/`, postApiCategoriesBody] as const;
+  return ["POST", `/api/categories`, postApiCategoriesBody] as const;
 };
 
 export const getPostApiCategoriesQueryOptions = <

@@ -1,6 +1,6 @@
 "use client";
 
-import type { PageSection } from "@/lib/api/contracts";
+import type { PageSection } from "./section-form-types";
 import { SectionFormHeroCarousel } from "./section-form-hero-carousel";
 import { SectionFormHeroStatic } from "./section-form-hero-static";
 import { SectionFormFaq } from "./section-form-faq";

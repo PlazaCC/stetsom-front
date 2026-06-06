@@ -2,19 +2,22 @@
 
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import { AdminInput } from "@/app/admin/_components/crud/admin-input";
-import type { ProductSpec, ProductVariation } from "@/lib/api/contracts";
+import type {
+  WizardProductSpec,
+  WizardProductVariation,
+} from "@/app/admin/_components/product-wizard-types";
 import { GripVertical, Plus, Trash2, X } from "lucide-react";
 
 interface ProductWizardStepSpecsProps {
-  variations: ProductVariation[];
+  variations: WizardProductVariation[];
   activeVariationId: string;
   highlightAttributes: string[];
-  onVariationsChange: (variations: ProductVariation[]) => void;
+  onVariationsChange: (variations: WizardProductVariation[]) => void;
   onActiveVariationChange: (variationId: string) => void;
   onHighlightAttributesChange: (highlightAttributes: string[]) => void;
 }
 
-function newSpec(order: number): ProductSpec {
+function newSpec(order: number): WizardProductSpec {
   return {
     id: `spec-${Date.now()}-${Math.random()}`,
     attribute: "",
@@ -25,8 +28,8 @@ function newSpec(order: number): ProductSpec {
 
 function newVariation(
   order: number,
-  baseSpecs: ProductSpec[] = [],
-): ProductVariation {
+  baseSpecs: WizardProductSpec[] = [],
+): WizardProductVariation {
   return {
     id: `variation-${Date.now()}-${Math.random()}`,
     label: `${order} Ohm`,
@@ -40,6 +43,120 @@ function newVariation(
   };
 }
 
+function VariationTabs({
+  variations,
+  activeId,
+  onSelect,
+  onUpdate,
+  onRemove,
+  onAdd,
+}: {
+  variations: WizardProductVariation[];
+  activeId: string;
+  onSelect: (id: string) => void;
+  onUpdate: (id: string, patch: Partial<WizardProductVariation>) => void;
+  onRemove: (id: string) => void;
+  onAdd: () => void;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      {variations.map((v) => (
+        <div
+          key={v.id}
+          className={
+            v.id === activeId
+              ? "flex items-center gap-1 rounded border border-brand bg-brand/5 px-2 py-1"
+              : "flex items-center gap-1 rounded border border-border px-2 py-1"
+          }
+        >
+          {v.id === activeId ? (
+            <input
+              value={v.label}
+              onChange={(e) => onUpdate(v.id, { label: e.target.value })}
+              className="w-20 border-none bg-transparent text-sm font-medium text-foreground outline-none"
+              placeholder="Nome"
+            />
+          ) : (
+            <button type="button" onClick={() => onSelect(v.id)}>
+              <span className="text-sm text-muted-foreground">{v.label}</span>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => onRemove(v.id)}
+            className="ml-1 text-muted-foreground hover:text-destructive"
+          >
+            <X className="size-3" />
+          </button>
+        </div>
+      ))}
+      <button
+        type="button"
+        onClick={onAdd}
+        className="flex items-center gap-1 rounded border border-dashed border-border px-2 py-1 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <Plus className="size-3" />
+        Variação
+      </button>
+    </div>
+  );
+}
+
+function SpecRow({
+  spec,
+  onChange,
+  onRemove,
+  highlighted,
+  onToggleHighlight,
+}: {
+  spec: WizardProductSpec;
+  onChange: (patch: Partial<WizardProductSpec>) => void;
+  onRemove: () => void;
+  highlighted: boolean;
+  onToggleHighlight: (checked: boolean) => void;
+}) {
+  return (
+    <tr>
+      <td className="px-3 py-2">
+        <GripVertical className="size-4 cursor-grab text-muted-foreground" />
+      </td>
+      <td className="px-3 py-2">
+        <AdminInput
+          value={spec.attribute}
+          onChange={(e) => onChange({ attribute: e.target.value })}
+          placeholder="Ex: Potência RMS"
+          className="max-w-48"
+        />
+      </td>
+      <td className="px-3 py-2">
+        <AdminInput
+          value={spec.value}
+          onChange={(e) => onChange({ value: e.target.value })}
+          placeholder="Ex: 3000W"
+          className="max-w-40"
+        />
+      </td>
+      <td className="px-3 py-2 text-center">
+        <input
+          type="checkbox"
+          checked={highlighted}
+          onChange={(e) => onToggleHighlight(e.target.checked)}
+          className="size-4 accent-brand"
+        />
+      </td>
+      <td className="px-3 py-2 text-right">
+        <button
+          type="button"
+          onClick={onRemove}
+          className="text-muted-foreground hover:text-destructive"
+        >
+          <Trash2 className="size-4" />
+        </button>
+      </td>
+    </tr>
+  );
+}
+
 export function ProductWizardStepSpecs({
   variations,
   activeVariationId,
@@ -49,89 +166,8 @@ export function ProductWizardStepSpecs({
   onHighlightAttributesChange,
 }: ProductWizardStepSpecsProps) {
   const activeVariation =
-    variations.find((variation) => variation.id === activeVariationId) ??
-    variations[0];
-
-  if (!activeVariation) {
-    return null;
-  }
-
-  const specs = activeVariation?.specs ?? [];
-
-  function updateActiveSpecs(nextSpecs: ProductSpec[]) {
-    onVariationsChange(
-      variations.map((variation) =>
-        variation.id === activeVariation.id
-          ? { ...variation, specs: nextSpecs }
-          : variation,
-      ),
-    );
-  }
-
-  function addRow() {
-    updateActiveSpecs([...specs, newSpec(specs.length + 1)]);
-  }
-
-  function removeRow(id: string) {
-    const removingSpec = specs.find((spec) => spec.id === id);
-    updateActiveSpecs(
-      specs
-        .filter((spec) => spec.id !== id)
-        .map((spec, index) => ({ ...spec, order: index + 1 })),
-    );
-
-    if (removingSpec && highlightAttributes.includes(removingSpec.attribute)) {
-      onHighlightAttributesChange(
-        highlightAttributes.filter(
-          (attribute) => attribute !== removingSpec.attribute,
-        ),
-      );
-    }
-  }
-
-  function updateAttribute(id: string, value: string) {
-    const current = specs.find((spec) => spec.id === id);
-    updateActiveSpecs(
-      specs.map((spec) =>
-        spec.id === id ? { ...spec, attribute: value } : spec,
-      ),
-    );
-
-    if (
-      current &&
-      current.attribute !== value &&
-      highlightAttributes.includes(current.attribute)
-    ) {
-      const nextHighlights = highlightAttributes.filter(
-        (attribute) => attribute !== current.attribute,
-      );
-      if (value.trim()) {
-        nextHighlights.push(value.trim());
-      }
-      onHighlightAttributesChange(Array.from(new Set(nextHighlights)));
-    }
-  }
-
-  function updateValue(id: string, value: string) {
-    updateActiveSpecs(
-      specs.map((spec) => (spec.id === id ? { ...spec, value } : spec)),
-    );
-  }
-
-  function toggleHighlight(attribute: string, checked: boolean) {
-    if (!attribute.trim()) return;
-
-    if (checked) {
-      onHighlightAttributesChange(
-        Array.from(new Set([...highlightAttributes, attribute.trim()])),
-      );
-      return;
-    }
-
-    onHighlightAttributesChange(
-      highlightAttributes.filter((item) => item !== attribute),
-    );
-  }
+    variations.find((v) => v.id === activeVariationId) ?? variations[0];
+  const activeSpecs = activeVariation?.specs ?? [];
 
   function addVariation() {
     const next = [
@@ -139,176 +175,128 @@ export function ProductWizardStepSpecs({
       newVariation(variations.length + 1, activeVariation?.specs ?? []),
     ];
     onVariationsChange(next);
-    onActiveVariationChange(next.at(-1)?.id ?? activeVariation.id);
+    onActiveVariationChange(next.at(-1)?.id ?? activeVariation?.id);
   }
 
-  function removeActiveVariation() {
-    if (variations.length <= 1) {
-      return;
-    }
-
-    const next = variations
-      .filter((variation) => variation.id !== activeVariation.id)
-      .map((variation, index) => ({ ...variation, order: index + 1 }));
-    onVariationsChange(next);
-    onActiveVariationChange(next[0].id);
-  }
-
-  function renameVariation(id: string, label: string) {
+  function updateVariation(id: string, patch: Partial<WizardProductVariation>) {
     onVariationsChange(
-      variations.map((variation) =>
-        variation.id === id ? { ...variation, label } : variation,
+      variations.map((v) => (v.id === id ? { ...v, ...patch } : v)),
+    );
+  }
+
+  function removeVariation(id: string) {
+    const next = variations.filter((v) => v.id !== id);
+    onVariationsChange(next);
+    if (id === activeVariationId && next.length > 0) {
+      onActiveVariationChange(next[0]!.id);
+    }
+  }
+
+  function addSpec() {
+    if (!activeVariation) return;
+    const newSpecItem = newSpec(activeSpecs.length + 1);
+    onVariationsChange(
+      variations.map((v) =>
+        v.id === activeVariation.id
+          ? { ...v, specs: [...v.specs, newSpecItem] }
+          : v,
       ),
     );
+  }
+
+  function updateSpec(specId: string, patch: Partial<WizardProductSpec>) {
+    if (!activeVariation) return;
+    onVariationsChange(
+      variations.map((v) =>
+        v.id === activeVariation.id
+          ? {
+              ...v,
+              specs: v.specs.map((s) =>
+                s.id === specId ? { ...s, ...patch } : s,
+              ),
+            }
+          : v,
+      ),
+    );
+  }
+
+  function removeSpec(specId: string) {
+    if (!activeVariation) return;
+    onVariationsChange(
+      variations.map((v) =>
+        v.id === activeVariation.id
+          ? { ...v, specs: v.specs.filter((s) => s.id !== specId) }
+          : v,
+      ),
+    );
+  }
+
+  function toggleHighlight(specAttribute: string, checked: boolean) {
+    if (!specAttribute.trim()) return;
+    if (checked) {
+      onHighlightAttributesChange(
+        Array.from(new Set([...highlightAttributes, specAttribute.trim()])),
+      );
+    } else {
+      onHighlightAttributesChange(
+        highlightAttributes.filter((item) => item !== specAttribute),
+      );
+    }
   }
 
   return (
     <div className="space-y-6">
       <AdminFormSection
-        title="Variações do produto"
-        description="Selecione a variação ativa para editar as especificações técnicas dela."
+        title="Variações"
+        description="Gerencie as variações do produto (ex: 1 Ohm, 2 Ohms, 4 Ohms). Cada variação pode ter especificações técnicas diferentes."
       >
-        <div className="flex flex-wrap items-center gap-2">
-          {variations.map((variation) => {
-            const isActive = variation.id === activeVariation.id;
-
-            return (
-              <button
-                key={variation.id}
-                type="button"
-                onClick={() => onActiveVariationChange(variation.id)}
-                className={
-                  isActive
-                    ? "rounded-md border border-border bg-white px-3 py-1.5 text-sm font-medium text-foreground"
-                    : "rounded-md border border-border bg-transparent px-3 py-1.5 text-sm text-muted-foreground"
-                }
-              >
-                {variation.label}
-              </button>
-            );
-          })}
-
-          <button
-            type="button"
-            onClick={addVariation}
-            className="inline-flex items-center justify-center rounded-md border border-border px-2.5 py-1.5 text-sm text-muted-foreground hover:text-foreground"
-            aria-label="Adicionar variação"
-          >
-            <Plus className="size-4" />
-          </button>
-
-          <button
-            type="button"
-            onClick={removeActiveVariation}
-            disabled={variations.length <= 1}
-            className="inline-flex items-center justify-center rounded-md border border-border px-2.5 py-1.5 text-sm text-muted-foreground hover:text-destructive disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label="Remover variação ativa"
-          >
-            <X className="size-4" />
-          </button>
-        </div>
-
-        <div className="mt-3 max-w-64">
-          <AdminInput
-            value={activeVariation.label}
-            onChange={(event) =>
-              renameVariation(activeVariation.id, event.target.value)
-            }
-            placeholder="Nome da variação"
-            className="h-9 text-sm"
-          />
-        </div>
+        <VariationTabs
+          variations={variations}
+          activeId={activeVariationId}
+          onSelect={onActiveVariationChange}
+          onUpdate={updateVariation}
+          onRemove={removeVariation}
+          onAdd={addVariation}
+        />
       </AdminFormSection>
 
       <AdminFormSection
-        title="Especificações técnicas"
-        description="Defina atributo e valor para a variação selecionada."
+        title="Especificações Técnicas"
+        description="Adicione as especificações para a variação selecionada. Marque como destaque as principais que aparecerão no card do produto."
       >
-        <div className="overflow-hidden rounded-md border border-border">
+        <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-muted/50">
-                <th className="w-8 px-2 py-2" />
-                <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">
-                  Atributo
-                </th>
-                <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">
-                  Valor
-                </th>
-                <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">
+              <tr className="border-b border-border text-left text-xs text-muted-foreground">
+                <th className="w-8 px-3 py-2" />
+                <th className="px-3 py-2 font-medium">Atributo</th>
+                <th className="px-3 py-2 font-medium">Valor</th>
+                <th className="w-16 px-3 py-2 text-center font-medium">
                   Destaque
                 </th>
-                <th className="w-10 px-2 py-2" />
+                <th className="w-10 px-3 py-2" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
-              {specs.map((spec) => (
-                <tr key={spec.id} className="group">
-                  <td className="px-2 py-2">
-                    <GripVertical className="size-4 cursor-grab text-muted-foreground opacity-0 group-hover:opacity-100" />
-                  </td>
-                  <td className="px-3 py-2">
-                    <AdminInput
-                      value={spec.attribute}
-                      onChange={(event) =>
-                        updateAttribute(spec.id, event.target.value)
-                      }
-                      placeholder="Ex: Potência RMS"
-                      className="h-8 text-sm"
-                    />
-                  </td>
-                  <td className="px-3 py-2">
-                    <AdminInput
-                      value={spec.value}
-                      onChange={(event) =>
-                        updateValue(spec.id, event.target.value)
-                      }
-                      placeholder="Ex: 4000W RMS"
-                      className="h-8 text-sm"
-                    />
-                  </td>
-                  <td className="px-3 py-2">
-                    <label className="inline-flex items-center gap-2 text-xs text-muted-foreground">
-                      <input
-                        type="checkbox"
-                        checked={highlightAttributes.includes(spec.attribute)}
-                        onChange={(event) =>
-                          toggleHighlight(spec.attribute, event.target.checked)
-                        }
-                        className="size-4 accent-brand"
-                      />
-                      Sim
-                    </label>
-                  </td>
-                  <td className="px-2 py-2">
-                    <button
-                      type="button"
-                      onClick={() => removeRow(spec.id)}
-                      className="text-muted-foreground hover:text-destructive"
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
-                  </td>
-                </tr>
+            <tbody>
+              {activeSpecs.map((spec) => (
+                <SpecRow
+                  key={spec.id}
+                  spec={spec}
+                  onChange={(patch) => updateSpec(spec.id, patch)}
+                  onRemove={() => removeSpec(spec.id)}
+                  highlighted={highlightAttributes.includes(spec.attribute)}
+                  onToggleHighlight={(checked) =>
+                    toggleHighlight(spec.attribute, checked)
+                  }
+                />
               ))}
-
-              {specs.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-4 py-6 text-center text-sm text-muted-foreground"
-                  >
-                    Nenhuma especificação adicionada.
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>
 
         <button
           type="button"
-          onClick={addRow}
+          onClick={addSpec}
           className="mt-2 flex items-center gap-1.5 text-sm font-medium text-brand hover:underline"
         >
           <Plus className="size-4" />

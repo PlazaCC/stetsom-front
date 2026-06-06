@@ -1,14 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { AdminFileUpload } from "@/app/admin/_components/crud/admin-file-upload";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminPagination } from "@/app/admin/_components/crud/admin-pagination";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import { UploadProgressList } from "@/components/upload-progress-list";
-import { useAdminLibrary } from "@/hooks/use-admin";
+import { useGetApiLibrary } from "@/api/stetsom";
+import type { LibraryAsset, LibraryAssetType } from "@/api/stetsom/model";
 import { useLibraryUpload } from "@/hooks/use-upload";
-import type { LibraryAsset } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
 import { Archive, Check, FileText, Image, type LucideIcon } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -23,7 +24,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "3d-models", label: "Arquivos 3D" },
 ];
 
-// ── Utilitários ────────────────────────────────────────────────────────────────
+// ── Utilidades ─────────────────────────────────────────────────────────────────
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -31,14 +32,33 @@ function formatBytes(bytes: number): string {
   return `${(bytes / 1048576).toFixed(1)} MB`;
 }
 
+function getCurrentVersionUrl(asset: LibraryAsset): string {
+  const version = asset.versions.find(
+    (v) => v.version_id === asset.current_version_id,
+  );
+  return version?.file_url ?? asset.versions[0]?.file_url ?? "";
+}
+
+function getCurrentVersionSize(asset: LibraryAsset): number {
+  const version = asset.versions.find(
+    (v) => v.version_id === asset.current_version_id,
+  );
+  return version?.size_bytes ?? asset.versions[0]?.size_bytes ?? 0;
+}
+
+function assetAltText(asset: LibraryAsset): string {
+  return asset.alt?.pt ?? asset.alt?.en ?? asset.filename;
+}
+
 // ── Cards de foto ──────────────────────────────────────────────────────────────
 
 function PhotoCard({ asset }: { asset: LibraryAsset }) {
   const [copied, setCopied] = useState(false);
+  const fileUrl = getCurrentVersionUrl(asset);
 
   async function handleCopy() {
     try {
-      await navigator.clipboard.writeText(asset.file_url);
+      await navigator.clipboard.writeText(fileUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -51,8 +71,8 @@ function PhotoCard({ asset }: { asset: LibraryAsset }) {
       <div className="relative flex h-32 items-center justify-center overflow-hidden rounded-md bg-muted">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={asset.file_url}
-          alt={asset.alt ?? asset.name}
+          src={fileUrl}
+          alt={assetAltText(asset)}
           className="h-full w-full rounded-md object-cover"
           onError={(e) => {
             (e.target as HTMLImageElement).style.display = "none";
@@ -77,11 +97,10 @@ function PhotoCard({ asset }: { asset: LibraryAsset }) {
       </div>
       <div className="min-w-0">
         <p className="truncate text-sm font-medium text-foreground">
-          {asset.name}
+          {asset.filename}
         </p>
         <p className="mt-0.5 text-xs text-muted-foreground">
-          {formatBytes(asset.size_bytes)}
-          {asset.revision ? ` · Rev. ${asset.revision}` : ""}
+          {formatBytes(getCurrentVersionSize(asset))}
         </p>
       </div>
     </div>
@@ -100,10 +119,7 @@ function FileTable({ assets }: { assets: LibraryAsset[] }) {
               Nome
             </th>
             <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
-              Produto
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
-              Revisão
+              Versões
             </th>
             <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
               Tamanho
@@ -117,20 +133,17 @@ function FileTable({ assets }: { assets: LibraryAsset[] }) {
           {assets.map((asset) => (
             <tr key={asset.id} className="hover:bg-muted/30">
               <td className="px-4 py-3">
-                <p className="font-medium text-foreground">{asset.name}</p>
+                <p className="font-medium text-foreground">{asset.filename}</p>
               </td>
               <td className="px-4 py-3 text-xs text-muted-foreground">
-                {asset.product_id ?? "—"}
+                {asset.versions.length > 0 ? `v${asset.versions.length}` : "—"}
               </td>
               <td className="px-4 py-3 text-xs text-muted-foreground">
-                {asset.revision != null ? `v${asset.revision}` : "—"}
-              </td>
-              <td className="px-4 py-3 text-xs text-muted-foreground">
-                {formatBytes(asset.size_bytes)}
+                {formatBytes(getCurrentVersionSize(asset))}
               </td>
               <td className="px-4 py-3 text-right">
                 <a
-                  href={asset.file_url}
+                  href={getCurrentVersionUrl(asset)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs font-medium text-brand hover:underline"
@@ -143,7 +156,7 @@ function FileTable({ assets }: { assets: LibraryAsset[] }) {
           {assets.length === 0 && (
             <tr>
               <td
-                colSpan={5}
+                colSpan={4}
                 className="px-4 py-8 text-center text-sm text-muted-foreground"
               >
                 Nenhum arquivo encontrado.
@@ -165,7 +178,7 @@ const UPLOAD_CONFIG: Record<
     label: string;
     description: string;
     icon: LucideIcon;
-    libraryType: LibraryAsset["type"];
+    libraryType: LibraryAssetType;
   }
 > = {
   photos: {
@@ -173,21 +186,21 @@ const UPLOAD_CONFIG: Record<
     label: "Clique ou arraste imagens para a biblioteca",
     description: "PNG, JPG, WebP, GIF — máx. 10 MB",
     icon: Image,
-    libraryType: "IMAGE",
+    libraryType: "IMAGE" as LibraryAssetType,
   },
   manuals: {
     accept: "application/pdf",
     label: "Clique ou arraste PDFs para a biblioteca",
     description: "Apenas arquivos PDF — máx. 50 MB",
     icon: FileText,
-    libraryType: "PDF",
+    libraryType: "PDF" as LibraryAssetType,
   },
   "3d-models": {
     accept: "model/gltf-binary,model/gltf+json,.glb,.gltf",
     label: "Clique ou arraste modelos 3D para a biblioteca",
     description: "GLB ou GLTF — máx. 100 MB",
     icon: Archive,
-    libraryType: "MODEL3D",
+    libraryType: "MODEL3D" as LibraryAssetType,
   },
 };
 
@@ -198,24 +211,40 @@ export default function AdminBibliotecaPage() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
 
-  const libraryQuery = useAdminLibrary();
+  const { data: libraryPayload, isError: libraryError } = useGetApiLibrary();
   const { upload, entries, isUploading, clearFinished } = useLibraryUpload();
 
   const filtered = useMemo(() => {
-    const allAssets = libraryQuery.data ?? [];
+    const allAssets = libraryPayload?.items ?? [];
     const q = query.trim().toLowerCase();
     const config = UPLOAD_CONFIG[activeTab];
     return allAssets.filter((asset) => {
-      const matchesSearch = !q || asset.name.toLowerCase().includes(q);
+      const matchesSearch = !q || asset.filename.toLowerCase().includes(q);
       const matchesTab = asset.type === config.libraryType;
       return matchesSearch && matchesTab;
     });
-  }, [query, activeTab, libraryQuery.data]);
+  }, [query, activeTab, libraryPayload]);
 
   const paginatedAssets = filtered.slice(
     (page - 1) * PAGE_SIZE,
     page * PAGE_SIZE,
   );
+
+  if (libraryError) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
+        <p className="text-sm font-medium text-destructive">
+          Sessão expirada ou sem permissão.
+        </p>
+        <Link
+          href="/admin/login"
+          className="text-sm text-brand underline underline-offset-4"
+        >
+          Fazer login novamente
+        </Link>
+      </div>
+    );
+  }
 
   function handleSearch(q: string) {
     setQuery(q);

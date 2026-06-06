@@ -36,7 +36,7 @@ export const getApiTemplates = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<Template[]>({
-    url: `/api/templates/`,
+    url: `/api/templates`,
     method: "GET",
     params,
     signal,
@@ -44,7 +44,7 @@ export const getApiTemplates = (
 };
 
 export const getGetApiTemplatesQueryKey = (params?: GetApiTemplatesParams) => {
-  return [`/api/templates/`, ...(params ? [params] : [])] as const;
+  return [`/api/templates`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiTemplatesQueryOptions = <
@@ -192,7 +192,7 @@ export const postApiTemplates = (
   signal?: AbortSignal,
 ) => {
   return orvalClient<Template>({
-    url: `/api/templates/`,
+    url: `/api/templates`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
     data: postApiTemplatesBody,
@@ -203,7 +203,7 @@ export const postApiTemplates = (
 export const getPostApiTemplatesQueryKey = (
   postApiTemplatesBody?: PostApiTemplatesBody,
 ) => {
-  return ["POST", `/api/templates/`, postApiTemplatesBody] as const;
+  return ["POST", `/api/templates`, postApiTemplatesBody] as const;
 };
 
 export const getPostApiTemplatesQueryOptions = <
