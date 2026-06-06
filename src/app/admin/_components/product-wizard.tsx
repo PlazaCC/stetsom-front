@@ -87,7 +87,9 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
       ? "DISCONTINUED"
       : detail.product.status === "DRAFT"
         ? "DRAFT"
-        : "ACTIVE",
+        : detail.product.status === "SCHEDULED"
+          ? "SCHEDULED"
+          : "ACTIVE",
     badge: "",
     description: detail.product.description?.pt ?? "",
     cover_image_url: detail.product.images?.[0]?.image_url ?? "",
@@ -174,7 +176,12 @@ function buildPayload(
     description: info.description ? { pt: info.description } : undefined,
     category_id: info.category_id,
     line_id: info.subcategory_id || null,
-    status: status === "ACTIVE" ? "PUBLISHED" : "DRAFT",
+    status:
+      status === "ACTIVE"
+        ? "PUBLISHED"
+        : status === "SCHEDULED"
+          ? "SCHEDULED"
+          : "DRAFT",
     is_discontinued: status === "DISCONTINUED",
     launch_date: launchDate,
     highlight_attributes: highlightAttributes,
@@ -435,9 +442,11 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
             <dd className="font-medium text-foreground">
               {info.status === "ACTIVE"
                 ? "Ativo"
-                : info.status === "DRAFT"
-                  ? "Rascunho"
-                  : "Descontinuado"}
+                : info.status === "SCHEDULED"
+                  ? "Agendado"
+                  : info.status === "DRAFT"
+                    ? "Rascunho"
+                    : "Descontinuado"}
             </dd>
           </div>
           {category && (

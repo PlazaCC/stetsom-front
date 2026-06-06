@@ -229,6 +229,22 @@ export default function AdminRepresentantesPage() {
     },
   });
 
+  const toggleMutation = useMutation({
+    mutationFn: ({
+      id,
+      body,
+    }: {
+      id: string;
+      body: PatchApiRepresentativesIdBody;
+    }) => patchApiRepresentativesId(id, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: getGetApiRepresentativesQueryKey(),
+      });
+      setToggleTarget(undefined);
+    },
+  });
+
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteApiRepresentativesId(id),
     onSuccess: () => {
@@ -388,14 +404,13 @@ export default function AdminRepresentantesPage() {
         description={`${toggleTarget?.name} será ${toggleTarget?.is_active ? "desativado" : "ativado"}.`}
         confirmLabel={toggleTarget?.is_active ? "Desativar" : "Ativar"}
         destructive={toggleTarget?.is_active}
-        isPending={updateMutation.isPending}
+        isPending={toggleMutation.isPending}
         onConfirm={() => {
           if (!toggleTarget) return;
-          updateMutation.mutate({
+          toggleMutation.mutate({
             id: toggleTarget.id,
             body: { is_active: !toggleTarget.is_active },
           });
-          setToggleTarget(undefined);
         }}
         onCancel={() => setToggleTarget(undefined)}
       />

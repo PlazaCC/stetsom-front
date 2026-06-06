@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const body = (await request.json()) as Record<string, unknown>;
 
     const base = getCmsApiBaseUrl();
-    const upstream = await fetch(`${base}/api/upload/`, {
+    const upstream = await fetch(`${base}/api/upload`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

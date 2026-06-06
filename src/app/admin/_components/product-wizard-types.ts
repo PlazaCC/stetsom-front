@@ -1,6 +1,10 @@
 import type { LibraryAssetType } from "@/api/stetsom/model";
 
-export type WizardProductStatus = "ACTIVE" | "DISCONTINUED" | "DRAFT";
+export type WizardProductStatus =
+  | "ACTIVE"
+  | "SCHEDULED"
+  | "DISCONTINUED"
+  | "DRAFT";
 
 export interface WizardProductSpec {
   id: string;

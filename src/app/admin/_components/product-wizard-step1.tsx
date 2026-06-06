@@ -265,7 +265,7 @@ export function ProductWizardStep1({
           <div>
             <AdminLabel>Status *</AdminLabel>
             <div className="flex gap-4 pt-1">
-              {(["ACTIVE", "DISCONTINUED"] as const).map((s) => (
+              {(["ACTIVE", "SCHEDULED", "DISCONTINUED"] as const).map((s) => (
                 <label
                   key={s}
                   className="flex cursor-pointer items-center gap-2"
@@ -279,7 +279,11 @@ export function ProductWizardStep1({
                     className="accent-brand"
                   />
                   <span className="text-sm text-foreground">
-                    {s === "ACTIVE" ? "Ativo" : "Descontinuado"}
+                    {s === "ACTIVE"
+                      ? "Ativo"
+                      : s === "SCHEDULED"
+                        ? "Agendado"
+                        : "Descontinuado"}
                   </span>
                 </label>
               ))}
