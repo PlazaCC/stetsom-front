@@ -7,11 +7,36 @@ import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminPagination } from "@/app/admin/_components/crud/admin-pagination";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import { UploadProgressList } from "@/components/upload-progress-list";
-import { useGetApiLibrary } from "@/api/stetsom";
-import type { LibraryAsset, LibraryAssetType } from "@/api/stetsom/model";
+import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
+import { AdminFormSection as AdminCard } from "@/app/admin/_components/crud/admin-form-section";
+import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import {
+  AdminInput,
+  AdminLabel,
+} from "@/app/admin/_components/crud/admin-input";
+import {
+  deleteApiLibraryId,
+  getGetApiLibraryQueryKey,
+  patchApiLibraryId,
+  useGetApiLibrary,
+} from "@/api/stetsom";
+import type {
+  I18nString,
+  LibraryAsset,
+  LibraryAssetType,
+} from "@/api/stetsom/model";
 import { useLibraryUpload } from "@/hooks/use-upload";
 import { cn } from "@/lib/utils";
-import { Archive, Check, FileText, Image, type LucideIcon } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  Archive,
+  Check,
+  FileText,
+  Image,
+  Pencil,
+  Trash2,
+  type LucideIcon,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 
 const PAGE_SIZE = 6;
@@ -52,7 +77,15 @@ function assetAltText(asset: LibraryAsset): string {
 
 // ── Cards de foto ──────────────────────────────────────────────────────────────
 
-function PhotoCard({ asset }: { asset: LibraryAsset }) {
+function PhotoCard({
+  asset,
+  onEdit,
+  onDelete,
+}: {
+  asset: LibraryAsset;
+  onEdit: (asset: LibraryAsset) => void;
+  onDelete: (asset: LibraryAsset) => void;
+}) {
   const [copied, setCopied] = useState(false);
   const fileUrl = getCurrentVersionUrl(asset);
 
@@ -94,6 +127,24 @@ function PhotoCard({ asset }: { asset: LibraryAsset }) {
             )}
           </button>
         </div>
+        <div className="absolute right-1.5 top-1.5 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+          <button
+            type="button"
+            aria-label="Editar"
+            onClick={() => onEdit(asset)}
+            className="flex size-7 items-center justify-center rounded-md bg-white/90 text-foreground shadow hover:bg-white"
+          >
+            <Pencil className="size-3.5" />
+          </button>
+          <button
+            type="button"
+            aria-label="Excluir"
+            onClick={() => onDelete(asset)}
+            className="flex size-7 items-center justify-center rounded-md bg-white/90 text-destructive shadow hover:bg-white"
+          >
+            <Trash2 className="size-3.5" />
+          </button>
+        </div>
       </div>
       <div className="min-w-0">
         <p className="truncate text-sm font-medium text-foreground">
@@ -109,7 +160,15 @@ function PhotoCard({ asset }: { asset: LibraryAsset }) {
 
 // ── Tabela de arquivos ─────────────────────────────────────────────────────────
 
-function FileTable({ assets }: { assets: LibraryAsset[] }) {
+function FileTable({
+  assets,
+  onEdit,
+  onDelete,
+}: {
+  assets: LibraryAsset[];
+  onEdit: (asset: LibraryAsset) => void;
+  onDelete: (asset: LibraryAsset) => void;
+}) {
   return (
     <div className="overflow-hidden rounded-[16px] border border-border bg-card">
       <table className="w-full text-sm">
@@ -142,14 +201,30 @@ function FileTable({ assets }: { assets: LibraryAsset[] }) {
                 {formatBytes(getCurrentVersionSize(asset))}
               </td>
               <td className="px-4 py-3 text-right">
-                <a
-                  href={getCurrentVersionUrl(asset)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-medium text-brand hover:underline"
-                >
-                  Abrir
-                </a>
+                <div className="flex items-center justify-end gap-3">
+                  <a
+                    href={getCurrentVersionUrl(asset)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-medium text-brand hover:underline"
+                  >
+                    Abrir
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => onEdit(asset)}
+                    className="text-xs font-medium text-foreground hover:underline"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onDelete(asset)}
+                    className="text-xs font-medium text-destructive hover:underline"
+                  >
+                    Excluir
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
@@ -211,8 +286,24 @@ export default function AdminBibliotecaPage() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
 
+  const queryClient = useQueryClient();
   const { data: libraryPayload, isError: libraryError } = useGetApiLibrary();
   const { upload, entries, isUploading, clearFinished } = useLibraryUpload();
+
+  const [editTarget, setEditTarget] = useState<LibraryAsset | undefined>();
+  const [deleteTarget, setDeleteTarget] = useState<LibraryAsset | undefined>();
+
+  function invalidateLibrary() {
+    queryClient.invalidateQueries({ queryKey: getGetApiLibraryQueryKey() });
+  }
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteApiLibraryId(id),
+    onSuccess: () => {
+      invalidateLibrary();
+      setDeleteTarget(undefined);
+    },
+  });
 
   const filtered = useMemo(() => {
     const allAssets = libraryPayload?.items ?? [];
@@ -324,12 +415,21 @@ export default function AdminBibliotecaPage() {
         ) : (
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             {paginatedAssets.map((asset) => (
-              <PhotoCard key={asset.id} asset={asset} />
+              <PhotoCard
+                key={asset.id}
+                asset={asset}
+                onEdit={setEditTarget}
+                onDelete={setDeleteTarget}
+              />
             ))}
           </div>
         )
       ) : (
-        <FileTable assets={paginatedAssets} />
+        <FileTable
+          assets={paginatedAssets}
+          onEdit={setEditTarget}
+          onDelete={setDeleteTarget}
+        />
       )}
 
       {filtered.length > PAGE_SIZE && (
@@ -340,6 +440,101 @@ export default function AdminBibliotecaPage() {
           onPageChange={setPage}
         />
       )}
+
+      {editTarget && (
+        <EditAssetModal
+          asset={editTarget}
+          onClose={() => setEditTarget(undefined)}
+          onSaved={() => {
+            invalidateLibrary();
+            setEditTarget(undefined);
+          }}
+        />
+      )}
+
+      <AdminConfirmDialog
+        open={!!deleteTarget}
+        title="Excluir asset?"
+        description={`${deleteTarget?.filename} será removido da biblioteca.`}
+        confirmLabel="Excluir"
+        destructive
+        isPending={deleteMutation.isPending}
+        onConfirm={() => {
+          if (deleteTarget) deleteMutation.mutate(deleteTarget.id);
+        }}
+        onCancel={() => setDeleteTarget(undefined)}
+      />
     </AdminListPage>
+  );
+}
+
+function EditAssetModal({
+  asset,
+  onClose,
+  onSaved,
+}: {
+  asset: LibraryAsset;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [alt, setAlt] = useState<I18nString>(asset.alt ?? { pt: "" });
+  const [tags, setTags] = useState(asset.tags.join(", "));
+
+  const mutation = useMutation({
+    mutationFn: () =>
+      patchApiLibraryId(asset.id, {
+        alt: alt.pt ? alt : undefined,
+        tags: tags
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
+      }),
+    onSuccess: onSaved,
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4">
+      <div className="w-full max-w-md">
+        <AdminCard title="Editar asset" className="shadow-xl">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              mutation.mutate();
+            }}
+            className="space-y-4"
+          >
+            <I18nInput
+              label="Texto alternativo (alt)"
+              value={alt}
+              onChange={setAlt}
+            />
+            <div>
+              <AdminLabel>Tags (separadas por vírgula)</AdminLabel>
+              <AdminInput
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                placeholder="hero, amplificador, 2024"
+              />
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 rounded-md border border-border py-2 text-sm font-medium text-foreground hover:bg-muted"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={mutation.isPending}
+                className="flex-1 rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-60"
+              >
+                {mutation.isPending ? "Salvando..." : "Salvar"}
+              </button>
+            </div>
+          </form>
+        </AdminCard>
+      </div>
+    </div>
   );
 }

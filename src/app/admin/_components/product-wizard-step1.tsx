@@ -7,9 +7,13 @@ import {
   AdminSelect,
 } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
-import type { WizardProductStatus } from "@/app/admin/_components/product-wizard-types";
+import { SortableList } from "@/app/admin/_components/crud/sortable-list";
+import type {
+  WizardProductImage,
+  WizardProductStatus,
+} from "@/app/admin/_components/product-wizard-types";
 import type { I18nString } from "@/api/stetsom/model";
-import { ImagePlus, X } from "lucide-react";
+import { ImagePlus, Star, X } from "lucide-react";
 
 interface Category {
   id: string;
@@ -40,8 +44,6 @@ export interface ProductInfo {
   is_featured: boolean;
   is_spotlight: boolean;
   badge: string;
-  cover_image_url: string;
-  additional_images: string[];
   video_url: string;
   launch_date: string;
   launch_time: string;
@@ -52,63 +54,89 @@ interface ProductWizardStep1Props {
   categories: Category[];
   subcategories: Subcategory[];
   templates: TemplateOption[];
+  images: WizardProductImage[];
   onPatch: (patch: Partial<ProductInfo>) => void;
-  onCoverFile?: (file: File) => void;
+  onImagesChange: (images: WizardProductImage[]) => void;
 }
 
-function ImageSlot({
-  url,
-  label,
-  onSet,
-  onClear,
-  onUploadFile,
+function ProductGallery({
+  images,
+  onChange,
 }: {
-  url: string;
-  label: string;
-  onSet: (url: string) => void;
-  onClear?: () => void;
-  onUploadFile?: (file: File) => void;
+  images: WizardProductImage[];
+  onChange: (images: WizardProductImage[]) => void;
 }) {
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    onSet(URL.createObjectURL(file));
-    onUploadFile?.(file);
+  function reindex(list: WizardProductImage[]): WizardProductImage[] {
+    return list.map((img, i) => ({ ...img, order: i }));
+  }
+
+  function addFiles(files: FileList | null) {
+    if (!files) return;
+    const next = Array.from(files).map((file, i) => ({
+      id: `img-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 6)}`,
+      file,
+      preview_url: URL.createObjectURL(file),
+      order: images.length + i,
+    }));
+    onChange(reindex([...images, ...next]));
   }
 
   return (
-    <div className="relative flex aspect-square flex-col items-center justify-center gap-1 overflow-hidden rounded-md border border-dashed border-border bg-muted text-center">
-      {url ? (
-        <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={url}
-            alt={label}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          {onClear && (
-            <button
-              type="button"
-              onClick={onClear}
-              className="absolute right-1 top-1 flex size-5 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
-            >
-              <X className="size-3" />
-            </button>
+    <div className="space-y-3">
+      {images.length > 0 && (
+        <SortableList
+          items={images}
+          getId={(img) => img.id}
+          onReorder={(list) => onChange(reindex(list))}
+          renderItem={(img, handle) => (
+            <div className="flex items-center gap-3 rounded-md border border-border bg-card p-2">
+              {handle}
+              <div className="relative size-14 shrink-0 overflow-hidden rounded bg-muted">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={img.preview_url}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <span className="flex-1 text-xs text-muted-foreground">
+                {img.order === 0 ? (
+                  <span className="inline-flex items-center gap-1 font-medium text-foreground">
+                    <Star className="size-3 fill-brand text-brand" />
+                    Capa
+                  </span>
+                ) : (
+                  `Imagem ${img.order + 1}`
+                )}
+              </span>
+              <button
+                type="button"
+                aria-label="Remover imagem"
+                onClick={() =>
+                  onChange(reindex(images.filter((i) => i.id !== img.id)))
+                }
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
           )}
-        </>
-      ) : (
-        <>
-          <ImagePlus className="size-5 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">{label}</span>
-          <input
-            type="file"
-            accept="image/*"
-            className="absolute inset-0 cursor-pointer opacity-0"
-            title={label}
-            onChange={handleFile}
-          />
-        </>
+        />
       )}
+      <label className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card py-4 text-sm text-muted-foreground hover:border-brand hover:text-foreground">
+        <ImagePlus className="size-5" />
+        Adicionar imagens
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          onChange={(e) => {
+            addFiles(e.target.files);
+            e.target.value = "";
+          }}
+        />
+      </label>
     </div>
   );
 }
@@ -118,8 +146,9 @@ export function ProductWizardStep1({
   categories,
   subcategories,
   templates,
+  images,
   onPatch,
-  onCoverFile,
+  onImagesChange,
 }: ProductWizardStep1Props) {
   const filteredSubcategories = subcategories.filter(
     (s) => s.category_id === info.category_id,
@@ -131,22 +160,10 @@ export function ProductWizardStep1({
   return (
     <div className="space-y-6">
       <AdminFormSection
-        title="Foto do produto"
-        description="A imagem de capa é usada como thumbnail no catálogo."
+        title="Fotos do produto"
+        description="A primeira imagem (arraste para reordenar) é a capa usada no catálogo."
       >
-        <div className="w-40">
-          <ImageSlot
-            url={info.cover_image_url}
-            label="Foto principal"
-            onSet={(url) => onPatch({ cover_image_url: url })}
-            onUploadFile={onCoverFile}
-            onClear={
-              info.cover_image_url
-                ? () => onPatch({ cover_image_url: "" })
-                : undefined
-            }
-          />
-        </div>
+        <ProductGallery images={images} onChange={onImagesChange} />
       </AdminFormSection>
 
       <AdminFormSection title="Identificação">

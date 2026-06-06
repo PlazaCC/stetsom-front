@@ -28,8 +28,12 @@ export interface WizardProductVariation {
 
 export interface WizardProductImage {
   id: string;
-  library_id: string;
-  file_url: string;
+  /** Present for images already persisted on the product. */
+  image_id?: string;
+  /** Present for newly added images pending upload. */
+  file?: File;
+  /** Object URL (new) or remote URL (existing) for preview. */
+  preview_url: string;
   order: number;
 }
 

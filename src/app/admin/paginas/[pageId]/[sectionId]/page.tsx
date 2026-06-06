@@ -3,7 +3,8 @@
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminSuccessPage } from "@/app/admin/_components/crud/admin-success-page";
 import { AdminSaveBar } from "@/app/admin/_components/crud/admin-save-bar";
-import { SectionFormRenderer } from "@/app/admin/paginas/_components/section-form-renderer";
+import { PAGE_SECTION_FORMS } from "@/app/admin/paginas/_components/page-section-forms";
+import { findSectionTemplate } from "@/app/admin/paginas/_components/page-section-catalog";
 import {
   useGetApiPagesSlugCms,
   patchApiPagesSlugBlocksBlockId,
@@ -113,17 +114,13 @@ export default function AdminSectionEditorPage({
     );
   }
 
-  const displaySection = {
-    id: block.block_id,
-    type: block.type,
-    order: block.order,
-    data: localData ?? block.data,
-    block_id: block.block_id,
-  };
+  const tpl = findSectionTemplate(block.section_id);
+  const Form = PAGE_SECTION_FORMS[block.section_id];
+  const sectionData = localData ?? block.data ?? {};
 
   return (
     <AdminListPage
-      title={block.type}
+      title={tpl?.label ?? block.section_id}
       icon={FileText}
       toolbar={
         <div className="flex items-center gap-2">
@@ -136,7 +133,13 @@ export default function AdminSectionEditorPage({
         </div>
       }
     >
-      <SectionFormRenderer section={displaySection} onChange={handleChange} />
+      {Form ? (
+        <Form data={sectionData} onChange={handleChange} />
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          Esta seção ({block.section_id}) ainda não possui editor configurado.
+        </p>
+      )}
 
       {saveError && <p className="text-sm text-destructive">{saveError}</p>}
 

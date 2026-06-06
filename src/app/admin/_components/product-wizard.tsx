@@ -20,15 +20,20 @@ import type { ProductInfo } from "@/app/admin/_components/product-wizard-step1";
 import { ProductWizardStep1 } from "@/app/admin/_components/product-wizard-step1";
 import type {
   WizardProductFile,
+  WizardProductImage,
   WizardProductVariation,
 } from "@/app/admin/_components/product-wizard-types";
 import {
   deleteApiProductsId,
   deleteApiProductsIdBlocksBlockId,
+  deleteApiProductsIdImagesImageId,
   patchApiProductsId,
   patchApiProductsIdBlocksBlockId,
+  patchApiProductsIdImagesImageId,
   postApiProducts,
   postApiProductsIdBlocks,
+  postApiProductsIdFiles,
+  postApiProductsIdImages,
   useGetApiAttributes,
   useGetApiCategories,
   useGetApiTemplates,
@@ -43,7 +48,6 @@ import { useAdminToast } from "@/hooks/use-admin-toast";
 import { useInlineUpload } from "@/hooks/use-inline-upload";
 import { useMutation } from "@tanstack/react-query";
 import { Package } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -83,8 +87,6 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
     is_featured: false,
     is_spotlight: false,
     badge: "",
-    cover_image_url: "",
-    additional_images: [],
     video_url: "",
     launch_date: new Date().toISOString().split("T")[0],
     launch_time: "00:00",
@@ -110,9 +112,22 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
           : "ACTIVE",
     is_featured: p.is_featured ?? false,
     is_spotlight: p.is_spotlight ?? false,
-    cover_image_url: p.images?.[0]?.image_url ?? "",
     launch_date: p.launch_date?.split("T")[0] ?? base.launch_date,
   };
+}
+
+function buildInitialImages(
+  detail?: CmsProductDetailPayload,
+): WizardProductImage[] {
+  if (!detail) return [];
+  return [...detail.product.images]
+    .sort((a, b) => a.order - b.order)
+    .map((img) => ({
+      id: img.image_id,
+      image_id: img.image_id,
+      preview_url: img.image_url ?? "",
+      order: img.order,
+    }));
 }
 
 function buildInitialVariations(
@@ -239,8 +254,14 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const [blocks, setBlocks] = useState<DraftBlock[]>(
     buildInitialBlocks(initial),
   );
-  const [files] = useState<WizardProductFile[]>([]);
-  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<WizardProductFile[]>([]);
+  const [newFileIds] = useState<Set<string>>(() => new Set());
+  const [images, setImages] = useState<WizardProductImage[]>(
+    buildInitialImages(initial),
+  );
+  const [initialImageIds] = useState<string[]>(() =>
+    (initial?.product.images ?? []).map((img) => img.image_id),
+  );
 
   const [productId, setProductId] = useState<string | null>(
     initial?.product.id ?? null,
@@ -317,6 +338,33 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
       }
       return next;
     });
+    // Prefill the active variation's specs from the chosen template's
+    // attributes (only when it has no specs yet, to avoid clobbering edits).
+    if (patch.template_id) {
+      const tpl = (templatesQuery.data ?? []).find(
+        (t) => t.id === patch.template_id,
+      );
+      if (tpl) {
+        const attrs = attributesQuery.data ?? [];
+        const prefilled = [...tpl.attributes]
+          .sort((a, b) => a.order - b.order)
+          .map((ta, i) => ({
+            id: `spec-tpl-${ta.attribute_id}-${i}`,
+            attribute_id: ta.attribute_id,
+            attribute_name: attrs.find((a) => a.id === ta.attribute_id)?.name,
+            value: { pt: "" },
+            order: i,
+            highlighted: false,
+          }));
+        setVariations((prev) =>
+          prev.map((v) =>
+            v.id === activeVariationId && v.specs.length === 0
+              ? { ...v, specs: prefilled }
+              : v,
+          ),
+        );
+      }
+    }
     setIsDirty(true);
   }
 
@@ -341,10 +389,81 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     }
   }
 
+  /**
+   * Reconcile the product gallery: delete removed images, upload new ones via
+   * the presign-on-POST flow, and patch the order of existing ones. Image at
+   * order 0 is the catalog cover.
+   */
+  async function syncImages(id: string) {
+    const currentImageIds = new Set(
+      images.filter((img) => img.image_id).map((img) => img.image_id as string),
+    );
+    const removed = initialImageIds.filter((iid) => !currentImageIds.has(iid));
+    await Promise.all(
+      removed.map((iid) => deleteApiProductsIdImagesImageId(id, iid)),
+    );
+
+    for (const [index, img] of images.entries()) {
+      if (img.file) {
+        const { upload } = await postApiProductsIdImages(id, {
+          file: {
+            fileName: img.file.name,
+            mimeType: img.file.type,
+            sizeBytes: img.file.size,
+          },
+          order: index,
+        });
+        await fetch(upload.uploadUrl, {
+          method: upload.method,
+          headers: upload.headers as Record<string, string>,
+          body: img.file,
+        });
+      } else if (img.image_id && img.order !== index) {
+        await patchApiProductsIdImagesImageId(id, img.image_id, {
+          order: index,
+        });
+      }
+    }
+  }
+
+  /** Link newly added library files to the product. */
+  async function syncFiles(id: string) {
+    const toAdd = files.filter((f) => newFileIds.has(f.id));
+    for (const f of toAdd) {
+      await postApiProductsIdFiles(id, {
+        library_id: f.library_id,
+        is_active: f.is_active,
+      });
+    }
+    newFileIds.clear();
+  }
+
+  function addFile(file: { library_id: string; file_url: string }) {
+    const id = `file-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    newFileIds.add(id);
+    setFiles((prev) => [
+      ...prev,
+      {
+        id,
+        library_id: file.library_id,
+        file_url: file.file_url,
+        type: "MANUAL",
+        is_active: true,
+      },
+    ]);
+    setIsDirty(true);
+  }
+
+  function removeFile(fileId: string) {
+    newFileIds.delete(fileId);
+    setFiles((prev) => prev.filter((f) => f.id !== fileId));
+    setIsDirty(true);
+  }
+
   async function handleSave(
     overrideStatus?: string,
   ): Promise<ProductMutationResult> {
-    const hasImage = !!coverImageFile || !!initial?.product.images?.length;
+    const hasImage = images.length > 0;
     const status =
       overrideStatus ?? resolveStatus(info, blocks, info.status, hasImage);
     const payload = buildPayload(info, variations, status);
@@ -358,7 +477,11 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
       setProductId(result.id);
     }
 
-    if (id) await syncBlocks(id);
+    if (id) {
+      await syncBlocks(id);
+      await syncImages(id);
+      await syncFiles(id);
+    }
 
     setLastSavedAt(new Date());
     setIsDirty(false);
@@ -390,7 +513,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
 
   async function handlePublish() {
     try {
-      const hasImage = !!coverImageFile || !!initial?.product.images?.length;
+      const hasImage = images.length > 0;
       const result = await handleSave(
         resolveStatus(info, blocks, info.status, hasImage),
       );
@@ -444,13 +567,13 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     <div className="space-y-4">
       <AdminFormSection title="Prévia">
         <div className="overflow-hidden rounded-md border border-border bg-muted">
-          {info.cover_image_url ? (
+          {images[0]?.preview_url ? (
             <div className="relative h-36 w-full">
-              <Image
-                src={info.cover_image_url}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={images[0].preview_url}
                 alt={info.name.pt}
-                fill
-                className="object-cover"
+                className="h-full w-full object-cover"
               />
             </div>
           ) : (
@@ -552,8 +675,12 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
             categories={categories}
             subcategories={subcategories}
             templates={templates}
+            images={images}
             onPatch={patchInfo}
-            onCoverFile={setCoverImageFile}
+            onImagesChange={(imgs) => {
+              setImages(imgs);
+              setIsDirty(true);
+            }}
           />
         )}
 
@@ -570,7 +697,13 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           />
         )}
 
-        {step === 3 && <ProductWizardStepFiles files={files} />}
+        {step === 3 && (
+          <ProductWizardStepFiles
+            files={files}
+            onAdd={addFile}
+            onRemove={removeFile}
+          />
+        )}
 
         {step === 4 && (
           <div className="space-y-6">

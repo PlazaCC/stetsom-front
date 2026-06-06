@@ -7,9 +7,14 @@ import {
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminDrawer } from "@/app/admin/_components/crud/admin-drawer";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
-import { useGetApiMessages } from "@/api/stetsom";
+import {
+  getGetApiMessagesQueryKey,
+  patchApiMessagesId,
+  useGetApiMessages,
+} from "@/api/stetsom";
 import type { ContactMessage } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Mail, Settings } from "lucide-react";
 import { useState } from "react";
 
@@ -24,12 +29,19 @@ const DEPARTMENTS: string[] = [
 ];
 
 export default function AdminMensagensPage() {
+  const queryClient = useQueryClient();
   const messagesQuery = useGetApiMessages();
   const [localOverrides, setLocalOverrides] = useState<
     Record<string, Partial<ContactMessage>>
   >({});
   const [selected, setSelected] = useState<ContactMessage | undefined>();
   const [activeTab, setActiveTab] = useState<Tab>("contatos");
+
+  const markReadMutation = useMutation({
+    mutationFn: (id: string) => patchApiMessagesId(id),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: getGetApiMessagesQueryKey() }),
+  });
 
   const messages: ContactMessage[] = (messagesQuery.data?.items ?? []).map(
     (m) => ({
@@ -43,6 +55,7 @@ export default function AdminMensagensPage() {
       ...prev,
       [id]: { ...prev[id], is_read: true },
     }));
+    markReadMutation.mutate(id);
   }
 
   function handleOpen(message: ContactMessage) {
