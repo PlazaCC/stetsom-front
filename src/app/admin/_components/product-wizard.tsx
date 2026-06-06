@@ -2,11 +2,14 @@
 
 import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
 import { AdminPanel } from "@/app/admin/_components/admin-panel";
-import type { DraftBlock } from "@/app/admin/_components/crud/admin-block-builder";
-import { AdminBlockBuilder } from "@/app/admin/_components/crud/admin-block-builder";
+import { AdminSaveBar } from "@/app/admin/_components/crud/admin-save-bar";
+import {
+  BlockBuilder,
+  type DraftBlock,
+} from "@/app/admin/_components/crud/block-builder";
+import { PRODUCT_BLOCK_REGISTRY } from "@/app/admin/_components/crud/product-block-registry";
 import { AdminDeleteAction } from "@/app/admin/_components/crud/admin-delete-action";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import { AdminSaveBar } from "@/app/admin/_components/crud/admin-save-bar";
 import type { AdminStep } from "@/app/admin/_components/crud/admin-step-indicator";
 import { AdminWizardPage } from "@/app/admin/_components/crud/admin-wizard-page";
 import { ProductWizardStepFiles } from "@/app/admin/_components/product-wizard-step-files";
@@ -16,24 +19,31 @@ import { ProductWizardStepSuccess } from "@/app/admin/_components/product-wizard
 import type { ProductInfo } from "@/app/admin/_components/product-wizard-step1";
 import { ProductWizardStep1 } from "@/app/admin/_components/product-wizard-step1";
 import type {
-  WizardProductVariation,
   WizardProductFile,
+  WizardProductVariation,
 } from "@/app/admin/_components/product-wizard-types";
-import Image from "next/image";
 import {
-  useGetApiCategories,
-  postApiProducts,
-  patchApiProductsId,
   deleteApiProductsId,
+  deleteApiProductsIdBlocksBlockId,
+  patchApiProductsId,
+  patchApiProductsIdBlocksBlockId,
+  postApiProducts,
+  postApiProductsIdBlocks,
+  useGetApiAttributes,
+  useGetApiCategories,
+  useGetApiTemplates,
 } from "@/api/stetsom";
 import type {
-  PostApiProductsBody,
   CmsProductDetailPayload,
+  PostApiProductsBody,
+  PostApiProductsIdBlocksBodyData,
+  PostApiProductsIdBlocksBodyType,
 } from "@/api/stetsom/model";
-import { useInlineUpload } from "@/hooks/use-inline-upload";
 import { useAdminToast } from "@/hooks/use-admin-toast";
+import { useInlineUpload } from "@/hooks/use-inline-upload";
 import { useMutation } from "@tanstack/react-query";
 import { Package } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -55,97 +65,144 @@ function slugify(text: string): string {
   return text
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 }
 
 function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
-  if (!detail) {
-    return {
-      name: "",
-      slug: "",
-      category_id: "",
-      subcategory_id: "",
-      status: "DRAFT",
-      badge: "",
-      description: "",
-      cover_image_url: "",
-      additional_images: [],
-      video_url: "",
-      launch_date: new Date().toISOString().split("T")[0],
-      launch_time: "00:00",
-    };
-  }
-
-  return {
-    name: detail.product.name?.pt ?? "",
-    slug: detail.product.slug?.pt ?? "",
-    category_id: detail.product.category_id,
-    subcategory_id: detail.product.line_id ?? "",
-    status: detail.product.is_discontinued
-      ? "DISCONTINUED"
-      : detail.product.status === "DRAFT"
-        ? "DRAFT"
-        : detail.product.status === "SCHEDULED"
-          ? "SCHEDULED"
-          : "ACTIVE",
+  const base: ProductInfo = {
+    name: { pt: "" },
+    slug: { pt: "" },
+    description: { pt: "" },
+    sku: "",
+    category_id: "",
+    subcategory_id: "",
+    template_id: "",
+    status: "DRAFT",
+    is_featured: false,
+    is_spotlight: false,
     badge: "",
-    description: detail.product.description?.pt ?? "",
-    cover_image_url: detail.product.images?.[0]?.image_url ?? "",
+    cover_image_url: "",
     additional_images: [],
     video_url: "",
-    launch_date: detail.product.launch_date?.split("T")[0] ?? "",
+    launch_date: new Date().toISOString().split("T")[0],
     launch_time: "00:00",
+  };
+  if (!detail) return base;
+
+  const p = detail.product;
+  return {
+    ...base,
+    name: p.name ?? { pt: "" },
+    slug: p.slug ?? { pt: "" },
+    description: p.description ?? { pt: "" },
+    sku: p.sku ?? "",
+    category_id: p.category_id,
+    subcategory_id: p.line_id ?? "",
+    template_id: p.template_id ?? "",
+    status: p.is_discontinued
+      ? "DISCONTINUED"
+      : p.status === "DRAFT"
+        ? "DRAFT"
+        : p.status === "SCHEDULED"
+          ? "SCHEDULED"
+          : "ACTIVE",
+    is_featured: p.is_featured ?? false,
+    is_spotlight: p.is_spotlight ?? false,
+    cover_image_url: p.images?.[0]?.image_url ?? "",
+    launch_date: p.launch_date?.split("T")[0] ?? base.launch_date,
   };
 }
 
 function buildInitialVariations(
   detail?: CmsProductDetailPayload,
 ): WizardProductVariation[] {
-  if (!detail) {
-    return [{ id: "variation-default", label: "1 Ohm", order: 1, specs: [] }];
+  if (!detail || detail.product.variants.length === 0) {
+    return [{ id: "variation-default", label: "Padrão", order: 0, specs: [] }];
   }
-
-  const variants = [...detail.product.variants].sort(
-    (a, b) => a.order - b.order,
-  );
-
-  return variants.length > 0
-    ? variants.map((v) => ({
-        id: v.variant_id,
-        label: v.name,
-        order: v.order,
-        specs: v.attributes.map((a) => ({
-          id: `attr-${a.attribute_id}`,
-          attribute: a.attribute_name?.pt ?? "",
-          value: a.value?.pt ?? "",
+  return [...detail.product.variants]
+    .sort((a, b) => a.order - b.order)
+    .map((v) => ({
+      id: v.variant_id,
+      label: v.name,
+      order: v.order,
+      specs: v.attributes
+        .slice()
+        .sort((a, b) => a.order - b.order)
+        .map((a, i) => ({
+          id: `attr-${v.variant_id}-${a.attribute_id}-${i}`,
+          attribute_id: a.attribute_id,
+          attribute_name: a.attribute_name,
+          value: a.value ?? { pt: "" },
           order: a.order,
+          highlighted: a.highlighted,
         })),
-      }))
-    : [{ id: "variation-default", label: "Padrão", order: 1, specs: [] }];
-}
-
-function buildInitialHighlights(detail?: CmsProductDetailPayload): string[] {
-  return detail?.product.highlight_attributes ?? [];
+    }));
 }
 
 function buildInitialBlocks(detail?: CmsProductDetailPayload): DraftBlock[] {
   if (!detail) return [];
-  return detail.product.page_blocks.map((b) => {
-    const d = b.data as Record<string, unknown>;
-    const images = Array.isArray(d.images) ? (d.images as string[]) : [];
-    return {
+  return detail.product.page_blocks
+    .slice()
+    .sort((a, b) => a.order - b.order)
+    .map((b) => ({
       id: b.block_id,
-      type: b.type as DraftBlock["type"],
-      data: {
-        images: images[0] ?? "",
-        caption: typeof d.caption === "string" ? d.caption : "",
-        layout: typeof d.layout === "string" ? d.layout : "default",
-      } as Record<string, unknown>,
+      type: b.type,
+      data: (b.data ?? {}) as Record<string, unknown>,
       order: b.order,
-    };
-  });
+    }));
+}
+
+function buildPayload(
+  info: ProductInfo,
+  variations: WizardProductVariation[],
+  status: string,
+): PostApiProductsBody {
+  const launchDate = info.launch_date
+    ? new Date(`${info.launch_date}T${info.launch_time}:00`).toISOString()
+    : new Date().toISOString();
+
+  const highlightIds = new Set<string>();
+  for (const v of variations) {
+    for (const s of v.specs) {
+      if (s.highlighted && s.attribute_id) highlightIds.add(s.attribute_id);
+    }
+  }
+
+  return {
+    name: info.name,
+    slug: info.slug.pt ? info.slug : { pt: slugify(info.name.pt) },
+    description: info.description.pt ? info.description : undefined,
+    category_id: info.category_id,
+    line_id: info.subcategory_id || null,
+    template_id: info.template_id || null,
+    status:
+      status === "ACTIVE"
+        ? "PUBLISHED"
+        : status === "SCHEDULED"
+          ? "SCHEDULED"
+          : "DRAFT",
+    is_discontinued: status === "DISCONTINUED",
+    is_featured: info.is_featured,
+    is_spotlight: info.is_spotlight,
+    launch_date: launchDate,
+    highlight_attributes: [...highlightIds],
+    available_locales: ["pt"],
+    variants: variations.map((v) => ({
+      variant_id: v.id.startsWith("variation-") ? undefined : v.id,
+      name: v.label,
+      order: v.order,
+      attributes: v.specs
+        .filter((s) => s.attribute_id)
+        .map((s) => ({
+          attribute_id: s.attribute_id,
+          value: s.value,
+          order: s.order,
+          highlighted: s.highlighted,
+        })),
+    })),
+  };
 }
 
 function resolveStatus(
@@ -155,49 +212,8 @@ function resolveStatus(
   hasImage: boolean,
 ): string {
   const hasRequired =
-    !!info.name && !!info.category_id && hasImage && blocks.length > 0;
+    !!info.name.pt && !!info.category_id && hasImage && blocks.length > 0;
   return hasRequired ? desiredStatus : "DRAFT";
-}
-
-function buildPayload(
-  info: ProductInfo,
-  variations: WizardProductVariation[],
-  blocks: DraftBlock[],
-  highlightAttributes: string[],
-  status: string,
-): PostApiProductsBody {
-  const launchDate = info.launch_date
-    ? new Date(`${info.launch_date}T${info.launch_time}:00`).toISOString()
-    : new Date().toISOString();
-
-  return {
-    name: { pt: info.name },
-    slug: { pt: info.slug },
-    description: info.description ? { pt: info.description } : undefined,
-    category_id: info.category_id,
-    line_id: info.subcategory_id || null,
-    status:
-      status === "ACTIVE"
-        ? "PUBLISHED"
-        : status === "SCHEDULED"
-          ? "SCHEDULED"
-          : "DRAFT",
-    is_discontinued: status === "DISCONTINUED",
-    launch_date: launchDate,
-    highlight_attributes: highlightAttributes,
-    variants: variations.map((v) => ({
-      variant_id: v.id.startsWith("variation-") ? undefined : v.id,
-      name: v.label,
-      order: v.order,
-      attributes: v.specs.map((s) => ({
-        attribute_id: "",
-        value: { pt: s.value },
-        order: s.order,
-        highlighted: highlightAttributes.includes(s.attribute),
-      })),
-    })),
-    available_locales: ["pt"],
-  };
 }
 
 const STEP_LABELS: Record<Step, string> = {
@@ -220,33 +236,33 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const [activeVariationId, setActiveVariationId] = useState<string>(
     buildInitialVariations(initial)[0].id,
   );
-  const [highlightAttributes, setHighlightAttributes] = useState<string[]>(
-    buildInitialHighlights(initial),
-  );
   const [blocks, setBlocks] = useState<DraftBlock[]>(
     buildInitialBlocks(initial),
   );
-  const [files, setFiles] = useState<WizardProductFile[]>([]);
+  const [files] = useState<WizardProductFile[]>([]);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
 
   const [productId, setProductId] = useState<string | null>(
     initial?.product.id ?? null,
+  );
+  const [initialBlockIds] = useState<string[]>(() =>
+    (initial?.product.page_blocks ?? []).map((b) => b.block_id),
   );
   const [isDirty, setIsDirty] = useState(mode === "edit");
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [publishedResult, setPublishedResult] =
     useState<ProductMutationResult | null>(null);
 
-  const categoriesQuery = useGetApiCategories({});
+  const categoriesQuery = useGetApiCategories();
+  const templatesQuery = useGetApiTemplates();
+  const attributesQuery = useGetApiAttributes();
   const rawCategories = categoriesQuery.data ?? [];
 
   const categories = rawCategories.map((cat) => ({
     id: cat.id,
     name: cat.name,
     slug: cat.slug,
-    order: cat.order,
   }));
-
   const subcategories = rawCategories.flatMap((cat) =>
     cat.lines.map((line) => ({
       id: line.line_id,
@@ -255,16 +271,19 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
       category_id: cat.id,
     })),
   );
+  const templates = (templatesQuery.data ?? []).map((t) => ({
+    id: t.id,
+    name: t.name.pt,
+    category_id: t.category_id,
+  }));
 
   const createMutation = useMutation({
     mutationFn: (body: PostApiProductsBody) => postApiProducts(body),
   });
-
   const updateMutation = useMutation({
     mutationFn: ({ id, body }: { id: string; body: PostApiProductsBody }) =>
       patchApiProductsId(id, body),
   });
-
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteApiProductsId(id),
   });
@@ -290,20 +309,36 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     status: step > n ? "done" : step === n ? "active" : "pending",
   }));
 
-  function updateInfo(key: keyof ProductInfo, value: string | string[]) {
+  function patchInfo(patch: Partial<ProductInfo>) {
     setInfo((prev) => {
-      const next = { ...prev, [key]: value };
-      if (key === "name" && mode === "create") {
-        next.slug = slugify(value as string);
+      const next = { ...prev, ...patch };
+      if (patch.name && mode === "create" && !prev.slug.pt) {
+        next.slug = { pt: slugify(patch.name.pt) };
       }
       return next;
     });
     setIsDirty(true);
   }
 
-  function removeFile(fileId: string) {
-    setFiles((prev) => prev.filter((f) => f.id !== fileId));
-    setIsDirty(true);
+  /** Reconcile product page-blocks via the block sub-resource endpoints. */
+  async function syncBlocks(id: string) {
+    const currentIds = new Set(blocks.map((b) => b.id));
+    const removed = initialBlockIds.filter((bid) => !currentIds.has(bid));
+    await Promise.all(
+      removed.map((bid) => deleteApiProductsIdBlocksBlockId(id, bid)),
+    );
+    for (const block of blocks) {
+      const body = {
+        type: block.type as PostApiProductsIdBlocksBodyType,
+        order: block.order,
+        data: block.data as PostApiProductsIdBlocksBodyData,
+      };
+      if (initialBlockIds.includes(block.id)) {
+        await patchApiProductsIdBlocksBlockId(id, block.id, body);
+      } else {
+        await postApiProductsIdBlocks(id, body);
+      }
+    }
   }
 
   async function handleSave(
@@ -312,30 +347,28 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     const hasImage = !!coverImageFile || !!initial?.product.images?.length;
     const status =
       overrideStatus ?? resolveStatus(info, blocks, info.status, hasImage);
-    const payload = buildPayload(
-      info,
-      variations,
-      blocks,
-      highlightAttributes,
-      status,
-    );
+    const payload = buildPayload(info, variations, status);
 
-    if (productId) {
-      await updateMutation.mutateAsync({ id: productId, body: payload });
+    let id = productId;
+    if (id) {
+      await updateMutation.mutateAsync({ id, body: payload });
     } else {
       const result = await createMutation.mutateAsync(payload);
+      id = result.id;
       setProductId(result.id);
     }
 
+    if (id) await syncBlocks(id);
+
     setLastSavedAt(new Date());
     setIsDirty(false);
-    return { id: productId ?? "", slug: info.slug, status };
+    return { id: id ?? "", slug: info.slug.pt, status };
   }
 
   async function handleSaveDraft() {
     try {
       await handleSave("DRAFT");
-      adminToast.draft(info.name || undefined);
+      adminToast.draft(info.name.pt || undefined);
     } catch {
       adminToast.error("Erro ao salvar rascunho");
     }
@@ -357,16 +390,12 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
 
   async function handlePublish() {
     try {
+      const hasImage = !!coverImageFile || !!initial?.product.images?.length;
       const result = await handleSave(
-        resolveStatus(
-          info,
-          blocks,
-          info.status,
-          !!coverImageFile || !!initial?.product.images?.length,
-        ),
+        resolveStatus(info, blocks, info.status, hasImage),
       );
       if (result.status === "DRAFT") {
-        adminToast.draft(info.name || undefined);
+        adminToast.draft(info.name.pt || undefined);
       } else {
         adminToast.success(
           mode === "create"
@@ -385,7 +414,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     if (!productId) return;
     try {
       await deleteMutation.mutateAsync(productId);
-      adminToast.deleted(info.name || undefined);
+      adminToast.deleted(info.name.pt || undefined);
       router.push("/admin/produtos");
     } catch {
       adminToast.error("Erro ao excluir produto");
@@ -393,7 +422,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   }
 
   const title =
-    mode === "create" ? "Novo Produto" : `Editar: ${info.name || "Produto"}`;
+    mode === "create" ? "Novo Produto" : `Editar: ${info.name.pt || "Produto"}`;
 
   const category = categories.find((c) => c.id === info.category_id);
   const subcategory = subcategories.find((s) => s.id === info.subcategory_id);
@@ -419,7 +448,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
             <div className="relative h-36 w-full">
               <Image
                 src={info.cover_image_url}
-                alt={info.name}
+                alt={info.name.pt}
                 fill
                 className="object-cover"
               />
@@ -434,7 +463,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           <div className="flex justify-between gap-2">
             <dt className="shrink-0 text-muted-foreground">Nome</dt>
             <dd className="truncate font-medium text-foreground">
-              {info.name || "—"}
+              {info.name.pt || "—"}
             </dd>
           </div>
           <div className="flex justify-between gap-2">
@@ -478,7 +507,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           <div className="flex justify-between gap-2">
             <dt className="shrink-0 text-muted-foreground">Slug</dt>
             <dd className="truncate font-mono text-foreground">
-              {info.slug || "—"}
+              {info.slug.pt || "—"}
             </dd>
           </div>
         </dl>
@@ -500,7 +529,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           {mode === "edit" && productId && (
             <AdminDeleteAction
               label="Excluir produto"
-              confirmTitle={`Excluir "${info.name}"?`}
+              confirmTitle={`Excluir "${info.name.pt}"?`}
               confirmDescription="O produto será removido permanentemente. Esta ação não pode ser desfeita."
               confirmLabel="Sim, excluir"
               onConfirm={handleDelete}
@@ -522,7 +551,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
             info={info}
             categories={categories}
             subcategories={subcategories}
-            onChange={updateInfo}
+            templates={templates}
+            onPatch={patchInfo}
             onCoverFile={setCoverImageFile}
           />
         )}
@@ -531,16 +561,16 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           <ProductWizardStepSpecs
             variations={variations}
             activeVariationId={activeVariationId}
-            highlightAttributes={highlightAttributes}
-            onVariationsChange={setVariations}
+            attributes={attributesQuery.data ?? []}
+            onVariationsChange={(v) => {
+              setVariations(v);
+              setIsDirty(true);
+            }}
             onActiveVariationChange={setActiveVariationId}
-            onHighlightAttributesChange={setHighlightAttributes}
           />
         )}
 
-        {step === 3 && (
-          <ProductWizardStepFiles files={files} onRemove={removeFile} />
-        )}
+        {step === 3 && <ProductWizardStepFiles files={files} />}
 
         {step === 4 && (
           <div className="space-y-6">
@@ -548,7 +578,14 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
               title="Blocos de conteúdo"
               description="Adicione e organize os blocos de conteúdo da página do produto."
             >
-              <AdminBlockBuilder value={blocks} onChange={setBlocks} />
+              <BlockBuilder
+                registry={PRODUCT_BLOCK_REGISTRY}
+                value={blocks}
+                onChange={(b) => {
+                  setBlocks(b);
+                  setIsDirty(true);
+                }}
+              />
             </AdminFormSection>
 
             <ProductWizardStepPublish
@@ -556,28 +593,64 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
               specs={activeSpecs}
               categoryName={category?.name}
               subcategoryName={subcategory?.name}
-              onInfoChange={(key, value) => updateInfo(key, value)}
+              onPatch={patchInfo}
             />
           </div>
         )}
       </AdminWizardPage>
 
-      <AdminSaveBar
-        onBack={step > 1 ? handleBack : undefined}
-        onNext={step < 4 ? handleNext : undefined}
+      <AdminSaveBarWrapper
+        step={step}
+        onBack={handleBack}
+        onNext={handleNext}
         onSaveDraft={handleSaveDraft}
-        onPublish={step === 4 ? handlePublish : undefined}
-        isLoading={isSaving}
+        onPublish={handlePublish}
+        isSaving={isSaving}
         isDirty={isDirty}
-        draftSavedAt={lastSavedAt}
-        publishLabel={
-          mode === "create" ? "Publicar produto" : "Salvar alterações"
-        }
-        nextLabel="Próxima etapa"
-        backLabel="Anterior"
-        saveDraftLabel="Salvar rascunho"
-        draftSavedPrefix="Salvo às"
+        lastSavedAt={lastSavedAt}
+        mode={mode}
       />
     </div>
+  );
+}
+
+function AdminSaveBarWrapper({
+  step,
+  onBack,
+  onNext,
+  onSaveDraft,
+  onPublish,
+  isSaving,
+  isDirty,
+  lastSavedAt,
+  mode,
+}: {
+  step: Step;
+  onBack: () => void;
+  onNext: () => void;
+  onSaveDraft: () => void;
+  onPublish: () => void;
+  isSaving: boolean;
+  isDirty: boolean;
+  lastSavedAt: Date | null;
+  mode: "create" | "edit";
+}) {
+  return (
+    <AdminSaveBar
+      onBack={step > 1 ? onBack : undefined}
+      onNext={step < 4 ? onNext : undefined}
+      onSaveDraft={onSaveDraft}
+      onPublish={step === 4 ? onPublish : undefined}
+      isLoading={isSaving}
+      isDirty={isDirty}
+      draftSavedAt={lastSavedAt}
+      publishLabel={
+        mode === "create" ? "Publicar produto" : "Salvar alterações"
+      }
+      nextLabel="Próxima etapa"
+      backLabel="Anterior"
+      saveDraftLabel="Salvar rascunho"
+      draftSavedPrefix="Salvo às"
+    />
   );
 }

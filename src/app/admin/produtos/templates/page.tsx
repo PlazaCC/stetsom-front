@@ -7,48 +7,46 @@ import {
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import {
-  AdminInput,
   AdminLabel,
   AdminSelect,
 } from "@/app/admin/_components/crud/admin-input";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
+import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { ProdutosTabs } from "@/app/admin/produtos/_components/produtos-tabs";
 import {
-  useGetApiTemplates,
+  deleteApiTemplatesId,
   getGetApiTemplatesQueryKey,
+  patchApiTemplatesId,
+  postApiTemplates,
   useGetApiAttributes,
   useGetApiCategories,
-  postApiTemplates,
-  patchApiTemplatesId,
-  deleteApiTemplatesId,
+  useGetApiTemplates,
 } from "@/api/stetsom";
-import type { Template } from "@/api/stetsom";
 import type {
-  PostApiTemplatesBody,
+  I18nString,
   PatchApiTemplatesIdBody,
+  PostApiTemplatesBody,
+  Template,
   TemplateAttrInput,
 } from "@/api/stetsom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { GripVertical, LayoutTemplate, Plus, X } from "lucide-react";
 import { useState } from "react";
 
-interface TemplateFormProps {
-  template?: Template;
-  onClose: () => void;
-  onSave: (data: PostApiTemplatesBody | PatchApiTemplatesIdBody) => void;
-  isPending: boolean;
-}
-
 function TemplateForm({
   template,
   onClose,
   onSave,
   isPending,
-}: TemplateFormProps) {
+}: {
+  template?: Template;
+  onClose: () => void;
+  onSave: (data: PostApiTemplatesBody | PatchApiTemplatesIdBody) => void;
+  isPending: boolean;
+}) {
   const { data: categories = [] } = useGetApiCategories();
   const { data: allAttributes = [] } = useGetApiAttributes();
-  const [pt, setPt] = useState(template?.name.pt ?? "");
-  const [en, setEn] = useState(template?.name.en ?? "");
-  const [es, setEs] = useState(template?.name.es ?? "");
+  const [name, setName] = useState<I18nString>(template?.name ?? { pt: "" });
   const [categoryId, setCategoryId] = useState(
     template?.category_id ?? categories[0]?.id ?? "",
   );
@@ -64,30 +62,13 @@ function TemplateForm({
     (a) => !selectedAttrIds.includes(a.id),
   );
 
-  function addAttribute(attrId: string) {
-    setSelectedAttrIds((prev) => [...prev, attrId]);
-  }
-
-  function removeAttribute(attrId: string) {
-    setSelectedAttrIds((prev) => prev.filter((id) => id !== attrId));
-  }
-
-  function moveUp(attrId: string) {
+  function move(attrId: string, dir: -1 | 1) {
     setSelectedAttrIds((prev) => {
       const idx = prev.indexOf(attrId);
-      if (idx <= 0) return prev;
+      const target = idx + dir;
+      if (idx === -1 || target < 0 || target >= prev.length) return prev;
       const next = [...prev];
-      [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
-      return next;
-    });
-  }
-
-  function moveDown(attrId: string) {
-    setSelectedAttrIds((prev) => {
-      const idx = prev.indexOf(attrId);
-      if (idx === -1 || idx >= prev.length - 1) return prev;
-      const next = [...prev];
-      [next[idx], next[idx + 1]] = [next[idx + 1], next[idx]];
+      [next[idx], next[target]] = [next[target], next[idx]];
       return next;
     });
   }
@@ -99,7 +80,7 @@ function TemplateForm({
       order: i,
     }));
     onSave({
-      name: { pt, en: en || undefined, es: es || undefined },
+      name,
       category_id: categoryId,
       attributes: attributes.length > 0 ? attributes : undefined,
     });
@@ -107,30 +88,13 @@ function TemplateForm({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4">
-      <div className="w-full max-w-lg">
+      <div className="max-h-[85vh] w-full max-w-lg overflow-y-auto">
         <AdminFormSection
           title={template ? "Editar Template" : "Novo Template"}
           className="shadow-xl"
         >
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <AdminLabel>
-                Nome (PT) <span className="text-destructive">*</span>
-              </AdminLabel>
-              <AdminInput
-                required
-                value={pt}
-                onChange={(e) => setPt(e.target.value)}
-              />
-            </div>
-            <div>
-              <AdminLabel>Nome (EN)</AdminLabel>
-              <AdminInput value={en} onChange={(e) => setEn(e.target.value)} />
-            </div>
-            <div>
-              <AdminLabel>Nome (ES)</AdminLabel>
-              <AdminInput value={es} onChange={(e) => setEs(e.target.value)} />
-            </div>
+            <I18nInput label="Nome" required value={name} onChange={setName} />
             <div>
               <AdminLabel>Categoria</AdminLabel>
               <AdminSelect
@@ -155,7 +119,7 @@ function TemplateForm({
                     Nenhum atributo selecionado
                   </p>
                 )}
-                {selectedAttrIds.map((attrId) => {
+                {selectedAttrIds.map((attrId, idx) => {
                   const attr = allAttributes.find((a) => a.id === attrId);
                   return (
                     <div
@@ -168,26 +132,27 @@ function TemplateForm({
                       </span>
                       <button
                         type="button"
-                        onClick={() => moveUp(attrId)}
-                        disabled={selectedAttrIds.indexOf(attrId) === 0}
+                        onClick={() => move(attrId, -1)}
+                        disabled={idx === 0}
                         className="text-xs text-muted-foreground disabled:opacity-30"
                       >
                         ↑
                       </button>
                       <button
                         type="button"
-                        onClick={() => moveDown(attrId)}
-                        disabled={
-                          selectedAttrIds.indexOf(attrId) ===
-                          selectedAttrIds.length - 1
-                        }
+                        onClick={() => move(attrId, 1)}
+                        disabled={idx === selectedAttrIds.length - 1}
                         className="text-xs text-muted-foreground disabled:opacity-30"
                       >
                         ↓
                       </button>
                       <button
                         type="button"
-                        onClick={() => removeAttribute(attrId)}
+                        onClick={() =>
+                          setSelectedAttrIds((prev) =>
+                            prev.filter((id) => id !== attrId),
+                          )
+                        }
                         className="text-destructive hover:opacity-80"
                       >
                         <X className="size-3.5" />
@@ -198,19 +163,15 @@ function TemplateForm({
               </div>
               {availableAttributes.length > 0 && (
                 <div className="mt-2">
-                  <AdminLabel className="text-xs text-muted-foreground">
-                    Adicionar atributo
-                  </AdminLabel>
                   <AdminSelect
                     value=""
                     onChange={(e) => {
                       if (e.target.value) {
-                        addAttribute(e.target.value);
-                        e.target.value = "";
+                        setSelectedAttrIds((prev) => [...prev, e.target.value]);
                       }
                     }}
                   >
-                    <option value="">Selecione...</option>
+                    <option value="">Adicionar atributo...</option>
                     {availableAttributes.map((attr) => (
                       <option key={attr.id} value={attr.id}>
                         {attr.name.pt}
@@ -251,12 +212,14 @@ export default function AdminTemplatesPage() {
   const [editing, setEditing] = useState<Template | undefined>();
   const [deleteTarget, setDeleteTarget] = useState<Template | undefined>();
 
+  function invalidate() {
+    queryClient.invalidateQueries({ queryKey: getGetApiTemplatesQueryKey() });
+  }
+
   const createMutation = useMutation({
     mutationFn: (body: PostApiTemplatesBody) => postApiTemplates(body),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: getGetApiTemplatesQueryKey(),
-      });
+      invalidate();
       closeForm();
     },
   });
@@ -265,9 +228,7 @@ export default function AdminTemplatesPage() {
     mutationFn: ({ id, body }: { id: string; body: PatchApiTemplatesIdBody }) =>
       patchApiTemplatesId(id, body),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: getGetApiTemplatesQueryKey(),
-      });
+      invalidate();
       closeForm();
     },
   });
@@ -275,22 +236,10 @@ export default function AdminTemplatesPage() {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteApiTemplatesId(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: getGetApiTemplatesQueryKey(),
-      });
+      invalidate();
       setDeleteTarget(undefined);
     },
   });
-
-  function openCreate() {
-    setEditing(undefined);
-    setFormOpen(true);
-  }
-
-  function openEdit(t: Template) {
-    setEditing(t);
-    setFormOpen(true);
-  }
 
   function closeForm() {
     setFormOpen(false);
@@ -299,19 +248,14 @@ export default function AdminTemplatesPage() {
 
   function handleSave(data: PostApiTemplatesBody | PatchApiTemplatesIdBody) {
     if (editing) {
-      updateMutation.mutate({
-        id: editing.id,
-        body: data as PatchApiTemplatesIdBody,
-      });
+      updateMutation.mutate({ id: editing.id, body: data });
     } else {
       createMutation.mutate(data as PostApiTemplatesBody);
     }
   }
 
-  function getCategoryName(t: Template): string {
-    if (!t.category_id) return "—";
-    const cat = categories.find((c) => c.id === t.category_id);
-    return cat?.name ?? "—";
+  function categoryName(t: Template): string {
+    return categories.find((c) => c.id === t.category_id)?.name ?? "—";
   }
 
   const columns: AdminTableColumn<Template>[] = [
@@ -333,7 +277,7 @@ export default function AdminTemplatesPage() {
       key: "category",
       header: "Categoria",
       render: (t) => (
-        <span className="text-muted-foreground">{getCategoryName(t)}</span>
+        <span className="text-muted-foreground">{categoryName(t)}</span>
       ),
     },
     {
@@ -345,7 +289,10 @@ export default function AdminTemplatesPage() {
         <div className="flex items-center justify-end gap-3">
           <button
             type="button"
-            onClick={() => openEdit(t)}
+            onClick={() => {
+              setEditing(t);
+              setFormOpen(true);
+            }}
             className="text-xs font-medium text-brand hover:underline"
           >
             Editar
@@ -363,14 +310,18 @@ export default function AdminTemplatesPage() {
   ];
 
   return (
-    <>
+    <div className="flex flex-col gap-5">
+      <ProdutosTabs />
       <AdminListPage
         title="Templates"
         icon={LayoutTemplate}
         action={
           <button
             type="button"
-            onClick={openCreate}
+            onClick={() => {
+              setEditing(undefined);
+              setFormOpen(true);
+            }}
             className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
           >
             <Plus className="size-4" />
@@ -405,11 +356,10 @@ export default function AdminTemplatesPage() {
         destructive
         isPending={deleteMutation.isPending}
         onConfirm={() => {
-          if (!deleteTarget) return;
-          deleteMutation.mutate(deleteTarget.id);
+          if (deleteTarget) deleteMutation.mutate(deleteTarget.id);
         }}
         onCancel={() => setDeleteTarget(undefined)}
       />
-    </>
+    </div>
   );
 }

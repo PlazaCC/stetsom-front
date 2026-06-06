@@ -10,8 +10,6 @@ import {
   FileText,
   Home,
   Image,
-  LayoutTemplate,
-  ListChecks,
   LogOut,
   Mail,
   Package,
@@ -36,8 +34,6 @@ const MAIN_NAV: {
   { href: "/admin/banners", label: "Banners", icon: Image },
   { href: "/admin/representantes", label: "Representantes", icon: Building2 },
   { href: "/admin/assistencias", label: "Assist. Técnicas", icon: Wrench },
-  { href: "/admin/atributos", label: "Atributos", icon: ListChecks },
-  { href: "/admin/templates", label: "Templates", icon: LayoutTemplate },
 ];
 
 const BOTTOM_NAV: { href: string; label: string; icon: LucideIcon }[] = [

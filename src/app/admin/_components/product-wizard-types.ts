@@ -1,4 +1,4 @@
-import type { LibraryAssetType } from "@/api/stetsom/model";
+import type { I18nString, LibraryAssetType } from "@/api/stetsom/model";
 
 export type WizardProductStatus =
   | "ACTIVE"
@@ -8,9 +8,15 @@ export type WizardProductStatus =
 
 export interface WizardProductSpec {
   id: string;
-  attribute: string;
-  value: string;
+  /** Reference to a global attribute (attributes collection). */
+  attribute_id: string;
+  /** Cached attribute name for display. */
+  attribute_name?: I18nString;
+  /** Multilingual technical value, e.g. { pt: "8000W RMS" }. */
+  value: I18nString;
   order: number;
+  /** Highlighted in the product header — limited to 3 across the variant. */
+  highlighted: boolean;
 }
 
 export interface WizardProductVariation {
@@ -20,11 +26,19 @@ export interface WizardProductVariation {
   specs: WizardProductSpec[];
 }
 
+export interface WizardProductImage {
+  id: string;
+  library_id: string;
+  file_url: string;
+  order: number;
+}
+
 export interface WizardProductFile {
   id: string;
+  library_id: string;
   file_url: string;
   type: LibraryAssetType;
-  version: number;
+  locale?: string;
   is_active: boolean;
   name?: string;
 }

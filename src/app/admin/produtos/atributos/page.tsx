@@ -6,11 +6,9 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import {
-  AdminInput,
-  AdminLabel,
-} from "@/app/admin/_components/crud/admin-input";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
+import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { ProdutosTabs } from "@/app/admin/produtos/_components/produtos-tabs";
 import {
   deleteApiAttributesId,
   getGetApiAttributesQueryKey,
@@ -18,6 +16,7 @@ import {
   postApiAttributes,
   useGetApiAttributes,
   type Attribute,
+  type I18nString,
   type PatchApiAttributesIdBody,
   type PostApiAttributesBody,
 } from "@/api/stetsom";
@@ -25,28 +24,22 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ListChecks, Plus } from "lucide-react";
 import { useState } from "react";
 
-interface AttributeFormProps {
-  attribute?: Attribute;
-  onClose: () => void;
-  onSave: (data: PostApiAttributesBody | PatchApiAttributesIdBody) => void;
-  isPending: boolean;
-}
-
 function AttributeForm({
   attribute,
   onClose,
   onSave,
   isPending,
-}: AttributeFormProps) {
-  const [pt, setPt] = useState(attribute?.name.pt ?? "");
-  const [en, setEn] = useState(attribute?.name.en ?? "");
-  const [es, setEs] = useState(attribute?.name.es ?? "");
+}: {
+  attribute?: Attribute;
+  onClose: () => void;
+  onSave: (data: PostApiAttributesBody | PatchApiAttributesIdBody) => void;
+  isPending: boolean;
+}) {
+  const [name, setName] = useState<I18nString>(attribute?.name ?? { pt: "" });
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSave({
-      name: { pt, en: en || undefined, es: es || undefined },
-    });
+    onSave({ name });
   }
 
   return (
@@ -57,24 +50,7 @@ function AttributeForm({
           className="shadow-xl"
         >
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <AdminLabel>
-                Nome (PT) <span className="text-destructive">*</span>
-              </AdminLabel>
-              <AdminInput
-                required
-                value={pt}
-                onChange={(e) => setPt(e.target.value)}
-              />
-            </div>
-            <div>
-              <AdminLabel>Nome (EN)</AdminLabel>
-              <AdminInput value={en} onChange={(e) => setEn(e.target.value)} />
-            </div>
-            <div>
-              <AdminLabel>Nome (ES)</AdminLabel>
-              <AdminInput value={es} onChange={(e) => setEs(e.target.value)} />
-            </div>
+            <I18nInput label="Nome" required value={name} onChange={setName} />
             <div className="flex gap-3 pt-2">
               <button
                 type="button"
@@ -105,12 +81,14 @@ export default function AdminAtributosPage() {
   const [editing, setEditing] = useState<Attribute | undefined>();
   const [deleteTarget, setDeleteTarget] = useState<Attribute | undefined>();
 
+  function invalidate() {
+    queryClient.invalidateQueries({ queryKey: getGetApiAttributesQueryKey() });
+  }
+
   const createMutation = useMutation({
     mutationFn: (body: PostApiAttributesBody) => postApiAttributes(body),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: getGetApiAttributesQueryKey(),
-      });
+      invalidate();
       closeForm();
     },
   });
@@ -124,9 +102,7 @@ export default function AdminAtributosPage() {
       body: PatchApiAttributesIdBody;
     }) => patchApiAttributesId(id, body),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: getGetApiAttributesQueryKey(),
-      });
+      invalidate();
       closeForm();
     },
   });
@@ -134,22 +110,10 @@ export default function AdminAtributosPage() {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteApiAttributesId(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: getGetApiAttributesQueryKey(),
-      });
+      invalidate();
       setDeleteTarget(undefined);
     },
   });
-
-  function openCreate() {
-    setEditing(undefined);
-    setFormOpen(true);
-  }
-
-  function openEdit(a: Attribute) {
-    setEditing(a);
-    setFormOpen(true);
-  }
 
   function closeForm() {
     setFormOpen(false);
@@ -158,10 +122,7 @@ export default function AdminAtributosPage() {
 
   function handleSave(data: PostApiAttributesBody | PatchApiAttributesIdBody) {
     if (editing) {
-      updateMutation.mutate({
-        id: editing.id,
-        body: data as PatchApiAttributesIdBody,
-      });
+      updateMutation.mutate({ id: editing.id, body: data });
     } else {
       createMutation.mutate(data as PostApiAttributesBody);
     }
@@ -198,7 +159,10 @@ export default function AdminAtributosPage() {
         <div className="flex items-center justify-end gap-3">
           <button
             type="button"
-            onClick={() => openEdit(a)}
+            onClick={() => {
+              setEditing(a);
+              setFormOpen(true);
+            }}
             className="text-xs font-medium text-brand hover:underline"
           >
             Editar
@@ -216,14 +180,18 @@ export default function AdminAtributosPage() {
   ];
 
   return (
-    <>
+    <div className="flex flex-col gap-5">
+      <ProdutosTabs />
       <AdminListPage
         title="Atributos"
         icon={ListChecks}
         action={
           <button
             type="button"
-            onClick={openCreate}
+            onClick={() => {
+              setEditing(undefined);
+              setFormOpen(true);
+            }}
             className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
           >
             <Plus className="size-4" />
@@ -258,11 +226,10 @@ export default function AdminAtributosPage() {
         destructive
         isPending={deleteMutation.isPending}
         onConfirm={() => {
-          if (!deleteTarget) return;
-          deleteMutation.mutate(deleteTarget.id);
+          if (deleteTarget) deleteMutation.mutate(deleteTarget.id);
         }}
         onCancel={() => setDeleteTarget(undefined)}
       />
-    </>
+    </div>
   );
 }
