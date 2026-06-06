@@ -98,3 +98,14 @@ if (!token) return unauthorizedResponse();
 ```
 
 This is the **sole security boundary** for `/api/*` routes — no fallback layer. A handler that omits this guard is publicly accessible.
+
+## CMS vs Public — Context-Oriented BFF
+
+| Context | i18n fields | Data |
+|---|---|---|
+| **Public** (`/api/products/*`, `/api/pages/*`, `/api/categories`) | Flat `string`, already locale-resolved by the API | Latest active file only |
+| **CMS** (`/api/products/admin/*`, `/api/pages/:slug/cms`) | Raw `I18nString { pt, en?, es? }` | All file versions |
+
+- Public components: use `PublicProductDetailPayload`, `PublicCategorySchema`. Never call `pickLocale` — the API already resolved it.
+- CMS components: use `I18nString` types. Display all languages for editing.
+- Include `?locale=` query param in public site data fetches. Add locale to React Query `queryKey` for locale-variant hooks.

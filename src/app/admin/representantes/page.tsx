@@ -12,17 +12,15 @@ import {
 } from "@/app/admin/_components/crud/admin-input";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import {
-  useGetApiRepresentatives,
+  deleteApiRepresentativesId,
   getGetApiRepresentativesQueryKey,
+  patchApiRepresentativesId,
+  postApiRepresentatives,
+  useGetApiRepresentatives,
+  type PatchApiRepresentativesIdBody,
+  type PostApiRepresentativesBody,
+  type Representative,
 } from "@/api/stetsom";
-import type { Representative } from "@/api/stetsom";
-import type {
-  PostApiRepresentativesBody,
-  PatchApiRepresentativesIdBody,
-} from "@/api/stetsom";
-import { postApiRepresentatives } from "@/api/stetsom";
-import { patchApiRepresentativesId } from "@/api/stetsom";
-import { deleteApiRepresentativesId } from "@/api/stetsom";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Building2, Plus } from "lucide-react";

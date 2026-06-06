@@ -1,3 +1,5 @@
+import type { LibraryAssetType } from "@/api/stetsom/model";
+
 export type WizardProductStatus = "ACTIVE" | "DISCONTINUED" | "DRAFT";
 
 export interface WizardProductSpec {
@@ -17,7 +19,7 @@ export interface WizardProductVariation {
 export interface WizardProductFile {
   id: string;
   file_url: string;
-  type: "MANUAL" | "CATALOG" | "CERTIFICATE" | "IMAGE" | "OTHER";
+  type: LibraryAssetType;
   version: number;
   is_active: boolean;
   name?: string;

@@ -31,6 +31,8 @@ export default function AdminSectionEditorPage({
   const [isDirty, setIsDirty] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [success, setSuccess] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const block = page?.blocks.find((b) => b.block_id === sectionId);
 
@@ -41,12 +43,20 @@ export default function AdminSectionEditorPage({
 
   async function handleSave() {
     if (!block || !localData) return;
-    await patchApiPagesSlugBlocksBlockId(pageId, sectionId, {
-      data: localData,
-    });
-    setSavedAt(new Date());
-    setIsDirty(false);
-    setSuccess(true);
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      await patchApiPagesSlugBlocksBlockId(pageId, sectionId, {
+        data: localData,
+      });
+      setSavedAt(new Date());
+      setIsDirty(false);
+      setSuccess(true);
+    } catch {
+      setSaveError("Erro ao salvar. Tente novamente.");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   const publicHref = PAGE_PUBLIC_HREFS[pageId] ?? `/${pageId}`;
@@ -103,21 +113,13 @@ export default function AdminSectionEditorPage({
     );
   }
 
-  const displaySection = localData
-    ? {
-        id: block.block_id,
-        type: block.type,
-        order: block.order,
-        data: localData,
-        block_id: block.block_id,
-      }
-    : {
-        id: block.block_id,
-        type: block.type,
-        order: block.order,
-        data: block.data,
-        block_id: block.block_id,
-      };
+  const displaySection = {
+    id: block.block_id,
+    type: block.type,
+    order: block.order,
+    data: localData ?? block.data,
+    block_id: block.block_id,
+  };
 
   return (
     <AdminListPage
@@ -136,9 +138,11 @@ export default function AdminSectionEditorPage({
     >
       <SectionFormRenderer section={displaySection} onChange={handleChange} />
 
+      {saveError && <p className="text-sm text-destructive">{saveError}</p>}
+
       <AdminSaveBar
         onPublish={handleSave}
-        isLoading={false}
+        isLoading={isSaving}
         isDirty={isDirty}
         draftSavedAt={savedAt}
         publishLabel="Salvar alterações"

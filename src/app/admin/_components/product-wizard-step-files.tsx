@@ -16,6 +16,11 @@ function fileTypeLabel(type: WizardProductFile["type"]): string {
     CATALOG: "Catálogo",
     CERTIFICATE: "Certificado",
     IMAGE: "Imagem",
+    PDF: "PDF",
+    VIDEO: "Vídeo",
+    MODEL3D: "Modelo 3D",
+    IMAGE_PACK: "Pack de imagens",
+    CATEGORY_ICON: "Ícone de categoria",
     OTHER: "Outro",
   };
   return labels[type];
