@@ -93,7 +93,8 @@ Server enforces roles; frontend uses them for UI display only.
 Every admin route handler must start with:
 
 ```ts
-const token = await getAdminToken();
+const cookieStore = await cookies();
+const token = cookieStore.get("admin_token")?.value;
 if (!token) return unauthorizedResponse();
 ```
 

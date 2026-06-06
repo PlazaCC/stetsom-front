@@ -39,7 +39,7 @@ export default async function SuportePage() {
     ),
     serverOrvalClient<{ items: TechnicalAssistance[]; total: number }>({
       method: "GET",
-      url: "/api/technical-assistances/",
+      url: "/api/technical-assistances",
     }).catch(() => ({ items: [], total: 0 })),
   ]);
 

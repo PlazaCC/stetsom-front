@@ -39,5 +39,5 @@ export * from "./endpoints/products-public/products-public";
 export * from "./endpoints/representatives-public/representatives-public";
 export * from "./endpoints/service-centers-public/service-centers-public";
 
-// ── Error class ───────────────────────────────────────────────────────────────
-export { OrvalApiError } from "./orval-client";
+// ── Error helpers ─────────────────────────────────────────────────────────────
+export { OrvalApiError, toApiError } from "./orval-client";
