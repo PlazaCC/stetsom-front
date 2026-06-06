@@ -6,7 +6,7 @@ import { serverOrvalClient } from "@/api/stetsom/orval-server";
 export async function submitContact(input: PostApiContactBody) {
   await serverOrvalClient({
     method: "POST",
-    url: "/api/contact/",
+    url: "/api/contact",
     data: input,
   });
 }

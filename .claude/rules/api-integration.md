@@ -98,7 +98,9 @@ const token = cookieStore.get("admin_token")?.value;
 if (!token) return unauthorizedResponse();
 ```
 
-This is the **sole security boundary** for `/api/*` routes — no fallback layer. A handler that omits this guard is publicly accessible.
+This is the **sole security boundary** for the *dedicated* route handlers (`/api/upload`, `/api/auth/*`) — no fallback layer. A handler that omits this guard is publicly accessible.
+
+**Exception — the generic BFF passthrough (`/api/bff/[...path]`):** it does **not** validate the JWT itself. It forwards the HttpOnly `admin_token` as a Bearer header and relies on the upstream stetsom-api to enforce auth and roles. Anonymous browser requests simply arrive without a token and upstream returns `401`. Do not add a per-path guard here — the BFF is a transparent proxy by design; the boundary is upstream. The `proxy.ts` middleware (JWT check) guards admin **UI** routes as defense in depth.
 
 ## CMS vs Public — Context-Oriented BFF
 
