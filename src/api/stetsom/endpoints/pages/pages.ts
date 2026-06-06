@@ -20,8 +20,6 @@ import type {
 
 import type {
   ApiErrorPayload,
-  GetApiPagesSlug200,
-  GetApiPagesSlugParams,
   PageBlock,
   PagePayload,
   PatchApiPagesSlugBlocksBlockIdBody,
@@ -31,178 +29,7 @@ import type {
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary Get a page payload by slug (locale-filtered)
- */
-export const getApiPagesSlug = (
-  slug: string,
-  params?: GetApiPagesSlugParams,
-  signal?: AbortSignal,
-) => {
-  return orvalClient<GetApiPagesSlug200>({
-    url: `/api/pages/${slug}`,
-    method: "GET",
-    params,
-    signal,
-  });
-};
-
-export const getGetApiPagesSlugQueryKey = (
-  slug: string,
-  params?: GetApiPagesSlugParams,
-) => {
-  return [`/api/pages/${slug}`, ...(params ? [params] : [])] as const;
-};
-
-export const getGetApiPagesSlugQueryOptions = <
-  TData = Awaited<ReturnType<typeof getApiPagesSlug>>,
-  TError = ApiErrorPayload,
->(
-  slug: string,
-  params?: GetApiPagesSlugParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiPagesSlug>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ?? getGetApiPagesSlugQueryKey(slug, params);
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPagesSlug>>> = ({
-    signal,
-  }) => getApiPagesSlug(slug, params, signal);
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: slug !== null && slug !== undefined,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof getApiPagesSlug>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetApiPagesSlugQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getApiPagesSlug>>
->;
-export type GetApiPagesSlugQueryError = ApiErrorPayload;
-
-export function useGetApiPagesSlug<
-  TData = Awaited<ReturnType<typeof getApiPagesSlug>>,
-  TError = ApiErrorPayload,
->(
-  slug: string,
-  params: undefined | GetApiPagesSlugParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiPagesSlug>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiPagesSlug>>,
-          TError,
-          Awaited<ReturnType<typeof getApiPagesSlug>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiPagesSlug<
-  TData = Awaited<ReturnType<typeof getApiPagesSlug>>,
-  TError = ApiErrorPayload,
->(
-  slug: string,
-  params?: GetApiPagesSlugParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiPagesSlug>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiPagesSlug>>,
-          TError,
-          Awaited<ReturnType<typeof getApiPagesSlug>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiPagesSlug<
-  TData = Awaited<ReturnType<typeof getApiPagesSlug>>,
-  TError = ApiErrorPayload,
->(
-  slug: string,
-  params?: GetApiPagesSlugParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiPagesSlug>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get a page payload by slug (locale-filtered)
- */
-
-export function useGetApiPagesSlug<
-  TData = Awaited<ReturnType<typeof getApiPagesSlug>>,
-  TError = ApiErrorPayload,
->(
-  slug: string,
-  params?: GetApiPagesSlugParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiPagesSlug>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetApiPagesSlugQueryOptions(slug, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
-
-/**
- * @summary Get page with all blocks for CMS (no locale filtering)
+ * @summary Get page
  */
 export const getApiPagesSlugCms = (slug: string, signal?: AbortSignal) => {
   return orvalClient<PagePayload>({
@@ -328,7 +155,7 @@ export function useGetApiPagesSlugCms<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Get page with all blocks for CMS (no locale filtering)
+ * @summary Get page
  */
 
 export function useGetApiPagesSlugCms<
@@ -360,7 +187,7 @@ export function useGetApiPagesSlugCms<
 }
 
 /**
- * @summary Add a block to a page
+ * @summary Add block
  */
 export const postApiPagesSlugBlocks = (
   slug: string,
@@ -505,7 +332,7 @@ export function usePostApiPagesSlugBlocks<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Add a block to a page
+ * @summary Add block
  */
 
 export function usePostApiPagesSlugBlocks<
@@ -542,7 +369,7 @@ export function usePostApiPagesSlugBlocks<
 }
 
 /**
- * @summary Update a block in a page
+ * @summary Update block
  */
 export const patchApiPagesSlugBlocksBlockId = (
   slug: string,
@@ -706,7 +533,7 @@ export function usePatchApiPagesSlugBlocksBlockId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Update a block in a page
+ * @summary Update block
  */
 
 export function usePatchApiPagesSlugBlocksBlockId<
@@ -745,7 +572,7 @@ export function usePatchApiPagesSlugBlocksBlockId<
 }
 
 /**
- * @summary Remove a block from a page
+ * @summary Remove block
  */
 export const deleteApiPagesSlugBlocksBlockId = (
   slug: string,
@@ -887,7 +714,7 @@ export function useDeleteApiPagesSlugBlocksBlockId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Remove a block from a page
+ * @summary Remove block
  */
 
 export function useDeleteApiPagesSlugBlocksBlockId<

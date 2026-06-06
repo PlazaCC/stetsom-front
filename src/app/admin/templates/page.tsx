@@ -142,7 +142,7 @@ function TemplateForm({
                 )}
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
-                    {cat.name.pt}
+                    {cat.name}
                   </option>
                 ))}
               </AdminSelect>
@@ -311,7 +311,7 @@ export default function AdminTemplatesPage() {
   function getCategoryName(t: Template): string {
     if (!t.category_id) return "—";
     const cat = categories.find((c) => c.id === t.category_id);
-    return cat?.name.pt ?? "—";
+    return cat?.name ?? "—";
   }
 
   const columns: AdminTableColumn<Template>[] = [

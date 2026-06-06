@@ -22,173 +22,12 @@ import type {
   ApiErrorPayload,
   BannerWithUploads,
   BannersPayload,
-  GetApiBannersActiveParams,
   GetApiBannersParams,
-  HeroBannerSlidesPayload,
   PatchApiBannersIdBody,
   PostApiBannersBody,
 } from "../../model";
 
 import { orvalClient } from "../../orval-client";
-
-/**
- * @summary List active hero banner slides (public)
- */
-export const getApiBannersActive = (
-  params?: GetApiBannersActiveParams,
-  signal?: AbortSignal,
-) => {
-  return orvalClient<HeroBannerSlidesPayload>({
-    url: `/api/banners/active`,
-    method: "GET",
-    params,
-    signal,
-  });
-};
-
-export const getGetApiBannersActiveQueryKey = (
-  params?: GetApiBannersActiveParams,
-) => {
-  return [`/api/banners/active`, ...(params ? [params] : [])] as const;
-};
-
-export const getGetApiBannersActiveQueryOptions = <
-  TData = Awaited<ReturnType<typeof getApiBannersActive>>,
-  TError = unknown,
->(
-  params?: GetApiBannersActiveParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiBannersActive>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ?? getGetApiBannersActiveQueryKey(params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getApiBannersActive>>
-  > = ({ signal }) => getApiBannersActive(params, signal);
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getApiBannersActive>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetApiBannersActiveQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getApiBannersActive>>
->;
-export type GetApiBannersActiveQueryError = unknown;
-
-export function useGetApiBannersActive<
-  TData = Awaited<ReturnType<typeof getApiBannersActive>>,
-  TError = unknown,
->(
-  params: undefined | GetApiBannersActiveParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiBannersActive>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiBannersActive>>,
-          TError,
-          Awaited<ReturnType<typeof getApiBannersActive>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiBannersActive<
-  TData = Awaited<ReturnType<typeof getApiBannersActive>>,
-  TError = unknown,
->(
-  params?: GetApiBannersActiveParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiBannersActive>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiBannersActive>>,
-          TError,
-          Awaited<ReturnType<typeof getApiBannersActive>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiBannersActive<
-  TData = Awaited<ReturnType<typeof getApiBannersActive>>,
-  TError = unknown,
->(
-  params?: GetApiBannersActiveParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiBannersActive>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary List active hero banner slides (public)
- */
-
-export function useGetApiBannersActive<
-  TData = Awaited<ReturnType<typeof getApiBannersActive>>,
-  TError = unknown,
->(
-  params?: GetApiBannersActiveParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiBannersActive>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetApiBannersActiveQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
 
 /**
  * @summary List banners
@@ -648,7 +487,7 @@ export function usePatchApiBannersId<
 }
 
 /**
- * @summary Delete banner (soft)
+ * @summary Delete banner
  */
 export const deleteApiBannersId = (id: string, signal?: AbortSignal) => {
   return orvalClient<unknown>({
@@ -773,7 +612,7 @@ export function useDeleteApiBannersId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Delete banner (soft)
+ * @summary Delete banner
  */
 
 export function useDeleteApiBannersId<

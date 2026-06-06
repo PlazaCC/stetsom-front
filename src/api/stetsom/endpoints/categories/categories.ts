@@ -21,8 +21,6 @@ import type {
 import type {
   ApiErrorPayload,
   Category,
-  GetApiCategoriesIdParams,
-  GetApiCategoriesParams,
   PatchApiCategoriesIdBody,
   PatchApiCategoriesIdLinesLineIdBody,
   PostApiCategoriesBody,
@@ -32,166 +30,7 @@ import type {
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary List all categories with lines
- */
-export const getApiCategories = (
-  params?: GetApiCategoriesParams,
-  signal?: AbortSignal,
-) => {
-  return orvalClient<Category[]>({
-    url: `/api/categories`,
-    method: "GET",
-    params,
-    signal,
-  });
-};
-
-export const getGetApiCategoriesQueryKey = (
-  params?: GetApiCategoriesParams,
-) => {
-  return [`/api/categories`, ...(params ? [params] : [])] as const;
-};
-
-export const getGetApiCategoriesQueryOptions = <
-  TData = Awaited<ReturnType<typeof getApiCategories>>,
-  TError = unknown,
->(
-  params?: GetApiCategoriesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiCategories>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ?? getGetApiCategoriesQueryKey(params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getApiCategories>>
-  > = ({ signal }) => getApiCategories(params, signal);
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getApiCategories>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetApiCategoriesQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getApiCategories>>
->;
-export type GetApiCategoriesQueryError = unknown;
-
-export function useGetApiCategories<
-  TData = Awaited<ReturnType<typeof getApiCategories>>,
-  TError = unknown,
->(
-  params: undefined | GetApiCategoriesParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiCategories>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiCategories>>,
-          TError,
-          Awaited<ReturnType<typeof getApiCategories>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiCategories<
-  TData = Awaited<ReturnType<typeof getApiCategories>>,
-  TError = unknown,
->(
-  params?: GetApiCategoriesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiCategories>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiCategories>>,
-          TError,
-          Awaited<ReturnType<typeof getApiCategories>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiCategories<
-  TData = Awaited<ReturnType<typeof getApiCategories>>,
-  TError = unknown,
->(
-  params?: GetApiCategoriesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiCategories>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary List all categories with lines
- */
-
-export function useGetApiCategories<
-  TData = Awaited<ReturnType<typeof getApiCategories>>,
-  TError = unknown,
->(
-  params?: GetApiCategoriesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiCategories>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetApiCategoriesQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
-
-/**
- * @summary Create a category
+ * @summary Create category
  */
 export const postApiCategories = (
   postApiCategoriesBody: PostApiCategoriesBody,
@@ -320,7 +159,7 @@ export function usePostApiCategories<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Create a category
+ * @summary Create category
  */
 
 export function usePostApiCategories<
@@ -355,26 +194,18 @@ export function usePostApiCategories<
 }
 
 /**
- * @summary Get a category by ID
+ * @summary Get category
  */
-export const getApiCategoriesId = (
-  id: string,
-  params?: GetApiCategoriesIdParams,
-  signal?: AbortSignal,
-) => {
+export const getApiCategoriesId = (id: string, signal?: AbortSignal) => {
   return orvalClient<Category>({
     url: `/api/categories/${id}`,
     method: "GET",
-    params,
     signal,
   });
 };
 
-export const getGetApiCategoriesIdQueryKey = (
-  id: string,
-  params?: GetApiCategoriesIdParams,
-) => {
-  return [`/api/categories/${id}`, ...(params ? [params] : [])] as const;
+export const getGetApiCategoriesIdQueryKey = (id: string) => {
+  return [`/api/categories/${id}`] as const;
 };
 
 export const getGetApiCategoriesIdQueryOptions = <
@@ -382,7 +213,6 @@ export const getGetApiCategoriesIdQueryOptions = <
   TError = ApiErrorPayload,
 >(
   id: string,
-  params?: GetApiCategoriesIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -395,12 +225,11 @@ export const getGetApiCategoriesIdQueryOptions = <
 ) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGetApiCategoriesIdQueryKey(id, params);
+  const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesIdQueryKey(id);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getApiCategoriesId>>
-  > = ({ signal }) => getApiCategoriesId(id, params, signal);
+  > = ({ signal }) => getApiCategoriesId(id, signal);
 
   return {
     queryKey,
@@ -424,7 +253,6 @@ export function useGetApiCategoriesId<
   TError = ApiErrorPayload,
 >(
   id: string,
-  params: undefined | GetApiCategoriesIdParams,
   options: {
     query: Partial<
       UseQueryOptions<
@@ -451,7 +279,6 @@ export function useGetApiCategoriesId<
   TError = ApiErrorPayload,
 >(
   id: string,
-  params?: GetApiCategoriesIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -478,7 +305,6 @@ export function useGetApiCategoriesId<
   TError = ApiErrorPayload,
 >(
   id: string,
-  params?: GetApiCategoriesIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -493,7 +319,7 @@ export function useGetApiCategoriesId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Get a category by ID
+ * @summary Get category
  */
 
 export function useGetApiCategoriesId<
@@ -501,7 +327,6 @@ export function useGetApiCategoriesId<
   TError = ApiErrorPayload,
 >(
   id: string,
-  params?: GetApiCategoriesIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -515,7 +340,7 @@ export function useGetApiCategoriesId<
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
-  const queryOptions = getGetApiCategoriesIdQueryOptions(id, params, options);
+  const queryOptions = getGetApiCategoriesIdQueryOptions(id, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,
@@ -526,7 +351,7 @@ export function useGetApiCategoriesId<
 }
 
 /**
- * @summary Update a category
+ * @summary Update category
  */
 export const patchApiCategoriesId = (
   id: string,
@@ -667,7 +492,7 @@ export function usePatchApiCategoriesId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Update a category
+ * @summary Update category
  */
 
 export function usePatchApiCategoriesId<
@@ -704,7 +529,7 @@ export function usePatchApiCategoriesId<
 }
 
 /**
- * @summary Delete a category
+ * @summary Delete category
  */
 export const deleteApiCategoriesId = (id: string, signal?: AbortSignal) => {
   return orvalClient<unknown>({
@@ -830,7 +655,7 @@ export function useDeleteApiCategoriesId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Delete a category
+ * @summary Delete category
  */
 
 export function useDeleteApiCategoriesId<
@@ -862,7 +687,7 @@ export function useDeleteApiCategoriesId<
 }
 
 /**
- * @summary Add a line to a category
+ * @summary Add line
  */
 export const postApiCategoriesIdLines = (
   id: string,
@@ -1007,7 +832,7 @@ export function usePostApiCategoriesIdLines<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Add a line to a category
+ * @summary Add line
  */
 
 export function usePostApiCategoriesIdLines<
@@ -1044,7 +869,7 @@ export function usePostApiCategoriesIdLines<
 }
 
 /**
- * @summary Update a line in a category
+ * @summary Update line
  */
 export const patchApiCategoriesIdLinesLineId = (
   id: string,
@@ -1208,7 +1033,7 @@ export function usePatchApiCategoriesIdLinesLineId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Update a line in a category
+ * @summary Update line
  */
 
 export function usePatchApiCategoriesIdLinesLineId<
@@ -1247,7 +1072,7 @@ export function usePatchApiCategoriesIdLinesLineId<
 }
 
 /**
- * @summary Remove a line from a category
+ * @summary Remove line
  */
 export const deleteApiCategoriesIdLinesLineId = (
   id: string,
@@ -1389,7 +1214,7 @@ export function useDeleteApiCategoriesIdLinesLineId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Remove a line from a category
+ * @summary Remove line
  */
 
 export function useDeleteApiCategoriesIdLinesLineId<

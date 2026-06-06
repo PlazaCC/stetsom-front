@@ -235,16 +235,16 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
 
   const categories = rawCategories.map((cat) => ({
     id: cat.id,
-    name: cat.name.pt,
-    slug: cat.slug.pt,
+    name: cat.name,
+    slug: cat.slug,
     order: cat.order,
   }));
 
   const subcategories = rawCategories.flatMap((cat) =>
     cat.lines.map((line) => ({
       id: line.line_id,
-      name: line.name.pt,
-      slug: line.slug.pt,
+      name: line.name,
+      slug: line.slug,
       category_id: cat.id,
     })),
   );

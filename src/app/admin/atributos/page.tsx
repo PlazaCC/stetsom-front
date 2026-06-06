@@ -12,16 +12,14 @@ import {
 } from "@/app/admin/_components/crud/admin-input";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import {
-  useGetApiAttributes,
-  getGetApiAttributesQueryKey,
-  postApiAttributes,
-  patchApiAttributesId,
   deleteApiAttributesId,
-} from "@/api/stetsom";
-import type { Attribute } from "@/api/stetsom";
-import type {
-  PostApiAttributesBody,
-  PatchApiAttributesIdBody,
+  getGetApiAttributesQueryKey,
+  patchApiAttributesId,
+  postApiAttributes,
+  useGetApiAttributes,
+  type Attribute,
+  type PatchApiAttributesIdBody,
+  type PostApiAttributesBody,
 } from "@/api/stetsom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ListChecks, Plus } from "lucide-react";

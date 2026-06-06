@@ -1,11 +1,11 @@
 "use client";
 
 import { useGetApiCategories, useGetApiProducts } from "@/api/stetsom";
-import type { Category } from "@/api/stetsom/model";
+import type { PublicCategory } from "@/api/stetsom/model";
 import { Container } from "@/components/ui/container";
 import { ProductCard } from "@/components/ui/product-card";
 import { useCatalogFilters } from "@/hooks/use-catalog-filters";
-import { pickLocale, toApiLocale } from "@/lib/api/i18n-utils";
+import { toApiLocale } from "@/lib/api/i18n-utils";
 import { cn } from "@/lib/utils";
 import { ArrowLeftRight, Search, SlidersHorizontal } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -67,18 +67,18 @@ export function CatalogContent() {
   } = useCatalogFilters();
 
   const categoriesQuery = useGetApiCategories({ locale: apiLocale });
-  const rawCategories: Category[] = useMemo(
+  const rawCategories: PublicCategory[] = useMemo(
     () => categoriesQuery.data ?? [],
     [categoriesQuery.data],
   );
 
   const categories: CategoryOption[] = useMemo(
     () =>
-      rawCategories.map((c: Category) => ({
-        name: pickLocale(c.name, locale),
-        slug: pickLocale(c.slug, locale),
+      rawCategories.map((c: PublicCategory) => ({
+        name: c.name,
+        slug: c.slug,
       })),
-    [rawCategories, locale],
+    [rawCategories],
   );
 
   const categoryOptions = useMemo(
@@ -114,15 +114,11 @@ export function CatalogContent() {
   // Product lines from the active category (or all categories)
   const productLines = useMemo<string[]>(() => {
     const activeRaw = activeCategorySlug
-      ? rawCategories.find(
-          (c: Category) => pickLocale(c.slug, locale) === activeCategorySlug,
-        )
+      ? rawCategories.find((c: PublicCategory) => c.slug === activeCategorySlug)
       : null;
     const source = activeRaw ? [activeRaw] : rawCategories;
-    return source.flatMap((c: Category) =>
-      c.lines.map((l) => pickLocale(l.name, locale)),
-    );
-  }, [rawCategories, activeCategorySlug, locale]);
+    return source.flatMap((c: PublicCategory) => c.lines.map((l) => l.name));
+  }, [rawCategories, activeCategorySlug]);
 
   const isLoading = categoriesQuery.isLoading || productsQuery.isLoading;
   const totalProducts = productsQuery.data?.total ?? 0;

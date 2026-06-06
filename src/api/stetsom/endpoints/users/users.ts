@@ -30,7 +30,7 @@ import type {
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary List admin users
+ * @summary List users
  */
 export const getApiUsers = (
   params?: GetApiUsersParams,
@@ -138,7 +138,7 @@ export function useGetApiUsers<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary List admin users
+ * @summary List users
  */
 
 export function useGetApiUsers<
@@ -166,7 +166,7 @@ export function useGetApiUsers<
 }
 
 /**
- * @summary Create admin user
+ * @summary Create user
  */
 export const postApiUsers = (
   postApiUsersBody: PostApiUsersBody,
@@ -278,7 +278,7 @@ export function usePostApiUsers<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Create admin user
+ * @summary Create user
  */
 
 export function usePostApiUsers<
@@ -306,7 +306,7 @@ export function usePostApiUsers<
 }
 
 /**
- * @summary Update admin user
+ * @summary Update user
  */
 export const patchApiUsersId = (
   id: string,
@@ -446,7 +446,7 @@ export function usePatchApiUsersId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Update admin user
+ * @summary Update user
  */
 
 export function usePatchApiUsersId<

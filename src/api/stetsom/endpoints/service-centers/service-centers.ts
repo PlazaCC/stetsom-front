@@ -20,7 +20,6 @@ import type {
 
 import type {
   ApiErrorPayload,
-  GetApiTechnicalAssistancesParams,
   PatchApiTechnicalAssistancesIdBody,
   PostApiTechnicalAssistancesBody,
   TechnicalAssistance,
@@ -29,169 +28,7 @@ import type {
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary List authorized technical assistance centers (public)
- */
-export const getApiTechnicalAssistances = (
-  params?: GetApiTechnicalAssistancesParams,
-  signal?: AbortSignal,
-) => {
-  return orvalClient<TechnicalAssistance[]>({
-    url: `/api/technical-assistances`,
-    method: "GET",
-    params,
-    signal,
-  });
-};
-
-export const getGetApiTechnicalAssistancesQueryKey = (
-  params?: GetApiTechnicalAssistancesParams,
-) => {
-  return [`/api/technical-assistances`, ...(params ? [params] : [])] as const;
-};
-
-export const getGetApiTechnicalAssistancesQueryOptions = <
-  TData = Awaited<ReturnType<typeof getApiTechnicalAssistances>>,
-  TError = unknown,
->(
-  params?: GetApiTechnicalAssistancesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiTechnicalAssistances>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ?? getGetApiTechnicalAssistancesQueryKey(params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getApiTechnicalAssistances>>
-  > = ({ signal }) => getApiTechnicalAssistances(params, signal);
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getApiTechnicalAssistances>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetApiTechnicalAssistancesQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getApiTechnicalAssistances>>
->;
-export type GetApiTechnicalAssistancesQueryError = unknown;
-
-export function useGetApiTechnicalAssistances<
-  TData = Awaited<ReturnType<typeof getApiTechnicalAssistances>>,
-  TError = unknown,
->(
-  params: undefined | GetApiTechnicalAssistancesParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiTechnicalAssistances>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiTechnicalAssistances>>,
-          TError,
-          Awaited<ReturnType<typeof getApiTechnicalAssistances>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiTechnicalAssistances<
-  TData = Awaited<ReturnType<typeof getApiTechnicalAssistances>>,
-  TError = unknown,
->(
-  params?: GetApiTechnicalAssistancesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiTechnicalAssistances>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiTechnicalAssistances>>,
-          TError,
-          Awaited<ReturnType<typeof getApiTechnicalAssistances>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiTechnicalAssistances<
-  TData = Awaited<ReturnType<typeof getApiTechnicalAssistances>>,
-  TError = unknown,
->(
-  params?: GetApiTechnicalAssistancesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiTechnicalAssistances>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary List authorized technical assistance centers (public)
- */
-
-export function useGetApiTechnicalAssistances<
-  TData = Awaited<ReturnType<typeof getApiTechnicalAssistances>>,
-  TError = unknown,
->(
-  params?: GetApiTechnicalAssistancesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiTechnicalAssistances>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetApiTechnicalAssistancesQueryOptions(
-    params,
-    options,
-  );
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
-
-/**
- * @summary Create technical assistance
+ * @summary Create service center
  */
 export const postApiTechnicalAssistances = (
   postApiTechnicalAssistancesBody: PostApiTechnicalAssistancesBody,
@@ -325,7 +162,7 @@ export function usePostApiTechnicalAssistances<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Create technical assistance
+ * @summary Create service center
  */
 
 export function usePostApiTechnicalAssistances<
@@ -360,7 +197,7 @@ export function usePostApiTechnicalAssistances<
 }
 
 /**
- * @summary Update technical assistance
+ * @summary Update service center
  */
 export const patchApiTechnicalAssistancesId = (
   id: string,
@@ -512,7 +349,7 @@ export function usePatchApiTechnicalAssistancesId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Update technical assistance
+ * @summary Update service center
  */
 
 export function usePatchApiTechnicalAssistancesId<
@@ -549,7 +386,7 @@ export function usePatchApiTechnicalAssistancesId<
 }
 
 /**
- * @summary Delete technical assistance (soft)
+ * @summary Delete service center
  */
 export const deleteApiTechnicalAssistancesId = (
   id: string,
@@ -678,7 +515,7 @@ export function useDeleteApiTechnicalAssistancesId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Delete technical assistance (soft)
+ * @summary Delete service center
  */
 
 export function useDeleteApiTechnicalAssistancesId<

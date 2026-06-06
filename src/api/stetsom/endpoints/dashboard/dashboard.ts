@@ -23,7 +23,7 @@ import type { AdminDashboardPayload } from "../../model";
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary Admin dashboard payload
+ * @summary Get dashboard
  */
 export const getApiDashboard = (signal?: AbortSignal) => {
   return orvalClient<AdminDashboardPayload>({
@@ -133,7 +133,7 @@ export function useGetApiDashboard<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Admin dashboard payload
+ * @summary Get dashboard
  */
 
 export function useGetApiDashboard<

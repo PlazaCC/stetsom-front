@@ -74,7 +74,6 @@ export * from "./getApiAuditParams";
 export * from "./getApiBannersActiveParams";
 export * from "./getApiBannersParams";
 export * from "./getApiBannersStatus";
-export * from "./getApiCategoriesIdParams";
 export * from "./getApiCategoriesParams";
 export * from "./getApiLibraryParams";
 export * from "./getApiLibraryType";

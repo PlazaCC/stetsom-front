@@ -12,17 +12,15 @@ import {
 } from "@/app/admin/_components/crud/admin-input";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import {
-  useGetApiTechnicalAssistances,
+  deleteApiTechnicalAssistancesId,
   getGetApiTechnicalAssistancesQueryKey,
+  patchApiTechnicalAssistancesId,
+  postApiTechnicalAssistances,
+  useGetApiTechnicalAssistances,
+  type PatchApiTechnicalAssistancesIdBody,
+  type PostApiTechnicalAssistancesBody,
+  type TechnicalAssistance,
 } from "@/api/stetsom";
-import type { TechnicalAssistance } from "@/api/stetsom";
-import type {
-  PostApiTechnicalAssistancesBody,
-  PatchApiTechnicalAssistancesIdBody,
-} from "@/api/stetsom";
-import { postApiTechnicalAssistances } from "@/api/stetsom";
-import { patchApiTechnicalAssistancesId } from "@/api/stetsom";
-import { deleteApiTechnicalAssistancesId } from "@/api/stetsom";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Wrench } from "lucide-react";

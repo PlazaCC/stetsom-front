@@ -12,7 +12,7 @@
 // ── Models (TypeScript types) ─────────────────────────────────────────────────
 export * from "./model";
 
-// ── React Query hooks — by domain ────────────────────────────────────────────
+// ── React Query hooks — CMS ───────────────────────────────────────────────────
 export * from "./endpoints/attributes/attributes";
 export * from "./endpoints/audit/audit";
 export * from "./endpoints/auth/auth";
@@ -26,10 +26,18 @@ export * from "./endpoints/messages/messages";
 export * from "./endpoints/pages/pages";
 export * from "./endpoints/products/products";
 export * from "./endpoints/representatives/representatives";
-export * from "./endpoints/technical-assistances/technical-assistances";
+export * from "./endpoints/service-centers/service-centers";
 export * from "./endpoints/templates/templates";
 export * from "./endpoints/upload/upload";
 export * from "./endpoints/users/users";
+
+// ── React Query hooks — Public Site ──────────────────────────────────────────
+export * from "./endpoints/banners-public/banners-public";
+export * from "./endpoints/categories-public/categories-public";
+export * from "./endpoints/pages-public/pages-public";
+export * from "./endpoints/products-public/products-public";
+export * from "./endpoints/representatives-public/representatives-public";
+export * from "./endpoints/service-centers-public/service-centers-public";
 
 // ── Error class ───────────────────────────────────────────────────────────────
 export { OrvalApiError } from "./orval-client";

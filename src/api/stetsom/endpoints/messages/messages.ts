@@ -28,7 +28,7 @@ import type {
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary List contact form messages
+ * @summary List messages
  */
 export const getApiMessages = (
   params?: GetApiMessagesParams,
@@ -136,7 +136,7 @@ export function useGetApiMessages<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary List contact form messages
+ * @summary List messages
  */
 
 export function useGetApiMessages<

@@ -20,172 +20,12 @@ import type {
 
 import type {
   ApiErrorPayload,
-  GetApiRepresentativesParams,
   PatchApiRepresentativesIdBody,
   PostApiRepresentativesBody,
   Representative,
 } from "../../model";
 
 import { orvalClient } from "../../orval-client";
-
-/**
- * @summary List commercial representatives (public)
- */
-export const getApiRepresentatives = (
-  params?: GetApiRepresentativesParams,
-  signal?: AbortSignal,
-) => {
-  return orvalClient<Representative[]>({
-    url: `/api/representatives`,
-    method: "GET",
-    params,
-    signal,
-  });
-};
-
-export const getGetApiRepresentativesQueryKey = (
-  params?: GetApiRepresentativesParams,
-) => {
-  return [`/api/representatives`, ...(params ? [params] : [])] as const;
-};
-
-export const getGetApiRepresentativesQueryOptions = <
-  TData = Awaited<ReturnType<typeof getApiRepresentatives>>,
-  TError = unknown,
->(
-  params?: GetApiRepresentativesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiRepresentatives>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ?? getGetApiRepresentativesQueryKey(params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getApiRepresentatives>>
-  > = ({ signal }) => getApiRepresentatives(params, signal);
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getApiRepresentatives>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetApiRepresentativesQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getApiRepresentatives>>
->;
-export type GetApiRepresentativesQueryError = unknown;
-
-export function useGetApiRepresentatives<
-  TData = Awaited<ReturnType<typeof getApiRepresentatives>>,
-  TError = unknown,
->(
-  params: undefined | GetApiRepresentativesParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiRepresentatives>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiRepresentatives>>,
-          TError,
-          Awaited<ReturnType<typeof getApiRepresentatives>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiRepresentatives<
-  TData = Awaited<ReturnType<typeof getApiRepresentatives>>,
-  TError = unknown,
->(
-  params?: GetApiRepresentativesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiRepresentatives>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiRepresentatives>>,
-          TError,
-          Awaited<ReturnType<typeof getApiRepresentatives>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiRepresentatives<
-  TData = Awaited<ReturnType<typeof getApiRepresentatives>>,
-  TError = unknown,
->(
-  params?: GetApiRepresentativesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiRepresentatives>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary List commercial representatives (public)
- */
-
-export function useGetApiRepresentatives<
-  TData = Awaited<ReturnType<typeof getApiRepresentatives>>,
-  TError = unknown,
->(
-  params?: GetApiRepresentativesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiRepresentatives>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetApiRepresentativesQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
 
 /**
  * @summary Create representative
@@ -535,7 +375,7 @@ export function usePatchApiRepresentativesId<
 }
 
 /**
- * @summary Delete representative (soft)
+ * @summary Delete representative
  */
 export const deleteApiRepresentativesId = (
   id: string,
@@ -664,7 +504,7 @@ export function useDeleteApiRepresentativesId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Delete representative (soft)
+ * @summary Delete representative
  */
 
 export function useDeleteApiRepresentativesId<

@@ -30,7 +30,7 @@ import { orvalClient } from "../../orval-client";
 
 /**
  * Returns a presigned uploadUrl for direct S3 PUT and the permanent file_url. PUT the file binary to uploadUrl (no Authorization header — signature is embedded).
- * @summary Generate upload URL
+ * @summary Request upload URL
  */
 export const postApiUpload = (
   postApiUploadBody: PostApiUploadBody,
@@ -142,7 +142,7 @@ export function usePostApiUpload<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Generate upload URL
+ * @summary Request upload URL
  */
 
 export function usePostApiUpload<
@@ -170,7 +170,7 @@ export function usePostApiUpload<
 }
 
 /**
- * @summary Register uploaded file in media library
+ * @summary Complete upload
  */
 export const postApiUploadComplete = (
   completeUploadInputInput: CompleteUploadInputInput,
@@ -299,7 +299,7 @@ export function usePostApiUploadComplete<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Register uploaded file in media library
+ * @summary Complete upload
  */
 
 export function usePostApiUploadComplete<
@@ -334,7 +334,7 @@ export function usePostApiUploadComplete<
 }
 
 /**
- * @summary Delete asset from S3 and media library (soft delete)
+ * @summary Delete asset
  */
 export const deleteApiUploadAssetId = (
   assetId: string,
@@ -463,7 +463,7 @@ export function useDeleteApiUploadAssetId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Delete asset from S3 and media library (soft delete)
+ * @summary Delete asset
  */
 
 export function useDeleteApiUploadAssetId<

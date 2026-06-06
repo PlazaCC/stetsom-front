@@ -28,7 +28,7 @@ import type {
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary List all global technical attributes
+ * @summary List attributes
  */
 export const getApiAttributes = (signal?: AbortSignal) => {
   return orvalClient<Attribute[]>({
@@ -138,7 +138,7 @@ export function useGetApiAttributes<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary List all global technical attributes
+ * @summary List attributes
  */
 
 export function useGetApiAttributes<
@@ -169,7 +169,7 @@ export function useGetApiAttributes<
 }
 
 /**
- * @summary Create a global attribute
+ * @summary Create attribute
  */
 export const postApiAttributes = (
   postApiAttributesBody: PostApiAttributesBody,
@@ -298,7 +298,7 @@ export function usePostApiAttributes<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Create a global attribute
+ * @summary Create attribute
  */
 
 export function usePostApiAttributes<
@@ -333,7 +333,7 @@ export function usePostApiAttributes<
 }
 
 /**
- * @summary Update an attribute
+ * @summary Update attribute
  */
 export const patchApiAttributesId = (
   id: string,
@@ -474,7 +474,7 @@ export function usePatchApiAttributesId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Update an attribute
+ * @summary Update attribute
  */
 
 export function usePatchApiAttributesId<
@@ -511,7 +511,7 @@ export function usePatchApiAttributesId<
 }
 
 /**
- * @summary Delete an attribute
+ * @summary Delete attribute
  */
 export const deleteApiAttributesId = (id: string, signal?: AbortSignal) => {
   return orvalClient<unknown>({
@@ -637,7 +637,7 @@ export function useDeleteApiAttributesId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Delete an attribute
+ * @summary Delete attribute
  */
 
 export function useDeleteApiAttributesId<

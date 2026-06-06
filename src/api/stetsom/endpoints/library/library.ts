@@ -31,7 +31,7 @@ import type {
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary List media library assets
+ * @summary List assets
  */
 export const getApiLibrary = (
   params?: GetApiLibraryParams,
@@ -139,7 +139,7 @@ export function useGetApiLibrary<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary List media library assets
+ * @summary List assets
  */
 
 export function useGetApiLibrary<
@@ -167,7 +167,7 @@ export function useGetApiLibrary<
 }
 
 /**
- * @summary Get a library asset by ID (with all versions)
+ * @summary Get asset
  */
 export const getApiLibraryId = (id: string, signal?: AbortSignal) => {
   return orvalClient<LibraryAsset>({
@@ -292,7 +292,7 @@ export function useGetApiLibraryId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Get a library asset by ID (with all versions)
+ * @summary Get asset
  */
 
 export function useGetApiLibraryId<
@@ -324,7 +324,7 @@ export function useGetApiLibraryId<
 }
 
 /**
- * @summary Update library asset metadata
+ * @summary Update asset
  */
 export const patchApiLibraryId = (
   id: string,
@@ -464,7 +464,7 @@ export function usePatchApiLibraryId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Update library asset metadata
+ * @summary Update asset
  */
 
 export function usePatchApiLibraryId<
@@ -501,7 +501,7 @@ export function usePatchApiLibraryId<
 }
 
 /**
- * @summary Soft-delete a library asset
+ * @summary Delete asset
  */
 export const deleteApiLibraryId = (id: string, signal?: AbortSignal) => {
   return orvalClient<unknown>({
@@ -626,7 +626,7 @@ export function useDeleteApiLibraryId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Soft-delete a library asset
+ * @summary Delete asset
  */
 
 export function useDeleteApiLibraryId<
@@ -658,7 +658,7 @@ export function useDeleteApiLibraryId<
 }
 
 /**
- * @summary Add a new version to an existing asset
+ * @summary Add version
  */
 export const postApiLibraryIdVersions = (
   id: string,
@@ -803,7 +803,7 @@ export function usePostApiLibraryIdVersions<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Add a new version to an existing asset
+ * @summary Add version
  */
 
 export function usePostApiLibraryIdVersions<

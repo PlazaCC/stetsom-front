@@ -27,7 +27,7 @@ import type {
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary Submissão do formulário de contato
+ * @summary Submit contact
  */
 export const postApiContact = (
   postApiContactBody: PostApiContactBody,
@@ -139,7 +139,7 @@ export function usePostApiContact<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Submissão do formulário de contato
+ * @summary Submit contact
  */
 
 export function usePostApiContact<

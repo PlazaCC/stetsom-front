@@ -29,7 +29,7 @@ import type {
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary List attribute templates
+ * @summary List templates
  */
 export const getApiTemplates = (
   params?: GetApiTemplatesParams,
@@ -153,7 +153,7 @@ export function useGetApiTemplates<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary List attribute templates
+ * @summary List templates
  */
 
 export function useGetApiTemplates<
@@ -185,7 +185,7 @@ export function useGetApiTemplates<
 }
 
 /**
- * @summary Create attribute template
+ * @summary Create template
  */
 export const postApiTemplates = (
   postApiTemplatesBody: PostApiTemplatesBody,
@@ -313,7 +313,7 @@ export function usePostApiTemplates<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Create attribute template
+ * @summary Create template
  */
 
 export function usePostApiTemplates<

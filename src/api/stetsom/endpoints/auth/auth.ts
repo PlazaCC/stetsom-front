@@ -31,7 +31,7 @@ import type {
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary Get current authenticated user
+ * @summary Get current user
  */
 export const getApiAuthMe = (signal?: AbortSignal) => {
   return orvalClient<AdminUser>({ url: `/api/auth/me`, method: "GET", signal });
@@ -125,7 +125,7 @@ export function useGetApiAuthMe<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Get current authenticated user
+ * @summary Get current user
  */
 
 export function useGetApiAuthMe<
@@ -152,7 +152,7 @@ export function useGetApiAuthMe<
 }
 
 /**
- * @summary Authenticate and receive tokens
+ * @summary Login
  */
 export const postApiAuthLogin = (
   postApiAuthLoginBody: PostApiAuthLoginBody,
@@ -280,7 +280,7 @@ export function usePostApiAuthLogin<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Authenticate and receive tokens
+ * @summary Login
  */
 
 export function usePostApiAuthLogin<
@@ -315,7 +315,7 @@ export function usePostApiAuthLogin<
 }
 
 /**
- * @summary Refresh access token using a refresh token
+ * @summary Refresh token
  */
 export const postApiAuthRefresh = (
   postApiAuthRefreshBody: PostApiAuthRefreshBody,
@@ -444,7 +444,7 @@ export function usePostApiAuthRefresh<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Refresh access token using a refresh token
+ * @summary Refresh token
  */
 
 export function usePostApiAuthRefresh<
@@ -479,7 +479,7 @@ export function usePostApiAuthRefresh<
 }
 
 /**
- * @summary Logout (stateless — discard tokens client-side)
+ * @summary Logout
  */
 export const deleteApiAuthLogout = (signal?: AbortSignal) => {
   return orvalClient<LogoutResponse>({
@@ -593,7 +593,7 @@ export function useDeleteApiAuthLogout<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Logout (stateless — discard tokens client-side)
+ * @summary Logout
  */
 
 export function useDeleteApiAuthLogout<

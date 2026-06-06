@@ -23,7 +23,7 @@ import type { CmsConfig, PatchApiConfigBody } from "../../model";
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary Get global company settings
+ * @summary Get config
  */
 export const getApiConfig = (signal?: AbortSignal) => {
   return orvalClient<CmsConfig>({ url: `/api/config`, method: "GET", signal });
@@ -117,7 +117,7 @@ export function useGetApiConfig<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Get global company settings
+ * @summary Get config
  */
 
 export function useGetApiConfig<
@@ -144,7 +144,7 @@ export function useGetApiConfig<
 }
 
 /**
- * @summary Update global company settings
+ * @summary Update config
  */
 export const patchApiConfig = (
   patchApiConfigBody: PatchApiConfigBody,
@@ -256,7 +256,7 @@ export function usePatchApiConfig<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Update global company settings
+ * @summary Update config
  */
 
 export function usePatchApiConfig<

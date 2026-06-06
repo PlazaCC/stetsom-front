@@ -23,9 +23,6 @@ import type {
   CmsProductDetailPayload,
   CmsProductsPayload,
   GetApiProductsAdminParams,
-  GetApiProductsParams,
-  GetApiProductsSlug200,
-  GetApiProductsSlugParams,
   PatchApiProductsId200,
   PatchApiProductsIdBlocksBlockIdBody,
   PatchApiProductsIdBody,
@@ -38,148 +35,11 @@ import type {
   PostApiProductsIdImages201,
   PostApiProductsIdImagesBody,
   ProductBlock,
-  ProductCatalogResponse,
   ProductFile,
   ProductImage,
 } from "../../model";
 
 import { orvalClient } from "../../orval-client";
-
-/**
- * @summary List products (public catalog)
- */
-export const getApiProducts = (
-  params?: GetApiProductsParams,
-  signal?: AbortSignal,
-) => {
-  return orvalClient<ProductCatalogResponse>({
-    url: `/api/products`,
-    method: "GET",
-    params,
-    signal,
-  });
-};
-
-export const getGetApiProductsQueryKey = (params?: GetApiProductsParams) => {
-  return [`/api/products`, ...(params ? [params] : [])] as const;
-};
-
-export const getGetApiProductsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getApiProducts>>,
-  TError = unknown,
->(
-  params?: GetApiProductsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getApiProducts>>, TError, TData>
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getGetApiProductsQueryKey(params);
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiProducts>>> = ({
-    signal,
-  }) => getApiProducts(params, signal);
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getApiProducts>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetApiProductsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getApiProducts>>
->;
-export type GetApiProductsQueryError = unknown;
-
-export function useGetApiProducts<
-  TData = Awaited<ReturnType<typeof getApiProducts>>,
-  TError = unknown,
->(
-  params: undefined | GetApiProductsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getApiProducts>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiProducts>>,
-          TError,
-          Awaited<ReturnType<typeof getApiProducts>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiProducts<
-  TData = Awaited<ReturnType<typeof getApiProducts>>,
-  TError = unknown,
->(
-  params?: GetApiProductsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getApiProducts>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiProducts>>,
-          TError,
-          Awaited<ReturnType<typeof getApiProducts>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiProducts<
-  TData = Awaited<ReturnType<typeof getApiProducts>>,
-  TError = unknown,
->(
-  params?: GetApiProductsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getApiProducts>>, TError, TData>
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary List products (public catalog)
- */
-
-export function useGetApiProducts<
-  TData = Awaited<ReturnType<typeof getApiProducts>>,
-  TError = unknown,
->(
-  params?: GetApiProductsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getApiProducts>>, TError, TData>
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetApiProductsQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
 
 /**
  * @summary Create product
@@ -345,178 +205,7 @@ export function usePostApiProducts<
 }
 
 /**
- * @summary Get product detail by slug
- */
-export const getApiProductsSlug = (
-  slug: string,
-  params?: GetApiProductsSlugParams,
-  signal?: AbortSignal,
-) => {
-  return orvalClient<GetApiProductsSlug200>({
-    url: `/api/products/${slug}`,
-    method: "GET",
-    params,
-    signal,
-  });
-};
-
-export const getGetApiProductsSlugQueryKey = (
-  slug: string,
-  params?: GetApiProductsSlugParams,
-) => {
-  return [`/api/products/${slug}`, ...(params ? [params] : [])] as const;
-};
-
-export const getGetApiProductsSlugQueryOptions = <
-  TData = Awaited<ReturnType<typeof getApiProductsSlug>>,
-  TError = ApiErrorPayload,
->(
-  slug: string,
-  params?: GetApiProductsSlugParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiProductsSlug>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ?? getGetApiProductsSlugQueryKey(slug, params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getApiProductsSlug>>
-  > = ({ signal }) => getApiProductsSlug(slug, params, signal);
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: slug !== null && slug !== undefined,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof getApiProductsSlug>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetApiProductsSlugQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getApiProductsSlug>>
->;
-export type GetApiProductsSlugQueryError = ApiErrorPayload;
-
-export function useGetApiProductsSlug<
-  TData = Awaited<ReturnType<typeof getApiProductsSlug>>,
-  TError = ApiErrorPayload,
->(
-  slug: string,
-  params: undefined | GetApiProductsSlugParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiProductsSlug>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiProductsSlug>>,
-          TError,
-          Awaited<ReturnType<typeof getApiProductsSlug>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiProductsSlug<
-  TData = Awaited<ReturnType<typeof getApiProductsSlug>>,
-  TError = ApiErrorPayload,
->(
-  slug: string,
-  params?: GetApiProductsSlugParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiProductsSlug>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiProductsSlug>>,
-          TError,
-          Awaited<ReturnType<typeof getApiProductsSlug>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetApiProductsSlug<
-  TData = Awaited<ReturnType<typeof getApiProductsSlug>>,
-  TError = ApiErrorPayload,
->(
-  slug: string,
-  params?: GetApiProductsSlugParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiProductsSlug>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get product detail by slug
- */
-
-export function useGetApiProductsSlug<
-  TData = Awaited<ReturnType<typeof getApiProductsSlug>>,
-  TError = ApiErrorPayload,
->(
-  slug: string,
-  params?: GetApiProductsSlugParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getApiProductsSlug>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetApiProductsSlugQueryOptions(slug, params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
-
-/**
- * @summary List products (CMS)
+ * @summary List products
  */
 export const getApiProductsAdmin = (
   params?: GetApiProductsAdminParams,
@@ -643,7 +332,7 @@ export function useGetApiProductsAdmin<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary List products (CMS)
+ * @summary List products
  */
 
 export function useGetApiProductsAdmin<
@@ -675,7 +364,7 @@ export function useGetApiProductsAdmin<
 }
 
 /**
- * @summary Get product for CMS editing
+ * @summary Get product
  */
 export const getApiProductsAdminId = (id: string, signal?: AbortSignal) => {
   return orvalClient<CmsProductDetailPayload>({
@@ -801,7 +490,7 @@ export function useGetApiProductsAdminId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Get product for CMS editing
+ * @summary Get product
  */
 
 export function useGetApiProductsAdminId<
@@ -1010,7 +699,7 @@ export function usePatchApiProductsId<
 }
 
 /**
- * @summary Delete product (soft)
+ * @summary Delete product
  */
 export const deleteApiProductsId = (id: string, signal?: AbortSignal) => {
   return orvalClient<unknown>({
@@ -1135,7 +824,7 @@ export function useDeleteApiProductsId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Delete product (soft)
+ * @summary Delete product
  */
 
 export function useDeleteApiProductsId<
@@ -1167,7 +856,7 @@ export function useDeleteApiProductsId<
 }
 
 /**
- * @summary Add image to product
+ * @summary Add image
  */
 export const postApiProductsIdImages = (
   id: string,
@@ -1312,7 +1001,7 @@ export function usePostApiProductsIdImages<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Add image to product
+ * @summary Add image
  */
 
 export function usePostApiProductsIdImages<
@@ -1349,7 +1038,7 @@ export function usePostApiProductsIdImages<
 }
 
 /**
- * @summary Update image order
+ * @summary Reorder image
  */
 export const patchApiProductsIdImagesImageId = (
   id: string,
@@ -1513,7 +1202,7 @@ export function usePatchApiProductsIdImagesImageId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Update image order
+ * @summary Reorder image
  */
 
 export function usePatchApiProductsIdImagesImageId<
@@ -1552,7 +1241,7 @@ export function usePatchApiProductsIdImagesImageId<
 }
 
 /**
- * @summary Remove image from product
+ * @summary Remove image
  */
 export const deleteApiProductsIdImagesImageId = (
   id: string,
@@ -1694,7 +1383,7 @@ export function useDeleteApiProductsIdImagesImageId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Remove image from product
+ * @summary Remove image
  */
 
 export function useDeleteApiProductsIdImagesImageId<
@@ -1731,7 +1420,7 @@ export function useDeleteApiProductsIdImagesImageId<
 }
 
 /**
- * @summary List product page blocks
+ * @summary List blocks
  */
 export const getApiProductsIdBlocks = (id: string, signal?: AbortSignal) => {
   return orvalClient<ProductBlock[]>({
@@ -1857,7 +1546,7 @@ export function useGetApiProductsIdBlocks<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary List product page blocks
+ * @summary List blocks
  */
 
 export function useGetApiProductsIdBlocks<
@@ -1889,7 +1578,7 @@ export function useGetApiProductsIdBlocks<
 }
 
 /**
- * @summary Add block to product page
+ * @summary Add block
  */
 export const postApiProductsIdBlocks = (
   id: string,
@@ -2034,7 +1723,7 @@ export function usePostApiProductsIdBlocks<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Add block to product page
+ * @summary Add block
  */
 
 export function usePostApiProductsIdBlocks<
@@ -2071,7 +1760,7 @@ export function usePostApiProductsIdBlocks<
 }
 
 /**
- * @summary Update product page block
+ * @summary Update block
  */
 export const patchApiProductsIdBlocksBlockId = (
   id: string,
@@ -2235,7 +1924,7 @@ export function usePatchApiProductsIdBlocksBlockId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Update product page block
+ * @summary Update block
  */
 
 export function usePatchApiProductsIdBlocksBlockId<
@@ -2274,7 +1963,7 @@ export function usePatchApiProductsIdBlocksBlockId<
 }
 
 /**
- * @summary Remove block from product page
+ * @summary Remove block
  */
 export const deleteApiProductsIdBlocksBlockId = (
   id: string,
@@ -2416,7 +2105,7 @@ export function useDeleteApiProductsIdBlocksBlockId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Remove block from product page
+ * @summary Remove block
  */
 
 export function useDeleteApiProductsIdBlocksBlockId<
@@ -2453,7 +2142,7 @@ export function useDeleteApiProductsIdBlocksBlockId<
 }
 
 /**
- * @summary List product downloadable files
+ * @summary List files
  */
 export const getApiProductsIdFiles = (id: string, signal?: AbortSignal) => {
   return orvalClient<ProductFile[]>({
@@ -2579,7 +2268,7 @@ export function useGetApiProductsIdFiles<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary List product downloadable files
+ * @summary List files
  */
 
 export function useGetApiProductsIdFiles<
@@ -2611,7 +2300,7 @@ export function useGetApiProductsIdFiles<
 }
 
 /**
- * @summary Add downloadable file to product
+ * @summary Add file
  */
 export const postApiProductsIdFiles = (
   id: string,
@@ -2756,7 +2445,7 @@ export function usePostApiProductsIdFiles<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Add downloadable file to product
+ * @summary Add file
  */
 
 export function usePostApiProductsIdFiles<
@@ -2793,7 +2482,7 @@ export function usePostApiProductsIdFiles<
 }
 
 /**
- * @summary Update product file metadata
+ * @summary Update file
  */
 export const patchApiProductsIdFilesFileId = (
   id: string,
@@ -2957,7 +2646,7 @@ export function usePatchApiProductsIdFilesFileId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Update product file metadata
+ * @summary Update file
  */
 
 export function usePatchApiProductsIdFilesFileId<
@@ -2996,7 +2685,7 @@ export function usePatchApiProductsIdFilesFileId<
 }
 
 /**
- * @summary Remove file from product
+ * @summary Remove file
  */
 export const deleteApiProductsIdFilesFileId = (
   id: string,
@@ -3138,7 +2827,7 @@ export function useDeleteApiProductsIdFilesFileId<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Remove file from product
+ * @summary Remove file
  */
 
 export function useDeleteApiProductsIdFilesFileId<
