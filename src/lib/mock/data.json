@@ -1,0 +1,4223 @@
+{
+  "banners--active": {
+    "items": [
+      {
+        "id": "6a252ce0d81bb6e1543f9a8b",
+        "desktop_image_url": "/figma-assets/raw/fill_5JQEZY_e95c6db4.png",
+        "mobile_image_url": "/figma-assets/raw/fill_8T5TD1_7ad629bc.png",
+        "title": "SINTA O VERDADEIRO\nPODER DO GRAVE",
+        "label": "Stetsom Digital Bass",
+        "href": "/produtos",
+        "order": 1
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a8c",
+        "desktop_image_url": "/figma-assets/raw/fill_5JQEZY_e95c6db4.png",
+        "title": "NOSSA HISTÓRIA",
+        "label": "Desde 1989",
+        "href": "/sobre",
+        "order": 2
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a8d",
+        "desktop_image_url": "/figma-assets/raw/fill_5JQEZY_e95c6db4.png",
+        "title": "COMUNIDADE STETSOM",
+        "label": "Suporte Oficial",
+        "href": "/suporte",
+        "order": 3
+      }
+    ],
+    "total": 3
+  },
+  "categories": [
+    {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": "Amplificadores",
+      "slug": "amplificadores",
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": "Full Range",
+          "slug": "full-range",
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": "Mono",
+          "slug": "mono",
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a79",
+      "name": "Processadores",
+      "slug": "processadores",
+      "lines": [
+        {
+          "line_id": "b0532c6d-f49b-43ac-8478-378343c0375b",
+          "name": "DSP",
+          "slug": "dsp",
+          "order": 1
+        }
+      ],
+      "order": 2,
+      "created_at": "2026-06-07T08:33:36.526Z",
+      "updated_at": "2026-06-07T08:33:36.526Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a7a",
+      "name": "Crossovers",
+      "slug": "crossovers",
+      "lines": [],
+      "order": 3,
+      "created_at": "2026-06-07T08:33:36.534Z",
+      "updated_at": "2026-06-07T08:33:36.534Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a7b",
+      "name": "Controles",
+      "slug": "controles",
+      "lines": [],
+      "order": 4,
+      "created_at": "2026-06-07T08:33:36.541Z",
+      "updated_at": "2026-06-07T08:33:36.541Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a7c",
+      "name": "Fontes e Carregadores",
+      "slug": "fontes-e-carregadores",
+      "lines": [
+        {
+          "line_id": "2816a8ba-fe7d-43c2-b6af-dc8c0d93e8e3",
+          "name": "Automotiva",
+          "slug": "automotiva",
+          "order": 1
+        }
+      ],
+      "order": 5,
+      "created_at": "2026-06-07T08:33:36.549Z",
+      "updated_at": "2026-06-07T08:33:36.549Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a7d",
+      "name": "Mesas de Som",
+      "slug": "mesas-de-som",
+      "lines": [],
+      "order": 6,
+      "created_at": "2026-06-07T08:33:36.557Z",
+      "updated_at": "2026-06-07T08:33:36.557Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a7e",
+      "name": "Acessórios",
+      "slug": "acessorios",
+      "lines": [],
+      "order": 7,
+      "created_at": "2026-06-07T08:33:36.566Z",
+      "updated_at": "2026-06-07T08:33:36.566Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a7f",
+      "name": "Subwoofers",
+      "slug": "subwoofers",
+      "lines": [
+        {
+          "line_id": "27bf533a-a9a3-4c7f-a732-31fda5d6e72e",
+          "name": "12 Polegadas",
+          "slug": "12-polegadas",
+          "order": 1
+        },
+        {
+          "line_id": "f50c8d87-00e5-45d6-acb5-07fa2e3d06eb",
+          "name": "15 Polegadas",
+          "slug": "15-polegadas",
+          "order": 2
+        }
+      ],
+      "order": 8,
+      "created_at": "2026-06-07T08:33:36.574Z",
+      "updated_at": "2026-06-07T08:33:36.574Z"
+    }
+  ],
+  "pages--about": {
+    "id": "6a252ce0d81bb6e1543f9a8f",
+    "slug": "about",
+    "title": "Sobre a Stetsom",
+    "blocks": [
+      {
+        "block_id": "b8a5934f-354c-493e-bb5a-4a962ccc92f8",
+        "section_id": "hero",
+        "type": "IMAGE",
+        "order": 1,
+        "data": {
+          "url": "/figma-assets/raw/fill_TZ5X2T_f271b766.png",
+          "stats": [
+            {
+              "value": "35+",
+              "label": "Anos de Mercado"
+            },
+            {
+              "value": "200+",
+              "label": "Produtos"
+            },
+            {
+              "value": "60+",
+              "label": "Países de Exportação"
+            },
+            {
+              "value": "1M+",
+              "label": "Unidades Vendidas"
+            }
+          ],
+          "milestones": [
+            "POTÊNCIA",
+            "QUALIDADE",
+            "INOVAÇÃO",
+            "FEITO NO BRASIL",
+            "DESDE 1989"
+          ],
+          "label": "Nossa história",
+          "title": "SEMPRE\nPIONEIRA\nNA POTÊNCIA",
+          "imageAlt": "Sobre a Stetsom"
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "a4ce4cb4-c357-41dc-9523-815a85325df5",
+        "section_id": "quality",
+        "type": "TEXT",
+        "order": 2,
+        "data": {
+          "image_url": "/figma-assets/raw/fill_C4OUE1_1e666beb.png",
+          "label": "QUEM SOMOS",
+          "title": "QUALIDADE\nINOVADORA",
+          "description": "A Stetsom nasceu da paixão pelo som automotivo de alta performance. Ao longo de mais de três décadas, construímos uma reputação sólida no Brasil e no mundo.",
+          "imageAlt": "Qualidade Stetsom"
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "d7ef870d-6b45-4878-968e-8ee3b1e0e058",
+        "section_id": "values",
+        "type": "CARDS",
+        "order": 3,
+        "data": {
+          "items": [
+            {
+              "icon": "zap",
+              "title": "Potência",
+              "description": "Quando se fala em Stetsom, potência sem limite é nossa assinatura."
+            },
+            {
+              "icon": "shield-check",
+              "title": "Qualidade",
+              "description": "Desde 1989 fazemos o melhor para fazer sempre melhor."
+            },
+            {
+              "icon": "rocket",
+              "title": "Inovação",
+              "description": "Projetados para serem objetos de desejo, os produtos Stetsom ocupam lugar de destaque."
+            }
+          ],
+          "bases": [
+            {
+              "title": "Excelência Técnica",
+              "description": "Cuidado extremo no design e fabricação de cada produto."
+            },
+            {
+              "title": "Compromisso com o Cliente",
+              "description": "Cada cliente é único. Em um mercado competitivo, escutar e evoluir com o cliente é parte do nosso DNA."
+            },
+            {
+              "title": "Inovação Contínua",
+              "description": "P&D constante para desenvolver soluções que surpreendem."
+            }
+          ]
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "e07e70c9-b15d-4b54-9ad3-d8b12bd2dc82",
+        "section_id": "timeline",
+        "type": "TIMELINE",
+        "order": 4,
+        "data": {
+          "events": [
+            {
+              "year": 1989,
+              "image_url": "/figma-assets/raw/fill_YKBFZV_e95c6db4.png",
+              "title": "Fundação",
+              "shortTitle": "COMEÇO DA STETSOM",
+              "description": "A Stetsom nasce com foco em amplificação automotiva e qualidade de engenharia."
+            },
+            {
+              "year": 1999,
+              "image_url": "/figma-assets/raw/fill_4ZTOB5_bf27a878.png",
+              "title": "Linha Booster",
+              "shortTitle": "LINHA BOOSTER",
+              "description": "A linha Booster fortalece a marca entre instaladores e profissionais de áudio em todo o Brasil."
+            },
+            {
+              "year": 2002,
+              "image_url": "/figma-assets/raw/fill_DMAWF3_a4b5ab27.png",
+              "title": "Antenas & Crossovers",
+              "shortTitle": "ANTENAS & CROSSOVER",
+              "description": "Expansão do portfólio com antenas e crossovers de alta fidelidade."
+            },
+            {
+              "year": 2007,
+              "image_url": "/figma-assets/raw/fill_RA4PPD_8b0b4189.png",
+              "title": "Melhor Amplificador do Mundo",
+              "shortTitle": "MELHOR AMPLIFICADOR",
+              "description": "Reconhecida internacionalmente, a Stetsom conquista o título de melhor amplificador do mundo."
+            },
+            {
+              "year": 2014,
+              "image_url": "/figma-assets/raw/fill_C4OUE1_1e666beb.png",
+              "title": "Era Digital",
+              "shortTitle": "ERA DIGITAL",
+              "description": "Nova fase digital com foco em experiência omnichannel para distribuidores e consumidores."
+            }
+          ]
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "f2091fc4-6da9-41a2-8342-3fbef466857b",
+        "section_id": "jobs-cta",
+        "type": "TEXT",
+        "order": 5,
+        "data": {
+          "image_url": "/figma-assets/raw/fill_RHRVZZ_ffc7fd09.png",
+          "label": "Trabalhe Conosco",
+          "title": "VENHA FAZER PARTE DA STETSOM",
+          "description": "Buscamos profissionais apaixonados que compartilham nossa visão de inovação e excelência.",
+          "buttonLabel": "Ver Vagas no LinkedIn",
+          "buttonHref": "https://www.linkedin.com/company/stetsom/jobs/",
+          "imageAlt": "Trabalhe Conosco"
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "37cfcb18-f7d2-4561-a24f-6f82e360ce80",
+        "section_id": "social",
+        "type": "GALLERY",
+        "order": 6,
+        "data": {
+          "handle": "@STETSOMBRASIL",
+          "ctaHref": "https://instagram.com/stetsombrasil",
+          "title": "MÍDIAS SOCIAIS",
+          "subtitle": "Participe da comunidade de profissionais do áudio.",
+          "ctaLabel": "Seguir no Instagram"
+        },
+        "available_locales": []
+      }
+    ],
+    "updated_at": "2026-06-07T08:33:36.755Z"
+  },
+  "pages--catalog": {
+    "id": "6a252ce0d81bb6e1543f9a90",
+    "slug": "catalog",
+    "title": "Catálogo",
+    "blocks": [
+      {
+        "block_id": "ff9dd5c2-128e-465c-b2b8-e819d5d9c96d",
+        "section_id": "hero",
+        "type": "TEXT",
+        "order": 1,
+        "data": {
+          "heroLabel": "Produtos",
+          "heroTitle": "NOSSO\nCATÁLOGO",
+          "heroImageAlt": "Catálogo Stetsom",
+          "heroWatermark": "STETSOM"
+        },
+        "available_locales": []
+      }
+    ],
+    "updated_at": "2026-06-07T08:33:36.769Z"
+  },
+  "pages--home": {
+    "id": "6a252ce0d81bb6e1543f9a8e",
+    "slug": "home",
+    "title": "Página Inicial",
+    "blocks": [
+      {
+        "block_id": "b1dac08c-e33d-42cd-8eae-137437438ae2",
+        "section_id": "featured",
+        "type": "TEXT",
+        "order": 1,
+        "data": {
+          "label": "Novidades",
+          "title": "CONHEÇA A\nPRATICIDADE",
+          "ctaLabel": "Ver todos",
+          "ctaHref": "/produtos",
+          "products": [
+            {
+              "id": "6a252ce0d81bb6e1543f9a87",
+              "slug": "ex-3000-1d-mono",
+              "name": "EX-3000.1D MONO",
+              "category": "Amplificadores",
+              "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+              "href": "/produtos/ex-3000-1d-mono",
+              "status": "PUBLISHED",
+              "is_discontinued": false,
+              "highlighted_specs": [
+                {
+                  "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+                },
+                {
+                  "attribute_id": "6a252ce0d81bb6e1543f9a70"
+                },
+                {
+                  "attribute_id": "6a252ce0d81bb6e1543f9a71"
+                }
+              ]
+            },
+            {
+              "id": "6a252ce0d81bb6e1543f9a85",
+              "slug": "st-1200-1d-bass",
+              "name": "ST-1200.1D BASS",
+              "category": "Amplificadores",
+              "thumbnail_url": "/figma-assets/raw/product-c.png",
+              "href": "/produtos/st-1200-1d-bass",
+              "status": "PUBLISHED",
+              "is_discontinued": false,
+              "highlighted_specs": [
+                {
+                  "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+                },
+                {
+                  "attribute_id": "6a252ce0d81bb6e1543f9a70"
+                },
+                {
+                  "attribute_id": "6a252ce0d81bb6e1543f9a71"
+                }
+              ]
+            },
+            {
+              "id": "6a252ce0d81bb6e1543f9a84",
+              "slug": "st-800-4-compact",
+              "name": "ST-800.4 COMPACT",
+              "category": "Amplificadores",
+              "thumbnail_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+              "href": "/produtos/st-800-4-compact",
+              "status": "PUBLISHED",
+              "is_discontinued": false,
+              "highlighted_specs": [
+                {
+                  "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+                },
+                {
+                  "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+                },
+                {
+                  "attribute_id": "6a252ce0d81bb6e1543f9a71"
+                }
+              ]
+            },
+            {
+              "id": "6a252ce0d81bb6e1543f9a83",
+              "slug": "st-2000eq-mono",
+              "name": "ST-2000EQ MONO",
+              "category": "Amplificadores",
+              "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+              "href": "/produtos/st-2000eq-mono",
+              "status": "PUBLISHED",
+              "is_discontinued": false,
+              "highlighted_specs": [
+                {
+                  "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+                },
+                {
+                  "attribute_id": "6a252ce0d81bb6e1543f9a70"
+                },
+                {
+                  "attribute_id": "6a252ce0d81bb6e1543f9a71"
+                }
+              ]
+            }
+          ],
+          "spotlight": {
+            "id": "6a252ce0d81bb6e1543f9a82",
+            "slug": "st-4000eq-4-canais",
+            "name": "ST-4000EQ 4 CANAIS",
+            "category": "Amplificadores",
+            "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+            "href": "/produtos/st-4000eq-4-canais",
+            "status": "PUBLISHED",
+            "is_discontinued": false,
+            "highlighted_specs": [
+              {
+                "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+              },
+              {
+                "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+              },
+              {
+                "attribute_id": "6a252ce0d81bb6e1543f9a70"
+              }
+            ]
+          }
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "a1b1d1fb-b6bc-4a30-8d64-58098a5cd63a",
+        "section_id": "history",
+        "type": "TEXT",
+        "order": 2,
+        "data": {
+          "image_url": "/figma-assets/raw/home-history.png",
+          "label": "Nossa História",
+          "title": "CONSTRUINDO\nCOM PROPÓSITO",
+          "subtitle": "Há mais de 35 anos desenvolvemos tecnologia de amplificação que define o padrão de qualidade no mercado automotivo.",
+          "imageAlt": "Nossa história",
+          "ctaLabel": "Conheça mais",
+          "ctaHref": "/sobre",
+          "stats": [
+            {
+              "value": "35+",
+              "label": "Anos de Mercado"
+            },
+            {
+              "value": "200+",
+              "label": "Produtos"
+            },
+            {
+              "value": "60+",
+              "label": "Países de Exportação"
+            },
+            {
+              "value": "1M+",
+              "label": "Unidades Vendidas"
+            }
+          ]
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "fc433500-9642-4d2b-b2e2-9d3608b7c696",
+        "section_id": "faq",
+        "type": "FAQ",
+        "order": 3,
+        "data": {
+          "items": [
+            {
+              "q": "Qual a diferença entre 1 Ohm e 2 Ohms de impedância?",
+              "a": "A impedância afeta diretamente a carga sobre o amplificador. Impedâncias menores permitem maior potência, desde que o sistema seja compatível."
+            },
+            {
+              "q": "Como verificar a garantia do meu produto?",
+              "a": "Acesse a central de garantia da Stetsom e informe o número de série para consultar o status atualizado."
+            },
+            {
+              "q": "Onde encontrar postos autorizados Stetsom?",
+              "a": "Nossa rede tem mais de 500 distribuidores no Brasil. Use o localizador da Central de Ajuda para encontrar o mais próximo."
+            }
+          ],
+          "section": {
+            "label": "Dúvidas",
+            "title": "PERGUNTAS\nFREQUENTES",
+            "subtitle": "Não encontrou o que procura? Entre em contato com nosso suporte.",
+            "ctaLabel": "Falar com suporte",
+            "ctaHref": "/suporte"
+          }
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "8b1b75bc-5dea-44d6-86a9-9a6971c1ffef",
+        "section_id": "social",
+        "type": "GALLERY",
+        "order": 4,
+        "data": {
+          "handle": "@STETSOMBRASIL",
+          "ctaHref": "https://instagram.com/stetsombrasil",
+          "title": "MÍDIAS SOCIAIS",
+          "subtitle": "Participe da comunidade de profissionais do áudio.",
+          "ctaLabel": "Seguir no Instagram"
+        },
+        "available_locales": []
+      }
+    ],
+    "updated_at": "2026-06-07T08:33:36.740Z"
+  },
+  "pages--support": {
+    "id": "6a252ce0d81bb6e1543f9a91",
+    "slug": "support",
+    "title": "Suporte",
+    "blocks": [
+      {
+        "block_id": "d60dcb92-ac3e-49c1-b54b-9f81ed638d6d",
+        "section_id": "hero",
+        "type": "TEXT",
+        "order": 1,
+        "data": {
+          "image_url": "/figma-assets/raw/fill_TZ5X2T_f271b766.png",
+          "label": "Central de Suporte",
+          "title": "COMO PODEMOS\nAJUDAR?",
+          "description": "Encontre manuais, assistência técnica autorizada e tire suas dúvidas.",
+          "watermarkText": "SUPORTE"
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "e83b2ae3-e5b8-42bf-a814-bfc017b9fd7b",
+        "section_id": "cards",
+        "type": "CARDS",
+        "order": 2,
+        "data": {
+          "items": [
+            {
+              "title": "Manuais & Downloads",
+              "description": "Acesse manuais técnicos, catálogos, fotos e logos.",
+              "cta": "Acessar"
+            },
+            {
+              "title": "Postos Autorizados",
+              "description": "Encontre a assistência técnica autorizada mais próxima.",
+              "cta": "Localizar"
+            },
+            {
+              "title": "Fale Conosco",
+              "description": "Entre em contato com nossa equipe de suporte técnico.",
+              "cta": "Contato"
+            }
+          ]
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "60532f2a-f159-4e1a-ad9e-aa2c07de5b15",
+        "section_id": "faq",
+        "type": "FAQ",
+        "order": 3,
+        "data": {
+          "items": [
+            {
+              "q": "Como instalar meu amplificador?",
+              "a": "Siga o manual incluso e procure um instalador autorizado Stetsom."
+            },
+            {
+              "q": "Qual a diferença entre 1 Ohm e 2 Ohms?",
+              "a": "Impedâncias menores permitem maior potência de saída."
+            },
+            {
+              "q": "Como verificar a garantia?",
+              "a": "Na central de garantia da Stetsom, informe o número de série."
+            },
+            {
+              "q": "Onde encontrar distribuidores autorizados?",
+              "a": "Temos mais de 500 distribuidores no Brasil. Use o localizador no suporte."
+            },
+            {
+              "q": "Qual a diferença entre amplificador e processador?",
+              "a": "Amplificadores amplificam sinais de áudio. Processadores trabalham no controle de frequência."
+            },
+            {
+              "q": "Posso usar fonte diferente da recomendada?",
+              "a": "Recomendamos usar fontes Stetsom de especificações iguais."
+            }
+          ],
+          "section": {
+            "label": "Perguntas Frequentes",
+            "title": "TIRE SUAS DÚVIDAS",
+            "supportButtonLabel": "Falar com suporte"
+          }
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "5958067f-1c71-43d1-a4ee-dc8b76607f10",
+        "section_id": "contact",
+        "type": "TEXT",
+        "order": 4,
+        "data": {
+          "label": "Fale com a Stetsom",
+          "title": "ENTRE EM CONTATO",
+          "description": "Nossa equipe está pronta para atender você."
+        },
+        "available_locales": []
+      }
+    ],
+    "updated_at": "2026-06-07T08:33:36.778Z"
+  },
+  "partner-locations": [
+    {
+      "id": "6a252cdb718d863967bb16c0",
+      "type": "REPRESENTATIVE",
+      "name": "North Sound Manaus",
+      "address": "Av. Djalma Batista, 1661, Chapada",
+      "city": "Manaus",
+      "state": "AM",
+      "zip": "69050-010",
+      "lat": -3.1019,
+      "lng": -60.0217,
+      "phone": "(92) 3200-0000",
+      "email": "vendas@northsound.am.br",
+      "region": "Norte",
+      "is_active": true,
+      "created_at": "2026-06-07T08:33:31.226Z",
+      "updated_at": "2026-06-07T08:33:31.226Z"
+    },
+    {
+      "id": "6a252cdb718d863967bb16be",
+      "type": "REPRESENTATIVE",
+      "name": "Audio Center RJ",
+      "address": "Rua da Assembleia, 10, Centro",
+      "city": "Rio de Janeiro",
+      "state": "RJ",
+      "zip": "20011-000",
+      "lat": -22.9035,
+      "lng": -43.1764,
+      "phone": "(21) 2220-2000",
+      "email": "vendas@audiocenterrj.com.br",
+      "region": "Sudeste",
+      "is_active": true,
+      "created_at": "2026-06-07T08:33:31.210Z",
+      "updated_at": "2026-06-07T08:33:31.210Z"
+    },
+    {
+      "id": "6a252cdb718d863967bb16c4",
+      "type": "SERVICE_CENTER",
+      "name": "RioSom Técnica",
+      "address": "Rua Visconde de Inhaúma, 58, Centro",
+      "city": "Rio de Janeiro",
+      "state": "RJ",
+      "zip": "20091-007",
+      "lat": -22.9028,
+      "lng": -43.1729,
+      "phone": "(21) 2220-0000",
+      "phone2": "(21) 9 9456-0000",
+      "specialty": "Subwoofers e Amplificadores",
+      "is_active": true,
+      "created_at": "2026-06-07T08:33:31.261Z",
+      "updated_at": "2026-06-07T08:33:31.261Z"
+    },
+    {
+      "id": "6a252cdb718d863967bb16c1",
+      "type": "SERVICE_CENTER",
+      "name": "Centro Técnico Santo Ângelo",
+      "address": "Av. Brasil, 1200",
+      "city": "Santo Ângelo",
+      "state": "RS",
+      "zip": "98801-000",
+      "lat": -28.2997,
+      "lng": -54.2607,
+      "phone": "(55) 3312-0000",
+      "phone2": "(55) 9 9123-0000",
+      "specialty": "Amplificadores",
+      "is_active": true,
+      "created_at": "2026-06-07T08:33:31.235Z",
+      "updated_at": "2026-06-07T08:33:31.235Z"
+    },
+    {
+      "id": "6a252cdb718d863967bb16bd",
+      "type": "REPRESENTATIVE",
+      "name": "Som Total Distribuidora",
+      "address": "Av. Paulista, 1000, Bela Vista",
+      "city": "São Paulo",
+      "state": "SP",
+      "zip": "01310-100",
+      "lat": -23.5614,
+      "lng": -46.6558,
+      "phone": "(11) 3000-1000",
+      "email": "contato@somtotal.com.br",
+      "website": "https://somtotal.com.br",
+      "region": "Sudeste",
+      "is_active": true,
+      "created_at": "2026-06-07T08:33:31.203Z",
+      "updated_at": "2026-06-07T08:33:31.203Z"
+    },
+    {
+      "id": "6a252cdb718d863967bb16c2",
+      "type": "SERVICE_CENTER",
+      "name": "Stetsom Service São Paulo",
+      "address": "Rua Voluntários da Pátria, 847, Santana",
+      "city": "São Paulo",
+      "state": "SP",
+      "zip": "02402-000",
+      "lat": -23.5073,
+      "lng": -46.6325,
+      "phone": "(11) 3991-0000",
+      "phone2": "(11) 9 9234-0000",
+      "specialty": "Amplificadores e Processadores",
+      "is_active": true,
+      "created_at": "2026-06-07T08:33:31.245Z",
+      "updated_at": "2026-06-07T08:33:31.245Z"
+    }
+  ],
+  "products--ex-3000-1d-mono": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a87",
+      "sku": null,
+      "name": "EX-3000.1D MONO",
+      "slug": "ex-3000-1d-mono",
+      "description": "Módulo mono de alta corrente para projetos SPL.",
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2024-09-01T00:00:00.000Z",
+      "is_featured": true,
+      "is_spotlight": false,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a6f",
+        "6a252ce0d81bb6e1543f9a70",
+        "6a252ce0d81bb6e1543f9a71"
+      ],
+      "images": [
+        {
+          "image_id": "38deca7e-3d65-49db-a2dc-f0755a5222c9",
+          "library_id": "6a252ce0d81bb6e1543f9a66",
+          "image_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.661Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "727d3a38-7035-4aab-bb5e-ed0eeb4f99fe",
+          "name": "1 Ohm",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "3000W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a70",
+              "attribute_name": "Impedância",
+              "value": "1 Ohm",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "1",
+              "order": 3,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a71",
+              "attribute_name": "Classe de Operação",
+              "value": "Classe D",
+              "order": 4,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "e9b1331d-4dcd-4fd8-92b9-a5814352fdc2",
+          "type": "IMAGE",
+          "order": 1,
+          "data": {
+            "library_id": "6a252ce0d81bb6e1543f9a66",
+            "background_color": "#0a0a0a"
+          }
+        }
+      ],
+      "files": [],
+      "created_at": "2026-06-07T08:33:36.662Z",
+      "updated_at": "2026-06-07T08:33:36.662Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": "Amplificadores",
+      "slug": "amplificadores",
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": "Full Range",
+          "slug": "full-range",
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": "Mono",
+          "slug": "mono",
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    "relatedProducts": [
+      {
+        "id": "6a252ce0d81bb6e1543f9a8a",
+        "slug": "st-350-4-mini",
+        "name": "ST-350.4 MINI",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
+        "href": "/produtos/st-350-4-mini",
+        "status": "PUBLISHED",
+        "is_discontinued": true,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a85",
+        "slug": "st-1200-1d-bass",
+        "name": "ST-1200.1D BASS",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
+        "href": "/produtos/st-1200-1d-bass",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a84",
+        "slug": "st-800-4-compact",
+        "name": "ST-800.4 COMPACT",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+        "href": "/produtos/st-800-4-compact",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a83",
+        "slug": "st-2000eq-mono",
+        "name": "ST-2000EQ MONO",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "href": "/produtos/st-2000eq-mono",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      }
+    ]
+  },
+  "products--sf-120a-fonte-automotiva": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a88",
+      "sku": null,
+      "name": "SF-120A FONTE AUTOMOTIVA",
+      "slug": "sf-120a-fonte-automotiva",
+      "description": "Fonte chaveada para sistemas de alta demanda.",
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2024-06-01T00:00:00.000Z",
+      "is_featured": false,
+      "is_spotlight": false,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a7c",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a74",
+        "6a252ce0d81bb6e1543f9a75",
+        "6a252ce0d81bb6e1543f9a76"
+      ],
+      "images": [
+        {
+          "image_id": "140583d8-9c5e-4a43-a522-48d6ef4a8e08",
+          "library_id": "6a252ce0d81bb6e1543f9a67",
+          "image_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.670Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "1ec709bb-4ce8-4cca-9c6a-948c043aa984",
+          "name": "Standard",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a74",
+              "attribute_name": "Corrente de Saída",
+              "value": "120A Contínuos",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a75",
+              "attribute_name": "Peso",
+              "value": "2.8kg",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a76",
+              "attribute_name": "Dimensões",
+              "value": "220 x 130 x 70mm",
+              "order": 3,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "3793575c-9441-4d8e-9602-a49136db922e",
+          "type": "TEXT",
+          "order": 1,
+          "data": {
+            "title": {
+              "pt": "Energia estável",
+              "en": "Stable Power"
+            },
+            "content": {
+              "pt": "Fonte chaveada para sistemas de alta demanda contínua."
+            },
+            "align": "left"
+          }
+        }
+      ],
+      "files": [],
+      "created_at": "2026-06-07T08:33:36.671Z",
+      "updated_at": "2026-06-07T08:33:36.671Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a7c",
+      "name": "Fontes e Carregadores",
+      "slug": "fontes-e-carregadores",
+      "lines": [
+        {
+          "line_id": "2816a8ba-fe7d-43c2-b6af-dc8c0d93e8e3",
+          "name": "Automotiva",
+          "slug": "automotiva",
+          "order": 1
+        }
+      ],
+      "order": 5,
+      "created_at": "2026-06-07T08:33:36.549Z",
+      "updated_at": "2026-06-07T08:33:36.549Z"
+    },
+    "relatedProducts": []
+  },
+  "products--st-1200-1d-bass": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a85",
+      "sku": null,
+      "name": "ST-1200.1D BASS",
+      "slug": "st-1200-1d-bass",
+      "description": "Módulo mono Classe D focado em graves.",
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2025-03-01T00:00:00.000Z",
+      "is_featured": true,
+      "is_spotlight": false,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a6f",
+        "6a252ce0d81bb6e1543f9a70",
+        "6a252ce0d81bb6e1543f9a71"
+      ],
+      "images": [
+        {
+          "image_id": "40d1ad8b-b367-48ed-acc0-23ee3bd7502e",
+          "library_id": "6a252ce0d81bb6e1543f9a68",
+          "image_url": "/figma-assets/raw/product-c.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.640Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "17d22a86-c600-45d4-b633-494c04a6f61f",
+          "name": "2 Ohms",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "1200W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a70",
+              "attribute_name": "Impedância",
+              "value": "2 Ohms",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "1",
+              "order": 3,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a71",
+              "attribute_name": "Classe de Operação",
+              "value": "Classe D",
+              "order": 4,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "b557b7ea-d8a9-4497-b298-15e369467866",
+          "type": "VIDEO",
+          "order": 1,
+          "data": {
+            "url": "https://www.youtube.com/watch?v=stetsom-demo-1200",
+            "background_color": "#000000"
+          }
+        }
+      ],
+      "files": [],
+      "created_at": "2026-06-07T08:33:36.641Z",
+      "updated_at": "2026-06-07T08:33:36.641Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": "Amplificadores",
+      "slug": "amplificadores",
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": "Full Range",
+          "slug": "full-range",
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": "Mono",
+          "slug": "mono",
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    "relatedProducts": [
+      {
+        "id": "6a252ce0d81bb6e1543f9a8a",
+        "slug": "st-350-4-mini",
+        "name": "ST-350.4 MINI",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
+        "href": "/produtos/st-350-4-mini",
+        "status": "PUBLISHED",
+        "is_discontinued": true,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a87",
+        "slug": "ex-3000-1d-mono",
+        "name": "EX-3000.1D MONO",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "href": "/produtos/ex-3000-1d-mono",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a84",
+        "slug": "st-800-4-compact",
+        "name": "ST-800.4 COMPACT",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+        "href": "/produtos/st-800-4-compact",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a83",
+        "slug": "st-2000eq-mono",
+        "name": "ST-2000EQ MONO",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "href": "/produtos/st-2000eq-mono",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      }
+    ]
+  },
+  "products--st-2000eq-mono": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a83",
+      "sku": null,
+      "name": "ST-2000EQ MONO",
+      "slug": "st-2000eq-mono",
+      "description": "Módulo mono de alta potência para graves.",
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2025-09-01T00:00:00.000Z",
+      "is_featured": true,
+      "is_spotlight": false,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a6f",
+        "6a252ce0d81bb6e1543f9a70",
+        "6a252ce0d81bb6e1543f9a71"
+      ],
+      "images": [
+        {
+          "image_id": "de0d7c32-83ab-46ae-acd5-82fb5f333a49",
+          "library_id": "6a252ce0d81bb6e1543f9a66",
+          "image_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.617Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "345a5f0a-056a-44f6-979b-d475437aef25",
+          "name": "1 Ohm",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "2000W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a70",
+              "attribute_name": "Impedância",
+              "value": "1 Ohm",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "1",
+              "order": 3,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a71",
+              "attribute_name": "Classe de Operação",
+              "value": "Classe D",
+              "order": 4,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "463962a0-f303-4a02-a214-591d7cd87f87",
+          "type": "IMAGE",
+          "order": 1,
+          "data": {
+            "library_id": "6a252ce0d81bb6e1543f9a66",
+            "background_color": "#111111"
+          }
+        },
+        {
+          "block_id": "2e5fa576-fea5-408f-b90d-6476c432f5be",
+          "type": "TEXT",
+          "order": 2,
+          "data": {
+            "title": {
+              "pt": "Graves encorpados",
+              "en": "Deep Bass"
+            },
+            "content": {
+              "pt": "Módulo mono para instalações de alta demanda em SPL."
+            },
+            "align": "left"
+          }
+        }
+      ],
+      "files": [
+        {
+          "file_id": "329573f4-a06a-42e7-97c5-734861b212d6",
+          "library_id": "6a252ce0d81bb6e1543f9a6a",
+          "file_url": "/uploads/manuals/manual-sr4000.pdf",
+          "filename": "manual-sr4000.pdf",
+          "type": "MANUAL",
+          "locale": "pt",
+          "is_active": true,
+          "created_at": "2026-06-07T08:33:36.617Z"
+        }
+      ],
+      "created_at": "2026-06-07T08:33:36.619Z",
+      "updated_at": "2026-06-07T08:33:36.619Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": "Amplificadores",
+      "slug": "amplificadores",
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": "Full Range",
+          "slug": "full-range",
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": "Mono",
+          "slug": "mono",
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    "relatedProducts": [
+      {
+        "id": "6a252ce0d81bb6e1543f9a8a",
+        "slug": "st-350-4-mini",
+        "name": "ST-350.4 MINI",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
+        "href": "/produtos/st-350-4-mini",
+        "status": "PUBLISHED",
+        "is_discontinued": true,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a87",
+        "slug": "ex-3000-1d-mono",
+        "name": "EX-3000.1D MONO",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "href": "/produtos/ex-3000-1d-mono",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a85",
+        "slug": "st-1200-1d-bass",
+        "name": "ST-1200.1D BASS",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
+        "href": "/produtos/st-1200-1d-bass",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a84",
+        "slug": "st-800-4-compact",
+        "name": "ST-800.4 COMPACT",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+        "href": "/produtos/st-800-4-compact",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      }
+    ]
+  },
+  "products--st-350-4-mini": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a8a",
+      "sku": null,
+      "name": "ST-350.4 MINI",
+      "slug": "st-350-4-mini",
+      "description": "Produto legado — referência técnica.",
+      "status": "PUBLISHED",
+      "is_discontinued": true,
+      "launch_date": "2015-01-01T00:00:00.000Z",
+      "is_featured": false,
+      "is_spotlight": false,
+      "available_locales": ["pt"],
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a6f",
+        "6a252ce0d81bb6e1543f9a6e"
+      ],
+      "images": [
+        {
+          "image_id": "cb427849-9085-4200-b500-e5df914772b9",
+          "library_id": "6a252ce0d81bb6e1543f9a68",
+          "image_url": "/figma-assets/raw/product-c.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.691Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "9b783589-9443-4a33-8882-6b823713787c",
+          "name": "4 Ohms",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "4x 350W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "4",
+              "order": 2,
+              "highlighted": true
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "bb1229a3-878e-42b7-a792-c39d137f63dc",
+          "type": "TEXT",
+          "order": 1,
+          "data": {
+            "title": {
+              "pt": "Modelo legado",
+              "en": "Legacy Model"
+            },
+            "content": {
+              "pt": "Produto descontinuado, disponível para referência técnica."
+            },
+            "align": "left"
+          }
+        }
+      ],
+      "files": [],
+      "created_at": "2026-06-07T08:33:36.692Z",
+      "updated_at": "2026-06-07T08:33:36.692Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": "Amplificadores",
+      "slug": "amplificadores",
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": "Full Range",
+          "slug": "full-range",
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": "Mono",
+          "slug": "mono",
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    "relatedProducts": [
+      {
+        "id": "6a252ce0d81bb6e1543f9a87",
+        "slug": "ex-3000-1d-mono",
+        "name": "EX-3000.1D MONO",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "href": "/produtos/ex-3000-1d-mono",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a85",
+        "slug": "st-1200-1d-bass",
+        "name": "ST-1200.1D BASS",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
+        "href": "/produtos/st-1200-1d-bass",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a84",
+        "slug": "st-800-4-compact",
+        "name": "ST-800.4 COMPACT",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+        "href": "/produtos/st-800-4-compact",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a83",
+        "slug": "st-2000eq-mono",
+        "name": "ST-2000EQ MONO",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "href": "/produtos/st-2000eq-mono",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      }
+    ]
+  },
+  "products--st-4000eq-4-canais": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a82",
+      "sku": null,
+      "name": "ST-4000EQ 4 CANAIS",
+      "slug": "st-4000eq-4-canais",
+      "description": "Amplificador 4 canais com alta eficiência para sistemas automotivos de média e alta potência.",
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2025-12-01T00:00:00.000Z",
+      "is_featured": false,
+      "is_spotlight": true,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a6f",
+        "6a252ce0d81bb6e1543f9a6e",
+        "6a252ce0d81bb6e1543f9a70"
+      ],
+      "images": [
+        {
+          "image_id": "ba44093b-1794-4a64-8316-3fdf21d7cb0a",
+          "library_id": "6a252ce0d81bb6e1543f9a66",
+          "image_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.607Z"
+        },
+        {
+          "image_id": "b8f12bc8-0786-43e7-8a23-d0c8da7141b3",
+          "library_id": "6a252ce0d81bb6e1543f9a67",
+          "image_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+          "order": 1,
+          "created_at": "2026-06-07T08:33:36.607Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "c91a3e28-0f26-4877-a253-a8245f5e078f",
+          "name": "2 Ohms",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "4x 1000W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a70",
+              "attribute_name": "Impedância",
+              "value": "2 Ohms",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "4",
+              "order": 3,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a71",
+              "attribute_name": "Classe de Operação",
+              "value": "Classe D",
+              "order": 4,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a72",
+              "attribute_name": "Resposta em Frequência",
+              "value": "20 Hz – 20 kHz",
+              "order": 5,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a73",
+              "attribute_name": "Ganho de Entrada",
+              "value": "0 a 6V",
+              "order": 6,
+              "highlighted": false
+            }
+          ]
+        },
+        {
+          "variant_id": "2af3a334-26ea-4a50-84a2-0f3c8cb5efad",
+          "name": "4 Ohms",
+          "order": 1,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "4x 600W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a70",
+              "attribute_name": "Impedância",
+              "value": "4 Ohms",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "4",
+              "order": 3,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a71",
+              "attribute_name": "Classe de Operação",
+              "value": "Classe D",
+              "order": 4,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a72",
+              "attribute_name": "Resposta em Frequência",
+              "value": "20 Hz – 20 kHz",
+              "order": 5,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a73",
+              "attribute_name": "Ganho de Entrada",
+              "value": "0 a 6V",
+              "order": 6,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "308f2226-d6a5-445f-b2bc-b655c01504cb",
+          "type": "IMAGE",
+          "order": 1,
+          "data": {
+            "library_id": "6a252ce0d81bb6e1543f9a66",
+            "background_color": "#000000"
+          }
+        },
+        {
+          "block_id": "31edd901-e630-4c2c-a0a6-f9691a47503f",
+          "type": "TEXT",
+          "order": 2,
+          "data": {
+            "title": {
+              "pt": "Performance sem limite",
+              "en": "Unlimited Performance",
+              "es": "Rendimiento sin límite"
+            },
+            "content": {
+              "pt": "Projetado para instalações exigentes, o ST-4000EQ entrega estabilidade e controle térmico.",
+              "en": "Designed for demanding installations, the ST-4000EQ delivers stability and thermal control.",
+              "es": "Diseñado para instalaciones exigentes, el ST-4000EQ ofrece estabilidad y control térmico."
+            },
+            "align": "left"
+          }
+        },
+        {
+          "block_id": "ce1910d7-9ccf-4309-ac80-83708870c4c8",
+          "type": "VIDEO",
+          "order": 3,
+          "data": {
+            "url": "https://www.youtube.com/watch?v=stetsom-demo-4000",
+            "background_color": "#000000"
+          }
+        }
+      ],
+      "files": [
+        {
+          "file_id": "724ee5ea-cf97-4680-8aa4-cbae343d61a1",
+          "library_id": "6a252ce0d81bb6e1543f9a6b",
+          "file_url": "/docs/manual-st-4000eq.pdf",
+          "filename": "manual-st-4000eq.pdf",
+          "type": "MANUAL",
+          "locale": "pt",
+          "is_active": true,
+          "created_at": "2026-06-07T08:33:36.607Z"
+        },
+        {
+          "file_id": "e8ae83e7-05fd-4d39-a862-c68853cb6b08",
+          "library_id": "6a252ce0d81bb6e1543f9a6c",
+          "file_url": "/docs/catalogo-st-4000eq.pdf",
+          "filename": "catalogo-st-4000eq.pdf",
+          "type": "CATALOG",
+          "locale": "pt",
+          "is_active": true,
+          "created_at": "2026-06-07T08:33:36.607Z"
+        }
+      ],
+      "created_at": "2026-06-07T08:33:36.610Z",
+      "updated_at": "2026-06-07T08:33:36.610Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": "Amplificadores",
+      "slug": "amplificadores",
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": "Full Range",
+          "slug": "full-range",
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": "Mono",
+          "slug": "mono",
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    "relatedProducts": [
+      {
+        "id": "6a252ce0d81bb6e1543f9a8a",
+        "slug": "st-350-4-mini",
+        "name": "ST-350.4 MINI",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
+        "href": "/produtos/st-350-4-mini",
+        "status": "PUBLISHED",
+        "is_discontinued": true,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a87",
+        "slug": "ex-3000-1d-mono",
+        "name": "EX-3000.1D MONO",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "href": "/produtos/ex-3000-1d-mono",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a85",
+        "slug": "st-1200-1d-bass",
+        "name": "ST-1200.1D BASS",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
+        "href": "/produtos/st-1200-1d-bass",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a84",
+        "slug": "st-800-4-compact",
+        "name": "ST-800.4 COMPACT",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+        "href": "/produtos/st-800-4-compact",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      }
+    ]
+  },
+  "products--st-800-4-compact": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a84",
+      "sku": null,
+      "name": "ST-800.4 COMPACT",
+      "slug": "st-800-4-compact",
+      "description": "Amplificador compacto 4 canais para upgrade sem sacrificar espaço.",
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2025-06-01T00:00:00.000Z",
+      "is_featured": true,
+      "is_spotlight": false,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a6f",
+        "6a252ce0d81bb6e1543f9a6e",
+        "6a252ce0d81bb6e1543f9a71"
+      ],
+      "images": [
+        {
+          "image_id": "cbe42e05-c9df-401a-af39-89f8723b70c6",
+          "library_id": "6a252ce0d81bb6e1543f9a67",
+          "image_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.630Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "52adf9fe-b66e-4191-9e86-ddf65938d078",
+          "name": "4 Ohms",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "4x 200W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a70",
+              "attribute_name": "Impedância",
+              "value": "4 Ohms",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "4",
+              "order": 3,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a71",
+              "attribute_name": "Classe de Operação",
+              "value": "Classe AB/D",
+              "order": 4,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "a1eca315-7ee1-4e6f-9831-7bb5e57a3476",
+          "type": "TEXT",
+          "order": 1,
+          "data": {
+            "title": {
+              "pt": "Compacto e inteligente",
+              "en": "Compact and Smart"
+            },
+            "content": {
+              "pt": "Excelente para projetos de upgrade sem sacrificar espaço."
+            },
+            "align": "left"
+          }
+        }
+      ],
+      "files": [],
+      "created_at": "2026-06-07T08:33:36.632Z",
+      "updated_at": "2026-06-07T08:33:36.632Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": "Amplificadores",
+      "slug": "amplificadores",
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": "Full Range",
+          "slug": "full-range",
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": "Mono",
+          "slug": "mono",
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    "relatedProducts": [
+      {
+        "id": "6a252ce0d81bb6e1543f9a8a",
+        "slug": "st-350-4-mini",
+        "name": "ST-350.4 MINI",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
+        "href": "/produtos/st-350-4-mini",
+        "status": "PUBLISHED",
+        "is_discontinued": true,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a87",
+        "slug": "ex-3000-1d-mono",
+        "name": "EX-3000.1D MONO",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "href": "/produtos/ex-3000-1d-mono",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a85",
+        "slug": "st-1200-1d-bass",
+        "name": "ST-1200.1D BASS",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
+        "href": "/produtos/st-1200-1d-bass",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a83",
+        "slug": "st-2000eq-mono",
+        "name": "ST-2000EQ MONO",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "href": "/produtos/st-2000eq-mono",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      }
+    ]
+  },
+  "products--stx-96-pro-dsp": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a86",
+      "sku": null,
+      "name": "STX-96 PRO DSP",
+      "slug": "stx-96-pro-dsp",
+      "description": "Processador DSP 96kHz com presets customizáveis.",
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2025-01-01T00:00:00.000Z",
+      "is_featured": false,
+      "is_spotlight": false,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a79",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a77",
+        "6a252ce0d81bb6e1543f9a72",
+        "6a252ce0d81bb6e1543f9a73"
+      ],
+      "images": [
+        {
+          "image_id": "d32e1077-3857-493a-a7f8-0b1436ea6554",
+          "library_id": "6a252ce0d81bb6e1543f9a66",
+          "image_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.648Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "998ac37a-053a-4632-8ee7-74fb1525be3d",
+          "name": "Standard",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a77",
+              "attribute_name": "Presets de DSP",
+              "value": "32 Presets",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a72",
+              "attribute_name": "Resposta em Frequência",
+              "value": "20 Hz – 20 kHz",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a73",
+              "attribute_name": "Ganho de Entrada",
+              "value": "0 a 4V",
+              "order": 3,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a76",
+              "attribute_name": "Dimensões",
+              "value": "220 x 65 x 35mm",
+              "order": 4,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a75",
+              "attribute_name": "Peso",
+              "value": "380g",
+              "order": 5,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "0a8ab9e8-ec82-4316-817d-0e5521733904",
+          "type": "HTML",
+          "order": 1,
+          "data": {
+            "content": "<div><strong>DSP 96kHz</strong> com presets customizáveis e interface via app Bluetooth.</div>"
+          }
+        }
+      ],
+      "files": [
+        {
+          "file_id": "ca6b2220-803a-488e-85fd-81e9af5bb99b",
+          "library_id": "6a252ce0d81bb6e1543f9a69",
+          "file_url": "/uploads/manuals/manual-stx2448bt.pdf",
+          "filename": "manual-stx2448bt.pdf",
+          "type": "MANUAL",
+          "locale": "pt",
+          "is_active": true,
+          "created_at": "2026-06-07T08:33:36.648Z"
+        }
+      ],
+      "created_at": "2026-06-07T08:33:36.650Z",
+      "updated_at": "2026-06-07T08:33:36.650Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a79",
+      "name": "Processadores",
+      "slug": "processadores",
+      "lines": [
+        {
+          "line_id": "b0532c6d-f49b-43ac-8478-378343c0375b",
+          "name": "DSP",
+          "slug": "dsp",
+          "order": 1
+        }
+      ],
+      "order": 2,
+      "created_at": "2026-06-07T08:33:36.526Z",
+      "updated_at": "2026-06-07T08:33:36.526Z"
+    },
+    "relatedProducts": []
+  },
+  "products": {
+    "items": [
+      {
+        "id": "6a252ce0d81bb6e1543f9a8a",
+        "slug": "st-350-4-mini",
+        "name": "ST-350.4 MINI",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
+        "href": "/produtos/st-350-4-mini",
+        "status": "PUBLISHED",
+        "is_discontinued": true,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a88",
+        "slug": "sf-120a-fonte-automotiva",
+        "name": "SF-120A FONTE AUTOMOTIVA",
+        "category": "Fontes e Carregadores",
+        "thumbnail_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+        "href": "/produtos/sf-120a-fonte-automotiva",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a74"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a75"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a76"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a87",
+        "slug": "ex-3000-1d-mono",
+        "name": "EX-3000.1D MONO",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "href": "/produtos/ex-3000-1d-mono",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a86",
+        "slug": "stx-96-pro-dsp",
+        "name": "STX-96 PRO DSP",
+        "category": "Processadores",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "href": "/produtos/stx-96-pro-dsp",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a77"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a72"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a73"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a85",
+        "slug": "st-1200-1d-bass",
+        "name": "ST-1200.1D BASS",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
+        "href": "/produtos/st-1200-1d-bass",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a84",
+        "slug": "st-800-4-compact",
+        "name": "ST-800.4 COMPACT",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+        "href": "/produtos/st-800-4-compact",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a83",
+        "slug": "st-2000eq-mono",
+        "name": "ST-2000EQ MONO",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "href": "/produtos/st-2000eq-mono",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a71"
+          }
+        ]
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a82",
+        "slug": "st-4000eq-4-canais",
+        "name": "ST-4000EQ 4 CANAIS",
+        "category": "Amplificadores",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "href": "/produtos/st-4000eq-4-canais",
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "highlighted_specs": [
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6f"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a6e"
+          },
+          {
+            "attribute_id": "6a252ce0d81bb6e1543f9a70"
+          }
+        ]
+      }
+    ],
+    "total": 8,
+    "page": 1,
+    "pageSize": 100,
+    "totalPages": 1
+  },
+  "attributes": [
+    {
+      "id": "6a252ce0d81bb6e1543f9a6e",
+      "name": {
+        "pt": "Número de Canais",
+        "en": "Channels",
+        "es": "Canales"
+      },
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a6f",
+      "name": {
+        "pt": "Potência RMS",
+        "en": "RMS Power",
+        "es": "Potencia RMS"
+      },
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a70",
+      "name": {
+        "pt": "Impedância",
+        "en": "Impedance",
+        "es": "Impedancia"
+      },
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a71",
+      "name": {
+        "pt": "Classe de Operação",
+        "en": "Operating Class",
+        "es": "Clase de Operación"
+      },
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a72",
+      "name": {
+        "pt": "Resposta em Frequência",
+        "en": "Frequency Response",
+        "es": "Respuesta en Frecuencia"
+      },
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a73",
+      "name": {
+        "pt": "Ganho de Entrada",
+        "en": "Input Gain",
+        "es": "Ganancia de Entrada"
+      },
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a74",
+      "name": {
+        "pt": "Tensão de Entrada",
+        "en": "Input Voltage",
+        "es": "Tensión de Entrada"
+      },
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a75",
+      "name": {
+        "pt": "Corrente de Saída",
+        "en": "Output Current",
+        "es": "Corriente de Salida"
+      },
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a76",
+      "name": {
+        "pt": "Proteção",
+        "en": "Protection",
+        "es": "Protección"
+      },
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a77",
+      "name": {
+        "pt": "Memórias DSP",
+        "en": "DSP Memories",
+        "es": "Memorias DSP"
+      },
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    }
+  ],
+  "templates": [
+    {
+      "id": "tmpl-amp-mono",
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "name": {
+        "pt": "Amplificador Mono",
+        "en": "Mono Amplifier",
+        "es": "Amplificador Mono"
+      },
+      "attributes": [
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+          "order": 1
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a70",
+          "order": 2
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a71",
+          "order": 3
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a72",
+          "order": 4
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a73",
+          "order": 5
+        }
+      ],
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    {
+      "id": "tmpl-amp-full-range",
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "name": {
+        "pt": "Amplificador Full Range",
+        "en": "Full Range Amplifier",
+        "es": "Amplificador Full Range"
+      },
+      "attributes": [
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+          "order": 1
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+          "order": 2
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a70",
+          "order": 3
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a71",
+          "order": 4
+        }
+      ],
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    {
+      "id": "tmpl-processador-dsp",
+      "category_id": "6a252ce0d81bb6e1543f9a79",
+      "name": {
+        "pt": "Processador DSP",
+        "en": "DSP Processor",
+        "es": "Procesador DSP"
+      },
+      "attributes": [
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a77",
+          "order": 1
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a72",
+          "order": 2
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a73",
+          "order": 3
+        }
+      ],
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    },
+    {
+      "id": "tmpl-fonte",
+      "category_id": "6a252ce0d81bb6e1543f9a7c",
+      "name": {
+        "pt": "Fonte Automotiva",
+        "en": "Automotive Power Supply",
+        "es": "Fuente Automotriz"
+      },
+      "attributes": [
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a74",
+          "order": 1
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a75",
+          "order": 2
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a76",
+          "order": 3
+        }
+      ],
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    }
+  ],
+  "users": {
+    "items": [
+      {
+        "id": "usr-001",
+        "name": "Admin Stetsom",
+        "email": "admin@stetsom.com.br",
+        "role": "SUPER_ADMIN",
+        "is_active": true,
+        "created_at": "2026-01-01T00:00:00.000Z",
+        "updated_at": "2026-06-07T08:00:00.000Z",
+        "last_login": "2026-06-07T08:00:00.000Z"
+      },
+      {
+        "id": "usr-002",
+        "name": "Editor Conteúdo",
+        "email": "editor@stetsom.com.br",
+        "role": "EDITOR",
+        "is_active": true,
+        "created_at": "2026-02-15T00:00:00.000Z",
+        "updated_at": "2026-06-01T10:00:00.000Z",
+        "last_login": "2026-06-06T14:30:00.000Z"
+      }
+    ],
+    "total": 2
+  },
+  "config": {
+    "company_name": "Stetsom",
+    "company_email": "contato@stetsom.com.br",
+    "company_phone": "(11) 4000-0000",
+    "company_whatsapp": "5511940000000",
+    "company_address": "Av. Indústria Stetsom, 1000 – Limeira, SP",
+    "social_instagram": "@stetsom",
+    "social_facebook": "stetsom",
+    "social_youtube": "stetsom",
+    "updated_at": "2026-06-07T08:00:00.000Z",
+    "updated_by": "usr-001"
+  },
+  "banners": {
+    "items": [
+      {
+        "id": "bnr-001",
+        "name": "Banner Principal – ST-4000EQ",
+        "product_id": "6a252ce0d81bb6e1543f9a82",
+        "desktop_image_library_id": "6a252ce0d81bb6e1543f9a66",
+        "mobile_image_library_id": "6a252ce0d81bb6e1543f9a67",
+        "title": {
+          "pt": "Potência sem limites",
+          "en": "Unlimited Power",
+          "es": "Potencia sin límites"
+        },
+        "label": "LANÇAMENTO",
+        "href": "/produtos/st-4000eq-4-canais",
+        "link_url": "/produtos/st-4000eq-4-canais",
+        "status": "ACTIVE",
+        "available_locales": ["pt", "en", "es"],
+        "order": 1,
+        "created_at": "2026-06-07T08:33:36.517Z",
+        "updated_at": "2026-06-07T08:33:36.517Z",
+        "created_by": "usr-001"
+      },
+      {
+        "id": "bnr-002",
+        "name": "Banner – EX-3000.1D",
+        "product_id": "6a252ce0d81bb6e1543f9a87",
+        "desktop_image_library_id": "6a252ce0d81bb6e1543f9a66",
+        "title": {
+          "pt": "Grave profundo",
+          "en": "Deep Bass",
+          "es": "Graves profundos"
+        },
+        "status": "INACTIVE",
+        "available_locales": ["pt"],
+        "order": 2,
+        "created_at": "2026-05-10T10:00:00.000Z",
+        "updated_at": "2026-05-15T14:00:00.000Z",
+        "created_by": "usr-001"
+      }
+    ],
+    "total": 2
+  },
+  "library": {
+    "items": [
+      {
+        "id": "6a252ce0d81bb6e1543f9a66",
+        "filename": "fill_EPTO4T_3d86cd17.png",
+        "type": "IMAGE",
+        "alt": {
+          "pt": "fill_EPTO4T_3d86cd17"
+        },
+        "tags": [],
+        "current_version_id": "ver-6a252ce0d81bb6e1543f9a66",
+        "versions": [
+          {
+            "version_id": "ver-6a252ce0d81bb6e1543f9a66",
+            "file_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+            "size_bytes": 204800,
+            "width": 1920,
+            "height": 1080,
+            "created_at": "2026-06-07T08:33:36.517Z",
+            "created_by": "usr-001"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.517Z",
+        "created_by": "usr-001"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a67",
+        "filename": "fill_THI4RN_1e666beb.png",
+        "type": "IMAGE",
+        "alt": {
+          "pt": "fill_THI4RN_1e666beb"
+        },
+        "tags": [],
+        "current_version_id": "ver-6a252ce0d81bb6e1543f9a67",
+        "versions": [
+          {
+            "version_id": "ver-6a252ce0d81bb6e1543f9a67",
+            "file_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+            "size_bytes": 204800,
+            "width": 1920,
+            "height": 1080,
+            "created_at": "2026-06-07T08:33:36.517Z",
+            "created_by": "usr-001"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.517Z",
+        "created_by": "usr-001"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a68",
+        "filename": "product-c.png",
+        "type": "IMAGE",
+        "alt": {
+          "pt": "product c"
+        },
+        "tags": [],
+        "current_version_id": "ver-6a252ce0d81bb6e1543f9a68",
+        "versions": [
+          {
+            "version_id": "ver-6a252ce0d81bb6e1543f9a68",
+            "file_url": "/figma-assets/raw/product-c.png",
+            "size_bytes": 204800,
+            "width": 1920,
+            "height": 1080,
+            "created_at": "2026-06-07T08:33:36.517Z",
+            "created_by": "usr-001"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.517Z",
+        "created_by": "usr-001"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a6b",
+        "filename": "manual-st-4000eq.pdf",
+        "type": "MANUAL",
+        "alt": {
+          "pt": "manual st 4000eq"
+        },
+        "tags": [],
+        "current_version_id": "ver-6a252ce0d81bb6e1543f9a6b",
+        "versions": [
+          {
+            "version_id": "ver-6a252ce0d81bb6e1543f9a6b",
+            "file_url": "/docs/manual-st-4000eq.pdf",
+            "size_bytes": 204800,
+            "created_at": "2026-06-07T08:33:36.517Z",
+            "created_by": "usr-001"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.517Z",
+        "created_by": "usr-001"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a6c",
+        "filename": "catalogo-stetsom-2026.pdf",
+        "type": "CATALOG",
+        "alt": {
+          "pt": "catalogo stetsom 2026"
+        },
+        "tags": [],
+        "current_version_id": "ver-6a252ce0d81bb6e1543f9a6c",
+        "versions": [
+          {
+            "version_id": "ver-6a252ce0d81bb6e1543f9a6c",
+            "file_url": "/docs/catalogo-stetsom-2026.pdf",
+            "size_bytes": 204800,
+            "created_at": "2026-06-07T08:33:36.517Z",
+            "created_by": "usr-001"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.517Z",
+        "created_by": "usr-001"
+      }
+    ],
+    "total": 5,
+    "page": 1,
+    "pageSize": 50,
+    "totalPages": 1
+  },
+  "audit": {
+    "items": [
+      {
+        "id": "aud-001",
+        "user_id": "usr-001",
+        "user_name": "Admin Stetsom",
+        "action": "UPDATE",
+        "action_sentence": "Atualizou o produto ST-4000EQ 4 CANAIS",
+        "entity": "product",
+        "entity_id": "6a252ce0d81bb6e1543f9a82",
+        "entity_label": "ST-4000EQ 4 CANAIS",
+        "created_at": "2026-06-07T09:15:00.000Z"
+      },
+      {
+        "id": "aud-002",
+        "user_id": "usr-001",
+        "user_name": "Admin Stetsom",
+        "action": "PUBLISH",
+        "action_sentence": "Publicou o banner Banner Principal – ST-4000EQ",
+        "entity": "banner",
+        "entity_id": "bnr-001",
+        "entity_label": "Banner Principal – ST-4000EQ",
+        "created_at": "2026-06-07T08:45:00.000Z"
+      },
+      {
+        "id": "aud-003",
+        "user_id": "usr-002",
+        "user_name": "Editor Conteúdo",
+        "action": "CREATE",
+        "action_sentence": "Criou o produto EX-3000.1D MONO",
+        "entity": "product",
+        "entity_id": "6a252ce0d81bb6e1543f9a87",
+        "entity_label": "EX-3000.1D MONO",
+        "created_at": "2026-06-06T16:00:00.000Z"
+      },
+      {
+        "id": "aud-004",
+        "user_id": "usr-001",
+        "user_name": "Admin Stetsom",
+        "action": "LOGIN",
+        "action_sentence": "Fez login no sistema",
+        "entity": "user",
+        "entity_id": "usr-001",
+        "created_at": "2026-06-06T08:00:00.000Z"
+      }
+    ],
+    "total": 4
+  },
+  "messages": {
+    "items": [
+      {
+        "id": "msg-001",
+        "name": "João Silva",
+        "email": "joao@email.com",
+        "phone": "(11) 99999-0001",
+        "subject": "Dúvida técnica",
+        "message": "Qual a diferença entre ST-4000EQ e EX-3000?",
+        "department": "suporte",
+        "is_read": false,
+        "created_at": "2026-06-07T10:00:00.000Z"
+      },
+      {
+        "id": "msg-002",
+        "name": "Maria Costa",
+        "email": "maria@email.com",
+        "subject": "Solicitação de catálogo",
+        "message": "Gostaria de receber o catálogo completo de produtos.",
+        "department": "comercial",
+        "is_read": true,
+        "created_at": "2026-06-06T14:30:00.000Z"
+      },
+      {
+        "id": "msg-003",
+        "name": "Carlos Mendes",
+        "email": "carlos@email.com",
+        "phone": "(21) 98888-0002",
+        "subject": "Garantia",
+        "message": "Meu amplificador apresentou defeito após 6 meses de uso.",
+        "department": "suporte",
+        "is_read": false,
+        "created_at": "2026-06-05T09:00:00.000Z"
+      }
+    ],
+    "total": 3
+  },
+  "dashboard": {
+    "title": "Painel de Controle",
+    "subtitle": "Bem-vindo de volta, Admin.",
+    "metrics": [
+      {
+        "id": "m-products",
+        "label": "Produtos publicados",
+        "value": 8,
+        "sub": "Total no catálogo",
+        "variation": "+2 este mês"
+      },
+      {
+        "id": "m-banners",
+        "label": "Banners ativos",
+        "value": 1,
+        "sub": "De 2 cadastrados"
+      },
+      {
+        "id": "m-messages",
+        "label": "Mensagens não lidas",
+        "value": 2,
+        "sub": "Aguardando resposta",
+        "variation": "2 novas hoje"
+      },
+      {
+        "id": "m-library",
+        "label": "Arquivos na biblioteca",
+        "value": 5,
+        "sub": "Imagens e documentos"
+      }
+    ],
+    "recentActivities": [
+      {
+        "id": "aud-001",
+        "user_id": "usr-001",
+        "user_name": "Admin Stetsom",
+        "action": "UPDATE",
+        "action_sentence": "Atualizou o produto ST-4000EQ 4 CANAIS",
+        "entity": "product",
+        "entity_id": "6a252ce0d81bb6e1543f9a82",
+        "entity_label": "ST-4000EQ 4 CANAIS",
+        "created_at": "2026-06-07T09:15:00.000Z"
+      },
+      {
+        "id": "aud-002",
+        "user_id": "usr-001",
+        "user_name": "Admin Stetsom",
+        "action": "PUBLISH",
+        "action_sentence": "Publicou o banner Banner Principal – ST-4000EQ",
+        "entity": "banner",
+        "entity_id": "bnr-001",
+        "entity_label": "Banner Principal – ST-4000EQ",
+        "created_at": "2026-06-07T08:45:00.000Z"
+      },
+      {
+        "id": "aud-003",
+        "user_id": "usr-002",
+        "user_name": "Editor Conteúdo",
+        "action": "CREATE",
+        "action_sentence": "Criou o produto EX-3000.1D MONO",
+        "entity": "product",
+        "entity_id": "6a252ce0d81bb6e1543f9a87",
+        "entity_label": "EX-3000.1D MONO",
+        "created_at": "2026-06-06T16:00:00.000Z"
+      },
+      {
+        "id": "aud-004",
+        "user_id": "usr-001",
+        "user_name": "Admin Stetsom",
+        "action": "LOGIN",
+        "action_sentence": "Fez login no sistema",
+        "entity": "user",
+        "entity_id": "usr-001",
+        "created_at": "2026-06-06T08:00:00.000Z"
+      }
+    ],
+    "scheduleItems": [
+      {
+        "id": "sched-001",
+        "label": "EX-3000.1D – publicação agendada",
+        "date": "2026-06-15T12:00:00.000Z",
+        "type": "product"
+      },
+      {
+        "id": "sched-002",
+        "label": "Banner Inverno 2026",
+        "date": "2026-07-01T00:00:00.000Z",
+        "type": "banner"
+      }
+    ],
+    "quickActions": [
+      {
+        "id": "qa-1",
+        "label": "Novo produto",
+        "href": "/admin/produtos/novo",
+        "icon": "plus"
+      },
+      {
+        "id": "qa-2",
+        "label": "Upload de arquivo",
+        "href": "/admin/biblioteca",
+        "icon": "upload"
+      },
+      {
+        "id": "qa-3",
+        "label": "Ver mensagens",
+        "href": "/admin/mensagens",
+        "icon": "mail"
+      },
+      {
+        "id": "qa-4",
+        "label": "Gerenciar banners",
+        "href": "/admin/banners",
+        "icon": "image"
+      }
+    ]
+  },
+  "products--admin": {
+    "title": "Produtos",
+    "subtitle": "Gerencie o catálogo de produtos da Stetsom.",
+    "items": [
+      {
+        "id": "6a252ce0d81bb6e1543f9a82",
+        "slug": "st-4000eq-4-canais",
+        "name": "ST-4000EQ 4 CANAIS",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "category": "Amplificadores",
+        "languages": ["pt", "en", "es"],
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "updated_at": "2026-06-07T08:33:36.517Z"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a83",
+        "slug": "st-2000eq-mono",
+        "name": "ST-2000EQ MONO",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "category": "Amplificadores",
+        "languages": ["pt", "en", "es"],
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "updated_at": "2026-06-07T08:33:36.517Z"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a84",
+        "slug": "st-800-4-compact",
+        "name": "ST-800.4 COMPACT",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "category": "Amplificadores",
+        "languages": ["pt", "en", "es"],
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "updated_at": "2026-06-07T08:33:36.517Z"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a85",
+        "slug": "st-1200-1d-bass",
+        "name": "ST-1200.1D BASS",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "category": "Amplificadores",
+        "languages": ["pt", "en", "es"],
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "updated_at": "2026-06-07T08:33:36.517Z"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a86",
+        "slug": "stx-96-pro-dsp",
+        "name": "STX-96 PRO DSP",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "category": "Processadores",
+        "languages": ["pt", "en", "es"],
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "updated_at": "2026-06-07T08:33:36.517Z"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a87",
+        "slug": "ex-3000-1d-mono",
+        "name": "EX-3000.1D MONO",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "category": "Amplificadores",
+        "languages": ["pt", "en", "es"],
+        "status": "DRAFT",
+        "is_discontinued": false,
+        "updated_at": "2026-06-07T08:33:36.517Z"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a88",
+        "slug": "sf-120a-fonte-automotiva",
+        "name": "SF-120A FONTE AUTOMOTIVA",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "category": "Fontes e Carregadores",
+        "languages": ["pt", "en", "es"],
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "updated_at": "2026-06-07T08:33:36.517Z"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a8a",
+        "slug": "st-350-4-mini",
+        "name": "ST-350.4 MINI",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "category": "Amplificadores",
+        "languages": ["pt", "en", "es"],
+        "status": "PUBLISHED",
+        "is_discontinued": true,
+        "updated_at": "2026-06-07T08:33:36.517Z"
+      }
+    ],
+    "total": 8,
+    "page": 1,
+    "pageSize": 50,
+    "totalPages": 1
+  },
+  "products--admin--6a252ce0d81bb6e1543f9a82": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a82",
+      "sku": null,
+      "name": {
+        "pt": "ST-4000EQ 4 CANAIS"
+      },
+      "slug": {
+        "pt": "st-4000eq-4-canais"
+      },
+      "description": {
+        "pt": "Amplificador 4 canais com alta eficiência para sistemas automotivos de média e alta potência."
+      },
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2025-12-01T00:00:00.000Z",
+      "is_featured": false,
+      "is_spotlight": true,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a6f",
+        "6a252ce0d81bb6e1543f9a6e",
+        "6a252ce0d81bb6e1543f9a70"
+      ],
+      "images": [
+        {
+          "image_id": "ba44093b-1794-4a64-8316-3fdf21d7cb0a",
+          "library_id": "6a252ce0d81bb6e1543f9a66",
+          "image_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.607Z"
+        },
+        {
+          "image_id": "b8f12bc8-0786-43e7-8a23-d0c8da7141b3",
+          "library_id": "6a252ce0d81bb6e1543f9a67",
+          "image_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+          "order": 1,
+          "created_at": "2026-06-07T08:33:36.607Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "c91a3e28-0f26-4877-a253-a8245f5e078f",
+          "name": "2 Ohms",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "4x 1000W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a70",
+              "attribute_name": "Impedância",
+              "value": "2 Ohms",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "4",
+              "order": 3,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a71",
+              "attribute_name": "Classe de Operação",
+              "value": "Classe D",
+              "order": 4,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a72",
+              "attribute_name": "Resposta em Frequência",
+              "value": "20 Hz – 20 kHz",
+              "order": 5,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a73",
+              "attribute_name": "Ganho de Entrada",
+              "value": "0 a 6V",
+              "order": 6,
+              "highlighted": false
+            }
+          ]
+        },
+        {
+          "variant_id": "2af3a334-26ea-4a50-84a2-0f3c8cb5efad",
+          "name": "4 Ohms",
+          "order": 1,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "4x 600W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a70",
+              "attribute_name": "Impedância",
+              "value": "4 Ohms",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "4",
+              "order": 3,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a71",
+              "attribute_name": "Classe de Operação",
+              "value": "Classe D",
+              "order": 4,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a72",
+              "attribute_name": "Resposta em Frequência",
+              "value": "20 Hz – 20 kHz",
+              "order": 5,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a73",
+              "attribute_name": "Ganho de Entrada",
+              "value": "0 a 6V",
+              "order": 6,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "308f2226-d6a5-445f-b2bc-b655c01504cb",
+          "type": "IMAGE",
+          "order": 1,
+          "data": {
+            "library_id": "6a252ce0d81bb6e1543f9a66",
+            "background_color": "#000000"
+          }
+        },
+        {
+          "block_id": "31edd901-e630-4c2c-a0a6-f9691a47503f",
+          "type": "TEXT",
+          "order": 2,
+          "data": {
+            "title": {
+              "pt": "Performance sem limite",
+              "en": "Unlimited Performance",
+              "es": "Rendimiento sin límite"
+            },
+            "content": {
+              "pt": "Projetado para instalações exigentes, o ST-4000EQ entrega estabilidade e controle térmico.",
+              "en": "Designed for demanding installations, the ST-4000EQ delivers stability and thermal control.",
+              "es": "Diseñado para instalaciones exigentes, el ST-4000EQ ofrece estabilidad y control térmico."
+            },
+            "align": "left"
+          }
+        },
+        {
+          "block_id": "ce1910d7-9ccf-4309-ac80-83708870c4c8",
+          "type": "VIDEO",
+          "order": 3,
+          "data": {
+            "url": "https://www.youtube.com/watch?v=stetsom-demo-4000",
+            "background_color": "#000000"
+          }
+        }
+      ],
+      "files": [
+        {
+          "file_id": "724ee5ea-cf97-4680-8aa4-cbae343d61a1",
+          "library_id": "6a252ce0d81bb6e1543f9a6b",
+          "file_url": "/docs/manual-st-4000eq.pdf",
+          "filename": "manual-st-4000eq.pdf",
+          "type": "MANUAL",
+          "locale": "pt",
+          "is_active": true,
+          "created_at": "2026-06-07T08:33:36.607Z"
+        },
+        {
+          "file_id": "e8ae83e7-05fd-4d39-a862-c68853cb6b08",
+          "library_id": "6a252ce0d81bb6e1543f9a6c",
+          "file_url": "/docs/catalogo-st-4000eq.pdf",
+          "filename": "catalogo-st-4000eq.pdf",
+          "type": "CATALOG",
+          "locale": "pt",
+          "is_active": true,
+          "created_at": "2026-06-07T08:33:36.607Z"
+        }
+      ],
+      "created_at": "2026-06-07T08:33:36.610Z",
+      "updated_at": "2026-06-07T08:33:36.610Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": "Amplificadores",
+      "slug": "amplificadores",
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": "Full Range",
+          "slug": "full-range",
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": "Mono",
+          "slug": "mono",
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    }
+  },
+  "products--admin--6a252ce0d81bb6e1543f9a83": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a83",
+      "sku": null,
+      "name": {
+        "pt": "ST-2000EQ MONO"
+      },
+      "slug": {
+        "pt": "st-2000eq-mono"
+      },
+      "description": {
+        "pt": "Módulo mono de alta potência para graves."
+      },
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2025-09-01T00:00:00.000Z",
+      "is_featured": true,
+      "is_spotlight": false,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a6f",
+        "6a252ce0d81bb6e1543f9a70",
+        "6a252ce0d81bb6e1543f9a71"
+      ],
+      "images": [
+        {
+          "image_id": "de0d7c32-83ab-46ae-acd5-82fb5f333a49",
+          "library_id": "6a252ce0d81bb6e1543f9a66",
+          "image_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.617Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "345a5f0a-056a-44f6-979b-d475437aef25",
+          "name": "1 Ohm",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "2000W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a70",
+              "attribute_name": "Impedância",
+              "value": "1 Ohm",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "1",
+              "order": 3,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a71",
+              "attribute_name": "Classe de Operação",
+              "value": "Classe D",
+              "order": 4,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "463962a0-f303-4a02-a214-591d7cd87f87",
+          "type": "IMAGE",
+          "order": 1,
+          "data": {
+            "library_id": "6a252ce0d81bb6e1543f9a66",
+            "background_color": "#111111"
+          }
+        },
+        {
+          "block_id": "2e5fa576-fea5-408f-b90d-6476c432f5be",
+          "type": "TEXT",
+          "order": 2,
+          "data": {
+            "title": {
+              "pt": "Graves encorpados",
+              "en": "Deep Bass"
+            },
+            "content": {
+              "pt": "Módulo mono para instalações de alta demanda em SPL."
+            },
+            "align": "left"
+          }
+        }
+      ],
+      "files": [
+        {
+          "file_id": "329573f4-a06a-42e7-97c5-734861b212d6",
+          "library_id": "6a252ce0d81bb6e1543f9a6a",
+          "file_url": "/uploads/manuals/manual-sr4000.pdf",
+          "filename": "manual-sr4000.pdf",
+          "type": "MANUAL",
+          "locale": "pt",
+          "is_active": true,
+          "created_at": "2026-06-07T08:33:36.617Z"
+        }
+      ],
+      "created_at": "2026-06-07T08:33:36.619Z",
+      "updated_at": "2026-06-07T08:33:36.619Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": "Amplificadores",
+      "slug": "amplificadores",
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": "Full Range",
+          "slug": "full-range",
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": "Mono",
+          "slug": "mono",
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    }
+  },
+  "products--admin--6a252ce0d81bb6e1543f9a84": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a84",
+      "sku": null,
+      "name": {
+        "pt": "ST-800.4 COMPACT"
+      },
+      "slug": {
+        "pt": "st-800-4-compact"
+      },
+      "description": {
+        "pt": "Amplificador compacto 4 canais para upgrade sem sacrificar espaço."
+      },
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2025-06-01T00:00:00.000Z",
+      "is_featured": true,
+      "is_spotlight": false,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a6f",
+        "6a252ce0d81bb6e1543f9a6e",
+        "6a252ce0d81bb6e1543f9a71"
+      ],
+      "images": [
+        {
+          "image_id": "cbe42e05-c9df-401a-af39-89f8723b70c6",
+          "library_id": "6a252ce0d81bb6e1543f9a67",
+          "image_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.630Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "52adf9fe-b66e-4191-9e86-ddf65938d078",
+          "name": "4 Ohms",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "4x 200W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a70",
+              "attribute_name": "Impedância",
+              "value": "4 Ohms",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "4",
+              "order": 3,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a71",
+              "attribute_name": "Classe de Operação",
+              "value": "Classe AB/D",
+              "order": 4,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "a1eca315-7ee1-4e6f-9831-7bb5e57a3476",
+          "type": "TEXT",
+          "order": 1,
+          "data": {
+            "title": {
+              "pt": "Compacto e inteligente",
+              "en": "Compact and Smart"
+            },
+            "content": {
+              "pt": "Excelente para projetos de upgrade sem sacrificar espaço."
+            },
+            "align": "left"
+          }
+        }
+      ],
+      "files": [],
+      "created_at": "2026-06-07T08:33:36.632Z",
+      "updated_at": "2026-06-07T08:33:36.632Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": "Amplificadores",
+      "slug": "amplificadores",
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": "Full Range",
+          "slug": "full-range",
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": "Mono",
+          "slug": "mono",
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    }
+  },
+  "products--admin--6a252ce0d81bb6e1543f9a85": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a85",
+      "sku": null,
+      "name": {
+        "pt": "ST-1200.1D BASS"
+      },
+      "slug": {
+        "pt": "st-1200-1d-bass"
+      },
+      "description": {
+        "pt": "Módulo mono Classe D focado em graves."
+      },
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2025-03-01T00:00:00.000Z",
+      "is_featured": true,
+      "is_spotlight": false,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a6f",
+        "6a252ce0d81bb6e1543f9a70",
+        "6a252ce0d81bb6e1543f9a71"
+      ],
+      "images": [
+        {
+          "image_id": "40d1ad8b-b367-48ed-acc0-23ee3bd7502e",
+          "library_id": "6a252ce0d81bb6e1543f9a68",
+          "image_url": "/figma-assets/raw/product-c.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.640Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "17d22a86-c600-45d4-b633-494c04a6f61f",
+          "name": "2 Ohms",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "1200W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a70",
+              "attribute_name": "Impedância",
+              "value": "2 Ohms",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "1",
+              "order": 3,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a71",
+              "attribute_name": "Classe de Operação",
+              "value": "Classe D",
+              "order": 4,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "b557b7ea-d8a9-4497-b298-15e369467866",
+          "type": "VIDEO",
+          "order": 1,
+          "data": {
+            "url": "https://www.youtube.com/watch?v=stetsom-demo-1200",
+            "background_color": "#000000"
+          }
+        }
+      ],
+      "files": [],
+      "created_at": "2026-06-07T08:33:36.641Z",
+      "updated_at": "2026-06-07T08:33:36.641Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": "Amplificadores",
+      "slug": "amplificadores",
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": "Full Range",
+          "slug": "full-range",
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": "Mono",
+          "slug": "mono",
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    }
+  },
+  "products--admin--6a252ce0d81bb6e1543f9a86": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a86",
+      "sku": null,
+      "name": {
+        "pt": "STX-96 PRO DSP"
+      },
+      "slug": {
+        "pt": "stx-96-pro-dsp"
+      },
+      "description": {
+        "pt": "Processador DSP 96kHz com presets customizáveis."
+      },
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2025-01-01T00:00:00.000Z",
+      "is_featured": false,
+      "is_spotlight": false,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a79",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a77",
+        "6a252ce0d81bb6e1543f9a72",
+        "6a252ce0d81bb6e1543f9a73"
+      ],
+      "images": [
+        {
+          "image_id": "d32e1077-3857-493a-a7f8-0b1436ea6554",
+          "library_id": "6a252ce0d81bb6e1543f9a66",
+          "image_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.648Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "998ac37a-053a-4632-8ee7-74fb1525be3d",
+          "name": "Standard",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a77",
+              "attribute_name": "Presets de DSP",
+              "value": "32 Presets",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a72",
+              "attribute_name": "Resposta em Frequência",
+              "value": "20 Hz – 20 kHz",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a73",
+              "attribute_name": "Ganho de Entrada",
+              "value": "0 a 4V",
+              "order": 3,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a76",
+              "attribute_name": "Dimensões",
+              "value": "220 x 65 x 35mm",
+              "order": 4,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a75",
+              "attribute_name": "Peso",
+              "value": "380g",
+              "order": 5,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "0a8ab9e8-ec82-4316-817d-0e5521733904",
+          "type": "HTML",
+          "order": 1,
+          "data": {
+            "content": "<div><strong>DSP 96kHz</strong> com presets customizáveis e interface via app Bluetooth.</div>"
+          }
+        }
+      ],
+      "files": [
+        {
+          "file_id": "ca6b2220-803a-488e-85fd-81e9af5bb99b",
+          "library_id": "6a252ce0d81bb6e1543f9a69",
+          "file_url": "/uploads/manuals/manual-stx2448bt.pdf",
+          "filename": "manual-stx2448bt.pdf",
+          "type": "MANUAL",
+          "locale": "pt",
+          "is_active": true,
+          "created_at": "2026-06-07T08:33:36.648Z"
+        }
+      ],
+      "created_at": "2026-06-07T08:33:36.650Z",
+      "updated_at": "2026-06-07T08:33:36.650Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a79",
+      "name": "Processadores",
+      "slug": "processadores",
+      "lines": [
+        {
+          "line_id": "b0532c6d-f49b-43ac-8478-378343c0375b",
+          "name": "DSP",
+          "slug": "dsp",
+          "order": 1
+        }
+      ],
+      "order": 2,
+      "created_at": "2026-06-07T08:33:36.526Z",
+      "updated_at": "2026-06-07T08:33:36.526Z"
+    }
+  },
+  "products--admin--6a252ce0d81bb6e1543f9a87": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a87",
+      "sku": null,
+      "name": {
+        "pt": "EX-3000.1D MONO"
+      },
+      "slug": {
+        "pt": "ex-3000-1d-mono"
+      },
+      "description": {
+        "pt": "Módulo mono de alta corrente para projetos SPL."
+      },
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2024-09-01T00:00:00.000Z",
+      "is_featured": true,
+      "is_spotlight": false,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a6f",
+        "6a252ce0d81bb6e1543f9a70",
+        "6a252ce0d81bb6e1543f9a71"
+      ],
+      "images": [
+        {
+          "image_id": "38deca7e-3d65-49db-a2dc-f0755a5222c9",
+          "library_id": "6a252ce0d81bb6e1543f9a66",
+          "image_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.661Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "727d3a38-7035-4aab-bb5e-ed0eeb4f99fe",
+          "name": "1 Ohm",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "3000W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a70",
+              "attribute_name": "Impedância",
+              "value": "1 Ohm",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "1",
+              "order": 3,
+              "highlighted": false
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a71",
+              "attribute_name": "Classe de Operação",
+              "value": "Classe D",
+              "order": 4,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "e9b1331d-4dcd-4fd8-92b9-a5814352fdc2",
+          "type": "IMAGE",
+          "order": 1,
+          "data": {
+            "library_id": "6a252ce0d81bb6e1543f9a66",
+            "background_color": "#0a0a0a"
+          }
+        }
+      ],
+      "files": [],
+      "created_at": "2026-06-07T08:33:36.662Z",
+      "updated_at": "2026-06-07T08:33:36.662Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": "Amplificadores",
+      "slug": "amplificadores",
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": "Full Range",
+          "slug": "full-range",
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": "Mono",
+          "slug": "mono",
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    }
+  },
+  "products--admin--6a252ce0d81bb6e1543f9a88": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a88",
+      "sku": null,
+      "name": {
+        "pt": "SF-120A FONTE AUTOMOTIVA"
+      },
+      "slug": {
+        "pt": "sf-120a-fonte-automotiva"
+      },
+      "description": {
+        "pt": "Fonte chaveada para sistemas de alta demanda."
+      },
+      "status": "PUBLISHED",
+      "is_discontinued": false,
+      "launch_date": "2024-06-01T00:00:00.000Z",
+      "is_featured": false,
+      "is_spotlight": false,
+      "available_locales": ["pt", "en", "es"],
+      "category_id": "6a252ce0d81bb6e1543f9a7c",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a74",
+        "6a252ce0d81bb6e1543f9a75",
+        "6a252ce0d81bb6e1543f9a76"
+      ],
+      "images": [
+        {
+          "image_id": "140583d8-9c5e-4a43-a522-48d6ef4a8e08",
+          "library_id": "6a252ce0d81bb6e1543f9a67",
+          "image_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.670Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "1ec709bb-4ce8-4cca-9c6a-948c043aa984",
+          "name": "Standard",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a74",
+              "attribute_name": "Corrente de Saída",
+              "value": "120A Contínuos",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a75",
+              "attribute_name": "Peso",
+              "value": "2.8kg",
+              "order": 2,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a76",
+              "attribute_name": "Dimensões",
+              "value": "220 x 130 x 70mm",
+              "order": 3,
+              "highlighted": false
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "3793575c-9441-4d8e-9602-a49136db922e",
+          "type": "TEXT",
+          "order": 1,
+          "data": {
+            "title": {
+              "pt": "Energia estável",
+              "en": "Stable Power"
+            },
+            "content": {
+              "pt": "Fonte chaveada para sistemas de alta demanda contínua."
+            },
+            "align": "left"
+          }
+        }
+      ],
+      "files": [],
+      "created_at": "2026-06-07T08:33:36.671Z",
+      "updated_at": "2026-06-07T08:33:36.671Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a7c",
+      "name": "Fontes e Carregadores",
+      "slug": "fontes-e-carregadores",
+      "lines": [
+        {
+          "line_id": "2816a8ba-fe7d-43c2-b6af-dc8c0d93e8e3",
+          "name": "Automotiva",
+          "slug": "automotiva",
+          "order": 1
+        }
+      ],
+      "order": 5,
+      "created_at": "2026-06-07T08:33:36.549Z",
+      "updated_at": "2026-06-07T08:33:36.549Z"
+    }
+  },
+  "products--admin--6a252ce0d81bb6e1543f9a8a": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a8a",
+      "sku": null,
+      "name": {
+        "pt": "ST-350.4 MINI"
+      },
+      "slug": {
+        "pt": "st-350-4-mini"
+      },
+      "description": {
+        "pt": "Produto legado — referência técnica."
+      },
+      "status": "PUBLISHED",
+      "is_discontinued": true,
+      "launch_date": "2015-01-01T00:00:00.000Z",
+      "is_featured": false,
+      "is_spotlight": false,
+      "available_locales": ["pt"],
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [
+        "6a252ce0d81bb6e1543f9a6f",
+        "6a252ce0d81bb6e1543f9a6e"
+      ],
+      "images": [
+        {
+          "image_id": "cb427849-9085-4200-b500-e5df914772b9",
+          "library_id": "6a252ce0d81bb6e1543f9a68",
+          "image_url": "/figma-assets/raw/product-c.png",
+          "order": 0,
+          "created_at": "2026-06-07T08:33:36.691Z"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "9b783589-9443-4a33-8882-6b823713787c",
+          "name": "4 Ohms",
+          "order": 0,
+          "attributes": [
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6f",
+              "attribute_name": "Potência RMS",
+              "value": "4x 350W RMS",
+              "order": 1,
+              "highlighted": true
+            },
+            {
+              "attribute_id": "6a252ce0d81bb6e1543f9a6e",
+              "attribute_name": "Número de Canais",
+              "value": "4",
+              "order": 2,
+              "highlighted": true
+            }
+          ]
+        }
+      ],
+      "page_blocks": [
+        {
+          "block_id": "bb1229a3-878e-42b7-a792-c39d137f63dc",
+          "type": "TEXT",
+          "order": 1,
+          "data": {
+            "title": {
+              "pt": "Modelo legado",
+              "en": "Legacy Model"
+            },
+            "content": {
+              "pt": "Produto descontinuado, disponível para referência técnica."
+            },
+            "align": "left"
+          }
+        }
+      ],
+      "files": [],
+      "created_at": "2026-06-07T08:33:36.692Z",
+      "updated_at": "2026-06-07T08:33:36.692Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": "Amplificadores",
+      "slug": "amplificadores",
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": "Full Range",
+          "slug": "full-range",
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": "Mono",
+          "slug": "mono",
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    }
+  },
+  "pages--home--cms": {
+    "id": "page-home",
+    "slug": "home",
+    "title": {
+      "pt": "Home",
+      "en": "Home",
+      "es": "Home"
+    },
+    "blocks": [],
+    "updated_at": "2026-06-07T08:00:00.000Z"
+  },
+  "pages--about--cms": {
+    "id": "page-about",
+    "slug": "about",
+    "title": {
+      "pt": "Sobre a Stetsom",
+      "en": "Sobre a Stetsom",
+      "es": "Sobre a Stetsom"
+    },
+    "blocks": [],
+    "updated_at": "2026-06-07T08:00:00.000Z"
+  },
+  "pages--catalog--cms": {
+    "id": "page-catalog",
+    "slug": "catalog",
+    "title": {
+      "pt": "Catálogo de produtos",
+      "en": "Catálogo de produtos",
+      "es": "Catálogo de produtos"
+    },
+    "blocks": [],
+    "updated_at": "2026-06-07T08:00:00.000Z"
+  },
+  "pages--support--cms": {
+    "id": "page-support",
+    "slug": "support",
+    "title": {
+      "pt": "Suporte técnico",
+      "en": "Suporte técnico",
+      "es": "Suporte técnico"
+    },
+    "blocks": [],
+    "updated_at": "2026-06-07T08:00:00.000Z"
+  }
+}

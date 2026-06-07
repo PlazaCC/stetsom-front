@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "prepare": "husky",
     "api:generate": "orval",
-    "api:watch": "orval --watch"
+    "api:watch": "orval --watch",
+    "mock:dump": "node scripts/dump-mock-data.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

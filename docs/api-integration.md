@@ -24,11 +24,14 @@ A troca entre mock e real é feita pela presença da variável `CMS_API_BASE_URL
 
 ```bash
 # .env.local
-# Sem CMS_API_BASE_URL  → usa mock (dados locais, sem rede)
-# CMS_API_BASE_URL=...  → usa provider remoto (stetsom-api)
+CMS_API_BASE_URL=http://localhost:3333  # omitir para usar modo mock
 
-# Para forçar o provider remoto mesmo sem CMS_API_BASE_URL:
-# CMS_FORCE_BFF=1
+# Ativa mock data (serve src/lib/mock/data/*.json — sem rede):
+# USE_MOCK_DATA=1
+
+# Credenciais para exportar dados admin via `pnpm mock:dump`:
+# MOCK_DUMP_EMAIL=admin@stetsom.com.br
+# MOCK_DUMP_PASSWORD=your-password
 ```
 
 ---
