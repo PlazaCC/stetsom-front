@@ -9,6 +9,7 @@
  * Auth flows (login / refresh / logout) are NOT handled here — they use the
  * dedicated /api/auth/* routes that manage the HttpOnly cookies.
  */
+import { loadMockData } from "@/lib/mock/loader";
 import { getCmsApiBaseUrl, toErrorResponse } from "@/lib/api/route-utils";
 import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
@@ -36,6 +37,24 @@ async function handle(
         { error: { code: "BAD_REQUEST", message: "Invalid path." } },
         { status: 400 },
       );
+    }
+
+    if (process.env.USE_MOCK_DATA === "1") {
+      if (request.method === "GET" || request.method === "HEAD") {
+        const mock = loadMockData(path);
+        if (mock !== null) return NextResponse.json(mock);
+        return NextResponse.json(
+          {
+            error: {
+              code: "MOCK_NOT_FOUND",
+              message: `No mock data for: ${path.join("/")}. Run pnpm mock:dump.`,
+            },
+          },
+          { status: 404 },
+        );
+      }
+      // Mutations are no-ops in mock mode so the UI doesn't show error toasts.
+      return NextResponse.json({ _mock: true }, { status: 200 });
     }
 
     const base = getCmsApiBaseUrl();
