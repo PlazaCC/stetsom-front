@@ -13,7 +13,12 @@ export async function proxy(request: NextRequest) {
 
     if (!isLoginPage) {
       const token = request.cookies.get("admin_token");
-      const isValid = token ? await verifyAdminToken(token.value) : false;
+      const isValid =
+        process.env.USE_MOCK_DATA === "1"
+          ? Boolean(token?.value)
+          : token
+            ? await verifyAdminToken(token.value)
+            : false;
 
       if (!isValid) {
         return NextResponse.redirect(new URL("/admin/login", request.url));

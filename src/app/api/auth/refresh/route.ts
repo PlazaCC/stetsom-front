@@ -19,6 +19,12 @@ export async function POST() {
       return unauthorizedResponse("Refresh token ausente.");
     }
 
+    if (process.env.USE_MOCK_DATA === "1") {
+      const response = NextResponse.json({ ok: true });
+      rotateAccessTokenCookie(response, "mock-access-token");
+      return response;
+    }
+
     const base = getCmsApiBaseUrl();
     const upstream = await fetch(`${base}/api/auth/refresh`, {
       method: "POST",

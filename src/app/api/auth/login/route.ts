@@ -13,6 +13,15 @@ export async function POST(request: Request) {
   try {
     const body = (await request.json()) as PostApiAuthLoginBody;
 
+    if (process.env.USE_MOCK_DATA === "1") {
+      const response = NextResponse.json({ ok: true });
+      setAuthCookies(response, {
+        accessToken: "mock-access-token",
+        refreshToken: "mock-refresh-token",
+      });
+      return response;
+    }
+
     const base = getCmsApiBaseUrl();
     const upstream = await fetch(`${base}/api/auth/login`, {
       method: "POST",

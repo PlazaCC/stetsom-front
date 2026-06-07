@@ -5,20 +5,20 @@ applyTo: 'src/lib/mock/**/*'
 
 # Mock API Guidelines (fallback mode)
 
-## Two Patterns Coexist
+## Single Pattern — Unified BFF + Server Mock
 
-| Pattern | Used for | Type source |
-|---|---|---|
-| Mock provider (`createMockCmsProvider`) | Public site RSC pages (no auth needed) | Orval models in `src/api/stetsom/model/` |
-| Orval React Query hooks + BFF | Admin/CMS client components | Orval models in `src/api/stetsom/model/` |
+All mock data (public site RSC pages, admin/CMS client components) is served from a single source:
 
-Both patterns share the same Orval-generated types as their contract.
+- Toggle: `USE_MOCK_DATA=1` in `.env.local`
+- Data: `src/lib/mock/data.json` — keyed by URL path segments joined with `--` (e.g. `pages--home--cms`)
+- Loader: `src/lib/mock/loader.ts` — `loadMockData(segments: string[])`, cached at module level
+- Intercept points:
+  - **BFF** (`/api/bff/[...path]`): GETs served from `data.json`; mutations return `{ _mock: true, 200 }`
+  - **Server Orval** (`orval-server.ts`): GETs served from `data.json`; mutations return `{}`
+  - **Auth routes** (`/api/auth/login|refresh`): return mock cookies; proxy skips JWT verification
+- Refresh data: `pnpm mock:dump` (requires real API + credentials in `.env.local`)
 
-## Mock Fallback (public site)
-
-- Active when `CMS_API_BASE_URL` is unset (default for local dev without backend)
-- Fixtures: `src/lib/mock/*.ts` → consumed by `src/lib/api/providers/mock-provider.ts`
-- Mock payloads must conform to Orval-generated types — import from `@/api/stetsom/model`
+All types source from Orval models in `src/api/stetsom/model/`.
 
 ## Data Quality Rules
 

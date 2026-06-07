@@ -51,16 +51,12 @@ Mock data with I18nString fields must use `{ pt: '...', en?: '...', es?: '...' }
 
 ## Mock Localization Structure
 
-```
-src/lib/mock/
-  *.ts          → base data in pt (source of truth)
-  *-i18n.ts     → get*ForLocale(locale?) with en/es variants
-```
+Mock data lives in `src/lib/mock/data.json` — a single JSON keyed by URL path (e.g. `pages--home`).
 
-- `mock-provider.ts` always calls `-i18n` functions, never raw arrays for user-visible data
-- Product badges: translate (`LANÇAMENTO` → `NEW`/`LANZAMIENTO`)
+- Multilingual fields in `data.json` use `I18nString { pt, en?, es? }` — never `pt-BR` as key
 - Product names (brand names like "ST-4000EQ") are not translated
 - Slugs and IDs are never translated
+- Public endpoint values use flat strings (backend resolves locale); CMS endpoints use `I18nString`
 
 ## Message Namespaces
 
