@@ -4,7 +4,7 @@ import type {
   CompleteUploadInput,
   LibraryAsset,
   UploadPresignResponse,
-} from "@/lib/api/contracts";
+} from "@/api/stetsom/model";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -140,7 +140,7 @@ export function useLibraryUpload() {
       const dims = await readImageDimensions(file);
 
       const completeBody: CompleteUploadInput = {
-        name: file.name.replace(/\.[^.]+$/, ""),
+        filename: file.name,
         file_url: presign.file_url,
         type: presign.assetType,
         size_bytes: file.size,

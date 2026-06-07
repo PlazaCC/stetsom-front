@@ -1,16 +1,42 @@
 "use client";
 
+import Link from "next/link";
 import { AdminFileUpload } from "@/app/admin/_components/crud/admin-file-upload";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminPagination } from "@/app/admin/_components/crud/admin-pagination";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import { UploadProgressList } from "@/components/upload-progress-list";
-import { useAdminLibrary } from "@/hooks/use-admin";
+import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
+import { AdminFormSection as AdminCard } from "@/app/admin/_components/crud/admin-form-section";
+import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import {
+  AdminInput,
+  AdminLabel,
+} from "@/app/admin/_components/crud/admin-input";
+import {
+  deleteApiLibraryId,
+  getGetApiLibraryQueryKey,
+  patchApiLibraryId,
+  useGetApiLibrary,
+} from "@/api/stetsom";
+import type {
+  I18nString,
+  LibraryAsset,
+  LibraryAssetType,
+} from "@/api/stetsom/model";
 import { useLibraryUpload } from "@/hooks/use-upload";
-import type { LibraryAsset } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
-import { Archive, Check, FileText, Image, type LucideIcon } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  Archive,
+  Check,
+  FileText,
+  Image,
+  Pencil,
+  Trash2,
+  type LucideIcon,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 
 const PAGE_SIZE = 6;
@@ -23,7 +49,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "3d-models", label: "Arquivos 3D" },
 ];
 
-// ── Utilitários ────────────────────────────────────────────────────────────────
+// ── Utilidades ─────────────────────────────────────────────────────────────────
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -31,14 +57,41 @@ function formatBytes(bytes: number): string {
   return `${(bytes / 1048576).toFixed(1)} MB`;
 }
 
+function getCurrentVersionUrl(asset: LibraryAsset): string {
+  const version = asset.versions.find(
+    (v) => v.version_id === asset.current_version_id,
+  );
+  return version?.file_url ?? asset.versions[0]?.file_url ?? "";
+}
+
+function getCurrentVersionSize(asset: LibraryAsset): number {
+  const version = asset.versions.find(
+    (v) => v.version_id === asset.current_version_id,
+  );
+  return version?.size_bytes ?? asset.versions[0]?.size_bytes ?? 0;
+}
+
+function assetAltText(asset: LibraryAsset): string {
+  return asset.alt?.pt ?? asset.alt?.en ?? asset.filename;
+}
+
 // ── Cards de foto ──────────────────────────────────────────────────────────────
 
-function PhotoCard({ asset }: { asset: LibraryAsset }) {
+function PhotoCard({
+  asset,
+  onEdit,
+  onDelete,
+}: {
+  asset: LibraryAsset;
+  onEdit: (asset: LibraryAsset) => void;
+  onDelete: (asset: LibraryAsset) => void;
+}) {
   const [copied, setCopied] = useState(false);
+  const fileUrl = getCurrentVersionUrl(asset);
 
   async function handleCopy() {
     try {
-      await navigator.clipboard.writeText(asset.file_url);
+      await navigator.clipboard.writeText(fileUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -51,8 +104,8 @@ function PhotoCard({ asset }: { asset: LibraryAsset }) {
       <div className="relative flex h-32 items-center justify-center overflow-hidden rounded-md bg-muted">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={asset.file_url}
-          alt={asset.alt ?? asset.name}
+          src={fileUrl}
+          alt={assetAltText(asset)}
           className="h-full w-full rounded-md object-cover"
           onError={(e) => {
             (e.target as HTMLImageElement).style.display = "none";
@@ -74,14 +127,31 @@ function PhotoCard({ asset }: { asset: LibraryAsset }) {
             )}
           </button>
         </div>
+        <div className="absolute right-1.5 top-1.5 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+          <button
+            type="button"
+            aria-label="Editar"
+            onClick={() => onEdit(asset)}
+            className="flex size-7 items-center justify-center rounded-md bg-white/90 text-foreground shadow hover:bg-white"
+          >
+            <Pencil className="size-3.5" />
+          </button>
+          <button
+            type="button"
+            aria-label="Excluir"
+            onClick={() => onDelete(asset)}
+            className="flex size-7 items-center justify-center rounded-md bg-white/90 text-destructive shadow hover:bg-white"
+          >
+            <Trash2 className="size-3.5" />
+          </button>
+        </div>
       </div>
       <div className="min-w-0">
         <p className="truncate text-sm font-medium text-foreground">
-          {asset.name}
+          {asset.filename}
         </p>
         <p className="mt-0.5 text-xs text-muted-foreground">
-          {formatBytes(asset.size_bytes)}
-          {asset.revision ? ` · Rev. ${asset.revision}` : ""}
+          {formatBytes(getCurrentVersionSize(asset))}
         </p>
       </div>
     </div>
@@ -90,7 +160,15 @@ function PhotoCard({ asset }: { asset: LibraryAsset }) {
 
 // ── Tabela de arquivos ─────────────────────────────────────────────────────────
 
-function FileTable({ assets }: { assets: LibraryAsset[] }) {
+function FileTable({
+  assets,
+  onEdit,
+  onDelete,
+}: {
+  assets: LibraryAsset[];
+  onEdit: (asset: LibraryAsset) => void;
+  onDelete: (asset: LibraryAsset) => void;
+}) {
   return (
     <div className="overflow-hidden rounded-[16px] border border-border bg-card">
       <table className="w-full text-sm">
@@ -100,10 +178,7 @@ function FileTable({ assets }: { assets: LibraryAsset[] }) {
               Nome
             </th>
             <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
-              Produto
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
-              Revisão
+              Versões
             </th>
             <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
               Tamanho
@@ -117,33 +192,46 @@ function FileTable({ assets }: { assets: LibraryAsset[] }) {
           {assets.map((asset) => (
             <tr key={asset.id} className="hover:bg-muted/30">
               <td className="px-4 py-3">
-                <p className="font-medium text-foreground">{asset.name}</p>
+                <p className="font-medium text-foreground">{asset.filename}</p>
               </td>
               <td className="px-4 py-3 text-xs text-muted-foreground">
-                {asset.product_id ?? "—"}
+                {asset.versions.length > 0 ? `v${asset.versions.length}` : "—"}
               </td>
               <td className="px-4 py-3 text-xs text-muted-foreground">
-                {asset.revision != null ? `v${asset.revision}` : "—"}
-              </td>
-              <td className="px-4 py-3 text-xs text-muted-foreground">
-                {formatBytes(asset.size_bytes)}
+                {formatBytes(getCurrentVersionSize(asset))}
               </td>
               <td className="px-4 py-3 text-right">
-                <a
-                  href={asset.file_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-medium text-brand hover:underline"
-                >
-                  Abrir
-                </a>
+                <div className="flex items-center justify-end gap-3">
+                  <a
+                    href={getCurrentVersionUrl(asset)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-medium text-brand hover:underline"
+                  >
+                    Abrir
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => onEdit(asset)}
+                    className="text-xs font-medium text-foreground hover:underline"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onDelete(asset)}
+                    className="text-xs font-medium text-destructive hover:underline"
+                  >
+                    Excluir
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
           {assets.length === 0 && (
             <tr>
               <td
-                colSpan={5}
+                colSpan={4}
                 className="px-4 py-8 text-center text-sm text-muted-foreground"
               >
                 Nenhum arquivo encontrado.
@@ -165,7 +253,7 @@ const UPLOAD_CONFIG: Record<
     label: string;
     description: string;
     icon: LucideIcon;
-    libraryType: LibraryAsset["type"];
+    libraryType: LibraryAssetType;
   }
 > = {
   photos: {
@@ -173,21 +261,21 @@ const UPLOAD_CONFIG: Record<
     label: "Clique ou arraste imagens para a biblioteca",
     description: "PNG, JPG, WebP, GIF — máx. 10 MB",
     icon: Image,
-    libraryType: "IMAGE",
+    libraryType: "IMAGE" as LibraryAssetType,
   },
   manuals: {
     accept: "application/pdf",
     label: "Clique ou arraste PDFs para a biblioteca",
     description: "Apenas arquivos PDF — máx. 50 MB",
     icon: FileText,
-    libraryType: "PDF",
+    libraryType: "PDF" as LibraryAssetType,
   },
   "3d-models": {
     accept: "model/gltf-binary,model/gltf+json,.glb,.gltf",
     label: "Clique ou arraste modelos 3D para a biblioteca",
     description: "GLB ou GLTF — máx. 100 MB",
     icon: Archive,
-    libraryType: "MODEL3D",
+    libraryType: "MODEL3D" as LibraryAssetType,
   },
 };
 
@@ -198,24 +286,56 @@ export default function AdminBibliotecaPage() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
 
-  const libraryQuery = useAdminLibrary();
+  const queryClient = useQueryClient();
+  const { data: libraryPayload, isError: libraryError } = useGetApiLibrary();
   const { upload, entries, isUploading, clearFinished } = useLibraryUpload();
 
+  const [editTarget, setEditTarget] = useState<LibraryAsset | undefined>();
+  const [deleteTarget, setDeleteTarget] = useState<LibraryAsset | undefined>();
+
+  function invalidateLibrary() {
+    queryClient.invalidateQueries({ queryKey: getGetApiLibraryQueryKey() });
+  }
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteApiLibraryId(id),
+    onSuccess: () => {
+      invalidateLibrary();
+      setDeleteTarget(undefined);
+    },
+  });
+
   const filtered = useMemo(() => {
-    const allAssets = libraryQuery.data ?? [];
+    const allAssets = libraryPayload?.items ?? [];
     const q = query.trim().toLowerCase();
     const config = UPLOAD_CONFIG[activeTab];
     return allAssets.filter((asset) => {
-      const matchesSearch = !q || asset.name.toLowerCase().includes(q);
+      const matchesSearch = !q || asset.filename.toLowerCase().includes(q);
       const matchesTab = asset.type === config.libraryType;
       return matchesSearch && matchesTab;
     });
-  }, [query, activeTab, libraryQuery.data]);
+  }, [query, activeTab, libraryPayload]);
 
   const paginatedAssets = filtered.slice(
     (page - 1) * PAGE_SIZE,
     page * PAGE_SIZE,
   );
+
+  if (libraryError) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
+        <p className="text-sm font-medium text-destructive">
+          Sessão expirada ou sem permissão.
+        </p>
+        <Link
+          href="/admin/login"
+          className="text-sm text-brand underline underline-offset-4"
+        >
+          Fazer login novamente
+        </Link>
+      </div>
+    );
+  }
 
   function handleSearch(q: string) {
     setQuery(q);
@@ -295,12 +415,21 @@ export default function AdminBibliotecaPage() {
         ) : (
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             {paginatedAssets.map((asset) => (
-              <PhotoCard key={asset.id} asset={asset} />
+              <PhotoCard
+                key={asset.id}
+                asset={asset}
+                onEdit={setEditTarget}
+                onDelete={setDeleteTarget}
+              />
             ))}
           </div>
         )
       ) : (
-        <FileTable assets={paginatedAssets} />
+        <FileTable
+          assets={paginatedAssets}
+          onEdit={setEditTarget}
+          onDelete={setDeleteTarget}
+        />
       )}
 
       {filtered.length > PAGE_SIZE && (
@@ -311,6 +440,101 @@ export default function AdminBibliotecaPage() {
           onPageChange={setPage}
         />
       )}
+
+      {editTarget && (
+        <EditAssetModal
+          asset={editTarget}
+          onClose={() => setEditTarget(undefined)}
+          onSaved={() => {
+            invalidateLibrary();
+            setEditTarget(undefined);
+          }}
+        />
+      )}
+
+      <AdminConfirmDialog
+        open={!!deleteTarget}
+        title="Excluir asset?"
+        description={`${deleteTarget?.filename} será removido da biblioteca.`}
+        confirmLabel="Excluir"
+        destructive
+        isPending={deleteMutation.isPending}
+        onConfirm={() => {
+          if (deleteTarget) deleteMutation.mutate(deleteTarget.id);
+        }}
+        onCancel={() => setDeleteTarget(undefined)}
+      />
     </AdminListPage>
+  );
+}
+
+function EditAssetModal({
+  asset,
+  onClose,
+  onSaved,
+}: {
+  asset: LibraryAsset;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [alt, setAlt] = useState<I18nString>(asset.alt ?? { pt: "" });
+  const [tags, setTags] = useState(asset.tags.join(", "));
+
+  const mutation = useMutation({
+    mutationFn: () =>
+      patchApiLibraryId(asset.id, {
+        alt: alt.pt ? alt : undefined,
+        tags: tags
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
+      }),
+    onSuccess: onSaved,
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4">
+      <div className="w-full max-w-md">
+        <AdminCard title="Editar asset" className="shadow-xl">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              mutation.mutate();
+            }}
+            className="space-y-4"
+          >
+            <I18nInput
+              label="Texto alternativo (alt)"
+              value={alt}
+              onChange={setAlt}
+            />
+            <div>
+              <AdminLabel>Tags (separadas por vírgula)</AdminLabel>
+              <AdminInput
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                placeholder="hero, amplificador, 2024"
+              />
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 rounded-md border border-border py-2 text-sm font-medium text-foreground hover:bg-muted"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={mutation.isPending}
+                className="flex-1 rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-60"
+              >
+                {mutation.isPending ? "Salvando..." : "Salvar"}
+              </button>
+            </div>
+          </form>
+        </AdminCard>
+      </div>
+    </div>
   );
 }

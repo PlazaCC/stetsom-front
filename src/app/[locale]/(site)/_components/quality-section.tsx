@@ -1,6 +1,5 @@
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
-import type { AboutValue } from "@/lib/api/contracts";
 import { Rocket, ShieldCheck, Zap } from "lucide-react";
 import Image from "next/image";
 
@@ -9,6 +8,13 @@ const ICONS = {
   "shield-check": ShieldCheck,
   rocket: Rocket,
 } as const;
+
+type AboutValue = {
+  id: string;
+  icon: keyof typeof ICONS;
+  title: string;
+  description: string;
+};
 
 interface QualitySectionData {
   label: string;

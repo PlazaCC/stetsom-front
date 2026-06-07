@@ -1,4 +1,4 @@
-import type { AuthPayload } from "@/lib/api/contracts";
+import type { TokensResponse } from "@/api/stetsom/model";
 import type { NextResponse } from "next/server";
 
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
@@ -7,7 +7,10 @@ const ACCESS_TOKEN_MAX_AGE = 60 * 60 * 8; // 8 h
 const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7; // 7 d
 
 /** Sets both HttpOnly auth cookies on a response after a successful login. */
-export function setAuthCookies(response: NextResponse, payload: AuthPayload) {
+export function setAuthCookies(
+  response: NextResponse,
+  payload: TokensResponse,
+) {
   response.cookies.set("admin_token", payload.accessToken, {
     httpOnly: true,
     secure: IS_PRODUCTION,

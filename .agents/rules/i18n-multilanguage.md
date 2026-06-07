@@ -1,144 +1,86 @@
 ---
-description: 'Use when adding UI text, translations, locale routing, language switching, or any user-facing string. Covers next-intl v4 usage, locale threading, and API-first architecture with mock fallback.'
+description: 'Use when adding UI text, translations, locale routing, language switching, or any user-facing string. Covers next-intl v4 usage, I18nString API fields, locale threading.'
 applyTo: 'src/**/*.{ts,tsx}'
 ---
 
 # i18n & Multi-language Guidelines
 
-## Biblioteca: next-intl v4
+## next-intl v4 — App Router, RSC-first
 
-Este projeto usa **next-intl v4** com App Router, RSC-first, `localePrefix: 'as-needed'`.
+- Locales: `pt-BR` (default, no URL prefix), `en` → `/en/*`, `es` → `/es/*`
+- Config: `src/i18n/routing.ts`, `src/i18n/request.ts`, `src/i18n/navigation.ts`
+- Messages: `src/i18n/messages/{pt-BR,en,es}.json`
 
-- Locales suportados: `pt-BR` (padrão), `en`, `es`
-- `localePrefix: 'as-needed'` — locale padrão (pt-BR) sem prefixo: `/produtos`; outros locales com prefixo: `/en/produtos`, `/es/produtos`
-- Arquivos de configuração: `src/i18n/routing.ts`, `src/i18n/request.ts`, `src/i18n/navigation.ts`
-- Mensagens: `src/i18n/messages/{pt-BR,en,es}.json`
-
----
-
-## Regras de uso de traduções
-
-### Server Components (async)
-```ts
-import { getTranslations } from 'next-intl/server'
-const t = await getTranslations('Namespace')
-```
-
-### Client Components (`'use client'`)
-```ts
-import { useTranslations } from 'next-intl'
-const t = useTranslations('Namespace')
-```
-
-### Locale atual
-- **Server Component**: `import { getLocale } from 'next-intl/server'` → `await getLocale()`
-- **Client Component**: `import { useLocale } from 'next-intl'` → `useLocale()`
-
-### Links e navegação locale-aware
-- **Sempre** importar `Link`, `useRouter`, `usePathname` de `@/i18n/navigation` — nunca de `next/link` ou `next/navigation` diretamente
-- O `Link` de `@/i18n/navigation` adiciona o prefixo de locale automaticamente
-
----
-
-## Todo texto visível ao usuário vai nos arquivos de mensagem
-
-- **Nunca** hardcode strings em PT (ou qualquer idioma) em componentes
-- Todo texto UI — labels, placeholders, títulos, mensagens de erro, aria-labels — deve estar em `src/i18n/messages/*.json`
-- Ao adicionar um novo namespace ou chave, adicionar nos **3 arquivos** simultaneamente (pt-BR, en, es)
-- Conteúdo dinâmico vindo da API/mock (nomes de produtos, descrições) é localizado na camada de dados, não nos arquivos de mensagem
-
----
-
-## Namespaces de mensagens — estrutura atual
-
-| Namespace | Arquivo de origem | Cobertura |
+| Context | Get translations | Get current locale |
 |---|---|---|
-| `Nav` | header.tsx | Links de nav + menu de categorias |
-| `Header` | header.tsx | Placeholder de busca |
-| `Footer` | footer.tsx | Colunas, copyright, links legais |
-| `Catalog` | catalog-content.tsx, catalog-sidebar.tsx | Tudo no catálogo |
-| `ProductDetail` | product-detail-content.tsx, block-renderer.tsx | Página de produto |
-| `Support.*` | suporte/_components/* | Contato, FAQ, documentação, postos |
-| `About` | sobre/page.tsx, our-foundations.tsx | Página sobre |
-| `NotFound` | not-found.tsx | Página 404 |
-| `LanguageSwitcher` | language-switcher.tsx | Labels do seletor |
-| `Meta` | layouts | Títulos e descrições SEO |
+| Server Component | `import { getTranslations } from 'next-intl/server'` → `await getTranslations('NS')` | `await getLocale()` |
+| Client Component | `import { useTranslations } from 'next-intl'` → `useTranslations('NS')` | `useLocale()` |
 
----
+- Navigation: always import `Link`, `useRouter`, `usePathname` from `@/i18n/navigation` — never from `next/link` / `next/navigation`
+- All visible UI text in `src/i18n/messages/*.json` — add to all 3 files simultaneously
+- Dynamic API content (product names, descriptions) is localized at the data layer, not in message files
 
-## Locale threading pela stack de dados
+## I18nString — API Multilingual Fields
 
-O locale flui de cima para baixo sem context global:
+API fields with multilingual content use `I18nString`: `{ pt: string, en?: string, es?: string }`.
 
-```
-[locale] page param
-  → server.ts (tryGetLocale / param explícito)
-    → provider-contract.ts (locale?: string em todos os métodos)
-      → mock-provider.ts / remote-provider.ts
-        → catalog-i18n.ts / site-i18n.ts / support-i18n.ts
+**Critical:** backend locale key is `pt`, not `pt-BR`. When reading I18nString from API data:
+
+```ts
+// ❌ Wrong — pt-BR is the next-intl locale, not the I18nString key
+const name = product.name['pt-BR']
+
+// ✅ Correct — map next-intl locale to I18nString key before access
+const key = locale === 'pt-BR' ? 'pt' : locale   // 'pt-BR' → 'pt'
+const name = product.name[key] ?? product.name.pt  // always fall back to pt
 ```
 
-- `server.ts` usa `tryGetLocale()` (wrapper seguro de `getLocale()`) para RSC
-- API routes não têm contexto next-intl — leem locale do query param `?locale=xx`
-- React Query hooks incluem locale na `queryKey` para re-fetch automático na troca
+Mock data with I18nString fields must use `{ pt: '...', en?: '...', es?: '...' }` (never `pt-BR` as key).
 
----
+## Locale Threading (public site / provider pattern)
 
-## Status atual: API-first com fallback de mock
-
-O back-end Fastify é usado quando `CMS_API_BASE_URL` está definida. Sem ela, o mock é usado automaticamente:
-
-```bash
-# Sem CMS_API_BASE_URL → mock (padrão, sem rede)
-# CMS_API_BASE_URL=... → provider remoto
-# CMS_FORCE_BFF=1      → força remoto mesmo sem CMS_API_BASE_URL
+```
+[locale] page param → server.ts (tryGetLocale)
+  → provider-contract.ts (locale?: string)
+    → mock-provider / remote-provider
+      → *-i18n.ts helpers
 ```
 
-### Arquitetura dos mocks
+- API routes have no next-intl context — read locale from `?locale=xx` query param
+- Orval React Query hooks: include locale in `queryKey` so data re-fetches on locale switch
+
+## Mock Localization Structure
+
 ```
 src/lib/mock/
-  catalog.ts          → dados base (PT-BR, slugs, IDs, assets)
-  catalog-i18n.ts     → getCatalogCategoriesForLocale / getCatalogProductsForLocale / getCatalogBlocksForLocale
-  site.ts             → dados base home/about
-  site-i18n.ts        → getHomeHeroSlides / getAboutHeroSection / ... (locale-aware)
-  support.ts          → dados base suporte
-  support-i18n.ts     → getSupportPayloadForLocale (locale-aware)
+  *.ts          → base data in pt (source of truth)
+  *-i18n.ts     → get*ForLocale(locale?) with en/es variants
 ```
 
-### Regras para mocks localizados
-- `src/lib/mock/*.ts` contém os dados em PT-BR como fonte de verdade
-- `src/lib/mock/*-i18n.ts` exporta funções `get*ForLocale(locale?: string)` com variantes EN/ES
-- O `mock-provider.ts` chama sempre as funções `-i18n`, nunca os arrays brutos, para dados visíveis ao usuário
-- Badge de produto: traduzir (`LANÇAMENTO` → `NEW`/`LANZAMIENTO`, `DESTAQUE` → `FEATURED`/`DESTACADO`)
-- Nomes de produtos (brand names como "ST-4000EQ") não são traduzidos
-- Slugs e IDs nunca são traduzidos — são sempre em formato URL-safe inglês/neutro
+- `mock-provider.ts` always calls `-i18n` functions, never raw arrays for user-visible data
+- Product badges: translate (`LANÇAMENTO` → `NEW`/`LANZAMIENTO`)
+- Product names (brand names like "ST-4000EQ") are not translated
+- Slugs and IDs are never translated
 
-### Relação entre remoto e mock
-- `src/lib/api/provider.ts` define o provider ativo (mock quando `CMS_API_BASE_URL` não está definida; remote quando está)
-- `remote-provider.ts` é a implementação padrão e deve permanecer alinhada ao OpenAPI do `stetsom-api`
-- Os arquivos de mock continuam como fallback e referência de contrato
+## Message Namespaces
 
----
+| Namespace | Source | Scope |
+|---|---|---|
+| `Nav` | header.tsx | Nav links + category menu |
+| `Header` | header.tsx | Search placeholder |
+| `Footer` | footer.tsx | Columns, copyright, legal |
+| `Catalog` | catalog-content/sidebar | Full catalog UI |
+| `ProductDetail` | product-detail-content, block-renderer | Product page |
+| `Support.*` | suporte/_components/* | Contact, FAQ, docs, service centers |
+| `About` | sobre/page.tsx, our-foundations | About page |
+| `NotFound` | not-found.tsx | 404 page |
+| `LanguageSwitcher` | language-switcher.tsx | Locale selector labels |
+| `Meta` | layouts | SEO titles + descriptions |
 
-## Filtro de produtos por mercado
+## Checklist — New Translatable Content
 
-`Product.markets?: string[]` — campo opcional para ocultar produtos em determinados locales:
-
-```ts
-markets: ['pt-BR']          // visível apenas no Brasil
-markets: ['en', 'es']       // visível em EN e ES, oculto em PT-BR
-markets: undefined           // visível em todos (comportamento padrão)
-```
-
-A filtragem ocorre em `isVisibleInLocale()` no `mock-provider.ts`.
-
----
-
-## Checklist ao adicionar novo conteúdo traduzível
-
-- [ ] String adicionada nos 3 arquivos de mensagem (pt-BR · en · es)
-- [ ] Componente usa `useTranslations` (client) ou `getTranslations` (server)
-- [ ] Se vier de mock: função `-i18n.ts` criada/atualizada com variantes EN/ES
-- [ ] Se vier de API route: rota aceita `?locale=xx` e passa para `server.ts`
-- [ ] React Query queryKey inclui locale se o dado muda por idioma
-- [ ] `pnpm tsc --noEmit` e `pnpm lint` passam sem erros
+- [ ] Added to all 3 message files (pt-BR · en · es)
+- [ ] Component uses `useTranslations` (client) or `getTranslations` (server)
+- [ ] Mock: `-i18n.ts` function updated with I18nString `{ pt, en?, es? }` format
+- [ ] API route: accepts `?locale=xx` param
+- [ ] React Query queryKey includes locale if data varies by language

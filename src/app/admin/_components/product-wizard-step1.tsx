@@ -1,25 +1,49 @@
 "use client";
 
+import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import {
   AdminInput,
   AdminLabel,
   AdminSelect,
-  AdminTextarea,
 } from "@/app/admin/_components/crud/admin-input";
-import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import type { Category, ProductStatus, Subcategory } from "@/lib/api/contracts";
-import { ImagePlus, X } from "lucide-react";
+import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { SortableList } from "@/app/admin/_components/crud/sortable-list";
+import type {
+  WizardProductImage,
+  WizardProductStatus,
+} from "@/app/admin/_components/product-wizard-types";
+import type { I18nString } from "@/api/stetsom/model";
+import { ImagePlus, Star, X } from "lucide-react";
 
-export interface ProductInfo {
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
+interface Subcategory {
+  id: string;
   name: string;
   slug: string;
   category_id: string;
+}
+interface TemplateOption {
+  id: string;
+  name: string;
+  category_id: string;
+}
+
+export interface ProductInfo {
+  name: I18nString;
+  slug: I18nString;
+  description: I18nString;
+  sku: string;
+  category_id: string;
   subcategory_id: string;
-  status: ProductStatus;
+  template_id: string;
+  status: WizardProductStatus;
+  is_featured: boolean;
+  is_spotlight: boolean;
   badge: string;
-  description: string;
-  cover_image_url: string;
-  additional_images: string[];
   video_url: string;
   launch_date: string;
   launch_time: string;
@@ -29,64 +53,90 @@ interface ProductWizardStep1Props {
   info: ProductInfo;
   categories: Category[];
   subcategories: Subcategory[];
-  onChange: (key: keyof ProductInfo, value: string | string[]) => void;
-  onCoverFile?: (file: File) => void;
+  templates: TemplateOption[];
+  images: WizardProductImage[];
+  onPatch: (patch: Partial<ProductInfo>) => void;
+  onImagesChange: (images: WizardProductImage[]) => void;
 }
 
-function ImageSlot({
-  url,
-  label,
-  onSet,
-  onClear,
-  onUploadFile,
+function ProductGallery({
+  images,
+  onChange,
 }: {
-  url: string;
-  label: string;
-  onSet: (url: string) => void;
-  onClear?: () => void;
-  onUploadFile?: (file: File) => void;
+  images: WizardProductImage[];
+  onChange: (images: WizardProductImage[]) => void;
 }) {
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const previewUrl = URL.createObjectURL(file);
-    onSet(previewUrl);
-    onUploadFile?.(file);
+  function reindex(list: WizardProductImage[]): WizardProductImage[] {
+    return list.map((img, i) => ({ ...img, order: i }));
+  }
+
+  function addFiles(files: FileList | null) {
+    if (!files) return;
+    const next = Array.from(files).map((file, i) => ({
+      id: `img-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 6)}`,
+      file,
+      preview_url: URL.createObjectURL(file),
+      order: images.length + i,
+    }));
+    onChange(reindex([...images, ...next]));
   }
 
   return (
-    <div className="relative flex aspect-square flex-col items-center justify-center gap-1 overflow-hidden rounded-md border border-dashed border-border bg-muted text-center">
-      {url ? (
-        <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={url}
-            alt={label}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          {onClear && (
-            <button
-              type="button"
-              onClick={onClear}
-              className="absolute right-1 top-1 flex size-5 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
-            >
-              <X className="size-3" />
-            </button>
+    <div className="space-y-3">
+      {images.length > 0 && (
+        <SortableList
+          items={images}
+          getId={(img) => img.id}
+          onReorder={(list) => onChange(reindex(list))}
+          renderItem={(img, handle) => (
+            <div className="flex items-center gap-3 rounded-md border border-border bg-card p-2">
+              {handle}
+              <div className="relative size-14 shrink-0 overflow-hidden rounded bg-muted">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={img.preview_url}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <span className="flex-1 text-xs text-muted-foreground">
+                {img.order === 0 ? (
+                  <span className="inline-flex items-center gap-1 font-medium text-foreground">
+                    <Star className="size-3 fill-brand text-brand" />
+                    Capa
+                  </span>
+                ) : (
+                  `Imagem ${img.order + 1}`
+                )}
+              </span>
+              <button
+                type="button"
+                aria-label="Remover imagem"
+                onClick={() =>
+                  onChange(reindex(images.filter((i) => i.id !== img.id)))
+                }
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
           )}
-        </>
-      ) : (
-        <>
-          <ImagePlus className="size-5 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">{label}</span>
-          <input
-            type="file"
-            accept="image/*"
-            className="absolute inset-0 cursor-pointer opacity-0"
-            title={label}
-            onChange={handleFile}
-          />
-        </>
+        />
       )}
+      <label className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card py-4 text-sm text-muted-foreground hover:border-brand hover:text-foreground">
+        <ImagePlus className="size-5" />
+        Adicionar imagens
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          onChange={(e) => {
+            addFiles(e.target.files);
+            e.target.value = "";
+          }}
+        />
+      </label>
     </div>
   );
 }
@@ -95,98 +145,61 @@ export function ProductWizardStep1({
   info,
   categories,
   subcategories,
-  onChange,
-  onCoverFile,
+  templates,
+  images,
+  onPatch,
+  onImagesChange,
 }: ProductWizardStep1Props) {
   const filteredSubcategories = subcategories.filter(
     (s) => s.category_id === info.category_id,
   );
-
-  function setAdditionalImage(index: number, url: string) {
-    const next = [...info.additional_images];
-    next[index] = url;
-    onChange("additional_images", next);
-  }
-
-  function clearAdditionalImage(index: number) {
-    const next = [...info.additional_images];
-    next.splice(index, 1);
-    onChange("additional_images", next);
-  }
-
-  const extraSlots = Array.from({
-    length: Math.max(0, 5 - info.additional_images.length),
-  });
+  const filteredTemplates = templates.filter(
+    (t) => t.category_id === info.category_id,
+  );
 
   return (
     <div className="space-y-6">
       <AdminFormSection
         title="Fotos do produto"
-        description="Selecione a capa e imagens adicionais. A primeira imagem é usada como thumbnail no catálogo."
+        description="A primeira imagem (arraste para reordenar) é a capa usada no catálogo."
       >
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-          <div className="col-span-2 row-span-2 sm:col-span-2">
-            <AdminLabel className="mb-1 block text-xs">Capa *</AdminLabel>
-            <div className="aspect-square">
-              <ImageSlot
-                url={info.cover_image_url}
-                label="Foto principal"
-                onSet={(url) => onChange("cover_image_url", url)}
-                onUploadFile={onCoverFile}
-                onClear={
-                  info.cover_image_url
-                    ? () => onChange("cover_image_url", "")
-                    : undefined
-                }
-              />
-            </div>
-          </div>
-
-          {info.additional_images.map((url, i) => (
-            <ImageSlot
-              key={i}
-              url={url}
-              label={`Foto ${i + 2}`}
-              onSet={(v) => setAdditionalImage(i, v)}
-              onClear={() => clearAdditionalImage(i)}
-            />
-          ))}
-
-          {extraSlots.map((_, i) => (
-            <ImageSlot
-              key={`empty-${i}`}
-              url=""
-              label={`Foto ${info.additional_images.length + i + 2}`}
-              onSet={(url) =>
-                setAdditionalImage(info.additional_images.length + i, url)
-              }
-            />
-          ))}
-        </div>
+        <ProductGallery images={images} onChange={onImagesChange} />
       </AdminFormSection>
 
       <AdminFormSection title="Identificação">
         <div className="space-y-4">
-          <div>
-            <AdminLabel>Nome do produto *</AdminLabel>
-            <AdminInput
-              required
-              value={info.name}
-              onChange={(e) => onChange("name", e.target.value)}
-              placeholder="Ex: ST-4000EQ"
-            />
-          </div>
+          <I18nInput
+            label="Nome do produto"
+            required
+            value={info.name}
+            onChange={(name) => onPatch({ name })}
+            placeholder="Ex: ST-4000EQ"
+          />
 
-          <div>
-            <AdminLabel>Slug (URL)</AdminLabel>
-            <AdminInput
-              value={info.slug}
-              onChange={(e) => onChange("slug", e.target.value)}
-              placeholder="st-4000eq"
-            />
-            <p className="mt-1 text-xs text-muted-foreground">
-              /produtos/{info.slug || "slug-do-produto"}
-            </p>
+          <I18nInput
+            label="Slug (URL)"
+            value={info.slug}
+            onChange={(slug) => onPatch({ slug })}
+            placeholder="st-4000eq"
+          />
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <AdminLabel>SKU</AdminLabel>
+              <AdminInput
+                value={info.sku}
+                onChange={(e) => onPatch({ sku: e.target.value })}
+                placeholder="Código único"
+              />
+            </div>
+            <div>
+              <AdminLabel>Badge (opcional)</AdminLabel>
+              <AdminInput
+                value={info.badge}
+                onChange={(e) => onPatch({ badge: e.target.value })}
+                placeholder="Ex: LANÇAMENTO"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -194,10 +207,13 @@ export function ProductWizardStep1({
               <AdminLabel>Categoria *</AdminLabel>
               <AdminSelect
                 value={info.category_id}
-                onChange={(e) => {
-                  onChange("category_id", e.target.value);
-                  onChange("subcategory_id", "");
-                }}
+                onChange={(e) =>
+                  onPatch({
+                    category_id: e.target.value,
+                    subcategory_id: "",
+                    template_id: "",
+                  })
+                }
               >
                 <option value="">Selecione...</option>
                 {categories.map((cat) => (
@@ -212,7 +228,7 @@ export function ProductWizardStep1({
               <AdminLabel>Linha (subcategoria)</AdminLabel>
               <AdminSelect
                 value={info.subcategory_id}
-                onChange={(e) => onChange("subcategory_id", e.target.value)}
+                onChange={(e) => onPatch({ subcategory_id: e.target.value })}
                 disabled={
                   !info.category_id || filteredSubcategories.length === 0
                 }
@@ -231,58 +247,53 @@ export function ProductWizardStep1({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <AdminLabel>Data de lançamento</AdminLabel>
-              <AdminInput
-                type="date"
-                value={info.launch_date}
-                onChange={(e) => onChange("launch_date", e.target.value)}
-              />
-            </div>
-
-            <div>
-              <AdminLabel>Badge (opcional)</AdminLabel>
-              <AdminInput
-                value={info.badge}
-                onChange={(e) => onChange("badge", e.target.value)}
-                placeholder="Ex: LANÇAMENTO, DESTAQUE"
-              />
-            </div>
+          <div>
+            <AdminLabel>Template de atributos</AdminLabel>
+            <AdminSelect
+              value={info.template_id}
+              onChange={(e) => onPatch({ template_id: e.target.value })}
+              disabled={!info.category_id || filteredTemplates.length === 0}
+            >
+              <option value="">
+                {filteredTemplates.length === 0 ? "Nenhum" : "Selecione..."}
+              </option>
+              {filteredTemplates.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </AdminSelect>
           </div>
 
-          <div>
-            <AdminLabel>Status *</AdminLabel>
-            <div className="flex gap-4 pt-1">
-              {(["ACTIVE", "DISCONTINUED"] as const).map((s) => (
-                <label
-                  key={s}
-                  className="flex cursor-pointer items-center gap-2"
-                >
-                  <input
-                    type="radio"
-                    name="status"
-                    value={s}
-                    checked={info.status === s}
-                    onChange={() => onChange("status", s)}
-                    className="accent-brand"
-                  />
-                  <span className="text-sm text-foreground">
-                    {s === "ACTIVE" ? "Ativo" : "Descontinuado"}
-                  </span>
-                </label>
-              ))}
-            </div>
+          <div className="flex gap-6 pt-1">
+            <label className="flex cursor-pointer items-center gap-2">
+              <input
+                type="checkbox"
+                checked={info.is_featured}
+                onChange={(e) => onPatch({ is_featured: e.target.checked })}
+                className="size-4 accent-brand"
+              />
+              <span className="text-sm text-foreground">Destaque</span>
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+              <input
+                type="checkbox"
+                checked={info.is_spotlight}
+                onChange={(e) => onPatch({ is_spotlight: e.target.checked })}
+                className="size-4 accent-brand"
+              />
+              <span className="text-sm text-foreground">Spotlight</span>
+            </label>
           </div>
         </div>
       </AdminFormSection>
 
       <AdminFormSection title="Descrição">
-        <AdminTextarea
-          rows={5}
+        <I18nInput
+          multiline
           value={info.description}
-          onChange={(e) => onChange("description", e.target.value)}
-          placeholder="Descrição completa do produto..."
+          onChange={(description) => onPatch({ description })}
+          placeholder="Descrição curta do produto..."
         />
       </AdminFormSection>
 
@@ -290,7 +301,7 @@ export function ProductWizardStep1({
         <AdminInput
           type="url"
           value={info.video_url}
-          onChange={(e) => onChange("video_url", e.target.value)}
+          onChange={(e) => onPatch({ video_url: e.target.value })}
           placeholder="https://www.youtube.com/watch?v=..."
         />
       </AdminFormSection>

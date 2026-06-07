@@ -6,8 +6,10 @@ import {
   AdminInput,
   AdminLabel,
 } from "@/app/admin/_components/crud/admin-input";
-import { useAdminConfig, useUpdateAdminConfig } from "@/hooks/use-admin";
-import type { CmsConfig } from "@/lib/api/contracts";
+import { useGetApiConfig } from "@/api/stetsom";
+import { patchApiConfig } from "@/api/stetsom/endpoints/config/config";
+import type { CmsConfig, PatchApiConfigBody } from "@/api/stetsom/model";
+import { useMutation } from "@tanstack/react-query";
 import { Settings } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -16,7 +18,9 @@ import { AdminPanel } from "../_components/admin-panel";
 
 function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
   const [config, setConfig] = useState<CmsConfig>(initialConfig);
-  const updateConfig = useUpdateAdminConfig();
+  const { mutate: updateConfig, isPending } = useMutation({
+    mutationFn: (body: PatchApiConfigBody) => patchApiConfig(body),
+  });
 
   function handleChange(key: keyof CmsConfig, value: string) {
     setConfig((prev) => ({ ...prev, [key]: value }));
@@ -24,7 +28,7 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    updateConfig.mutate(config, {
+    updateConfig(config as PatchApiConfigBody, {
       onSuccess: () => toast.success("Configurações salvas com sucesso"),
       onError: (err) =>
         toast.error("Erro ao salvar configurações", {
@@ -46,12 +50,10 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
               <div className="mt-4">
                 <button
                   type="submit"
-                  disabled={updateConfig.isPending}
+                  disabled={isPending}
                   className="w-full rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-50"
                 >
-                  {updateConfig.isPending
-                    ? "Salvando..."
-                    : "Salvar configurações"}
+                  {isPending ? "Salvando..." : "Salvar configurações"}
                 </button>
               </div>
             </AdminFormSection>
@@ -156,7 +158,7 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
 }
 
 export default function AdminConfiguracoesPage() {
-  const configQuery = useAdminConfig();
+  const configQuery = useGetApiConfig();
 
   return (
     <div className="flex flex-col gap-5">

@@ -1,106 +1,79 @@
 "use client";
 
-import { AdminFileUpload } from "@/app/admin/_components/crud/admin-file-upload";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import type { ProductFile } from "@/lib/api/contracts";
-import { FileText, Shield, X } from "lucide-react";
+import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-picker";
+import type { WizardProductFile } from "@/app/admin/_components/product-wizard-types";
+import { FileText, X } from "lucide-react";
 
 interface ProductWizardStepFilesProps {
-  files: ProductFile[];
-  onRemove: (id: string) => void;
+  files: WizardProductFile[];
+  onAdd?: (file: { library_id: string; file_url: string }) => void;
+  onRemove?: (id: string) => void;
 }
 
-function fileTypeLabel(type: ProductFile["type"]): string {
-  const labels: Record<ProductFile["type"], string> = {
-    MANUAL: "Manual",
-    CATALOG: "Catálogo",
-    CERTIFICATE: "Certificado",
-    IMAGE: "Imagem",
-    OTHER: "Outro",
-  };
-  return labels[type];
-}
+const TYPE_LABELS: Record<string, string> = {
+  MANUAL: "Manual",
+  CATALOG: "Catálogo",
+  CERTIFICATE: "Certificado",
+  PDF: "PDF",
+  OTHER: "Outro",
+};
 
 export function ProductWizardStepFiles({
   files,
+  onAdd,
   onRemove,
 }: ProductWizardStepFilesProps) {
-  const certificates = files.filter((f) => f.type === "CERTIFICATE");
-  const manuals = files.filter((f) => f.type !== "CERTIFICATE");
-
   return (
     <div className="space-y-6">
       <AdminFormSection
-        title="Certificados"
-        description="Faça upload de certificações, laudos e documentos oficiais do produto."
+        title="Manuais e documentos"
+        description="Vincule manuais, catálogos e certificados a partir da biblioteca ou faça upload."
       >
-        <AdminFileUpload
-          multiple
+        <LibraryAssetPicker
+          type="MANUAL"
+          variant="file"
           accept=".pdf"
-          label="Clique ou arraste certificados (PDF)"
-          description="Apenas arquivos PDF"
-          icon={Shield}
+          value={null}
+          onChange={(a) => {
+            if (a) onAdd?.({ library_id: a.library_id, file_url: a.file_url });
+          }}
         />
 
-        {certificates.length > 0 && (
+        {files.length > 0 && (
           <ul className="mt-3 space-y-2">
-            {certificates.map((file) => (
-              <FileRow key={file.id} file={file} onRemove={onRemove} />
-            ))}
-          </ul>
-        )}
-      </AdminFormSection>
-
-      <AdminFormSection
-        title="Manuais e catálogos"
-        description="Adicione manuais de instalação, guias e catálogos do produto."
-      >
-        <AdminFileUpload
-          multiple
-          accept=".pdf,image/*"
-          label="Clique ou arraste manuais e catálogos"
-          description="PDF ou imagens"
-          icon={FileText}
-        />
-
-        {manuals.length > 0 && (
-          <ul className="mt-3 space-y-2">
-            {manuals.map((file) => (
-              <FileRow key={file.id} file={file} onRemove={onRemove} />
+            {files.map((file) => (
+              <li
+                key={file.id}
+                className="flex items-center justify-between rounded-md border border-border bg-card px-3 py-2"
+              >
+                <div className="flex items-center gap-2">
+                  <FileText className="size-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">
+                      {file.name ?? file.file_url.split("/").pop()}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {TYPE_LABELS[file.type] ?? file.type} ·{" "}
+                      {file.is_active ? "Ativo" : "Inativo"}
+                    </p>
+                  </div>
+                </div>
+                {onRemove && (
+                  <button
+                    type="button"
+                    onClick={() => onRemove(file.id)}
+                    className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="size-3.5" />
+                    Remover
+                  </button>
+                )}
+              </li>
             ))}
           </ul>
         )}
       </AdminFormSection>
     </div>
-  );
-}
-
-function FileRow({
-  file,
-  onRemove,
-}: {
-  file: ProductFile;
-  onRemove: (id: string) => void;
-}) {
-  return (
-    <li className="flex items-center justify-between rounded-md border border-border bg-card px-3 py-2">
-      <div>
-        <p className="text-sm font-medium text-foreground">
-          {file.name ?? file.file_url.split("/").pop()}
-        </p>
-        <p className="text-xs text-muted-foreground">
-          {fileTypeLabel(file.type)} · v{file.version} ·{" "}
-          {file.is_active ? "Ativo" : "Inativo"}
-        </p>
-      </div>
-      <button
-        type="button"
-        onClick={() => onRemove(file.id)}
-        className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-destructive"
-      >
-        <X className="size-3.5" />
-        Remover
-      </button>
-    </li>
   );
 }

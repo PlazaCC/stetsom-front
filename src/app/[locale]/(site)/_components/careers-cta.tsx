@@ -1,11 +1,20 @@
 import { Container } from "@/components/ui/container";
 import { CTAButton } from "@/components/ui/cta-button";
 import { SectionLabel } from "@/components/ui/section-label";
-import type { SiteAboutPayload } from "@/lib/api/contracts";
 import Image from "next/image";
 
+type JobsCtaSection = {
+  label: string;
+  title: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+  buttonText: string;
+  buttonHref: string;
+};
+
 interface CareersCTAProps {
-  section: SiteAboutPayload["jobsCta"];
+  section: JobsCtaSection;
 }
 
 export function CareersCTA({ section }: Readonly<CareersCTAProps>) {
@@ -23,7 +32,7 @@ export function CareersCTA({ section }: Readonly<CareersCTAProps>) {
 
             <CTAButton
               href={section.buttonHref}
-              label={section.buttonLabel}
+              label={section.buttonText}
               variant="brand"
               size="md"
               external

@@ -1,9 +1,14 @@
 "use client";
 
-import type { FeaturedTab } from "@/lib/api/contracts";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
-import { Link } from "@/i18n/navigation";
+
+type FeaturedTab = {
+  id: string;
+  label: string;
+  categorySlug?: string;
+};
 
 interface FeaturedTabStripProps {
   tabs: FeaturedTab[];

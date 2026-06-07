@@ -1,15 +1,11 @@
 "use client";
 
+import { useGetApiCategories, useGetApiProducts } from "@/api/stetsom";
+import type { PublicCategory } from "@/api/stetsom/model";
 import { Container } from "@/components/ui/container";
 import { ProductCard } from "@/components/ui/product-card";
-import {
-  useCatalogCategories,
-  useCatalogPage,
-  useCatalogProducts,
-} from "@/hooks/use-catalog";
 import { useCatalogFilters } from "@/hooks/use-catalog-filters";
-import type { Category } from "@/lib/api/contracts";
-import { PRODUCT_LINES } from "@/lib/mock/catalog";
+import { toApiLocale } from "@/lib/api/i18n-utils";
 import { cn } from "@/lib/utils";
 import { ArrowLeftRight, Search, SlidersHorizontal } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -37,20 +33,19 @@ const CATEGORY_IMAGE_BY_ID: Record<string, string> = {
 const DEFAULT_HERO_IMAGE = "/figma-assets/raw/fill_CGM3WO_6a0a1876.png";
 
 function toCategoryOptions(
-  categories: Category[],
+  categories: CategoryOption[],
   allLabel: string,
 ): CategoryOption[] {
-  return [
-    { name: allLabel, slug: "todos" },
-    ...categories.map((c) => ({ name: c.name, slug: c.slug })),
-  ];
+  return [{ name: allLabel, slug: "todos" }, ...categories];
 }
 
-function buildSlugImageMap(categories: Category[]): Record<string, string> {
+function buildSlugImageMap(
+  categories: CategoryOption[],
+): Record<string, string> {
   const map: Record<string, string> = {};
   for (const cat of categories) {
-    if (CATEGORY_IMAGE_BY_ID[cat.id]) {
-      map[cat.slug] = CATEGORY_IMAGE_BY_ID[cat.id];
+    if (CATEGORY_IMAGE_BY_ID[cat.slug]) {
+      map[cat.slug] = CATEGORY_IMAGE_BY_ID[cat.slug];
     }
   }
   return map;
@@ -59,6 +54,7 @@ function buildSlugImageMap(categories: Category[]): Record<string, string> {
 export function CatalogContent() {
   const t = useTranslations("Catalog");
   const locale = useLocale();
+  const apiLocale = toApiLocale(locale);
 
   const {
     activeCategory,
@@ -70,11 +66,19 @@ export function CatalogContent() {
     clearFilters,
   } = useCatalogFilters();
 
-  const catalogPageQuery = useCatalogPage(locale);
-  const categoriesQuery = useCatalogCategories(locale);
-  const categories = useMemo(
+  const categoriesQuery = useGetApiCategories({ locale: apiLocale });
+  const rawCategories: PublicCategory[] = useMemo(
     () => categoriesQuery.data ?? [],
     [categoriesQuery.data],
+  );
+
+  const categories: CategoryOption[] = useMemo(
+    () =>
+      rawCategories.map((c: PublicCategory) => ({
+        name: c.name,
+        slug: c.slug,
+      })),
+    [rawCategories],
   );
 
   const categoryOptions = useMemo(
@@ -89,13 +93,13 @@ export function CatalogContent() {
   const activeCategorySlug =
     activeCategory === "todos" ? undefined : activeCategory;
 
-  const productsQuery = useCatalogProducts({
+  const productsQuery = useGetApiProducts({
     q: search || undefined,
     category: activeCategorySlug,
-    status: "ALL",
+    status: "PUBLISHED",
     page: 1,
     pageSize: 24,
-    locale,
+    locale: apiLocale,
   });
 
   const productCards = useMemo(
@@ -107,25 +111,25 @@ export function CatalogContent() {
     [categoryOptions],
   );
 
+  // Product lines from the active category (or all categories)
+  const productLines = useMemo<string[]>(() => {
+    const activeRaw = activeCategorySlug
+      ? rawCategories.find((c: PublicCategory) => c.slug === activeCategorySlug)
+      : null;
+    const source = activeRaw ? [activeRaw] : rawCategories;
+    return source.flatMap((c: PublicCategory) => c.lines.map((l) => l.name));
+  }, [rawCategories, activeCategorySlug]);
+
   const isLoading = categoriesQuery.isLoading || productsQuery.isLoading;
   const totalProducts = productsQuery.data?.total ?? 0;
-  const hero = catalogPageQuery.data ?? {
-    heroLabel: t("heroLabel"),
-    heroTitle: t("heroTitle"),
-    heroImage: DEFAULT_HERO_IMAGE,
-    heroImageAlt: t("heroImageAlt"),
-    heroWatermark: "PRO",
-  };
-  const productGrid = hero.productGrid;
-  const showFilters = productGrid?.showFilters ?? true;
 
   return (
     <div>
       <section className="relative overflow-hidden bg-brand-dark h-72 lg:h-84">
         <div className="absolute inset-0 bg-radial-dark" />
         <Image
-          src={hero.heroImage}
-          alt={hero.heroImageAlt}
+          src={DEFAULT_HERO_IMAGE}
+          alt={t("heroImageAlt")}
           fill
           className="object-cover opacity-45"
           sizes="100vw"
@@ -136,15 +140,17 @@ export function CatalogContent() {
           <div className="flex items-center gap-2 mb-1">
             <div className="w-6 h-px bg-brand shrink-0" />
             <span className="font-sans-condensed font-medium text-xs md:text-base uppercase text-brand">
-              {hero.heroLabel}
+              {t("heroLabel")}
             </span>
           </div>
           <h1 className="font-sans-condensed font-black text-5xl md:text-6xl lg:text-[90px] leading-tight md:leading-16 lg:leading-18.5 uppercase text-white">
-            {hero.heroTitle.split("\n").map((line) => (
-              <span key={line} className="block">
-                {line}
-              </span>
-            ))}
+            {t("heroTitle")
+              .split("\n")
+              .map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
           </h1>
           <span className="text-xs md:text-base text-text-subtle-dark mt-2 block">
             <strong className="font-sans-condensed font-black text-xl text-white">
@@ -154,80 +160,76 @@ export function CatalogContent() {
           </span>
         </Container>
         <div className="absolute right-0 bottom-0 font-sans-condensed font-black text-display-2xl sm:text-[150px] lg:text-[263px] text-watermark-text leading-none pointer-events-none select-none opacity-[0.08]">
-          {hero.heroWatermark}
+          PRO
         </div>
         <div className="absolute left-0 top-0 w-3.5 h-full bg-bar-accent" />
       </section>
 
-      {showFilters && (
-        <section className="bg-white border-b border-border py-8">
-          <Container>
-            <p className="mb-5 font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground">
-              {t("categories")}
-            </p>
-            <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8">
-              {categoryOptions.map((cat) => {
-                const imageSrc = categoryImageBySlug[cat.slug];
-                const isActive = activeCategory === cat.slug;
-                return (
-                  <button
-                    key={cat.slug}
-                    onClick={() => setActiveCategory(cat.slug)}
+      <section className="bg-white border-b border-border py-8">
+        <Container>
+          <p className="mb-5 font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground">
+            {t("categories")}
+          </p>
+          <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8">
+            {categoryOptions.map((cat) => {
+              const imageSrc = categoryImageBySlug[cat.slug];
+              const isActive = activeCategory === cat.slug;
+              return (
+                <button
+                  key={cat.slug}
+                  onClick={() => setActiveCategory(cat.slug)}
+                  className={cn(
+                    "flex flex-col items-center gap-2 rounded p-2 text-center transition-colors",
+                    isActive ? "bg-brand/10" : "hover:bg-muted",
+                  )}
+                >
+                  <div
                     className={cn(
-                      "flex flex-col items-center gap-2 rounded p-2 text-center transition-colors",
-                      isActive ? "bg-brand/10" : "hover:bg-muted",
+                      "flex aspect-square w-full items-center justify-center overflow-hidden rounded",
+                      isActive ? "bg-brand/10" : "bg-muted",
                     )}
                   >
-                    <div
-                      className={cn(
-                        "flex aspect-square w-full items-center justify-center overflow-hidden rounded",
-                        isActive ? "bg-brand/10" : "bg-muted",
-                      )}
-                    >
-                      {imageSrc ? (
-                        <Image
-                          src={imageSrc}
-                          alt=""
-                          width={48}
-                          height={48}
-                          className="h-10 w-10 object-contain"
-                        />
-                      ) : (
-                        <span className="font-sans-condensed text-xs font-black uppercase text-muted-foreground">
-                          {cat.name.slice(0, 2)}
-                        </span>
-                      )}
-                    </div>
-                    <span
-                      className={cn(
-                        "font-sans text-2xs font-medium leading-tight",
-                        isActive ? "text-brand" : "text-muted-foreground",
-                      )}
-                    >
-                      {cat.name}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </Container>
-        </section>
-      )}
+                    {imageSrc ? (
+                      <Image
+                        src={imageSrc}
+                        alt=""
+                        width={48}
+                        height={48}
+                        className="h-10 w-10 object-contain"
+                      />
+                    ) : (
+                      <span className="font-sans-condensed text-xs font-black uppercase text-muted-foreground">
+                        {cat.name.slice(0, 2)}
+                      </span>
+                    )}
+                  </div>
+                  <span
+                    className={cn(
+                      "font-sans text-2xs font-medium leading-tight",
+                      isActive ? "text-brand" : "text-muted-foreground",
+                    )}
+                  >
+                    {cat.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </Container>
+      </section>
 
       <section className="bg-white pt-6 pb-12">
         <Container>
           <div className="flex gap-9">
-            {showFilters && (
-              <CatalogSidebar
-                search={search}
-                onSearchChange={setSearch}
-                activeCategory={activeCategory}
-                onCategoryChange={setActiveCategory}
-                onClear={clearFilters}
-                typeFilterOptions={typeFilterOptions}
-                productLines={PRODUCT_LINES}
-              />
-            )}
+            <CatalogSidebar
+              search={search}
+              onSearchChange={setSearch}
+              activeCategory={activeCategory}
+              onCategoryChange={setActiveCategory}
+              onClear={clearFilters}
+              typeFilterOptions={typeFilterOptions}
+              productLines={productLines}
+            />
 
             <div className="flex-1 min-w-0">
               <div className="flex gap-3 mb-4 lg:hidden">
@@ -278,9 +280,7 @@ export function CatalogContent() {
                       key={product.id}
                       name={product.name}
                       category={product.category}
-                      spec={product.spec}
-                      badge={product.badge}
-                      img={product.img}
+                      img={product.thumbnail_url ?? undefined}
                       href={product.href}
                     />
                   ))}

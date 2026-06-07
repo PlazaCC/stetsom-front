@@ -7,35 +7,53 @@ import {
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
-import { useCmsProducts } from "@/hooks/use-cms";
-import type { CmsProductRow, ProductStatus } from "@/lib/api/contracts";
+import {
+  FilterChips,
+  type FilterChip,
+} from "@/app/admin/_components/crud/filter-chips";
+import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
+import { ProdutosTabs } from "@/app/admin/produtos/_components/produtos-tabs";
+import { useGetApiProductsAdmin } from "@/api/stetsom";
+import type { CmsProductRow, CmsProductRowStatus } from "@/api/stetsom/model";
+import { BrFlag, EsFlag, UsFlag } from "@/components/ui/flag-icons";
 import { cn } from "@/lib/utils";
-import { Package, Plus } from "lucide-react";
+import { Filter, Package, Plus } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-const STATUS_LABELS: Record<ProductStatus, string> = {
-  ACTIVE: "Ativo",
-  DISCONTINUED: "Descontinuado",
-  DRAFT: "Rascunho",
-};
+const STATUS_OPTIONS: { value: CmsProductRowStatus; label: string }[] = [
+  { value: "PUBLISHED", label: "Publicado" },
+  { value: "DRAFT", label: "Rascunho" },
+  { value: "SCHEDULED", label: "Agendado" },
+];
 
-const LOCALE_LABEL: Record<string, string> = {
-  "pt-BR": "PT",
-  en: "EN",
-  es: "ES",
-};
+function localeActive(
+  languages: string[],
+  locale: "pt" | "en" | "es",
+): boolean {
+  if (locale === "pt")
+    return languages.includes("pt") || languages.includes("pt-BR");
+  return languages.includes(locale);
+}
 
-function LocaleFlags({ locales }: { locales: string[] }) {
+function LocaleFlags({ languages }: { languages: string[] }) {
+  const flags = [
+    { locale: "pt" as const, Flag: BrFlag },
+    { locale: "en" as const, Flag: UsFlag },
+    { locale: "es" as const, Flag: EsFlag },
+  ];
   return (
-    <span className="flex gap-1">
-      {locales.map((l) => (
+    <span className="flex items-center gap-1.5">
+      {flags.map(({ locale, Flag }) => (
         <span
-          key={l}
-          title={l}
-          className="rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground"
+          key={locale}
+          title={locale}
+          className={cn(
+            "transition-opacity",
+            localeActive(languages, locale) ? "opacity-100" : "opacity-25",
+          )}
         >
-          {LOCALE_LABEL[l] ?? l}
+          <Flag />
         </span>
       ))}
     </span>
@@ -44,15 +62,16 @@ function LocaleFlags({ locales }: { locales: string[] }) {
 
 export default function AdminProdutos() {
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"ALL" | ProductStatus>(
-    "ALL",
+  const [statusFilter, setStatusFilter] = useState<CmsProductRowStatus | null>(
+    null,
   );
+  const [filterOpen, setFilterOpen] = useState(false);
   const [page, setPage] = useState(1);
   const pageSize = 12;
 
-  const cmsProducts = useCmsProducts({
+  const cmsProducts = useGetApiProductsAdmin({
     q: query || undefined,
-    status: statusFilter,
+    status: statusFilter ?? undefined,
     page,
     pageSize,
   });
@@ -62,92 +81,70 @@ export default function AdminProdutos() {
     [cmsProducts.data?.items],
   );
 
+  const chips: FilterChip[] = statusFilter
+    ? [
+        {
+          key: "status",
+          label:
+            STATUS_OPTIONS.find((s) => s.value === statusFilter)?.label ??
+            statusFilter,
+        },
+      ]
+    : [];
+
   const columns: AdminTableColumn<CmsProductRow>[] = [
     {
-      key: "thumb",
-      header: "",
-      className: "w-12",
-      render: (row) => (
-        <div className="size-10 overflow-hidden rounded-md bg-muted">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={row.thumbnail_url}
-            alt={row.name}
-            className="h-full w-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
-          />
-        </div>
-      ),
-    },
-    {
       key: "name",
-      header: "Nome",
+      header: "Produto",
       render: (row) => (
-        <div>
-          <p className="font-medium text-foreground">{row.name}</p>
-          <p className="text-xs text-muted-foreground">{row.slug}</p>
+        <div className="flex items-center gap-3">
+          <div className="size-10 shrink-0 overflow-hidden rounded-md bg-muted">
+            {row.thumbnail_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={row.thumbnail_url}
+                alt={row.name}
+                className="h-full w-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                }}
+              />
+            ) : null}
+          </div>
+          <div>
+            <p className="font-medium text-foreground">{row.name}</p>
+            {row.line && (
+              <p className="text-xs text-muted-foreground">{row.line}</p>
+            )}
+          </div>
         </div>
       ),
     },
     {
       key: "category",
-      header: "Categoria / Linha",
+      header: "Categoria",
       render: (row) => (
-        <div>
-          <p className="text-sm text-foreground">{row.category}</p>
-          {row.subcategory && (
-            <p className="text-xs text-muted-foreground">{row.subcategory}</p>
-          )}
-        </div>
+        <span className="text-sm text-foreground">{row.category}</span>
       ),
     },
     {
       key: "languages",
       header: "Idiomas",
-      render: (row) => <LocaleFlags locales={row.languages} />,
+      render: (row) => <LocaleFlags languages={row.languages} />,
+    },
+    {
+      key: "is_discontinued",
+      header: "Em linha",
+      render: (row) => (
+        <span className="text-sm font-medium text-foreground">
+          {row.is_discontinued ? "Não" : "Sim"}
+        </span>
+      ),
     },
     {
       key: "status",
-      header: "Status",
-      render: (row) => (
-        <span
-          className={cn(
-            "rounded-full border px-2 py-0.5 text-xs font-medium",
-            row.status === "ACTIVE"
-              ? "border-cms-step-done bg-cms-step-done text-white"
-              : "border-cms-step-pending bg-cms-step-pending text-muted-foreground",
-          )}
-        >
-          {STATUS_LABELS[row.status]}
-        </span>
-      ),
-    },
-    {
-      key: "is_published",
       header: "Publicação",
-      render: (row) => (
-        <span
-          className={cn(
-            "rounded-full border px-2 py-0.5 text-xs font-medium",
-            row.is_published
-              ? "border-cms-active-item bg-cms-active-item text-foreground"
-              : "border-border bg-muted text-muted-foreground",
-          )}
-        >
-          {row.is_published ? "Publicado" : "Rascunho"}
-        </span>
-      ),
-    },
-    {
-      key: "updated_at",
-      header: "Atualizado",
-      render: (row) => (
-        <span className="text-xs text-muted-foreground">
-          {new Date(row.updated_at).toLocaleDateString("pt-BR")}
-        </span>
-      ),
+      render: (row) => <StatusBadge status={row.status} />,
     },
     {
       key: "actions",
@@ -165,72 +162,123 @@ export default function AdminProdutos() {
     },
   ];
 
+  if (cmsProducts.isError) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
+        <p className="text-sm font-medium text-destructive">
+          Sessão expirada ou sem permissão.
+        </p>
+        <Link
+          href="/admin/login"
+          className="text-sm text-brand underline underline-offset-4"
+        >
+          Fazer login novamente
+        </Link>
+      </div>
+    );
+  }
+
   return (
-    <AdminListPage
-      title="Produtos"
-      icon={Package}
-      action={
-        <AdminActionBar>
-          <button
-            type="button"
-            className="rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-          >
-            Importar planilha
-          </button>
-          <Link
-            href="/admin/produtos/novo"
-            className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
-          >
-            <Plus className="size-4" />
-            Cadastrar produto
-          </Link>
-        </AdminActionBar>
-      }
-      toolbar={
-        <div className="flex items-center gap-3">
-          <AdminSearchInput
-            value={query}
-            onChange={setQuery}
-            placeholder="Buscar por nome ou slug"
-            className="max-w-72"
-          />
-          <select
-            value={statusFilter}
-            onChange={(e) =>
-              setStatusFilter(e.target.value as "ALL" | ProductStatus)
-            }
-            className="h-9 rounded-md border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-brand"
-          >
-            <option value="ALL">Todos os status</option>
-            <option value="ACTIVE">Ativo</option>
-            <option value="DISCONTINUED">Descontinuado</option>
-          </select>
-          {cmsProducts.data && (
-            <span className="ml-auto text-xs text-muted-foreground">
-              {cmsProducts.data.total} itens
-            </span>
-          )}
-        </div>
-      }
-    >
-      <AdminDataTable
-        columns={columns}
-        data={rows}
-        isLoading={cmsProducts.isLoading}
-        keyExtractor={(row) => row.id}
-        emptyTitle="Nenhum produto encontrado"
-        emptyDescription="Cadastre um novo produto ou ajuste os filtros."
-        pagination={
-          cmsProducts.data
-            ? {
-                page,
-                pageSize,
-                total: cmsProducts.data.total,
-                onPageChange: setPage,
-              }
-            : undefined
+    <div className="flex flex-col gap-5">
+      <ProdutosTabs />
+      <AdminListPage
+        title="Produtos"
+        icon={Package}
+        action={
+          <AdminActionBar>
+            <button
+              type="button"
+              disabled
+              className="rounded-md border border-border px-3 py-2 text-sm font-medium text-muted-foreground"
+              title="Em breve"
+            >
+              Importar planilha
+            </button>
+            <Link
+              href="/admin/produtos/novo"
+              className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+            >
+              <Plus className="size-4" />
+              Cadastrar produto
+            </Link>
+          </AdminActionBar>
         }
-      />
-    </AdminListPage>
+        toolbar={
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <AdminSearchInput
+                value={query}
+                onChange={setQuery}
+                placeholder="Procurar"
+                className="max-w-72"
+              />
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setFilterOpen((o) => !o)}
+                  className="flex h-9 items-center gap-1.5 rounded-md bg-foreground px-3 text-sm font-medium text-background"
+                >
+                  <Filter className="size-4" />
+                  Filtrar
+                </button>
+                {filterOpen && (
+                  <div className="absolute left-0 top-10 z-10 w-44 rounded-md border border-border bg-card p-1 shadow-lg">
+                    {STATUS_OPTIONS.map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => {
+                          setStatusFilter(opt.value);
+                          setPage(1);
+                          setFilterOpen(false);
+                        }}
+                        className={cn(
+                          "block w-full rounded px-2 py-1.5 text-left text-sm hover:bg-muted",
+                          statusFilter === opt.value &&
+                            "font-semibold text-brand",
+                        )}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {cmsProducts.data && (
+                <span className="ml-auto text-xs text-muted-foreground">
+                  {cmsProducts.data.total} itens
+                </span>
+              )}
+            </div>
+            <FilterChips
+              chips={chips}
+              onRemove={() => {
+                setStatusFilter(null);
+                setPage(1);
+              }}
+            />
+          </div>
+        }
+      >
+        <AdminDataTable
+          columns={columns}
+          data={rows}
+          isLoading={cmsProducts.isLoading}
+          keyExtractor={(row) => row.id}
+          emptyTitle="Nenhum produto encontrado"
+          emptyDescription="Cadastre um novo produto ou ajuste os filtros."
+          pagination={
+            cmsProducts.data
+              ? {
+                  page,
+                  pageSize,
+                  total: cmsProducts.data.total,
+                  onPageChange: setPage,
+                }
+              : undefined
+          }
+        />
+      </AdminListPage>
+    </div>
   );
 }

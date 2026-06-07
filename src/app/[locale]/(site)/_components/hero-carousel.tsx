@@ -1,32 +1,28 @@
 "use client";
 
+import type { HeroBannerSlide } from "@/api/stetsom/model";
 import { Link } from "@/i18n/navigation";
-import type { HeroBannerSlide, HeroCarouselConfig } from "@/lib/api/contracts";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRef } from "react";
 import "swiper/css";
 import "swiper/css/pagination";
-import { A11y, Autoplay, Pagination, EffectFade } from "swiper/modules";
+import { A11y, Autoplay, EffectFade, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 const HERO_HEIGHT_CLASS = "h-130 sm:h-155 lg:h-175";
 
 interface HeroCarouselProps {
   slides: HeroBannerSlide[];
-  config?: HeroCarouselConfig;
 }
 
-export default function HeroCarousel({
-  slides,
-  config,
-}: Readonly<HeroCarouselProps>) {
+export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
   const t = useTranslations("HeroCarousel");
   const shouldLoop = slides.length > 1;
   const paginationRef = useRef<HTMLDivElement | null>(null);
-  const interval = config?.interval ?? 5000;
-  const effectEnabled = config?.effect === "fade";
+  const interval = 5000;
+  const effectEnabled = false;
   const modules = effectEnabled
     ? [Autoplay, Pagination, A11y, EffectFade]
     : [Autoplay, Pagination, A11y];
@@ -69,7 +65,7 @@ export default function HeroCarousel({
           swiper.pagination.update();
         }}
         autoplay={
-          config?.autoplay !== false && shouldLoop
+          shouldLoop
             ? {
                 delay: interval,
                 disableOnInteraction: false,
@@ -80,22 +76,22 @@ export default function HeroCarousel({
         pagination={{ clickable: true }}
       >
         {slides.map((slide, index) => {
-          const mobileSrc = slide.mobileImage ?? slide.desktopImage;
+          const mobileSrc = slide.mobile_image_url ?? slide.desktop_image_url;
 
           const bannerContent = (
             <>
               <Image
                 className="absolute inset-0 object-cover sm:hidden"
                 src={mobileSrc}
-                alt={slide.alt ?? "Banner Stetsom"}
+                alt="Banner Stetsom"
                 fill
                 sizes="100vw"
                 priority={index === 0}
               />
               <Image
                 className="absolute inset-0 hidden object-cover sm:block"
-                src={slide.desktopImage}
-                alt={slide.alt ?? "Banner Stetsom"}
+                src={slide.desktop_image_url}
+                alt="Banner Stetsom"
                 fill
                 sizes="100vw"
                 priority={index === 0}

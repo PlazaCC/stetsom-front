@@ -1,10 +1,19 @@
 import { CTAButton } from "@/components/ui/cta-button";
 import { SectionLabel } from "@/components/ui/section-label";
-import type { SiteHomePayload } from "@/lib/api/contracts";
 import Image from "next/image";
 
+type HistorySection = {
+  image: string;
+  imageAlt: string;
+  label: string;
+  title: string;
+  subtitle?: string;
+  ctaHref: string;
+  ctaLabel: string;
+};
+
 interface OurHistoryProps {
-  section: SiteHomePayload["history"];
+  section: HistorySection;
 }
 
 export function OurHistory({ section }: Readonly<OurHistoryProps>) {

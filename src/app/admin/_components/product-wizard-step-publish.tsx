@@ -6,14 +6,14 @@ import {
 } from "@/app/admin/_components/crud/admin-input";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import type { ProductInfo } from "@/app/admin/_components/product-wizard-step1";
-import type { ProductSpec } from "@/lib/api/contracts";
+import type { WizardProductSpec } from "@/app/admin/_components/product-wizard-types";
 
 interface ProductWizardStepPublishProps {
   info: ProductInfo;
-  specs: ProductSpec[];
+  specs: WizardProductSpec[];
   categoryName: string | undefined;
   subcategoryName: string | undefined;
-  onInfoChange: (key: keyof ProductInfo, value: string) => void;
+  onPatch: (patch: Partial<ProductInfo>) => void;
 }
 
 export function ProductWizardStepPublish({
@@ -21,7 +21,7 @@ export function ProductWizardStepPublish({
   specs,
   categoryName,
   subcategoryName,
-  onInfoChange,
+  onPatch,
 }: ProductWizardStepPublishProps) {
   return (
     <div className="space-y-6">
@@ -35,7 +35,7 @@ export function ProductWizardStepPublish({
             <AdminInput
               type="date"
               value={info.launch_date}
-              onChange={(e) => onInfoChange("launch_date", e.target.value)}
+              onChange={(e) => onPatch({ launch_date: e.target.value })}
             />
           </div>
           <div>
@@ -43,7 +43,7 @@ export function ProductWizardStepPublish({
             <AdminInput
               type="time"
               value={info.launch_time}
-              onChange={(e) => onInfoChange("launch_time", e.target.value)}
+              onChange={(e) => onPatch({ launch_time: e.target.value })}
             />
           </div>
         </div>
@@ -61,7 +61,7 @@ export function ProductWizardStepPublish({
                 name="publish-status"
                 value={s}
                 checked={info.status === s}
-                onChange={() => onInfoChange("status", s)}
+                onChange={() => onPatch({ status: s })}
                 className="mt-0.5 accent-brand"
               />
               <div>
@@ -83,11 +83,13 @@ export function ProductWizardStepPublish({
         <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div>
             <dt className="text-xs text-muted-foreground">Nome</dt>
-            <dd className="font-medium text-foreground">{info.name || "—"}</dd>
+            <dd className="font-medium text-foreground">
+              {info.name.pt || "—"}
+            </dd>
           </div>
           <div>
             <dt className="text-xs text-muted-foreground">Slug</dt>
-            <dd className="font-mono text-foreground">{info.slug || "—"}</dd>
+            <dd className="font-mono text-foreground">{info.slug.pt || "—"}</dd>
           </div>
           <div>
             <dt className="text-xs text-muted-foreground">Categoria</dt>
@@ -102,16 +104,8 @@ export function ProductWizardStepPublish({
             <dd className="text-foreground">{specs.length} registradas</dd>
           </div>
           <div>
-            <dt className="text-xs text-muted-foreground">Badge</dt>
-            <dd className="text-foreground">{info.badge || "—"}</dd>
-          </div>
-          <div className="col-span-2">
-            <dt className="text-xs text-muted-foreground">Idiomas</dt>
-            <dd className="flex gap-2">
-              <span className="rounded bg-muted px-2 py-0.5 text-xs font-medium">
-                PT-BR
-              </span>
-            </dd>
+            <dt className="text-xs text-muted-foreground">SKU</dt>
+            <dd className="text-foreground">{info.sku || "—"}</dd>
           </div>
         </dl>
       </AdminFormSection>

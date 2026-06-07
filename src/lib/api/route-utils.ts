@@ -1,4 +1,3 @@
-import type { ApiErrorPayload } from "@/lib/api/contracts";
 import { NextResponse } from "next/server";
 
 type ErrorPayload = {
@@ -24,38 +23,18 @@ export function getCmsApiBaseUrl(): string {
   }
 }
 
-export function isMockMode(): boolean {
-  return !process.env.CMS_API_BASE_URL && process.env.CMS_FORCE_BFF !== "1";
-}
-
 export function notFoundResponse(message = "Recurso não encontrado.") {
-  const payload: ApiErrorPayload = {
-    error: { code: "NOT_FOUND", message },
-  };
-  return NextResponse.json(payload, { status: 404 });
+  return NextResponse.json(
+    { error: { code: "NOT_FOUND", message } },
+    { status: 404 },
+  );
 }
 
 export function unauthorizedResponse(message = "Não autenticado.") {
-  const payload: ApiErrorPayload = {
-    error: {
-      code: "UNAUTHORIZED",
-      message,
-    },
-  };
-
-  return NextResponse.json(payload, { status: 401 });
-}
-
-export function getProxyUpstreamPath(
-  routeMap: Record<string, string>,
-  resource: string[],
-) {
-  const upstreamPath = routeMap[resource[0]];
-  if (!upstreamPath) {
-    throw new HttpError(404, "NOT_FOUND", "Recurso não encontrado.");
-  }
-
-  return upstreamPath;
+  return NextResponse.json(
+    { error: { code: "UNAUTHORIZED", message } },
+    { status: 401 },
+  );
 }
 
 export function ensureFound<T>(value: T | null | undefined): T {
@@ -109,22 +88,19 @@ export class HttpError extends Error {
 
 export function toErrorResponse(error: unknown) {
   if (error instanceof HttpError) {
-    const payload: ApiErrorPayload = {
-      error: {
-        code: error.code,
-        message: error.message,
-      },
-    };
-
-    return NextResponse.json(payload, { status: error.status });
+    return NextResponse.json(
+      { error: { code: error.code, message: error.message } },
+      { status: error.status },
+    );
   }
 
-  const payload: ApiErrorPayload = {
-    error: {
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Unexpected server error",
+  return NextResponse.json(
+    {
+      error: {
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Unexpected server error",
+      },
     },
-  };
-
-  return NextResponse.json(payload, { status: 500 });
+    { status: 500 },
+  );
 }

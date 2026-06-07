@@ -1,153 +1,61 @@
 ---
-description: 'Use when creating, moving, or refactoring React components. Covers component folder structure (components/ui vs components vs _components), dummy/presentational components, composable vs monolithic pattern, file size limits, !important prohibition, and subcomponent extraction.'
+description: 'Use when creating, moving, or refactoring React components. Covers Server vs Client decision, folder structure, dummy/presentational pattern, composable vs monolithic, subcomponent extraction.'
 applyTo: 'src/**/*.{ts,tsx}'
 ---
 
 # Component Architecture
 
----
+## Component Basics
 
-## Estrutura de Pastas — Três Destinos
+- **Server Component by default** — add `"use client"` only for: event handlers, state/effect hooks, browser APIs, `usePathname`
+- Named exports for all components except `page.tsx` and `layout.tsx` (default export)
+- Use `cn()` from `@/lib/utils` for conditional Tailwind class merging
+- Static data constants at the top of the file in `SCREAMING_SNAKE_CASE`
+- Avoid excessive prop drilling — prefer component composition
 
-```
-src/components/ui/        ← Primitivos globais reutilizáveis
-src/components/           ← Infraestrutura (providers, wrappers)
-src/app/[rota]/_components/ ← Co-localizados na rota
-```
+## Folder Structure — Three Destinations
 
-### `src/components/ui/` — Primitivos globais
+| Folder | Purpose | Rules |
+|---|---|---|
+| `src/components/ui/` | Global reusable primitives | Dummy/presentational only; no data hooks; usable in 2+ routes |
+| `src/components/` | Infrastructure | Providers, context wrappers only — no visual UI |
+| `src/app/[route]/_components/` | Route-co-located sections | May contain data hooks; not imported by other routes |
 
-- Destino de `shadcn add` e de extensões de primitivos shadcn
-- Componentes dummy reutilizáveis em 2+ rotas
-- Sem lógica de negócio, sem chamadas a hooks de dados
-- Exemplos corretos: `button.tsx`, `navigation-menu.tsx`, `product-card.tsx`, `container.tsx`
+If a `_components/` file is needed in 2+ routes → move to `components/ui/`.
 
-```tsx
-// ✅ Componente em components/ui/ — dummy, sem efeitos colaterais
-export function ProductCard({ product, className }: ProductCardProps) {
-  return <div className={cn("...", className)}>...</div>
-}
-```
+## Dummy Components (Presentational)
 
-### `src/components/` — Infraestrutura
-
-- Apenas componentes sem UI visual própria: providers, wrappers de contexto, feature flags
-- Exemplos corretos: `query-provider.tsx`, `theme-provider.tsx`
-- Nunca criar componentes visuais aqui
-
-### `src/app/[rota]/_components/` — Co-localizados
-
-- Seções específicas de uma única rota
-- Podem conter lógica de dados (hooks, queries) porque são containers de rota
-- Não devem ser importados por outras rotas
-- Se um componente de `_components/` for usado por 2+ rotas → mover para `components/ui/`
-
----
-
-## Componentes Dummy (Apresentacionais)
-
-Componentes em `components/ui/` devem ser apresentacionais:
-
-- Recebem dados via props, renderizam UI
-- Sem `useQuery`, `useCatalogProducts`, ou outros hooks de dados
-- Sem efeitos colaterais de negócio
-- `useRouter` e `usePathname` apenas em componentes de navegação explícitos (Header, LanguageSwitcher)
+Components in `components/ui/` receive data via props and render UI only:
+- No `useQuery`, `useCatalogProducts`, or other data hooks
+- No business side-effects
+- `useRouter` / `usePathname` only in explicit navigation components (Header, LanguageSwitcher)
 
 ```tsx
-// ❌ Lógica de dados em primitivo
+// ❌ Data logic in a primitive
 export function FeaturedProducts() {
-  const { data } = useCatalogProducts() // dados devem vir de props
-  ...
+  const { data } = useCatalogProducts() // data must come from props
 }
-
-// ✅ Dados chegam via props — container na rota faz o fetch
+// ✅ Container in the route fetches, primitive renders
 export function FeaturedProducts({ products }: FeaturedProductsProps) {
   return <div>...</div>
 }
 ```
 
----
+## Subcomponent Extraction
 
-## Composição — Quando Agrupar Primitivos
-
-Agrupar primitivos em `components/ui/` **somente** quando o grupo é composable: múltiplas partes intercambiáveis que fazem sentido usadas individualmente.
-
-**Referência positiva:** `navigation-menu.tsx` expõe `NavigationMenuRoot`, `NavigationMenuList`, `NavigationMenuItem`, `NavigationMenuTrigger`, `NavigationMenuContent` — cada parte é usável de forma independente.
-
-```tsx
-// ✅ Composable — partes separadas e independentes
-<NavigationMenuRoot>
-  <NavigationMenuList>
-    <NavigationMenuItem>
-      <NavigationMenuTrigger>Produtos</NavigationMenuTrigger>
-      <NavigationMenuContent>...</NavigationMenuContent>
-    </NavigationMenuItem>
-  </NavigationMenuList>
-</NavigationMenuRoot>
-```
-
-**Nunca** agrupar lógica de uma feature específica dentro de um primitivo de `components/ui/`.
-
----
-
-## Tamanho de Arquivo e Extração de Subcomponentes
-
-| Situação | Ação |
+| Situation | Action |
 |---|---|
-| Arquivo > 150 linhas | Avaliar extração de subcomponentes |
-| Subcomponente com estado/efeito próprio | Extrair para arquivo separado obrigatoriamente |
-| Subcomponente puramente visual sem lógica, não reutilizável | Pode ficar no arquivo como função auxiliar interna (abaixo do export principal) |
-| Subcomponente reutilizável em 2+ lugares | Sempre extrair para arquivo próprio em `components/ui/` |
+| File > 150 lines | Evaluate subcomponent extraction |
+| Subcomponent has its own state/effect | Extract to separate file — mandatory |
+| Visual-only, not reusable | Can stay in file as internal function (below main export) |
+| Reusable in 2+ places | Extract to `components/ui/` — mandatory |
 
-**Exemplo de subcomponente interno legítimo** (sem lógica, não reutilizável):
-```tsx
-// Ao final do arquivo, após o export principal
-function CategoryItem({ name, image }: { name: string; image: string }) {
-  return <div className="flex items-center gap-2">...</div>
-}
-```
+## Composable vs Monolithic
 
-**Exemplo de extração obrigatória** (tem estado próprio):
-```tsx
-// ❌ MobileDrawer com useState embutido no Header — extrair
-// ✅ src/components/ui/mobile-drawer.tsx
-```
-
----
-
-## Proibição de `!important`
-
-**Nunca** usar `!important` em componentes React ou em estilos de componentes.
-
-```tsx
-// ❌ Em className
-<div className="!text-brand !bg-white" />
-
-// ❌ Em style inline
-<div style={{ color: 'red !important' }} />
-```
-
-**Para sobrescrever estilos de bibliotecas terceiras** (Swiper, etc.): isolar em bloco CSS dedicado em `globals.css` com comentário identificando a biblioteca e o motivo:
-
-```css
-/* Swiper pagination — overrides necessários por especificidade da lib */
-.hero-carousel .swiper-pagination-bullet {
-  /* usar especificidade de seletor, não !important quando possível */
-  width: 10px;
-  height: 10px;
-}
-```
-
-Preferir aumentar especificidade de seletor em vez de `!important`. Reservar `!important` apenas quando a biblioteca force inline styles (caso raro — documentar com comentário).
-
----
-
-## Padrão Composable vs Monolítico
-
-| Padrão | Onde usar | Exemplo |
+| Pattern | Where | Example |
 |---|---|---|
-| **Composable** | `components/ui/` | `navigation-menu.tsx`, `accordion.tsx` |
-| **Atômico** | `components/ui/` | `button.tsx`, `product-card.tsx`, `container.tsx` |
-| **Monolítico (container)** | `_components/` de rota | `catalog-content.tsx`, `hero-carousel.tsx` |
+| Composable | `components/ui/` | `navigation-menu.tsx` (Root, List, Item, Trigger, Content — each usable independently) |
+| Atomic | `components/ui/` | `button.tsx`, `product-card.tsx`, `container.tsx` |
+| Monolithic container | `_components/` | `catalog-content.tsx`, `hero-carousel.tsx` |
 
-**Regra simples:** se alguém vai `import` o componente em `components/ui/` e usá-lo em contextos diferentes, ele deve ser composable ou atômico — nunca um bloco monolítico cheio de lógica de negócio.
+Never put feature-specific business logic inside a `components/ui/` primitive.

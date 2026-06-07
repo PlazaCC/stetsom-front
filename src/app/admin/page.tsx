@@ -1,6 +1,6 @@
 "use client";
 
-import { useAdminDashboard } from "@/hooks/use-admin";
+import { useGetApiDashboard } from "@/api/stetsom";
 import { Image, Mail, Package, Plus, Upload } from "lucide-react";
 import Link from "next/link";
 
@@ -19,7 +19,7 @@ function formatDate(iso: string) {
 }
 
 export default function AdminHome() {
-  const dashboard = useAdminDashboard();
+  const dashboard = useGetApiDashboard();
 
   if (dashboard.isLoading) {
     return <div className="text-muted-foreground">Carregando dashboard...</div>;

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import type { PostApiContactBodyDepartment } from "@/api/stetsom/model";
 import { useTranslations } from "next-intl";
-import type { ContactDepartment } from "@/lib/api/contracts";
+import { useState } from "react";
 import { submitContact } from "./actions";
 
-const DEPARTMENT_MAP: Record<string, ContactDepartment> = {
+const DEPARTMENT_MAP: Record<string, PostApiContactBodyDepartment> = {
   technical: "suporte_tecnico",
   warranty: "produto",
   commercial: "comercial",

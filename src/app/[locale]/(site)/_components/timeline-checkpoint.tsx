@@ -1,6 +1,13 @@
 "use client";
 
-import type { TimelineEvent } from "@/lib/api/contracts";
+type TimelineEvent = {
+  year: string;
+  title: string;
+  shortTitle?: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+};
 import { cn } from "@/lib/utils";
 
 interface TimelineCheckpointProps {

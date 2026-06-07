@@ -1,6 +1,6 @@
 "use client";
 
-import type { ProductBlock } from "@/lib/api/contracts";
+import type { ProductBlock } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
 import {
   resolveTextAlignClass,
@@ -8,8 +8,8 @@ import {
   toTextBlockData,
 } from "@/lib/utils/product";
 import DOMPurify from "dompurify";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 interface BlockRendererProps {
   block: ProductBlock;
@@ -50,7 +50,7 @@ export function BlockRenderer({
       <article className="space-y-3">
         {images.map((src, i) => (
           <div
-            key={`${block.id}-${i}`}
+            key={`${block.block_id}-${i}`}
             className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-brand-dark"
           >
             <Image
@@ -70,10 +70,13 @@ export function BlockRenderer({
   }
 
   if (block.type === "VIDEO") {
-    const title = block.data.title ?? t("blockVideoFeatured", { productName });
+    const title =
+      (block.data.title as string | undefined) ??
+      t("blockVideoFeatured", { productName });
     const description =
-      block.data.description ?? t("blockVideoDefaultDescription");
-    const videoUrl = block.data.video_url;
+      (block.data.description as string | undefined) ??
+      t("blockVideoDefaultDescription");
+    const videoUrl = block.data.video_url as string | undefined;
     return (
       <article className="rounded-xl border border-border bg-card p-6 md:p-8">
         <p className="font-sans-condensed text-xs font-bold uppercase tracking-wider text-brand">
@@ -98,7 +101,7 @@ export function BlockRenderer({
   }
 
   if (block.type === "HTML") {
-    const rawHtml = block.data.html;
+    const rawHtml = block.data.html as string;
     const safeHtml = DOMPurify.sanitize(rawHtml, {
       USE_PROFILES: { html: true },
     });
@@ -116,7 +119,7 @@ export function BlockRenderer({
   }
 
   if (block.type === "MODEL3D") {
-    const modelUrl = block.data.file_url;
+    const modelUrl = block.data.file_url as string | undefined;
     return (
       <article className="rounded-xl border border-border bg-card p-6 md:p-8">
         <p className="font-sans-condensed text-xs font-bold uppercase tracking-wider text-brand">

@@ -5,10 +5,18 @@ import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminStatusToggle } from "@/app/admin/_components/crud/admin-status-toggle";
 import type {
   Banner,
+  BannersPayload,
   BannerWithUploads,
-  CreateBannerInput,
-} from "@/lib/api/contracts";
-import { useBannerMutations } from "@/hooks/use-banner-mutations";
+  PostApiBannersBody,
+  PatchApiBannersIdBody,
+  UploadPresignResponse,
+} from "@/api/stetsom/model";
+import {
+  postApiBanners,
+  patchApiBannersId,
+  deleteApiBannersId,
+} from "@/api/stetsom";
+import { useMutation } from "@tanstack/react-query";
 import { useInlineUpload } from "@/hooks/use-inline-upload";
 import { cn } from "@/lib/utils";
 import { Image, Plus } from "lucide-react";
@@ -23,25 +31,48 @@ import {
   statusLabel,
 } from "./banner-form";
 
+type BannerTableRow = Banner & {
+  desktop_image_url?: string;
+  mobile_image_url?: string;
+  locale?: string;
+};
+
+function toLocaleDisplay(locale: string): string {
+  if (locale === "pt-BR" || locale === "pt") return "PT";
+  if (locale === "en") return "EN";
+  return "ES";
+}
+
 export function BannersContent({
   initialBanners,
 }: {
-  initialBanners: Banner[];
+  initialBanners: BannersPayload;
 }) {
-  const [banners] = useState<Banner[]>(initialBanners);
-  const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
+  const banners = initialBanners.items as BannerTableRow[];
+  const [editingBanner, setEditingBanner] = useState<BannerTableRow | null>(
+    null,
+  );
   const [isCreating, setIsCreating] = useState(false);
   const [draft, setDraft] = useState<BannerDraft>(EMPTY_DRAFT);
   const [desktopImageFile, setDesktopImageFile] = useState<File | null>(null);
   const [mobileImageFile, setMobileImageFile] = useState<File | null>(null);
 
-  const mutations = useBannerMutations();
+  const createBanner = useMutation({
+    mutationFn: (body: PostApiBannersBody) => postApiBanners(body),
+  });
+  const updateBanner = useMutation({
+    mutationFn: ({ id, body }: { id: string; body: PatchApiBannersIdBody }) =>
+      patchApiBannersId(id, body),
+  });
+  const deleteBanner = useMutation({
+    mutationFn: (id: string) => deleteApiBannersId(id),
+  });
   const inlineUpload = useInlineUpload();
 
   const isFormOpen = isCreating || editingBanner !== null;
   const isSaving =
-    mutations.create.isPending ||
-    mutations.update.isPending ||
+    createBanner.isPending ||
+    updateBanner.isPending ||
     inlineUpload.isUploading;
 
   function openCreate() {
@@ -51,7 +82,7 @@ export function BannersContent({
     setIsCreating(true);
   }
 
-  function openEdit(banner: Banner) {
+  function openEdit(banner: BannerTableRow) {
     setDraft(bannerToDraft(banner));
     setDesktopImageFile(null);
     setMobileImageFile(null);
@@ -67,10 +98,10 @@ export function BannersContent({
     setDraft((prev) => ({ ...prev, [key]: value }));
   }
 
-  function buildPayload(): CreateBannerInput {
-    const payload: CreateBannerInput = {
+  function buildPayload(): PostApiBannersBody {
+    const payload: PostApiBannersBody = {
       name: draft.name,
-      product_id: draft.product_id || undefined,
+      product_id: draft.product_id || null,
       desktop_image: desktopImageFile
         ? {
             fileName: desktopImageFile.name,
@@ -78,11 +109,15 @@ export function BannersContent({
             sizeBytes: desktopImageFile.size,
           }
         : { fileName: "", mimeType: "", sizeBytes: 0 },
-      link_url: draft.link_url || undefined,
-      status: draft.status,
-      locale: draft.locale,
-      display_from: draft.display_from || undefined,
-      display_until: draft.display_until || undefined,
+      link_url: draft.link_url || null,
+      status: draft.status as PostApiBannersBody["status"],
+      available_locales: draft.locale
+        ? ([
+            draft.locale === "pt-BR" ? "pt" : draft.locale,
+          ] as PostApiBannersBody["available_locales"])
+        : undefined,
+      display_from: draft.display_from || null,
+      display_until: draft.display_until || null,
     };
 
     if (mobileImageFile) {
@@ -96,15 +131,19 @@ export function BannersContent({
     return payload;
   }
 
-  function buildUpdatePayload(): Partial<CreateBannerInput> {
-    const payload: Partial<CreateBannerInput> = {
-      name: draft.name,
-      product_id: draft.product_id || undefined,
-      link_url: draft.link_url || undefined,
-      status: draft.status,
-      locale: draft.locale,
-      display_from: draft.display_from || undefined,
-      display_until: draft.display_until || undefined,
+  function buildUpdatePayload(): PatchApiBannersIdBody {
+    const payload: PatchApiBannersIdBody = {
+      name: draft.name || undefined,
+      product_id: draft.product_id || null,
+      link_url: draft.link_url || null,
+      status: draft.status as PatchApiBannersIdBody["status"],
+      available_locales: draft.locale
+        ? ([
+            draft.locale === "pt-BR" ? "pt" : draft.locale,
+          ] as PatchApiBannersIdBody["available_locales"])
+        : undefined,
+      display_from: draft.display_from || null,
+      display_until: draft.display_until || null,
     };
 
     if (desktopImageFile) {
@@ -131,12 +170,12 @@ export function BannersContent({
 
     if (isCreating) {
       const payload = buildPayload();
-      result = await mutations.create.mutateAsync(payload);
+      result = await createBanner.mutateAsync(payload);
     } else if (editingBanner) {
       const payload = buildUpdatePayload();
-      result = await mutations.update.mutateAsync({
+      result = await updateBanner.mutateAsync({
         id: editingBanner.id,
-        input: payload,
+        body: payload,
       });
     } else {
       return;
@@ -151,14 +190,17 @@ export function BannersContent({
     }
 
     if (fileMap.size > 0 && result.uploads) {
-      await inlineUpload.upload(result.uploads, fileMap);
+      await inlineUpload.upload(
+        result.uploads as Record<string, UploadPresignResponse>,
+        fileMap,
+      );
     }
 
     closeForm();
   }
 
   async function handleDelete(id: string) {
-    await mutations.remove.mutateAsync(id);
+    await deleteBanner.mutateAsync(id);
   }
 
   if (isFormOpen) {
@@ -231,15 +273,18 @@ export function BannersContent({
                 <tr key={banner.id} className="hover:bg-muted/30">
                   <td className="px-4 py-3">
                     <div className="h-10 w-16 overflow-hidden rounded-md bg-muted">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={banner.desktop_image_url}
-                        alt={banner.name}
-                        className="h-full w-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = "none";
-                        }}
-                      />
+                      {banner.desktop_image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={banner.desktop_image_url}
+                          alt={banner.name}
+                          className="h-full w-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display =
+                              "none";
+                          }}
+                        />
+                      ) : null}
                     </div>
                   </td>
                   <td className="px-4 py-3">
@@ -251,11 +296,9 @@ export function BannersContent({
                     )}
                   </td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">
-                    {banner.locale === "pt-BR"
-                      ? "PT"
-                      : banner.locale === "en"
-                        ? "EN"
-                        : "ES"}
+                    {toLocaleDisplay(
+                      banner.locale ?? banner.available_locales?.[0] ?? "pt-BR",
+                    )}
                   </td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">
                     {formatDateRange(banner.display_from, banner.display_until)}
@@ -270,9 +313,9 @@ export function BannersContent({
                               banner.status === "ACTIVE"
                                 ? ("INACTIVE" as const)
                                 : ("ACTIVE" as const);
-                            await mutations.update.mutateAsync({
+                            await updateBanner.mutateAsync({
                               id: banner.id,
-                              input: { status: newStatus },
+                              body: { status: newStatus },
                             });
                           }}
                         />
@@ -304,7 +347,7 @@ export function BannersContent({
                           handleDelete(banner.id);
                         }
                       }}
-                      disabled={mutations.remove.isPending}
+                      disabled={deleteBanner.isPending}
                       className="text-xs font-medium text-red-500 hover:underline disabled:opacity-50"
                     >
                       Excluir

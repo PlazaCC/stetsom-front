@@ -3,16 +3,15 @@
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminSuccessPage } from "@/app/admin/_components/crud/admin-success-page";
 import { AdminSaveBar } from "@/app/admin/_components/crud/admin-save-bar";
-import { SectionFormRenderer } from "@/app/admin/paginas/_components/section-form-renderer";
+import { PAGE_SECTION_FORMS } from "@/app/admin/paginas/_components/page-section-forms";
+import { findSectionTemplate } from "@/app/admin/paginas/_components/page-section-catalog";
 import {
-  useAdminPageSections,
-  useUpdatePageSection,
-} from "@/hooks/use-admin-pages";
-import { useInlineUpload } from "@/hooks/use-inline-upload";
-import type { PageId, PageSection, UploadFileInput } from "@/lib/api/contracts";
+  useGetApiPagesSlugCms,
+  patchApiPagesSlugBlocksBlockId,
+} from "@/api/stetsom";
 import { CheckCircle2, FileText } from "lucide-react";
 import Link from "next/link";
-import { use, useRef, useState } from "react";
+import { use, useState } from "react";
 import { PAGE_PUBLIC_HREFS } from "../../_components/page-constants";
 
 interface PageParams {
@@ -26,63 +25,39 @@ export default function AdminSectionEditorPage({
   params: Promise<PageParams>;
 }) {
   const { pageId, sectionId } = use(params);
-  const { data, isLoading } = useAdminPageSections(pageId as PageId);
-  const updateSection = useUpdatePageSection();
-  const inlineUpload = useInlineUpload();
-
+  const { data: page, isLoading } = useGetApiPagesSlugCms(pageId);
   const [localData, setLocalData] = useState<Record<string, unknown> | null>(
     null,
   );
-  const [uploads, setUploads] = useState<Record<string, UploadFileInput>>({});
   const [isDirty, setIsDirty] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [success, setSuccess] = useState(false);
-  const fileMapRef = useRef<Map<string, File>>(new Map());
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
-  const section = data?.sections.find((s) => s.id === sectionId);
+  const block = page?.blocks.find((b) => b.block_id === sectionId);
 
   function handleChange(data: Record<string, unknown>) {
     setLocalData(data);
     setIsDirty(true);
   }
 
-  function handleFileChange(fieldKey: string, file: File | null) {
-    if (file) {
-      fileMapRef.current.set(fieldKey, file);
-      setUploads((prev) => ({
-        ...prev,
-        [fieldKey]: {
-          fileName: file.name,
-          mimeType: file.type,
-          sizeBytes: file.size,
-        },
-      }));
-    } else {
-      fileMapRef.current.delete(fieldKey);
-      setUploads((prev) => {
-        const next = { ...prev };
-        delete next[fieldKey];
-        return next;
-      });
-    }
-    setIsDirty(true);
-  }
-
   async function handleSave() {
-    if (!section || !localData) return;
-    const result = await updateSection.mutateAsync({
-      id: sectionId,
-      data: localData,
-      _uploads: Object.keys(uploads).length > 0 ? uploads : undefined,
-    });
-
-    if (result.uploads && fileMapRef.current.size > 0) {
-      await inlineUpload.upload(result.uploads, fileMapRef.current);
+    if (!block || !localData) return;
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      await patchApiPagesSlugBlocksBlockId(pageId, sectionId, {
+        data: localData,
+      });
+      setSavedAt(new Date());
+      setIsDirty(false);
+      setSuccess(true);
+    } catch {
+      setSaveError("Erro ao salvar. Tente novamente.");
+    } finally {
+      setIsSaving(false);
     }
-
-    setSavedAt(new Date());
-    setIsDirty(false);
-    setSuccess(true);
   }
 
   const publicHref = PAGE_PUBLIC_HREFS[pageId] ?? `/${pageId}`;
@@ -123,7 +98,7 @@ export default function AdminSectionEditorPage({
     );
   }
 
-  if (!section) {
+  if (!block) {
     return (
       <AdminListPage title="Seção não encontrada" icon={FileText}>
         <p className="text-sm text-muted-foreground">
@@ -139,13 +114,13 @@ export default function AdminSectionEditorPage({
     );
   }
 
-  const displaySection: PageSection = localData
-    ? { ...section, data: localData }
-    : section;
+  const tpl = findSectionTemplate(block.section_id);
+  const Form = PAGE_SECTION_FORMS[block.section_id];
+  const sectionData = localData ?? block.data ?? {};
 
   return (
     <AdminListPage
-      title={section.name}
+      title={tpl?.label ?? block.section_id}
       icon={FileText}
       toolbar={
         <div className="flex items-center gap-2">
@@ -153,26 +128,24 @@ export default function AdminSectionEditorPage({
             href={`/admin/paginas/${pageId}`}
             className="text-xs text-muted-foreground hover:text-foreground"
           >
-            ← {data?.label ?? pageId}
+            ← {page?.title?.pt ?? pageId}
           </Link>
         </div>
       }
     >
-      {updateSection.isError && (
-        <div className="mb-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-          {updateSection.error?.message ?? "Erro ao salvar. Tente novamente."}
-        </div>
+      {Form ? (
+        <Form data={sectionData} onChange={handleChange} />
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          Esta seção ({block.section_id}) ainda não possui editor configurado.
+        </p>
       )}
 
-      <SectionFormRenderer
-        section={displaySection}
-        onChange={handleChange}
-        onFileChange={handleFileChange}
-      />
+      {saveError && <p className="text-sm text-destructive">{saveError}</p>}
 
       <AdminSaveBar
         onPublish={handleSave}
-        isLoading={updateSection.isPending}
+        isLoading={isSaving}
         isDirty={isDirty}
         draftSavedAt={savedAt}
         publishLabel="Salvar alterações"
