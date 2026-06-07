@@ -2425,11 +2425,11 @@
       "id": "6a252ce0d81bb6e1543f9a6e",
       "name": {
         "pt": "Número de Canais",
-        "en": "Channels",
-        "es": "Canales"
+        "en": "Number of Channels",
+        "es": "Número de Canales"
       },
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
+      "created_at": "2026-06-07T08:33:36.432Z",
+      "updated_at": "2026-06-07T08:33:36.432Z"
     },
     {
       "id": "6a252ce0d81bb6e1543f9a6f",
@@ -2438,8 +2438,8 @@
         "en": "RMS Power",
         "es": "Potencia RMS"
       },
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
+      "created_at": "2026-06-07T08:33:36.440Z",
+      "updated_at": "2026-06-07T08:33:36.440Z"
     },
     {
       "id": "6a252ce0d81bb6e1543f9a70",
@@ -2448,8 +2448,8 @@
         "en": "Impedance",
         "es": "Impedancia"
       },
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
+      "created_at": "2026-06-07T08:33:36.447Z",
+      "updated_at": "2026-06-07T08:33:36.447Z"
     },
     {
       "id": "6a252ce0d81bb6e1543f9a71",
@@ -2458,8 +2458,8 @@
         "en": "Operating Class",
         "es": "Clase de Operación"
       },
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
+      "created_at": "2026-06-07T08:33:36.454Z",
+      "updated_at": "2026-06-07T08:33:36.454Z"
     },
     {
       "id": "6a252ce0d81bb6e1543f9a72",
@@ -2468,8 +2468,8 @@
         "en": "Frequency Response",
         "es": "Respuesta en Frecuencia"
       },
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
+      "created_at": "2026-06-07T08:33:36.461Z",
+      "updated_at": "2026-06-07T08:33:36.461Z"
     },
     {
       "id": "6a252ce0d81bb6e1543f9a73",
@@ -2478,91 +2478,58 @@
         "en": "Input Gain",
         "es": "Ganancia de Entrada"
       },
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
+      "created_at": "2026-06-07T08:33:36.471Z",
+      "updated_at": "2026-06-07T08:33:36.471Z"
     },
     {
       "id": "6a252ce0d81bb6e1543f9a74",
-      "name": {
-        "pt": "Tensão de Entrada",
-        "en": "Input Voltage",
-        "es": "Tensión de Entrada"
-      },
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
-    },
-    {
-      "id": "6a252ce0d81bb6e1543f9a75",
       "name": {
         "pt": "Corrente de Saída",
         "en": "Output Current",
         "es": "Corriente de Salida"
       },
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
+      "created_at": "2026-06-07T08:33:36.479Z",
+      "updated_at": "2026-06-07T08:33:36.479Z"
+    },
+    {
+      "id": "6a252ce0d81bb6e1543f9a75",
+      "name": {
+        "pt": "Peso",
+        "en": "Weight",
+        "es": "Peso"
+      },
+      "created_at": "2026-06-07T08:33:36.484Z",
+      "updated_at": "2026-06-07T08:33:36.484Z"
     },
     {
       "id": "6a252ce0d81bb6e1543f9a76",
       "name": {
-        "pt": "Proteção",
-        "en": "Protection",
-        "es": "Protección"
+        "pt": "Dimensões",
+        "en": "Dimensions",
+        "es": "Dimensiones"
       },
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
+      "created_at": "2026-06-07T08:33:36.490Z",
+      "updated_at": "2026-06-07T08:33:36.490Z"
     },
     {
       "id": "6a252ce0d81bb6e1543f9a77",
       "name": {
-        "pt": "Memórias DSP",
-        "en": "DSP Memories",
-        "es": "Memorias DSP"
+        "pt": "Presets de DSP",
+        "en": "DSP Presets",
+        "es": "Presets de DSP"
       },
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
+      "created_at": "2026-06-07T08:33:36.498Z",
+      "updated_at": "2026-06-07T08:33:36.498Z"
     }
   ],
   "templates": [
     {
-      "id": "tmpl-amp-mono",
+      "id": "6a252ce0d81bb6e1543f9a80",
       "category_id": "6a252ce0d81bb6e1543f9a78",
       "name": {
-        "pt": "Amplificador Mono",
-        "en": "Mono Amplifier",
-        "es": "Amplificador Mono"
-      },
-      "attributes": [
-        {
-          "attribute_id": "6a252ce0d81bb6e1543f9a6f",
-          "order": 1
-        },
-        {
-          "attribute_id": "6a252ce0d81bb6e1543f9a70",
-          "order": 2
-        },
-        {
-          "attribute_id": "6a252ce0d81bb6e1543f9a71",
-          "order": 3
-        },
-        {
-          "attribute_id": "6a252ce0d81bb6e1543f9a72",
-          "order": 4
-        },
-        {
-          "attribute_id": "6a252ce0d81bb6e1543f9a73",
-          "order": 5
-        }
-      ],
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
-    },
-    {
-      "id": "tmpl-amp-full-range",
-      "category_id": "6a252ce0d81bb6e1543f9a78",
-      "name": {
-        "pt": "Amplificador Full Range",
-        "en": "Full Range Amplifier",
-        "es": "Amplificador Full Range"
+        "pt": "Template Amplificador",
+        "en": "Amplifier Template",
+        "es": "Plantilla Amplificador"
       },
       "attributes": [
         {
@@ -2580,18 +2547,34 @@
         {
           "attribute_id": "6a252ce0d81bb6e1543f9a71",
           "order": 4
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a72",
+          "order": 5
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a73",
+          "order": 6
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a75",
+          "order": 7
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a76",
+          "order": 8
         }
       ],
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
+      "created_at": "2026-06-07T08:33:36.584Z",
+      "updated_at": "2026-06-07T08:33:36.584Z"
     },
     {
-      "id": "tmpl-processador-dsp",
+      "id": "6a252ce0d81bb6e1543f9a81",
       "category_id": "6a252ce0d81bb6e1543f9a79",
       "name": {
-        "pt": "Processador DSP",
-        "en": "DSP Processor",
-        "es": "Procesador DSP"
+        "pt": "Template Processador DSP",
+        "en": "DSP Processor Template",
+        "es": "Plantilla Procesador DSP"
       },
       "attributes": [
         {
@@ -2605,485 +2588,678 @@
         {
           "attribute_id": "6a252ce0d81bb6e1543f9a73",
           "order": 3
-        }
-      ],
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
-    },
-    {
-      "id": "tmpl-fonte",
-      "category_id": "6a252ce0d81bb6e1543f9a7c",
-      "name": {
-        "pt": "Fonte Automotiva",
-        "en": "Automotive Power Supply",
-        "es": "Fuente Automotriz"
-      },
-      "attributes": [
-        {
-          "attribute_id": "6a252ce0d81bb6e1543f9a74",
-          "order": 1
-        },
-        {
-          "attribute_id": "6a252ce0d81bb6e1543f9a75",
-          "order": 2
         },
         {
           "attribute_id": "6a252ce0d81bb6e1543f9a76",
-          "order": 3
+          "order": 4
+        },
+        {
+          "attribute_id": "6a252ce0d81bb6e1543f9a75",
+          "order": 5
         }
       ],
-      "created_at": "2026-06-07T08:33:36.517Z",
-      "updated_at": "2026-06-07T08:33:36.517Z"
+      "created_at": "2026-06-07T08:33:36.592Z",
+      "updated_at": "2026-06-07T08:33:36.592Z"
     }
   ],
   "users": {
     "items": [
       {
-        "id": "usr-001",
+        "id": "6a22a8734e9ea2e51f22dd4c",
+        "name": "Editor Stetsom",
+        "email": "editor@stetsom.com.br",
+        "role": "EDITOR",
+        "is_active": true,
+        "created_at": "2026-06-05T10:44:03.045Z",
+        "updated_at": "2026-06-05T10:44:03.045Z"
+      },
+      {
+        "id": "6a22a8724e9ea2e51f22dd4b",
         "name": "Admin Stetsom",
         "email": "admin@stetsom.com.br",
         "role": "SUPER_ADMIN",
         "is_active": true,
-        "created_at": "2026-01-01T00:00:00.000Z",
-        "updated_at": "2026-06-07T08:00:00.000Z",
-        "last_login": "2026-06-07T08:00:00.000Z"
-      },
-      {
-        "id": "usr-002",
-        "name": "Editor Conteúdo",
-        "email": "editor@stetsom.com.br",
-        "role": "EDITOR",
-        "is_active": true,
-        "created_at": "2026-02-15T00:00:00.000Z",
-        "updated_at": "2026-06-01T10:00:00.000Z",
-        "last_login": "2026-06-06T14:30:00.000Z"
+        "created_at": "2026-06-05T10:44:02.738Z",
+        "updated_at": "2026-06-07T21:52:04.112Z",
+        "last_login": "2026-06-07T21:52:04.109Z"
       }
     ],
     "total": 2
   },
   "config": {
-    "company_name": "Stetsom",
-    "company_email": "contato@stetsom.com.br",
-    "company_phone": "(11) 4000-0000",
-    "company_whatsapp": "5511940000000",
-    "company_address": "Av. Indústria Stetsom, 1000 – Limeira, SP",
-    "social_instagram": "@stetsom",
-    "social_facebook": "stetsom",
-    "social_youtube": "stetsom",
-    "updated_at": "2026-06-07T08:00:00.000Z",
-    "updated_by": "usr-001"
+    "company_name": "Stetsom Eletrônica Ltda.",
+    "company_email": "contato@example.com",
+    "company_phone": "(11) 4444-5555",
+    "company_whatsapp": "(11) 99999-8888",
+    "company_address": "Rua das Indústrias, 1234 — Distrito Industrial, São Paulo, SP",
+    "social_instagram": "https://instagram.com/stetsombrasil",
+    "social_facebook": "https://facebook.com/stetsom",
+    "social_youtube": "https://youtube.com/@stetsom",
+    "updated_at": "2026-06-07T08:33:36.123Z",
+    "updated_by": "seed"
   },
   "banners": {
     "items": [
       {
-        "id": "bnr-001",
-        "name": "Banner Principal – ST-4000EQ",
-        "product_id": "6a252ce0d81bb6e1543f9a82",
-        "desktop_image_library_id": "6a252ce0d81bb6e1543f9a66",
-        "mobile_image_library_id": "6a252ce0d81bb6e1543f9a67",
+        "id": "6a252ce0d81bb6e1543f9a8b",
+        "name": "Banner Principal Digital Bass",
+        "desktop_image_library_id": "6a252ce0d81bb6e1543f9a5b",
+        "mobile_image_library_id": "6a252ce0d81bb6e1543f9a5c",
         "title": {
-          "pt": "Potência sem limites",
-          "en": "Unlimited Power",
-          "es": "Potencia sin límites"
+          "pt": "SINTA O VERDADEIRO\nPODER DO GRAVE",
+          "en": "FEEL THE TRUE\nPOWER OF BASS",
+          "es": "SIENTE EL VERDADERO\nPODER DEL BAJO"
         },
-        "label": "LANÇAMENTO",
-        "href": "/produtos/st-4000eq-4-canais",
-        "link_url": "/produtos/st-4000eq-4-canais",
+        "label": "Stetsom Digital Bass",
+        "href": "/produtos",
         "status": "ACTIVE",
-        "available_locales": ["pt", "en", "es"],
+        "available_locales": [],
         "order": 1,
-        "created_at": "2026-06-07T08:33:36.517Z",
-        "updated_at": "2026-06-07T08:33:36.517Z",
-        "created_by": "usr-001"
+        "created_at": "2026-06-07T08:33:36.707Z",
+        "updated_at": "2026-06-07T08:33:36.707Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
       },
       {
-        "id": "bnr-002",
-        "name": "Banner – EX-3000.1D",
-        "product_id": "6a252ce0d81bb6e1543f9a87",
-        "desktop_image_library_id": "6a252ce0d81bb6e1543f9a66",
+        "id": "6a252ce0d81bb6e1543f9a8c",
+        "name": "Banner Nossa História",
+        "desktop_image_library_id": "6a252ce0d81bb6e1543f9a5b",
         "title": {
-          "pt": "Grave profundo",
-          "en": "Deep Bass",
-          "es": "Graves profundos"
+          "pt": "NOSSA HISTÓRIA",
+          "en": "OUR HISTORY",
+          "es": "NUESTRA HISTORIA"
         },
-        "status": "INACTIVE",
-        "available_locales": ["pt"],
+        "label": "Desde 1989",
+        "href": "/sobre",
+        "status": "ACTIVE",
+        "available_locales": [],
         "order": 2,
-        "created_at": "2026-05-10T10:00:00.000Z",
-        "updated_at": "2026-05-15T14:00:00.000Z",
-        "created_by": "usr-001"
+        "created_at": "2026-06-07T08:33:36.719Z",
+        "updated_at": "2026-06-07T08:33:36.719Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a8d",
+        "name": "Banner Comunidade",
+        "desktop_image_library_id": "6a252ce0d81bb6e1543f9a5b",
+        "title": {
+          "pt": "COMUNIDADE STETSOM",
+          "en": "STETSOM COMMUNITY",
+          "es": "COMUNIDAD STETSOM"
+        },
+        "label": "Suporte Oficial",
+        "href": "/suporte",
+        "status": "ACTIVE",
+        "available_locales": [],
+        "order": 3,
+        "created_at": "2026-06-07T08:33:36.726Z",
+        "updated_at": "2026-06-07T08:33:36.726Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
       }
     ],
-    "total": 2
+    "total": 3
   },
   "library": {
     "items": [
       {
-        "id": "6a252ce0d81bb6e1543f9a66",
-        "filename": "fill_EPTO4T_3d86cd17.png",
+        "id": "6a252ce0d81bb6e1543f9a6d",
+        "filename": "logo-stetsom.png",
         "type": "IMAGE",
-        "alt": {
-          "pt": "fill_EPTO4T_3d86cd17"
-        },
         "tags": [],
-        "current_version_id": "ver-6a252ce0d81bb6e1543f9a66",
+        "current_version_id": "754d72bc-7a8a-4b72-8170-f52f9b01f037",
         "versions": [
           {
-            "version_id": "ver-6a252ce0d81bb6e1543f9a66",
-            "file_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
-            "size_bytes": 204800,
-            "width": 1920,
-            "height": 1080,
-            "created_at": "2026-06-07T08:33:36.517Z",
-            "created_by": "usr-001"
+            "version_id": "754d72bc-7a8a-4b72-8170-f52f9b01f037",
+            "file_url": "/uploads/images/logo-stetsom.png",
+            "size_bytes": 838861,
+            "width": 800,
+            "height": 400,
+            "created_at": "2026-06-07T08:33:36.413Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
           }
         ],
-        "created_at": "2026-06-07T08:33:36.517Z",
-        "created_by": "usr-001"
+        "created_at": "2026-06-07T08:33:36.414Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
       },
       {
-        "id": "6a252ce0d81bb6e1543f9a67",
-        "filename": "fill_THI4RN_1e666beb.png",
-        "type": "IMAGE",
-        "alt": {
-          "pt": "fill_THI4RN_1e666beb"
-        },
+        "id": "6a252ce0d81bb6e1543f9a6c",
+        "filename": "catalogo-st-4000eq.pdf",
+        "type": "CATALOG",
         "tags": [],
-        "current_version_id": "ver-6a252ce0d81bb6e1543f9a67",
+        "current_version_id": "290dff3f-433f-4f02-a0a4-42b20d5110df",
         "versions": [
           {
-            "version_id": "ver-6a252ce0d81bb6e1543f9a67",
-            "file_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
-            "size_bytes": 204800,
-            "width": 1920,
-            "height": 1080,
-            "created_at": "2026-06-07T08:33:36.517Z",
-            "created_by": "usr-001"
+            "version_id": "290dff3f-433f-4f02-a0a4-42b20d5110df",
+            "file_url": "/docs/catalogo-st-4000eq.pdf",
+            "size_bytes": 5453000,
+            "created_at": "2026-06-07T08:33:36.404Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
           }
         ],
-        "created_at": "2026-06-07T08:33:36.517Z",
-        "created_by": "usr-001"
-      },
-      {
-        "id": "6a252ce0d81bb6e1543f9a68",
-        "filename": "product-c.png",
-        "type": "IMAGE",
-        "alt": {
-          "pt": "product c"
-        },
-        "tags": [],
-        "current_version_id": "ver-6a252ce0d81bb6e1543f9a68",
-        "versions": [
-          {
-            "version_id": "ver-6a252ce0d81bb6e1543f9a68",
-            "file_url": "/figma-assets/raw/product-c.png",
-            "size_bytes": 204800,
-            "width": 1920,
-            "height": 1080,
-            "created_at": "2026-06-07T08:33:36.517Z",
-            "created_by": "usr-001"
-          }
-        ],
-        "created_at": "2026-06-07T08:33:36.517Z",
-        "created_by": "usr-001"
+        "created_at": "2026-06-07T08:33:36.406Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
       },
       {
         "id": "6a252ce0d81bb6e1543f9a6b",
         "filename": "manual-st-4000eq.pdf",
         "type": "MANUAL",
-        "alt": {
-          "pt": "manual st 4000eq"
-        },
         "tags": [],
-        "current_version_id": "ver-6a252ce0d81bb6e1543f9a6b",
+        "current_version_id": "6afe3688-155a-48b3-b2f2-7224f62e8225",
         "versions": [
           {
-            "version_id": "ver-6a252ce0d81bb6e1543f9a6b",
+            "version_id": "6afe3688-155a-48b3-b2f2-7224f62e8225",
             "file_url": "/docs/manual-st-4000eq.pdf",
-            "size_bytes": 204800,
-            "created_at": "2026-06-07T08:33:36.517Z",
-            "created_by": "usr-001"
+            "size_bytes": 3567000,
+            "created_at": "2026-06-07T08:33:36.397Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
           }
         ],
-        "created_at": "2026-06-07T08:33:36.517Z",
-        "created_by": "usr-001"
+        "created_at": "2026-06-07T08:33:36.398Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
       },
       {
-        "id": "6a252ce0d81bb6e1543f9a6c",
-        "filename": "catalogo-stetsom-2026.pdf",
-        "type": "CATALOG",
-        "alt": {
-          "pt": "catalogo stetsom 2026"
-        },
+        "id": "6a252ce0d81bb6e1543f9a6a",
+        "filename": "manual-sr4000.pdf",
+        "type": "MANUAL",
         "tags": [],
-        "current_version_id": "ver-6a252ce0d81bb6e1543f9a6c",
+        "current_version_id": "ab6e2f8c-0eb8-4619-a240-61cf2f2485de",
         "versions": [
           {
-            "version_id": "ver-6a252ce0d81bb6e1543f9a6c",
-            "file_url": "/docs/catalogo-stetsom-2026.pdf",
-            "size_bytes": 204800,
-            "created_at": "2026-06-07T08:33:36.517Z",
-            "created_by": "usr-001"
+            "version_id": "ab6e2f8c-0eb8-4619-a240-61cf2f2485de",
+            "file_url": "/uploads/manuals/manual-sr4000.pdf",
+            "size_bytes": 2202010,
+            "created_at": "2026-06-07T08:33:36.388Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
           }
         ],
-        "created_at": "2026-06-07T08:33:36.517Z",
-        "created_by": "usr-001"
+        "created_at": "2026-06-07T08:33:36.390Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a69",
+        "filename": "manual-stx2448bt.pdf",
+        "type": "MANUAL",
+        "tags": [],
+        "current_version_id": "bfe455ae-3dff-48c4-bf96-a72182c6bbe0",
+        "versions": [
+          {
+            "version_id": "bfe455ae-3dff-48c4-bf96-a72182c6bbe0",
+            "file_url": "/uploads/manuals/manual-stx2448bt.pdf",
+            "size_bytes": 1887437,
+            "created_at": "2026-06-07T08:33:36.381Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.383Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a68",
+        "filename": "produto-terciario.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "de06fb88-c20c-47d0-8dbf-3e31c5a9d1e7",
+        "versions": [
+          {
+            "version_id": "de06fb88-c20c-47d0-8dbf-3e31c5a9d1e7",
+            "file_url": "/figma-assets/raw/product-c.png",
+            "size_bytes": 98304,
+            "width": 800,
+            "height": 800,
+            "created_at": "2026-06-07T08:33:36.371Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.373Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a67",
+        "filename": "produto-secundario.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "e9af9d24-e689-49cf-b2ef-c43a39f08f82",
+        "versions": [
+          {
+            "version_id": "e9af9d24-e689-49cf-b2ef-c43a39f08f82",
+            "file_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+            "size_bytes": 98304,
+            "width": 800,
+            "height": 800,
+            "created_at": "2026-06-07T08:33:36.364Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.365Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a66",
+        "filename": "produto-principal.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "d1460be8-aee0-41d3-bd56-fe1a7c57c71c",
+        "versions": [
+          {
+            "version_id": "d1460be8-aee0-41d3-bd56-fe1a7c57c71c",
+            "file_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+            "size_bytes": 98304,
+            "width": 800,
+            "height": 800,
+            "created_at": "2026-06-07T08:33:36.356Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.357Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a65",
+        "filename": "timeline-2014.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "4552682c-f706-48d8-9b8f-0772bffc5d1c",
+        "versions": [
+          {
+            "version_id": "4552682c-f706-48d8-9b8f-0772bffc5d1c",
+            "file_url": "/figma-assets/raw/fill_C4OUE1_1e666beb.png",
+            "size_bytes": 140000,
+            "width": 800,
+            "height": 600,
+            "created_at": "2026-06-07T08:33:36.347Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.348Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a64",
+        "filename": "timeline-2007.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "84a05b73-c002-41e7-ba17-4d57e8574057",
+        "versions": [
+          {
+            "version_id": "84a05b73-c002-41e7-ba17-4d57e8574057",
+            "file_url": "/figma-assets/raw/fill_RA4PPD_8b0b4189.png",
+            "size_bytes": 140000,
+            "width": 800,
+            "height": 600,
+            "created_at": "2026-06-07T08:33:36.335Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.336Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a63",
+        "filename": "timeline-2002.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "1f781a68-1fb2-4df1-88f9-c66dbd2ad313",
+        "versions": [
+          {
+            "version_id": "1f781a68-1fb2-4df1-88f9-c66dbd2ad313",
+            "file_url": "/figma-assets/raw/fill_DMAWF3_a4b5ab27.png",
+            "size_bytes": 140000,
+            "width": 800,
+            "height": 600,
+            "created_at": "2026-06-07T08:33:36.329Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.330Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a62",
+        "filename": "timeline-1999.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "d43f5df6-d53e-4ec9-a37a-1c1fc2e77974",
+        "versions": [
+          {
+            "version_id": "d43f5df6-d53e-4ec9-a37a-1c1fc2e77974",
+            "file_url": "/figma-assets/raw/fill_4ZTOB5_bf27a878.png",
+            "size_bytes": 140000,
+            "width": 800,
+            "height": 600,
+            "created_at": "2026-06-07T08:33:36.323Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.324Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a61",
+        "filename": "timeline-1989.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "1884010e-1abd-4d45-9b7b-6397dbc2a7b4",
+        "versions": [
+          {
+            "version_id": "1884010e-1abd-4d45-9b7b-6397dbc2a7b4",
+            "file_url": "/figma-assets/raw/fill_YKBFZV_e95c6db4.png",
+            "size_bytes": 140000,
+            "width": 800,
+            "height": 600,
+            "created_at": "2026-06-07T08:33:36.317Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.318Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a60",
+        "filename": "about-jobs.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "676fce7d-018c-4714-9e30-e09263b21169",
+        "versions": [
+          {
+            "version_id": "676fce7d-018c-4714-9e30-e09263b21169",
+            "file_url": "/figma-assets/raw/fill_RHRVZZ_ffc7fd09.png",
+            "size_bytes": 155000,
+            "width": 1200,
+            "height": 900,
+            "created_at": "2026-06-07T08:33:36.312Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.313Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a5f",
+        "filename": "about-quality.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "f06b4329-a1f9-4a95-9f00-fa02fd93eca5",
+        "versions": [
+          {
+            "version_id": "f06b4329-a1f9-4a95-9f00-fa02fd93eca5",
+            "file_url": "/figma-assets/raw/fill_C4OUE1_1e666beb.png",
+            "size_bytes": 160000,
+            "width": 1200,
+            "height": 900,
+            "created_at": "2026-06-07T08:33:36.303Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.304Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a5e",
+        "filename": "about-hero.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "3836977b-a5c3-43fd-995c-d77312d10467",
+        "versions": [
+          {
+            "version_id": "3836977b-a5c3-43fd-995c-d77312d10467",
+            "file_url": "/figma-assets/raw/fill_TZ5X2T_f271b766.png",
+            "size_bytes": 200000,
+            "width": 1920,
+            "height": 1080,
+            "created_at": "2026-06-07T08:33:36.298Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.299Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a5d",
+        "filename": "home-history.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "01cdc0b6-b257-425d-8e68-649fda015eb4",
+        "versions": [
+          {
+            "version_id": "01cdc0b6-b257-425d-8e68-649fda015eb4",
+            "file_url": "/figma-assets/raw/home-history.png",
+            "size_bytes": 180000,
+            "width": 1200,
+            "height": 800,
+            "created_at": "2026-06-07T08:33:36.292Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.293Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a5c",
+        "filename": "hero-banner-mobile.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "8369b6c7-c79d-42ab-9951-a4d9da90b975",
+        "versions": [
+          {
+            "version_id": "8369b6c7-c79d-42ab-9951-a4d9da90b975",
+            "file_url": "/figma-assets/raw/fill_8T5TD1_7ad629bc.png",
+            "size_bytes": 120000,
+            "width": 768,
+            "height": 1024,
+            "created_at": "2026-06-07T08:33:36.287Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.288Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a5b",
+        "filename": "hero-banner-principal.png",
+        "type": "IMAGE",
+        "tags": [],
+        "current_version_id": "53a33711-4870-475e-856d-74995af0534b",
+        "versions": [
+          {
+            "version_id": "53a33711-4870-475e-856d-74995af0534b",
+            "file_url": "/figma-assets/raw/fill_5JQEZY_e95c6db4.png",
+            "size_bytes": 245760,
+            "width": 1920,
+            "height": 1080,
+            "created_at": "2026-06-07T08:33:36.277Z",
+            "created_by": "6a22a8724e9ea2e51f22dd4b"
+          }
+        ],
+        "created_at": "2026-06-07T08:33:36.279Z",
+        "created_by": "6a22a8724e9ea2e51f22dd4b"
       }
     ],
-    "total": 5,
+    "total": 19,
     "page": 1,
-    "pageSize": 50,
+    "pageSize": 100,
     "totalPages": 1
   },
   "audit": {
     "items": [
       {
-        "id": "aud-001",
-        "user_id": "usr-001",
-        "user_name": "Admin Stetsom",
-        "action": "UPDATE",
-        "action_sentence": "Atualizou o produto ST-4000EQ 4 CANAIS",
-        "entity": "product",
-        "entity_id": "6a252ce0d81bb6e1543f9a82",
-        "entity_label": "ST-4000EQ 4 CANAIS",
-        "created_at": "2026-06-07T09:15:00.000Z"
-      },
-      {
-        "id": "aud-002",
-        "user_id": "usr-001",
-        "user_name": "Admin Stetsom",
-        "action": "PUBLISH",
-        "action_sentence": "Publicou o banner Banner Principal – ST-4000EQ",
-        "entity": "banner",
-        "entity_id": "bnr-001",
-        "entity_label": "Banner Principal – ST-4000EQ",
-        "created_at": "2026-06-07T08:45:00.000Z"
-      },
-      {
-        "id": "aud-003",
-        "user_id": "usr-002",
-        "user_name": "Editor Conteúdo",
-        "action": "CREATE",
-        "action_sentence": "Criou o produto EX-3000.1D MONO",
-        "entity": "product",
-        "entity_id": "6a252ce0d81bb6e1543f9a87",
-        "entity_label": "EX-3000.1D MONO",
-        "created_at": "2026-06-06T16:00:00.000Z"
-      },
-      {
-        "id": "aud-004",
-        "user_id": "usr-001",
+        "id": "6a25e80467ad8f54f5d156a7",
+        "user_id": "6a22a8724e9ea2e51f22dd4b",
         "user_name": "Admin Stetsom",
         "action": "LOGIN",
-        "action_sentence": "Fez login no sistema",
-        "entity": "user",
-        "entity_id": "usr-001",
-        "created_at": "2026-06-06T08:00:00.000Z"
+        "action_sentence": "Fez login",
+        "entity": "Auth",
+        "created_at": "2026-06-07T21:52:04.112Z"
+      },
+      {
+        "id": "6a25e7b067ad8f54f5d156a6",
+        "user_id": "6a22a8724e9ea2e51f22dd4b",
+        "user_name": "Admin Stetsom",
+        "action": "LOGIN",
+        "action_sentence": "Fez login",
+        "entity": "Auth",
+        "created_at": "2026-06-07T21:50:40.046Z"
+      },
+      {
+        "id": "6a25254c46f02b3d1df2e46a",
+        "user_id": "6a22a8724e9ea2e51f22dd4b",
+        "user_name": "Admin Stetsom",
+        "action": "LOGIN",
+        "action_sentence": "Fez login",
+        "entity": "Auth",
+        "created_at": "2026-06-07T08:01:16.600Z"
+      },
+      {
+        "id": "6a248d2b07d147892c175b1d",
+        "user_id": "6a22a8724e9ea2e51f22dd4b",
+        "user_name": "Admin Stetsom",
+        "action": "LOGIN",
+        "action_sentence": "Fez login",
+        "entity": "Auth",
+        "created_at": "2026-06-06T21:12:11.445Z"
+      },
+      {
+        "id": "6a23a42d4c80dd7e836b96ba",
+        "user_id": "6a22a8724e9ea2e51f22dd4b",
+        "user_name": "Admin Stetsom",
+        "action": "LOGIN",
+        "action_sentence": "Fez login",
+        "entity": "Auth",
+        "created_at": "2026-06-06T04:38:05.604Z"
+      },
+      {
+        "id": "6a23324e6160992ea4d5f44f",
+        "user_id": "6a22a8724e9ea2e51f22dd4b",
+        "user_name": "Admin Stetsom",
+        "action": "LOGIN",
+        "action_sentence": "Fez login",
+        "entity": "Auth",
+        "created_at": "2026-06-05T20:32:14.299Z"
+      },
+      {
+        "id": "6a230f3139f353612b3cafcc",
+        "user_id": "6a22a8724e9ea2e51f22dd4b",
+        "user_name": "Admin Stetsom",
+        "action": "LOGIN",
+        "action_sentence": "Fez login",
+        "entity": "Auth",
+        "created_at": "2026-06-05T18:02:25.920Z"
+      },
+      {
+        "id": "6a23004b418e0038e3765488",
+        "user_id": "6a22a8724e9ea2e51f22dd4b",
+        "user_name": "Admin Stetsom",
+        "action": "LOGIN",
+        "action_sentence": "Fez login",
+        "entity": "Auth",
+        "created_at": "2026-06-05T16:58:51.488Z"
       }
     ],
-    "total": 4
+    "total": 8
   },
   "messages": {
-    "items": [
-      {
-        "id": "msg-001",
-        "name": "João Silva",
-        "email": "joao@email.com",
-        "phone": "(11) 99999-0001",
-        "subject": "Dúvida técnica",
-        "message": "Qual a diferença entre ST-4000EQ e EX-3000?",
-        "department": "suporte",
-        "is_read": false,
-        "created_at": "2026-06-07T10:00:00.000Z"
-      },
-      {
-        "id": "msg-002",
-        "name": "Maria Costa",
-        "email": "maria@email.com",
-        "subject": "Solicitação de catálogo",
-        "message": "Gostaria de receber o catálogo completo de produtos.",
-        "department": "comercial",
-        "is_read": true,
-        "created_at": "2026-06-06T14:30:00.000Z"
-      },
-      {
-        "id": "msg-003",
-        "name": "Carlos Mendes",
-        "email": "carlos@email.com",
-        "phone": "(21) 98888-0002",
-        "subject": "Garantia",
-        "message": "Meu amplificador apresentou defeito após 6 meses de uso.",
-        "department": "suporte",
-        "is_read": false,
-        "created_at": "2026-06-05T09:00:00.000Z"
-      }
-    ],
-    "total": 3
+    "items": [],
+    "total": 0
   },
   "dashboard": {
-    "title": "Painel de Controle",
-    "subtitle": "Bem-vindo de volta, Admin.",
+    "title": "Dashboard",
+    "subtitle": "Visão geral do sistema",
     "metrics": [
       {
-        "id": "m-products",
-        "label": "Produtos publicados",
-        "value": 8,
-        "sub": "Total no catálogo",
-        "variation": "+2 este mês"
+        "id": "total_products",
+        "label": "Total de Produtos",
+        "value": "9"
       },
       {
-        "id": "m-banners",
-        "label": "Banners ativos",
-        "value": 1,
-        "sub": "De 2 cadastrados"
+        "id": "published_products",
+        "label": "Produtos Publicados",
+        "value": "8"
       },
       {
-        "id": "m-messages",
-        "label": "Mensagens não lidas",
-        "value": 2,
-        "sub": "Aguardando resposta",
-        "variation": "2 novas hoje"
+        "id": "draft_products",
+        "label": "Rascunhos",
+        "value": "1"
       },
       {
-        "id": "m-library",
-        "label": "Arquivos na biblioteca",
-        "value": 5,
-        "sub": "Imagens e documentos"
+        "id": "categories",
+        "label": "Categorias",
+        "value": "8"
       }
     ],
-    "recentActivities": [
-      {
-        "id": "aud-001",
-        "user_id": "usr-001",
-        "user_name": "Admin Stetsom",
-        "action": "UPDATE",
-        "action_sentence": "Atualizou o produto ST-4000EQ 4 CANAIS",
-        "entity": "product",
-        "entity_id": "6a252ce0d81bb6e1543f9a82",
-        "entity_label": "ST-4000EQ 4 CANAIS",
-        "created_at": "2026-06-07T09:15:00.000Z"
-      },
-      {
-        "id": "aud-002",
-        "user_id": "usr-001",
-        "user_name": "Admin Stetsom",
-        "action": "PUBLISH",
-        "action_sentence": "Publicou o banner Banner Principal – ST-4000EQ",
-        "entity": "banner",
-        "entity_id": "bnr-001",
-        "entity_label": "Banner Principal – ST-4000EQ",
-        "created_at": "2026-06-07T08:45:00.000Z"
-      },
-      {
-        "id": "aud-003",
-        "user_id": "usr-002",
-        "user_name": "Editor Conteúdo",
-        "action": "CREATE",
-        "action_sentence": "Criou o produto EX-3000.1D MONO",
-        "entity": "product",
-        "entity_id": "6a252ce0d81bb6e1543f9a87",
-        "entity_label": "EX-3000.1D MONO",
-        "created_at": "2026-06-06T16:00:00.000Z"
-      },
-      {
-        "id": "aud-004",
-        "user_id": "usr-001",
-        "user_name": "Admin Stetsom",
-        "action": "LOGIN",
-        "action_sentence": "Fez login no sistema",
-        "entity": "user",
-        "entity_id": "usr-001",
-        "created_at": "2026-06-06T08:00:00.000Z"
-      }
-    ],
-    "scheduleItems": [
-      {
-        "id": "sched-001",
-        "label": "EX-3000.1D – publicação agendada",
-        "date": "2026-06-15T12:00:00.000Z",
-        "type": "product"
-      },
-      {
-        "id": "sched-002",
-        "label": "Banner Inverno 2026",
-        "date": "2026-07-01T00:00:00.000Z",
-        "type": "banner"
-      }
-    ],
+    "recentActivities": [],
+    "scheduleItems": [],
     "quickActions": [
       {
-        "id": "qa-1",
+        "id": "qa-produtos",
         "label": "Novo produto",
         "href": "/admin/produtos/novo",
-        "icon": "plus"
+        "icon": "package"
       },
       {
-        "id": "qa-2",
-        "label": "Upload de arquivo",
+        "id": "qa-banners",
+        "label": "Novo banner",
+        "href": "/admin/banners/novo",
+        "icon": "image"
+      },
+      {
+        "id": "qa-library",
+        "label": "Upload arquivo",
         "href": "/admin/biblioteca",
         "icon": "upload"
       },
       {
-        "id": "qa-3",
+        "id": "qa-messages",
         "label": "Ver mensagens",
         "href": "/admin/mensagens",
         "icon": "mail"
-      },
-      {
-        "id": "qa-4",
-        "label": "Gerenciar banners",
-        "href": "/admin/banners",
-        "icon": "image"
       }
     ]
   },
   "products--admin": {
     "title": "Produtos",
-    "subtitle": "Gerencie o catálogo de produtos da Stetsom.",
+    "subtitle": "9 produtos cadastrados",
     "items": [
       {
-        "id": "6a252ce0d81bb6e1543f9a82",
-        "slug": "st-4000eq-4-canais",
-        "name": "ST-4000EQ 4 CANAIS",
-        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "id": "6a252ce0d81bb6e1543f9a8a",
+        "slug": "st-350-4-mini",
+        "name": "ST-350.4 MINI",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
         "category": "Amplificadores",
-        "languages": ["pt", "en", "es"],
+        "languages": ["pt"],
         "status": "PUBLISHED",
-        "is_discontinued": false,
-        "updated_at": "2026-06-07T08:33:36.517Z"
+        "is_discontinued": true,
+        "updated_at": "2026-06-07T08:33:36.692Z"
       },
       {
-        "id": "6a252ce0d81bb6e1543f9a83",
-        "slug": "st-2000eq-mono",
-        "name": "ST-2000EQ MONO",
-        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "id": "6a252ce0d81bb6e1543f9a89",
+        "slug": "st-9000-1d-mono-draft",
+        "name": "ST-9000.1D MONO (Draft)",
+        "thumbnail_url": null,
         "category": "Amplificadores",
-        "languages": ["pt", "en", "es"],
-        "status": "PUBLISHED",
+        "languages": ["pt"],
+        "status": "DRAFT",
         "is_discontinued": false,
-        "updated_at": "2026-06-07T08:33:36.517Z"
+        "updated_at": "2026-06-07T08:33:36.683Z"
       },
       {
-        "id": "6a252ce0d81bb6e1543f9a84",
-        "slug": "st-800-4-compact",
-        "name": "ST-800.4 COMPACT",
-        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
-        "category": "Amplificadores",
+        "id": "6a252ce0d81bb6e1543f9a88",
+        "slug": "sf-120a-fonte-automotiva",
+        "name": "SF-120A FONTE AUTOMOTIVA",
+        "thumbnail_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+        "category": "Fontes e Carregadores",
         "languages": ["pt", "en", "es"],
         "status": "PUBLISHED",
         "is_discontinued": false,
-        "updated_at": "2026-06-07T08:33:36.517Z"
+        "updated_at": "2026-06-07T08:33:36.671Z"
       },
       {
-        "id": "6a252ce0d81bb6e1543f9a85",
-        "slug": "st-1200-1d-bass",
-        "name": "ST-1200.1D BASS",
+        "id": "6a252ce0d81bb6e1543f9a87",
+        "slug": "ex-3000-1d-mono",
+        "name": "EX-3000.1D MONO",
         "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
         "category": "Amplificadores",
         "languages": ["pt", "en", "es"],
         "status": "PUBLISHED",
         "is_discontinued": false,
-        "updated_at": "2026-06-07T08:33:36.517Z"
+        "updated_at": "2026-06-07T08:33:36.662Z"
       },
       {
         "id": "6a252ce0d81bb6e1543f9a86",
@@ -3094,45 +3270,56 @@
         "languages": ["pt", "en", "es"],
         "status": "PUBLISHED",
         "is_discontinued": false,
-        "updated_at": "2026-06-07T08:33:36.517Z"
+        "updated_at": "2026-06-07T08:33:36.650Z"
       },
       {
-        "id": "6a252ce0d81bb6e1543f9a87",
-        "slug": "ex-3000-1d-mono",
-        "name": "EX-3000.1D MONO",
-        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
-        "category": "Amplificadores",
-        "languages": ["pt", "en", "es"],
-        "status": "DRAFT",
-        "is_discontinued": false,
-        "updated_at": "2026-06-07T08:33:36.517Z"
-      },
-      {
-        "id": "6a252ce0d81bb6e1543f9a88",
-        "slug": "sf-120a-fonte-automotiva",
-        "name": "SF-120A FONTE AUTOMOTIVA",
-        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
-        "category": "Fontes e Carregadores",
-        "languages": ["pt", "en", "es"],
-        "status": "PUBLISHED",
-        "is_discontinued": false,
-        "updated_at": "2026-06-07T08:33:36.517Z"
-      },
-      {
-        "id": "6a252ce0d81bb6e1543f9a8a",
-        "slug": "st-350-4-mini",
-        "name": "ST-350.4 MINI",
-        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "id": "6a252ce0d81bb6e1543f9a85",
+        "slug": "st-1200-1d-bass",
+        "name": "ST-1200.1D BASS",
+        "thumbnail_url": "/figma-assets/raw/product-c.png",
         "category": "Amplificadores",
         "languages": ["pt", "en", "es"],
         "status": "PUBLISHED",
-        "is_discontinued": true,
-        "updated_at": "2026-06-07T08:33:36.517Z"
+        "is_discontinued": false,
+        "updated_at": "2026-06-07T08:33:36.641Z"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a84",
+        "slug": "st-800-4-compact",
+        "name": "ST-800.4 COMPACT",
+        "thumbnail_url": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
+        "category": "Amplificadores",
+        "languages": ["pt", "en", "es"],
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "updated_at": "2026-06-07T08:33:36.632Z"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a83",
+        "slug": "st-2000eq-mono",
+        "name": "ST-2000EQ MONO",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "category": "Amplificadores",
+        "languages": ["pt", "en", "es"],
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "updated_at": "2026-06-07T08:33:36.619Z"
+      },
+      {
+        "id": "6a252ce0d81bb6e1543f9a82",
+        "slug": "st-4000eq-4-canais",
+        "name": "ST-4000EQ 4 CANAIS",
+        "thumbnail_url": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+        "category": "Amplificadores",
+        "languages": ["pt", "en", "es"],
+        "status": "PUBLISHED",
+        "is_discontinued": false,
+        "updated_at": "2026-06-07T08:33:36.610Z"
       }
     ],
-    "total": 8,
+    "total": 9,
     "page": 1,
-    "pageSize": 50,
+    "pageSize": 100,
     "totalPages": 1
   },
   "products--admin--6a252ce0d81bb6e1543f9a82": {
@@ -3140,13 +3327,19 @@
       "id": "6a252ce0d81bb6e1543f9a82",
       "sku": null,
       "name": {
-        "pt": "ST-4000EQ 4 CANAIS"
+        "pt": "ST-4000EQ 4 CANAIS",
+        "en": "ST-4000EQ 4-Channel",
+        "es": "ST-4000EQ 4 Canales"
       },
       "slug": {
-        "pt": "st-4000eq-4-canais"
+        "pt": "st-4000eq-4-canais",
+        "en": "st-4000eq-4-channel",
+        "es": "st-4000eq-4-canales"
       },
       "description": {
-        "pt": "Amplificador 4 canais com alta eficiência para sistemas automotivos de média e alta potência."
+        "pt": "Amplificador 4 canais com alta eficiência para sistemas automotivos de média e alta potência.",
+        "en": "4-channel amplifier with high efficiency for medium and high power automotive systems.",
+        "es": "Amplificador de 4 canales con alta eficiencia para sistemas automotivos de mediana y alta potencia."
       },
       "status": "PUBLISHED",
       "is_discontinued": false,
@@ -3186,43 +3379,55 @@
           "attributes": [
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6f",
-              "attribute_name": "Potência RMS",
-              "value": "4x 1000W RMS",
+              "value": {
+                "pt": "4x 1000W RMS",
+                "en": "4x 1000W RMS"
+              },
               "order": 1,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a70",
-              "attribute_name": "Impedância",
-              "value": "2 Ohms",
+              "value": {
+                "pt": "2 Ohms",
+                "en": "2 Ohms"
+              },
               "order": 2,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6e",
-              "attribute_name": "Número de Canais",
-              "value": "4",
+              "value": {
+                "pt": "4",
+                "en": "4"
+              },
               "order": 3,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a71",
-              "attribute_name": "Classe de Operação",
-              "value": "Classe D",
+              "value": {
+                "pt": "Classe D",
+                "en": "Class D"
+              },
               "order": 4,
               "highlighted": false
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a72",
-              "attribute_name": "Resposta em Frequência",
-              "value": "20 Hz – 20 kHz",
+              "value": {
+                "pt": "20 Hz – 20 kHz",
+                "en": "20 Hz – 20 kHz"
+              },
               "order": 5,
               "highlighted": false
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a73",
-              "attribute_name": "Ganho de Entrada",
-              "value": "0 a 6V",
+              "value": {
+                "pt": "0 a 6V",
+                "en": "0 to 6V"
+              },
               "order": 6,
               "highlighted": false
             }
@@ -3235,43 +3440,55 @@
           "attributes": [
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6f",
-              "attribute_name": "Potência RMS",
-              "value": "4x 600W RMS",
+              "value": {
+                "pt": "4x 600W RMS",
+                "en": "4x 600W RMS"
+              },
               "order": 1,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a70",
-              "attribute_name": "Impedância",
-              "value": "4 Ohms",
+              "value": {
+                "pt": "4 Ohms",
+                "en": "4 Ohms"
+              },
               "order": 2,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6e",
-              "attribute_name": "Número de Canais",
-              "value": "4",
+              "value": {
+                "pt": "4",
+                "en": "4"
+              },
               "order": 3,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a71",
-              "attribute_name": "Classe de Operação",
-              "value": "Classe D",
+              "value": {
+                "pt": "Classe D",
+                "en": "Class D"
+              },
               "order": 4,
               "highlighted": false
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a72",
-              "attribute_name": "Resposta em Frequência",
-              "value": "20 Hz – 20 kHz",
+              "value": {
+                "pt": "20 Hz – 20 kHz",
+                "en": "20 Hz – 20 kHz"
+              },
               "order": 5,
               "highlighted": false
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a73",
-              "attribute_name": "Ganho de Entrada",
-              "value": "0 a 6V",
+              "value": {
+                "pt": "0 a 6V",
+                "en": "0 to 6V"
+              },
               "order": 6,
               "highlighted": false
             }
@@ -3344,19 +3561,43 @@
     },
     "category": {
       "id": "6a252ce0d81bb6e1543f9a78",
-      "name": "Amplificadores",
-      "slug": "amplificadores",
+      "name": {
+        "pt": "Amplificadores",
+        "en": "Amplifiers",
+        "es": "Amplificadores"
+      },
+      "slug": {
+        "pt": "amplificadores",
+        "en": "amplifiers",
+        "es": "amplificadores"
+      },
       "lines": [
         {
           "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
-          "name": "Full Range",
-          "slug": "full-range",
+          "name": {
+            "pt": "Full Range",
+            "en": "Full Range",
+            "es": "Full Range"
+          },
+          "slug": {
+            "pt": "full-range",
+            "en": "full-range",
+            "es": "full-range"
+          },
           "order": 1
         },
         {
           "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
-          "name": "Mono",
-          "slug": "mono",
+          "name": {
+            "pt": "Mono",
+            "en": "Mono",
+            "es": "Mono"
+          },
+          "slug": {
+            "pt": "mono",
+            "en": "mono",
+            "es": "mono"
+          },
           "order": 2
         }
       ],
@@ -3370,13 +3611,19 @@
       "id": "6a252ce0d81bb6e1543f9a83",
       "sku": null,
       "name": {
-        "pt": "ST-2000EQ MONO"
+        "pt": "ST-2000EQ MONO",
+        "en": "ST-2000EQ MONO",
+        "es": "ST-2000EQ MONO"
       },
       "slug": {
-        "pt": "st-2000eq-mono"
+        "pt": "st-2000eq-mono",
+        "en": "st-2000eq-mono",
+        "es": "st-2000eq-mono"
       },
       "description": {
-        "pt": "Módulo mono de alta potência para graves."
+        "pt": "Módulo mono de alta potência para graves.",
+        "en": "High power mono module for bass.",
+        "es": "Módulo mono de alta potencia para graves."
       },
       "status": "PUBLISHED",
       "is_discontinued": false,
@@ -3409,29 +3656,37 @@
           "attributes": [
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6f",
-              "attribute_name": "Potência RMS",
-              "value": "2000W RMS",
+              "value": {
+                "pt": "2000W RMS",
+                "en": "2000W RMS"
+              },
               "order": 1,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a70",
-              "attribute_name": "Impedância",
-              "value": "1 Ohm",
+              "value": {
+                "pt": "1 Ohm",
+                "en": "1 Ohm"
+              },
               "order": 2,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6e",
-              "attribute_name": "Número de Canais",
-              "value": "1",
+              "value": {
+                "pt": "1",
+                "en": "1"
+              },
               "order": 3,
               "highlighted": false
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a71",
-              "attribute_name": "Classe de Operação",
-              "value": "Classe D",
+              "value": {
+                "pt": "Classe D",
+                "en": "Class D"
+              },
               "order": 4,
               "highlighted": false
             }
@@ -3482,19 +3737,43 @@
     },
     "category": {
       "id": "6a252ce0d81bb6e1543f9a78",
-      "name": "Amplificadores",
-      "slug": "amplificadores",
+      "name": {
+        "pt": "Amplificadores",
+        "en": "Amplifiers",
+        "es": "Amplificadores"
+      },
+      "slug": {
+        "pt": "amplificadores",
+        "en": "amplifiers",
+        "es": "amplificadores"
+      },
       "lines": [
         {
           "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
-          "name": "Full Range",
-          "slug": "full-range",
+          "name": {
+            "pt": "Full Range",
+            "en": "Full Range",
+            "es": "Full Range"
+          },
+          "slug": {
+            "pt": "full-range",
+            "en": "full-range",
+            "es": "full-range"
+          },
           "order": 1
         },
         {
           "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
-          "name": "Mono",
-          "slug": "mono",
+          "name": {
+            "pt": "Mono",
+            "en": "Mono",
+            "es": "Mono"
+          },
+          "slug": {
+            "pt": "mono",
+            "en": "mono",
+            "es": "mono"
+          },
           "order": 2
         }
       ],
@@ -3508,13 +3787,19 @@
       "id": "6a252ce0d81bb6e1543f9a84",
       "sku": null,
       "name": {
-        "pt": "ST-800.4 COMPACT"
+        "pt": "ST-800.4 COMPACT",
+        "en": "ST-800.4 COMPACT",
+        "es": "ST-800.4 COMPACT"
       },
       "slug": {
-        "pt": "st-800-4-compact"
+        "pt": "st-800-4-compact",
+        "en": "st-800-4-compact",
+        "es": "st-800-4-compact"
       },
       "description": {
-        "pt": "Amplificador compacto 4 canais para upgrade sem sacrificar espaço."
+        "pt": "Amplificador compacto 4 canais para upgrade sem sacrificar espaço.",
+        "en": "Compact 4-channel amplifier for upgrade without sacrificing space.",
+        "es": "Amplificador compacto de 4 canales para actualización sin sacrificar espacio."
       },
       "status": "PUBLISHED",
       "is_discontinued": false,
@@ -3547,29 +3832,37 @@
           "attributes": [
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6f",
-              "attribute_name": "Potência RMS",
-              "value": "4x 200W RMS",
+              "value": {
+                "pt": "4x 200W RMS",
+                "en": "4x 200W RMS"
+              },
               "order": 1,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a70",
-              "attribute_name": "Impedância",
-              "value": "4 Ohms",
+              "value": {
+                "pt": "4 Ohms",
+                "en": "4 Ohms"
+              },
               "order": 2,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6e",
-              "attribute_name": "Número de Canais",
-              "value": "4",
+              "value": {
+                "pt": "4",
+                "en": "4"
+              },
               "order": 3,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a71",
-              "attribute_name": "Classe de Operação",
-              "value": "Classe AB/D",
+              "value": {
+                "pt": "Classe AB/D",
+                "en": "Class AB/D"
+              },
               "order": 4,
               "highlighted": false
             }
@@ -3600,19 +3893,43 @@
     },
     "category": {
       "id": "6a252ce0d81bb6e1543f9a78",
-      "name": "Amplificadores",
-      "slug": "amplificadores",
+      "name": {
+        "pt": "Amplificadores",
+        "en": "Amplifiers",
+        "es": "Amplificadores"
+      },
+      "slug": {
+        "pt": "amplificadores",
+        "en": "amplifiers",
+        "es": "amplificadores"
+      },
       "lines": [
         {
           "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
-          "name": "Full Range",
-          "slug": "full-range",
+          "name": {
+            "pt": "Full Range",
+            "en": "Full Range",
+            "es": "Full Range"
+          },
+          "slug": {
+            "pt": "full-range",
+            "en": "full-range",
+            "es": "full-range"
+          },
           "order": 1
         },
         {
           "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
-          "name": "Mono",
-          "slug": "mono",
+          "name": {
+            "pt": "Mono",
+            "en": "Mono",
+            "es": "Mono"
+          },
+          "slug": {
+            "pt": "mono",
+            "en": "mono",
+            "es": "mono"
+          },
           "order": 2
         }
       ],
@@ -3626,13 +3943,19 @@
       "id": "6a252ce0d81bb6e1543f9a85",
       "sku": null,
       "name": {
-        "pt": "ST-1200.1D BASS"
+        "pt": "ST-1200.1D BASS",
+        "en": "ST-1200.1D BASS",
+        "es": "ST-1200.1D BASS"
       },
       "slug": {
-        "pt": "st-1200-1d-bass"
+        "pt": "st-1200-1d-bass",
+        "en": "st-1200-1d-bass",
+        "es": "st-1200-1d-bass"
       },
       "description": {
-        "pt": "Módulo mono Classe D focado em graves."
+        "pt": "Módulo mono Classe D focado em graves.",
+        "en": "Class D mono module focused on bass.",
+        "es": "Módulo mono Clase D enfocado en graves."
       },
       "status": "PUBLISHED",
       "is_discontinued": false,
@@ -3665,29 +3988,37 @@
           "attributes": [
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6f",
-              "attribute_name": "Potência RMS",
-              "value": "1200W RMS",
+              "value": {
+                "pt": "1200W RMS",
+                "en": "1200W RMS"
+              },
               "order": 1,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a70",
-              "attribute_name": "Impedância",
-              "value": "2 Ohms",
+              "value": {
+                "pt": "2 Ohms",
+                "en": "2 Ohms"
+              },
               "order": 2,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6e",
-              "attribute_name": "Número de Canais",
-              "value": "1",
+              "value": {
+                "pt": "1",
+                "en": "1"
+              },
               "order": 3,
               "highlighted": false
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a71",
-              "attribute_name": "Classe de Operação",
-              "value": "Classe D",
+              "value": {
+                "pt": "Classe D",
+                "en": "Class D"
+              },
               "order": 4,
               "highlighted": false
             }
@@ -3712,19 +4043,43 @@
     },
     "category": {
       "id": "6a252ce0d81bb6e1543f9a78",
-      "name": "Amplificadores",
-      "slug": "amplificadores",
+      "name": {
+        "pt": "Amplificadores",
+        "en": "Amplifiers",
+        "es": "Amplificadores"
+      },
+      "slug": {
+        "pt": "amplificadores",
+        "en": "amplifiers",
+        "es": "amplificadores"
+      },
       "lines": [
         {
           "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
-          "name": "Full Range",
-          "slug": "full-range",
+          "name": {
+            "pt": "Full Range",
+            "en": "Full Range",
+            "es": "Full Range"
+          },
+          "slug": {
+            "pt": "full-range",
+            "en": "full-range",
+            "es": "full-range"
+          },
           "order": 1
         },
         {
           "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
-          "name": "Mono",
-          "slug": "mono",
+          "name": {
+            "pt": "Mono",
+            "en": "Mono",
+            "es": "Mono"
+          },
+          "slug": {
+            "pt": "mono",
+            "en": "mono",
+            "es": "mono"
+          },
           "order": 2
         }
       ],
@@ -3738,13 +4093,19 @@
       "id": "6a252ce0d81bb6e1543f9a86",
       "sku": null,
       "name": {
-        "pt": "STX-96 PRO DSP"
+        "pt": "STX-96 PRO DSP",
+        "en": "STX-96 PRO DSP",
+        "es": "STX-96 PRO DSP"
       },
       "slug": {
-        "pt": "stx-96-pro-dsp"
+        "pt": "stx-96-pro-dsp",
+        "en": "stx-96-pro-dsp",
+        "es": "stx-96-pro-dsp"
       },
       "description": {
-        "pt": "Processador DSP 96kHz com presets customizáveis."
+        "pt": "Processador DSP 96kHz com presets customizáveis.",
+        "en": "DSP 96kHz processor with customizable presets.",
+        "es": "Procesador DSP 96kHz con presets personalizables."
       },
       "status": "PUBLISHED",
       "is_discontinued": false,
@@ -3777,36 +4138,46 @@
           "attributes": [
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a77",
-              "attribute_name": "Presets de DSP",
-              "value": "32 Presets",
+              "value": {
+                "pt": "32 Presets",
+                "en": "32 Presets"
+              },
               "order": 1,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a72",
-              "attribute_name": "Resposta em Frequência",
-              "value": "20 Hz – 20 kHz",
+              "value": {
+                "pt": "20 Hz – 20 kHz",
+                "en": "20 Hz – 20 kHz"
+              },
               "order": 2,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a73",
-              "attribute_name": "Ganho de Entrada",
-              "value": "0 a 4V",
+              "value": {
+                "pt": "0 a 4V",
+                "en": "0 to 4V"
+              },
               "order": 3,
               "highlighted": false
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a76",
-              "attribute_name": "Dimensões",
-              "value": "220 x 65 x 35mm",
+              "value": {
+                "pt": "220 x 65 x 35mm",
+                "en": "220 x 65 x 35mm"
+              },
               "order": 4,
               "highlighted": false
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a75",
-              "attribute_name": "Peso",
-              "value": "380g",
+              "value": {
+                "pt": "380g",
+                "en": "380g"
+              },
               "order": 5,
               "highlighted": false
             }
@@ -3841,13 +4212,29 @@
     },
     "category": {
       "id": "6a252ce0d81bb6e1543f9a79",
-      "name": "Processadores",
-      "slug": "processadores",
+      "name": {
+        "pt": "Processadores",
+        "en": "Processors",
+        "es": "Procesadores"
+      },
+      "slug": {
+        "pt": "processadores",
+        "en": "processors",
+        "es": "procesadores"
+      },
       "lines": [
         {
           "line_id": "b0532c6d-f49b-43ac-8478-378343c0375b",
-          "name": "DSP",
-          "slug": "dsp",
+          "name": {
+            "pt": "DSP",
+            "en": "DSP",
+            "es": "DSP"
+          },
+          "slug": {
+            "pt": "dsp",
+            "en": "dsp",
+            "es": "dsp"
+          },
           "order": 1
         }
       ],
@@ -3861,13 +4248,19 @@
       "id": "6a252ce0d81bb6e1543f9a87",
       "sku": null,
       "name": {
-        "pt": "EX-3000.1D MONO"
+        "pt": "EX-3000.1D MONO",
+        "en": "EX-3000.1D MONO",
+        "es": "EX-3000.1D MONO"
       },
       "slug": {
-        "pt": "ex-3000-1d-mono"
+        "pt": "ex-3000-1d-mono",
+        "en": "ex-3000-1d-mono",
+        "es": "ex-3000-1d-mono"
       },
       "description": {
-        "pt": "Módulo mono de alta corrente para projetos SPL."
+        "pt": "Módulo mono de alta corrente para projetos SPL.",
+        "en": "High current mono module for SPL projects.",
+        "es": "Módulo mono de alta corriente para proyectos SPL."
       },
       "status": "PUBLISHED",
       "is_discontinued": false,
@@ -3900,29 +4293,37 @@
           "attributes": [
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6f",
-              "attribute_name": "Potência RMS",
-              "value": "3000W RMS",
+              "value": {
+                "pt": "3000W RMS",
+                "en": "3000W RMS"
+              },
               "order": 1,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a70",
-              "attribute_name": "Impedância",
-              "value": "1 Ohm",
+              "value": {
+                "pt": "1 Ohm",
+                "en": "1 Ohm"
+              },
               "order": 2,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6e",
-              "attribute_name": "Número de Canais",
-              "value": "1",
+              "value": {
+                "pt": "1",
+                "en": "1"
+              },
               "order": 3,
               "highlighted": false
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a71",
-              "attribute_name": "Classe de Operação",
-              "value": "Classe D",
+              "value": {
+                "pt": "Classe D",
+                "en": "Class D"
+              },
               "order": 4,
               "highlighted": false
             }
@@ -3947,19 +4348,43 @@
     },
     "category": {
       "id": "6a252ce0d81bb6e1543f9a78",
-      "name": "Amplificadores",
-      "slug": "amplificadores",
+      "name": {
+        "pt": "Amplificadores",
+        "en": "Amplifiers",
+        "es": "Amplificadores"
+      },
+      "slug": {
+        "pt": "amplificadores",
+        "en": "amplifiers",
+        "es": "amplificadores"
+      },
       "lines": [
         {
           "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
-          "name": "Full Range",
-          "slug": "full-range",
+          "name": {
+            "pt": "Full Range",
+            "en": "Full Range",
+            "es": "Full Range"
+          },
+          "slug": {
+            "pt": "full-range",
+            "en": "full-range",
+            "es": "full-range"
+          },
           "order": 1
         },
         {
           "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
-          "name": "Mono",
-          "slug": "mono",
+          "name": {
+            "pt": "Mono",
+            "en": "Mono",
+            "es": "Mono"
+          },
+          "slug": {
+            "pt": "mono",
+            "en": "mono",
+            "es": "mono"
+          },
           "order": 2
         }
       ],
@@ -3973,13 +4398,19 @@
       "id": "6a252ce0d81bb6e1543f9a88",
       "sku": null,
       "name": {
-        "pt": "SF-120A FONTE AUTOMOTIVA"
+        "pt": "SF-120A FONTE AUTOMOTIVA",
+        "en": "SF-120A AUTOMOTIVE POWER SUPPLY",
+        "es": "SF-120A FUENTE AUTOMOTIVA"
       },
       "slug": {
-        "pt": "sf-120a-fonte-automotiva"
+        "pt": "sf-120a-fonte-automotiva",
+        "en": "sf-120a-automotive-power-supply",
+        "es": "sf-120a-fuente-automotiva"
       },
       "description": {
-        "pt": "Fonte chaveada para sistemas de alta demanda."
+        "pt": "Fonte chaveada para sistemas de alta demanda.",
+        "en": "Switching power supply for high demand systems.",
+        "es": "Fuente conmutada para sistemas de alta demanda."
       },
       "status": "PUBLISHED",
       "is_discontinued": false,
@@ -4012,22 +4443,28 @@
           "attributes": [
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a74",
-              "attribute_name": "Corrente de Saída",
-              "value": "120A Contínuos",
+              "value": {
+                "pt": "120A Contínuos",
+                "en": "120A Continuous"
+              },
               "order": 1,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a75",
-              "attribute_name": "Peso",
-              "value": "2.8kg",
+              "value": {
+                "pt": "2.8kg",
+                "en": "2.8kg"
+              },
               "order": 2,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a76",
-              "attribute_name": "Dimensões",
-              "value": "220 x 130 x 70mm",
+              "value": {
+                "pt": "220 x 130 x 70mm",
+                "en": "220 x 130 x 70mm"
+              },
               "order": 3,
               "highlighted": false
             }
@@ -4058,13 +4495,29 @@
     },
     "category": {
       "id": "6a252ce0d81bb6e1543f9a7c",
-      "name": "Fontes e Carregadores",
-      "slug": "fontes-e-carregadores",
+      "name": {
+        "pt": "Fontes e Carregadores",
+        "en": "Power Supplies",
+        "es": "Fuentes y Cargadores"
+      },
+      "slug": {
+        "pt": "fontes-e-carregadores",
+        "en": "power-supplies",
+        "es": "fuentes-y-cargadores"
+      },
       "lines": [
         {
           "line_id": "2816a8ba-fe7d-43c2-b6af-dc8c0d93e8e3",
-          "name": "Automotiva",
-          "slug": "automotiva",
+          "name": {
+            "pt": "Automotiva",
+            "en": "Automotive",
+            "es": "Automotiva"
+          },
+          "slug": {
+            "pt": "automotiva",
+            "en": "automotive",
+            "es": "automotiva"
+          },
           "order": 1
         }
       ],
@@ -4078,13 +4531,18 @@
       "id": "6a252ce0d81bb6e1543f9a8a",
       "sku": null,
       "name": {
-        "pt": "ST-350.4 MINI"
+        "pt": "ST-350.4 MINI",
+        "en": "ST-350.4 MINI",
+        "es": "ST-350.4 MINI"
       },
       "slug": {
-        "pt": "st-350-4-mini"
+        "pt": "st-350-4-mini",
+        "en": "st-350-4-mini",
+        "es": "st-350-4-mini"
       },
       "description": {
-        "pt": "Produto legado — referência técnica."
+        "pt": "Produto legado — referência técnica.",
+        "en": "Legacy product — technical reference."
       },
       "status": "PUBLISHED",
       "is_discontinued": true,
@@ -4116,15 +4574,19 @@
           "attributes": [
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6f",
-              "attribute_name": "Potência RMS",
-              "value": "4x 350W RMS",
+              "value": {
+                "pt": "4x 350W RMS",
+                "en": "4x 350W RMS"
+              },
               "order": 1,
               "highlighted": true
             },
             {
               "attribute_id": "6a252ce0d81bb6e1543f9a6e",
-              "attribute_name": "Número de Canais",
-              "value": "4",
+              "value": {
+                "pt": "4",
+                "en": "4"
+              },
               "order": 2,
               "highlighted": true
             }
@@ -4155,19 +4617,43 @@
     },
     "category": {
       "id": "6a252ce0d81bb6e1543f9a78",
-      "name": "Amplificadores",
-      "slug": "amplificadores",
+      "name": {
+        "pt": "Amplificadores",
+        "en": "Amplifiers",
+        "es": "Amplificadores"
+      },
+      "slug": {
+        "pt": "amplificadores",
+        "en": "amplifiers",
+        "es": "amplificadores"
+      },
       "lines": [
         {
           "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
-          "name": "Full Range",
-          "slug": "full-range",
+          "name": {
+            "pt": "Full Range",
+            "en": "Full Range",
+            "es": "Full Range"
+          },
+          "slug": {
+            "pt": "full-range",
+            "en": "full-range",
+            "es": "full-range"
+          },
           "order": 1
         },
         {
           "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
-          "name": "Mono",
-          "slug": "mono",
+          "name": {
+            "pt": "Mono",
+            "en": "Mono",
+            "es": "Mono"
+          },
+          "slug": {
+            "pt": "mono",
+            "en": "mono",
+            "es": "mono"
+          },
           "order": 2
         }
       ],
@@ -4177,47 +4663,984 @@
     }
   },
   "pages--home--cms": {
-    "id": "page-home",
+    "id": "6a252ce0d81bb6e1543f9a8e",
     "slug": "home",
     "title": {
-      "pt": "Home",
+      "pt": "Página Inicial",
       "en": "Home",
-      "es": "Home"
+      "es": "Inicio"
     },
-    "blocks": [],
-    "updated_at": "2026-06-07T08:00:00.000Z"
+    "blocks": [
+      {
+        "block_id": "b1dac08c-e33d-42cd-8eae-137437438ae2",
+        "section_id": "featured",
+        "type": "TEXT",
+        "order": 1,
+        "data": {
+          "pt": {
+            "label": "Novidades",
+            "title": "CONHEÇA A\nPRATICIDADE",
+            "ctaLabel": "Ver todos",
+            "ctaHref": "/produtos"
+          },
+          "en": {
+            "label": "New arrivals",
+            "title": "DISCOVER THE\nPRACTICALITY",
+            "ctaLabel": "See all",
+            "ctaHref": "/produtos"
+          },
+          "es": {
+            "label": "Novedades",
+            "title": "DESCUBRE LA\nPRACTICIDAD",
+            "ctaLabel": "Ver todos",
+            "ctaHref": "/produtos"
+          }
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "a1b1d1fb-b6bc-4a30-8d64-58098a5cd63a",
+        "section_id": "history",
+        "type": "TEXT",
+        "order": 2,
+        "data": {
+          "image_library_id": "6a252ce0d81bb6e1543f9a5d",
+          "pt": {
+            "label": "Nossa História",
+            "title": "CONSTRUINDO\nCOM PROPÓSITO",
+            "subtitle": "Há mais de 35 anos desenvolvemos tecnologia de amplificação que define o padrão de qualidade no mercado automotivo.",
+            "imageAlt": "Nossa história",
+            "ctaLabel": "Conheça mais",
+            "ctaHref": "/sobre",
+            "stats": [
+              {
+                "value": "35+",
+                "label": "Anos de Mercado"
+              },
+              {
+                "value": "200+",
+                "label": "Produtos"
+              },
+              {
+                "value": "60+",
+                "label": "Países de Exportação"
+              },
+              {
+                "value": "1M+",
+                "label": "Unidades Vendidas"
+              }
+            ]
+          },
+          "en": {
+            "label": "Our History",
+            "title": "BUILDING\nWITH PURPOSE",
+            "subtitle": "For over 35 years we have been developing amplification technology that sets the quality standard in the automotive market.",
+            "imageAlt": "Our history",
+            "ctaLabel": "Learn more",
+            "ctaHref": "/sobre",
+            "stats": [
+              {
+                "value": "35+",
+                "label": "Years in Business"
+              },
+              {
+                "value": "200+",
+                "label": "Products"
+              },
+              {
+                "value": "60+",
+                "label": "Export Countries"
+              },
+              {
+                "value": "1M+",
+                "label": "Units Sold"
+              }
+            ]
+          },
+          "es": {
+            "label": "Nuestra Historia",
+            "title": "CONSTRUYENDO\nCON PROPÓSITO",
+            "subtitle": "Durante más de 35 años hemos desarrollado tecnología de amplificación que define el estándar de calidad en el mercado automotivo.",
+            "imageAlt": "Nuestra historia",
+            "ctaLabel": "Conocer más",
+            "ctaHref": "/sobre",
+            "stats": [
+              {
+                "value": "35+",
+                "label": "Años de mercado"
+              },
+              {
+                "value": "200+",
+                "label": "Productos"
+              },
+              {
+                "value": "60+",
+                "label": "Países de exportación"
+              },
+              {
+                "value": "1M+",
+                "label": "Unidades vendidas"
+              }
+            ]
+          }
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "fc433500-9642-4d2b-b2e2-9d3608b7c696",
+        "section_id": "faq",
+        "type": "FAQ",
+        "order": 3,
+        "data": {
+          "items": [
+            {
+              "q": {
+                "pt": "Qual a diferença entre 1 Ohm e 2 Ohms de impedância?",
+                "en": "What is the difference between 1 Ohm and 2 Ohms impedance?",
+                "es": "¿Cuál es la diferencia entre 1 Ohm y 2 Ohms de impedancia?"
+              },
+              "a": {
+                "pt": "A impedância afeta diretamente a carga sobre o amplificador. Impedâncias menores permitem maior potência, desde que o sistema seja compatível.",
+                "en": "Impedance directly affects the load on the amplifier. Lower impedances allow higher power output, as long as the system is compatible.",
+                "es": "La impedancia afecta directamente la carga sobre el amplificador. Impedancias menores permiten mayor potencia, siempre que el sistema sea compatible."
+              }
+            },
+            {
+              "q": {
+                "pt": "Como verificar a garantia do meu produto?",
+                "en": "How do I check my product warranty?",
+                "es": "¿Cómo verifico la garantía de mi producto?"
+              },
+              "a": {
+                "pt": "Acesse a central de garantia da Stetsom e informe o número de série para consultar o status atualizado.",
+                "en": "Access Stetsom's warranty center and enter the serial number to check the current status.",
+                "es": "Acceda al centro de garantía de Stetsom e ingrese el número de serie para consultar el estado actualizado."
+              }
+            },
+            {
+              "q": {
+                "pt": "Onde encontrar postos autorizados Stetsom?",
+                "en": "Where can I find authorized Stetsom service centers?",
+                "es": "¿Dónde encontrar centros autorizados Stetsom?"
+              },
+              "a": {
+                "pt": "Nossa rede tem mais de 500 distribuidores no Brasil. Use o localizador da Central de Ajuda para encontrar o mais próximo.",
+                "en": "Our network has over 500 distributors in Brazil. Use the locator in the Help Center to find the nearest one.",
+                "es": "Nuestra red tiene más de 500 distribuidores en Brasil. Use el localizador en la Central de Ayuda para encontrar el más cercano."
+              }
+            }
+          ],
+          "section": {
+            "pt": {
+              "label": "Dúvidas",
+              "title": "PERGUNTAS\nFREQUENTES",
+              "subtitle": "Não encontrou o que procura? Entre em contato com nosso suporte.",
+              "ctaLabel": "Falar com suporte",
+              "ctaHref": "/suporte"
+            },
+            "en": {
+              "label": "FAQ",
+              "title": "FREQUENTLY\nASKED QUESTIONS",
+              "subtitle": "Didn't find what you're looking for? Contact our support team.",
+              "ctaLabel": "Talk to support",
+              "ctaHref": "/suporte"
+            },
+            "es": {
+              "label": "Preguntas",
+              "title": "PREGUNTAS\nFRECUENTES",
+              "subtitle": "¿No encontró lo que busca? Póngase en contacto con nuestro soporte.",
+              "ctaLabel": "Hablar con soporte",
+              "ctaHref": "/suporte"
+            }
+          }
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "8b1b75bc-5dea-44d6-86a9-9a6971c1ffef",
+        "section_id": "social",
+        "type": "GALLERY",
+        "order": 4,
+        "data": {
+          "handle": "@STETSOMBRASIL",
+          "ctaHref": "https://instagram.com/stetsombrasil",
+          "pt": {
+            "title": "MÍDIAS SOCIAIS",
+            "subtitle": "Participe da comunidade de profissionais do áudio.",
+            "ctaLabel": "Seguir no Instagram"
+          },
+          "en": {
+            "title": "SOCIAL MEDIA",
+            "subtitle": "Join the community of audio professionals.",
+            "ctaLabel": "Follow on Instagram"
+          },
+          "es": {
+            "title": "REDES SOCIALES",
+            "subtitle": "Únase a la comunidad de profesionales del audio.",
+            "ctaLabel": "Seguir en Instagram"
+          }
+        },
+        "available_locales": []
+      }
+    ],
+    "updated_at": "2026-06-07T08:33:36.740Z"
   },
   "pages--about--cms": {
-    "id": "page-about",
+    "id": "6a252ce0d81bb6e1543f9a8f",
     "slug": "about",
     "title": {
       "pt": "Sobre a Stetsom",
-      "en": "Sobre a Stetsom",
-      "es": "Sobre a Stetsom"
+      "en": "About Stetsom",
+      "es": "Sobre Stetsom"
     },
-    "blocks": [],
-    "updated_at": "2026-06-07T08:00:00.000Z"
+    "blocks": [
+      {
+        "block_id": "b8a5934f-354c-493e-bb5a-4a962ccc92f8",
+        "section_id": "hero",
+        "type": "IMAGE",
+        "order": 1,
+        "data": {
+          "library_id": "6a252ce0d81bb6e1543f9a5e",
+          "pt": {
+            "label": "Nossa história",
+            "title": "SEMPRE\nPIONEIRA\nNA POTÊNCIA",
+            "imageAlt": "Sobre a Stetsom"
+          },
+          "en": {
+            "label": "Our history",
+            "title": "ALWAYS\nA PIONEER\nIN POWER",
+            "imageAlt": "About Stetsom"
+          },
+          "es": {
+            "label": "Nuestra historia",
+            "title": "SIEMPRE\nPIONERA\nEN POTENCIA",
+            "imageAlt": "Sobre Stetsom"
+          },
+          "stats": {
+            "pt": [
+              {
+                "value": "35+",
+                "label": "Anos de Mercado"
+              },
+              {
+                "value": "200+",
+                "label": "Produtos"
+              },
+              {
+                "value": "60+",
+                "label": "Países de Exportação"
+              },
+              {
+                "value": "1M+",
+                "label": "Unidades Vendidas"
+              }
+            ],
+            "en": [
+              {
+                "value": "35+",
+                "label": "Years in Business"
+              },
+              {
+                "value": "200+",
+                "label": "Products"
+              },
+              {
+                "value": "60+",
+                "label": "Export Countries"
+              },
+              {
+                "value": "1M+",
+                "label": "Units Sold"
+              }
+            ],
+            "es": [
+              {
+                "value": "35+",
+                "label": "Años de mercado"
+              },
+              {
+                "value": "200+",
+                "label": "Productos"
+              },
+              {
+                "value": "60+",
+                "label": "Países de exportación"
+              },
+              {
+                "value": "1M+",
+                "label": "Unidades vendidas"
+              }
+            ]
+          },
+          "milestones": {
+            "pt": [
+              "POTÊNCIA",
+              "QUALIDADE",
+              "INOVAÇÃO",
+              "FEITO NO BRASIL",
+              "DESDE 1989"
+            ],
+            "en": [
+              "POWER",
+              "QUALITY",
+              "INNOVATION",
+              "MADE IN BRAZIL",
+              "SINCE 1989"
+            ],
+            "es": [
+              "POTENCIA",
+              "CALIDAD",
+              "INNOVACIÓN",
+              "HECHO EN BRASIL",
+              "DESDE 1989"
+            ]
+          }
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "a4ce4cb4-c357-41dc-9523-815a85325df5",
+        "section_id": "quality",
+        "type": "TEXT",
+        "order": 2,
+        "data": {
+          "image_library_id": "6a252ce0d81bb6e1543f9a5f",
+          "pt": {
+            "label": "QUEM SOMOS",
+            "title": "QUALIDADE\nINOVADORA",
+            "description": "A Stetsom nasceu da paixão pelo som automotivo de alta performance. Ao longo de mais de três décadas, construímos uma reputação sólida no Brasil e no mundo.",
+            "imageAlt": "Qualidade Stetsom"
+          },
+          "en": {
+            "label": "WHO WE ARE",
+            "title": "INNOVATIVE\nQUALITY",
+            "description": "Stetsom was born from a passion for high-performance automotive audio. Over more than three decades, we have built a solid reputation in Brazil and worldwide.",
+            "imageAlt": "Stetsom Quality"
+          },
+          "es": {
+            "label": "QUIÉNES SOMOS",
+            "title": "CALIDAD\nINNOVADORA",
+            "description": "Stetsom nació de la pasión por el audio automotivo de alto rendimiento. A lo largo de más de tres décadas, construimos una sólida reputación en Brasil y en el mundo.",
+            "imageAlt": "Calidad Stetsom"
+          }
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "d7ef870d-6b45-4878-968e-8ee3b1e0e058",
+        "section_id": "values",
+        "type": "CARDS",
+        "order": 3,
+        "data": {
+          "items": [
+            {
+              "icon": "zap",
+              "pt": {
+                "title": "Potência",
+                "description": "Quando se fala em Stetsom, potência sem limite é nossa assinatura."
+              },
+              "en": {
+                "title": "Power",
+                "description": "When it comes to Stetsom, unlimited power is our signature."
+              },
+              "es": {
+                "title": "Potencia",
+                "description": "Cuando se habla de Stetsom, la potencia sin límite es nuestra firma."
+              }
+            },
+            {
+              "icon": "shield-check",
+              "pt": {
+                "title": "Qualidade",
+                "description": "Desde 1989 fazemos o melhor para fazer sempre melhor."
+              },
+              "en": {
+                "title": "Quality",
+                "description": "Since 1989 we do our best to always do better."
+              },
+              "es": {
+                "title": "Calidad",
+                "description": "Desde 1989 hacemos lo mejor para siempre mejorar."
+              }
+            },
+            {
+              "icon": "rocket",
+              "pt": {
+                "title": "Inovação",
+                "description": "Projetados para serem objetos de desejo, os produtos Stetsom ocupam lugar de destaque."
+              },
+              "en": {
+                "title": "Innovation",
+                "description": "Designed to be objects of desire, Stetsom products hold a prominent place."
+              },
+              "es": {
+                "title": "Innovación",
+                "description": "Diseñados para ser objetos de deseo, los productos Stetsom ocupan un lugar destacado."
+              }
+            }
+          ],
+          "bases": [
+            {
+              "pt": {
+                "title": "Excelência Técnica",
+                "description": "Cuidado extremo no design e fabricação de cada produto."
+              },
+              "en": {
+                "title": "Technical Excellence",
+                "description": "Extreme care in the design and manufacture of each product."
+              },
+              "es": {
+                "title": "Excelencia Técnica",
+                "description": "Cuidado extremo en el diseño y fabricación de cada producto."
+              }
+            },
+            {
+              "pt": {
+                "title": "Compromisso com o Cliente",
+                "description": "Cada cliente é único. Em um mercado competitivo, escutar e evoluir com o cliente é parte do nosso DNA."
+              },
+              "en": {
+                "title": "Customer Commitment",
+                "description": "Every customer is unique. Listening and evolving with the customer is part of our DNA."
+              },
+              "es": {
+                "title": "Compromiso con el Cliente",
+                "description": "Cada cliente es único. Escuchar y evolucionar con el cliente es parte de nuestro ADN."
+              }
+            },
+            {
+              "pt": {
+                "title": "Inovação Contínua",
+                "description": "P&D constante para desenvolver soluções que surpreendem."
+              },
+              "en": {
+                "title": "Continuous Innovation",
+                "description": "Constant R&D to develop solutions that surprise."
+              },
+              "es": {
+                "title": "Innovación Continua",
+                "description": "I+D constante para desarrollar soluciones que sorprenden."
+              }
+            }
+          ]
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "e07e70c9-b15d-4b54-9ad3-d8b12bd2dc82",
+        "section_id": "timeline",
+        "type": "TIMELINE",
+        "order": 4,
+        "data": {
+          "events": [
+            {
+              "year": 1989,
+              "image_library_id": "6a252ce0d81bb6e1543f9a61",
+              "pt": {
+                "title": "Fundação",
+                "shortTitle": "COMEÇO DA STETSOM",
+                "description": "A Stetsom nasce com foco em amplificação automotiva e qualidade de engenharia."
+              },
+              "en": {
+                "title": "Foundation",
+                "shortTitle": "STETSOM BEGINS",
+                "description": "Stetsom is born with a focus on automotive amplification and engineering quality."
+              },
+              "es": {
+                "title": "Fundación",
+                "shortTitle": "COMIENZO DE STETSOM",
+                "description": "Stetsom nace con foco en amplificación automotiva y calidad de ingeniería."
+              }
+            },
+            {
+              "year": 1999,
+              "image_library_id": "6a252ce0d81bb6e1543f9a62",
+              "pt": {
+                "title": "Linha Booster",
+                "shortTitle": "LINHA BOOSTER",
+                "description": "A linha Booster fortalece a marca entre instaladores e profissionais de áudio em todo o Brasil."
+              },
+              "en": {
+                "title": "Booster Line",
+                "shortTitle": "BOOSTER LINE",
+                "description": "The Booster line strengthens the brand among installers and audio professionals across Brazil."
+              },
+              "es": {
+                "title": "Línea Booster",
+                "shortTitle": "LÍNEA BOOSTER",
+                "description": "La línea Booster fortalece la marca entre instaladores y profesionales de audio en todo Brasil."
+              }
+            },
+            {
+              "year": 2002,
+              "image_library_id": "6a252ce0d81bb6e1543f9a63",
+              "pt": {
+                "title": "Antenas & Crossovers",
+                "shortTitle": "ANTENAS & CROSSOVER",
+                "description": "Expansão do portfólio com antenas e crossovers de alta fidelidade."
+              },
+              "en": {
+                "title": "Antennas & Crossovers",
+                "shortTitle": "ANTENNAS & CROSSOVER",
+                "description": "Portfolio expansion with high-fidelity antennas and crossovers."
+              },
+              "es": {
+                "title": "Antenas y Crossovers",
+                "shortTitle": "ANTENAS Y CROSSOVER",
+                "description": "Expansión del portafolio con antenas y crossovers de alta fidelidad."
+              }
+            },
+            {
+              "year": 2007,
+              "image_library_id": "6a252ce0d81bb6e1543f9a64",
+              "pt": {
+                "title": "Melhor Amplificador do Mundo",
+                "shortTitle": "MELHOR AMPLIFICADOR",
+                "description": "Reconhecida internacionalmente, a Stetsom conquista o título de melhor amplificador do mundo."
+              },
+              "en": {
+                "title": "World's Best Amplifier",
+                "shortTitle": "BEST AMPLIFIER",
+                "description": "Internationally recognized, Stetsom wins the title of the world's best amplifier."
+              },
+              "es": {
+                "title": "Mejor Amplificador del Mundo",
+                "shortTitle": "MEJOR AMPLIFICADOR",
+                "description": "Reconocida internacionalmente, Stetsom conquista el título de mejor amplificador del mundo."
+              }
+            },
+            {
+              "year": 2014,
+              "image_library_id": "6a252ce0d81bb6e1543f9a65",
+              "pt": {
+                "title": "Era Digital",
+                "shortTitle": "ERA DIGITAL",
+                "description": "Nova fase digital com foco em experiência omnichannel para distribuidores e consumidores."
+              },
+              "en": {
+                "title": "Digital Era",
+                "shortTitle": "DIGITAL ERA",
+                "description": "New digital phase focused on omnichannel experience for distributors and consumers."
+              },
+              "es": {
+                "title": "Era Digital",
+                "shortTitle": "ERA DIGITAL",
+                "description": "Nueva fase digital con foco en experiencia omnicanal para distribuidores y consumidores."
+              }
+            }
+          ]
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "f2091fc4-6da9-41a2-8342-3fbef466857b",
+        "section_id": "jobs-cta",
+        "type": "TEXT",
+        "order": 5,
+        "data": {
+          "image_library_id": "6a252ce0d81bb6e1543f9a60",
+          "pt": {
+            "label": "Trabalhe Conosco",
+            "title": "VENHA FAZER PARTE DA STETSOM",
+            "description": "Buscamos profissionais apaixonados que compartilham nossa visão de inovação e excelência.",
+            "buttonLabel": "Ver Vagas no LinkedIn",
+            "buttonHref": "https://www.linkedin.com/company/stetsom/jobs/",
+            "imageAlt": "Trabalhe Conosco"
+          },
+          "en": {
+            "label": "Work With Us",
+            "title": "COME BE PART OF STETSOM",
+            "description": "We are looking for passionate professionals who share our vision of innovation and excellence.",
+            "buttonLabel": "View Jobs on LinkedIn",
+            "buttonHref": "https://www.linkedin.com/company/stetsom/jobs/",
+            "imageAlt": "Work With Us"
+          },
+          "es": {
+            "label": "Trabaja Con Nosotros",
+            "title": "VEN A SER PARTE DE STETSOM",
+            "description": "Buscamos profesionales apasionados que compartan nuestra visión de innovación y excelencia.",
+            "buttonLabel": "Ver Vacantes en LinkedIn",
+            "buttonHref": "https://www.linkedin.com/company/stetsom/jobs/",
+            "imageAlt": "Trabaja Con Nosotros"
+          }
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "37cfcb18-f7d2-4561-a24f-6f82e360ce80",
+        "section_id": "social",
+        "type": "GALLERY",
+        "order": 6,
+        "data": {
+          "handle": "@STETSOMBRASIL",
+          "ctaHref": "https://instagram.com/stetsombrasil",
+          "pt": {
+            "title": "MÍDIAS SOCIAIS",
+            "subtitle": "Participe da comunidade de profissionais do áudio.",
+            "ctaLabel": "Seguir no Instagram"
+          },
+          "en": {
+            "title": "SOCIAL MEDIA",
+            "subtitle": "Join the community of audio professionals.",
+            "ctaLabel": "Follow on Instagram"
+          },
+          "es": {
+            "title": "REDES SOCIALES",
+            "subtitle": "Únase a la comunidad de profesionales del audio.",
+            "ctaLabel": "Seguir en Instagram"
+          }
+        },
+        "available_locales": []
+      }
+    ],
+    "updated_at": "2026-06-07T08:33:36.755Z"
   },
   "pages--catalog--cms": {
-    "id": "page-catalog",
+    "id": "6a252ce0d81bb6e1543f9a90",
     "slug": "catalog",
     "title": {
-      "pt": "Catálogo de produtos",
-      "en": "Catálogo de produtos",
-      "es": "Catálogo de produtos"
+      "pt": "Catálogo",
+      "en": "Catalog",
+      "es": "Catálogo"
     },
-    "blocks": [],
-    "updated_at": "2026-06-07T08:00:00.000Z"
+    "blocks": [
+      {
+        "block_id": "ff9dd5c2-128e-465c-b2b8-e819d5d9c96d",
+        "section_id": "hero",
+        "type": "TEXT",
+        "order": 1,
+        "data": {
+          "pt": {
+            "heroLabel": "Produtos",
+            "heroTitle": "NOSSO\nCATÁLOGO",
+            "heroImageAlt": "Catálogo Stetsom",
+            "heroWatermark": "STETSOM"
+          },
+          "en": {
+            "heroLabel": "Products",
+            "heroTitle": "OUR\nCATALOG",
+            "heroImageAlt": "Stetsom Catalog",
+            "heroWatermark": "STETSOM"
+          },
+          "es": {
+            "heroLabel": "Productos",
+            "heroTitle": "NUESTRO\nCATÁLOGO",
+            "heroImageAlt": "Catálogo Stetsom",
+            "heroWatermark": "STETSOM"
+          }
+        },
+        "available_locales": []
+      }
+    ],
+    "updated_at": "2026-06-07T08:33:36.769Z"
   },
   "pages--support--cms": {
-    "id": "page-support",
+    "id": "6a252ce0d81bb6e1543f9a91",
     "slug": "support",
     "title": {
-      "pt": "Suporte técnico",
-      "en": "Suporte técnico",
-      "es": "Suporte técnico"
+      "pt": "Suporte",
+      "en": "Support",
+      "es": "Soporte"
     },
-    "blocks": [],
-    "updated_at": "2026-06-07T08:00:00.000Z"
+    "blocks": [
+      {
+        "block_id": "d60dcb92-ac3e-49c1-b54b-9f81ed638d6d",
+        "section_id": "hero",
+        "type": "TEXT",
+        "order": 1,
+        "data": {
+          "image_library_id": "6a252ce0d81bb6e1543f9a5e",
+          "pt": {
+            "label": "Central de Suporte",
+            "title": "COMO PODEMOS\nAJUDAR?",
+            "description": "Encontre manuais, assistência técnica autorizada e tire suas dúvidas.",
+            "watermarkText": "SUPORTE"
+          },
+          "en": {
+            "label": "Support Center",
+            "title": "HOW CAN\nWE HELP?",
+            "description": "Find manuals, authorized technical assistance and get your questions answered.",
+            "watermarkText": "SUPPORT"
+          },
+          "es": {
+            "label": "Centro de Soporte",
+            "title": "¿CÓMO PODEMOS\nAYUDAR?",
+            "description": "Encuentre manuales, asistencia técnica autorizada y resuelva sus dudas.",
+            "watermarkText": "SOPORTE"
+          }
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "e83b2ae3-e5b8-42bf-a814-bfc017b9fd7b",
+        "section_id": "cards",
+        "type": "CARDS",
+        "order": 2,
+        "data": {
+          "items": [
+            {
+              "pt": {
+                "title": "Manuais & Downloads",
+                "description": "Acesse manuais técnicos, catálogos, fotos e logos.",
+                "cta": "Acessar"
+              },
+              "en": {
+                "title": "Manuals & Downloads",
+                "description": "Access technical manuals, catalogs, product photos and logos.",
+                "cta": "Access"
+              },
+              "es": {
+                "title": "Manuales y Descargas",
+                "description": "Accede a manuales técnicos, catálogos, fotos y logos.",
+                "cta": "Acceder"
+              }
+            },
+            {
+              "pt": {
+                "title": "Postos Autorizados",
+                "description": "Encontre a assistência técnica autorizada mais próxima.",
+                "cta": "Localizar"
+              },
+              "en": {
+                "title": "Authorized Centers",
+                "description": "Find the nearest authorized service center.",
+                "cta": "Locate"
+              },
+              "es": {
+                "title": "Centros Autorizados",
+                "description": "Encuentra el centro de servicio técnico autorizado más cercano.",
+                "cta": "Localizar"
+              }
+            },
+            {
+              "pt": {
+                "title": "Fale Conosco",
+                "description": "Entre em contato com nossa equipe de suporte técnico.",
+                "cta": "Contato"
+              },
+              "en": {
+                "title": "Contact Us",
+                "description": "Get in touch with our technical support team.",
+                "cta": "Contact"
+              },
+              "es": {
+                "title": "Contáctanos",
+                "description": "Ponte en contacto con nuestro equipo de soporte técnico.",
+                "cta": "Contacto"
+              }
+            }
+          ]
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "60532f2a-f159-4e1a-ad9e-aa2c07de5b15",
+        "section_id": "faq",
+        "type": "FAQ",
+        "order": 3,
+        "data": {
+          "items": [
+            {
+              "q": {
+                "pt": "Como instalar meu amplificador?",
+                "en": "How do I install my amplifier?",
+                "es": "¿Cómo instalo mi amplificador?"
+              },
+              "a": {
+                "pt": "Siga o manual incluso e procure um instalador autorizado Stetsom.",
+                "en": "Follow the included manual and look for an authorized Stetsom installer.",
+                "es": "Siga el manual incluido y busque un instalador autorizado Stetsom."
+              }
+            },
+            {
+              "q": {
+                "pt": "Qual a diferença entre 1 Ohm e 2 Ohms?",
+                "en": "What is the difference between 1 Ohm and 2 Ohms?",
+                "es": "¿Cuál es la diferencia entre 1 Ohm y 2 Ohms?"
+              },
+              "a": {
+                "pt": "Impedâncias menores permitem maior potência de saída.",
+                "en": "Lower impedances allow higher power output.",
+                "es": "Impedancias menores permiten mayor potencia de salida."
+              }
+            },
+            {
+              "q": {
+                "pt": "Como verificar a garantia?",
+                "en": "How do I check the warranty?",
+                "es": "¿Cómo verifico la garantía?"
+              },
+              "a": {
+                "pt": "Na central de garantia da Stetsom, informe o número de série.",
+                "en": "At Stetsom's warranty center, enter the serial number.",
+                "es": "En el centro de garantía de Stetsom, ingrese el número de serie."
+              }
+            },
+            {
+              "q": {
+                "pt": "Onde encontrar distribuidores autorizados?",
+                "en": "Where to find authorized distributors?",
+                "es": "¿Dónde encontrar distribuidores autorizados?"
+              },
+              "a": {
+                "pt": "Temos mais de 500 distribuidores no Brasil. Use o localizador no suporte.",
+                "en": "We have over 500 distributors in Brazil. Use the locator in support.",
+                "es": "Tenemos más de 500 distribuidores en Brasil. Use el localizador en el soporte."
+              }
+            },
+            {
+              "q": {
+                "pt": "Qual a diferença entre amplificador e processador?",
+                "en": "What is the difference between an amplifier and a processor?",
+                "es": "¿Cuál es la diferencia entre amplificador y procesador?"
+              },
+              "a": {
+                "pt": "Amplificadores amplificam sinais de áudio. Processadores trabalham no controle de frequência.",
+                "en": "Amplifiers amplify audio signals. Processors work on frequency control.",
+                "es": "Los amplificadores amplían señales de audio. Los procesadores trabajan en el control de frecuencia."
+              }
+            },
+            {
+              "q": {
+                "pt": "Posso usar fonte diferente da recomendada?",
+                "en": "Can I use a different power supply than recommended?",
+                "es": "¿Puedo usar una fuente diferente a la recomendada?"
+              },
+              "a": {
+                "pt": "Recomendamos usar fontes Stetsom de especificações iguais.",
+                "en": "We recommend using Stetsom power supplies with equal specifications.",
+                "es": "Recomendamos usar fuentes Stetsom de especificaciones iguales."
+              }
+            }
+          ],
+          "section": {
+            "pt": {
+              "label": "Perguntas Frequentes",
+              "title": "TIRE SUAS DÚVIDAS",
+              "supportButtonLabel": "Falar com suporte"
+            },
+            "en": {
+              "label": "FAQ",
+              "title": "GET YOUR ANSWERS",
+              "supportButtonLabel": "Talk to support"
+            },
+            "es": {
+              "label": "Preguntas Frecuentes",
+              "title": "RESUELVA SUS DUDAS",
+              "supportButtonLabel": "Hablar con soporte"
+            }
+          }
+        },
+        "available_locales": []
+      },
+      {
+        "block_id": "5958067f-1c71-43d1-a4ee-dc8b76607f10",
+        "section_id": "contact",
+        "type": "TEXT",
+        "order": 4,
+        "data": {
+          "pt": {
+            "label": "Fale com a Stetsom",
+            "title": "ENTRE EM CONTATO",
+            "description": "Nossa equipe está pronta para atender você."
+          },
+          "en": {
+            "label": "Talk to Stetsom",
+            "title": "GET IN TOUCH",
+            "description": "Our team is ready to serve you."
+          },
+          "es": {
+            "label": "Habla con Stetsom",
+            "title": "CONTÁCTANOS",
+            "description": "Nuestro equipo está listo para atenderle."
+          }
+        },
+        "available_locales": []
+      }
+    ],
+    "updated_at": "2026-06-07T08:33:36.778Z"
+  },
+  "products--admin--6a252ce0d81bb6e1543f9a89": {
+    "product": {
+      "id": "6a252ce0d81bb6e1543f9a89",
+      "sku": null,
+      "name": {
+        "pt": "ST-9000.1D MONO (Draft)",
+        "en": "ST-9000.1D MONO (Draft)",
+        "es": "ST-9000.1D MONO (Draft)"
+      },
+      "slug": {
+        "pt": "st-9000-1d-mono-draft",
+        "en": "st-9000-1d-mono-draft",
+        "es": "st-9000-1d-mono-draft"
+      },
+      "description": {
+        "pt": "Em desenvolvimento.",
+        "en": "Under development."
+      },
+      "status": "DRAFT",
+      "is_discontinued": false,
+      "launch_date": null,
+      "is_featured": false,
+      "is_spotlight": false,
+      "available_locales": [],
+      "category_id": "6a252ce0d81bb6e1543f9a78",
+      "line_id": null,
+      "template_id": null,
+      "highlight_attributes": [],
+      "images": [],
+      "variants": [],
+      "page_blocks": [],
+      "files": [],
+      "created_at": "2026-06-07T08:33:36.683Z",
+      "updated_at": "2026-06-07T08:33:36.683Z",
+      "created_by": "6a22a8724e9ea2e51f22dd4b"
+    },
+    "category": {
+      "id": "6a252ce0d81bb6e1543f9a78",
+      "name": {
+        "pt": "Amplificadores",
+        "en": "Amplifiers",
+        "es": "Amplificadores"
+      },
+      "slug": {
+        "pt": "amplificadores",
+        "en": "amplifiers",
+        "es": "amplificadores"
+      },
+      "lines": [
+        {
+          "line_id": "2b489628-f47d-458b-b8a5-a50c800369ae",
+          "name": {
+            "pt": "Full Range",
+            "en": "Full Range",
+            "es": "Full Range"
+          },
+          "slug": {
+            "pt": "full-range",
+            "en": "full-range",
+            "es": "full-range"
+          },
+          "order": 1
+        },
+        {
+          "line_id": "56933acd-e0d4-4ee0-b7d3-bebb8e8eb926",
+          "name": {
+            "pt": "Mono",
+            "en": "Mono",
+            "es": "Mono"
+          },
+          "slug": {
+            "pt": "mono",
+            "en": "mono",
+            "es": "mono"
+          },
+          "order": 2
+        }
+      ],
+      "order": 1,
+      "created_at": "2026-06-07T08:33:36.517Z",
+      "updated_at": "2026-06-07T08:33:36.517Z"
+    }
   }
 }
