@@ -1,4 +1,4 @@
-import type { TechnicalAssistance } from "@/api/stetsom/model";
+import type { PartnerLocation } from "@/api/stetsom/model";
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
 import { MapPin } from "lucide-react";
@@ -8,7 +8,7 @@ import Image from "next/image";
 const DEFAULT_MAP_IMAGE = "/figma-assets/raw/fill_KULSWW_74ec6dcf.png";
 
 interface SupportServiceCentersProps {
-  serviceCenters: TechnicalAssistance[];
+  serviceCenters: PartnerLocation[];
   mapImage?: string;
 }
 

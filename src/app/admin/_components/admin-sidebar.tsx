@@ -15,7 +15,6 @@ import {
   Package,
   Settings,
   Users,
-  Wrench,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -32,8 +31,7 @@ const MAIN_NAV: {
   { href: "/admin/paginas", label: "Páginas", icon: FileText },
   { href: "/admin/biblioteca", label: "Biblioteca", icon: Archive },
   { href: "/admin/banners", label: "Banners", icon: Image },
-  { href: "/admin/representantes", label: "Representantes", icon: Building2 },
-  { href: "/admin/assistencias", label: "Assist. Técnicas", icon: Wrench },
+  { href: "/admin/parceiros", label: "Parceiros", icon: Building2 },
 ];
 
 const BOTTOM_NAV: { href: string; label: string; icon: LucideIcon }[] = [

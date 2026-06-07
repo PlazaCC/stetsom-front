@@ -5,42 +5,44 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { PostApiPartnerLocationsBodyType } from "./postApiPartnerLocationsBodyType";
 
-export type PatchApiTechnicalAssistancesIdBody = {
+export type PostApiPartnerLocationsBody = {
+  type: PostApiPartnerLocationsBodyType;
   /**
    * @minLength 1
    * @maxLength 200
    */
-  name?: string;
+  name: string;
   /**
    * @minLength 1
    * @maxLength 500
    */
-  address?: string;
+  address: string;
   /**
    * @minLength 1
    * @maxLength 100
    */
-  city?: string;
+  city: string;
   /**
    * @minLength 2
    * @maxLength 2
    */
-  state?: string;
+  state: string;
   /**
    * @minLength 8
    * @maxLength 9
    */
-  zip?: string;
+  zip: string;
   /** @nullable */
   lat?: number | null;
   /** @nullable */
   lng?: number | null;
   /**
-   * @minLength 1
    * @maxLength 20
+   * @nullable
    */
-  phone?: string;
+  phone?: string | null;
   /**
    * @maxLength 20
    * @nullable
@@ -51,6 +53,13 @@ export type PatchApiTechnicalAssistancesIdBody = {
    * @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
    */
   email?: string | null;
+  /** @nullable */
+  website?: string | null;
+  /**
+   * @maxLength 100
+   * @nullable
+   */
+  region?: string | null;
   /**
    * @maxLength 200
    * @nullable

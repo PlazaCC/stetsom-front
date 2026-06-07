@@ -1,4 +1,4 @@
-import type { PagePayload, TechnicalAssistance } from "@/api/stetsom/model";
+import type { PagePayload, PartnerLocation } from "@/api/stetsom/model";
 import { serverOrvalClient } from "@/api/stetsom/orval-server";
 import { toApiLocale } from "@/lib/api/i18n-utils";
 import {
@@ -22,7 +22,7 @@ export default async function SuportePage() {
   const locale = await getLocale();
   const apiLocale = toApiLocale(locale);
 
-  const [pageRes, assistancesRes] = await Promise.all([
+  const [pageRes, serviceCenters] = await Promise.all([
     serverOrvalClient<PagePayload>({
       method: "GET",
       url: "/api/pages/support",
@@ -37,10 +37,11 @@ export default async function SuportePage() {
           updated_at: "",
         }) as PagePayload,
     ),
-    serverOrvalClient<{ items: TechnicalAssistance[]; total: number }>({
+    serverOrvalClient<PartnerLocation[]>({
       method: "GET",
-      url: "/api/technical-assistances",
-    }).catch(() => ({ items: [], total: 0 })),
+      url: "/api/partner-locations",
+      params: { type: "SERVICE_CENTER" },
+    }).catch(() => [] as PartnerLocation[]),
   ]);
 
   const blocks = pageRes.blocks ?? [];
@@ -84,7 +85,7 @@ export default async function SuportePage() {
         }}
       />
       <SupportServiceCenters
-        serviceCenters={assistancesRes.items}
+        serviceCenters={serviceCenters}
         mapImage={mapData.mapImage}
       />
       {docData.categories?.length || docData.files?.length ? (

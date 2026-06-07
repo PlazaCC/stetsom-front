@@ -24,9 +24,8 @@ export * from "./endpoints/dashboard/dashboard";
 export * from "./endpoints/library/library";
 export * from "./endpoints/messages/messages";
 export * from "./endpoints/pages/pages";
+export * from "./endpoints/partner-locations/partner-locations";
 export * from "./endpoints/products/products";
-export * from "./endpoints/representatives/representatives";
-export * from "./endpoints/service-centers/service-centers";
 export * from "./endpoints/templates/templates";
 export * from "./endpoints/upload/upload";
 export * from "./endpoints/users/users";
@@ -35,9 +34,8 @@ export * from "./endpoints/users/users";
 export * from "./endpoints/banners-public/banners-public";
 export * from "./endpoints/categories-public/categories-public";
 export * from "./endpoints/pages-public/pages-public";
+export * from "./endpoints/partner-locations-public/partner-locations-public";
 export * from "./endpoints/products-public/products-public";
-export * from "./endpoints/representatives-public/representatives-public";
-export * from "./endpoints/service-centers-public/service-centers-public";
 
 // ── Error helpers ─────────────────────────────────────────────────────────────
 export { OrvalApiError, toApiError } from "./orval-client";

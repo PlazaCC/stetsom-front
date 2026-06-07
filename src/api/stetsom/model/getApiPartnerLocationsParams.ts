@@ -5,9 +5,12 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { GetApiPartnerLocationsType } from "./getApiPartnerLocationsType";
 
-export type GetApiRepresentativesParams = {
+export type GetApiPartnerLocationsParams = {
+  type?: GetApiPartnerLocationsType;
   state?: string;
   region?: string;
+  specialty?: string;
   is_active?: boolean;
 };

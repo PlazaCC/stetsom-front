@@ -18,40 +18,43 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { GetApiRepresentativesParams, Representative } from "../../model";
+import type {
+  GetApiPartnerLocationsParams,
+  PartnerLocation,
+} from "../../model";
 
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary List representatives
+ * @summary List partner locations
  */
-export const getApiRepresentatives = (
-  params?: GetApiRepresentativesParams,
+export const getApiPartnerLocations = (
+  params?: GetApiPartnerLocationsParams,
   signal?: AbortSignal,
 ) => {
-  return orvalClient<Representative[]>({
-    url: `/api/representatives`,
+  return orvalClient<PartnerLocation[]>({
+    url: `/api/partner-locations`,
     method: "GET",
     params,
     signal,
   });
 };
 
-export const getGetApiRepresentativesQueryKey = (
-  params?: GetApiRepresentativesParams,
+export const getGetApiPartnerLocationsQueryKey = (
+  params?: GetApiPartnerLocationsParams,
 ) => {
-  return [`/api/representatives`, ...(params ? [params] : [])] as const;
+  return [`/api/partner-locations`, ...(params ? [params] : [])] as const;
 };
 
-export const getGetApiRepresentativesQueryOptions = <
-  TData = Awaited<ReturnType<typeof getApiRepresentatives>>,
+export const getGetApiPartnerLocationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiPartnerLocations>>,
   TError = unknown,
 >(
-  params?: GetApiRepresentativesParams,
+  params?: GetApiPartnerLocationsParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getApiRepresentatives>>,
+        Awaited<ReturnType<typeof getApiPartnerLocations>>,
         TError,
         TData
       >
@@ -61,42 +64,42 @@ export const getGetApiRepresentativesQueryOptions = <
   const { query: queryOptions } = options ?? {};
 
   const queryKey =
-    queryOptions?.queryKey ?? getGetApiRepresentativesQueryKey(params);
+    queryOptions?.queryKey ?? getGetApiPartnerLocationsQueryKey(params);
 
   const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getApiRepresentatives>>
-  > = ({ signal }) => getApiRepresentatives(params, signal);
+    Awaited<ReturnType<typeof getApiPartnerLocations>>
+  > = ({ signal }) => getApiPartnerLocations(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getApiRepresentatives>>,
+    Awaited<ReturnType<typeof getApiPartnerLocations>>,
     TError,
     TData
   > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
-export type GetApiRepresentativesQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getApiRepresentatives>>
+export type GetApiPartnerLocationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiPartnerLocations>>
 >;
-export type GetApiRepresentativesQueryError = unknown;
+export type GetApiPartnerLocationsQueryError = unknown;
 
-export function useGetApiRepresentatives<
-  TData = Awaited<ReturnType<typeof getApiRepresentatives>>,
+export function useGetApiPartnerLocations<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocations>>,
   TError = unknown,
 >(
-  params: undefined | GetApiRepresentativesParams,
+  params: undefined | GetApiPartnerLocationsParams,
   options: {
     query: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getApiRepresentatives>>,
+        Awaited<ReturnType<typeof getApiPartnerLocations>>,
         TError,
         TData
       >
     > &
       Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiRepresentatives>>,
+          Awaited<ReturnType<typeof getApiPartnerLocations>>,
           TError,
-          Awaited<ReturnType<typeof getApiRepresentatives>>
+          Awaited<ReturnType<typeof getApiPartnerLocations>>
         >,
         "initialData"
       >;
@@ -105,24 +108,24 @@ export function useGetApiRepresentatives<
 ): DefinedUseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 };
-export function useGetApiRepresentatives<
-  TData = Awaited<ReturnType<typeof getApiRepresentatives>>,
+export function useGetApiPartnerLocations<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocations>>,
   TError = unknown,
 >(
-  params?: GetApiRepresentativesParams,
+  params?: GetApiPartnerLocationsParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getApiRepresentatives>>,
+        Awaited<ReturnType<typeof getApiPartnerLocations>>,
         TError,
         TData
       >
     > &
       Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiRepresentatives>>,
+          Awaited<ReturnType<typeof getApiPartnerLocations>>,
           TError,
-          Awaited<ReturnType<typeof getApiRepresentatives>>
+          Awaited<ReturnType<typeof getApiPartnerLocations>>
         >,
         "initialData"
       >;
@@ -131,15 +134,15 @@ export function useGetApiRepresentatives<
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 };
-export function useGetApiRepresentatives<
-  TData = Awaited<ReturnType<typeof getApiRepresentatives>>,
+export function useGetApiPartnerLocations<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocations>>,
   TError = unknown,
 >(
-  params?: GetApiRepresentativesParams,
+  params?: GetApiPartnerLocationsParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getApiRepresentatives>>,
+        Awaited<ReturnType<typeof getApiPartnerLocations>>,
         TError,
         TData
       >
@@ -150,18 +153,18 @@ export function useGetApiRepresentatives<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary List representatives
+ * @summary List partner locations
  */
 
-export function useGetApiRepresentatives<
-  TData = Awaited<ReturnType<typeof getApiRepresentatives>>,
+export function useGetApiPartnerLocations<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocations>>,
   TError = unknown,
 >(
-  params?: GetApiRepresentativesParams,
+  params?: GetApiPartnerLocationsParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getApiRepresentatives>>,
+        Awaited<ReturnType<typeof getApiPartnerLocations>>,
         TError,
         TData
       >
@@ -171,7 +174,7 @@ export function useGetApiRepresentatives<
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
-  const queryOptions = getGetApiRepresentativesQueryOptions(params, options);
+  const queryOptions = getGetApiPartnerLocationsQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,

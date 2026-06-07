@@ -1,5 +1,16 @@
 "use client";
 
+import {
+  deleteApiPartnerLocationsId,
+  getGetApiPartnerLocationsQueryKey,
+  patchApiPartnerLocationsId,
+  postApiPartnerLocations,
+  useGetApiPartnerLocations,
+  type PartnerLocation,
+  type PartnerLocationType,
+  type PatchApiPartnerLocationsIdBody,
+  type PostApiPartnerLocationsBody,
+} from "@/api/stetsom";
 import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
 import {
   AdminDataTable,
@@ -11,20 +22,40 @@ import {
   AdminLabel,
 } from "@/app/admin/_components/crud/admin-input";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
-import {
-  deleteApiTechnicalAssistancesId,
-  getGetApiTechnicalAssistancesQueryKey,
-  patchApiTechnicalAssistancesId,
-  postApiTechnicalAssistances,
-  useGetApiTechnicalAssistances,
-  type PatchApiTechnicalAssistancesIdBody,
-  type PostApiTechnicalAssistancesBody,
-  type TechnicalAssistance,
-} from "@/api/stetsom";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Wrench } from "lucide-react";
+import { Building2, Plus, Wrench, type LucideIcon } from "lucide-react";
 import { useState } from "react";
+
+const TABS: {
+  type: PartnerLocationType;
+  label: string;
+  icon: LucideIcon;
+  /** Singular noun used in dialog/button copy. */
+  noun: string;
+  createLabel: string;
+  emptyTitle: string;
+  emptyDescription: string;
+}[] = [
+  {
+    type: "REPRESENTATIVE",
+    label: "Representantes",
+    icon: Building2,
+    noun: "representante",
+    createLabel: "Novo representante",
+    emptyTitle: "Nenhum representante cadastrado",
+    emptyDescription: "Crie um representante para exibir no site.",
+  },
+  {
+    type: "SERVICE_CENTER",
+    label: "Assist. Técnicas",
+    icon: Wrench,
+    noun: "assistência",
+    createLabel: "Nova assistência",
+    emptyTitle: "Nenhuma assistência cadastrada",
+    emptyDescription: "Crie uma assistência técnica para exibir no site.",
+  },
+];
 
 function StatusBadge({ active }: { active: boolean }) {
   return (
@@ -41,58 +72,63 @@ function StatusBadge({ active }: { active: boolean }) {
   );
 }
 
-interface AssistanceFormProps {
-  assistance?: TechnicalAssistance;
+interface PartnerLocationFormProps {
+  type: PartnerLocationType;
+  location?: PartnerLocation;
   onClose: () => void;
-  onSave: (
-    data: PostApiTechnicalAssistancesBody | PatchApiTechnicalAssistancesIdBody,
-  ) => void;
+  onSave: (data: PostApiPartnerLocationsBody) => void;
   isPending: boolean;
 }
 
-function AssistanceForm({
-  assistance,
+function PartnerLocationForm({
+  type,
+  location,
   onClose,
   onSave,
   isPending,
-}: AssistanceFormProps) {
-  const [name, setName] = useState(assistance?.name ?? "");
-  const [address, setAddress] = useState(assistance?.address ?? "");
-  const [city, setCity] = useState(assistance?.city ?? "");
-  const [state, setState] = useState(assistance?.state ?? "");
-  const [zip, setZip] = useState(assistance?.zip ?? "");
-  const [phone, setPhone] = useState(assistance?.phone ?? "");
-  const [email, setEmail] = useState(assistance?.email ?? "");
-  const [specialty, setSpecialty] = useState(assistance?.specialty ?? "");
+}: PartnerLocationFormProps) {
+  const isRepresentative = type === "REPRESENTATIVE";
+  const [name, setName] = useState(location?.name ?? "");
+  const [address, setAddress] = useState(location?.address ?? "");
+  const [city, setCity] = useState(location?.city ?? "");
+  const [state, setState] = useState(location?.state ?? "");
+  const [zip, setZip] = useState(location?.zip ?? "");
+  const [phone, setPhone] = useState(location?.phone ?? "");
+  const [email, setEmail] = useState(location?.email ?? "");
+  const [website, setWebsite] = useState(location?.website ?? "");
+  const [region, setRegion] = useState(location?.region ?? "");
+  const [specialty, setSpecialty] = useState(location?.specialty ?? "");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const body:
-      | PostApiTechnicalAssistancesBody
-      | PatchApiTechnicalAssistancesIdBody = {
+    onSave({
+      type,
       name,
       address,
       city,
       state,
       zip,
-      phone,
+      phone: phone || null,
       email: email || null,
+      website: website || null,
+      region: region || null,
       specialty: specialty || null,
-    };
-    onSave(body);
+    });
   }
+
+  const editing = !!location;
+  const title = isRepresentative
+    ? editing
+      ? "Editar Representante"
+      : "Novo Representante"
+    : editing
+      ? "Editar Assistência Técnica"
+      : "Nova Assistência Técnica";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4">
       <div className="w-full max-w-lg">
-        <AdminFormSection
-          title={
-            assistance
-              ? "Editar Assistência Técnica"
-              : "Nova Assistência Técnica"
-          }
-          className="shadow-xl"
-        >
+        <AdminFormSection title={title} className="shadow-xl">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <AdminLabel>Nome</AdminLabel>
@@ -140,18 +176,26 @@ function AssistanceForm({
                 />
               </div>
               <div>
-                <AdminLabel>Especialidade</AdminLabel>
-                <AdminInput
-                  value={specialty}
-                  onChange={(e) => setSpecialty(e.target.value)}
-                />
+                <AdminLabel>
+                  {isRepresentative ? "Região" : "Especialidade"}
+                </AdminLabel>
+                {isRepresentative ? (
+                  <AdminInput
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                  />
+                ) : (
+                  <AdminInput
+                    value={specialty}
+                    onChange={(e) => setSpecialty(e.target.value)}
+                  />
+                )}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <AdminLabel>Telefone</AdminLabel>
                 <AdminInput
-                  required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                 />
@@ -164,6 +208,13 @@ function AssistanceForm({
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
+            </div>
+            <div>
+              <AdminLabel>Website</AdminLabel>
+              <AdminInput
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+              />
             </div>
             <div className="flex gap-3 pt-2">
               <button
@@ -188,25 +239,37 @@ function AssistanceForm({
   );
 }
 
-export default function AdminAssistenciasPage() {
+export default function AdminParceirosPage() {
   const queryClient = useQueryClient();
-  const { data: assistances = [], isLoading } = useGetApiTechnicalAssistances();
+  const [activeType, setActiveType] =
+    useState<PartnerLocationType>("REPRESENTATIVE");
+  const tab = TABS.find((t) => t.type === activeType) ?? TABS[0];
+
+  const { data: locations = [], isLoading } = useGetApiPartnerLocations({
+    type: activeType,
+  });
+
   const [formOpen, setFormOpen] = useState(false);
-  const [editing, setEditing] = useState<TechnicalAssistance | undefined>();
+  const [editing, setEditing] = useState<PartnerLocation | undefined>();
   const [deleteTarget, setDeleteTarget] = useState<
-    TechnicalAssistance | undefined
+    PartnerLocation | undefined
   >();
   const [toggleTarget, setToggleTarget] = useState<
-    TechnicalAssistance | undefined
+    PartnerLocation | undefined
   >();
 
+  function invalidate() {
+    // Invalidate every list variant — keeps both tabs fresh.
+    queryClient.invalidateQueries({
+      queryKey: getGetApiPartnerLocationsQueryKey(),
+    });
+  }
+
   const createMutation = useMutation({
-    mutationFn: (body: PostApiTechnicalAssistancesBody) =>
-      postApiTechnicalAssistances(body),
+    mutationFn: (body: PostApiPartnerLocationsBody) =>
+      postApiPartnerLocations(body),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: getGetApiTechnicalAssistancesQueryKey(),
-      });
+      invalidate();
       closeForm();
     },
   });
@@ -217,12 +280,10 @@ export default function AdminAssistenciasPage() {
       body,
     }: {
       id: string;
-      body: PatchApiTechnicalAssistancesIdBody;
-    }) => patchApiTechnicalAssistancesId(id, body),
+      body: PatchApiPartnerLocationsIdBody;
+    }) => patchApiPartnerLocationsId(id, body),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: getGetApiTechnicalAssistancesQueryKey(),
-      });
+      invalidate();
       closeForm();
     },
   });
@@ -233,22 +294,18 @@ export default function AdminAssistenciasPage() {
       body,
     }: {
       id: string;
-      body: PatchApiTechnicalAssistancesIdBody;
-    }) => patchApiTechnicalAssistancesId(id, body),
+      body: PatchApiPartnerLocationsIdBody;
+    }) => patchApiPartnerLocationsId(id, body),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: getGetApiTechnicalAssistancesQueryKey(),
-      });
+      invalidate();
       setToggleTarget(undefined);
     },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteApiTechnicalAssistancesId(id),
+    mutationFn: (id: string) => deleteApiPartnerLocationsId(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: getGetApiTechnicalAssistancesQueryKey(),
-      });
+      invalidate();
       setDeleteTarget(undefined);
     },
   });
@@ -258,8 +315,8 @@ export default function AdminAssistenciasPage() {
     setFormOpen(true);
   }
 
-  function openEdit(a: TechnicalAssistance) {
-    setEditing(a);
+  function openEdit(location: PartnerLocation) {
+    setEditing(location);
     setFormOpen(true);
   }
 
@@ -268,79 +325,76 @@ export default function AdminAssistenciasPage() {
     setEditing(undefined);
   }
 
-  function handleSave(
-    data: PostApiTechnicalAssistancesBody | PatchApiTechnicalAssistancesIdBody,
-  ) {
+  function handleSave(data: PostApiPartnerLocationsBody) {
     if (editing) {
-      updateMutation.mutate({
-        id: editing.id,
-        body: data as PatchApiTechnicalAssistancesIdBody,
-      });
+      updateMutation.mutate({ id: editing.id, body: data });
     } else {
-      createMutation.mutate(data as PostApiTechnicalAssistancesBody);
+      createMutation.mutate(data);
     }
   }
 
-  const columns: AdminTableColumn<TechnicalAssistance>[] = [
+  const columns: AdminTableColumn<PartnerLocation>[] = [
     {
       key: "name",
       header: "Nome",
-      render: (a) => (
-        <span className="font-medium text-foreground">{a.name}</span>
+      render: (l) => (
+        <span className="font-medium text-foreground">{l.name}</span>
       ),
     },
     {
       key: "city",
       header: "Cidade/UF",
-      render: (a) => (
+      render: (l) => (
         <span className="text-muted-foreground">
-          {a.city}/{a.state}
+          {l.city}/{l.state}
         </span>
       ),
     },
     {
       key: "phone",
       header: "Telefone",
-      render: (a) => (
-        <span className="text-muted-foreground">{a.phone ?? "—"}</span>
+      render: (l) => (
+        <span className="text-muted-foreground">{l.phone ?? "—"}</span>
       ),
     },
     {
-      key: "specialty",
-      header: "Especialidade",
-      render: (a) => (
-        <span className="text-muted-foreground">{a.specialty ?? "—"}</span>
+      key: "detail",
+      header: activeType === "REPRESENTATIVE" ? "Região" : "Especialidade",
+      render: (l) => (
+        <span className="text-muted-foreground">
+          {(activeType === "REPRESENTATIVE" ? l.region : l.specialty) ?? "—"}
+        </span>
       ),
     },
     {
       key: "is_active",
       header: "Status",
-      render: (a) => <StatusBadge active={a.is_active} />,
+      render: (l) => <StatusBadge active={l.is_active} />,
     },
     {
       key: "actions",
       header: "",
       headerClassName: "text-right",
       className: "text-right",
-      render: (a) => (
+      render: (l) => (
         <div className="flex items-center justify-end gap-3">
           <button
             type="button"
-            onClick={() => openEdit(a)}
+            onClick={() => openEdit(l)}
             className="text-xs font-medium text-brand hover:underline"
           >
             Editar
           </button>
           <button
             type="button"
-            onClick={() => setToggleTarget(a)}
+            onClick={() => setToggleTarget(l)}
             className="text-xs font-medium text-muted-foreground hover:underline"
           >
-            {a.is_active ? "Desativar" : "Ativar"}
+            {l.is_active ? "Desativar" : "Ativar"}
           </button>
           <button
             type="button"
-            onClick={() => setDeleteTarget(a)}
+            onClick={() => setDeleteTarget(l)}
             className="text-xs font-medium text-destructive hover:underline"
           >
             Excluir
@@ -353,8 +407,31 @@ export default function AdminAssistenciasPage() {
   return (
     <>
       <AdminListPage
-        title="Assistências Técnicas"
-        icon={Wrench}
+        title="Parceiros"
+        icon={Building2}
+        toolbar={
+          <nav className="flex gap-1 border-b border-border">
+            {TABS.map(({ type, label, icon: Icon }) => {
+              const active = type === activeType;
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setActiveType(type)}
+                  className={cn(
+                    "-mb-px flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors",
+                    active
+                      ? "border-brand text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <Icon className="size-4" />
+                  {label}
+                </button>
+              );
+            })}
+          </nav>
+        }
         action={
           <button
             type="button"
@@ -362,23 +439,24 @@ export default function AdminAssistenciasPage() {
             className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
           >
             <Plus className="size-4" />
-            Nova assistência
+            {tab.createLabel}
           </button>
         }
       >
         <AdminDataTable
           columns={columns}
-          data={assistances}
+          data={locations}
           isLoading={isLoading}
-          keyExtractor={(a) => a.id}
-          emptyTitle="Nenhuma assistência cadastrada"
-          emptyDescription="Crie uma assistência técnica para exibir no site."
+          keyExtractor={(l) => l.id}
+          emptyTitle={tab.emptyTitle}
+          emptyDescription={tab.emptyDescription}
         />
       </AdminListPage>
 
       {formOpen && (
-        <AssistanceForm
-          assistance={editing}
+        <PartnerLocationForm
+          type={editing?.type ?? activeType}
+          location={editing}
           onClose={closeForm}
           onSave={handleSave}
           isPending={createMutation.isPending || updateMutation.isPending}
@@ -389,10 +467,10 @@ export default function AdminAssistenciasPage() {
         open={!!toggleTarget}
         title={
           toggleTarget?.is_active
-            ? "Desativar assistência?"
-            : "Ativar assistência?"
+            ? `Desativar ${tab.noun}?`
+            : `Ativar ${tab.noun}?`
         }
-        description={`${toggleTarget?.name} será ${toggleTarget?.is_active ? "desativada" : "ativada"}.`}
+        description={`${toggleTarget?.name} será ${toggleTarget?.is_active ? "desativado" : "ativado"}.`}
         confirmLabel={toggleTarget?.is_active ? "Desativar" : "Ativar"}
         destructive={toggleTarget?.is_active}
         isPending={toggleMutation.isPending}
@@ -408,8 +486,8 @@ export default function AdminAssistenciasPage() {
 
       <AdminConfirmDialog
         open={!!deleteTarget}
-        title="Excluir assistência?"
-        description={`${deleteTarget?.name} será removida permanentemente.`}
+        title={`Excluir ${tab.noun}?`}
+        description={`${deleteTarget?.name} será removido permanentemente.`}
         confirmLabel="Excluir"
         destructive
         isPending={deleteMutation.isPending}

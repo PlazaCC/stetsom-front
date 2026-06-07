@@ -5,9 +5,11 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { PartnerLocationInputType } from "./partnerLocationInputType";
 
-export interface TechnicalAssistanceInput {
+export interface PartnerLocationInput {
   id: string;
+  type: PartnerLocationInputType;
   name: string;
   address: string;
   city: string;
@@ -15,9 +17,11 @@ export interface TechnicalAssistanceInput {
   zip: string;
   lat?: number;
   lng?: number;
-  phone: string;
+  phone?: string;
   phone2?: string;
   email?: string;
+  website?: string;
+  region?: string;
   specialty?: string;
   is_active: boolean;
   created_at: string;
