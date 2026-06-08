@@ -66,11 +66,11 @@ export function QualitySection({
             </p>
 
             <div className="grid grid-cols-1 gap-6 mt-10">
-              {values.map((value) => {
+              {values.map((value, index) => {
                 const Icon = ICONS[value.icon];
 
                 return (
-                  <div key={value.id} className="flex gap-4">
+                  <div key={value.id ?? index} className="flex gap-4">
                     <div className="flex h-8 w-8 shrink-0 bg-muted items-center justify-center rounded-md font-bold">
                       <Icon
                         className="h-6 w-6 text-brand "
