@@ -53,81 +53,85 @@ export default async function SobrePage() {
 
   return (
     <div>
-      <section className="relative bg-brand-dark h-109.75 overflow-hidden flex items-center">
-        {heroData.url && (
-          <Image
-            src={heroData.url}
-            alt={heroData.imageAlt ?? "Stetsom"}
-            fill
-            className="object-cover opacity-35"
-            sizes="100vw"
-            priority
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-dark-overlay" />
+      {!heroData.hidden && (
+        <section className="relative bg-brand-dark h-109.75 overflow-hidden flex items-center">
+          {heroData.url && (
+            <Image
+              src={heroData.url}
+              alt={heroData.imageAlt ?? "Stetsom"}
+              fill
+              className="object-cover opacity-35"
+              sizes="100vw"
+              priority
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-dark-overlay" />
 
-        <Container className="z-10">
-          <div className="grid gap-10 lg:grid-cols-[1fr_428px] lg:items-end">
-            <div>
-              <SectionLabel label={heroData.label ?? ""} />
-              <h1 className="font-sans-condensed font-black text-5xl leading-none uppercase text-white mt-1 lg:text-display-2xl">
-                {(heroData.title ?? "")
-                  .split("\n")
-                  .map((line: string, lineIdx: number, allLines: string[]) => {
-                    if (lineIdx === allLines.length - 1) {
-                      const words = line.split(" ");
-                      const lastWord = words.pop();
-                      return (
-                        <span key={line} className="block">
-                          {words.length > 0 ? `${words.join(" ")} ` : ""}
-                          <span className="text-brand">{lastWord}</span>
-                        </span>
-                      );
-                    }
-                    return (
-                      <span key={line} className="block">
-                        {line}
-                      </span>
-                    );
-                  })}
-              </h1>
-              <p className="mt-4 max-w-125 text-base text-text-subtle-dark">
-                {t("heroDescription")}
-              </p>
-            </div>
-
-            {heroData.stats?.length ? (
-              <div className="relative border-t border-white/20 pt-5">
-                <span className="pointer-events-none absolute right-0 -top-24 font-sans-condensed text-[112px] font-black leading-none text-white/10">
-                  1989
-                </span>
-                <div className="grid grid-cols-2 border border-white/20">
-                  {heroData.stats.map((stat) => (
-                    <div
-                      key={stat.label}
-                      className="border border-white/20 px-4 py-4"
-                    >
-                      <p className="font-sans-condensed text-display-sm font-black text-white">
-                        {stat.value.replace("+", "")}
-                        <span className="text-brand">+</span>
-                      </p>
-                      <p className="mt-1 text-sm font-sans font-medium uppercase text-text-subtle-dark">
-                        {stat.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+          <Container className="z-10">
+            <div className="grid gap-10 lg:grid-cols-[1fr_428px] lg:items-end">
+              <div>
+                <SectionLabel label={heroData.label ?? ""} />
+                <h1 className="font-sans-condensed font-black text-5xl leading-none uppercase text-white mt-1 lg:text-display-2xl">
+                  {(heroData.title ?? "")
+                    .split("\n")
+                    .map(
+                      (line: string, lineIdx: number, allLines: string[]) => {
+                        if (lineIdx === allLines.length - 1) {
+                          const words = line.split(" ");
+                          const lastWord = words.pop();
+                          return (
+                            <span key={line} className="block">
+                              {words.length > 0 ? `${words.join(" ")} ` : ""}
+                              <span className="text-brand">{lastWord}</span>
+                            </span>
+                          );
+                        }
+                        return (
+                          <span key={line} className="block">
+                            {line}
+                          </span>
+                        );
+                      },
+                    )}
+                </h1>
+                <p className="mt-4 max-w-125 text-base text-text-subtle-dark">
+                  {t("heroDescription")}
+                </p>
               </div>
-            ) : null}
-          </div>
-        </Container>
-      </section>
 
-      {heroData.milestones?.length ? (
+              {heroData.stats?.length ? (
+                <div className="relative border-t border-white/20 pt-5">
+                  <span className="pointer-events-none absolute right-0 -top-24 font-sans-condensed text-[112px] font-black leading-none text-white/10">
+                    1989
+                  </span>
+                  <div className="grid grid-cols-2 border border-white/20">
+                    {heroData.stats.map((stat) => (
+                      <div
+                        key={stat.label}
+                        className="border border-white/20 px-4 py-4"
+                      >
+                        <p className="font-sans-condensed text-display-sm font-black text-white">
+                          {stat.value.replace("+", "")}
+                          <span className="text-brand">+</span>
+                        </p>
+                        <p className="mt-1 text-sm font-sans font-medium uppercase text-text-subtle-dark">
+                          {stat.label}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </Container>
+        </section>
+      )}
+
+      {!heroData.hidden && heroData.milestones?.length ? (
         <MilestonesMarquee items={heroData.milestones} />
       ) : null}
 
-      {qualityData.image_url && (
+      {!qualityData.hidden && qualityData.image_url && (
         <QualitySection
           section={{
             label: qualityData.label ?? "",
@@ -147,7 +151,7 @@ export default async function SobrePage() {
           foundingLabel={t("foundingLabel")}
         />
       )}
-      {timelineData.events?.length ? (
+      {!timelineData.hidden && timelineData.events?.length ? (
         <CompanyTimeline
           events={timelineData.events.map((e) => ({
             year: String(e.year),
@@ -158,10 +162,10 @@ export default async function SobrePage() {
           }))}
         />
       ) : null}
-      {valuesData.bases?.length ? (
+      {!valuesData.hidden && valuesData.bases?.length ? (
         <OurFoundations bases={valuesData.bases} />
       ) : null}
-      {socialData.handle && (
+      {!socialData.hidden && socialData.handle && (
         <SocialFeed
           section={{
             handle: socialData.handle,
@@ -173,17 +177,19 @@ export default async function SobrePage() {
           }}
         />
       )}
-      <OurFactory
-        jobsCta={{
-          image: factoryData.image_url,
-          imageAlt: factoryData.imageAlt,
-          label: factoryData.label,
-          title: factoryData.title,
-          description: factoryData.description,
-          buttonText: factoryData.buttonLabel ?? "",
-          buttonHref: factoryData.buttonHref,
-        }}
-      />
+      {!factoryData.hidden && (
+        <OurFactory
+          jobsCta={{
+            image: factoryData.image_url,
+            imageAlt: factoryData.imageAlt,
+            label: factoryData.label,
+            title: factoryData.title,
+            description: factoryData.description,
+            buttonText: factoryData.buttonLabel ?? "",
+            buttonHref: factoryData.buttonHref,
+          }}
+        />
+      )}
     </div>
   );
 }

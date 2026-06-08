@@ -16,6 +16,7 @@ export type HomeHeroBlockData = {
 };
 
 export type HomeFeaturedBlockData = {
+  hidden?: boolean;
   label?: string;
   title?: string;
   spotlightTitle?: string;
@@ -27,6 +28,7 @@ export type HomeFeaturedBlockData = {
 };
 
 export type HomeHistoryBlockData = {
+  hidden?: boolean;
   image_url?: string;
   imageAlt?: string;
   label?: string;
@@ -37,6 +39,7 @@ export type HomeHistoryBlockData = {
 };
 
 export type HomeSocialBlockData = {
+  hidden?: boolean;
   handle?: string;
   title?: string;
   subtitle?: string;
@@ -46,6 +49,7 @@ export type HomeSocialBlockData = {
 };
 
 export type HomeFaqBlockData = {
+  hidden?: boolean;
   section?: {
     label?: string;
     title?: string;
@@ -59,6 +63,7 @@ export type HomeFaqBlockData = {
 // ── About page ─────────────────────────────────────────────────────────────
 
 export type AboutHeroBlockData = {
+  hidden?: boolean;
   url?: string;
   imageAlt?: string;
   label?: string;
@@ -68,6 +73,7 @@ export type AboutHeroBlockData = {
 };
 
 export type AboutQualityBlockData = {
+  hidden?: boolean;
   label?: string;
   title?: string;
   description?: string;
@@ -76,6 +82,7 @@ export type AboutQualityBlockData = {
 };
 
 export type AboutValuesBlockData = {
+  hidden?: boolean;
   items?: Array<{
     id?: string;
     icon: string;
@@ -91,6 +98,7 @@ export type AboutValuesBlockData = {
 };
 
 export type AboutTimelineBlockData = {
+  hidden?: boolean;
   events?: Array<{
     year: number | string;
     title: string;
@@ -111,6 +119,7 @@ export type AboutSocialBlockData = HomeSocialBlockData & {
 };
 
 export type AboutFactoryBlockData = {
+  hidden?: boolean;
   image_url?: string;
   imageAlt?: string;
   label?: string;
@@ -123,6 +132,7 @@ export type AboutFactoryBlockData = {
 // ── Support page ───────────────────────────────────────────────────────────
 
 export type SupportHeroBlockData = {
+  hidden?: boolean;
   image_url?: string;
   badge?: string;
   label?: string;
@@ -133,10 +143,12 @@ export type SupportHeroBlockData = {
 };
 
 export type SupportCardsBlockData = {
+  hidden?: boolean;
   items?: Array<{ title: string; description: string }>;
 };
 
 export type SupportContactBlockData = {
+  hidden?: boolean;
   label?: string;
   title?: string;
   description?: string;
@@ -146,6 +158,7 @@ export type SupportContactBlockData = {
 };
 
 export type SupportDocBlockData = {
+  hidden?: boolean;
   categories?: Array<{
     id: string;
     title: string;
@@ -164,6 +177,7 @@ export type SupportDocBlockData = {
 };
 
 export type SupportFaqBlockData = {
+  hidden?: boolean;
   section?: {
     label?: string;
     title?: string;
@@ -174,5 +188,6 @@ export type SupportFaqBlockData = {
 };
 
 export type SupportServiceCentersBlockData = {
+  hidden?: boolean;
   mapImage?: string;
 };
