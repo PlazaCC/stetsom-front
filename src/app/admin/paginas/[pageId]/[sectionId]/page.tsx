@@ -35,8 +35,7 @@ export default function AdminSectionEditorPage({
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  // The route param is the block_id (rows link to `${pageId}/${block_id}`).
-  const block = page?.blocks.find((b) => b.block_id === sectionId);
+  const block = page?.blocks.find((b) => b.section_id === sectionId);
 
   function handleChange(data: Record<string, unknown>) {
     setLocalData(data);
@@ -75,6 +74,11 @@ export default function AdminSectionEditorPage({
             href: publicHref,
             variant: "secondary",
             external: true,
+          },
+          {
+            label: "Continuar editando",
+            onClick: () => setSuccess(false),
+            variant: "outline",
           },
           {
             label: "Editar outra seção",

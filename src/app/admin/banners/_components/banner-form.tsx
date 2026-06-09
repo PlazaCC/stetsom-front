@@ -37,19 +37,14 @@ export const EMPTY_DRAFT: BannerDraft = {
 };
 
 export function bannerToDraft(b: Banner): BannerDraft {
-  const row = b as Banner & {
-    desktop_image_url?: string;
-    mobile_image_url?: string;
-    locale?: string;
-  };
   return {
     name: b.name,
     product_id: b.product_id ?? "",
-    desktop_image_url: row.desktop_image_url ?? "",
-    mobile_image_url: row.mobile_image_url ?? "",
+    desktop_image_url: "",
+    mobile_image_url: "",
     link_url: b.link_url ?? "",
     status: b.status,
-    locale: row.locale ?? b.available_locales?.[0] ?? "pt-BR",
+    locale: b.available_locales?.[0] ?? "pt-BR",
     display_from: b.display_from ? b.display_from.split("T")[0] : "",
     display_until: b.display_until ? b.display_until.split("T")[0] : "",
   };
@@ -382,7 +377,7 @@ export function BannerForm({
         <button
           type="button"
           onClick={onSave}
-          disabled={!draft.name || !hasImage}
+          disabled={!draft.name || (isCreating && !hasImage)}
           className="rounded-md bg-foreground px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-50"
         >
           {isCreating ? "Criar banner" : "Salvar alterações"}

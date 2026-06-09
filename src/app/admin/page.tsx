@@ -89,22 +89,28 @@ export default function AdminHome() {
               Atividades recentes
             </h2>
             <ul className="mt-4 space-y-3">
-              {recentActivities.map((activity) => (
-                <li
-                  key={activity.id}
-                  className="rounded-md border border-border p-3"
-                >
-                  <p className="text-sm font-medium text-foreground">
-                    {activity.title}
-                  </p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    {activity.description}
-                  </p>
-                  <p className="mt-1.5 text-xs text-muted-foreground">
-                    {new Date(activity.timestamp).toLocaleString("pt-BR")}
-                  </p>
+              {recentActivities.length === 0 ? (
+                <li className="py-6 text-center text-sm text-muted-foreground">
+                  Nenhuma atividade recente.
                 </li>
-              ))}
+              ) : (
+                recentActivities.map((activity) => (
+                  <li
+                    key={activity.id}
+                    className="rounded-md border border-border p-3"
+                  >
+                    <p className="text-sm font-medium text-foreground">
+                      {activity.title}
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      {activity.description}
+                    </p>
+                    <p className="mt-1.5 text-xs text-muted-foreground">
+                      {new Date(activity.timestamp).toLocaleString("pt-BR")}
+                    </p>
+                  </li>
+                ))
+              )}
             </ul>
           </section>
         </div>

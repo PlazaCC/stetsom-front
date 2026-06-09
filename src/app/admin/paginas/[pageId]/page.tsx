@@ -204,7 +204,7 @@ export default function AdminPageSectionsPage({
                   )}
                 </button>
                 <Link
-                  href={`/admin/paginas/${pageId}/${block.block_id}`}
+                  href={`/admin/paginas/${pageId}/${block.section_id}`}
                   className="shrink-0 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted"
                 >
                   Editar
