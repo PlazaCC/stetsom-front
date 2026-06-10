@@ -21,6 +21,8 @@ const BASE = (process.env.CMS_API_BASE_URL ?? "http://localhost:3333").replace(/
 const EMAIL = process.env.MOCK_DUMP_EMAIL;
 const PASSWORD = process.env.MOCK_DUMP_PASSWORD;
 const DATA_FILE = path.join(ROOT, "src/lib/mock/data.json");
+// Cap the number of individual product detail pages stored in the mock.
+const MAX_PRODUCT_DETAILS = 15;
 
 // Load existing store to preserve previously dumped keys
 const store = fs.existsSync(DATA_FILE)
@@ -60,7 +62,7 @@ async function dump(apiPath, { token = null, params = {} } = {}) {
 }
 
 function save() {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(store, null, 2));
+  fs.writeFileSync(DATA_FILE, JSON.stringify(store, null, 2) + "\n");
   console.log(`\n  📦 data.json — ${Object.keys(store).length} keys, ${(fs.statSync(DATA_FILE).size / 1024).toFixed(1)} KB`);
 }
 
@@ -71,18 +73,19 @@ async function main() {
   console.log("📦  Public:");
   await dump("/api/categories");
   await dump("/api/partner-locations");
-  await dump("/api/banners/active");
-  await dump("/api/pages/home");
-  await dump("/api/pages/about");
-  await dump("/api/pages/catalog");
-  await dump("/api/pages/support");
+  await dump("/api/banners/active", { params: { locale: "pt" } });
+  await dump("/api/pages/home",    { params: { locale: "pt" } });
+  await dump("/api/pages/about",   { params: { locale: "pt" } });
+  await dump("/api/pages/catalog", { params: { locale: "pt" } });
+  await dump("/api/pages/support", { params: { locale: "pt" } });
 
-  const catalog = await dump("/api/products", { params: { pageSize: 100, page: 1 } });
+  const catalog = await dump("/api/products", { params: { pageSize: MAX_PRODUCT_DETAILS, page: 1, locale: "pt" } });
   if (catalog?.items?.length) {
-    console.log(`\n  📄  ${catalog.items.length} product detail pages:`);
-    for (const item of catalog.items) {
+    const items = catalog.items.slice(0, MAX_PRODUCT_DETAILS);
+    console.log(`\n  📄  ${items.length} product detail pages (capped at ${MAX_PRODUCT_DETAILS}):`);
+    for (const item of items) {
       const slug = typeof item.slug === "object" ? item.slug.pt : item.slug;
-      if (slug) await dump(`/api/products/${slug}`);
+      if (slug) await dump(`/api/products/${slug}`, { params: { locale: "pt" } });
     }
   }
 
@@ -113,7 +116,7 @@ async function main() {
 
   console.log("🛡️   Admin:");
   await dump("/api/dashboard", { token });
-  await dump("/api/products/admin", { token, params: { pageSize: 100 } });
+  await dump("/api/products/admin", { token, params: { page: 1, pageSize: 100 } });
   await dump("/api/banners", { token, params: { limit: 100 } });
   await dump("/api/library", { token, params: { limit: 100 } });
   await dump("/api/messages", { token, params: { limit: 100 } });
@@ -128,11 +131,12 @@ async function main() {
     await dump(`/api/pages/${slug}/cms`, { token });
   }
 
-  // Admin product details (by id)
+  // Admin product details (capped to avoid bloating the mock file)
   const adminCatalog = store["products--admin"];
   if (adminCatalog?.items?.length) {
-    console.log(`\n  📄  ${adminCatalog.items.length} admin product detail pages:`);
-    for (const item of adminCatalog.items) {
+    const adminItems = adminCatalog.items.slice(0, MAX_PRODUCT_DETAILS);
+    console.log(`\n  📄  ${adminItems.length} admin product detail pages (capped at ${MAX_PRODUCT_DETAILS}):`);
+    for (const item of adminItems) {
       if (item.id) await dump(`/api/products/admin/${item.id}`, { token });
     }
   }
