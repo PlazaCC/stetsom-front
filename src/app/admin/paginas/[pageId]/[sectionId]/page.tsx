@@ -1,15 +1,15 @@
 "use client";
 
-import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
-import { AdminSuccessPage } from "@/app/admin/_components/crud/admin-success-page";
-import { AdminSaveBar } from "@/app/admin/_components/crud/admin-save-bar";
-import { PAGE_SECTION_FORMS } from "@/app/admin/paginas/_components/page-section-forms";
-import { findSectionTemplate } from "@/app/admin/paginas/_components/page-section-catalog";
 import {
-  useGetApiPagesSlugCms,
   patchApiPagesSlugBlocksBlockId,
+  useGetApiPagesSlugCms,
 } from "@/api/stetsom";
-import { CheckCircle2, FileText } from "lucide-react";
+import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
+import { AdminSaveBar } from "@/app/admin/_components/crud/admin-save-bar";
+import { AdminSuccessPage } from "@/app/admin/_components/crud/admin-success-page";
+import { findSectionDef } from "@/app/admin/paginas/_components/section-field-spec";
+import { SectionFormRenderer } from "@/app/admin/paginas/_components/section-form-renderer";
+import { CheckCircle2, FileText, Info } from "lucide-react";
 import Link from "next/link";
 import { use, useState } from "react";
 import { PAGE_PUBLIC_HREFS } from "../../_components/page-constants";
@@ -35,7 +35,7 @@ export default function AdminSectionEditorPage({
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const block = page?.blocks.find((b) => b.block_id === sectionId);
+  const block = page?.blocks.find((b) => b.section_id === sectionId);
 
   function handleChange(data: Record<string, unknown>) {
     setLocalData(data);
@@ -47,7 +47,7 @@ export default function AdminSectionEditorPage({
     setIsSaving(true);
     setSaveError(null);
     try {
-      await patchApiPagesSlugBlocksBlockId(pageId, sectionId, {
+      await patchApiPagesSlugBlocksBlockId(pageId, block.block_id, {
         data: localData,
       });
       setSavedAt(new Date());
@@ -74,6 +74,11 @@ export default function AdminSectionEditorPage({
             href: publicHref,
             variant: "secondary",
             external: true,
+          },
+          {
+            label: "Continuar editando",
+            onClick: () => setSuccess(false),
+            variant: "outline",
           },
           {
             label: "Editar outra seção",
@@ -114,14 +119,13 @@ export default function AdminSectionEditorPage({
     );
   }
 
-  const tpl = findSectionTemplate(block.section_id);
-  const Form = PAGE_SECTION_FORMS[block.section_id];
+  const def = findSectionDef(pageId, block.section_id);
   const sectionData = localData ?? block.data ?? {};
 
   return (
     <AdminListPage
-      title={tpl?.label ?? block.section_id}
-      icon={FileText}
+      title={def?.label ?? block.section_id}
+      icon={def?.icon ?? FileText}
       toolbar={
         <div className="flex items-center gap-2">
           <Link
@@ -133,15 +137,28 @@ export default function AdminSectionEditorPage({
         </div>
       }
     >
-      {Form ? (
-        <Form data={sectionData} onChange={handleChange} />
+      {def?.autoNote && (
+        <div className="mb-4 flex items-start gap-3 rounded-md border border-border bg-muted/40 px-4 py-3">
+          <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">{def.autoNote}</p>
+        </div>
+      )}
+
+      {def ? (
+        <SectionFormRenderer
+          fields={def.fields}
+          data={sectionData}
+          onChange={handleChange}
+        />
       ) : (
         <p className="text-sm text-muted-foreground">
-          Esta seção ({block.section_id}) ainda não possui editor configurado.
+          Esta seção ({block.section_id}) não possui editor configurado.
         </p>
       )}
 
-      {saveError && <p className="text-sm text-destructive">{saveError}</p>}
+      {saveError && (
+        <p className="mt-3 text-sm text-destructive">{saveError}</p>
+      )}
 
       <AdminSaveBar
         onPublish={handleSave}

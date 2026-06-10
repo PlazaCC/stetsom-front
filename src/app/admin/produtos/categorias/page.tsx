@@ -170,7 +170,7 @@ export default function AdminCategoriasPage() {
       {formOpen && (
         <CategoryForm
           categoryId={editing?.id}
-          fallbackName={editing?.name}
+          fallbackCategory={editing}
           onClose={() => {
             setFormOpen(false);
             setEditing(undefined);
@@ -197,25 +197,23 @@ export default function AdminCategoriasPage() {
 
 function CategoryForm({
   categoryId,
-  fallbackName,
+  fallbackCategory,
   onClose,
   onSaved,
 }: {
   categoryId?: string;
-  fallbackName?: string;
+  fallbackCategory?: PublicCategory;
   onClose: () => void;
   onSaved: () => void;
 }) {
   const isEdit = !!categoryId;
 
-  // Full I18n payload is only available from the single-category endpoint.
-  const { data: full } = useGetApiCategoriesId(categoryId ?? "", {
+  // /api/categories/:id may not be implemented yet — fall back to list data on error.
+  const { data: full, isLoading } = useGetApiCategoriesId(categoryId ?? "", {
     query: { enabled: isEdit },
   });
 
-  // Wait for the full payload before mounting the inner form so its state can
-  // initialise from props (no setState-in-effect).
-  if (isEdit && !full) {
+  if (isEdit && isLoading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4">
         <div className="rounded-md bg-card px-6 py-4 text-sm text-muted-foreground">
@@ -225,18 +223,26 @@ function CategoryForm({
     );
   }
 
-  return (
-    <CategoryFormInner
-      categoryId={categoryId}
-      initialName={full?.name ?? { pt: fallbackName ?? "" }}
-      initialSlug={full?.slug ?? { pt: "" }}
-      initialOrder={full?.order ?? 0}
-      initialIconId={full?.icon_library_id}
-      lines={(full?.lines ?? []).map((l) => ({
+  const lines = full
+    ? full.lines.map((l) => ({
         line_id: l.line_id,
         name: l.name.pt,
         order: l.order,
-      }))}
+      }))
+    : (fallbackCategory?.lines ?? []).map((l) => ({
+        line_id: l.line_id,
+        name: l.name,
+        order: l.order,
+      }));
+
+  return (
+    <CategoryFormInner
+      categoryId={categoryId}
+      initialName={full?.name ?? { pt: fallbackCategory?.name ?? "" }}
+      initialSlug={full?.slug ?? { pt: fallbackCategory?.slug ?? "" }}
+      initialOrder={full?.order ?? fallbackCategory?.order ?? 0}
+      initialIconId={full?.icon_library_id ?? fallbackCategory?.icon_library_id}
+      lines={lines}
       isEdit={isEdit}
       onClose={onClose}
       onSaved={onSaved}

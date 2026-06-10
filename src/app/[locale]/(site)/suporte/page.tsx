@@ -57,51 +57,61 @@ export default async function SuportePage() {
 
   return (
     <div>
-      <SupportHero
-        hero={{
-          image:
-            heroData.image_url ?? "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
-          badge: heroData.badge,
-          label: heroData.label,
-          title: heroData.title ?? "Suporte Stetsom",
-          subtitle: heroData.subtitle,
-          description: heroData.description,
-          watermarkText: heroData.watermarkText,
-        }}
-      />
-      {cardsData.items?.length ? (
+      {!heroData.hidden && (
+        <SupportHero
+          hero={{
+            image:
+              heroData.image_url ??
+              "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+            badge: heroData.badge,
+            label: heroData.label,
+            title: heroData.title ?? "Suporte Stetsom",
+            subtitle: heroData.subtitle,
+            description: heroData.description,
+            watermarkText: heroData.watermarkText,
+          }}
+        />
+      )}
+      {!cardsData.hidden && cardsData.items?.length ? (
         <SupportCards cards={cardsData.items} />
       ) : null}
-      <SupportContact
-        contact={{
-          label: contactData.label,
-          title: contactData.title,
-          description: contactData.description,
-        }}
-        contactInfo={{
-          phone: contactData.phone,
-          email: contactData.email,
-          whatsapp: contactData.whatsapp,
-        }}
-      />
-      <SupportServiceCenters
-        serviceCenters={serviceCenters}
-        mapImage={mapData.mapImage}
-      />
-      {docData.categories?.length || docData.files?.length ? (
+      {!contactData.hidden && (
+        <SupportContact
+          contact={{
+            label: contactData.label,
+            title: contactData.title,
+            description: contactData.description,
+          }}
+          contactInfo={{
+            phone: contactData.phone,
+            email: contactData.email,
+            whatsapp: contactData.whatsapp,
+          }}
+        />
+      )}
+      {!mapData.hidden && (
+        <SupportServiceCenters
+          serviceCenters={serviceCenters}
+          mapImage={mapData.mapImage}
+        />
+      )}
+      {!docData.hidden &&
+      (docData.categories?.length || docData.files?.length) ? (
         <SupportDocumentation
           categories={docData.categories ?? []}
           files={docData.files ?? []}
         />
       ) : null}
-      <SupportFAQ
-        faq={{
-          label: faqData.section?.label,
-          title: faqData.section?.title,
-          supportButtonLabel: faqData.section?.supportButtonLabel,
-          items: faqData.items ?? [],
-        }}
-      />
+      {!faqData.hidden && (
+        <SupportFAQ
+          faq={{
+            label: faqData.section?.label,
+            title: faqData.section?.title,
+            supportButtonLabel: faqData.section?.supportButtonLabel,
+            items: faqData.items ?? [],
+          }}
+        />
+      )}
     </div>
   );
 }

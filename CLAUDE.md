@@ -86,12 +86,9 @@ Skills in `.claude/skills/` are auto-discovered by the harness. Quick reference:
 
 | Skill | Trigger | When to use |
 |---|---|---|
-| `next-task` | `/next-task` | Pick + implement the next backlog task |
-| `deliver` | `/deliver` | Full cycle: next-task → create-pr → code-review |
 | `create-pr` | `/create-pr` | Generate PR description and open PR on GitHub |
 | `code-review` | `/code-review` | Review branch diff vs `main` before merging |
-| `brainstorm` | `/brainstorm` | Refine a new feature idea before creating a task |
-| `create-task` | `/create-task` | Create a tracked task in `docs/ia/tasks/` |
+| `brainstorm` | `/brainstorm` | Refine a new feature idea before starting |
 | `modularize` | `/modularize` | Refactor large components into focused modules |
 | `design-fidelity-audit` | `/design-fidelity-audit` | Full-site Figma fidelity pass |
 | `refine-design` | `/refine-design` | Single-component Figma alignment |
@@ -99,7 +96,6 @@ Skills in `.claude/skills/` are auto-discovered by the harness. Quick reference:
 | `graphify` | `/graphify` | (Re)generate the codebase knowledge graph |
 
 Full delivery workflow: `docs/ia/AI-DRIVEN-WORKFLOW.md`
-Task backlog: `docs/ia/tasks/TASKS.md`
 
 ## Multi-Agent Coordination
 
@@ -107,4 +103,3 @@ Both Claude Code (CLI) and VSCode Copilot Chat agents operate in this repo.
 
 - Claude Code rules: `.claude/rules/` (auto-loaded by harness)
 - VSCode agent skills: `.agents/skills/`
-- Shared tasks: `docs/ia/tasks/`

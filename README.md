@@ -19,12 +19,15 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Commands
 
-| Command      | Description              |
-| ------------ | ------------------------ |
-| `pnpm dev`   | Start development server |
-| `pnpm build` | Production build         |
-| `pnpm start` | Start production server  |
-| `pnpm lint`  | Run ESLint               |
+| Command              | Description                              |
+| -------------------- | ---------------------------------------- |
+| `pnpm dev`           | Start development server                 |
+| `pnpm build`         | Production build                         |
+| `pnpm start`         | Start production server                  |
+| `pnpm lint`          | Run ESLint                               |
+| `pnpm tsc --noEmit`  | Type-check without emitting              |
+| `pnpm api:generate`  | Regenerate Orval types and hooks         |
+| `pnpm mock:dump`     | Refresh `src/lib/mock/data.json` from API |
 
 ## Stack
 
@@ -46,15 +49,35 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ```
 src/
 ├── app/
-│   ├── (site)/          ← Public site (header + footer layout)
-│   │   ├── page.tsx     ← Home page
-│   │   ├── produtos/    ← Products listing and detail
-│   │   ├── sobre/       ← About page
-│   │   └── suporte/     ← Support page
-│   ├── admin/           ← Admin panel (planned)
-│   └── cms/             ← CMS panel (planned)
-└── components/ui/       ← Shared UI components
+│   ├── [locale]/        ← next-intl locale wrapper (pt-BR = no prefix)
+│   │   └── (site)/      ← Public site (header + footer layout)
+│   │       ├── page.tsx ← Home page
+│   │       ├── produtos/ ← Products listing and detail
+│   │       ├── sobre/   ← About page
+│   │       └── suporte/ ← Support page
+│   ├── admin/           ← Admin CMS panel
+│   └── api/             ← BFF route handlers + auth + upload
+├── api/stetsom/         ← Orval-generated types and React Query hooks
+├── components/ui/       ← Shared UI components
+└── lib/mock/            ← Mock data loader (USE_MOCK_DATA=1)
 ```
+
+## Development with Mock Data
+
+To run without the backend API:
+
+```bash
+# 1. Populate the fixture file (requires real API + credentials)
+MOCK_DUMP_EMAIL=admin@example.com MOCK_DUMP_PASSWORD=secret pnpm mock:dump
+
+# 2. Enable mock mode
+echo "USE_MOCK_DATA=1" >> .env.local
+
+# 3. Start the dev server
+pnpm dev
+```
+
+All `GET` requests are served from `src/lib/mock/data.json`. Mutations return `{ _mock: true }` so the UI doesn't show errors.
 
 ## Code Quality
 
@@ -64,6 +87,18 @@ Pre-commit hooks (husky + lint-staged) run automatically on every commit:
 - **tsc**: Full type-check (`--noEmit`) before commit
 
 CI (GitHub Actions) runs on every push and pull request: type-check → lint → build.
+
+## Environment Variables
+
+Copy `.env.local.example` to `.env.local`. See inline comments for details.
+
+| Variable | Description |
+| --- | --- |
+| `CMS_API_BASE_URL` | Fastify API URL. Omit to use mock data. |
+| `USE_MOCK_DATA` | Set `1` to serve GET requests from local fixture. |
+| `MOCK_DUMP_EMAIL` / `MOCK_DUMP_PASSWORD` | Credentials for `pnpm mock:dump` only. |
+| `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | Must match `stetsom-api/.env`. |
+| `STORAGE_PUBLIC_HOSTNAME` | S3 bucket hostname for `next/image` (`{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com`). Set in Vercel for preview deployments. |
 
 ## Deploy
 

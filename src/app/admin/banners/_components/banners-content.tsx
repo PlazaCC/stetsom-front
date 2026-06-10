@@ -12,14 +12,15 @@ import type {
   UploadPresignResponse,
 } from "@/api/stetsom/model";
 import {
+  getGetApiBannersQueryKey,
   postApiBanners,
   patchApiBannersId,
   deleteApiBannersId,
 } from "@/api/stetsom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useInlineUpload } from "@/hooks/use-inline-upload";
 import { cn } from "@/lib/utils";
-import { Image, Plus } from "lucide-react";
+import { Image as ImageIcon, Plus } from "lucide-react";
 import { useState } from "react";
 import {
   BannerDraft,
@@ -30,12 +31,6 @@ import {
   statusBadgeClass,
   statusLabel,
 } from "./banner-form";
-
-type BannerTableRow = Banner & {
-  desktop_image_url?: string;
-  mobile_image_url?: string;
-  locale?: string;
-};
 
 function toLocaleDisplay(locale: string): string {
   if (locale === "pt-BR" || locale === "pt") return "PT";
@@ -48,14 +43,17 @@ export function BannersContent({
 }: {
   initialBanners: BannersPayload;
 }) {
-  const banners = initialBanners.items as BannerTableRow[];
-  const [editingBanner, setEditingBanner] = useState<BannerTableRow | null>(
-    null,
-  );
+  const queryClient = useQueryClient();
+  const banners = initialBanners.items;
+  const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [draft, setDraft] = useState<BannerDraft>(EMPTY_DRAFT);
   const [desktopImageFile, setDesktopImageFile] = useState<File | null>(null);
   const [mobileImageFile, setMobileImageFile] = useState<File | null>(null);
+
+  function invalidate() {
+    queryClient.invalidateQueries({ queryKey: getGetApiBannersQueryKey() });
+  }
 
   const createBanner = useMutation({
     mutationFn: (body: PostApiBannersBody) => postApiBanners(body),
@@ -66,6 +64,7 @@ export function BannersContent({
   });
   const deleteBanner = useMutation({
     mutationFn: (id: string) => deleteApiBannersId(id),
+    onSuccess: invalidate,
   });
   const inlineUpload = useInlineUpload();
 
@@ -82,7 +81,7 @@ export function BannersContent({
     setIsCreating(true);
   }
 
-  function openEdit(banner: BannerTableRow) {
+  function openEdit(banner: Banner) {
     setDraft(bannerToDraft(banner));
     setDesktopImageFile(null);
     setMobileImageFile(null);
@@ -197,6 +196,7 @@ export function BannersContent({
     }
 
     closeForm();
+    invalidate();
   }
 
   async function handleDelete(id: string) {
@@ -222,7 +222,7 @@ export function BannersContent({
   return (
     <AdminListPage
       title="Banners"
-      icon={Image}
+      icon={ImageIcon}
       action={
         <AdminActionBar>
           <button
@@ -272,19 +272,8 @@ export function BannersContent({
               {banners.map((banner) => (
                 <tr key={banner.id} className="hover:bg-muted/30">
                   <td className="px-4 py-3">
-                    <div className="h-10 w-16 overflow-hidden rounded-md bg-muted">
-                      {banner.desktop_image_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={banner.desktop_image_url}
-                          alt={banner.name}
-                          className="h-full w-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display =
-                              "none";
-                          }}
-                        />
-                      ) : null}
+                    <div className="flex h-10 w-16 items-center justify-center overflow-hidden rounded-md bg-muted">
+                      <ImageIcon className="size-4 text-muted-foreground/40" />
                     </div>
                   </td>
                   <td className="px-4 py-3">
@@ -296,9 +285,7 @@ export function BannersContent({
                     )}
                   </td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">
-                    {toLocaleDisplay(
-                      banner.locale ?? banner.available_locales?.[0] ?? "pt-BR",
-                    )}
+                    {toLocaleDisplay(banner.available_locales?.[0] ?? "pt-BR")}
                   </td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">
                     {formatDateRange(banner.display_from, banner.display_until)}
@@ -317,6 +304,7 @@ export function BannersContent({
                               id: banner.id,
                               body: { status: newStatus },
                             });
+                            invalidate();
                           }}
                         />
                       )}

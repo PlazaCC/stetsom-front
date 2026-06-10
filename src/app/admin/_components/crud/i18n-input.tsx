@@ -90,7 +90,12 @@ export function I18nInput({
       {LOCALES.map((loc) => (
         <Field
           key={loc.id}
-          className={cn(active !== loc.id && "hidden", multiline && "min-h-24")}
+          aria-hidden={active !== loc.id || undefined}
+          tabIndex={active !== loc.id ? -1 : undefined}
+          className={cn(
+            active !== loc.id && "sr-only",
+            multiline && "min-h-24",
+          )}
           required={loc.id === "pt" && required}
           placeholder={placeholder}
           value={(loc.id === "pt" ? current.pt : current[loc.id]) ?? ""}

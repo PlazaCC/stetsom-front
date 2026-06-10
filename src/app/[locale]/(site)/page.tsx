@@ -53,21 +53,23 @@ export default async function Home() {
   return (
     <>
       <HeroCarousel slides={bannersRes.items} />
-      {featuredProducts.length > 0 && spotlightProduct && (
-        <FeaturedProducts
-          featuredProducts={featuredProducts}
-          spotlightProduct={spotlightProduct}
-          tabs={featuredData.tabs ?? []}
-          section={{
-            label: featuredData.label ?? "",
-            title: featuredData.title ?? "",
-            spotlightTitle: featuredData.spotlightTitle,
-            ctaHref: featuredData.ctaHref ?? "/produtos",
-            ctaLabel: featuredData.ctaLabel ?? "Ver todos",
-          }}
-        />
-      )}
-      {historyData.image_url && (
+      {!featuredData.hidden &&
+        featuredProducts.length > 0 &&
+        spotlightProduct && (
+          <FeaturedProducts
+            featuredProducts={featuredProducts}
+            spotlightProduct={spotlightProduct}
+            tabs={featuredData.tabs ?? []}
+            section={{
+              label: featuredData.label ?? "",
+              title: featuredData.title ?? "",
+              spotlightTitle: featuredData.spotlightTitle,
+              ctaHref: featuredData.ctaHref ?? "/produtos",
+              ctaLabel: featuredData.ctaLabel ?? "Ver todos",
+            }}
+          />
+        )}
+      {!historyData.hidden && historyData.image_url && (
         <OurHistory
           section={{
             image: historyData.image_url,
@@ -80,7 +82,7 @@ export default async function Home() {
           }}
         />
       )}
-      {socialData.handle && (
+      {!socialData.hidden && socialData.handle && (
         <SocialFeed
           section={{
             handle: socialData.handle,
@@ -92,7 +94,7 @@ export default async function Home() {
           }}
         />
       )}
-      {faqData.items?.length ? (
+      {!faqData.hidden && faqData.items?.length ? (
         <Faq
           items={faqData.items as Array<{ id: string; q: string; a: string }>}
           section={{

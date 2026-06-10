@@ -1,34 +1,38 @@
 "use client";
 
-import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
-import { SortableList } from "@/app/admin/_components/crud/sortable-list";
 import {
-  PAGE_SECTION_CATALOG,
-  findSectionTemplate,
-} from "@/app/admin/paginas/_components/page-section-catalog";
-import {
-  deleteApiPagesSlugBlocksBlockId,
   getGetApiPagesSlugCmsQueryKey,
   patchApiPagesSlugBlocksBlockId,
   postApiPagesSlugBlocks,
   useGetApiPagesSlugCms,
 } from "@/api/stetsom";
 import type { PageBlock } from "@/api/stetsom/model";
+import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
+import { SortableList } from "@/app/admin/_components/crud/sortable-list";
+import {
+  findSectionDef,
+  getPageSections,
+} from "@/app/admin/paginas/_components/section-field-spec";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   ExternalLink,
+  Eye,
+  EyeOff,
   FileText,
   LayoutTemplate,
   Plus,
-  Trash2,
-  X,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { use, useState } from "react";
 import { PAGE_LABELS, PAGE_PUBLIC_HREFS } from "../_components/page-constants";
 
 interface PageParams {
   pageId: string;
+}
+
+function isHidden(block: PageBlock): boolean {
+  return Boolean((block.data as Record<string, unknown> | undefined)?.hidden);
 }
 
 export default function AdminPageSectionsPage({
@@ -40,9 +44,8 @@ export default function AdminPageSectionsPage({
   const queryClient = useQueryClient();
   const { data: page, isLoading } = useGetApiPagesSlugCms(pageId);
 
-  // Optimistic local ordering; reset to query data after add/remove.
+  // Optimistic local ordering; reset to query data after add/toggle/error.
   const [localBlocks, setLocalBlocks] = useState<PageBlock[] | null>(null);
-  const [addOpen, setAddOpen] = useState(false);
 
   const blocks =
     localBlocks ??
@@ -50,6 +53,12 @@ export default function AdminPageSectionsPage({
 
   const label = page?.title?.pt ?? PAGE_LABELS[pageId] ?? pageId;
   const publicHref = PAGE_PUBLIC_HREFS[pageId] ?? `/${pageId}`;
+
+  // Known sections not yet present on this page → can be added back.
+  const presentIds = new Set(blocks.map((b) => b.section_id));
+  const missingDefs = getPageSections(pageId).filter(
+    (def) => !presentIds.has(def.section_id),
+  );
 
   function invalidate() {
     setLocalBlocks(null);
@@ -59,36 +68,44 @@ export default function AdminPageSectionsPage({
   }
 
   const reorderMutation = useMutation({
-    mutationFn: (ordered: PageBlock[]) =>
-      Promise.all(
-        ordered.map((b, i) =>
-          patchApiPagesSlugBlocksBlockId(pageId, b.block_id, { order: i }),
+    mutationFn: (ordered: PageBlock[]) => {
+      // Only PATCH blocks whose order actually changed.
+      const changed = ordered.filter((b, i) => b.order !== i);
+      return Promise.all(
+        changed.map((b) =>
+          patchApiPagesSlugBlocksBlockId(pageId, b.block_id, {
+            order: ordered.indexOf(b),
+          }),
         ),
-      ),
+      );
+    },
+    onError: invalidate, // revert optimistic order on failure
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: getGetApiPagesSlugCmsQueryKey(pageId),
       }),
   });
 
+  const toggleMutation = useMutation({
+    mutationFn: (block: PageBlock) =>
+      patchApiPagesSlugBlocksBlockId(pageId, block.block_id, {
+        data: {
+          ...(block.data as Record<string, unknown>),
+          hidden: !isHidden(block),
+        },
+      }),
+    onSuccess: invalidate,
+  });
+
   const addMutation = useMutation({
-    mutationFn: (section_id: string) => {
-      const tpl = findSectionTemplate(section_id);
+    mutationFn: (sectionId: string) => {
+      const def = findSectionDef(pageId, sectionId);
       return postApiPagesSlugBlocks(pageId, {
-        section_id,
-        type: tpl?.type ?? "TEXT",
+        section_id: sectionId,
+        type: def?.type ?? "TEXT",
         order: blocks.length,
       });
     },
-    onSuccess: () => {
-      setAddOpen(false);
-      invalidate();
-    },
-  });
-
-  const removeMutation = useMutation({
-    mutationFn: (blockId: string) =>
-      deleteApiPagesSlugBlocksBlockId(pageId, blockId),
     onSuccess: invalidate,
   });
 
@@ -101,21 +118,11 @@ export default function AdminPageSectionsPage({
     <AdminListPage
       title={label}
       icon={FileText}
-      action={
-        <button
-          type="button"
-          onClick={() => setAddOpen(true)}
-          className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
-        >
-          <Plus className="size-4" />
-          Adicionar seção
-        </button>
-      }
       toolbar={
         <div className="flex items-center gap-3">
           <p className="text-xs text-muted-foreground">
-            Arraste para reordenar as seções. As alterações ficam visíveis no
-            site imediatamente.
+            Arraste para reordenar. Use o olho para mostrar/ocultar uma seção.
+            As alterações ficam visíveis no site imediatamente.
           </p>
           <a
             href={publicHref}
@@ -149,7 +156,7 @@ export default function AdminPageSectionsPage({
         </div>
       ) : blocks.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          Nenhuma seção. Clique em “Adicionar seção”.
+          Esta página ainda não tem seções.
         </p>
       ) : (
         <SortableList
@@ -157,99 +164,90 @@ export default function AdminPageSectionsPage({
           getId={(b) => b.block_id}
           onReorder={handleReorder}
           renderItem={(block, handle) => {
-            const tpl = findSectionTemplate(block.section_id);
-            const Icon = tpl?.icon ?? LayoutTemplate;
+            const def = findSectionDef(pageId, block.section_id);
+            const Icon = def?.icon ?? LayoutTemplate;
+            const hidden = isHidden(block);
             return (
-              <div className="flex items-center gap-3 rounded-[12px] border border-border bg-card px-4 py-3">
+              <div
+                className={cn(
+                  "flex items-center gap-3 rounded-[12px] border border-border bg-card px-4 py-3",
+                  hidden && "opacity-60",
+                )}
+              >
                 {handle}
                 <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
                   <Icon className="size-4" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-foreground">
-                    {tpl?.label ?? block.section_id}
+                    {def?.label ?? block.section_id}
+                    {def?.kind === "auto" && (
+                      <span className="ml-2 text-2xs font-normal text-muted-foreground">
+                        (automático)
+                      </span>
+                    )}
                   </p>
-                  <p className="text-xs text-muted-foreground">{block.type}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {hidden ? "Oculta no site" : "Visível no site"}
+                  </p>
                 </div>
-                {tpl?.reference ? (
-                  <span className="shrink-0 rounded-md bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground">
-                    Automático
-                  </span>
-                ) : (
-                  <Link
-                    href={`/admin/paginas/${pageId}/${block.block_id}`}
-                    className="shrink-0 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted"
-                  >
-                    Editar
-                  </Link>
-                )}
                 <button
                   type="button"
-                  aria-label="Remover seção"
-                  onClick={() => removeMutation.mutate(block.block_id)}
-                  className="shrink-0 text-muted-foreground hover:text-destructive"
+                  aria-label={hidden ? "Mostrar seção" : "Ocultar seção"}
+                  title={hidden ? "Mostrar no site" : "Ocultar do site"}
+                  disabled={toggleMutation.isPending}
+                  onClick={() => toggleMutation.mutate(block)}
+                  className="shrink-0 rounded-md border border-border p-1.5 text-muted-foreground transition-colors hover:bg-muted disabled:opacity-50"
                 >
-                  <Trash2 className="size-4" />
+                  {hidden ? (
+                    <EyeOff className="size-4" />
+                  ) : (
+                    <Eye className="size-4" />
+                  )}
                 </button>
+                <Link
+                  href={`/admin/paginas/${pageId}/${block.section_id}`}
+                  className="shrink-0 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted"
+                >
+                  Editar
+                </Link>
               </div>
             );
           }}
         />
       )}
 
-      {addOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4"
-          onClick={() => setAddOpen(false)}
-        >
-          <div
-            className="w-full max-w-md overflow-hidden rounded-[16px] border border-border bg-card shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between border-b border-border px-5 py-4">
-              <h3 className="text-sm font-semibold text-foreground">
-                Adicionar seção
-              </h3>
-              <button
-                type="button"
-                aria-label="Fechar"
-                onClick={() => setAddOpen(false)}
-                className="rounded p-1 text-muted-foreground hover:bg-muted"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-            <div className="max-h-96 divide-y divide-border overflow-y-auto">
-              {PAGE_SECTION_CATALOG.map((tpl) => {
-                const Icon = tpl.icon;
-                return (
-                  <button
-                    key={tpl.section_id}
-                    type="button"
-                    disabled={addMutation.isPending}
-                    onClick={() => addMutation.mutate(tpl.section_id)}
-                    className="flex w-full items-center gap-4 px-5 py-3.5 text-left transition-colors hover:bg-muted disabled:opacity-50"
-                  >
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-md border border-border bg-background text-muted-foreground">
-                      <Icon className="size-5" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-foreground">
-                        {tpl.label}
-                        {tpl.reference && (
-                          <span className="ml-2 text-2xs text-muted-foreground">
-                            (automático)
-                          </span>
-                        )}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {tpl.description}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+      {missingDefs.length > 0 && (
+        <div className="mt-8">
+          <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Seções disponíveis
+          </h2>
+          <div className="space-y-2">
+            {missingDefs.map((def) => {
+              const Icon = def.icon;
+              return (
+                <button
+                  key={def.section_id}
+                  type="button"
+                  disabled={addMutation.isPending}
+                  onClick={() => addMutation.mutate(def.section_id)}
+                  className="flex w-full items-center gap-3 rounded-[12px] border border-dashed border-border bg-card px-4 py-3 text-left transition-colors hover:border-brand disabled:opacity-50"
+                >
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
+                    <Icon className="size-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-foreground">
+                      {def.label}
+                    </p>
+                  </div>
+                  <span className="flex shrink-0 items-center gap-1 text-xs font-medium text-brand">
+                    <Plus className="size-4" />
+                    Adicionar
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}

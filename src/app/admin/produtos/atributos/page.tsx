@@ -179,36 +179,10 @@ export default function AdminAtributosPage() {
     },
   ];
 
+  const isDialogOpen = formOpen || !!deleteTarget;
+
   return (
     <div className="flex flex-col gap-5">
-      <ProdutosTabs />
-      <AdminListPage
-        title="Atributos"
-        icon={ListChecks}
-        action={
-          <button
-            type="button"
-            onClick={() => {
-              setEditing(undefined);
-              setFormOpen(true);
-            }}
-            className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
-          >
-            <Plus className="size-4" />
-            Novo atributo
-          </button>
-        }
-      >
-        <AdminDataTable
-          columns={columns}
-          data={attributes}
-          isLoading={isLoading}
-          keyExtractor={(a) => a.id}
-          emptyTitle="Nenhum atributo cadastrado"
-          emptyDescription="Atributos são usados nos templates de produtos."
-        />
-      </AdminListPage>
-
       {formOpen && (
         <AttributeForm
           attribute={editing}
@@ -230,6 +204,36 @@ export default function AdminAtributosPage() {
         }}
         onCancel={() => setDeleteTarget(undefined)}
       />
+
+      <div inert={isDialogOpen || undefined}>
+        <ProdutosTabs />
+        <AdminListPage
+          title="Atributos"
+          icon={ListChecks}
+          action={
+            <button
+              type="button"
+              onClick={() => {
+                setEditing(undefined);
+                setFormOpen(true);
+              }}
+              className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+            >
+              <Plus className="size-4" />
+              Novo atributo
+            </button>
+          }
+        >
+          <AdminDataTable
+            columns={columns}
+            data={attributes}
+            isLoading={isLoading}
+            keyExtractor={(a) => a.id}
+            emptyTitle="Nenhum atributo cadastrado"
+            emptyDescription="Atributos são usados nos templates de produtos."
+          />
+        </AdminListPage>
+      </div>
     </div>
   );
 }

@@ -12,7 +12,12 @@ import {
   AdminSelect,
 } from "@/app/admin/_components/crud/admin-input";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
-import { useGetApiUsers, postApiUsers, patchApiUsersId } from "@/api/stetsom";
+import {
+  getGetApiUsersQueryKey,
+  useGetApiUsers,
+  postApiUsers,
+  patchApiUsersId,
+} from "@/api/stetsom";
 import type {
   AdminUser,
   PostApiUsersBody,
@@ -20,7 +25,7 @@ import type {
   UserRole,
 } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Users } from "lucide-react";
 import { useState } from "react";
 
@@ -148,13 +153,21 @@ function UserForm({ user, onClose, onSave, isPending }: UserFormProps) {
 }
 
 export default function AdminUsuariosPage() {
+  const queryClient = useQueryClient();
   const users = useGetApiUsers();
+
+  function invalidate() {
+    queryClient.invalidateQueries({ queryKey: getGetApiUsersQueryKey() });
+  }
+
   const createMutation = useMutation({
     mutationFn: (body: PostApiUsersBody) => postApiUsers(body),
+    onSuccess: invalidate,
   });
   const updateMutation = useMutation({
     mutationFn: ({ id, body }: { id: string; body: PatchApiUsersIdBody }) =>
       patchApiUsersId(id, body),
+    onSuccess: invalidate,
   });
   const [formOpen, setFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | undefined>();

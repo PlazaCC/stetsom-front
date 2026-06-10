@@ -19,7 +19,7 @@ import { BrFlag, EsFlag, UsFlag } from "@/components/ui/flag-icons";
 import { cn } from "@/lib/utils";
 import { Filter, Package, Plus } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const STATUS_OPTIONS: { value: CmsProductRowStatus; label: string }[] = [
   { value: "PUBLISHED", label: "Publicado" },
@@ -61,6 +61,7 @@ function LocaleFlags({ languages }: { languages: string[] }) {
 }
 
 export default function AdminProdutos() {
+  const [inputValue, setInputValue] = useState("");
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<CmsProductRowStatus | null>(
     null,
@@ -68,6 +69,11 @@ export default function AdminProdutos() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [page, setPage] = useState(1);
   const pageSize = 12;
+
+  useEffect(() => {
+    const t = setTimeout(() => setQuery(inputValue), 300);
+    return () => clearTimeout(t);
+  }, [inputValue]);
 
   const cmsProducts = useGetApiProductsAdmin({
     q: query || undefined,
@@ -207,8 +213,11 @@ export default function AdminProdutos() {
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
               <AdminSearchInput
-                value={query}
-                onChange={setQuery}
+                value={inputValue}
+                onChange={(v) => {
+                  setInputValue(v);
+                  setPage(1);
+                }}
                 placeholder="Procurar"
                 className="max-w-72"
               />
