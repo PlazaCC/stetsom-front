@@ -2,7 +2,9 @@
 
 **Autores:** Plaza Creative Collective
 **Data:** 10/04/2026
-**Status:** Proposto
+**Status:** Superseded
+
+> As decisões de stack e arquitetura descritas aqui foram revisadas durante o desenvolvimento. Para a arquitetura atual, consulte `docs/ARCHITECTURE.md` (front) e `stetsom-api/docs/ARCHITECTURE.md` (API).
 
 ---
 
