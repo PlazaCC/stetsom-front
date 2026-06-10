@@ -20,7 +20,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useInlineUpload } from "@/hooks/use-inline-upload";
 import { cn } from "@/lib/utils";
-import { Image, Plus } from "lucide-react";
+import { Image as ImageIcon, Plus } from "lucide-react";
 import { useState } from "react";
 import {
   BannerDraft,
@@ -222,7 +222,7 @@ export function BannersContent({
   return (
     <AdminListPage
       title="Banners"
-      icon={Image}
+      icon={ImageIcon}
       action={
         <AdminActionBar>
           <button
@@ -273,8 +273,7 @@ export function BannersContent({
                 <tr key={banner.id} className="hover:bg-muted/30">
                   <td className="px-4 py-3">
                     <div className="flex h-10 w-16 items-center justify-center overflow-hidden rounded-md bg-muted">
-                      {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                      <Image className="size-4 text-muted-foreground/40" />
+                      <ImageIcon className="size-4 text-muted-foreground/40" />
                     </div>
                   </td>
                   <td className="px-4 py-3">

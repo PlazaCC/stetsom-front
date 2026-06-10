@@ -13,12 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-/**
- * Declarative description of a single editable field inside a page block.
- * The renderer (`section-form-renderer.tsx`) interprets these specs and reuses
- * the shared `crud/*` primitives. Keys map 1:1 to the block `data` shape
- * defined in `src/lib/page-blocks.ts` (the SSOT consumed by the public site).
- */
+// Field spec interpreted by SectionFormRenderer; keys map 1:1 to block.data in page-blocks.ts.
 export type FieldSpec =
   | { kind: "i18n"; key: string; label: string; multiline?: boolean }
   | {
@@ -69,11 +64,7 @@ export interface SectionDef {
   label: string;
   description?: string;
   icon: LucideIcon;
-  /**
-   * `auto` blocks have part of their content filled by the backend/external
-   * API (featured products, Instagram feed). Only the text/CTA fields below are
-   * editable here; `autoNote` explains what is managed automatically.
-   */
+  // "auto" = content filled by backend/API; only text/CTA fields here are editable.
   kind: "editable" | "auto";
   autoNote?: string;
   fields: FieldSpec[];
@@ -112,12 +103,7 @@ const socialFields: FieldSpec[] = [
   },
 ];
 
-/**
- * Fixed catalog of sections per institutional page. The admin can edit, reorder
- * and show/hide these — adding unknown sections (that the public site cannot
- * render) is intentionally not allowed. Order here is the canonical default for
- * sections not yet present on a page.
- */
+// Fixed catalog per page — only known sections (renderable by the public site) are listed.
 export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
   home: [
     {

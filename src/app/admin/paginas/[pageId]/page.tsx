@@ -22,6 +22,7 @@ import {
   LayoutTemplate,
   Plus,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { use, useState } from "react";
 import { PAGE_LABELS, PAGE_PUBLIC_HREFS } from "../_components/page-constants";
@@ -168,9 +169,10 @@ export default function AdminPageSectionsPage({
             const hidden = isHidden(block);
             return (
               <div
-                className={`flex items-center gap-3 rounded-[12px] border border-border bg-card px-4 py-3 ${
-                  hidden ? "opacity-60" : ""
-                }`}
+                className={cn(
+                  "flex items-center gap-3 rounded-[12px] border border-border bg-card px-4 py-3",
+                  hidden && "opacity-60",
+                )}
               >
                 {handle}
                 <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
