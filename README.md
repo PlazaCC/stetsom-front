@@ -88,6 +88,18 @@ Pre-commit hooks (husky + lint-staged) run automatically on every commit:
 
 CI (GitHub Actions) runs on every push and pull request: type-check → lint → build.
 
+## Environment Variables
+
+Copy `.env.local.example` to `.env.local`. See inline comments for details.
+
+| Variable | Description |
+| --- | --- |
+| `CMS_API_BASE_URL` | Fastify API URL. Omit to use mock data. |
+| `USE_MOCK_DATA` | Set `1` to serve GET requests from local fixture. |
+| `MOCK_DUMP_EMAIL` / `MOCK_DUMP_PASSWORD` | Credentials for `pnpm mock:dump` only. |
+| `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | Must match `stetsom-api/.env`. |
+| `STORAGE_PUBLIC_HOSTNAME` | S3 bucket hostname for `next/image` (`{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com`). Set in Vercel for preview deployments. |
+
 ## Deploy
 
 Production deployments are handled by [Vercel](https://vercel.com). Preview deployments are created automatically for every pull request.
