@@ -47,7 +47,7 @@ export default function AdminSectionEditorPage({
     setIsSaving(true);
     setSaveError(null);
     try {
-      await patchApiPagesSlugBlocksBlockId(pageId, sectionId, {
+      await patchApiPagesSlugBlocksBlockId(pageId, block.block_id, {
         data: localData,
       });
       setSavedAt(new Date());

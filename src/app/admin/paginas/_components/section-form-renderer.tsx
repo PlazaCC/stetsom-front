@@ -229,44 +229,43 @@ function ListField({
     return `Item ${index + 1}`;
   }
 
+  const indexed = items.map((item, i) => ({ item, i, key: itemId(item, i) }));
+
   return (
     <div className="space-y-2">
       <AdminLabel>{field.label}</AdminLabel>
       <SortableList
-        items={items}
-        getId={(item) => itemId(item, items.indexOf(item))}
-        onReorder={set}
-        renderItem={(item, handle) => {
-          const i = items.indexOf(item);
-          return (
-            <div className="space-y-3 rounded-md border border-border bg-card p-3">
-              <div className="flex items-center gap-2">
-                {handle}
-                <span className="min-w-0 flex-1 truncate text-xs font-semibold text-muted-foreground">
-                  {rowTitle(item, i)}
-                </span>
-                <button
-                  type="button"
-                  aria-label="Remover"
-                  onClick={() => set(items.filter((_, j) => j !== i))}
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <Trash2 className="size-4" />
-                </button>
-              </div>
-              {field.itemFields.map((sub) => (
-                <Field
-                  key={sub.key}
-                  field={sub}
-                  data={item}
-                  onChange={(next) =>
-                    set(items.map((it, j) => (j === i ? next : it)))
-                  }
-                />
-              ))}
+        items={indexed}
+        getId={(it) => it.key}
+        onReorder={(next) => set(next.map((it) => it.item))}
+        renderItem={({ item, i }, handle) => (
+          <div className="space-y-3 rounded-md border border-border bg-card p-3">
+            <div className="flex items-center gap-2">
+              {handle}
+              <span className="min-w-0 flex-1 truncate text-xs font-semibold text-muted-foreground">
+                {rowTitle(item, i)}
+              </span>
+              <button
+                type="button"
+                aria-label="Remover"
+                onClick={() => set(items.filter((_, j) => j !== i))}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="size-4" />
+              </button>
             </div>
-          );
-        }}
+            {field.itemFields.map((sub) => (
+              <Field
+                key={sub.key}
+                field={sub}
+                data={item}
+                onChange={(next) =>
+                  set(items.map((it, j) => (j === i ? next : it)))
+                }
+              />
+            ))}
+          </div>
+        )}
       />
       <button
         type="button"
@@ -286,12 +285,11 @@ interface SectionFormRendererProps {
   onChange: (data: Data) => void;
 }
 
-/** Renders a page-block editor from its declarative field-spec. */
 export function SectionFormRenderer({
   fields,
   data,
   onChange,
-}: Readonly<SectionFormRendererProps>) {
+}: SectionFormRendererProps) {
   return (
     <div className="space-y-4">
       {fields.map((field) => (
