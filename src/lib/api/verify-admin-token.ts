@@ -10,7 +10,7 @@ export async function verifyAdminToken(token: string): Promise<boolean> {
   const secret = getJwtSecret();
   if (!secret) {
     console.error(
-      "[verifyAdminToken] JWT_ACCESS_SECRET não está configurado — rejeitando tokens de admin.",
+      "[verifyAdminToken] JWT_ACCESS_SECRET is not set — rejecting all admin tokens.",
     );
     return false;
   }
@@ -18,7 +18,11 @@ export async function verifyAdminToken(token: string): Promise<boolean> {
   try {
     await jwtVerify(token, secret);
     return true;
-  } catch {
+  } catch (err) {
+    // Common codes: ERR_JWS_SIGNATURE_VERIFICATION_FAILED (wrong secret),
+    // ERR_JWT_EXPIRED (token expired), ERR_JWT_CLAIM_VALIDATION_FAILED.
+    const code = (err as { code?: string }).code ?? "unknown";
+    console.warn(`[verifyAdminToken] rejected: ${code}`);
     return false;
   }
 }
