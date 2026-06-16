@@ -5,6 +5,10 @@ import type {
   LibraryAsset,
   UploadPresignResponse,
 } from "@/api/stetsom/model";
+import {
+  getGetApiLibraryQueryKey,
+  postApiLibraryIdVersions,
+} from "@/api/stetsom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -85,6 +89,56 @@ export function useLibraryUpload() {
     );
   }
 
+  /** Steps 1–2 of the upload flow: presign + PUT to storage. Shared by the
+   *  "create asset" and "add version" paths. */
+  async function presignAndPut(
+    id: string,
+    file: File,
+  ): Promise<{
+    presign: UploadPresignResponse;
+    dims: { width: number; height: number } | null;
+  }> {
+    patch(id, { status: "presigning", progress: 10 });
+
+    const presignRes = await fetch("/api/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fileName: file.name,
+        mimeType: file.type,
+        sizeBytes: file.size,
+        scope: "library",
+      }),
+    });
+
+    if (!presignRes.ok) {
+      const err = (await presignRes.json()) as { error?: { message?: string } };
+      throw new Error(
+        err.error?.message ?? `Presign falhou (${presignRes.status})`,
+      );
+    }
+
+    const presign = (await presignRes.json()) as UploadPresignResponse;
+
+    patch(id, { status: "uploading", progress: 40 });
+
+    const putRes = await fetch(presign.uploadUrl, {
+      method: "PUT",
+      headers: presign.headers,
+      body: file,
+    });
+
+    if (!putRes.ok) {
+      throw new Error(`Upload para o storage falhou (HTTP ${putRes.status})`);
+    }
+
+    patch(id, { progress: 80 });
+
+    const dims = await readImageDimensions(file);
+    return { presign, dims };
+  }
+
+  /** Full flow ending in a brand-new library asset (step 3 = /upload/complete). */
   async function processFile(entry: UploadEntry, file: File): Promise<boolean> {
     const { id } = entry;
 
@@ -97,47 +151,9 @@ export function useLibraryUpload() {
     }
 
     try {
-      patch(id, { status: "presigning", progress: 10 });
-
-      const presignRes = await fetch("/api/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fileName: file.name,
-          mimeType: file.type,
-          sizeBytes: file.size,
-          scope: "library",
-        }),
-      });
-
-      if (!presignRes.ok) {
-        const err = (await presignRes.json()) as {
-          error?: { message?: string };
-        };
-        throw new Error(
-          err.error?.message ?? `Presign falhou (${presignRes.status})`,
-        );
-      }
-
-      const presign = (await presignRes.json()) as UploadPresignResponse;
-
-      patch(id, { status: "uploading", progress: 40 });
-
-      const putRes = await fetch(presign.uploadUrl, {
-        method: "PUT",
-        headers: presign.headers,
-        body: file,
-      });
-
-      if (!putRes.ok) {
-        throw new Error(`Upload para o storage falhou (HTTP ${putRes.status})`);
-      }
-
-      patch(id, { progress: 80 });
+      const { presign, dims } = await presignAndPut(id, file);
 
       patch(id, { status: "registering", progress: 85 });
-
-      const dims = await readImageDimensions(file);
 
       const completeBody: CompleteUploadInput = {
         filename: file.name,
@@ -166,6 +182,45 @@ export function useLibraryUpload() {
       const { asset } = (await completeRes.json()) as { asset: LibraryAsset };
 
       patch(id, { status: "done", progress: 100, asset });
+      return true;
+    } catch (err) {
+      patch(id, {
+        status: "error",
+        error: err instanceof Error ? err.message : "Erro desconhecido.",
+      });
+      return false;
+    }
+  }
+
+  /** Full flow ending in a new version on an existing asset
+   *  (step 3 = POST /api/library/:id/versions). */
+  async function processVersionFile(
+    entry: UploadEntry,
+    file: File,
+    assetId: string,
+  ): Promise<boolean> {
+    const { id } = entry;
+
+    if (!ALLOWED_MIMES.has(file.type)) {
+      patch(id, {
+        status: "error",
+        error: `Tipo "${file.type}" não permitido.`,
+      });
+      return false;
+    }
+
+    try {
+      const { presign, dims } = await presignAndPut(id, file);
+
+      patch(id, { status: "registering", progress: 85 });
+
+      await postApiLibraryIdVersions(assetId, {
+        file_url: presign.file_url,
+        size_bytes: file.size,
+        ...(dims ?? {}),
+      });
+
+      patch(id, { status: "done", progress: 100 });
       return true;
     } catch (err) {
       patch(id, {
@@ -210,8 +265,29 @@ export function useLibraryUpload() {
 
     await Promise.all(workers);
     if (anySuccess) {
-      void queryClient.invalidateQueries({ queryKey: ["admin", "library"] });
+      void queryClient.invalidateQueries({
+        queryKey: getGetApiLibraryQueryKey(),
+      });
     }
+  }
+
+  /** Upload a new version for an existing asset and refresh the library. */
+  async function uploadVersion(assetId: string, file: File): Promise<boolean> {
+    const entry: UploadEntry = {
+      id: generateId(),
+      fileName: file.name,
+      status: "idle",
+      progress: 0,
+    };
+    setEntries((prev) => [...prev, entry]);
+
+    const success = await processVersionFile(entry, file, assetId);
+    if (success) {
+      void queryClient.invalidateQueries({
+        queryKey: getGetApiLibraryQueryKey(),
+      });
+    }
+    return success;
   }
 
   function clearFinished() {
@@ -227,6 +303,7 @@ export function useLibraryUpload() {
 
   return {
     upload,
+    uploadVersion,
     entries,
     isUploading,
     doneCount,

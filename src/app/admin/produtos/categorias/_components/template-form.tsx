@@ -129,7 +129,7 @@ function TemplateFormInner({
       toast.success("Template criado");
       router.push(backHref);
     },
-    onError: () => toast.error("Não foi possível criar o template"),
+    onError: (e) => toast.apiError(e, "Não foi possível criar o template"),
   });
 
   const updateMutation = useMutation({
@@ -143,7 +143,7 @@ function TemplateFormInner({
       toast.success("Template salvo");
       router.push(backHref);
     },
-    onError: () => toast.error("Não foi possível salvar o template"),
+    onError: (e) => toast.apiError(e, "Não foi possível salvar o template"),
   });
 
   const deleteMutation = useMutation({
@@ -153,7 +153,7 @@ function TemplateFormInner({
       toast.deleted(name.pt);
       router.push(backHref);
     },
-    onError: () => toast.error("Não foi possível excluir o template"),
+    onError: (e) => toast.apiError(e, "Não foi possível excluir o template"),
   });
 
   function move(attrId: string, dir: -1 | 1) {

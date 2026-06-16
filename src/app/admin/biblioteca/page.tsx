@@ -34,7 +34,7 @@ import {
   Trash2,
   type LucideIcon,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 const PAGE_SIZE = 6;
 
@@ -476,6 +476,19 @@ function EditAssetModal({
 }) {
   const [alt, setAlt] = useState<I18nString>(asset.alt ?? { pt: "" });
   const [tags, setTags] = useState(asset.tags.join(", "));
+  const { uploadVersion } = useLibraryUpload();
+  const versionInputRef = useRef<HTMLInputElement>(null);
+  const [versioning, setVersioning] = useState(false);
+
+  async function handleVersionFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file
+    if (!file) return;
+    setVersioning(true);
+    const ok = await uploadVersion(asset.id, file);
+    setVersioning(false);
+    if (ok) onSaved();
+  }
 
   const mutation = useMutation({
     mutationFn: () =>
@@ -512,6 +525,26 @@ function EditAssetModal({
                 onChange={(e) => setTags(e.target.value)}
                 placeholder="hero, amplificador, 2024"
               />
+            </div>
+            <div className="rounded-md border border-border p-3">
+              <p className="text-sm font-medium text-foreground">Versões</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Versão atual: v{asset.versions.length}
+              </p>
+              <input
+                ref={versionInputRef}
+                type="file"
+                className="hidden"
+                onChange={handleVersionFile}
+              />
+              <button
+                type="button"
+                disabled={versioning}
+                onClick={() => versionInputRef.current?.click()}
+                className="mt-2 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted disabled:opacity-60"
+              >
+                {versioning ? "Enviando nova versão..." : "Enviar nova versão"}
+              </button>
             </div>
             <div className="flex gap-3 pt-2">
               <button
