@@ -50,7 +50,14 @@ Multilingual fields use `I18nString`: `{ pt: string, en?: string, es?: string }`
 
 **Line** (formerly `Subcategory`): `{ line_id, name: I18nString, slug: I18nString, order }`
 
-**ProductCardItem** (light catalog item): `{ id, slug, name, category, thumbnail_url, href, status, is_discontinued, highlighted_specs }`
+**ProductCardItem** (light catalog item): `{ id, slug, name, category, line, thumbnail_url, href, status, is_discontinued, highlighted_specs }` — `line: string | null` is the product's line name (locale-resolved), `null` when the product has no line.
+
+## Catalog Filtering (`GET /api/products`)
+
+Server-side query params: `q`, `category` (category **slug**), `line` (line **slug**), `status`, `page`/`pageSize`, `is_featured`, `is_spotlight`, `sort`, `locale`.
+- `category` and `line` both accept **slugs** (resolved to ids upstream); `line` narrows within a category.
+- `sort`: `relevance` (default — recent first) | `newest`. There is **no** `name` sort (`name` is a Json column; can't be ordered in Mongo without an aggregate pipeline).
+- The catalog UI is URL-driven (`useCatalogFilters`): changing category clears the line; changing any filter resets `page`.
 
 ## Key Rules
 

@@ -66,3 +66,23 @@ User approved implementing **all items (1–9)** on a single branch/PR
 Contract limitations recorded: `PublicCategory` exposes only `icon_library_id` (no resolved
 image URL) and no description; `CmsConfig` is protected and not consumed publicly. These shaped
 the curated-fallback (item 3) and About-block (item 7) decisions.
+
+---
+
+## Round 2 — integration & UI-consistency refinement (2026-06-16)
+
+Deeper pass removing "ghost" controls (visible but doing nothing) and completing screens to the
+level the BFF supports. Verified gaps against the live API before acting.
+
+| # | Item | Status | Notes |
+|---|---|---|---|
+| R1 | Catalog **line filter** didn't work | ✅ done (contract **extended**) | Verified `?line=` was silently ignored and `ProductCardItem` had no `line`. User approved reopening the contract: `../stetsom-api` now accepts `line` (slug→`line_id`) + `sort` on `GET /api/products` and the card carries `line`. Regenerated Orval; sidebar line checkboxes (single-select) + sort dropdown are wired; URL-driven via `useCatalogFilters` |
+| R2 | Catalog **sort** + ghost controls | ✅ done | `sort=relevance\|newest` (no `name` — `name` is a Json column, unsortable in Mongo without an aggregate). Removed non-functional "Exportar produtos", "Comparar", and the static "options" block |
+| R3 | **Library** not WordPress-like | ✅ done | Switched to server-side `type/q/limit/offset` (was client-side filter/slice). Cards/table show dimensions, version count, tags, upload date. `EditAssetModal` now edits **`filename`** (+ alt/tags/new-version) |
+| R4 | **Partner locations** not paginated | ✅ done | Admin `/parceiros`: search + UF filter + `AdminPagination` (client-side — contract has no offset). Public `/suporte`: extracted `ServiceCenterList` (client) with live search + "load more" (the search box was previously inert) |
+
+**New contract surface (Round 2):** `GET /api/products` gains `line` (slug) and `sort` (`relevance|newest`);
+`ProductCardItem.line: string | null`. Backend changes live in `../stetsom-api`
+(`schemas/index.ts`, products `mapper`/`repository`/`use-case`). Mock `data.json` card items carry
+`line: null` for shape fidelity (the mock loader ignores query params, so line/sort don't filter in
+mock mode — validate against the live API).
