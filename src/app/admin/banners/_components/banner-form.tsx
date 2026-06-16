@@ -173,7 +173,10 @@ interface BannerFormProps {
   draft: BannerFormState;
   isCreating: boolean;
   isSaving: boolean;
-  onDraftChange: (key: keyof BannerFormState, value: string) => void;
+  onDraftChange: (
+    key: keyof BannerFormState,
+    value: string | I18nString,
+  ) => void;
   onSave: () => void;
   onCancel: () => void;
   onDesktopFile?: (file: File) => void;
@@ -194,8 +197,6 @@ export function BannerForm({
   onClearDesktopFile,
   onClearMobileFile,
 }: BannerFormProps) {
-  const hasImage = !!draft.desktop_image_url;
-
   return (
     <div className="flex flex-col gap-5">
       <AdminPanel className="flex items-center justify-between p-5">
@@ -265,9 +266,7 @@ export function BannerForm({
               <I18nInput
                 label="Título do banner (opcional)"
                 value={draft.title}
-                onChange={(title) =>
-                  onDraftChange("title", title as unknown as string)
-                }
+                onChange={(title) => onDraftChange("title", title)}
                 placeholder="Texto que aparece sobre o banner"
               />
 

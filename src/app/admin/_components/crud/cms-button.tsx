@@ -2,15 +2,6 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
-/**
- * CMS action button — Mantine-inspired, token-only (resolves to the blue accent
- * inside `.cms`). Use INSTEAD of the public `@/components/ui/button` within the
- * admin: that one is the Stetsom-red, uppercase, Barlow site button.
- *
- * Variants mirror Mantine: filled · light · outline · subtle · default · danger.
- * `cmsButtonVariants(...)` is exported so the same look can be applied to a
- * `<Link>` (e.g. `className={cmsButtonVariants({ variant: "filled" })}`).
- */
 export const cmsButtonVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-2 rounded-md font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
