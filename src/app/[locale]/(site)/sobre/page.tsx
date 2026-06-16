@@ -102,7 +102,7 @@ export default async function SobrePage() {
               {heroData.stats?.length ? (
                 <div className="relative border-t border-white/20 pt-5">
                   <span className="pointer-events-none absolute right-0 -top-24 font-sans-condensed text-[112px] font-black leading-none text-white/10">
-                    1989
+                    {heroData.foundedYear ?? "1989"}
                   </span>
                   <div className="grid grid-cols-2 border border-white/20">
                     {heroData.stats.map((stat) => (
@@ -149,6 +149,7 @@ export default async function SobrePage() {
             }>
           }
           foundingLabel={t("foundingLabel")}
+          foundingYear={heroData.foundedYear ?? "1989"}
         />
       )}
       {!timelineData.hidden && timelineData.events?.length ? (

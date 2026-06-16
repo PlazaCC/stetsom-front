@@ -68,6 +68,7 @@ export type AboutHeroBlockData = {
   imageAlt?: string;
   label?: string;
   title?: string;
+  foundedYear?: string;
   stats?: Array<{ value: string; label: string }>;
   milestones?: string[];
 };
