@@ -95,3 +95,16 @@ complement the sidebar accordion.
 | Histórico | `1200-11636` |
 
 Inspect via Figma MCP `get_figma_data` with these IDs (don't fetch the whole file).
+
+## Responsividade
+
+**Breakpoint**: `lg` (1024px)
+- **≥1024px**: sidebar fixa (`w-60`)
+- **<1024px**: sidebar vira drawer com hambúrguer overlay (`fixed inset-y-0 left-0`)
+
+**Regras de design**:
+- **AppShell**: `flex h-screen overflow-hidden` com `AdminTopbar` no mobile
+- **Tabela**: `overflow-x-auto` com `min-w-[640px]` para scroll horizontal dentro do card
+- **Drawer**: `w-full sm:w-120` - full-width no mobile, 480px no desktop
+- **Grids**: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4` para padrão de colapso
+- **Tap targets**: ≥44px no mobile
