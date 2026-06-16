@@ -8,9 +8,8 @@ import type {
   WizardProductVariation,
 } from "@/app/admin/_components/product-wizard-types";
 import type { Attribute } from "@/api/stetsom/model";
+import { CMS_UI } from "@/lib/cms/constants";
 import { Plus, Trash2, X } from "lucide-react";
-
-const MAX_HIGHLIGHTS = 3;
 
 interface ProductWizardStepSpecsProps {
   variations: WizardProductVariation[];
@@ -173,12 +172,12 @@ export function ProductWizardStepSpecs({
 
       <AdminFormSection
         title="Especificações Técnicas"
-        description={`Selecione o atributo e informe o valor. Até ${MAX_HIGHLIGHTS} podem ser destacados no cabeçalho do produto.`}
+        description={`Selecione o atributo e informe o valor. Até ${CMS_UI.MAX_HIGHLIGHTS} podem ser destacados no cabeçalho do produto.`}
       >
         <div className="space-y-2">
           {activeSpecs.map((spec) => {
             const highlightDisabled =
-              !spec.highlighted && highlightCount >= MAX_HIGHLIGHTS;
+              !spec.highlighted && highlightCount >= CMS_UI.MAX_HIGHLIGHTS;
             return (
               <div
                 key={spec.id}

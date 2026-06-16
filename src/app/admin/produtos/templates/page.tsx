@@ -12,13 +12,25 @@ import { cn } from "@/lib/utils";
 import { LayoutTemplate, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function AdminTemplatesPage() {
   const router = useRouter();
   const { data: templates = [], isLoading } = useGetApiTemplates();
   const { data: categories = [] } = useGetApiCategories();
   const [pickerOpen, setPickerOpen] = useState(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!pickerOpen) return;
+    function handleClick(e: MouseEvent) {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setPickerOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [pickerOpen]);
 
   function categoryName(t: Template): string {
     return categories.find((c) => c.id === t.category_id)?.name ?? "—";
@@ -80,7 +92,10 @@ export default function AdminTemplatesPage() {
               Novo template
             </button>
             {pickerOpen && (
-              <div className="absolute right-0 top-11 z-10 w-56 rounded-md border border-border bg-card p-1 shadow-lg">
+              <div
+                ref={pickerRef}
+                className="absolute right-0 top-11 z-10 w-56 rounded-md border border-border bg-card p-1 shadow-lg"
+              >
                 <p className="px-2 py-1.5 text-xs text-muted-foreground">
                   Escolha a categoria
                 </p>

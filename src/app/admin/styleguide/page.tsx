@@ -7,16 +7,19 @@
  * Reference doc: docs/ia/figma/CMS_DESIGN_SYSTEM.md
  */
 
-import { AdminPageHeader } from "../_components/admin-page-header";
-import { AdminPanel } from "../_components/admin-panel";
+import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
+import { AdminPanel } from "@/app/admin/_components/admin-panel";
 import {
   AdminInput,
   AdminLabel,
   AdminSelect,
   AdminTextarea,
-} from "../_components/crud/admin-input";
-import { CmsButton, type CmsButtonProps } from "../_components/crud/cms-button";
-import { StatusBadge } from "../_components/crud/status-badge";
+} from "@/app/admin/_components/crud/admin-input";
+import {
+  CmsButton,
+  type CmsButtonProps,
+} from "@/app/admin/_components/crud/cms-button";
+import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import { Plus } from "lucide-react";
 
 const COLOR_TOKENS: { name: string; className: string; hex: string }[] = [

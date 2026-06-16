@@ -9,6 +9,7 @@ import {
 } from "@/app/admin/_components/crud/block-builder";
 import { PRODUCT_BLOCK_REGISTRY } from "@/app/admin/_components/crud/product-block-registry";
 import { AdminDeleteAction } from "@/app/admin/_components/crud/admin-delete-action";
+import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import type { AdminStep } from "@/app/admin/_components/crud/admin-step-indicator";
 import { AdminWizardPage } from "@/app/admin/_components/crud/admin-wizard-page";
@@ -247,6 +248,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [publishedResult, setPublishedResult] =
     useState<ProductMutationResult | null>(null);
+  const [showBackConfirm, setShowBackConfirm] = useState(false);
 
   const categoriesQuery = useGetApiCategories();
   const templatesQuery = useGetApiTemplates();
@@ -471,10 +473,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   }
 
   function handleBack() {
-    if (
-      isDirty &&
-      !window.confirm("Você tem alterações não salvas. Deseja sair sem salvar?")
-    ) {
+    if (isDirty) {
+      setShowBackConfirm(true);
       return;
     }
     setStep((s) => (s - 1) as Step);
@@ -712,6 +712,18 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
         isDirty={isDirty}
         lastSavedAt={lastSavedAt}
         mode={mode}
+      />
+      <AdminConfirmDialog
+        open={showBackConfirm}
+        title="Sair sem salvar?"
+        description="Você tem alterações não salvas. Deseja sair sem salvar?"
+        confirmLabel="Sair"
+        destructive
+        onConfirm={() => {
+          setShowBackConfirm(false);
+          setStep((s) => (s - 1) as Step);
+        }}
+        onCancel={() => setShowBackConfirm(false)}
       />
     </div>
   );
