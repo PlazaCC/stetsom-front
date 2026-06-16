@@ -44,7 +44,7 @@ export function AdminTagInput({
     <div
       onClick={() => inputRef.current?.focus()}
       className={cn(
-        "flex min-h-10 cursor-text flex-wrap gap-1.5 rounded-md border border-border bg-card px-3 py-2 transition-colors focus-within:ring-1 focus-within:ring-brand",
+        "flex min-h-10 cursor-text flex-wrap gap-1.5 rounded-md border border-border bg-card px-3 py-2 transition-colors focus-within:ring-1 focus-within:ring-primary",
         className,
       )}
     >

@@ -7,10 +7,10 @@ import { AdminInput, AdminLabel, AdminTextarea } from "./admin-input";
 
 type Locale = "pt" | "en" | "es";
 
-const LOCALES: { id: Locale; label: string; required?: boolean }[] = [
-  { id: "pt", label: "PT", required: true },
-  { id: "en", label: "EN" },
-  { id: "es", label: "ES" },
+const LOCALES: { id: Locale; flag: string; required?: boolean }[] = [
+  { id: "pt", flag: "🇧🇷", required: true },
+  { id: "en", flag: "🇺🇸" },
+  { id: "es", flag: "🇪🇸" },
 ];
 
 interface I18nInputProps {
@@ -74,12 +74,12 @@ export function I18nInput({
                   : "bg-muted text-muted-foreground hover:text-foreground",
               )}
             >
-              {loc.label}
+              {loc.flag}
               {filled && (
                 <span
                   className={cn(
                     "ml-1 inline-block size-1.5 rounded-full",
-                    active === loc.id ? "bg-background" : "bg-brand",
+                    active === loc.id ? "bg-background" : "bg-primary",
                   )}
                 />
               )}
@@ -87,23 +87,21 @@ export function I18nInput({
           );
         })}
       </div>
-      {LOCALES.map((loc) => (
-        <Field
-          key={loc.id}
-          aria-hidden={active !== loc.id || undefined}
-          tabIndex={active !== loc.id ? -1 : undefined}
-          className={cn(
-            active !== loc.id && "sr-only",
-            multiline && "min-h-24",
-          )}
-          required={loc.id === "pt" && required}
-          placeholder={placeholder}
-          value={(loc.id === "pt" ? current.pt : current[loc.id]) ?? ""}
-          onChange={(
-            e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-          ) => set(loc.id, e.target.value)}
-        />
-      ))}
+      {/* Render only the active locale field. Keeping inactive fields mounted
+          but hidden (sr-only) collided with the input's w-full and produced a
+          full-width absolutely-positioned box off-screen, expanding the
+          document's horizontal scroll. The value lives in props, so switching
+          tabs loses nothing. */}
+      <Field
+        key={active}
+        className={cn(multiline && "min-h-24")}
+        required={active === "pt" && required}
+        placeholder={placeholder}
+        value={(active === "pt" ? current.pt : current[active]) ?? ""}
+        onChange={(
+          e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        ) => set(active, e.target.value)}
+      />
     </div>
   );
 }

@@ -8,11 +8,8 @@ import {
 } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
-import type {
-  WizardProductImage,
-  WizardProductStatus,
-} from "@/app/admin/_components/product-wizard-types";
-import type { I18nString } from "@/api/stetsom/model";
+import type { WizardProductImage } from "@/app/admin/_components/product-wizard-types";
+import type { ProductStatus, I18nString } from "@/api/stetsom/model";
 import { ImagePlus, Star, X } from "lucide-react";
 
 interface Category {
@@ -40,13 +37,13 @@ export interface ProductInfo {
   category_id: string;
   subcategory_id: string;
   template_id: string;
-  status: WizardProductStatus;
+  status: ProductStatus;
+  is_discontinued: boolean;
   is_featured: boolean;
   is_spotlight: boolean;
-  badge: string;
-  video_url: string;
   launch_date: string;
   launch_time: string;
+  available_locales: ("pt" | "en" | "es")[];
 }
 
 interface ProductWizardStep1Props {
@@ -102,7 +99,7 @@ function ProductGallery({
               <span className="flex-1 text-xs text-muted-foreground">
                 {img.order === 0 ? (
                   <span className="inline-flex items-center gap-1 font-medium text-foreground">
-                    <Star className="size-3 fill-brand text-brand" />
+                    <Star className="size-3 fill-primary text-primary" />
                     Capa
                   </span>
                 ) : (
@@ -123,7 +120,7 @@ function ProductGallery({
           )}
         />
       )}
-      <label className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card py-4 text-sm text-muted-foreground hover:border-brand hover:text-foreground">
+      <label className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card py-4 text-sm text-muted-foreground hover:border-primary hover:text-foreground">
         <ImagePlus className="size-5" />
         Adicionar imagens
         <input
@@ -183,26 +180,16 @@ export function ProductWizardStep1({
             placeholder="st-4000eq"
           />
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <AdminLabel>SKU</AdminLabel>
-              <AdminInput
-                value={info.sku}
-                onChange={(e) => onPatch({ sku: e.target.value })}
-                placeholder="Código único"
-              />
-            </div>
-            <div>
-              <AdminLabel>Badge (opcional)</AdminLabel>
-              <AdminInput
-                value={info.badge}
-                onChange={(e) => onPatch({ badge: e.target.value })}
-                placeholder="Ex: LANÇAMENTO"
-              />
-            </div>
+          <div>
+            <AdminLabel>SKU</AdminLabel>
+            <AdminInput
+              value={info.sku}
+              onChange={(e) => onPatch({ sku: e.target.value })}
+              placeholder="Código único"
+            />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <AdminLabel>Categoria *</AdminLabel>
               <AdminSelect
@@ -271,7 +258,7 @@ export function ProductWizardStep1({
                 type="checkbox"
                 checked={info.is_featured}
                 onChange={(e) => onPatch({ is_featured: e.target.checked })}
-                className="size-4 accent-brand"
+                className="size-4 accent-primary"
               />
               <span className="text-sm text-foreground">Destaque</span>
             </label>
@@ -280,7 +267,7 @@ export function ProductWizardStep1({
                 type="checkbox"
                 checked={info.is_spotlight}
                 onChange={(e) => onPatch({ is_spotlight: e.target.checked })}
-                className="size-4 accent-brand"
+                className="size-4 accent-primary"
               />
               <span className="text-sm text-foreground">Spotlight</span>
             </label>
@@ -294,15 +281,6 @@ export function ProductWizardStep1({
           value={info.description}
           onChange={(description) => onPatch({ description })}
           placeholder="Descrição curta do produto..."
-        />
-      </AdminFormSection>
-
-      <AdminFormSection title="Vídeo (opcional)">
-        <AdminInput
-          type="url"
-          value={info.video_url}
-          onChange={(e) => onPatch({ video_url: e.target.value })}
-          placeholder="https://www.youtube.com/watch?v=..."
         />
       </AdminFormSection>
     </div>

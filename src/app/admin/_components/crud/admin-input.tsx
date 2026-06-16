@@ -13,7 +13,7 @@ interface AdminLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
 }
 
 const inputBase =
-  "w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand disabled:cursor-not-allowed disabled:opacity-60";
+  "w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60";
 
 const labelBase = "mb-1.5 block text-sm font-medium text-foreground";
 

@@ -68,7 +68,7 @@ export default function AdminPaginasPage() {
                     </a>
                     <Link
                       href={`/admin/paginas/${page.slug}`}
-                      className="text-xs font-medium text-brand hover:underline"
+                      className="text-xs font-medium text-primary hover:underline"
                     >
                       Editar
                     </Link>

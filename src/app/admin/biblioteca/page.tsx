@@ -20,11 +20,8 @@ import {
   patchApiLibraryId,
   useGetApiLibrary,
 } from "@/api/stetsom";
-import type {
-  I18nString,
-  LibraryAsset,
-  LibraryAssetType,
-} from "@/api/stetsom/model";
+import type { I18nString, LibraryAsset } from "@/api/stetsom/model";
+import { LibraryAssetType } from "@/api/stetsom/model";
 import { useLibraryUpload } from "@/hooks/use-upload";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -206,7 +203,7 @@ function FileTable({
                     href={getCurrentVersionUrl(asset)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs font-medium text-brand hover:underline"
+                    className="text-xs font-medium text-primary hover:underline"
                   >
                     Abrir
                   </a>
@@ -261,21 +258,21 @@ const UPLOAD_CONFIG: Record<
     label: "Clique ou arraste imagens para a biblioteca",
     description: "PNG, JPG, WebP, GIF — máx. 10 MB",
     icon: Image,
-    libraryType: "IMAGE" as LibraryAssetType,
+    libraryType: LibraryAssetType.IMAGE,
   },
   manuals: {
     accept: "application/pdf",
     label: "Clique ou arraste PDFs para a biblioteca",
     description: "Apenas arquivos PDF — máx. 50 MB",
     icon: FileText,
-    libraryType: "PDF" as LibraryAssetType,
+    libraryType: LibraryAssetType.PDF,
   },
   "3d-models": {
     accept: "model/gltf-binary,model/gltf+json,.glb,.gltf",
     label: "Clique ou arraste modelos 3D para a biblioteca",
     description: "GLB ou GLTF — máx. 100 MB",
     icon: Archive,
-    libraryType: "MODEL3D" as LibraryAssetType,
+    libraryType: LibraryAssetType.MODEL3D,
   },
 };
 
@@ -329,7 +326,7 @@ export default function AdminBibliotecaPage() {
         </p>
         <Link
           href="/admin/login"
-          className="text-sm text-brand underline underline-offset-4"
+          className="text-sm text-primary underline underline-offset-4"
         >
           Fazer login novamente
         </Link>
@@ -378,7 +375,7 @@ export default function AdminBibliotecaPage() {
             className={cn(
               "px-4 py-2.5 text-sm font-medium transition-colors",
               activeTab === tab.id
-                ? "border-b-2 border-brand text-foreground"
+                ? "border-b-2 border-primary text-foreground"
                 : "text-muted-foreground hover:text-foreground",
             )}
           >
@@ -413,7 +410,7 @@ export default function AdminBibliotecaPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
             {paginatedAssets.map((asset) => (
               <PhotoCard
                 key={asset.id}

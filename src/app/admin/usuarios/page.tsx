@@ -243,7 +243,7 @@ export default function AdminUsuariosPage() {
           <button
             type="button"
             onClick={() => openEdit(u)}
-            className="text-xs font-medium text-brand hover:underline"
+            className="text-xs font-medium text-primary hover:underline"
           >
             Editar
           </button>

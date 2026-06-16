@@ -189,7 +189,7 @@ function StringListField({
       <button
         type="button"
         onClick={() => set([...values, ""])}
-        className="flex items-center gap-1.5 text-sm font-medium text-brand hover:underline"
+        className="flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
       >
         <Plus className="size-4" />
         {field.addLabel}
@@ -270,7 +270,7 @@ function ListField({
       <button
         type="button"
         onClick={() => set([...items, { id: newId() }])}
-        className="flex items-center gap-1.5 text-sm font-medium text-brand hover:underline"
+        className="flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
       >
         <Plus className="size-4" />
         {field.addLabel}

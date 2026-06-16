@@ -24,6 +24,7 @@
   --font-sans: var(--font-barlow);
   --font-sans-condensed: var(--font-barlow-condensed);
   --font-mono: var(--font-geist-mono);
+  --font-geist: var(--font-geist-sans);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -63,12 +64,18 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* CMS color tokens — accessible as bg-cms-active-item, bg-cms-step-done, etc. */
+  /* CMS color tokens — accessible as bg-cms-primary, bg-cms-active-item, etc. */
+  --color-cms-primary: var(--cms-primary);
+  --color-cms-primary-hover: var(--cms-primary-hover);
+  --color-cms-primary-subtle: var(--cms-primary-subtle);
+  --color-cms-text-muted: var(--cms-text-muted);
   --color-cms-active-item: var(--cms-active-item);
   --color-cms-step-done: var(--cms-step-done);
   --color-cms-step-pending: var(--cms-step-pending);
   --color-cms-overlay: var(--cms-overlay);
   --shadow-cms-sidebar: var(--cms-sidebar-shadow);
+  --shadow-cms-card: var(--cms-card-shadow);
+  --shadow-cms-card-lg: var(--cms-card-shadow-lg);
 
   /* Typography — declared last to override any conflicting @theme definitions from imported CSS (shadcn, tw-animate) */
   --text-2xs: 0.6875rem;
@@ -82,16 +89,25 @@
 
 :root {
   --footer: rgb(17, 17, 17);
-  /* CMS design tokens (raw values — remapped via .cms {} in admin.css) */
-  --cms-bg: oklch(0.94 0.019 261);
-  --cms-bg-alt: oklch(0.96 0.008 258);
-  --cms-panel: oklch(0.98 0 0);
-  --cms-border: oklch(0.9 0.002 264);
-  --cms-active-item: oklch(0.95 0.028 249);
+  /* CMS design tokens (raw values, faithful to Figma huD41oTL0FAa7xsNEK8tAM —
+     remapped onto shadcn tokens via .cms {} in admin.css). Mantine-inspired. */
+  --cms-primary: #4375e2; /* Mantine blue.6 — actions, active state, focus */
+  --cms-primary-hover: #3a67cc; /* blue.7 — hover/pressed */
+  --cms-primary-subtle: #edf2fd; /* blue.0 — active nav bg, light surfaces */
+  --cms-primary-foreground: #ffffff;
+  --cms-text: #1a1a1a;
+  --cms-text-muted: #838383; /* secondary text */
+  --cms-bg: #f2f3f7; /* app background */
+  --cms-bg-alt: #f7f8fa;
+  --cms-panel: #fafafa; /* cards / panels */
+  --cms-border: #d9d9d9; /* dividers, borders */
+  --cms-active-item: var(--cms-primary-subtle);
   --cms-step-done: oklch(0.648 0.15 162);
   --cms-step-pending: oklch(0.968 0.001 286);
   --cms-overlay: oklch(0.648 0.001 286 / 0.4);
   --cms-sidebar-shadow: 0px 0px 8.8px 0px rgb(0 0 0 / 0.2);
+  --cms-card-shadow: 0px 0px 3.7px 0px rgb(0 0 0 / 0.12);
+  --cms-card-shadow-lg: 0px 0px 7.2px 0px rgb(0 0 0 / 0.15);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(0.975 0 0);

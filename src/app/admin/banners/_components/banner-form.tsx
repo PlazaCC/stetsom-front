@@ -8,45 +8,67 @@ import {
   AdminLabel,
   AdminSelect,
 } from "@/app/admin/_components/crud/admin-input";
-import type { Banner, BannerStatus } from "@/api/stetsom/model";
+import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import type { Banner, BannerStatus, I18nString } from "@/api/stetsom/model";
+import { toDisplayLocale } from "@/lib/cms/locale-utils";
 import { ArrowLeft, Image, X } from "lucide-react";
 import { useRef } from "react";
 
-export interface BannerDraft {
+/**
+ * Banner form state - UI layer representation
+ *
+ * API mapping:
+ * - locale -> available_locales[0] (singular to array)
+ * - desktop_image_url/mobile_image_url -> preview URLs (not sent to API)
+ * - File objects handled separately in parent component
+ */
+export interface BannerFormState {
   name: string;
   product_id: string;
-  desktop_image_url: string;
-  mobile_image_url: string;
-  link_url: string;
   status: BannerStatus;
-  locale: string;
+  title: I18nString;
+  label: string;
+  href: string;
+  link_url: string;
   display_from: string;
   display_until: string;
+  order: number;
+  locale: string;
+  desktop_image_url: string;
+  mobile_image_url: string;
 }
 
-export const EMPTY_DRAFT: BannerDraft = {
+export const EMPTY_FORM_STATE: BannerFormState = {
   name: "",
   product_id: "",
-  desktop_image_url: "",
-  mobile_image_url: "",
-  link_url: "",
   status: "ACTIVE",
-  locale: "pt-BR",
+  title: { pt: "" },
+  label: "",
+  href: "",
+  link_url: "",
   display_from: "",
   display_until: "",
+  order: 0,
+  locale: "pt-BR",
+  desktop_image_url: "",
+  mobile_image_url: "",
 };
 
-export function bannerToDraft(b: Banner): BannerDraft {
+export function bannerToFormState(b: Banner): BannerFormState {
   return {
     name: b.name,
     product_id: b.product_id ?? "",
-    desktop_image_url: "",
-    mobile_image_url: "",
-    link_url: b.link_url ?? "",
     status: b.status,
-    locale: b.available_locales?.[0] ?? "pt-BR",
+    title: b.title ?? { pt: "" },
+    label: b.label ?? "",
+    href: b.href ?? "",
+    link_url: b.link_url ?? "",
     display_from: b.display_from ? b.display_from.split("T")[0] : "",
     display_until: b.display_until ? b.display_until.split("T")[0] : "",
+    order: b.order ?? 0,
+    locale: toDisplayLocale(b.available_locales?.[0] ?? "pt"),
+    desktop_image_url: "",
+    mobile_image_url: "",
   };
 }
 
@@ -148,9 +170,13 @@ function ImageUploadSlot({
 }
 
 interface BannerFormProps {
-  draft: BannerDraft;
+  draft: BannerFormState;
   isCreating: boolean;
-  onDraftChange: (key: keyof BannerDraft, value: string) => void;
+  isSaving: boolean;
+  onDraftChange: (
+    key: keyof BannerFormState,
+    value: string | I18nString,
+  ) => void;
   onSave: () => void;
   onCancel: () => void;
   onDesktopFile?: (file: File) => void;
@@ -162,6 +188,7 @@ interface BannerFormProps {
 export function BannerForm({
   draft,
   isCreating,
+  isSaving,
   onDraftChange,
   onSave,
   onCancel,
@@ -170,8 +197,6 @@ export function BannerForm({
   onClearDesktopFile,
   onClearMobileFile,
 }: BannerFormProps) {
-  const hasImage = !!draft.desktop_image_url;
-
   return (
     <div className="flex flex-col gap-5">
       <AdminPanel className="flex items-center justify-between p-5">
@@ -215,11 +240,58 @@ export function BannerForm({
                   />
                 </div>
                 <div>
-                  <AdminLabel>URL de destino (opcional)</AdminLabel>
+                  <AdminLabel>URL de destino para produto</AdminLabel>
                   <AdminInput
                     value={draft.link_url}
                     onChange={(e) => onDraftChange("link_url", e.target.value)}
                     placeholder="/produtos/st-4000eq"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <AdminLabel>Link personalizado (opcional)</AdminLabel>
+                <AdminInput
+                  type="url"
+                  value={draft.href}
+                  onChange={(e) => onDraftChange("href", e.target.value)}
+                  placeholder="https://exemplo.com/promocao"
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Use este campo para links externos. Mutuamente exclusivo com
+                  produto.
+                </p>
+              </div>
+
+              <I18nInput
+                label="Título do banner (opcional)"
+                value={draft.title}
+                onChange={(title) => onDraftChange("title", title)}
+                placeholder="Texto que aparece sobre o banner"
+              />
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <AdminLabel>Etiqueta (opcional)</AdminLabel>
+                  <AdminInput
+                    value={draft.label}
+                    onChange={(e) => onDraftChange("label", e.target.value)}
+                    placeholder="Ex: LANÇAMENTO"
+                  />
+                </div>
+                <div>
+                  <AdminLabel>Ordem</AdminLabel>
+                  <AdminInput
+                    type="number"
+                    min={0}
+                    value={draft.order}
+                    onChange={(e) =>
+                      onDraftChange(
+                        "order",
+                        String(Number(e.target.value) || 0),
+                      )
+                    }
+                    placeholder="0"
                   />
                 </div>
               </div>
@@ -377,7 +449,7 @@ export function BannerForm({
         <button
           type="button"
           onClick={onSave}
-          disabled={!draft.name || (isCreating && !hasImage)}
+          disabled={isSaving}
           className="rounded-md bg-foreground px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-50"
         >
           {isCreating ? "Criar banner" : "Salvar alterações"}

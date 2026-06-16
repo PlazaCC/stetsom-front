@@ -47,14 +47,14 @@ export function AdminDataTable<T>({
     >
       {isLoading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="size-6 animate-spin rounded-full border-2 border-border border-t-brand" />
+          <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
         </div>
       ) : data.length === 0 ? (
         <AdminEmptyState title={emptyTitle} description={emptyDescription} />
       ) : (
         <>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className={cn("w-full min-w-[640px] text-sm")}>
               <thead>
                 <tr className="border-b border-border bg-muted/50">
                   {columns.map((col) => (

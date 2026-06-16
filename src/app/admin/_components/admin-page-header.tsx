@@ -18,9 +18,7 @@ export function AdminPageHeader({
     <div className={cn("flex items-center justify-between", className)}>
       <div className="flex items-center gap-2">
         {Icon && <Icon className="size-7 text-foreground/40" />}
-        <h1 className="font-mono text-2xl font-bold text-foreground">
-          {title}
-        </h1>
+        <h1 className="text-2xl font-bold text-foreground">{title}</h1>
       </div>
       {action && <div>{action}</div>}
     </div>

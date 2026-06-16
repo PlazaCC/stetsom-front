@@ -8,9 +8,8 @@ import type {
   WizardProductVariation,
 } from "@/app/admin/_components/product-wizard-types";
 import type { Attribute } from "@/api/stetsom/model";
+import { CMS_UI } from "@/lib/cms/constants";
 import { Plus, Trash2, X } from "lucide-react";
-
-const MAX_HIGHLIGHTS = 3;
 
 interface ProductWizardStepSpecsProps {
   variations: WizardProductVariation[];
@@ -72,7 +71,7 @@ function VariationTabs({
           key={v.id}
           className={
             v.id === activeId
-              ? "flex items-center gap-1 rounded border border-brand bg-brand/5 px-2 py-1"
+              ? "flex items-center gap-1 rounded border border-primary bg-primary/5 px-2 py-1"
               : "flex items-center gap-1 rounded border border-border px-2 py-1"
           }
         >
@@ -173,12 +172,12 @@ export function ProductWizardStepSpecs({
 
       <AdminFormSection
         title="Especificações Técnicas"
-        description={`Selecione o atributo e informe o valor. Até ${MAX_HIGHLIGHTS} podem ser destacados no cabeçalho do produto.`}
+        description={`Selecione o atributo e informe o valor. Até ${CMS_UI.MAX_HIGHLIGHTS} podem ser destacados no cabeçalho do produto.`}
       >
         <div className="space-y-2">
           {activeSpecs.map((spec) => {
             const highlightDisabled =
-              !spec.highlighted && highlightCount >= MAX_HIGHLIGHTS;
+              !spec.highlighted && highlightCount >= CMS_UI.MAX_HIGHLIGHTS;
             return (
               <div
                 key={spec.id}
@@ -243,7 +242,7 @@ export function ProductWizardStepSpecs({
                         ),
                       )
                     }
-                    className="size-4 accent-brand disabled:opacity-40"
+                    className="size-4 accent-primary disabled:opacity-40"
                   />
                 </label>
                 <button
@@ -268,7 +267,7 @@ export function ProductWizardStepSpecs({
           onClick={() =>
             patchActiveSpecs((specs) => [...specs, newSpec(specs.length)])
           }
-          className="mt-3 flex items-center gap-1.5 text-sm font-medium text-brand hover:underline"
+          className="mt-3 flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
         >
           <Plus className="size-4" />
           Adicionar especificação

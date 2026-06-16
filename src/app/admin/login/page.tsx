@@ -42,8 +42,8 @@ export default function AdminLoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="flex w-full max-w-224.5 overflow-hidden rounded-[16px] shadow-2xl">
-        {/* Form panel */}
-        <div className="flex w-112.25 shrink-0 flex-col justify-center bg-card p-12">
+        {/* Form panel - full width on mobile, 112.25 on desktop */}
+        <div className="flex w-full flex-col justify-center bg-card p-8 sm:p-12 md:w-112.25">
           <div className="mb-10 flex justify-start">
             <Image
               src="/logo.png"
@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
             />
           </div>
 
-          <h1 className="mb-1 font-mono text-2xl font-bold text-foreground">
+          <h1 className="mb-1 text-2xl font-bold text-foreground">
             Bem-vindo de volta!
           </h1>
           <p className="mb-8 text-sm text-muted-foreground">
@@ -75,7 +75,7 @@ export default function AdminLoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand"
+                className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                 placeholder="seu@email.com"
               />
             </div>
@@ -94,7 +94,7 @@ export default function AdminLoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-md border border-border bg-card px-3 py-2 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand"
+                  className="w-full rounded-md border border-border bg-card px-3 py-2 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                   placeholder="••••••••"
                 />
                 <button
@@ -114,7 +114,7 @@ export default function AdminLoginPage() {
             <div className="flex justify-end">
               <button
                 type="button"
-                className="text-xs text-brand hover:underline"
+                className="text-xs text-primary hover:underline"
               >
                 Esqueci minha senha
               </button>
@@ -132,7 +132,7 @@ export default function AdminLoginPage() {
           </form>
         </div>
 
-        {/* Brand panel */}
+        {/* Brand panel - hidden on mobile */}
         <div className="relative hidden flex-1 flex-col items-center justify-center gap-6 overflow-hidden bg-surface-elevated md:flex">
           <div className="absolute inset-0 bg-linear-to-br from-surface-elevated/0 via-surface-elevated/90 to-surface-elevated" />
           <div className="relative z-10 flex flex-col items-center gap-4 px-10 text-center">
@@ -143,9 +143,7 @@ export default function AdminLoginPage() {
               height={34}
               className="h-8 w-auto brightness-0 invert"
             />
-            <p className="font-mono text-lg font-bold text-white">
-              CMS Stetsom
-            </p>
+            <p className="text-lg font-bold text-white">CMS Stetsom</p>
             <p className="max-w-xs text-sm text-white/60">
               Gerencie produtos, banners e conteúdo do site institucional.
             </p>

@@ -9,6 +9,7 @@ import {
 } from "@/app/admin/_components/crud/block-builder";
 import { PRODUCT_BLOCK_REGISTRY } from "@/app/admin/_components/crud/product-block-registry";
 import { AdminDeleteAction } from "@/app/admin/_components/crud/admin-delete-action";
+import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import type { AdminStep } from "@/app/admin/_components/crud/admin-step-indicator";
 import { AdminWizardPage } from "@/app/admin/_components/crud/admin-wizard-page";
@@ -46,6 +47,7 @@ import type {
 } from "@/api/stetsom/model";
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { useInlineUpload } from "@/hooks/use-inline-upload";
+import { slugify } from "@/lib/utils/slugify";
 import { useMutation } from "@tanstack/react-query";
 import { Package } from "lucide-react";
 import Link from "next/link";
@@ -65,15 +67,6 @@ interface ProductMutationResult {
 
 type Step = 1 | 2 | 3 | 4;
 
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
 function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
   const base: ProductInfo = {
     name: { pt: "" },
@@ -84,12 +77,12 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
     subcategory_id: "",
     template_id: "",
     status: "DRAFT",
+    is_discontinued: false,
     is_featured: false,
     is_spotlight: false,
-    badge: "",
-    video_url: "",
     launch_date: new Date().toISOString().split("T")[0],
     launch_time: "00:00",
+    available_locales: ["pt"],
   };
   if (!detail) return base;
 
@@ -103,16 +96,14 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
     category_id: p.category_id,
     subcategory_id: p.line_id ?? "",
     template_id: p.template_id ?? "",
-    status: p.is_discontinued
-      ? "DISCONTINUED"
-      : p.status === "DRAFT"
-        ? "DRAFT"
-        : p.status === "SCHEDULED"
-          ? "SCHEDULED"
-          : "ACTIVE",
+    status: p.status,
+    is_discontinued: p.is_discontinued,
     is_featured: p.is_featured ?? false,
     is_spotlight: p.is_spotlight ?? false,
     launch_date: p.launch_date?.split("T")[0] ?? base.launch_date,
+    available_locales: (p.available_locales as ("pt" | "en" | "es")[]) ?? [
+      "pt",
+    ],
   };
 }
 
@@ -172,7 +163,6 @@ function buildInitialBlocks(detail?: CmsProductDetailPayload): DraftBlock[] {
 function buildPayload(
   info: ProductInfo,
   variations: WizardProductVariation[],
-  status: string,
 ): PostApiProductsBody {
   const launchDate = info.launch_date
     ? new Date(`${info.launch_date}T${info.launch_time}:00`).toISOString()
@@ -192,18 +182,14 @@ function buildPayload(
     category_id: info.category_id,
     line_id: info.subcategory_id || null,
     template_id: info.template_id || null,
-    status:
-      status === "ACTIVE"
-        ? "PUBLISHED"
-        : status === "SCHEDULED"
-          ? "SCHEDULED"
-          : "DRAFT",
-    is_discontinued: status === "DISCONTINUED",
+    status: info.status,
+    is_discontinued: info.is_discontinued,
     is_featured: info.is_featured,
     is_spotlight: info.is_spotlight,
     launch_date: launchDate,
     highlight_attributes: [...highlightIds],
-    available_locales: ["pt"],
+    available_locales:
+      info.available_locales.length > 0 ? info.available_locales : ["pt"],
     variants: variations.map((v) => ({
       variant_id: v.id.startsWith("variation-") ? undefined : v.id,
       name: v.label,
@@ -218,17 +204,6 @@ function buildPayload(
         })),
     })),
   };
-}
-
-function resolveStatus(
-  info: ProductInfo,
-  blocks: DraftBlock[],
-  desiredStatus: string,
-  hasImage: boolean,
-): string {
-  const hasRequired =
-    !!info.name.pt && !!info.category_id && hasImage && blocks.length > 0;
-  return hasRequired ? desiredStatus : "DRAFT";
 }
 
 const STEP_LABELS: Record<Step, string> = {
@@ -273,6 +248,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [publishedResult, setPublishedResult] =
     useState<ProductMutationResult | null>(null);
+  const [showBackConfirm, setShowBackConfirm] = useState(false);
 
   const categoriesQuery = useGetApiCategories();
   const templatesQuery = useGetApiTemplates();
@@ -460,13 +436,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     setIsDirty(true);
   }
 
-  async function handleSave(
-    overrideStatus?: string,
-  ): Promise<ProductMutationResult> {
-    const hasImage = images.length > 0;
-    const status =
-      overrideStatus ?? resolveStatus(info, blocks, info.status, hasImage);
-    const payload = buildPayload(info, variations, status);
+  async function handleSave(): Promise<ProductMutationResult> {
+    const payload = buildPayload(info, variations);
 
     let id = productId;
     if (id) {
@@ -485,12 +456,12 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
 
     setLastSavedAt(new Date());
     setIsDirty(false);
-    return { id: id ?? "", slug: info.slug.pt, status };
+    return { id: id ?? "", slug: info.slug.pt, status: info.status };
   }
 
   async function handleSaveDraft() {
     try {
-      await handleSave("DRAFT");
+      await handleSave();
       adminToast.draft(info.name.pt || undefined);
     } catch {
       adminToast.error("Erro ao salvar rascunho");
@@ -502,10 +473,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   }
 
   function handleBack() {
-    if (
-      isDirty &&
-      !window.confirm("Você tem alterações não salvas. Deseja sair sem salvar?")
-    ) {
+    if (isDirty) {
+      setShowBackConfirm(true);
       return;
     }
     setStep((s) => (s - 1) as Step);
@@ -513,10 +482,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
 
   async function handlePublish() {
     try {
-      const hasImage = images.length > 0;
-      const result = await handleSave(
-        resolveStatus(info, blocks, info.status, hasImage),
-      );
+      const result = await handleSave();
       if (result.status === "DRAFT") {
         adminToast.draft(info.name.pt || undefined);
       } else {
@@ -592,15 +558,19 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           <div className="flex justify-between gap-2">
             <dt className="shrink-0 text-muted-foreground">Status</dt>
             <dd className="font-medium text-foreground">
-              {info.status === "ACTIVE"
-                ? "Ativo"
+              {info.status === "PUBLISHED"
+                ? "Publicado"
                 : info.status === "SCHEDULED"
                   ? "Agendado"
-                  : info.status === "DRAFT"
-                    ? "Rascunho"
-                    : "Descontinuado"}
+                  : "Rascunho"}
             </dd>
           </div>
+          {info.is_discontinued && (
+            <div className="flex justify-between gap-2">
+              <dt className="shrink-0 text-muted-foreground">Observação</dt>
+              <dd className="text-destructive">Descontinuado</dd>
+            </div>
+          )}
           {category && (
             <div className="flex justify-between gap-2">
               <dt className="shrink-0 text-muted-foreground">Categoria</dt>
@@ -742,6 +712,18 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
         isDirty={isDirty}
         lastSavedAt={lastSavedAt}
         mode={mode}
+      />
+      <AdminConfirmDialog
+        open={showBackConfirm}
+        title="Sair sem salvar?"
+        description="Você tem alterações não salvas. Deseja sair sem salvar?"
+        confirmLabel="Sair"
+        destructive
+        onConfirm={() => {
+          setShowBackConfirm(false);
+          setStep((s) => (s - 1) as Step);
+        }}
+        onCancel={() => setShowBackConfirm(false)}
       />
     </div>
   );

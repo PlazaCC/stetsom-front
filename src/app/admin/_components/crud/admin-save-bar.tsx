@@ -97,7 +97,7 @@ export function AdminSaveBar({
             type="button"
             onClick={onPublish}
             disabled={isLoading}
-            className="inline-flex items-center gap-2 rounded-md bg-brand px-5 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
           >
             {isLoading && <Loader2 className="size-4 animate-spin" />}
             {publishLabel}

@@ -72,7 +72,7 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
                 onChange={(e) => handleChange("company_name", e.target.value)}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <AdminLabel>E-mail</AdminLabel>
                 <AdminInput
@@ -168,7 +168,7 @@ export default function AdminConfiguracoesPage() {
 
       {configQuery.isLoading || !configQuery.data ? (
         <div className="flex items-center justify-center py-16">
-          <div className="size-6 animate-spin rounded-full border-2 border-border border-t-brand" />
+          <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
         </div>
       ) : (
         <ConfigForm

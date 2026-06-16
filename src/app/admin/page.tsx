@@ -39,7 +39,7 @@ export default function AdminHome() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-sans-condensed text-4xl font-black uppercase text-foreground">
+        <h1 className="text-4xl font-bold text-foreground">
           {dashboard.data.title}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -48,7 +48,7 @@ export default function AdminHome() {
       </header>
 
       {/* Metrics */}
-      <section className="grid gap-4 sm:grid-cols-3">
+      <section className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
         {metrics.map((metric) => (
           <article
             key={metric.id}
@@ -68,7 +68,7 @@ export default function AdminHome() {
               <p className="text-xs uppercase tracking-wide text-muted-foreground">
                 {metric.label}
               </p>
-              <p className="mt-1 font-sans-condensed text-3xl font-black text-foreground">
+              <p className="mt-1 text-3xl font-bold text-foreground">
                 {metric.value}
               </p>
               {metric.sub && (
@@ -81,11 +81,11 @@ export default function AdminHome() {
         ))}
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+      <div className="grid gap-6 grid-cols-1 lg:grid-cols-[1fr_320px]">
         <div className="space-y-6">
           {/* Recent activities */}
           <section className="rounded-[16px] border border-border bg-card p-5">
-            <h2 className="font-sans-condensed text-xl font-black uppercase text-foreground">
+            <h2 className="text-xl font-bold text-foreground">
               Atividades recentes
             </h2>
             <ul className="mt-4 space-y-3">
@@ -118,7 +118,7 @@ export default function AdminHome() {
         <div className="space-y-6">
           {/* Quick actions */}
           <section className="rounded-[16px] border border-border bg-card p-5">
-            <h2 className="mb-3 font-sans-condensed text-lg font-black uppercase text-foreground">
+            <h2 className="mb-3 text-lg font-bold text-foreground">
               Ações rápidas
             </h2>
             <div className="space-y-1.5">
@@ -141,7 +141,7 @@ export default function AdminHome() {
           {/* Schedule */}
           {scheduleItems.length > 0 && (
             <section className="rounded-[16px] border border-border bg-card p-5">
-              <h2 className="mb-3 font-sans-condensed text-lg font-black uppercase text-foreground">
+              <h2 className="mb-3 text-lg font-bold text-foreground">
                 Programação
               </h2>
               <ul className="space-y-3">

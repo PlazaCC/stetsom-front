@@ -20,9 +20,7 @@ export function AdminFormSection({
       {(title || description) && (
         <div className="border-b border-border px-6 py-4">
           {title && (
-            <h2 className="font-mono text-sm font-semibold text-foreground">
-              {title}
-            </h2>
+            <h2 className="text-sm font-semibold text-foreground">{title}</h2>
           )}
           {description && (
             <p className="mt-0.5 text-xs text-muted-foreground">
