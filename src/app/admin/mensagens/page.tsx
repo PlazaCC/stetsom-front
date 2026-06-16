@@ -13,6 +13,7 @@ import {
   useGetApiMessages,
 } from "@/api/stetsom";
 import type { ContactMessage } from "@/api/stetsom/model";
+import { PostApiContactBodyDepartment } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Mail, Settings } from "lucide-react";
@@ -20,13 +21,24 @@ import { useState } from "react";
 
 type Tab = "contatos" | "departamentos";
 
-const DEPARTMENTS: string[] = [
-  "Suporte Técnico",
-  "Comercial",
-  "Produto",
-  "Marketing",
-  "Financeiro",
-];
+// Canonical department values come from the contact contract enum. Messages
+// store these enum values; the UI maps them to display labels. (Previously a
+// list of display labels was compared against stored enum values, so the
+// departments grouping never matched.)
+const DEPARTMENT_LABELS: Record<string, string> = {
+  suporte_tecnico: "Suporte Técnico",
+  comercial: "Comercial",
+  produto: "Produto",
+  marketing: "Marketing",
+  parcerias: "Parcerias",
+  outro: "Outro",
+};
+
+const DEPARTMENTS = Object.values(PostApiContactBodyDepartment);
+
+function departmentLabel(value: string): string {
+  return DEPARTMENT_LABELS[value] ?? value;
+}
 
 export default function AdminMensagensPage() {
   const queryClient = useQueryClient();
@@ -103,7 +115,7 @@ export default function AdminMensagensPage() {
       header: "Setor responsável",
       render: (m) => (
         <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium text-foreground">
-          {m.department}
+          {departmentLabel(m.department)}
         </span>
       ),
     },
@@ -204,7 +216,7 @@ export default function AdminMensagensPage() {
                   return (
                     <tr key={dept} className="hover:bg-muted/30">
                       <td className="px-4 py-3 font-medium text-foreground">
-                        {dept}
+                        {departmentLabel(dept)}
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">
                         {deptMessages.length}
@@ -252,7 +264,7 @@ export default function AdminMensagensPage() {
                 Setor responsável
               </p>
               <p className="text-sm font-medium text-foreground">
-                {selected.department}
+                {departmentLabel(selected.department)}
               </p>
             </div>
 
