@@ -45,6 +45,54 @@ The GRAPH_REPORT.md "Surprising Connections" section lists inferred edges that a
 - UI Components (hero, FAQ, support page)
 - Technology Stack (Next.js config, fonts, providers)
 
+## Stetsom Front Context
+
+Key facts about this codebase that inform graph interpretation:
+
+- **`cn()`** from `src/lib/utils.ts` is intentionally universal — it's the Tailwind class merger. High edge count is expected, not a smell.
+- **`Button()`** from `src/components/ui/button.tsx` should only be imported where interaction is needed — unexpected usages in server components are a smell.
+- **`_components/`** directories are co-located and route-scoped — edges between different route's `_components/` indicate unintended coupling.
+- **`src/components/ui/`** is the shared layer — components here should have many inbound edges from pages/sections.
+
+## Common CLI Commands
+
+### Build & Update
+```
+graphify .                          # Build/analyze entire codebase
+graphify . --update                 # Re-extract only changed files
+graphify . --cluster-only           # Rerun clustering on existing graph
+graphify . --cluster-only --resolution 1.5      # More granular communities
+graphify . --cluster-only --exclude-hubs 99     # Suppress utility super-hubs from god-node rankings
+graphify . --no-viz                 # Skip HTML visualization
+graphify . --wiki                   # Build markdown wiki
+graphify export callflow-html      # Mermaid architecture/call-flow HTML
+```
+
+### Query & Explore
+```
+graphify query "what connects auth to the database?"
+graphify query "..." --dfs --budget 1500
+graphify path "UserService" "DatabasePool"
+graphify explain "RateLimiter"
+```
+
+### Installation
+```
+uv tool install graphifyy --python 3.12
+graphify install                    # User profile install
+graphify install --project          # Project-scoped install (.claude/ + .agents/)
+graphify hook install               # Post-commit + post-checkout hooks
+```
+
+### Output Artifacts (committed to git)
+```
+graphify-out/
+├── graph.json       ← Full graph data
+├── graph.html       ← Interactive visualization
+├── GRAPH_REPORT.md  ← Highlights & suggested questions
+└── cost.json        ← Token cost (local only)
+```
+
 ## Regenerating the Graph
 
 Run in Claude Code CLI terminal:
