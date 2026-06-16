@@ -87,6 +87,7 @@ export * from "./getApiProductsAdminStatus";
 export * from "./getApiProductsParams";
 export * from "./getApiProductsSlug200";
 export * from "./getApiProductsSlugParams";
+export * from "./getApiProductsSort";
 export * from "./getApiProductsStatus";
 export * from "./getApiTemplatesParams";
 export * from "./getApiUsersParams";
