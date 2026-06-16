@@ -8,7 +8,10 @@ interface AdminPanelProps {
 export function AdminPanel({ children, className }: AdminPanelProps) {
   return (
     <div
-      className={cn("rounded-[16px] border border-border bg-card", className)}
+      className={cn(
+        "rounded-[16px] border border-border bg-card shadow-cms-card",
+        className,
+      )}
     >
       {children}
     </div>

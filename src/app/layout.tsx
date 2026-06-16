@@ -1,5 +1,5 @@
 import "@/app/globals.css";
-import { Barlow, Barlow_Condensed, Geist_Mono } from "next/font/google";
+import { Barlow, Barlow_Condensed, Geist, Geist_Mono } from "next/font/google";
 import { getLocale } from "next-intl/server";
 
 const barlow = Barlow({
@@ -16,6 +16,12 @@ const barlowCondensed = Barlow_Condensed({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+// Geist Sans — CMS/admin typeface (Mantine-inspired). Public site stays Barlow.
+const geist = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
@@ -37,7 +43,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${barlow.variable} ${barlowCondensed.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${barlow.variable} ${barlowCondensed.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">{children}</body>
