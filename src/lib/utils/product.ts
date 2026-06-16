@@ -1,5 +1,6 @@
 type TextBlockData = { title?: string; content?: string; align?: string };
 type ImageBlockData = { images?: string[]; caption?: string };
+type GalleryBlockData = { images: string[] };
 
 function isStringArray(v: unknown): v is string[] {
   return (
@@ -22,6 +23,28 @@ export function toImageBlockData(
     images: isStringArray(data.images) ? data.images : undefined,
     caption: typeof data.caption === "string" ? data.caption : undefined,
   };
+}
+
+/**
+ * GALLERY block images. The CMS block-builder stores each image as
+ * `{ library_id, file_url? }`; the public API may already resolve them to plain
+ * URL strings. Accept both shapes and return the non-empty URLs.
+ */
+export function toGalleryBlockData(
+  data: Record<string, unknown>,
+): GalleryBlockData {
+  const raw = Array.isArray(data.images) ? data.images : [];
+  const images = raw
+    .map((item) => {
+      if (typeof item === "string") return item;
+      if (item && typeof item === "object" && "file_url" in item) {
+        const url = (item as { file_url?: unknown }).file_url;
+        return typeof url === "string" ? url : "";
+      }
+      return "";
+    })
+    .filter((url) => url.length > 0);
+  return { images };
 }
 
 export function resolveTextAlignClass(align: string | undefined): string {

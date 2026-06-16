@@ -4,6 +4,7 @@ import type { ProductBlock } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
 import {
   resolveTextAlignClass,
+  toGalleryBlockData,
   toImageBlockData,
   toTextBlockData,
 } from "@/lib/utils/product";
@@ -141,6 +142,29 @@ export function BlockRenderer({
             {t("blockModel3dOpen")}
           </a>
         ) : null}
+      </article>
+    );
+  }
+
+  if (block.type === "GALLERY") {
+    const { images } = toGalleryBlockData(block.data);
+    if (!images.length) return null;
+    return (
+      <article className="grid grid-cols-2 gap-3 md:grid-cols-3">
+        {images.map((src, i) => (
+          <div
+            key={`${block.block_id}-${i}`}
+            className="relative aspect-square w-full overflow-hidden rounded-xl bg-brand-dark"
+          >
+            <Image
+              src={src}
+              alt={`${productName} ${t("blockGalleryAlt")} ${i + 1}`}
+              fill
+              sizes="(max-width: 768px) 50vw, 33vw"
+              className="object-cover"
+            />
+          </div>
+        ))}
       </article>
     );
   }
