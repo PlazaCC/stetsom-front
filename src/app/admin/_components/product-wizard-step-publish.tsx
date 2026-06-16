@@ -3,10 +3,12 @@
 import {
   AdminInput,
   AdminLabel,
+  AdminSelect,
 } from "@/app/admin/_components/crud/admin-input";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import type { ProductInfo } from "@/app/admin/_components/product-wizard-step1";
 import type { WizardProductSpec } from "@/app/admin/_components/product-wizard-types";
+import type { ProductStatus } from "@/api/stetsom/model";
 
 interface ProductWizardStepPublishProps {
   info: ProductInfo;
@@ -101,32 +103,38 @@ export function ProductWizardStepPublish({
       </AdminFormSection>
 
       <AdminFormSection title="Status de publicação">
-        <div className="flex flex-col gap-3">
-          {(["ACTIVE", "DISCONTINUED"] as const).map((s) => (
-            <label
-              key={s}
-              className="flex cursor-pointer items-start gap-3 rounded-md border border-border p-3 hover:bg-muted/50"
+        <div className="space-y-4">
+          <div>
+            <AdminLabel>Status</AdminLabel>
+            <AdminSelect
+              value={info.status}
+              onChange={(e) =>
+                onPatch({ status: e.target.value as ProductStatus })
+              }
             >
-              <input
-                type="radio"
-                name="publish-status"
-                value={s}
-                checked={info.status === s}
-                onChange={() => onPatch({ status: s })}
-                className="mt-0.5 accent-primary"
-              />
-              <div>
-                <span className="text-sm font-medium text-foreground">
-                  {s === "ACTIVE" ? "Ativo" : "Descontinuado"}
-                </span>
-                <p className="text-xs text-muted-foreground">
-                  {s === "ACTIVE"
-                    ? "O produto ficará visível no catálogo para os visitantes do site."
-                    : "O produto não será exibido no catálogo mas continuará salvo no sistema."}
-                </p>
-              </div>
-            </label>
-          ))}
+              <option value="DRAFT">Rascunho</option>
+              <option value="PUBLISHED">Publicado</option>
+              <option value="SCHEDULED">Agendado</option>
+            </AdminSelect>
+          </div>
+          <label className="flex cursor-pointer items-start gap-3 rounded-md border border-border p-3 hover:bg-muted/50">
+            <input
+              type="checkbox"
+              checked={info.is_discontinued}
+              onChange={(e) => onPatch({ is_discontinued: e.target.checked })}
+              className="mt-0.5 accent-primary"
+            />
+            <div>
+              <span className="text-sm font-medium text-foreground">
+                Produto descontinuado
+              </span>
+              <p className="text-xs text-muted-foreground">
+                Marque esta opção para indicar que o produto não é mais
+                fabricado. Ele continuará visível no catálogo mas será
+                identificado como descontinuado.
+              </p>
+            </div>
+          </label>
         </div>
       </AdminFormSection>
 

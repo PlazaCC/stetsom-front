@@ -1,11 +1,5 @@
 import type { I18nString, LibraryAssetType } from "@/api/stetsom/model";
 
-export type WizardProductStatus =
-  | "ACTIVE"
-  | "SCHEDULED"
-  | "DISCONTINUED"
-  | "DRAFT";
-
 export interface WizardProductSpec {
   id: string;
   /** Reference to a global attribute (attributes collection). */

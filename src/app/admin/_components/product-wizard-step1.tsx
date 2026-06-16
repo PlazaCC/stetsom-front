@@ -8,11 +8,8 @@ import {
 } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
-import type {
-  WizardProductImage,
-  WizardProductStatus,
-} from "@/app/admin/_components/product-wizard-types";
-import type { I18nString } from "@/api/stetsom/model";
+import type { WizardProductImage } from "@/app/admin/_components/product-wizard-types";
+import type { ProductStatus, I18nString } from "@/api/stetsom/model";
 import { ImagePlus, Star, X } from "lucide-react";
 
 interface Category {
@@ -40,7 +37,8 @@ export interface ProductInfo {
   category_id: string;
   subcategory_id: string;
   template_id: string;
-  status: WizardProductStatus;
+  status: ProductStatus;
+  is_discontinued: boolean;
   is_featured: boolean;
   is_spotlight: boolean;
   launch_date: string;

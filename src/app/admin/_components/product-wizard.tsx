@@ -84,6 +84,7 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
     subcategory_id: "",
     template_id: "",
     status: "DRAFT",
+    is_discontinued: false,
     is_featured: false,
     is_spotlight: false,
     launch_date: new Date().toISOString().split("T")[0],
@@ -102,13 +103,8 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
     category_id: p.category_id,
     subcategory_id: p.line_id ?? "",
     template_id: p.template_id ?? "",
-    status: p.is_discontinued
-      ? "DISCONTINUED"
-      : p.status === "DRAFT"
-        ? "DRAFT"
-        : p.status === "SCHEDULED"
-          ? "SCHEDULED"
-          : "ACTIVE",
+    status: p.status,
+    is_discontinued: p.is_discontinued,
     is_featured: p.is_featured ?? false,
     is_spotlight: p.is_spotlight ?? false,
     launch_date: p.launch_date?.split("T")[0] ?? base.launch_date,
@@ -174,7 +170,6 @@ function buildInitialBlocks(detail?: CmsProductDetailPayload): DraftBlock[] {
 function buildPayload(
   info: ProductInfo,
   variations: WizardProductVariation[],
-  status: "PUBLISHED" | "DRAFT" | "SCHEDULED",
 ): PostApiProductsBody {
   const launchDate = info.launch_date
     ? new Date(`${info.launch_date}T${info.launch_time}:00`).toISOString()
@@ -194,8 +189,8 @@ function buildPayload(
     category_id: info.category_id,
     line_id: info.subcategory_id || null,
     template_id: info.template_id || null,
-    status,
-    is_discontinued: info.status === "DISCONTINUED",
+    status: info.status,
+    is_discontinued: info.is_discontinued,
     is_featured: info.is_featured,
     is_spotlight: info.is_spotlight,
     launch_date: launchDate,
@@ -447,15 +442,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     setIsDirty(true);
   }
 
-  function mapStatusToApi(status: string): "PUBLISHED" | "DRAFT" | "SCHEDULED" {
-    if (status === "ACTIVE" || status === "DISCONTINUED") return "PUBLISHED";
-    if (status === "SCHEDULED") return "SCHEDULED";
-    return "DRAFT";
-  }
-
   async function handleSave(): Promise<ProductMutationResult> {
-    const status = mapStatusToApi(info.status);
-    const payload = buildPayload(info, variations, status);
+    const payload = buildPayload(info, variations);
 
     let id = productId;
     if (id) {
@@ -474,7 +462,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
 
     setLastSavedAt(new Date());
     setIsDirty(false);
-    return { id: id ?? "", slug: info.slug.pt, status };
+    return { id: id ?? "", slug: info.slug.pt, status: info.status };
   }
 
   async function handleSaveDraft() {
@@ -578,15 +566,19 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           <div className="flex justify-between gap-2">
             <dt className="shrink-0 text-muted-foreground">Status</dt>
             <dd className="font-medium text-foreground">
-              {info.status === "ACTIVE"
-                ? "Ativo"
+              {info.status === "PUBLISHED"
+                ? "Publicado"
                 : info.status === "SCHEDULED"
                   ? "Agendado"
-                  : info.status === "DRAFT"
-                    ? "Rascunho"
-                    : "Descontinuado"}
+                  : "Rascunho"}
             </dd>
           </div>
+          {info.is_discontinued && (
+            <div className="flex justify-between gap-2">
+              <dt className="shrink-0 text-muted-foreground">Observação</dt>
+              <dd className="text-destructive">Descontinuado</dd>
+            </div>
+          )}
           {category && (
             <div className="flex justify-between gap-2">
               <dt className="shrink-0 text-muted-foreground">Categoria</dt>
