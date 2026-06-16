@@ -87,23 +87,21 @@ export function I18nInput({
           );
         })}
       </div>
-      {LOCALES.map((loc) => (
-        <Field
-          key={loc.id}
-          aria-hidden={active !== loc.id || undefined}
-          tabIndex={active !== loc.id ? -1 : undefined}
-          className={cn(
-            active !== loc.id && "sr-only",
-            multiline && "min-h-24",
-          )}
-          required={loc.id === "pt" && required}
-          placeholder={placeholder}
-          value={(loc.id === "pt" ? current.pt : current[loc.id]) ?? ""}
-          onChange={(
-            e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-          ) => set(loc.id, e.target.value)}
-        />
-      ))}
+      {/* Render only the active locale field. Keeping inactive fields mounted
+          but hidden (sr-only) collided with the input's w-full and produced a
+          full-width absolutely-positioned box off-screen, expanding the
+          document's horizontal scroll. The value lives in props, so switching
+          tabs loses nothing. */}
+      <Field
+        key={active}
+        className={cn(multiline && "min-h-24")}
+        required={active === "pt" && required}
+        placeholder={placeholder}
+        value={(active === "pt" ? current.pt : current[active]) ?? ""}
+        onChange={(
+          e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        ) => set(active, e.target.value)}
+      />
     </div>
   );
 }
