@@ -163,6 +163,7 @@ function ImageUploadSlot({
 interface BannerFormProps {
   draft: BannerDraft;
   isCreating: boolean;
+  isSaving: boolean;
   onDraftChange: (key: keyof BannerDraft, value: string) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -175,6 +176,7 @@ interface BannerFormProps {
 export function BannerForm({
   draft,
   isCreating,
+  isSaving,
   onDraftChange,
   onSave,
   onCancel,
@@ -439,7 +441,7 @@ export function BannerForm({
         <button
           type="button"
           onClick={onSave}
-          disabled={!draft.name || (isCreating && !hasImage)}
+          disabled={isSaving}
           className="rounded-md bg-foreground px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-50"
         >
           {isCreating ? "Criar banner" : "Salvar alterações"}

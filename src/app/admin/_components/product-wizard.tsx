@@ -174,7 +174,7 @@ function buildInitialBlocks(detail?: CmsProductDetailPayload): DraftBlock[] {
 function buildPayload(
   info: ProductInfo,
   variations: WizardProductVariation[],
-  status: string,
+  status: "PUBLISHED" | "DRAFT" | "SCHEDULED",
 ): PostApiProductsBody {
   const launchDate = info.launch_date
     ? new Date(`${info.launch_date}T${info.launch_time}:00`).toISOString()
@@ -194,13 +194,8 @@ function buildPayload(
     category_id: info.category_id,
     line_id: info.subcategory_id || null,
     template_id: info.template_id || null,
-    status:
-      status === "ACTIVE"
-        ? "PUBLISHED"
-        : status === "SCHEDULED"
-          ? "SCHEDULED"
-          : "DRAFT",
-    is_discontinued: status === "DISCONTINUED",
+    status,
+    is_discontinued: info.status === "DISCONTINUED",
     is_featured: info.is_featured,
     is_spotlight: info.is_spotlight,
     launch_date: launchDate,
@@ -221,17 +216,6 @@ function buildPayload(
         })),
     })),
   };
-}
-
-function resolveStatus(
-  info: ProductInfo,
-  blocks: DraftBlock[],
-  desiredStatus: string,
-  hasImage: boolean,
-): string {
-  const hasRequired =
-    !!info.name.pt && !!info.category_id && hasImage && blocks.length > 0;
-  return hasRequired ? desiredStatus : "DRAFT";
 }
 
 const STEP_LABELS: Record<Step, string> = {
@@ -463,12 +447,14 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     setIsDirty(true);
   }
 
-  async function handleSave(
-    overrideStatus?: string,
-  ): Promise<ProductMutationResult> {
-    const hasImage = images.length > 0;
-    const status =
-      overrideStatus ?? resolveStatus(info, blocks, info.status, hasImage);
+  function mapStatusToApi(status: string): "PUBLISHED" | "DRAFT" | "SCHEDULED" {
+    if (status === "ACTIVE" || status === "DISCONTINUED") return "PUBLISHED";
+    if (status === "SCHEDULED") return "SCHEDULED";
+    return "DRAFT";
+  }
+
+  async function handleSave(): Promise<ProductMutationResult> {
+    const status = mapStatusToApi(info.status);
     const payload = buildPayload(info, variations, status);
 
     let id = productId;
@@ -493,7 +479,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
 
   async function handleSaveDraft() {
     try {
-      await handleSave("DRAFT");
+      await handleSave();
       adminToast.draft(info.name.pt || undefined);
     } catch {
       adminToast.error("Erro ao salvar rascunho");
@@ -516,10 +502,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
 
   async function handlePublish() {
     try {
-      const hasImage = images.length > 0;
-      const result = await handleSave(
-        resolveStatus(info, blocks, info.status, hasImage),
-      );
+      const result = await handleSave();
       if (result.status === "DRAFT") {
         adminToast.draft(info.name.pt || undefined);
       } else {

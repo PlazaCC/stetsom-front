@@ -221,6 +221,7 @@ export function BannersContent({
       <BannerForm
         draft={draft}
         isCreating={isCreating}
+        isSaving={isSaving}
         onDraftChange={handleDraftChange}
         onSave={handleSave}
         onCancel={closeForm}
