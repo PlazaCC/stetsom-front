@@ -1,7 +1,15 @@
-import type { I18nString, Locale } from "@/api/stetsom/model";
+import type { Locale } from "@/api/stetsom/model";
 
-export type ApiLocale = Locale;
+/**
+ * Locale helpers — the single source for converting between the next-intl
+ * display locale (e.g. "pt-BR") and the API locale key ("pt").
+ *
+ * Public pages do NOT resolve I18nString themselves: the backend already
+ * returns flat strings when given `?locale=`. These helpers only translate
+ * the locale token used in that query param (and back, for admin forms).
+ */
 
+/** next-intl display locale → API locale key. "pt-BR" → "pt". */
 export function toApiLocale(locale: string): Locale {
   if (locale === "pt-BR" || locale === "pt") return "pt";
   if (locale === "en" || locale.startsWith("en-")) return "en";
@@ -9,17 +17,7 @@ export function toApiLocale(locale: string): Locale {
   return "pt";
 }
 
-export function pickLocale(i18n: I18nString, locale: string): string {
-  const api = toApiLocale(locale);
-  if (api !== "pt" && i18n[api]) return i18n[api] as string;
-  return i18n.pt;
-}
-
-export function resolveLocale(
-  value: string | I18nString | null | undefined,
-  locale: string,
-): string {
-  if (!value) return "";
-  if (typeof value === "string") return value;
-  return pickLocale(value, locale);
+/** API locale key → next-intl display locale. "pt" → "pt-BR". */
+export function toDisplayLocale(apiLocale: string): string {
+  return apiLocale === "pt" ? "pt-BR" : apiLocale;
 }
