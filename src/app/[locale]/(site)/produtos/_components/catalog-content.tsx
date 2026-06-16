@@ -148,7 +148,7 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
         <div className="absolute right-0 bottom-0 font-sans-condensed font-black text-display-2xl sm:text-[150px] lg:text-[263px] text-watermark-text leading-none pointer-events-none select-none opacity-[0.08]">
           PRO
         </div>
-        <div className="absolute left-0 top-0 w-3.5 h-full bg-bar-accent" />
+        <div className="absolute left-0 top-0 w-3.5 h-full bg-brand" />
       </section>
 
       <section className="bg-white border-b border-border py-8">
