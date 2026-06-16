@@ -84,6 +84,9 @@
     "heroLabel": "CATÁLOGO COMPLETO",
     "heroTitle": "NOSSO\nPRODUTOS",
     "heroImageAlt": "Catálogo Stetsom",
+    "paginationPrevious": "Anterior",
+    "paginationNext": "Próxima",
+    "paginationInfo": "Página {page} de {total}",
     "emptyCategory": "Nenhum produto encontrado nesta categoria."
   },
   "ProductDetail": {
@@ -110,6 +113,7 @@
     "recommendations": "Recomendações",
     "noRelated": "Nenhum produto relacionado disponível.",
     "blockTextDefaultTitle": "Detalhes do produto",
+    "blockGalleryAlt": "imagem da galeria",
     "blockTextUnavailable": "Descrição indisponível para este bloco.",
     "blockVideoLabel": "Vídeo",
     "blockVideoFeatured": "{productName} em destaque",

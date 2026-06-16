@@ -84,6 +84,9 @@
     "heroLabel": "FULL CATALOG",
     "heroTitle": "OUR\nPRODUCTS",
     "heroImageAlt": "Stetsom Catalog",
+    "paginationPrevious": "Previous",
+    "paginationNext": "Next",
+    "paginationInfo": "Page {page} of {total}",
     "emptyCategory": "No products found in this category."
   },
   "ProductDetail": {
@@ -110,6 +113,7 @@
     "recommendations": "Recommendations",
     "noRelated": "No related products available.",
     "blockTextDefaultTitle": "Product details",
+    "blockGalleryAlt": "gallery image",
     "blockTextUnavailable": "Description unavailable for this block.",
     "blockVideoLabel": "Video",
     "blockVideoFeatured": "{productName} featured",
