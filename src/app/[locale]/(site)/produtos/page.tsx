@@ -12,7 +12,13 @@ const PAGE_SIZE = 24;
 export default async function ProdutosPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; category?: string; page?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    category?: string;
+    line?: string;
+    sort?: string;
+    page?: string;
+  }>;
 }) {
   const [sp, locale] = await Promise.all([searchParams, getLocale()]);
   const apiLocale = toApiLocale(locale);
@@ -20,6 +26,8 @@ export default async function ProdutosPage({
   const q = sp.q?.trim() || undefined;
   const category =
     sp.category && sp.category !== "todos" ? sp.category : undefined;
+  const line = sp.line && sp.line !== "todas" ? sp.line : undefined;
+  const sort = sp.sort === "newest" ? "newest" : undefined;
   const page = Math.max(1, Number(sp.page) || 1);
 
   const [categories, catalog] = await Promise.all([
@@ -34,6 +42,8 @@ export default async function ProdutosPage({
       params: {
         q,
         category,
+        line,
+        sort,
         status: "PUBLISHED",
         page,
         pageSize: PAGE_SIZE,

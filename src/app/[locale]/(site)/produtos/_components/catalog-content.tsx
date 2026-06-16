@@ -8,7 +8,7 @@ import { Container } from "@/components/ui/container";
 import { ProductCard } from "@/components/ui/product-card";
 import { useCatalogFilters } from "@/hooks/use-catalog-filters";
 import { cn } from "@/lib/utils";
-import { ArrowLeftRight, Search, SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
@@ -43,11 +43,15 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
 
   const {
     activeCategory,
+    activeLine,
     search,
+    sort,
     page,
     sidebarOpen,
     setActiveCategory,
+    setActiveLine,
     setSearch,
+    setSort,
     setPage,
     setSidebarOpen,
     clearFilters,
@@ -88,13 +92,18 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
   const activeCategorySlug =
     activeCategory === "todos" ? undefined : activeCategory;
 
-  // Product lines from the active category (or all categories).
-  const productLines = useMemo<string[]>(() => {
+  // Product lines from the active category (or all categories), as {name, slug}
+  // so the sidebar can drive the `line` filter (slug) while showing the label.
+  const productLines = useMemo<CategoryOption[]>(() => {
     const activeRaw = activeCategorySlug
       ? categories.find((c) => c.slug === activeCategorySlug)
       : null;
     const source = activeRaw ? [activeRaw] : categories;
-    return source.flatMap((c) => c.lines.map((l) => l.name));
+    return source.flatMap((c) =>
+      [...c.lines]
+        .sort((a, b) => a.order - b.order)
+        .map((l) => ({ name: l.name, slug: l.slug })),
+    );
   }, [categories, activeCategorySlug]);
 
   const productCards = catalog.items;
@@ -192,6 +201,10 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
               onSearchChange={setSearchInput}
               activeCategory={activeCategory}
               onCategoryChange={setActiveCategory}
+              activeLine={activeLine}
+              onLineChange={setActiveLine}
+              sort={sort}
+              onSortChange={setSort}
               onClear={clearFilters}
               typeFilterOptions={typeFilterOptions}
               productLines={productLines}
@@ -214,13 +227,6 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
                 >
                   <SlidersHorizontal size={14} />
                   {t("filters")}
-                </button>
-                <button
-                  type="button"
-                  className="border border-border flex items-center gap-2 px-3 h-10 text-sm text-muted-foreground"
-                >
-                  <ArrowLeftRight size={14} />
-                  {t("compare")}
                 </button>
               </div>
 
