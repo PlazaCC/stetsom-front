@@ -1,4 +1,4 @@
-import Header from "@/components/ui/header";
+import { Header } from "@/components/ui/header";
 import Footer from "@/components/ui/footer";
 import type { PublicCategory } from "@/api/stetsom/model";
 import { serverOrvalClient } from "@/api/stetsom/orval-server";

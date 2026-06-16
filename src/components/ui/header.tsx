@@ -75,7 +75,7 @@ interface HeaderProps {
   categories?: PublicCategory[];
 }
 
-export default function Header({ categories }: HeaderProps) {
+export function Header({ categories }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const t = useTranslations("Nav");
