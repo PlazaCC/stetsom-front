@@ -72,7 +72,7 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
                 onChange={(e) => handleChange("company_name", e.target.value)}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <AdminLabel>E-mail</AdminLabel>
                 <AdminInput

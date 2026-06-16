@@ -10,6 +10,7 @@ import type {
   PostApiBannersBody,
   PatchApiBannersIdBody,
   UploadPresignResponse,
+  I18nString,
 } from "@/api/stetsom/model";
 import {
   getGetApiBannersQueryKey,
@@ -109,6 +110,12 @@ export function BannersContent({
           }
         : { fileName: "", mimeType: "", sizeBytes: 0 },
       link_url: draft.link_url || null,
+      href: draft.href || null,
+      title: (draft.title as I18nString).pt
+        ? (draft.title as I18nString)
+        : undefined,
+      label: draft.label || null,
+      order: draft.order ?? 0,
       status: draft.status as PostApiBannersBody["status"],
       available_locales: draft.locale
         ? ([
@@ -135,6 +142,12 @@ export function BannersContent({
       name: draft.name || undefined,
       product_id: draft.product_id || null,
       link_url: draft.link_url || null,
+      href: draft.href || null,
+      title: (draft.title as I18nString).pt
+        ? (draft.title as I18nString)
+        : undefined,
+      label: draft.label || null,
+      order: draft.order ?? undefined,
       status: draft.status as PatchApiBannersIdBody["status"],
       available_locales: draft.locale
         ? ([

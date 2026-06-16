@@ -7,10 +7,10 @@ import { AdminInput, AdminLabel, AdminTextarea } from "./admin-input";
 
 type Locale = "pt" | "en" | "es";
 
-const LOCALES: { id: Locale; label: string; required?: boolean }[] = [
-  { id: "pt", label: "PT", required: true },
-  { id: "en", label: "EN" },
-  { id: "es", label: "ES" },
+const LOCALES: { id: Locale; flag: string; required?: boolean }[] = [
+  { id: "pt", flag: "🇧🇷", required: true },
+  { id: "en", flag: "🇺🇸" },
+  { id: "es", flag: "🇪🇸" },
 ];
 
 interface I18nInputProps {
@@ -74,7 +74,7 @@ export function I18nInput({
                   : "bg-muted text-muted-foreground hover:text-foreground",
               )}
             >
-              {loc.label}
+              {loc.flag}
               {filled && (
                 <span
                   className={cn(

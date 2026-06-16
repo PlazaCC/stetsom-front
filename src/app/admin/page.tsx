@@ -48,7 +48,7 @@ export default function AdminHome() {
       </header>
 
       {/* Metrics */}
-      <section className="grid gap-4 sm:grid-cols-3">
+      <section className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
         {metrics.map((metric) => (
           <article
             key={metric.id}
@@ -81,7 +81,7 @@ export default function AdminHome() {
         ))}
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+      <div className="grid gap-6 grid-cols-1 lg:grid-cols-[1fr_320px]">
         <div className="space-y-6">
           {/* Recent activities */}
           <section className="rounded-[16px] border border-border bg-card p-5">

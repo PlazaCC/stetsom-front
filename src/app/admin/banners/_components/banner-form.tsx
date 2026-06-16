@@ -8,7 +8,8 @@ import {
   AdminLabel,
   AdminSelect,
 } from "@/app/admin/_components/crud/admin-input";
-import type { Banner, BannerStatus } from "@/api/stetsom/model";
+import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import type { Banner, BannerStatus, I18nString } from "@/api/stetsom/model";
 import { ArrowLeft, Image, X } from "lucide-react";
 import { useRef } from "react";
 
@@ -18,10 +19,14 @@ export interface BannerDraft {
   desktop_image_url: string;
   mobile_image_url: string;
   link_url: string;
+  href: string;
+  title: I18nString;
+  label: string;
   status: BannerStatus;
   locale: string;
   display_from: string;
   display_until: string;
+  order: number;
 }
 
 export const EMPTY_DRAFT: BannerDraft = {
@@ -30,10 +35,14 @@ export const EMPTY_DRAFT: BannerDraft = {
   desktop_image_url: "",
   mobile_image_url: "",
   link_url: "",
+  href: "",
+  title: { pt: "" },
+  label: "",
   status: "ACTIVE",
   locale: "pt-BR",
   display_from: "",
   display_until: "",
+  order: 0,
 };
 
 export function bannerToDraft(b: Banner): BannerDraft {
@@ -43,10 +52,14 @@ export function bannerToDraft(b: Banner): BannerDraft {
     desktop_image_url: "",
     mobile_image_url: "",
     link_url: b.link_url ?? "",
+    href: b.href ?? "",
+    title: b.title ?? { pt: "" },
+    label: b.label ?? "",
     status: b.status,
     locale: b.available_locales?.[0] ?? "pt-BR",
     display_from: b.display_from ? b.display_from.split("T")[0] : "",
     display_until: b.display_until ? b.display_until.split("T")[0] : "",
+    order: b.order ?? 0,
   };
 }
 
@@ -215,11 +228,60 @@ export function BannerForm({
                   />
                 </div>
                 <div>
-                  <AdminLabel>URL de destino (opcional)</AdminLabel>
+                  <AdminLabel>URL de destino para produto</AdminLabel>
                   <AdminInput
                     value={draft.link_url}
                     onChange={(e) => onDraftChange("link_url", e.target.value)}
                     placeholder="/produtos/st-4000eq"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <AdminLabel>Link personalizado (opcional)</AdminLabel>
+                <AdminInput
+                  type="url"
+                  value={draft.href}
+                  onChange={(e) => onDraftChange("href", e.target.value)}
+                  placeholder="https://exemplo.com/promocao"
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Use este campo para links externos. Mutuamente exclusivo com
+                  produto.
+                </p>
+              </div>
+
+              <I18nInput
+                label="Título do banner (opcional)"
+                value={draft.title}
+                onChange={(title) =>
+                  onDraftChange("title", title as unknown as string)
+                }
+                placeholder="Texto que aparece sobre o banner"
+              />
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <AdminLabel>Etiqueta (opcional)</AdminLabel>
+                  <AdminInput
+                    value={draft.label}
+                    onChange={(e) => onDraftChange("label", e.target.value)}
+                    placeholder="Ex: LANÇAMENTO"
+                  />
+                </div>
+                <div>
+                  <AdminLabel>Ordem</AdminLabel>
+                  <AdminInput
+                    type="number"
+                    min={0}
+                    value={draft.order}
+                    onChange={(e) =>
+                      onDraftChange(
+                        "order",
+                        String(Number(e.target.value) || 0),
+                      )
+                    }
+                    placeholder="0"
                   />
                 </div>
               </div>

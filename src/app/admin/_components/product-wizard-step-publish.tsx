@@ -23,13 +23,64 @@ export function ProductWizardStepPublish({
   subcategoryName,
   onPatch,
 }: ProductWizardStepPublishProps) {
+  function toggleLocale(locale: "pt" | "en" | "es") {
+    if (locale === "pt") return;
+    const current = info.available_locales;
+    const next = current.includes(locale)
+      ? current.filter((l) => l !== locale)
+      : [...current, locale];
+    onPatch({ available_locales: next as ("pt" | "en" | "es")[] });
+  }
+
   return (
     <div className="space-y-6">
+      <AdminFormSection
+        title="Idiomas disponíveis"
+        description="Selecione em quais idiomas o produto será exibido."
+      >
+        <div className="flex flex-wrap gap-4">
+          <label className="flex cursor-not-allowed items-center gap-2 rounded-md border border-border bg-muted/50 px-4 py-3">
+            <input
+              type="checkbox"
+              checked
+              disabled
+              className="accent-primary"
+            />
+            <span className="text-sm font-medium text-foreground">
+              🇧🇷 Português
+            </span>
+            <span className="text-xs text-muted-foreground">(obrigatório)</span>
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 rounded-md border border-border bg-card px-4 py-3 hover:bg-muted/50">
+            <input
+              type="checkbox"
+              checked={info.available_locales.includes("en")}
+              onChange={() => toggleLocale("en")}
+              className="accent-primary"
+            />
+            <span className="text-sm font-medium text-foreground">
+              🇺🇸 English
+            </span>
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 rounded-md border border-border bg-card px-4 py-3 hover:bg-muted/50">
+            <input
+              type="checkbox"
+              checked={info.available_locales.includes("es")}
+              onChange={() => toggleLocale("es")}
+              className="accent-primary"
+            />
+            <span className="text-sm font-medium text-foreground">
+              🇪🇸 Español
+            </span>
+          </label>
+        </div>
+      </AdminFormSection>
+
       <AdminFormSection
         title="Data e horário de publicação"
         description="Defina quando o produto estará disponível no site."
       >
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <AdminLabel>Data de lançamento</AdminLabel>
             <AdminInput
@@ -80,7 +131,7 @@ export function ProductWizardStepPublish({
       </AdminFormSection>
 
       <AdminFormSection title="Resumo do produto">
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+        <dl className="grid grid-cols-1 gap-x-6 gap-y-3 text-sm">
           <div>
             <dt className="text-xs text-muted-foreground">Nome</dt>
             <dd className="font-medium text-foreground">

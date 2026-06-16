@@ -18,7 +18,7 @@ export function AdminDrawer({
   onClose,
   title,
   children,
-  width = "w-120",
+  width = "w-full sm:w-120",
   className,
 }: AdminDrawerProps) {
   useEffect(() => {

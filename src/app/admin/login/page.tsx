@@ -42,8 +42,8 @@ export default function AdminLoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="flex w-full max-w-224.5 overflow-hidden rounded-[16px] shadow-2xl">
-        {/* Form panel */}
-        <div className="flex w-112.25 shrink-0 flex-col justify-center bg-card p-12">
+        {/* Form panel - full width on mobile, 112.25 on desktop */}
+        <div className="flex w-full flex-col justify-center bg-card p-8 sm:p-12 md:w-112.25">
           <div className="mb-10 flex justify-start">
             <Image
               src="/logo.png"
@@ -132,7 +132,7 @@ export default function AdminLoginPage() {
           </form>
         </div>
 
-        {/* Brand panel */}
+        {/* Brand panel - hidden on mobile */}
         <div className="relative hidden flex-1 flex-col items-center justify-center gap-6 overflow-hidden bg-surface-elevated md:flex">
           <div className="absolute inset-0 bg-linear-to-br from-surface-elevated/0 via-surface-elevated/90 to-surface-elevated" />
           <div className="relative z-10 flex flex-col items-center gap-4 px-10 text-center">

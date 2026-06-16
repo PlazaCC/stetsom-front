@@ -86,10 +86,9 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
     status: "DRAFT",
     is_featured: false,
     is_spotlight: false,
-    badge: "",
-    video_url: "",
     launch_date: new Date().toISOString().split("T")[0],
     launch_time: "00:00",
+    available_locales: ["pt"],
   };
   if (!detail) return base;
 
@@ -113,6 +112,9 @@ function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
     is_featured: p.is_featured ?? false,
     is_spotlight: p.is_spotlight ?? false,
     launch_date: p.launch_date?.split("T")[0] ?? base.launch_date,
+    available_locales: (p.available_locales as ("pt" | "en" | "es")[]) ?? [
+      "pt",
+    ],
   };
 }
 
@@ -203,7 +205,8 @@ function buildPayload(
     is_spotlight: info.is_spotlight,
     launch_date: launchDate,
     highlight_attributes: [...highlightIds],
-    available_locales: ["pt"],
+    available_locales:
+      info.available_locales.length > 0 ? info.available_locales : ["pt"],
     variants: variations.map((v) => ({
       variant_id: v.id.startsWith("variation-") ? undefined : v.id,
       name: v.label,

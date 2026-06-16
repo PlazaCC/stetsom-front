@@ -43,10 +43,9 @@ export interface ProductInfo {
   status: WizardProductStatus;
   is_featured: boolean;
   is_spotlight: boolean;
-  badge: string;
-  video_url: string;
   launch_date: string;
   launch_time: string;
+  available_locales: ("pt" | "en" | "es")[];
 }
 
 interface ProductWizardStep1Props {
@@ -183,26 +182,16 @@ export function ProductWizardStep1({
             placeholder="st-4000eq"
           />
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <AdminLabel>SKU</AdminLabel>
-              <AdminInput
-                value={info.sku}
-                onChange={(e) => onPatch({ sku: e.target.value })}
-                placeholder="Código único"
-              />
-            </div>
-            <div>
-              <AdminLabel>Badge (opcional)</AdminLabel>
-              <AdminInput
-                value={info.badge}
-                onChange={(e) => onPatch({ badge: e.target.value })}
-                placeholder="Ex: LANÇAMENTO"
-              />
-            </div>
+          <div>
+            <AdminLabel>SKU</AdminLabel>
+            <AdminInput
+              value={info.sku}
+              onChange={(e) => onPatch({ sku: e.target.value })}
+              placeholder="Código único"
+            />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <AdminLabel>Categoria *</AdminLabel>
               <AdminSelect
@@ -294,15 +283,6 @@ export function ProductWizardStep1({
           value={info.description}
           onChange={(description) => onPatch({ description })}
           placeholder="Descrição curta do produto..."
-        />
-      </AdminFormSection>
-
-      <AdminFormSection title="Vídeo (opcional)">
-        <AdminInput
-          type="url"
-          value={info.video_url}
-          onChange={(e) => onPatch({ video_url: e.target.value })}
-          placeholder="https://www.youtube.com/watch?v=..."
         />
       </AdminFormSection>
     </div>
