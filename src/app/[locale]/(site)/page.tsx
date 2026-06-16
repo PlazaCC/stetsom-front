@@ -24,7 +24,10 @@ export default async function Home() {
       method: "GET",
       url: "/api/banners/active",
       params: { locale: apiLocale },
-    }).catch(() => ({ items: [], total: 0 }) as HeroBannerSlidesPayload),
+    }).catch((err) => {
+      console.error("Failed to fetch home banners:", err);
+      return { items: [], total: 0 } as HeroBannerSlidesPayload;
+    }),
     serverOrvalClient<PagePayload>({
       method: "GET",
       url: "/api/pages/home",
