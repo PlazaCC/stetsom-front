@@ -7010,8 +7010,8 @@
         "role": "SUPER_ADMIN",
         "is_active": true,
         "created_at": "2026-06-10T03:02:38.712Z",
-        "updated_at": "2026-06-16T21:22:48.978Z",
-        "last_login": "2026-06-16T21:22:48.976Z"
+        "updated_at": "2026-06-16T21:53:48.786Z",
+        "last_login": "2026-06-16T21:53:48.776Z"
       }
     ],
     "total": 2
@@ -8904,6 +8904,15 @@
   "audit": {
     "items": [
       {
+        "id": "6a31c5ecb7c0bd5604a8db81",
+        "user_id": "6a28d3ce7ed2feca02f806b4",
+        "user_name": "Admin Stetsom",
+        "action": "LOGIN",
+        "action_sentence": "Fez login",
+        "entity": "Auth",
+        "created_at": "2026-06-16T21:53:48.779Z"
+      },
+      {
         "id": "6a31bea8d80734d2b2722231",
         "user_id": "6a28d3ce7ed2feca02f806b4",
         "user_name": "Admin Stetsom",
@@ -8940,7 +8949,7 @@
         "created_at": "2026-06-10T04:50:41.757Z"
       }
     ],
-    "total": 4
+    "total": 5
   },
   "messages": {
     "items": [],

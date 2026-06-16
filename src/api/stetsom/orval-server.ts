@@ -13,7 +13,7 @@
 import type { AxiosRequestConfig } from "axios";
 import Axios from "axios";
 import { cookies } from "next/headers";
-import { loadMockData } from "@/lib/mock/loader";
+import { handleMockRequest } from "@/lib/mock/handlers";
 import { OrvalApiError, toApiError } from "./orval-client";
 
 const directAxios = Axios.create({
@@ -32,7 +32,13 @@ export async function serverOrvalClient<T>(
       .split("/")
       .filter(Boolean);
     if (method === "GET") {
-      const mock = loadMockData(segments);
+      const sp = new URLSearchParams();
+      if (config.params) {
+        for (const [k, v] of Object.entries(config.params)) {
+          if (v != null && v !== "") sp.set(k, String(v));
+        }
+      }
+      const mock = handleMockRequest(segments, sp);
       if (mock !== null) return mock as T;
       throw new OrvalApiError(
         404,

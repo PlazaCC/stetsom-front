@@ -9,7 +9,7 @@
  * Auth flows (login / refresh / logout) are NOT handled here — they use the
  * dedicated /api/auth/* routes that manage the HttpOnly cookies.
  */
-import { loadMockData } from "@/lib/mock/loader";
+import { handleMockRequest } from "@/lib/mock/handlers";
 import { getCmsApiBaseUrl, toErrorResponse } from "@/lib/api/route-utils";
 import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
@@ -41,7 +41,7 @@ async function handle(
 
     if (process.env.USE_MOCK_DATA === "1") {
       if (request.method === "GET" || request.method === "HEAD") {
-        const mock = loadMockData(path);
+        const mock = handleMockRequest(path, request.nextUrl.searchParams);
         if (mock !== null) return NextResponse.json(mock);
         return NextResponse.json(
           {
