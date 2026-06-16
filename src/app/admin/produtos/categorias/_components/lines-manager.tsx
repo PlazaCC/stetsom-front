@@ -7,18 +7,10 @@ import {
   postApiCategoriesIdLines,
 } from "@/api/stetsom";
 import type { I18nString } from "@/api/stetsom/model";
+import { slugify } from "@/lib/utils/slugify";
 import { useMutation } from "@tanstack/react-query";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
 
 export interface DisplayLine {
   line_id: string;

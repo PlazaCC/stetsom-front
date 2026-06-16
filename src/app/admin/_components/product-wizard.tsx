@@ -46,6 +46,7 @@ import type {
 } from "@/api/stetsom/model";
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { useInlineUpload } from "@/hooks/use-inline-upload";
+import { slugify } from "@/lib/utils/slugify";
 import { useMutation } from "@tanstack/react-query";
 import { Package } from "lucide-react";
 import Link from "next/link";
@@ -64,15 +65,6 @@ interface ProductMutationResult {
 }
 
 type Step = 1 | 2 | 3 | 4;
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
 
 function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
   const base: ProductInfo = {

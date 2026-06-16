@@ -20,11 +20,8 @@ import {
   patchApiLibraryId,
   useGetApiLibrary,
 } from "@/api/stetsom";
-import type {
-  I18nString,
-  LibraryAsset,
-  LibraryAssetType,
-} from "@/api/stetsom/model";
+import type { I18nString, LibraryAsset } from "@/api/stetsom/model";
+import { LibraryAssetType } from "@/api/stetsom/model";
 import { useLibraryUpload } from "@/hooks/use-upload";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -261,21 +258,21 @@ const UPLOAD_CONFIG: Record<
     label: "Clique ou arraste imagens para a biblioteca",
     description: "PNG, JPG, WebP, GIF — máx. 10 MB",
     icon: Image,
-    libraryType: "IMAGE" as LibraryAssetType,
+    libraryType: LibraryAssetType.IMAGE,
   },
   manuals: {
     accept: "application/pdf",
     label: "Clique ou arraste PDFs para a biblioteca",
     description: "Apenas arquivos PDF — máx. 50 MB",
     icon: FileText,
-    libraryType: "PDF" as LibraryAssetType,
+    libraryType: LibraryAssetType.PDF,
   },
   "3d-models": {
     accept: "model/gltf-binary,model/gltf+json,.glb,.gltf",
     label: "Clique ou arraste modelos 3D para a biblioteca",
     description: "GLB ou GLTF — máx. 100 MB",
     icon: Archive,
-    libraryType: "MODEL3D" as LibraryAssetType,
+    libraryType: LibraryAssetType.MODEL3D,
   },
 };
 

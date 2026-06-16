@@ -94,3 +94,23 @@ export const CMS_UPLOAD_MAX_SIZES = {
 - [ ] Não transformar valores de enum
 - [ ] Remover validação cliente que duplica API
 - [ ] Usar constantes de `lib/cms/constants.ts`
+
+## Exceções Conhecidas
+
+### Pages (PAGE_SECTIONS)
+
+**Problema**: O catálogo de seções de páginas (`PAGE_SECTIONS`) é hardcoded em `src/app/admin/paginas/_components/section-field-spec.ts`.
+
+**Motivo**: A API não expõe schemas de blocos dinâmicos. O `PageBlockType` enum define tipos mas não a estrutura de campos.
+
+**Solução Temporária**: Manter `FieldSpec` e `SectionDef` como tipos locais até que:
+1. Backend forneça endpoint com schemas de blocos, OU
+2. Backend use JSON Schema para descrever blocos
+
+**Risco**: Seções adicionadas no backend requerem atualização manual no frontend.
+
+### Helpers Permitidos
+
+- `slugify()` - helper de UX, não substitui validação backend
+- `toApiLocale()` - converte display locale (pt-BR) para API locale (pt)
+- `toDisplayLocale()` - converte API locale para display locale

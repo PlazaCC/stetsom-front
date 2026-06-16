@@ -20,14 +20,15 @@ import {
 } from "@/api/stetsom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useInlineUpload } from "@/hooks/use-inline-upload";
+import { toApiLocale } from "@/lib/cms/locale-utils";
 import { cn } from "@/lib/utils";
 import { Image as ImageIcon, Plus } from "lucide-react";
 import { useState } from "react";
 import {
-  BannerDraft,
+  BannerFormState,
   BannerForm,
-  EMPTY_DRAFT,
-  bannerToDraft,
+  EMPTY_FORM_STATE,
+  bannerToFormState,
   formatDateRange,
   statusBadgeClass,
   statusLabel,
@@ -48,7 +49,7 @@ export function BannersContent({
   const banners = initialBanners.items;
   const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [draft, setDraft] = useState<BannerDraft>(EMPTY_DRAFT);
+  const [draft, setDraft] = useState<BannerFormState>(EMPTY_FORM_STATE);
   const [desktopImageFile, setDesktopImageFile] = useState<File | null>(null);
   const [mobileImageFile, setMobileImageFile] = useState<File | null>(null);
 
@@ -76,14 +77,14 @@ export function BannersContent({
     inlineUpload.isUploading;
 
   function openCreate() {
-    setDraft(EMPTY_DRAFT);
+    setDraft(EMPTY_FORM_STATE);
     setDesktopImageFile(null);
     setMobileImageFile(null);
     setIsCreating(true);
   }
 
   function openEdit(banner: Banner) {
-    setDraft(bannerToDraft(banner));
+    setDraft(bannerToFormState(banner));
     setDesktopImageFile(null);
     setMobileImageFile(null);
     setEditingBanner(banner);
@@ -94,7 +95,7 @@ export function BannersContent({
     setEditingBanner(null);
   }
 
-  function handleDraftChange(key: keyof BannerDraft, value: string) {
+  function handleDraftChange(key: keyof BannerFormState, value: string) {
     setDraft((prev) => ({ ...prev, [key]: value }));
   }
 
@@ -116,12 +117,8 @@ export function BannersContent({
         : undefined,
       label: draft.label || null,
       order: draft.order ?? 0,
-      status: draft.status as PostApiBannersBody["status"],
-      available_locales: draft.locale
-        ? ([
-            draft.locale === "pt-BR" ? "pt" : draft.locale,
-          ] as PostApiBannersBody["available_locales"])
-        : undefined,
+      status: draft.status,
+      available_locales: draft.locale ? [toApiLocale(draft.locale)] : undefined,
       display_from: draft.display_from || null,
       display_until: draft.display_until || null,
     };
@@ -148,12 +145,8 @@ export function BannersContent({
         : undefined,
       label: draft.label || null,
       order: draft.order ?? undefined,
-      status: draft.status as PatchApiBannersIdBody["status"],
-      available_locales: draft.locale
-        ? ([
-            draft.locale === "pt-BR" ? "pt" : draft.locale,
-          ] as PatchApiBannersIdBody["available_locales"])
-        : undefined,
+      status: draft.status,
+      available_locales: draft.locale ? [toApiLocale(draft.locale)] : undefined,
       display_from: draft.display_from || null,
       display_until: draft.display_until || null,
     };

@@ -29,6 +29,7 @@ import type {
   PostApiCategoriesBody,
 } from "@/api/stetsom/model";
 import { useAdminToast } from "@/hooks/use-admin-toast";
+import { slugify } from "@/lib/utils/slugify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Tags } from "lucide-react";
 import Link from "next/link";
@@ -36,15 +37,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const LIST_HREF = "/admin/produtos/categorias";
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
 
 interface CategoryFormProps {
   mode: "create" | "edit";

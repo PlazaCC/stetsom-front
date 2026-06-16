@@ -10,56 +10,65 @@ import {
 } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import type { Banner, BannerStatus, I18nString } from "@/api/stetsom/model";
+import { toDisplayLocale } from "@/lib/cms/locale-utils";
 import { ArrowLeft, Image, X } from "lucide-react";
 import { useRef } from "react";
 
-export interface BannerDraft {
+/**
+ * Banner form state - UI layer representation
+ *
+ * API mapping:
+ * - locale -> available_locales[0] (singular to array)
+ * - desktop_image_url/mobile_image_url -> preview URLs (not sent to API)
+ * - File objects handled separately in parent component
+ */
+export interface BannerFormState {
   name: string;
   product_id: string;
-  desktop_image_url: string;
-  mobile_image_url: string;
-  link_url: string;
-  href: string;
+  status: BannerStatus;
   title: I18nString;
   label: string;
-  status: BannerStatus;
-  locale: string;
+  href: string;
+  link_url: string;
   display_from: string;
   display_until: string;
   order: number;
+  locale: string;
+  desktop_image_url: string;
+  mobile_image_url: string;
 }
 
-export const EMPTY_DRAFT: BannerDraft = {
+export const EMPTY_FORM_STATE: BannerFormState = {
   name: "",
   product_id: "",
-  desktop_image_url: "",
-  mobile_image_url: "",
-  link_url: "",
-  href: "",
+  status: "ACTIVE",
   title: { pt: "" },
   label: "",
-  status: "ACTIVE",
-  locale: "pt-BR",
+  href: "",
+  link_url: "",
   display_from: "",
   display_until: "",
   order: 0,
+  locale: "pt-BR",
+  desktop_image_url: "",
+  mobile_image_url: "",
 };
 
-export function bannerToDraft(b: Banner): BannerDraft {
+export function bannerToFormState(b: Banner): BannerFormState {
   return {
     name: b.name,
     product_id: b.product_id ?? "",
-    desktop_image_url: "",
-    mobile_image_url: "",
-    link_url: b.link_url ?? "",
-    href: b.href ?? "",
+    status: b.status,
     title: b.title ?? { pt: "" },
     label: b.label ?? "",
-    status: b.status,
-    locale: b.available_locales?.[0] ?? "pt-BR",
+    href: b.href ?? "",
+    link_url: b.link_url ?? "",
     display_from: b.display_from ? b.display_from.split("T")[0] : "",
     display_until: b.display_until ? b.display_until.split("T")[0] : "",
     order: b.order ?? 0,
+    locale: toDisplayLocale(b.available_locales?.[0] ?? "pt"),
+    desktop_image_url: "",
+    mobile_image_url: "",
   };
 }
 
@@ -161,10 +170,10 @@ function ImageUploadSlot({
 }
 
 interface BannerFormProps {
-  draft: BannerDraft;
+  draft: BannerFormState;
   isCreating: boolean;
   isSaving: boolean;
-  onDraftChange: (key: keyof BannerDraft, value: string) => void;
+  onDraftChange: (key: keyof BannerFormState, value: string) => void;
   onSave: () => void;
   onCancel: () => void;
   onDesktopFile?: (file: File) => void;
