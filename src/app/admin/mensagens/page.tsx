@@ -72,7 +72,7 @@ export default function AdminMensagensPage() {
       className: "w-2",
       render: (m) =>
         !m.is_read ? (
-          <span className="block size-2 rounded-full bg-brand" />
+          <span className="block size-2 rounded-full bg-primary" />
         ) : null,
     },
     {
@@ -116,7 +116,7 @@ export default function AdminMensagensPage() {
         <button
           type="button"
           onClick={() => handleOpen(m)}
-          className="text-xs font-medium text-brand hover:underline"
+          className="text-xs font-medium text-primary hover:underline"
         >
           Ver mensagem
         </button>
@@ -151,7 +151,7 @@ export default function AdminMensagensPage() {
                   className={cn(
                     "px-4 py-2 text-sm font-medium capitalize transition-colors",
                     activeTab === tab
-                      ? "border-b-2 border-brand text-foreground"
+                      ? "border-b-2 border-primary text-foreground"
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
@@ -161,7 +161,7 @@ export default function AdminMensagensPage() {
             </div>
             {activeTab === "contatos" && unread > 0 && (
               <span className="text-xs text-muted-foreground">
-                <span className="font-semibold text-brand">{unread}</span>{" "}
+                <span className="font-semibold text-primary">{unread}</span>{" "}
                 {unread === 1 ? "não lida" : "não lidas"}
               </span>
             )}
@@ -211,7 +211,7 @@ export default function AdminMensagensPage() {
                       </td>
                       <td className="px-4 py-3">
                         {deptUnread > 0 ? (
-                          <span className="font-semibold text-brand">
+                          <span className="font-semibold text-primary">
                             {deptUnread}
                           </span>
                         ) : (

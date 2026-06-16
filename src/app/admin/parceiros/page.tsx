@@ -381,7 +381,7 @@ export default function AdminParceirosPage() {
           <button
             type="button"
             onClick={() => openEdit(l)}
-            className="text-xs font-medium text-brand hover:underline"
+            className="text-xs font-medium text-primary hover:underline"
           >
             Editar
           </button>
@@ -421,7 +421,7 @@ export default function AdminParceirosPage() {
                   className={cn(
                     "-mb-px flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors",
                     active
-                      ? "border-brand text-foreground"
+                      ? "border-primary text-foreground"
                       : "border-transparent text-muted-foreground hover:text-foreground",
                   )}
                 >

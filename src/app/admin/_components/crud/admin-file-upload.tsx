@@ -64,7 +64,7 @@ export function AdminFileUpload({
       <label
         className={cn(
           "flex cursor-pointer flex-col items-center justify-center gap-3 rounded-md border border-dashed border-border bg-card px-6 py-10 text-center transition-colors",
-          isDragging && "border-brand bg-brand/5",
+          isDragging && "border-primary bg-primary/5",
           disabled && "cursor-not-allowed opacity-50",
         )}
         onDragOver={(e) => {

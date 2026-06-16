@@ -79,7 +79,7 @@ export function I18nInput({
                 <span
                   className={cn(
                     "ml-1 inline-block size-1.5 rounded-full",
-                    active === loc.id ? "bg-background" : "bg-brand",
+                    active === loc.id ? "bg-background" : "bg-primary",
                   )}
                 />
               )}

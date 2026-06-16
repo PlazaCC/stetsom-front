@@ -206,7 +206,7 @@ function FileTable({
                     href={getCurrentVersionUrl(asset)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs font-medium text-brand hover:underline"
+                    className="text-xs font-medium text-primary hover:underline"
                   >
                     Abrir
                   </a>
@@ -329,7 +329,7 @@ export default function AdminBibliotecaPage() {
         </p>
         <Link
           href="/admin/login"
-          className="text-sm text-brand underline underline-offset-4"
+          className="text-sm text-primary underline underline-offset-4"
         >
           Fazer login novamente
         </Link>
@@ -378,7 +378,7 @@ export default function AdminBibliotecaPage() {
             className={cn(
               "px-4 py-2.5 text-sm font-medium transition-colors",
               activeTab === tab.id
-                ? "border-b-2 border-brand text-foreground"
+                ? "border-b-2 border-primary text-foreground"
                 : "text-muted-foreground hover:text-foreground",
             )}
           >

@@ -111,7 +111,7 @@ export default function AdminSectionEditorPage({
         </p>
         <Link
           href={`/admin/paginas/${pageId}`}
-          className="mt-4 inline-block text-sm text-brand hover:underline"
+          className="mt-4 inline-block text-sm text-primary hover:underline"
         >
           ← Voltar às seções
         </Link>

@@ -48,7 +48,7 @@ export function CategoryTemplatesSection({
             </span>
             <Link
               href={`/admin/produtos/categorias/${categoryId}/templates/${template.id}`}
-              className="text-xs font-medium text-brand hover:underline"
+              className="text-xs font-medium text-primary hover:underline"
             >
               Editar
             </Link>

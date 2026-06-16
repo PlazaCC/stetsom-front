@@ -102,7 +102,7 @@ function ProductGallery({
               <span className="flex-1 text-xs text-muted-foreground">
                 {img.order === 0 ? (
                   <span className="inline-flex items-center gap-1 font-medium text-foreground">
-                    <Star className="size-3 fill-brand text-brand" />
+                    <Star className="size-3 fill-primary text-primary" />
                     Capa
                   </span>
                 ) : (
@@ -123,7 +123,7 @@ function ProductGallery({
           )}
         />
       )}
-      <label className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card py-4 text-sm text-muted-foreground hover:border-brand hover:text-foreground">
+      <label className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card py-4 text-sm text-muted-foreground hover:border-primary hover:text-foreground">
         <ImagePlus className="size-5" />
         Adicionar imagens
         <input
@@ -271,7 +271,7 @@ export function ProductWizardStep1({
                 type="checkbox"
                 checked={info.is_featured}
                 onChange={(e) => onPatch({ is_featured: e.target.checked })}
-                className="size-4 accent-brand"
+                className="size-4 accent-primary"
               />
               <span className="text-sm text-foreground">Destaque</span>
             </label>
@@ -280,7 +280,7 @@ export function ProductWizardStep1({
                 type="checkbox"
                 checked={info.is_spotlight}
                 onChange={(e) => onPatch({ is_spotlight: e.target.checked })}
-                className="size-4 accent-brand"
+                className="size-4 accent-primary"
               />
               <span className="text-sm text-foreground">Spotlight</span>
             </label>

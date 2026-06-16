@@ -176,7 +176,7 @@ export default function AdminProdutos() {
         </p>
         <Link
           href="/admin/login"
-          className="text-sm text-brand underline underline-offset-4"
+          className="text-sm text-primary underline underline-offset-4"
         >
           Fazer login novamente
         </Link>
@@ -244,7 +244,7 @@ export default function AdminProdutos() {
                         className={cn(
                           "block w-full rounded px-2 py-1.5 text-left text-sm hover:bg-muted",
                           statusFilter === opt.value &&
-                            "font-semibold text-brand",
+                            "font-semibold text-primary",
                         )}
                       >
                         {opt.label}

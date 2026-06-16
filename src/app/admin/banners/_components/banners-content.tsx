@@ -322,7 +322,7 @@ export function BannersContent({
                     <button
                       type="button"
                       onClick={() => openEdit(banner)}
-                      className="text-xs font-medium text-brand hover:underline"
+                      className="text-xs font-medium text-primary hover:underline"
                     >
                       Editar
                     </button>

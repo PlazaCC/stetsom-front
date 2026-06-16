@@ -51,7 +51,7 @@ export function AdminConfirmDialog({
       >
         <h2
           id="confirm-dialog-title"
-          className="font-mono text-lg font-bold text-foreground"
+          className="text-lg font-bold text-foreground"
         >
           {title}
         </h2>

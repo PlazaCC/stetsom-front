@@ -62,7 +62,7 @@ export function ProductWizardStepPublish({
                 value={s}
                 checked={info.status === s}
                 onChange={() => onPatch({ status: s })}
-                className="mt-0.5 accent-brand"
+                className="mt-0.5 accent-primary"
               />
               <div>
                 <span className="text-sm font-medium text-foreground">

@@ -9,7 +9,7 @@ export default function AdminBannersPage() {
   if (isLoading || !data) {
     return (
       <div className="flex items-center justify-center py-16">
-        <div className="size-6 animate-spin rounded-full border-2 border-border border-t-brand" />
+        <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
       </div>
     );
   }

@@ -52,9 +52,7 @@ export function AdminDrawer({
       >
         <div className="flex shrink-0 items-center justify-between border-b border-border px-6 py-4">
           {title && (
-            <h2 className="font-mono text-base font-semibold text-foreground">
-              {title}
-            </h2>
+            <h2 className="text-base font-semibold text-foreground">{title}</h2>
           )}
           <button
             type="button"

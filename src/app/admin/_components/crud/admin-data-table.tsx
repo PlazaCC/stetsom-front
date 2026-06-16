@@ -47,7 +47,7 @@ export function AdminDataTable<T>({
     >
       {isLoading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="size-6 animate-spin rounded-full border-2 border-border border-t-brand" />
+          <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
         </div>
       ) : data.length === 0 ? (
         <AdminEmptyState title={emptyTitle} description={emptyDescription} />

@@ -92,7 +92,7 @@ export function LibraryAssetPicker({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card py-6 text-sm text-muted-foreground hover:border-brand hover:text-foreground"
+          className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card py-6 text-sm text-muted-foreground hover:border-primary hover:text-foreground"
         >
           {variant === "image" ? (
             <ImageIcon className="size-5" />
@@ -269,7 +269,7 @@ function AssetThumb({
     <button
       type="button"
       onClick={onClick}
-      className="group flex flex-col gap-1 rounded-md border border-border p-1.5 text-left hover:border-brand"
+      className="group flex flex-col gap-1 rounded-md border border-border p-1.5 text-left hover:border-primary"
     >
       <div className="flex aspect-square items-center justify-center overflow-hidden rounded bg-muted">
         {isImage && url ? (

@@ -138,7 +138,7 @@ export function BlockBuilder({
       <button
         type="button"
         onClick={() => setShowMenu(true)}
-        className="flex items-center gap-2 rounded-md border border-dashed border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-brand hover:text-brand"
+        className="flex items-center gap-2 rounded-md border border-dashed border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
       >
         <Plus className="size-4" />
         {addLabel}

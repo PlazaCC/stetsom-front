@@ -231,7 +231,7 @@ export default function AdminPageSectionsPage({
                   type="button"
                   disabled={addMutation.isPending}
                   onClick={() => addMutation.mutate(def.section_id)}
-                  className="flex w-full items-center gap-3 rounded-[12px] border border-dashed border-border bg-card px-4 py-3 text-left transition-colors hover:border-brand disabled:opacity-50"
+                  className="flex w-full items-center gap-3 rounded-[12px] border border-dashed border-border bg-card px-4 py-3 text-left transition-colors hover:border-primary disabled:opacity-50"
                 >
                   <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
                     <Icon className="size-4" />
@@ -241,7 +241,7 @@ export default function AdminPageSectionsPage({
                       {def.label}
                     </p>
                   </div>
-                  <span className="flex shrink-0 items-center gap-1 text-xs font-medium text-brand">
+                  <span className="flex shrink-0 items-center gap-1 text-xs font-medium text-primary">
                     <Plus className="size-4" />
                     Adicionar
                   </span>

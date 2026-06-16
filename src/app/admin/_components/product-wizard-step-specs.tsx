@@ -72,7 +72,7 @@ function VariationTabs({
           key={v.id}
           className={
             v.id === activeId
-              ? "flex items-center gap-1 rounded border border-brand bg-brand/5 px-2 py-1"
+              ? "flex items-center gap-1 rounded border border-primary bg-primary/5 px-2 py-1"
               : "flex items-center gap-1 rounded border border-border px-2 py-1"
           }
         >
@@ -243,7 +243,7 @@ export function ProductWizardStepSpecs({
                         ),
                       )
                     }
-                    className="size-4 accent-brand disabled:opacity-40"
+                    className="size-4 accent-primary disabled:opacity-40"
                   />
                 </label>
                 <button
@@ -268,7 +268,7 @@ export function ProductWizardStepSpecs({
           onClick={() =>
             patchActiveSpecs((specs) => [...specs, newSpec(specs.length)])
           }
-          className="mt-3 flex items-center gap-1.5 text-sm font-medium text-brand hover:underline"
+          className="mt-3 flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
         >
           <Plus className="size-4" />
           Adicionar especificação
