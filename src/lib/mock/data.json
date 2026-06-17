@@ -7010,8 +7010,8 @@
         "role": "SUPER_ADMIN",
         "is_active": true,
         "created_at": "2026-06-10T03:02:38.712Z",
-        "updated_at": "2026-06-16T21:53:48.786Z",
-        "last_login": "2026-06-16T21:53:48.776Z"
+        "updated_at": "2026-06-17T06:49:37.760Z",
+        "last_login": "2026-06-17T06:49:37.753Z"
       }
     ],
     "total": 2
@@ -7025,8 +7025,15 @@
     "social_instagram": "https://instagram.com/stetsombrasil",
     "social_facebook": "https://facebook.com/stetsom",
     "social_youtube": "https://youtube.com/@stetsom",
-    "updated_at": "2026-06-10T03:02:39.045Z",
-    "updated_by": "seed"
+    "contact_departments": [
+      {
+        "slug": "comercial",
+        "label": "Comercial",
+        "email": "teste@stetsom.com.br"
+      }
+    ],
+    "updated_at": "2026-06-17T06:46:42.820Z",
+    "updated_by": "6a28d3ce7ed2feca02f806b4"
   },
   "banners": {
     "items": [
@@ -8904,6 +8911,24 @@
   "audit": {
     "items": [
       {
+        "id": "6a3243813b8abc4f189bcd05",
+        "user_id": "6a28d3ce7ed2feca02f806b4",
+        "user_name": "Admin Stetsom",
+        "action": "LOGIN",
+        "action_sentence": "Fez login",
+        "entity": "Auth",
+        "created_at": "2026-06-17T06:49:37.760Z"
+      },
+      {
+        "id": "6a3242aad2e1594c52860d8e",
+        "user_id": "6a28d3ce7ed2feca02f806b4",
+        "user_name": "Admin Stetsom",
+        "action": "LOGIN",
+        "action_sentence": "Fez login",
+        "entity": "Auth",
+        "created_at": "2026-06-17T06:46:02.635Z"
+      },
+      {
         "id": "6a31c5ecb7c0bd5604a8db81",
         "user_id": "6a28d3ce7ed2feca02f806b4",
         "user_name": "Admin Stetsom",
@@ -8949,11 +8974,32 @@
         "created_at": "2026-06-10T04:50:41.757Z"
       }
     ],
-    "total": 5
+    "total": 7
   },
   "messages": {
-    "items": [],
-    "total": 0
+    "items": [
+      {
+        "id": "6a324313acd99ab59d72e0c2",
+        "name": "Teste",
+        "email": "eu@gmail.com",
+        "subject": "Teste",
+        "message": "Mensagem de teste aqui.",
+        "department": "comercial",
+        "is_read": false,
+        "created_at": "2026-06-17T06:47:47.258Z"
+      },
+      {
+        "id": "6a3242dfd2e1594c52860d90",
+        "name": "Teste",
+        "email": "eu@gmail.com",
+        "subject": "Teste",
+        "message": "Mensagem de teste aqui.",
+        "department": "comercial",
+        "is_read": false,
+        "created_at": "2026-06-17T06:46:55.232Z"
+      }
+    ],
+    "total": 2
   },
   "dashboard": {
     "title": "Dashboard",

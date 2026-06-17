@@ -10,44 +10,28 @@ import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import {
   getGetApiMessagesQueryKey,
   patchApiMessagesId,
+  useGetApiConfig,
   useGetApiMessages,
 } from "@/api/stetsom";
 import type { ContactMessage } from "@/api/stetsom/model";
-import { PostApiContactBodyDepartment } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Mail, Settings } from "lucide-react";
 import { useState } from "react";
+import { DepartmentRoutingModal } from "./_components/department-routing-modal";
 
 type Tab = "contatos" | "departamentos";
-
-// Canonical department values come from the contact contract enum. Messages
-// store these enum values; the UI maps them to display labels. (Previously a
-// list of display labels was compared against stored enum values, so the
-// departments grouping never matched.)
-const DEPARTMENT_LABELS: Record<string, string> = {
-  suporte_tecnico: "Suporte Técnico",
-  comercial: "Comercial",
-  produto: "Produto",
-  marketing: "Marketing",
-  parcerias: "Parcerias",
-  outro: "Outro",
-};
-
-const DEPARTMENTS = Object.values(PostApiContactBodyDepartment);
-
-function departmentLabel(value: string): string {
-  return DEPARTMENT_LABELS[value] ?? value;
-}
 
 export default function AdminMensagensPage() {
   const queryClient = useQueryClient();
   const messagesQuery = useGetApiMessages();
+  const configQuery = useGetApiConfig();
   const [localOverrides, setLocalOverrides] = useState<
     Record<string, Partial<ContactMessage>>
   >({});
   const [selected, setSelected] = useState<ContactMessage | undefined>();
   const [activeTab, setActiveTab] = useState<Tab>("contatos");
+  const [routingOpen, setRoutingOpen] = useState(false);
 
   const markReadMutation = useMutation({
     mutationFn: (id: string) => patchApiMessagesId(id),
@@ -61,6 +45,13 @@ export default function AdminMensagensPage() {
       ...localOverrides[m.id],
     }),
   );
+
+  const configuredDepts = configQuery.data?.contact_departments ?? [];
+
+  function departmentLabel(slug: string): string {
+    const match = configuredDepts.find((d) => d.slug === slug);
+    return match?.label ?? slug;
+  }
 
   function markAsRead(id: string) {
     setLocalOverrides((prev) => ({
@@ -76,6 +67,11 @@ export default function AdminMensagensPage() {
   }
 
   const unread = messages.filter((m) => !m.is_read).length;
+
+  const deptSlugs =
+    configuredDepts.length > 0
+      ? configuredDepts.map((d) => d.slug)
+      : [...new Set(messages.map((m) => m.department))];
 
   const contactColumns: AdminTableColumn<ContactMessage>[] = [
     {
@@ -145,6 +141,7 @@ export default function AdminMensagensPage() {
           <AdminActionBar>
             <button
               type="button"
+              onClick={() => setRoutingOpen(true)}
               className="flex items-center gap-1.5 rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
             >
               <Settings className="size-4" />
@@ -206,33 +203,44 @@ export default function AdminMensagensPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {DEPARTMENTS.map((dept) => {
-                  const deptMessages = messages.filter(
-                    (m) => m.department === dept,
-                  );
-                  const deptUnread = deptMessages.filter(
-                    (m) => !m.is_read,
-                  ).length;
-                  return (
-                    <tr key={dept} className="hover:bg-muted/30">
-                      <td className="px-4 py-3 font-medium text-foreground">
-                        {departmentLabel(dept)}
-                      </td>
-                      <td className="px-4 py-3 text-muted-foreground">
-                        {deptMessages.length}
-                      </td>
-                      <td className="px-4 py-3">
-                        {deptUnread > 0 ? (
-                          <span className="font-semibold text-primary">
-                            {deptUnread}
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground">0</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
+                {deptSlugs.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={3}
+                      className="px-4 py-8 text-center text-sm text-muted-foreground"
+                    >
+                      Nenhum departamento configurado.
+                    </td>
+                  </tr>
+                ) : (
+                  deptSlugs.map((slug) => {
+                    const deptMessages = messages.filter(
+                      (m) => m.department === slug,
+                    );
+                    const deptUnread = deptMessages.filter(
+                      (m) => !m.is_read,
+                    ).length;
+                    return (
+                      <tr key={slug} className="hover:bg-muted/30">
+                        <td className="px-4 py-3 font-medium text-foreground">
+                          {departmentLabel(slug)}
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground">
+                          {deptMessages.length}
+                        </td>
+                        <td className="px-4 py-3">
+                          {deptUnread > 0 ? (
+                            <span className="font-semibold text-primary">
+                              {deptUnread}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">0</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>
@@ -306,6 +314,13 @@ export default function AdminMensagensPage() {
           </div>
         )}
       </AdminDrawer>
+
+      {routingOpen && (
+        <DepartmentRoutingModal
+          onClose={() => setRoutingOpen(false)}
+          initialDepartments={configQuery.data?.contact_departments ?? []}
+        />
+      )}
     </>
   );
 }

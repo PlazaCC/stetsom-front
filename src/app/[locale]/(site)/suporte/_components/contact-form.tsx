@@ -1,54 +1,54 @@
 "use client";
 
-import type { PostApiContactBodyDepartment } from "@/api/stetsom/model";
+import type { PublicDepartmentItem } from "@/api/stetsom/model";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { submitContact } from "./actions";
 
-const DEPARTMENT_MAP: Record<string, PostApiContactBodyDepartment> = {
-  technical: "suporte_tecnico",
-  warranty: "produto",
-  commercial: "comercial",
-  partnerships: "parcerias",
-  other: "outro",
-};
+interface ContactFormProps {
+  departments: PublicDepartmentItem[];
+}
 
-const SECTOR_KEYS = [
-  "technical",
-  "warranty",
-  "commercial",
-  "partnerships",
-  "other",
-] as const;
-
-export function ContactForm() {
+export function ContactForm({ departments }: ContactFormProps) {
   const t = useTranslations("Support.contact");
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSending(true);
+    setError(null);
 
     const form = e.currentTarget;
     const data = new FormData(form);
-    const sector = (data.get("setor") as string) || "other";
-    const department = DEPARTMENT_MAP[sector] ?? "outro";
     const name = (data.get("name") as string) || "";
+    // When no departments are configured, submit with "geral" — backend routes
+    // to company_email fallback since no department list is set.
+    const department =
+      departments.length > 0
+        ? (data.get("department") as string) || departments[0].slug
+        : "geral";
 
-    try {
-      await submitContact({
-        name,
-        email: (data.get("email") as string) || "",
-        phone: (data.get("phone") as string) || undefined,
-        subject: `Contato via site - ${name}`,
-        message: (data.get("message") as string) || "",
-        department,
-      });
+    const result = await submitContact({
+      name,
+      email: (data.get("email") as string) || "",
+      phone: (data.get("phone") as string) || undefined,
+      subject: `Contato via site - ${name}`,
+      message: (data.get("message") as string) || "",
+      department,
+    });
+
+    setSending(false);
+
+    if (result.ok) {
       setSent(true);
-    } catch {
-    } finally {
-      setSending(false);
+    } else {
+      setError(
+        result.code === "NOT_CONFIGURED"
+          ? "Serviço de contato temporariamente indisponível. Tente novamente mais tarde."
+          : "Não foi possível enviar sua mensagem. Tente novamente.",
+      );
     }
   }
 
@@ -74,27 +74,29 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <div>
-        <label
-          htmlFor="setor"
-          className="mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground"
-        >
-          {t("sectorLabel")}
-        </label>
-        <select
-          id="setor"
-          name="setor"
-          required
-          className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark focus:outline-none focus:ring-1 focus:ring-brand"
-        >
-          <option value="">{t("sectorPlaceholder")}</option>
-          {SECTOR_KEYS.map((key) => (
-            <option key={key} value={key}>
-              {t(`sectors.${key}`)}
-            </option>
-          ))}
-        </select>
-      </div>
+      {departments.length > 0 && (
+        <div>
+          <label
+            htmlFor="department"
+            className="mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground"
+          >
+            {t("sectorLabel")}
+          </label>
+          <select
+            id="department"
+            name="department"
+            required
+            className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark focus:outline-none focus:ring-1 focus:ring-brand"
+          >
+            <option value="">{t("sectorPlaceholder")}</option>
+            {departments.map((dept) => (
+              <option key={dept.slug} value={dept.slug}>
+                {dept.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
@@ -109,6 +111,8 @@ export function ContactForm() {
             id="name"
             name="name"
             required
+            minLength={2}
+            maxLength={100}
             placeholder={t("namePlaceholder")}
             className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand"
           />
@@ -159,6 +163,8 @@ export function ContactForm() {
           name="message"
           rows={5}
           required
+          minLength={10}
+          maxLength={5000}
           placeholder={t("messagePlaceholder")}
           className="w-full resize-none border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand"
         />
@@ -171,7 +177,7 @@ export function ContactForm() {
           required
           className="mt-0.5 h-4 w-4 shrink-0 accent-brand"
         />
-        <span className="font-sans text-xs text-text-subtle leading-relaxed">
+        <span className="font-sans text-xs leading-relaxed text-text-subtle">
           {t.rich("privacyText", {
             privacyLink: (chunks) => (
               <a
@@ -184,6 +190,8 @@ export function ContactForm() {
           })}
         </span>
       </label>
+
+      {error && <p className="text-sm font-medium text-destructive">{error}</p>}
 
       <button
         type="submit"

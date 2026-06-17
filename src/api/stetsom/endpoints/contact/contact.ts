@@ -22,9 +22,156 @@ import type {
   ApiErrorPayload,
   PostApiContact200,
   PostApiContactBody,
+  PublicDepartmentItem,
 } from "../../model";
 
 import { orvalClient } from "../../orval-client";
+
+/**
+ * @summary List contact form departments
+ */
+export const getApiContactDepartments = (signal?: AbortSignal) => {
+  return orvalClient<PublicDepartmentItem[]>({
+    url: `/api/contact/departments`,
+    method: "GET",
+    signal,
+  });
+};
+
+export const getGetApiContactDepartmentsQueryKey = () => {
+  return [`/api/contact/departments`] as const;
+};
+
+export const getGetApiContactDepartmentsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiContactDepartments>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof getApiContactDepartments>>,
+      TError,
+      TData
+    >
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetApiContactDepartmentsQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiContactDepartments>>
+  > = ({ signal }) => getApiContactDepartments(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiContactDepartments>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiContactDepartmentsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiContactDepartments>>
+>;
+export type GetApiContactDepartmentsQueryError = unknown;
+
+export function useGetApiContactDepartments<
+  TData = Awaited<ReturnType<typeof getApiContactDepartments>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiContactDepartments>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiContactDepartments>>,
+          TError,
+          Awaited<ReturnType<typeof getApiContactDepartments>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiContactDepartments<
+  TData = Awaited<ReturnType<typeof getApiContactDepartments>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiContactDepartments>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiContactDepartments>>,
+          TError,
+          Awaited<ReturnType<typeof getApiContactDepartments>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiContactDepartments<
+  TData = Awaited<ReturnType<typeof getApiContactDepartments>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiContactDepartments>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List contact form departments
+ */
+
+export function useGetApiContactDepartments<
+  TData = Awaited<ReturnType<typeof getApiContactDepartments>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiContactDepartments>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiContactDepartmentsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
 
 /**
  * @summary Submit contact
