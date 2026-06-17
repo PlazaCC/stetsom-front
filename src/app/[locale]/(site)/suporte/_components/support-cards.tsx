@@ -1,13 +1,20 @@
 import { Container } from "@/components/ui/container";
 import { cn } from "@/lib/utils";
-import { ArrowUpRight, Download, FileText, Mail, MapPin } from "lucide-react";
+import {
+  ArrowUpRight,
+  Download,
+  FileText,
+  Mail,
+  MapPin,
+  type LucideIcon,
+} from "lucide-react";
 
 type SupportCard = {
   title: string;
   description: string;
 };
 
-const ICON_BY_TITLE: Record<string, React.ElementType> = {
+const ICON_BY_TITLE: Record<string, LucideIcon> = {
   manuais: Download,
   download: Download,
   posto: MapPin,
@@ -20,7 +27,7 @@ interface SupportCardsProps {
   cards: SupportCard[];
 }
 
-function pickIcon(title: string): React.ElementType {
+function pickIcon(title: string): LucideIcon {
   const lower = title.toLowerCase();
   for (const [key, icon] of Object.entries(ICON_BY_TITLE)) {
     if (lower.includes(key)) return icon;
@@ -45,7 +52,7 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
                 )}
               >
                 <Icon size={20} className="mb-5 text-brand" />
-                <h3 className="mb-3 font-sans-condensed text-section-title font-black uppercase text-brand-dark">
+                <h3 className="mb-3 font-sans-condensed text-section-title font-black text-brand-dark uppercase">
                   {card.title}
                 </h3>
                 <p className="flex-1 text-base text-text-subtle">

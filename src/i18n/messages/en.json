@@ -122,6 +122,7 @@
     "blockModel3dTitle": "Interactive view",
     "blockModel3dDescription": "Explore the product in full perspective to check connectors, finish and real dimensions.",
     "blockModel3dOpen": "Open model",
+    "blockModel3dLoading": "Loading model…",
     "thumbnail": "{name} — thumbnail {index}"
   },
   "Support": {

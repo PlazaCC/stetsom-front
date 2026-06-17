@@ -31,8 +31,8 @@ export async function ProductDetailContent({
 
   return (
     <>
-      <section id="overview" className="scroll-mt-38">
-        <section className="relative isolate overflow-hidden bg-black">
+      {/* <section id="overview" className="scroll-mt-38"> */}
+      {/* <section className="relative isolate overflow-hidden bg-black">
           <div className="absolute inset-0 bg-product-hero" />
           <div className="absolute inset-x-0 bottom-0 h-22 bg-gradient-to-t from-black/70 to-transparent" />
           <Container className="relative z-10 py-8 md:py-10 lg:py-14">
@@ -59,32 +59,26 @@ export async function ProductDetailContent({
               </div>
             </div>
           </Container>
-        </section>
+        </section> */}
 
-        {blocks.length > 0 && (
-          <section className="bg-white py-10 md:py-12 lg:py-14">
-            <Container className="space-y-6 md:space-y-8">
-              {blocks.map((block) => (
-                <BlockRenderer
-                  key={block.block_id}
-                  block={block}
-                  productName={productName}
-                  fallbackImage={thumbnailUrl ?? ""}
-                />
-              ))}
-            </Container>
-          </section>
-        )}
-      </section>
+      {blocks.length > 0 &&
+        blocks.map((block) => (
+          <BlockRenderer
+            key={block.block_id}
+            block={block}
+            productName={productName}
+            fallbackImage={thumbnailUrl ?? ""}
+          />
+        ))}
 
       <section id="specifications" className="scroll-mt-38">
         <div className="border-b border-zinc-200 px-5 py-3 lg:px-42.5">
-          <p className="font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground">
+          <p className="font-sans-condensed text-xs font-black tracking-widest text-muted-foreground uppercase">
             {t("techData")}
           </p>
         </div>
         <div className="bg-off-white px-5 py-4 lg:px-42.5">
-          <h2 className="font-sans-condensed text-display-sm font-black uppercase leading-none text-brand-dark">
+          <h2 className="font-sans-condensed text-display-sm leading-none font-black text-brand-dark uppercase">
             {t("techSpecifications")}
           </h2>
         </div>
@@ -99,7 +93,7 @@ export async function ProductDetailContent({
                     i % 2 === 0 ? "bg-muted" : "bg-white",
                   )}
                 >
-                  <span className="w-1/2 shrink-0 font-sans text-sm font-medium capitalize text-brand-dark">
+                  <span className="w-1/2 shrink-0 font-sans text-sm font-medium text-brand-dark capitalize">
                     {attr.attribute_name ?? attr.attribute_id}
                   </span>
                   <span className="font-sans text-sm text-text-subtle">
@@ -122,11 +116,11 @@ export async function ProductDetailContent({
       >
         <Container>
           <div className="border-b border-zinc-200 pb-3">
-            <p className="font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground">
+            <p className="font-sans-condensed text-xs font-black tracking-widest text-muted-foreground uppercase">
               {t("recommendations")}
             </p>
           </div>
-          <h2 className="mt-4 font-sans-condensed text-display-sm font-black uppercase leading-none text-brand-dark">
+          <h2 className="mt-4 font-sans-condensed text-display-sm leading-none font-black text-brand-dark uppercase">
             {t("related")}
           </h2>
           {relatedProducts && relatedProducts.length > 0 ? (

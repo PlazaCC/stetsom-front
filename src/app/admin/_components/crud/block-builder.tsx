@@ -2,8 +2,9 @@
 
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
-import { Plus, Trash2, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useState } from "react";
+import { BlockEditorCard } from "./block-editor-card";
 import { SortableList } from "./sortable-list";
 
 export interface DraftBlock {
@@ -103,34 +104,16 @@ export function BlockBuilder({
         renderItem={(block, handle) => {
           const def = registry[block.type];
           if (!def) return null;
-          const Icon = def.icon;
           return (
-            <div className="rounded-[16px] border border-border bg-card">
-              <div className="flex items-center gap-3 border-b border-border px-4 py-3">
-                {handle}
-                <Icon className="size-4 shrink-0 text-muted-foreground" />
-                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  {def.label}
-                </span>
-                <span className="ml-auto text-xs text-muted-foreground">
-                  #{block.order + 1}
-                </span>
-                <button
-                  type="button"
-                  aria-label="Remover bloco"
-                  onClick={() => removeBlock(block.id)}
-                  className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-                >
-                  <Trash2 className="size-4" />
-                </button>
-              </div>
-              <div className="p-4">
-                <def.Form
-                  data={block.data}
-                  onChange={(d) => updateData(block.id, d)}
-                />
-              </div>
-            </div>
+            <BlockEditorCard
+              def={def}
+              blockType={block.type}
+              data={block.data}
+              order={block.order}
+              handle={handle}
+              onChange={(d) => updateData(block.id, d)}
+              onRemove={() => removeBlock(block.id)}
+            />
           );
         }}
       />

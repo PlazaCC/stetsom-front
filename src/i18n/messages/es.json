@@ -122,6 +122,7 @@
     "blockModel3dTitle": "Vista interactiva",
     "blockModel3dDescription": "Explore el producto en perspectiva completa para verificar conectores, acabado y dimensiones reales.",
     "blockModel3dOpen": "Abrir modelo",
+    "blockModel3dLoading": "Cargando modelo…",
     "thumbnail": "{name} — miniatura {index}"
   },
   "Support": {

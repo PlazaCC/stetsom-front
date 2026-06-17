@@ -50,7 +50,7 @@ export function StickySectionNav() {
                 ?.scrollIntoView({ behavior: "smooth" });
             }}
             className={cn(
-              "border-b-2 pb-1 font-sans text-base font-medium uppercase tracking-wide transition-colors",
+              "border-b-2 pb-1 font-sans text-base font-medium tracking-wide uppercase transition-colors",
               activeSection === id
                 ? "border-brand-dark text-brand-dark"
                 : "border-transparent text-muted-foreground hover:text-brand-dark",
