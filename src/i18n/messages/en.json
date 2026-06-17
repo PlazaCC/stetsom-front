@@ -147,6 +147,7 @@
       "contactInfoPhone": "Phone",
       "contactInfoEmail": "Email",
       "contactInfoWhatsapp": "WhatsApp",
+      "sending": "Sending...",
       "submit": "Send message",
       "successTitle": "Message sent!",
       "successDescription": "We will get back to you shortly.",

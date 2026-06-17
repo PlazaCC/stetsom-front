@@ -5,6 +5,7 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { DepartmentConfigItemInput } from "./departmentConfigItemInput";
 
 export type PatchApiConfigBody = {
   company_name?: string;
@@ -15,4 +16,6 @@ export type PatchApiConfigBody = {
   social_instagram?: string;
   social_facebook?: string;
   social_youtube?: string;
+  /** Contact form department routing — each entry maps a slug to an internal email */
+  contact_departments?: DepartmentConfigItemInput[];
 };

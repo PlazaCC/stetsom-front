@@ -5,6 +5,7 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { DepartmentConfigItemInput } from "./departmentConfigItemInput";
 
 export interface CmsConfigInput {
   company_name: string;
@@ -15,6 +16,8 @@ export interface CmsConfigInput {
   social_instagram?: string;
   social_facebook?: string;
   social_youtube?: string;
+  /** Contact form department routing — each entry maps a slug to an internal email */
+  contact_departments?: DepartmentConfigItemInput[];
   updated_at: string;
   updated_by: string;
 }

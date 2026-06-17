@@ -5,7 +5,6 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
-import type { PostApiContactBodyDepartment } from "./postApiContactBodyDepartment";
 
 export type PostApiContactBody = {
   /**
@@ -27,5 +26,9 @@ export type PostApiContactBody = {
    * @maxLength 5000
    */
   message: string;
-  department: PostApiContactBodyDepartment;
+  /**
+   * Department slug from /api/contact/departments
+   * @minLength 1
+   */
+  department: string;
 };

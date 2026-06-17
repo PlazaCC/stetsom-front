@@ -1,3 +1,5 @@
+import type { PublicDepartmentItem } from "@/api/stetsom/model";
+import { serverOrvalClient } from "@/api/stetsom/orval-server";
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
 import { Mail, Phone } from "lucide-react";
@@ -32,6 +34,11 @@ export async function SupportContact({
   contactInfo,
 }: Readonly<SupportContactProps>) {
   const t = await getTranslations("Support.contact");
+
+  const departments = await serverOrvalClient<PublicDepartmentItem[]>({
+    method: "GET",
+    url: "/api/contact/departments",
+  }).catch(() => [] as PublicDepartmentItem[]);
 
   const infoItems = contactInfo
     ? ([
@@ -91,7 +98,7 @@ export async function SupportContact({
             )}
           </div>
           <div className="mt-8 flex-1 lg:mt-0">
-            <ContactForm />
+            <ContactForm departments={departments} />
           </div>
         </div>
       </Container>
