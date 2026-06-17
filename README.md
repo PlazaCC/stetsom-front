@@ -2,9 +2,9 @@
 
 [![CI](https://github.com/PlazaCC/stetsom-front/actions/workflows/ci.yml/badge.svg)](https://github.com/PlazaCC/stetsom-front/actions/workflows/ci.yml)
 
-Institutional website and admin CMS for [Stetsom](https://stetsom.com.br) — a Brazilian automotive amplifier brand with 35+ years in the market.
+Institutional website and admin CMS for [Stetsom](https://stetsom.com.br).
 
-Built with **Next.js 16** (App Router), **React 19**, **TypeScript 5**, and **Tailwind CSS v4**.
+Built with **Next.js 16**, **React 19**, **TypeScript 5**, and **Tailwind CSS v4**.
 
 ---
 
@@ -15,19 +15,17 @@ pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
 ## Commands
 
-| Command              | Description                              |
-| -------------------- | ---------------------------------------- |
-| `pnpm dev`           | Start development server                 |
-| `pnpm build`         | Production build                         |
-| `pnpm start`         | Start production server                  |
-| `pnpm lint`          | Run ESLint                               |
-| `pnpm tsc --noEmit`  | Type-check without emitting              |
-| `pnpm api:generate`  | Regenerate Orval types and hooks         |
-| `pnpm mock:dump`     | Refresh `src/lib/mock/data.json` from API |
+| Command             | Description                               |
+| ------------------- | ----------------------------------------- |
+| `pnpm dev`          | Start development server                  |
+| `pnpm build`        | Production build                          |
+| `pnpm start`        | Start production server                   |
+| `pnpm lint`         | Run ESLint                                |
+| `pnpm tsc --noEmit` | Type-check without emitting               |
+| `pnpm api:generate` | Regenerate Orval types and hooks          |
+| `pnpm mock:dump`    | Refresh `src/lib/mock/data.json` from API |
 
 ## Stack
 
@@ -38,7 +36,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 | Language      | TypeScript            | 5       |
 | Styling       | Tailwind CSS          | v4      |
 | UI Primitives | @base-ui/react        | 1.4.1   |
-| Components    | shadcn/ui (base-nova) | —       |
+| Components    | shadcn/ui             | base-nova |
 | Icons         | lucide-react          | 1.8.0   |
 | Animation     | motion                | 12      |
 | Carousel      | swiper                | 12.1.4  |
@@ -49,57 +47,37 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ```
 src/
 ├── app/
-│   ├── [locale]/        ← next-intl locale wrapper (pt-BR = no prefix)
-│   │   └── (site)/      ← Public site (header + footer layout)
-│   │       ├── page.tsx ← Home page
-│   │       ├── produtos/ ← Products listing and detail
-│   │       ├── sobre/   ← About page
-│   │       └── suporte/ ← Support page
-│   ├── admin/           ← Admin CMS panel
-│   └── api/             ← BFF route handlers + auth + upload
-├── api/stetsom/         ← Orval-generated types and React Query hooks
-├── components/ui/       ← Shared UI components
-└── lib/mock/            ← Mock data loader (USE_MOCK_DATA=1)
+│   ├── [locale]/         ← next-intl locale wrapper
+│   │   └── (site)/       ← public site
+│   │       ├── page.tsx  ← home page
+│   │       ├── produtos/ ← product listing and detail
+│   │       ├── sobre/    ← about page
+│   │       └── suporte/  ← support page
+│   ├── admin/            ← admin CMS panel
+│   └── api/              ← BFF route handlers, auth, upload
+├── api/stetsom/          ← Orval-generated types and React Query hooks
+├── components/ui/        ← shared UI components
+└── lib/mock/             ← mock data loader
 ```
-
-## Development with Mock Data
-
-To run without the backend API:
-
-```bash
-# 1. Populate the fixture file (requires real API + credentials)
-MOCK_DUMP_EMAIL=admin@example.com MOCK_DUMP_PASSWORD=secret pnpm mock:dump
-
-# 2. Enable mock mode
-echo "USE_MOCK_DATA=1" >> .env.local
-
-# 3. Start the dev server
-pnpm dev
-```
-
-All `GET` requests are served from `src/lib/mock/data.json`. Mutations return `{ _mock: true }` so the UI doesn't show errors.
-
-## Code Quality
-
-Pre-commit hooks (husky + lint-staged) run automatically on every commit:
-
-- **lint-staged**: ESLint auto-fix on staged `*.ts` / `*.tsx` files
-- **tsc**: Full type-check (`--noEmit`) before commit
-
-CI (GitHub Actions) runs on every push and pull request: type-check → lint → build.
 
 ## Environment Variables
 
-Copy `.env.local.example` to `.env.local`. See inline comments for details.
+Copy `.env.local.example` to `.env.local`.
 
-| Variable | Description |
-| --- | --- |
-| `CMS_API_BASE_URL` | Fastify API URL. Omit to use mock data. |
-| `USE_MOCK_DATA` | Set `1` to serve GET requests from local fixture. |
-| `MOCK_DUMP_EMAIL` / `MOCK_DUMP_PASSWORD` | Credentials for `pnpm mock:dump` only. |
-| `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | Must match `stetsom-api/.env`. |
-| `STORAGE_PUBLIC_HOSTNAME` | S3 bucket hostname for `next/image` (`{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com`). Set in Vercel for preview deployments. |
+| Variable                                  | Description                                                                                     |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `CMS_API_BASE_URL`                        | Fastify API base URL. Omit to use mock data.                                                    |
+| `USE_MOCK_DATA`                           | Set `1` to serve GET requests from `src/lib/mock/data.json` instead of the real API.           |
+| `MOCK_DUMP_EMAIL` / `MOCK_DUMP_PASSWORD`  | Credentials for `pnpm mock:dump`. Required only when refreshing mock fixtures after an API change. |
+| `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET`| Must match `stetsom-api/.env`.                                                                     |
+| `STORAGE_PUBLIC_HOSTNAME`                 | S3 bucket hostname for `next/image`. Format: `{bucket}.s3.{region}.amazonaws.com`.                |
+
+## Code Quality
+
+Pre-commit hooks run on every commit: ESLint auto-fix on staged `.ts`/`.tsx` files and a full `tsc --noEmit` type-check.
+
+CI runs on every push and pull request. Pipeline: type-check → lint → build.
 
 ## Deploy
 
-Production deployments are handled by [Vercel](https://vercel.com). Preview deployments are created automatically for every pull request.
+Production and preview deployments are handled by [Vercel](https://vercel.com). Preview environments are created automatically for every pull request.
