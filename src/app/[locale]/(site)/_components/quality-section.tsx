@@ -28,12 +28,14 @@ interface QualitySectionProps {
   section: QualitySectionData;
   values: AboutValue[];
   foundingLabel?: string;
+  foundingYear?: string;
 }
 
 export function QualitySection({
   section,
   values,
   foundingLabel,
+  foundingYear,
 }: Readonly<QualitySectionProps>) {
   return (
     <section className="bg-off-white py-20">
@@ -49,7 +51,7 @@ export function QualitySection({
             <div className="absolute bottom-5 left-5 flex flex-col gap-2">
               <div className="flex h-15 w-15 items-center justify-center bg-brand">
                 <span className="font-sans-condensed text-xl font-black uppercase leading-none text-white">
-                  1989
+                  {foundingYear ?? "1989"}
                 </span>
               </div>
               <span className="font-sans-condensed text-xs font-black uppercase tracking-widest text-white drop-shadow-md">

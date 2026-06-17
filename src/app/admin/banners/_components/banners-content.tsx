@@ -20,7 +20,7 @@ import {
 } from "@/api/stetsom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useInlineUpload } from "@/hooks/use-inline-upload";
-import { toApiLocale } from "@/lib/cms/locale-utils";
+import { toApiLocale } from "@/lib/api/i18n-utils";
 import { cn } from "@/lib/utils";
 import { Image as ImageIcon, Plus } from "lucide-react";
 import { useState } from "react";

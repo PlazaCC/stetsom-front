@@ -11,7 +11,10 @@ export function useCatalogFilters() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const activeCategory = searchParams.get("category") || "todos";
+  const activeLine = searchParams.get("line") || "todas";
   const search = searchParams.get("q") || "";
+  const sort = searchParams.get("sort") || "relevance";
+  const page = Math.max(1, Number(searchParams.get("page")) || 1);
 
   const pushParams = useCallback(
     (updater: (p: URLSearchParams) => void) => {
@@ -28,6 +31,31 @@ export function useCatalogFilters() {
       pushParams((p) => {
         if (slug === "todos") p.delete("category");
         else p.set("category", slug);
+        // A line belongs to a category — changing the category invalidates it.
+        p.delete("line");
+        p.delete("page"); // reset pagination when the filter changes
+      });
+    },
+    [pushParams],
+  );
+
+  const setActiveLine = useCallback(
+    (slug: string) => {
+      pushParams((p) => {
+        if (slug === "todas") p.delete("line");
+        else p.set("line", slug);
+        p.delete("page"); // reset pagination when the filter changes
+      });
+    },
+    [pushParams],
+  );
+
+  const setSort = useCallback(
+    (value: string) => {
+      pushParams((p) => {
+        if (value === "relevance") p.delete("sort");
+        else p.set("sort", value);
+        p.delete("page"); // reset pagination when the order changes
       });
     },
     [pushParams],
@@ -38,6 +66,17 @@ export function useCatalogFilters() {
       pushParams((p) => {
         if (q) p.set("q", q);
         else p.delete("q");
+        p.delete("page"); // reset pagination when the query changes
+      });
+    },
+    [pushParams],
+  );
+
+  const setPage = useCallback(
+    (n: number) => {
+      pushParams((p) => {
+        if (n <= 1) p.delete("page");
+        else p.set("page", String(n));
       });
     },
     [pushParams],
@@ -49,10 +88,16 @@ export function useCatalogFilters() {
 
   return {
     activeCategory,
+    activeLine,
     search,
+    sort,
+    page,
     sidebarOpen,
     setActiveCategory,
+    setActiveLine,
     setSearch,
+    setSort,
+    setPage,
     setSidebarOpen,
     clearFilters,
   };

@@ -5,6 +5,7 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { GetApiProductsSort } from "./getApiProductsSort";
 import type { GetApiProductsStatus } from "./getApiProductsStatus";
 import type { LocaleInput } from "./localeInput";
 
@@ -21,8 +22,10 @@ export type GetApiProductsParams = {
   pageSize?: number;
   q?: string;
   category?: string;
+  line?: string;
   status?: (typeof GetApiProductsStatus)[keyof typeof GetApiProductsStatus];
   locale?: LocaleInput;
   is_featured?: boolean;
   is_spotlight?: boolean;
+  sort?: GetApiProductsSort;
 };

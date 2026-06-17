@@ -34,9 +34,9 @@ import {
   Trash2,
   type LucideIcon,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useRef, useState } from "react";
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 12;
 
 type Tab = "photos" | "manuals" | "3d-models";
 
@@ -61,11 +61,25 @@ function getCurrentVersionUrl(asset: LibraryAsset): string {
   return version?.file_url ?? asset.versions[0]?.file_url ?? "";
 }
 
-function getCurrentVersionSize(asset: LibraryAsset): number {
-  const version = asset.versions.find(
-    (v) => v.version_id === asset.current_version_id,
+function getCurrentVersion(asset: LibraryAsset) {
+  return (
+    asset.versions.find((v) => v.version_id === asset.current_version_id) ??
+    asset.versions[0]
   );
-  return version?.size_bytes ?? asset.versions[0]?.size_bytes ?? 0;
+}
+
+function getCurrentVersionSize(asset: LibraryAsset): number {
+  return getCurrentVersion(asset)?.size_bytes ?? 0;
+}
+
+function getCurrentVersionDims(asset: LibraryAsset): string | null {
+  const v = getCurrentVersion(asset);
+  return v?.width && v?.height ? `${v.width}×${v.height}` : null;
+}
+
+function formatDate(iso: string): string {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleDateString("pt-BR");
 }
 
 function assetAltText(asset: LibraryAsset): string {
@@ -149,7 +163,23 @@ function PhotoCard({
         </p>
         <p className="mt-0.5 text-xs text-muted-foreground">
           {formatBytes(getCurrentVersionSize(asset))}
+          {getCurrentVersionDims(asset)
+            ? ` · ${getCurrentVersionDims(asset)}`
+            : ""}
+          {asset.versions.length > 1 ? ` · v${asset.versions.length}` : ""}
         </p>
+        {asset.tags.length > 0 && (
+          <div className="mt-1.5 flex flex-wrap gap-1">
+            {asset.tags.slice(0, 3).map((tag) => (
+              <span
+                key={tag}
+                className="rounded bg-muted px-1.5 py-0.5 text-2xs font-medium text-muted-foreground"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -180,6 +210,9 @@ function FileTable({
             <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
               Tamanho
             </th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
+              Enviado em
+            </th>
             <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground">
               Ações
             </th>
@@ -196,6 +229,9 @@ function FileTable({
               </td>
               <td className="px-4 py-3 text-xs text-muted-foreground">
                 {formatBytes(getCurrentVersionSize(asset))}
+              </td>
+              <td className="px-4 py-3 text-xs text-muted-foreground">
+                {formatDate(asset.created_at)}
               </td>
               <td className="px-4 py-3 text-right">
                 <div className="flex items-center justify-end gap-3">
@@ -228,7 +264,7 @@ function FileTable({
           {assets.length === 0 && (
             <tr>
               <td
-                colSpan={4}
+                colSpan={5}
                 className="px-4 py-8 text-center text-sm text-muted-foreground"
               >
                 Nenhum arquivo encontrado.
@@ -284,7 +320,19 @@ export default function AdminBibliotecaPage() {
   const [page, setPage] = useState(1);
 
   const queryClient = useQueryClient();
-  const { data: libraryPayload, isError: libraryError } = useGetApiLibrary();
+  const activeConfig = UPLOAD_CONFIG[activeTab];
+  // Server-side filtering + pagination (the /api/library contract supports
+  // type/q/limit/offset). No client-side slicing — the API returns one page.
+  const {
+    data: libraryPayload,
+    isError: libraryError,
+    isLoading,
+  } = useGetApiLibrary({
+    type: activeConfig.libraryType,
+    q: query.trim() || undefined,
+    limit: PAGE_SIZE,
+    offset: (page - 1) * PAGE_SIZE,
+  });
   const { upload, entries, isUploading, clearFinished } = useLibraryUpload();
 
   const [editTarget, setEditTarget] = useState<LibraryAsset | undefined>();
@@ -302,21 +350,10 @@ export default function AdminBibliotecaPage() {
     },
   });
 
-  const filtered = useMemo(() => {
-    const allAssets = libraryPayload?.items ?? [];
-    const q = query.trim().toLowerCase();
-    const config = UPLOAD_CONFIG[activeTab];
-    return allAssets.filter((asset) => {
-      const matchesSearch = !q || asset.filename.toLowerCase().includes(q);
-      const matchesTab = asset.type === config.libraryType;
-      return matchesSearch && matchesTab;
-    });
-  }, [query, activeTab, libraryPayload]);
-
-  const paginatedAssets = filtered.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE,
-  );
+  const total = libraryPayload?.total ?? 0;
+  // The API returns one page (limit/offset). The extra slice is a no-op live and
+  // only guards mock mode, where the loader ignores query params and returns all.
+  const assets = (libraryPayload?.items ?? []).slice(0, PAGE_SIZE);
 
   if (libraryError) {
     return (
@@ -345,8 +382,6 @@ export default function AdminBibliotecaPage() {
     setQuery("");
   }
 
-  const activeConfig = UPLOAD_CONFIG[activeTab];
-
   return (
     <AdminListPage
       title="Biblioteca"
@@ -360,7 +395,7 @@ export default function AdminBibliotecaPage() {
             className="max-w-64"
           />
           <span className="ml-auto text-xs text-muted-foreground">
-            {filtered.length} {filtered.length === 1 ? "arquivo" : "arquivos"}
+            {total} {total === 1 ? "arquivo" : "arquivos"}
           </span>
         </div>
       }
@@ -402,8 +437,12 @@ export default function AdminBibliotecaPage() {
       <UploadProgressList entries={entries} onClear={clearFinished} />
 
       {/* Grid de fotos ou tabela de arquivos */}
-      {activeTab === "photos" ? (
-        paginatedAssets.length === 0 ? (
+      {isLoading ? (
+        <div className="flex items-center justify-center rounded-lg border border-dashed border-border py-12">
+          <p className="text-sm text-muted-foreground">Carregando...</p>
+        </div>
+      ) : activeTab === "photos" ? (
+        assets.length === 0 ? (
           <div className="flex items-center justify-center rounded-lg border border-dashed border-border py-12">
             <p className="text-sm text-muted-foreground">
               Nenhuma foto encontrada.
@@ -411,7 +450,7 @@ export default function AdminBibliotecaPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {paginatedAssets.map((asset) => (
+            {assets.map((asset) => (
               <PhotoCard
                 key={asset.id}
                 asset={asset}
@@ -423,17 +462,17 @@ export default function AdminBibliotecaPage() {
         )
       ) : (
         <FileTable
-          assets={paginatedAssets}
+          assets={assets}
           onEdit={setEditTarget}
           onDelete={setDeleteTarget}
         />
       )}
 
-      {filtered.length > PAGE_SIZE && (
+      {total > PAGE_SIZE && (
         <AdminPagination
           page={page}
           pageSize={PAGE_SIZE}
-          total={filtered.length}
+          total={total}
           onPageChange={setPage}
         />
       )}
@@ -474,12 +513,27 @@ function EditAssetModal({
   onClose: () => void;
   onSaved: () => void;
 }) {
+  const [filename, setFilename] = useState(asset.filename);
   const [alt, setAlt] = useState<I18nString>(asset.alt ?? { pt: "" });
   const [tags, setTags] = useState(asset.tags.join(", "));
+  const { uploadVersion } = useLibraryUpload();
+  const versionInputRef = useRef<HTMLInputElement>(null);
+  const [versioning, setVersioning] = useState(false);
+
+  async function handleVersionFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file
+    if (!file) return;
+    setVersioning(true);
+    const ok = await uploadVersion(asset.id, file);
+    setVersioning(false);
+    if (ok) onSaved();
+  }
 
   const mutation = useMutation({
     mutationFn: () =>
       patchApiLibraryId(asset.id, {
+        filename: filename.trim() || undefined,
         alt: alt.pt ? alt : undefined,
         tags: tags
           .split(",")
@@ -500,6 +554,15 @@ function EditAssetModal({
             }}
             className="space-y-4"
           >
+            <div>
+              <AdminLabel>Nome do arquivo</AdminLabel>
+              <AdminInput
+                value={filename}
+                onChange={(e) => setFilename(e.target.value)}
+                maxLength={255}
+                placeholder="exemplo.png"
+              />
+            </div>
             <I18nInput
               label="Texto alternativo (alt)"
               value={alt}
@@ -512,6 +575,26 @@ function EditAssetModal({
                 onChange={(e) => setTags(e.target.value)}
                 placeholder="hero, amplificador, 2024"
               />
+            </div>
+            <div className="rounded-md border border-border p-3">
+              <p className="text-sm font-medium text-foreground">Versões</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Versão atual: v{asset.versions.length}
+              </p>
+              <input
+                ref={versionInputRef}
+                type="file"
+                className="hidden"
+                onChange={handleVersionFile}
+              />
+              <button
+                type="button"
+                disabled={versioning}
+                onClick={() => versionInputRef.current?.click()}
+                className="mt-2 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted disabled:opacity-60"
+              >
+                {versioning ? "Enviando nova versão..." : "Enviar nova versão"}
+              </button>
             </div>
             <div className="flex gap-3 pt-2">
               <button

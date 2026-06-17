@@ -22,10 +22,12 @@ import {
   AdminLabel,
 } from "@/app/admin/_components/crud/admin-input";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
+import { AdminPagination } from "@/app/admin/_components/crud/admin-pagination";
+import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Building2, Plus, Wrench, type LucideIcon } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 const TABS: {
   type: PartnerLocationType;
@@ -56,6 +58,8 @@ const TABS: {
     emptyDescription: "Crie uma assistência técnica para exibir no site.",
   },
 ];
+
+const PAGE_SIZE = 10;
 
 function StatusBadge({ active }: { active: boolean }) {
   return (
@@ -249,6 +253,39 @@ export default function AdminParceirosPage() {
     type: activeType,
   });
 
+  // The partner-locations contract has no offset pagination — it returns the
+  // full list for a type. Search/UF filter and pagination are client-side.
+  const [query, setQuery] = useState("");
+  const [stateFilter, setStateFilter] = useState("");
+  const [page, setPage] = useState(1);
+
+  const states = useMemo(
+    () =>
+      Array.from(new Set(locations.map((l) => l.state).filter(Boolean))).sort(),
+    [locations],
+  );
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return locations.filter((l) => {
+      const matchesQuery =
+        !q ||
+        l.name.toLowerCase().includes(q) ||
+        l.city.toLowerCase().includes(q);
+      const matchesState = !stateFilter || l.state === stateFilter;
+      return matchesQuery && matchesState;
+    });
+  }, [locations, query, stateFilter]);
+
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  function changeType(type: PartnerLocationType) {
+    setActiveType(type);
+    setQuery("");
+    setStateFilter("");
+    setPage(1);
+  }
+
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<PartnerLocation | undefined>();
   const [deleteTarget, setDeleteTarget] = useState<
@@ -417,7 +454,7 @@ export default function AdminParceirosPage() {
                 <button
                   key={type}
                   type="button"
-                  onClick={() => setActiveType(type)}
+                  onClick={() => changeType(type)}
                   className={cn(
                     "-mb-px flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors",
                     active
@@ -443,13 +480,50 @@ export default function AdminParceirosPage() {
           </button>
         }
       >
+        <div className="mb-4 flex flex-wrap items-center gap-3">
+          <AdminSearchInput
+            value={query}
+            onChange={(v) => {
+              setQuery(v);
+              setPage(1);
+            }}
+            placeholder="Buscar por nome ou cidade"
+            className="max-w-64"
+          />
+          <select
+            value={stateFilter}
+            onChange={(e) => {
+              setStateFilter(e.target.value);
+              setPage(1);
+            }}
+            className="h-9 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-primary"
+          >
+            <option value="">Todas as UFs</option>
+            {states.map((uf) => (
+              <option key={uf} value={uf}>
+                {uf}
+              </option>
+            ))}
+          </select>
+          <span className="ml-auto text-xs text-muted-foreground">
+            {filtered.length} {filtered.length === 1 ? "registro" : "registros"}
+          </span>
+        </div>
+
         <AdminDataTable
           columns={columns}
-          data={locations}
+          data={paginated}
           isLoading={isLoading}
           keyExtractor={(l) => l.id}
           emptyTitle={tab.emptyTitle}
           emptyDescription={tab.emptyDescription}
+        />
+
+        <AdminPagination
+          page={page}
+          pageSize={PAGE_SIZE}
+          total={filtered.length}
+          onPageChange={setPage}
         />
       </AdminListPage>
 

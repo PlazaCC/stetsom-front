@@ -1,16 +1,17 @@
 "use client";
 
-import { useGetApiCategories, useGetApiProducts } from "@/api/stetsom";
-import type { PublicCategory } from "@/api/stetsom/model";
+import type {
+  ProductCatalogResponse,
+  PublicCategory,
+} from "@/api/stetsom/model";
 import { Container } from "@/components/ui/container";
 import { ProductCard } from "@/components/ui/product-card";
 import { useCatalogFilters } from "@/hooks/use-catalog-filters";
-import { toApiLocale } from "@/lib/api/i18n-utils";
 import { cn } from "@/lib/utils";
-import { ArrowLeftRight, Search, SlidersHorizontal } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { Search, SlidersHorizontal } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CatalogMobileFilter } from "./catalog-mobile-filter";
 import { CatalogSidebar } from "./catalog-sidebar";
 
@@ -19,18 +20,11 @@ interface CategoryOption {
   slug: string;
 }
 
-const CATEGORY_IMAGE_BY_ID: Record<string, string> = {
-  "cat-amplificadores": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
-  "cat-processadores": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
-  "cat-crossovers": "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
-  "cat-controles": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
-  "cat-fontes-carregadores": "/figma-assets/raw/fill_THI4RN_1e666beb.png",
-  "cat-mesas-de-som": "/figma-assets/raw/product-c.png",
-  "cat-acessorios": "/figma-assets/raw/product-c.png",
-  "cat-subwoofers": "/figma-assets/raw/product-c.png",
-};
-
+// Hero background is a static design asset — the public catalog payload does not
+// expose a hero image, so this stays a constant rather than a hardcoded contract value.
 const DEFAULT_HERO_IMAGE = "/figma-assets/raw/fill_CGM3WO_6a0a1876.png";
+
+const SEARCH_DEBOUNCE_MS = 400;
 
 function toCategoryOptions(
   categories: CategoryOption[],
@@ -39,89 +33,81 @@ function toCategoryOptions(
   return [{ name: allLabel, slug: "todos" }, ...categories];
 }
 
-function buildSlugImageMap(
-  categories: CategoryOption[],
-): Record<string, string> {
-  const map: Record<string, string> = {};
-  for (const cat of categories) {
-    if (CATEGORY_IMAGE_BY_ID[cat.slug]) {
-      map[cat.slug] = CATEGORY_IMAGE_BY_ID[cat.slug];
-    }
-  }
-  return map;
+interface CatalogContentProps {
+  categories: PublicCategory[];
+  catalog: ProductCatalogResponse;
 }
 
-export function CatalogContent() {
+export function CatalogContent({ categories, catalog }: CatalogContentProps) {
   const t = useTranslations("Catalog");
-  const locale = useLocale();
-  const apiLocale = toApiLocale(locale);
 
   const {
     activeCategory,
+    activeLine,
     search,
+    sort,
+    page,
     sidebarOpen,
     setActiveCategory,
+    setActiveLine,
     setSearch,
+    setSort,
+    setPage,
     setSidebarOpen,
     clearFilters,
   } = useCatalogFilters();
 
-  const categoriesQuery = useGetApiCategories({ locale: apiLocale });
-  const rawCategories: PublicCategory[] = useMemo(
-    () => categoriesQuery.data ?? [],
-    [categoriesQuery.data],
-  );
+  // Local input mirrors the URL `q`, debounced before pushing to the URL so a
+  // server re-fetch does not fire on every keystroke. When the URL `q` changes
+  // externally (clear filters, back navigation) we re-sync during render —
+  // React's recommended pattern instead of setState-in-effect.
+  const [searchInput, setSearchInput] = useState(search);
+  const [syncedSearch, setSyncedSearch] = useState(search);
+  if (search !== syncedSearch) {
+    setSyncedSearch(search);
+    setSearchInput(search);
+  }
 
-  const categories: CategoryOption[] = useMemo(
-    () =>
-      rawCategories.map((c: PublicCategory) => ({
-        name: c.name,
-        slug: c.slug,
-      })),
-    [rawCategories],
-  );
+  useEffect(() => {
+    if (searchInput === search) return;
+    const id = setTimeout(() => setSearch(searchInput), SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(id);
+  }, [searchInput, search, setSearch]);
 
-  const categoryOptions = useMemo(
-    () => toCategoryOptions(categories, t("allCategories")),
-    [categories, t],
-  );
-  const categoryImageBySlug = useMemo(
-    () => buildSlugImageMap(categories),
+  const categoryItems: CategoryOption[] = useMemo(
+    () => categories.map((c) => ({ name: c.name, slug: c.slug })),
     [categories],
   );
 
-  const activeCategorySlug =
-    activeCategory === "todos" ? undefined : activeCategory;
-
-  const productsQuery = useGetApiProducts({
-    q: search || undefined,
-    category: activeCategorySlug,
-    status: "PUBLISHED",
-    page: 1,
-    pageSize: 24,
-    locale: apiLocale,
-  });
-
-  const productCards = useMemo(
-    () => productsQuery.data?.items ?? [],
-    [productsQuery.data?.items],
+  const categoryOptions = useMemo(
+    () => toCategoryOptions(categoryItems, t("allCategories")),
+    [categoryItems, t],
   );
+
   const typeFilterOptions = useMemo(
     () => categoryOptions.filter((c) => c.slug !== "todos"),
     [categoryOptions],
   );
 
-  // Product lines from the active category (or all categories)
-  const productLines = useMemo<string[]>(() => {
-    const activeRaw = activeCategorySlug
-      ? rawCategories.find((c: PublicCategory) => c.slug === activeCategorySlug)
-      : null;
-    const source = activeRaw ? [activeRaw] : rawCategories;
-    return source.flatMap((c: PublicCategory) => c.lines.map((l) => l.name));
-  }, [rawCategories, activeCategorySlug]);
+  const activeCategorySlug =
+    activeCategory === "todos" ? undefined : activeCategory;
 
-  const isLoading = categoriesQuery.isLoading || productsQuery.isLoading;
-  const totalProducts = productsQuery.data?.total ?? 0;
+  // Product lines from the active category (or all categories), as {name, slug}
+  // so the sidebar can drive the `line` filter (slug) while showing the label.
+  const productLines = useMemo<CategoryOption[]>(() => {
+    const activeRaw = activeCategorySlug
+      ? categories.find((c) => c.slug === activeCategorySlug)
+      : null;
+    const source = activeRaw ? [activeRaw] : categories;
+    return source.flatMap((c) =>
+      [...c.lines]
+        .sort((a, b) => a.order - b.order)
+        .map((l) => ({ name: l.name, slug: l.slug })),
+    );
+  }, [categories, activeCategorySlug]);
+
+  const productCards = catalog.items;
+  const totalProducts = catalog.total;
 
   return (
     <div>
@@ -162,7 +148,7 @@ export function CatalogContent() {
         <div className="absolute right-0 bottom-0 font-sans-condensed font-black text-display-2xl sm:text-[150px] lg:text-[263px] text-watermark-text leading-none pointer-events-none select-none opacity-[0.08]">
           PRO
         </div>
-        <div className="absolute left-0 top-0 w-3.5 h-full bg-bar-accent" />
+        <div className="absolute left-0 top-0 w-3.5 h-full bg-brand" />
       </section>
 
       <section className="bg-white border-b border-border py-8">
@@ -172,7 +158,6 @@ export function CatalogContent() {
           </p>
           <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8">
             {categoryOptions.map((cat) => {
-              const imageSrc = categoryImageBySlug[cat.slug];
               const isActive = activeCategory === cat.slug;
               return (
                 <button
@@ -189,19 +174,9 @@ export function CatalogContent() {
                       isActive ? "bg-brand/10" : "bg-muted",
                     )}
                   >
-                    {imageSrc ? (
-                      <Image
-                        src={imageSrc}
-                        alt=""
-                        width={48}
-                        height={48}
-                        className="h-10 w-10 object-contain"
-                      />
-                    ) : (
-                      <span className="font-sans-condensed text-xs font-black uppercase text-muted-foreground">
-                        {cat.name.slice(0, 2)}
-                      </span>
-                    )}
+                    <span className="font-sans-condensed text-xs font-black uppercase text-muted-foreground">
+                      {cat.name.slice(0, 2)}
+                    </span>
                   </div>
                   <span
                     className={cn(
@@ -222,10 +197,14 @@ export function CatalogContent() {
         <Container>
           <div className="flex gap-9">
             <CatalogSidebar
-              search={search}
-              onSearchChange={setSearch}
+              search={searchInput}
+              onSearchChange={setSearchInput}
               activeCategory={activeCategory}
               onCategoryChange={setActiveCategory}
+              activeLine={activeLine}
+              onLineChange={setActiveLine}
+              sort={sort}
+              onSortChange={setSort}
               onClear={clearFilters}
               typeFilterOptions={typeFilterOptions}
               productLines={productLines}
@@ -236,8 +215,8 @@ export function CatalogContent() {
                 <div className="flex-1 border border-border flex items-center h-10 px-3 gap-2">
                   <Search size={14} className="text-icon-muted shrink-0" />
                   <input
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
                     placeholder={t("searchPlaceholder")}
                     className="border-none outline-none text-sm flex-1 text-brand-dark bg-transparent"
                   />
@@ -248,13 +227,6 @@ export function CatalogContent() {
                 >
                   <SlidersHorizontal size={14} />
                   {t("filters")}
-                </button>
-                <button
-                  type="button"
-                  className="border border-border flex items-center gap-2 px-3 h-10 text-sm text-muted-foreground"
-                >
-                  <ArrowLeftRight size={14} />
-                  {t("compare")}
                 </button>
               </div>
 
@@ -269,22 +241,47 @@ export function CatalogContent() {
                 />
               )}
 
-              {isLoading ? (
-                <div className="text-center py-16 text-muted-foreground text-base">
-                  {t("loading")}
-                </div>
-              ) : productCards.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5 md:gap-8">
-                  {productCards.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      name={product.name}
-                      category={product.category}
-                      img={product.thumbnail_url ?? undefined}
-                      href={product.href}
-                    />
-                  ))}
-                </div>
+              {productCards.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5 md:gap-8">
+                    {productCards.map((product) => (
+                      <ProductCard
+                        key={product.id}
+                        name={product.name}
+                        category={product.category}
+                        img={product.thumbnail_url ?? undefined}
+                        href={product.href}
+                      />
+                    ))}
+                  </div>
+
+                  {catalog.totalPages > 1 && (
+                    <div className="mt-10 flex items-center justify-center gap-4">
+                      <button
+                        type="button"
+                        disabled={page <= 1}
+                        onClick={() => setPage(page - 1)}
+                        className="border border-border px-4 h-10 text-sm font-medium text-muted-foreground transition-colors hover:text-brand disabled:opacity-40 disabled:hover:text-muted-foreground"
+                      >
+                        {t("paginationPrevious")}
+                      </button>
+                      <span className="font-sans text-sm text-muted-foreground">
+                        {t("paginationInfo", {
+                          page,
+                          total: catalog.totalPages,
+                        })}
+                      </span>
+                      <button
+                        type="button"
+                        disabled={page >= catalog.totalPages}
+                        onClick={() => setPage(page + 1)}
+                        className="border border-border px-4 h-10 text-sm font-medium text-muted-foreground transition-colors hover:text-brand disabled:opacity-40 disabled:hover:text-muted-foreground"
+                      >
+                        {t("paginationNext")}
+                      </button>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="text-center py-16 text-muted-foreground text-base">
                   {t("noProducts")}

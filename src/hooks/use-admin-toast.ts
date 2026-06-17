@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { getApiErrorMessage } from "@/lib/api/error-utils";
 
 export function useAdminToast() {
   return {
@@ -10,6 +11,11 @@ export function useAdminToast() {
       toast.error(message, {
         description: description ?? "Tente novamente ou contate o suporte.",
       });
+    },
+
+    /** Error toast whose message is resolved from the contract error code. */
+    apiError(error: unknown, fallback: string) {
+      toast.error(getApiErrorMessage(error, fallback));
     },
 
     draft(name?: string) {

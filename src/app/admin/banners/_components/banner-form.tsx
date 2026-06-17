@@ -10,7 +10,7 @@ import {
 } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import type { Banner, BannerStatus, I18nString } from "@/api/stetsom/model";
-import { toDisplayLocale } from "@/lib/cms/locale-utils";
+import { toDisplayLocale } from "@/lib/api/i18n-utils";
 import { ArrowLeft, Image, X } from "lucide-react";
 import { useRef } from "react";
 

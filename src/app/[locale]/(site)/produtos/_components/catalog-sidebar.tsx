@@ -13,9 +13,13 @@ interface CatalogSidebarProps {
   onSearchChange: (value: string) => void;
   activeCategory: string;
   onCategoryChange: (slug: string) => void;
+  activeLine: string;
+  onLineChange: (slug: string) => void;
+  sort: string;
+  onSortChange: (value: string) => void;
   onClear: () => void;
   typeFilterOptions: CategoryOption[];
-  productLines: readonly string[];
+  productLines: CategoryOption[];
 }
 
 export function CatalogSidebar({
@@ -23,6 +27,10 @@ export function CatalogSidebar({
   onSearchChange,
   activeCategory,
   onCategoryChange,
+  activeLine,
+  onLineChange,
+  sort,
+  onSortChange,
   onClear,
   typeFilterOptions,
   productLines,
@@ -48,38 +56,19 @@ export function CatalogSidebar({
         <p className="font-sans font-medium text-base text-muted-foreground">
           {t("sortBy")}
         </p>
-        <button
-          type="button"
-          className="mt-3 flex h-11 w-full items-center justify-between rounded border border-border bg-card px-3.5 text-base text-muted-foreground"
-        >
-          <span>{t("mostRelevant")}</span>
-          <ChevronDown size={14} className="text-muted-foreground" />
-        </button>
-      </div>
-
-      <div className="border-t border-border pt-5">
-        <div className="flex items-center justify-between">
-          <span className="font-sans font-bold text-lg text-foreground">
-            {t("options")}
-          </span>
-          <ChevronDown size={16} className="text-muted-foreground" />
-        </div>
-        <div className="mt-3 space-y-3">
-          <label className="flex items-center gap-3 text-base text-muted-foreground">
-            <input
-              type="checkbox"
-              className="size-4 rounded border-border accent-brand"
-              defaultChecked
-            />
-            {t("showDiscontinued")}
-          </label>
-          <label className="flex items-center gap-3 text-base text-muted-foreground">
-            <input
-              type="checkbox"
-              className="size-4 rounded border-border accent-brand"
-            />
-            {t("exportProducts")}
-          </label>
+        <div className="relative mt-3">
+          <select
+            value={sort}
+            onChange={(e) => onSortChange(e.target.value)}
+            className="h-11 w-full appearance-none rounded border border-border bg-card px-3.5 pr-9 text-base text-muted-foreground outline-none focus:border-brand"
+          >
+            <option value="relevance">{t("sortRelevance")}</option>
+            <option value="newest">{t("sortNewest")}</option>
+          </select>
+          <ChevronDown
+            size={14}
+            className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+          />
         </div>
       </div>
 
@@ -125,26 +114,31 @@ export function CatalogSidebar({
         </div>
       </div>
 
-      <div className="border-t border-border pt-5">
-        <div className="flex items-center justify-between">
-          <span className="font-sans font-bold text-lg text-foreground">
-            {t("productLines")}
-          </span>
-          <ChevronDown size={16} className="text-muted-foreground" />
+      {productLines.length > 0 && (
+        <div className="border-t border-border pt-5">
+          <div className="flex items-center justify-between">
+            <span className="font-sans font-bold text-lg text-foreground">
+              {t("productLines")}
+            </span>
+            <ChevronDown size={16} className="text-muted-foreground" />
+          </div>
+          <div className="mt-3 space-y-2 text-base text-muted-foreground">
+            {productLines.map((line) => (
+              <label key={line.slug} className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={activeLine === line.slug}
+                  onChange={() =>
+                    onLineChange(activeLine === line.slug ? "todas" : line.slug)
+                  }
+                  className="size-4 rounded border-border accent-brand"
+                />
+                {line.name}
+              </label>
+            ))}
+          </div>
         </div>
-        <div className="mt-3 space-y-2 text-base text-muted-foreground">
-          {productLines.map((line, i) => (
-            <label key={line} className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                className="size-4 rounded border-border accent-brand"
-                defaultChecked={i === 0}
-              />
-              {line}
-            </label>
-          ))}
-        </div>
-      </div>
+      )}
     </aside>
   );
 }

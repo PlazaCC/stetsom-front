@@ -131,7 +131,7 @@ function CategoryFormInner({
       const newId = (created as { id?: string } | undefined)?.id;
       router.push(newId ? `${LIST_HREF}/${newId}` : LIST_HREF);
     },
-    onError: () => toast.error("Não foi possível criar a categoria"),
+    onError: (e) => toast.apiError(e, "Não foi possível criar a categoria"),
   });
 
   const updateMutation = useMutation({
@@ -146,7 +146,7 @@ function CategoryFormInner({
       invalidate();
       toast.success("Categoria salva");
     },
-    onError: () => toast.error("Não foi possível salvar a categoria"),
+    onError: (e) => toast.apiError(e, "Não foi possível salvar a categoria"),
   });
 
   const deleteMutation = useMutation({
@@ -156,7 +156,7 @@ function CategoryFormInner({
       toast.deleted(name.pt);
       router.push(LIST_HREF);
     },
-    onError: () => toast.error("Não foi possível excluir a categoria"),
+    onError: (e) => toast.apiError(e, "Não foi possível excluir a categoria"),
   });
 
   function handleSubmit(e: React.FormEvent) {

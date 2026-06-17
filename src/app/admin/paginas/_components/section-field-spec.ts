@@ -238,6 +238,12 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
         { kind: "i18n", key: "label", label: "Rótulo" },
         { kind: "i18n", key: "title", label: "Título" },
         {
+          kind: "text",
+          key: "foundedYear",
+          label: "Ano de fundação",
+          placeholder: "1989",
+        },
+        {
           kind: "list",
           key: "stats",
           label: "Indicadores",

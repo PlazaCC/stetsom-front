@@ -16,49 +16,93 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "./navigation-menu";
+import type { PublicCategory } from "@/api/stetsom/model";
 
-const CATEGORY_NAV_ITEMS = [
-  {
+const DEFAULT_CATEGORY_IMAGE = "/figma-assets/raw/fill_THI4RN_1e666beb.png";
+
+type CategoryKey =
+  | "amplifiers"
+  | "processors"
+  | "crossovers"
+  | "controls"
+  | "powerSupplies"
+  | "mixers"
+  | "accessories";
+
+/**
+ * Curated presentation for known category slugs. The public contract exposes
+ * neither category images nor menu descriptions (only `icon_library_id`), so
+ * this design content stays curated and is matched by slug. Unknown categories
+ * fall back to the default image and render the name only.
+ */
+const CATEGORY_PRESENTATION: Record<
+  string,
+  { image: string; key: CategoryKey }
+> = {
+  amplificadores: {
+    image: "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
     key: "amplifiers",
-    href: "/produtos?category=amplificadores",
-    image: "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
   },
-  {
+  processadores: {
+    image: "/figma-assets/raw/fill_THI4RN_1e666beb.png",
     key: "processors",
-    href: "/produtos?category=processadores",
+  },
+  crossovers: { image: "/figma-assets/raw/product-c.png", key: "crossovers" },
+  controles: {
     image: "/figma-assets/raw/fill_THI4RN_1e666beb.png",
-  },
-  {
-    key: "crossovers",
-    href: "/produtos?category=crossovers",
-    image: "/figma-assets/raw/product-c.png",
-  },
-  {
     key: "controls",
-    href: "/produtos?category=controles",
-    image: "/figma-assets/raw/fill_THI4RN_1e666beb.png",
   },
-  {
+  "fontes-e-carregadores": {
+    image: "/figma-assets/raw/fill_THI4RN_1e666beb.png",
     key: "powerSupplies",
-    href: "/produtos?category=fontes-e-carregadores",
-    image: "/figma-assets/raw/fill_THI4RN_1e666beb.png",
   },
-  {
-    key: "mixers",
-    href: "/produtos?category=mesas-de-som",
-    image: "/figma-assets/raw/product-c.png",
-  },
-  {
-    key: "accessories",
-    href: "/produtos?category=acessorios",
+  "mesas-de-som": { image: "/figma-assets/raw/product-c.png", key: "mixers" },
+  acessorios: {
     image: "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
+    key: "accessories",
   },
-] as const;
+};
 
-export default function Header() {
+type CategoryNavItem = {
+  slug: string;
+  label: string;
+  href: string;
+  image: string;
+  description?: string;
+};
+
+interface HeaderProps {
+  categories?: PublicCategory[];
+}
+
+export function Header({ categories }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const t = useTranslations("Nav");
+
+  const navItems: CategoryNavItem[] =
+    categories && categories.length
+      ? [...categories]
+          .sort((a, b) => a.order - b.order)
+          .map((category) => {
+            const presentation = CATEGORY_PRESENTATION[category.slug];
+            return {
+              slug: category.slug,
+              label: category.name,
+              href: `/produtos?category=${category.slug}`,
+              image: presentation?.image ?? DEFAULT_CATEGORY_IMAGE,
+              description: presentation
+                ? t(`categoryMenu.${presentation.key}.description`)
+                : undefined,
+            };
+          })
+      : Object.entries(CATEGORY_PRESENTATION).map(([slug, presentation]) => ({
+          slug,
+          label: t(`categoryMenu.${presentation.key}.label`),
+          href: `/produtos?category=${slug}`,
+          image: presentation.image,
+          description: t(`categoryMenu.${presentation.key}.description`),
+        }));
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -101,14 +145,14 @@ export default function Header() {
                   />
                   <NavigationMenuContent>
                     <ul className="grid w-100 gap-2 md:w-125 md:grid-cols-2 lg:w-150">
-                      {CATEGORY_NAV_ITEMS.map((cat) => (
+                      {navItems.map((cat) => (
                         <ListItem
-                          key={cat.key}
-                          title={t(`categoryMenu.${cat.key}.label`)}
+                          key={cat.slug}
+                          title={cat.label}
                           href={cat.href}
                           image={cat.image}
                         >
-                          {t(`categoryMenu.${cat.key}.description`)}
+                          {cat.description ?? ""}
                         </ListItem>
                       ))}
                     </ul>
@@ -187,6 +231,7 @@ export default function Header() {
       <MobileDrawer
         open={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
+        navItems={navItems}
       />
     </>
   );
@@ -197,9 +242,10 @@ export default function Header() {
 interface MobileDrawerProps {
   open: boolean;
   onClose: () => void;
+  navItems: CategoryNavItem[];
 }
 
-function MobileDrawer({ open, onClose }: MobileDrawerProps) {
+function MobileDrawer({ open, onClose, navItems }: MobileDrawerProps) {
   const pathname = usePathname();
   const t = useTranslations("Nav");
   const [categoriesOpen, setCategoriesOpen] = useState(false);
@@ -254,14 +300,14 @@ function MobileDrawer({ open, onClose }: MobileDrawerProps) {
             )}
           >
             <div className="flex flex-col pb-4 pl-4">
-              {CATEGORY_NAV_ITEMS.map((cat) => (
+              {navItems.map((cat) => (
                 <Link
-                  key={cat.key}
+                  key={cat.slug}
                   href={cat.href}
                   onClick={onClose}
                   className="py-2.5 font-sans text-sm text-text-subtle-dark transition-colors hover:text-white"
                 >
-                  {t(`categoryMenu.${cat.key}.label`)}
+                  {cat.label}
                 </Link>
               ))}
             </div>

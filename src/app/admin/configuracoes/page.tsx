@@ -13,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Settings } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { getApiErrorMessage } from "@/lib/api/error-utils";
 import { AdminPageHeader } from "../_components/admin-page-header";
 import { AdminPanel } from "../_components/admin-panel";
 
@@ -32,7 +33,7 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
       onSuccess: () => toast.success("Configurações salvas com sucesso"),
       onError: (err) =>
         toast.error("Erro ao salvar configurações", {
-          description: err.message,
+          description: getApiErrorMessage(err, "Tente novamente."),
         }),
     });
   }
