@@ -20,9 +20,8 @@ function slugify(label: string): string {
     .replace(/^_+|_+$/g, "");
 }
 
-let _counter = 0;
 function newKey() {
-  return `new-${++_counter}`;
+  return crypto.randomUUID();
 }
 
 type DraftRow = DepartmentConfigItem & { _key: string };
