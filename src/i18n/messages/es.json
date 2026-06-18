@@ -84,7 +84,10 @@
     "paginationPrevious": "Anterior",
     "paginationNext": "Siguiente",
     "paginationInfo": "Página {page} de {total}",
-    "emptyCategory": "No se encontraron productos en esta categoría."
+    "emptyCategory": "No se encontraron productos en esta categoría.",
+    "options": "Opciones",
+    "showDiscontinued": "Mostrar descontinuados",
+    "showExport": "Productos de exportación"
   },
   "ProductDetail": {
     "overview": "Vista general",

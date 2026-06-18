@@ -84,7 +84,10 @@
     "paginationPrevious": "Previous",
     "paginationNext": "Next",
     "paginationInfo": "Page {page} of {total}",
-    "emptyCategory": "No products found in this category."
+    "emptyCategory": "No products found in this category.",
+    "options": "Options",
+    "showDiscontinued": "Show discontinued",
+    "showExport": "Export products"
   },
   "ProductDetail": {
     "overview": "Overview",
