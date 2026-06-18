@@ -133,7 +133,7 @@ export default function AdminMensagensPage() {
   ];
 
   return (
-    <>
+    <div className="px-4 py-4 lg:px-11.75 lg:py-7.25">
       <AdminListPage
         title="Central de contato"
         icon={Mail}
@@ -298,7 +298,7 @@ export default function AdminMensagensPage() {
               <p className="text-xs font-medium text-muted-foreground">
                 Mensagem
               </p>
-              <p className="whitespace-pre-wrap leading-relaxed text-sm text-foreground">
+              <p className="text-sm leading-relaxed whitespace-pre-wrap text-foreground">
                 {selected.message}
               </p>
             </div>
@@ -321,6 +321,6 @@ export default function AdminMensagensPage() {
           initialDepartments={configQuery.data?.contact_departments ?? []}
         />
       )}
-    </>
+    </div>
   );
 }

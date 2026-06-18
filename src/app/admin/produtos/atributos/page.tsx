@@ -182,7 +182,7 @@ export default function AdminAtributosPage() {
   const isDialogOpen = formOpen || !!deleteTarget;
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 px-4 py-4 lg:px-11.75 lg:py-7.25">
       {formOpen && (
         <AttributeForm
           attribute={editing}

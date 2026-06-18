@@ -29,12 +29,16 @@ export default function AdminHome() {
   const dashboard = useGetApiDashboard();
 
   if (dashboard.isLoading) {
-    return <div className="text-muted-foreground">Carregando dashboard...</div>;
+    return (
+      <div className="px-4 py-4 text-muted-foreground lg:px-11.75 lg:py-7.25">
+        Carregando dashboard...
+      </div>
+    );
   }
 
   if (dashboard.isError || !dashboard.data) {
     return (
-      <div className="text-destructive">
+      <div className="px-4 py-4 text-destructive lg:px-11.75 lg:py-7.25">
         Não foi possível carregar o dashboard.
       </div>
     );
@@ -44,7 +48,7 @@ export default function AdminHome() {
     dashboard.data;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-4 py-4 lg:px-11.75 lg:py-7.25">
       <header>
         <h1 className="text-4xl font-bold text-foreground">
           {dashboard.data.title}

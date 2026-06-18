@@ -65,6 +65,7 @@ export default function AdminSectionEditorPage({
   if (success) {
     return (
       <AdminSuccessPage
+        className="px-4 py-4 lg:px-11.75 lg:py-7.25"
         icon={CheckCircle2}
         title="Seção atualizada com sucesso!"
         subtitle="A alteração está visível no site imediatamente."
@@ -97,7 +98,11 @@ export default function AdminSectionEditorPage({
 
   if (isLoading) {
     return (
-      <AdminListPage title="Carregando..." icon={FileText}>
+      <AdminListPage
+        className="px-4 py-4 lg:px-11.75 lg:py-7.25"
+        title="Carregando..."
+        icon={FileText}
+      >
         <div className="h-64 animate-pulse rounded-[12px] bg-muted" />
       </AdminListPage>
     );
@@ -105,7 +110,11 @@ export default function AdminSectionEditorPage({
 
   if (!block) {
     return (
-      <AdminListPage title="Seção não encontrada" icon={FileText}>
+      <AdminListPage
+        className="px-4 py-4 lg:px-11.75 lg:py-7.25"
+        title="Seção não encontrada"
+        icon={FileText}
+      >
         <p className="text-sm text-muted-foreground">
           A seção solicitada não existe ou não pôde ser carregada.
         </p>
@@ -124,6 +133,7 @@ export default function AdminSectionEditorPage({
 
   return (
     <AdminListPage
+      className="px-4 py-4 lg:px-11.75 lg:py-7.25"
       title={def?.label ?? block.section_id}
       icon={def?.icon ?? FileText}
       toolbar={

@@ -44,7 +44,7 @@ export function AdminSaveBar({
   return (
     <div
       className={cn(
-        "sticky bottom-0 z-10 flex items-center justify-between gap-4 border-t border-border bg-card px-6 py-4",
+        "z-10 flex items-center justify-between gap-4 border-t border-border bg-card px-6 py-4",
         className,
       )}
     >

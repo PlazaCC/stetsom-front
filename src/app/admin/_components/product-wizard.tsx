@@ -9,11 +9,14 @@ import {
 } from "@/app/admin/_components/crud/block-builder";
 import { PRODUCT_BLOCK_REGISTRY } from "@/app/admin/_components/crud/product-block-registry";
 import { AdminDeleteAction } from "@/app/admin/_components/crud/admin-delete-action";
-import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import type { AdminStep } from "@/app/admin/_components/crud/admin-step-indicator";
+import {
+  AdminWizardTabs,
+  type AdminWizardTab,
+} from "@/app/admin/_components/crud/admin-wizard-tabs";
 import { AdminWizardPage } from "@/app/admin/_components/crud/admin-wizard-page";
 import { ProductWizardStepFiles } from "@/app/admin/_components/product-wizard-step-files";
+import { ProductWizardStepImages } from "@/app/admin/_components/product-wizard-step-images";
 import { ProductWizardStepPublish } from "@/app/admin/_components/product-wizard-step-publish";
 import { ProductWizardStepSpecs } from "@/app/admin/_components/product-wizard-step-specs";
 import { ProductWizardStepSuccess } from "@/app/admin/_components/product-wizard-step-success";
@@ -65,7 +68,7 @@ interface ProductMutationResult {
   status: string;
 }
 
-type Step = 1 | 2 | 3 | 4;
+type Tab = 1 | 2 | 3 | 4 | 5;
 
 function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
   const base: ProductInfo = {
@@ -206,11 +209,12 @@ function buildPayload(
   };
 }
 
-const STEP_LABELS: Record<Step, string> = {
+const TAB_LABELS: Record<Tab, string> = {
   1: "Dados gerais",
-  2: "Especificações técnicas",
-  3: "Arquivos",
-  4: "Customização",
+  2: "Imagens",
+  3: "Especificações técnicas",
+  4: "Arquivos",
+  5: "Customização",
 };
 
 export function ProductWizard({ initial, mode }: ProductWizardProps) {
@@ -218,7 +222,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const inlineUpload = useInlineUpload();
   const adminToast = useAdminToast();
 
-  const [step, setStep] = useState<Step>(1);
+  const [activeTab, setActiveTab] = useState<Tab>(1);
   const [info, setInfo] = useState<ProductInfo>(buildInitialInfo(initial));
   const [variations, setVariations] = useState<WizardProductVariation[]>(
     buildInitialVariations(initial),
@@ -248,7 +252,6 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [publishedResult, setPublishedResult] =
     useState<ProductMutationResult | null>(null);
-  const [showBackConfirm, setShowBackConfirm] = useState(false);
 
   const categoriesQuery = useGetApiCategories();
   const templatesQuery = useGetApiTemplates();
@@ -301,9 +304,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     return () => window.removeEventListener("beforeunload", handler);
   }, [isDirty]);
 
-  const steps: AdminStep[] = [1, 2, 3, 4].map((n) => ({
-    label: STEP_LABELS[n as Step],
-    status: step > n ? "done" : step === n ? "active" : "pending",
+  const tabs: AdminWizardTab[] = ([1, 2, 3, 4, 5] as Tab[]).map((n) => ({
+    label: TAB_LABELS[n],
   }));
 
   function patchInfo(patch: Partial<ProductInfo>) {
@@ -468,18 +470,6 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     }
   }
 
-  function handleNext() {
-    setStep((s) => (s + 1) as Step);
-  }
-
-  function handleBack() {
-    if (isDirty) {
-      setShowBackConfirm(true);
-      return;
-    }
-    setStep((s) => (s - 1) as Step);
-  }
-
   async function handlePublish() {
     try {
       const result = await handleSave();
@@ -615,38 +605,33 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   );
 
   return (
-    <div className="flex flex-col gap-5">
-      <AdminPanel className="flex items-center justify-between p-5">
+    <div className="flex h-full flex-col">
+      <AdminPanel className="flex flex-col justify-between">
         <AdminPageHeader title={title} icon={Package} />
-        <div className="flex items-center gap-3">
-          {mode === "edit" && productId && (
-            <AdminDeleteAction
-              label="Excluir produto"
-              confirmTitle={`Excluir "${info.name.pt}"?`}
-              confirmDescription="O produto será removido permanentemente. Esta ação não pode ser desfeita."
-              confirmLabel="Sim, excluir"
-              onConfirm={handleDelete}
-              isLoading={deleteMutation.isPending}
-            />
-          )}
-          <Link
-            href="/admin/produtos"
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-          >
-            ← Voltar
-          </Link>
-        </div>
+        <AdminWizardTabs
+          tabs={tabs}
+          activeIndex={activeTab - 1}
+          onSelect={(index) => setActiveTab((index + 1) as Tab)}
+        />
       </AdminPanel>
 
-      <AdminWizardPage steps={steps} aside={previewAside}>
-        {step === 1 && (
+      <AdminWizardPage
+        aside={previewAside}
+        className="flex flex-1 overflow-auto px-4 pb-5 lg:px-11.75"
+      >
+        {activeTab === 1 && (
           <ProductWizardStep1
             info={info}
             categories={categories}
             subcategories={subcategories}
             templates={templates}
-            images={images}
             onPatch={patchInfo}
+          />
+        )}
+
+        {activeTab === 2 && (
+          <ProductWizardStepImages
+            images={images}
             onImagesChange={(imgs) => {
               setImages(imgs);
               setIsDirty(true);
@@ -654,7 +639,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           />
         )}
 
-        {step === 2 && (
+        {activeTab === 3 && (
           <ProductWizardStepSpecs
             variations={variations}
             activeVariationId={activeVariationId}
@@ -667,7 +652,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           />
         )}
 
-        {step === 3 && (
+        {activeTab === 4 && (
           <ProductWizardStepFiles
             files={files}
             onAdd={addFile}
@@ -675,7 +660,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           />
         )}
 
-        {step === 4 && (
+        {activeTab === 5 && (
           <div className="space-y-6">
             <AdminFormSection
               title="Blocos de conteúdo"
@@ -702,70 +687,18 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
         )}
       </AdminWizardPage>
 
-      <AdminSaveBarWrapper
-        step={step}
-        onBack={handleBack}
-        onNext={handleNext}
+      <AdminSaveBar
         onSaveDraft={handleSaveDraft}
         onPublish={handlePublish}
-        isSaving={isSaving}
+        isLoading={isSaving}
         isDirty={isDirty}
-        lastSavedAt={lastSavedAt}
-        mode={mode}
-      />
-      <AdminConfirmDialog
-        open={showBackConfirm}
-        title="Sair sem salvar?"
-        description="Você tem alterações não salvas. Deseja sair sem salvar?"
-        confirmLabel="Sair"
-        destructive
-        onConfirm={() => {
-          setShowBackConfirm(false);
-          setStep((s) => (s - 1) as Step);
-        }}
-        onCancel={() => setShowBackConfirm(false)}
+        draftSavedAt={lastSavedAt}
+        publishLabel={
+          mode === "create" ? "Publicar produto" : "Salvar alterações"
+        }
+        saveDraftLabel="Salvar rascunho"
+        draftSavedPrefix="Salvo às"
       />
     </div>
-  );
-}
-
-function AdminSaveBarWrapper({
-  step,
-  onBack,
-  onNext,
-  onSaveDraft,
-  onPublish,
-  isSaving,
-  isDirty,
-  lastSavedAt,
-  mode,
-}: {
-  step: Step;
-  onBack: () => void;
-  onNext: () => void;
-  onSaveDraft: () => void;
-  onPublish: () => void;
-  isSaving: boolean;
-  isDirty: boolean;
-  lastSavedAt: Date | null;
-  mode: "create" | "edit";
-}) {
-  return (
-    <AdminSaveBar
-      onBack={step > 1 ? onBack : undefined}
-      onNext={step < 4 ? onNext : undefined}
-      onSaveDraft={onSaveDraft}
-      onPublish={step === 4 ? onPublish : undefined}
-      isLoading={isSaving}
-      isDirty={isDirty}
-      draftSavedAt={lastSavedAt}
-      publishLabel={
-        mode === "create" ? "Publicar produto" : "Salvar alterações"
-      }
-      nextLabel="Próxima etapa"
-      backLabel="Anterior"
-      saveDraftLabel="Salvar rascunho"
-      draftSavedPrefix="Salvo às"
-    />
   );
 }

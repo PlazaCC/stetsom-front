@@ -442,7 +442,7 @@ export default function AdminParceirosPage() {
   ];
 
   return (
-    <>
+    <div className="px-4 py-4 lg:px-11.75 lg:py-7.25">
       <AdminListPage
         title="Parceiros"
         icon={Building2}
@@ -571,6 +571,6 @@ export default function AdminParceirosPage() {
         }}
         onCancel={() => setDeleteTarget(undefined)}
       />
-    </>
+    </div>
   );
 }

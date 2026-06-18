@@ -260,7 +260,7 @@ export default function AdminUsuariosPage() {
   ];
 
   return (
-    <>
+    <div className="px-4 py-4 lg:px-11.75 lg:py-7.25">
       <AdminListPage
         title="Usuários"
         icon={Users}
@@ -315,6 +315,6 @@ export default function AdminUsuariosPage() {
         }}
         onCancel={() => setToggleTarget(undefined)}
       />
-    </>
+    </div>
   );
 }

@@ -162,7 +162,7 @@ export default function AdminConfiguracoesPage() {
   const configQuery = useGetApiConfig();
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 px-4 py-4 lg:px-11.75 lg:py-7.25">
       <AdminPanel className="p-5">
         <AdminPageHeader title="Configurações" icon={Settings} />
       </AdminPanel>

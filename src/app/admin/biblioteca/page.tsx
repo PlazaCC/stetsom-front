@@ -138,7 +138,7 @@ function PhotoCard({
             )}
           </button>
         </div>
-        <div className="absolute right-1.5 top-1.5 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="absolute top-1.5 right-1.5 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
           <button
             type="button"
             aria-label="Editar"
@@ -357,7 +357,7 @@ export default function AdminBibliotecaPage() {
 
   if (libraryError) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
+      <div className="flex flex-col items-center justify-center gap-3 px-4 py-4 text-center lg:px-11.75 lg:py-7.25">
         <p className="text-sm font-medium text-destructive">
           Sessão expirada ou sem permissão.
         </p>
@@ -384,6 +384,7 @@ export default function AdminBibliotecaPage() {
 
   return (
     <AdminListPage
+      className="px-4 py-4 lg:px-11.75 lg:py-7.25"
       title="Biblioteca"
       icon={Archive}
       toolbar={

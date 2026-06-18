@@ -75,7 +75,7 @@ export default function AdminTemplatesPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 px-4 py-4 lg:px-11.75 lg:py-7.25">
       <ProdutosTabs />
       <AdminListPage
         title="Templates"
@@ -94,7 +94,7 @@ export default function AdminTemplatesPage() {
             {pickerOpen && (
               <div
                 ref={pickerRef}
-                className="absolute right-0 top-11 z-10 w-56 rounded-md border border-border bg-card p-1 shadow-lg"
+                className="absolute top-11 right-0 z-10 w-56 rounded-md border border-border bg-card p-1 shadow-lg"
               >
                 <p className="px-2 py-1.5 text-xs text-muted-foreground">
                   Escolha a categoria

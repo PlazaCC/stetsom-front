@@ -76,7 +76,7 @@ function Section({
 
 export default function StyleguidePage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 px-4 py-4 lg:px-11.75 lg:py-7.25">
       <AdminPageHeader title="Design System" />
 
       <Section title="Tipografia (Geist)">
