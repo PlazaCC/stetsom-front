@@ -176,7 +176,14 @@
       "searchPlaceholder": "Ingrese su código postal o ciudad...",
       "noResults": "Ningún centro encontrado.",
       "loadMore": "Cargar más",
-      "mapAlt": "Mapa de centros de servicio autorizados"
+      "mapAlt": "Mapa de centros de servicio autorizados",
+      "typeServiceCenter": "Asistencias Técnicas",
+      "typeRepresentative": "Representantes Comerciales",
+      "useMyLocation": "Usar mi ubicación",
+      "locating": "Localizando...",
+      "locationDenied": "No se pudo obtener tu ubicación.",
+      "distanceAway": "{km} km de distancia",
+      "resultsCount": "{count} resultados"
     },
     "faq": {
       "noAnswer": "¿No encontró lo que busca? Póngase en contacto con nuestro equipo de soporte."

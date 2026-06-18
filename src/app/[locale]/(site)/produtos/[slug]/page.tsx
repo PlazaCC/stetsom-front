@@ -7,7 +7,6 @@ import type {
 } from "@/api/stetsom/model";
 import { type BreadcrumbItem, Breadcrumb } from "@/components/ui/breadcrumb";
 import { Container } from "@/components/ui/container";
-import { Link } from "@/i18n/navigation";
 import { toApiLocale } from "@/lib/api/i18n-utils";
 import { getLocale, getTranslations } from "next-intl/server";
 import Image from "next/image";
@@ -66,9 +65,10 @@ export default async function ProdutoDetalhePage(
     ? [...activeVariant.attributes].sort((a, b) => a.order - b.order)
     : [];
 
-  const highlights = activeAttrs
-    .filter((attr) => product.highlight_attributes.includes(attr.attribute_id))
-    .slice(0, 3);
+  const highlightedAttrs = activeAttrs.filter((attr) =>
+    product.highlight_attributes.includes(attr.attribute_id),
+  );
+  const highlights = highlightedAttrs.slice(0, 3);
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: t("breadcrumbHome"), href: "/" },
@@ -86,9 +86,9 @@ export default async function ProdutoDetalhePage(
         <Container>
           <Breadcrumb items={breadcrumbItems} />
 
-          <div className="mt-6 flex flex-col lg:flex-row lg:gap-12 lg:items-start">
-            <div className="flex flex-col gap-4 lg:w-111.75 shrink-0">
-              <div className="relative w-full aspect-[4/3] lg:h-89.5 border border-border rounded-2xl overflow-hidden bg-card flex items-center justify-center">
+          <div className="mt-6 flex flex-col lg:flex-row lg:items-start lg:gap-12">
+            <div className="flex shrink-0 flex-col gap-4 lg:w-111.75">
+              <div className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-card lg:h-89.5">
                 {thumbnailUrl && (
                   <Image
                     src={thumbnailUrl}
@@ -125,31 +125,31 @@ export default async function ProdutoDetalhePage(
               )}
 
               {files.length > 0 && (
-                <p className="text-2xs font-sans uppercase text-muted-foreground tracking-wide">
+                <p className="font-sans text-2xs tracking-wide text-muted-foreground uppercase">
                   {t("filesAvailable", { count: files.length })}
                 </p>
               )}
             </div>
 
-            <div className="flex-1 mt-6 lg:mt-0 lg:max-w-119">
-              <p className="font-sans-condensed text-2xs font-black uppercase text-brand">
+            <div className="mt-6 flex-1 lg:mt-0 lg:max-w-119">
+              <p className="font-sans-condensed text-2xs font-black text-brand uppercase">
                 {category.name}
               </p>
-              <h1 className="mt-2 font-sans-condensed text-4xl lg:text-display-sm font-black uppercase leading-none text-brand-dark">
+              <h1 className="mt-2 font-sans-condensed text-4xl leading-none font-black text-brand-dark uppercase lg:text-display-sm">
                 {product.name}
               </h1>
               {product.description && (
-                <p className="mt-4 text-sm lg:text-base text-text-subtle">
+                <p className="mt-4 text-sm text-text-subtle lg:text-base">
                   {product.description}
                 </p>
               )}
 
-              {activeAttrs.length > 0 && (
+              {highlightedAttrs.length > 0 && (
                 <ul className="mt-4 flex flex-wrap gap-2">
-                  {activeAttrs.map((attr) => (
+                  {highlightedAttrs.map((attr) => (
                     <li
                       key={attr.attribute_id}
-                      className="rounded-lg border border-muted px-3 py-1 text-xs uppercase text-brand-dark"
+                      className="rounded-lg border border-muted px-3 py-1 text-xs text-brand-dark uppercase"
                     >
                       {attr.attribute_name ?? attr.attribute_id}: {attr.value}
                     </li>
@@ -163,17 +163,12 @@ export default async function ProdutoDetalhePage(
                     {t("variations")}
                   </span>
                   {sortedVariants.map((item) => (
-                    <Link
+                    <span
                       key={item.variant_id}
-                      href={`/produtos/${slug}?variation=${encodeURIComponent(item.variant_id)}`}
-                      className={
-                        item.variant_id === activeVariant?.variant_id
-                          ? "rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground"
-                          : "rounded-md border border-border bg-transparent px-3 py-1.5 text-sm text-muted-foreground"
-                      }
+                      className="rounded-md border border-border bg-card px-3 py-1.5 text-sm text-foreground"
                     >
                       {item.name}
-                    </Link>
+                    </span>
                   ))}
                 </div>
               )}
@@ -182,10 +177,10 @@ export default async function ProdutoDetalhePage(
                 <div className="mt-6 grid grid-cols-3 gap-4 border-y border-border py-4">
                   {highlights.map((attr) => (
                     <div key={attr.attribute_id}>
-                      <p className="font-sans-condensed text-3xl font-black uppercase leading-none text-brand">
+                      <p className="font-sans-condensed text-3xl leading-none font-black text-brand uppercase">
                         {attr.value}
                       </p>
-                      <p className="text-2xs font-sans uppercase tracking-wide text-text-subtle">
+                      <p className="font-sans text-2xs tracking-wide text-text-subtle uppercase">
                         {attr.attribute_name ?? attr.attribute_id}
                       </p>
                     </div>
@@ -197,14 +192,14 @@ export default async function ProdutoDetalhePage(
                 {manualFile && (
                   <a
                     href={manualFile.file_url ?? "#"}
-                    className="inline-flex h-10 items-center rounded-sm bg-brand px-5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-white transition-colors hover:bg-brand/90"
+                    className="inline-flex h-10 items-center rounded-sm bg-brand px-5 font-sans text-button-md font-bold tracking-[0.8px] text-white uppercase transition-colors hover:bg-brand/90"
                   >
                     {t("manual")}
                   </a>
                 )}
                 <button
                   type="button"
-                  className="inline-flex h-10 items-center rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold uppercase tracking-[0.8px] text-brand-dark"
+                  className="inline-flex h-10 items-center rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold tracking-[0.8px] text-brand-dark uppercase"
                 >
                   {t("downloadPhotos")}
                 </button>
@@ -218,7 +213,7 @@ export default async function ProdutoDetalhePage(
       <ProductDetailContent
         productName={product.name}
         thumbnailUrl={thumbnailUrl}
-        attrs={activeAttrs}
+        variants={sortedVariants}
         blocks={blocks}
         relatedProducts={relatedProducts}
       />

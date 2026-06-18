@@ -89,6 +89,10 @@
 
 :root {
   --footer: rgb(17, 17, 17);
+  /* Scrollbar — light theme */
+  --sb-track-color: #f5f5f5;
+  --sb-thumb-color: #e8132a;
+  --sb-size: 10px;
   /* CMS design tokens (raw values, faithful to Figma huD41oTL0FAa7xsNEK8tAM —
      remapped onto shadcn tokens via .cms {} in admin.css). Mantine-inspired. */
   --cms-primary: #4375e2; /* Mantine blue.6 — actions, active state, focus */
@@ -150,6 +154,10 @@
 }
 
 .dark {
+  /* Scrollbar — dark theme */
+  --sb-track-color: #212121;
+  --sb-thumb-color: #e8132a;
+  --sb-size: 12px;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -195,6 +203,30 @@
   }
   p {
     @apply leading-snug;
+  }
+
+  /* Custom scrollbar — applied app-wide (page + inner scroll areas).
+   Track/thumb colors come from --sb-* tokens, themed in :root and .dark. */
+  *::-webkit-scrollbar {
+    width: var(--sb-size);
+    height: var(--sb-size);
+  }
+
+  *::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-radius: 0px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 0px;
+  }
+
+  /* Firefox / browsers without ::-webkit-scrollbar support */
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+    }
   }
 }
 
