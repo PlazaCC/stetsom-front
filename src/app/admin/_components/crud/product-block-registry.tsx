@@ -4,8 +4,16 @@ import { YouTubeEmbed } from "@/components/ui/youtube-embed";
 import { getYouTubeEmbedUrl } from "@/lib/utils/product";
 import { Box, Code, FileText, ImageIcon, Images, Video } from "lucide-react";
 import dynamic from "next/dynamic";
-import type { BlockRegistry } from "./block-builder";
-import { AdminInput, AdminSelect, AdminTextarea } from "./admin-input";
+import type { BlockRegistry } from "./block-manager";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { AdminTextarea } from "./admin-input";
 import { AdminTextEditor } from "./admin-text-editor";
 import { LibraryAssetPicker } from "./library-asset-picker";
 
@@ -33,7 +41,7 @@ function HeadingFields({
     <>
       <div>
         <label className={fieldLabel}>Título (opcional)</label>
-        <AdminInput
+        <Input
           value={str(data, "title")}
           onChange={(e) => onChange({ ...data, title: e.target.value })}
           placeholder="Título do bloco"
@@ -77,7 +85,7 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
       <div className="space-y-3">
         <div>
           <label className={fieldLabel}>Título (opcional)</label>
-          <AdminInput
+          <Input
             value={str(data, "title")}
             onChange={(e) => onChange({ ...data, title: e.target.value })}
             placeholder="Título do bloco"
@@ -90,14 +98,21 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
         />
         <div>
           <label className={fieldLabel}>Alinhamento</label>
-          <AdminSelect
+          <Select
             value={str(data, "align") || "left"}
-            onChange={(e) => onChange({ ...data, align: e.target.value })}
+            onValueChange={(value) =>
+              onChange({ ...data, align: value ?? "left" })
+            }
           >
-            <option value="left">Esquerda</option>
-            <option value="center">Centro</option>
-            <option value="right">Direita</option>
-          </AdminSelect>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="left">Esquerda</SelectItem>
+              <SelectItem value="center">Centro</SelectItem>
+              <SelectItem value="right">Direita</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
     ),
@@ -138,7 +153,7 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
         <HeadingFields data={data} onChange={onChange} />
         <div>
           <label className={fieldLabel}>URL do vídeo (YouTube)</label>
-          <AdminInput
+          <Input
             value={str(data, "url")}
             onChange={(e) => onChange({ ...data, url: e.target.value })}
             placeholder="https://www.youtube.com/watch?v=..."
@@ -207,7 +222,7 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
               }
               className="h-9 w-10 shrink-0 cursor-pointer rounded border border-border bg-card"
             />
-            <AdminInput
+            <Input
               value={str(data, "backgroundColor")}
               onChange={(e) =>
                 onChange({ ...data, backgroundColor: e.target.value })

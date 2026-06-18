@@ -3,7 +3,8 @@
 import type { I18nString } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { AdminInput, AdminLabel, AdminTextarea } from "./admin-input";
+import { Input } from "@/components/ui/input";
+import { AdminLabel, AdminTextarea } from "./admin-input";
 
 type Locale = "pt" | "en" | "es";
 
@@ -49,43 +50,45 @@ export function I18nInput({
     onChange(next);
   }
 
-  const Field = multiline ? AdminTextarea : AdminInput;
+  const Field = multiline ? AdminTextarea : Input;
 
   return (
     <div className={className}>
-      {label && (
-        <AdminLabel>
-          {label}
-          {required && <span className="ml-0.5 text-destructive">*</span>}
-        </AdminLabel>
-      )}
-      <div className="mb-1.5 flex gap-1">
-        {LOCALES.map((loc) => {
-          const filled = loc.id === "pt" ? !!current.pt : !!current[loc.id];
-          return (
-            <button
-              key={loc.id}
-              type="button"
-              onClick={() => setActive(loc.id)}
-              className={cn(
-                "rounded px-2 py-0.5 text-2xs font-semibold uppercase transition-colors",
-                active === loc.id
-                  ? "bg-foreground text-background"
-                  : "bg-muted text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {loc.flag}
-              {filled && (
-                <span
-                  className={cn(
-                    "ml-1 inline-block size-1.5 rounded-full",
-                    active === loc.id ? "bg-background" : "bg-primary",
-                  )}
-                />
-              )}
-            </button>
-          );
-        })}
+      <div className="flex items-end gap-2">
+        {label && (
+          <AdminLabel>
+            {label}
+            {required && <span className="ml-0.5 text-destructive">*</span>}
+          </AdminLabel>
+        )}
+        <div className="mb-1 flex gap-1">
+          {LOCALES.map((loc) => {
+            const filled = loc.id === "pt" ? !!current.pt : !!current[loc.id];
+            return (
+              <button
+                key={loc.id}
+                type="button"
+                onClick={() => setActive(loc.id)}
+                className={cn(
+                  "rounded px-2 py-0.5 text-xs font-semibold uppercase transition-colors",
+                  active === loc.id
+                    ? "bg-foreground text-background"
+                    : "bg-muted text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {loc.flag}
+                {filled && (
+                  <span
+                    className={cn(
+                      "ml-1 inline-block size-1.5 rounded-full",
+                      active === loc.id ? "bg-background" : "bg-primary",
+                    )}
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
       {/* Render only the active locale field. Keeping inactive fields mounted
           but hidden (sr-only) collided with the input's w-full and produced a

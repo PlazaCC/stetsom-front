@@ -1,7 +1,8 @@
 "use client";
 
 import { BLOCK_BEM_CLASSES } from "@/lib/utils/product";
-import { AdminInput, AdminTextarea } from "./admin-input";
+import { Input } from "@/components/ui/input";
+import { AdminTextarea } from "./admin-input";
 import { LibraryAssetPicker } from "./library-asset-picker";
 
 const fieldLabel = "mb-1 block text-xs font-medium text-muted-foreground";
@@ -76,7 +77,7 @@ export function BlockStyleForm({
             onChange={(e) => update({ backgroundColor: e.target.value })}
             className="h-9 w-10 shrink-0 cursor-pointer rounded border border-border bg-card"
           />
-          <AdminInput
+          <Input
             value={str(style.backgroundColor)}
             onChange={(e) => update({ backgroundColor: e.target.value })}
             placeholder="#121212"
@@ -104,7 +105,7 @@ export function BlockStyleForm({
 
       <div>
         <label className={fieldLabel}>Identificador (opcional)</label>
-        <AdminInput
+        <Input
           value={str(style.customId)}
           onChange={(e) => update({ customId: e.target.value })}
           placeholder="Gerado automaticamente se vazio"

@@ -1,11 +1,13 @@
 "use client";
 
 import { AdminFormPage } from "@/app/admin/_components/crud/admin-form-page";
-import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import {
-  AdminInput,
-  AdminLabel,
-} from "@/app/admin/_components/crud/admin-input";
+  AdminFormSection,
+  AdminFormSectionContent,
+  AdminFormSectionTitle,
+} from "@/app/admin/_components/crud/admin-form-section";
+import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
+import { Input } from "@/components/ui/input";
 import { useGetApiConfig } from "@/api/stetsom";
 import { patchApiConfig } from "@/api/stetsom/endpoints/config/config";
 import type { CmsConfig, PatchApiConfigBody } from "@/api/stetsom/model";
@@ -44,11 +46,11 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
         aside={
           <div className="space-y-4">
             <AdminFormSection title="Publicação">
-              <p className="text-xs text-muted-foreground">
-                As configurações afetam todas as páginas do site imediatamente
-                após salvar.
-              </p>
-              <div className="mt-4">
+              <AdminFormSectionContent>
+                <p className="text-xs text-muted-foreground">
+                  As configurações afetam todas as páginas do site imediatamente
+                  após salvar.
+                </p>
                 <button
                   type="submit"
                   disabled={isPending}
@@ -56,7 +58,7 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
                 >
                   {isPending ? "Salvando..." : "Salvar configurações"}
                 </button>
-              </div>
+              </AdminFormSectionContent>
             </AdminFormSection>
           </div>
         }
@@ -65,10 +67,10 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
           title="Informações da Empresa"
           description="Dados de contato e identificação exibidos no site."
         >
-          <div className="space-y-4">
+          <AdminFormSectionContent>
             <div>
               <AdminLabel>Nome da empresa</AdminLabel>
-              <AdminInput
+              <Input
                 value={config.company_name}
                 onChange={(e) => handleChange("company_name", e.target.value)}
               />
@@ -76,7 +78,7 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <AdminLabel>E-mail</AdminLabel>
-                <AdminInput
+                <Input
                   type="email"
                   value={config.company_email}
                   onChange={(e) =>
@@ -86,7 +88,7 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
               </div>
               <div>
                 <AdminLabel>Telefone</AdminLabel>
-                <AdminInput
+                <Input
                   value={config.company_phone}
                   onChange={(e) =>
                     handleChange("company_phone", e.target.value)
@@ -96,7 +98,7 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
             </div>
             <div>
               <AdminLabel>WhatsApp</AdminLabel>
-              <AdminInput
+              <Input
                 value={config.company_whatsapp}
                 onChange={(e) =>
                   handleChange("company_whatsapp", e.target.value)
@@ -105,24 +107,24 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
             </div>
             <div>
               <AdminLabel>Endereço</AdminLabel>
-              <AdminInput
+              <Input
                 value={config.company_address}
                 onChange={(e) =>
                   handleChange("company_address", e.target.value)
                 }
               />
             </div>
-          </div>
-        </AdminFormSection>
+          </AdminFormSectionContent>
 
-        <AdminFormSection
-          title="Redes Sociais"
-          description="URLs completas dos perfis oficiais."
-        >
-          <div className="space-y-4">
+          <AdminFormSectionTitle
+            title="Redes Sociais"
+            description="URLs completas dos perfis oficiais."
+            className="border-t"
+          />
+          <AdminFormSectionContent>
             <div>
               <AdminLabel>Instagram</AdminLabel>
-              <AdminInput
+              <Input
                 type="url"
                 value={config.social_instagram ?? ""}
                 onChange={(e) =>
@@ -133,7 +135,7 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
             </div>
             <div>
               <AdminLabel>Facebook</AdminLabel>
-              <AdminInput
+              <Input
                 type="url"
                 value={config.social_facebook ?? ""}
                 onChange={(e) =>
@@ -144,14 +146,14 @@ function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
             </div>
             <div>
               <AdminLabel>YouTube</AdminLabel>
-              <AdminInput
+              <Input
                 type="url"
                 value={config.social_youtube ?? ""}
                 onChange={(e) => handleChange("social_youtube", e.target.value)}
                 placeholder="https://youtube.com/@stetsom"
               />
             </div>
-          </div>
+          </AdminFormSectionContent>
         </AdminFormSection>
       </AdminFormPage>
     </form>

@@ -10,11 +10,17 @@
 import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
 import { AdminPanel } from "@/app/admin/_components/admin-panel";
 import {
-  AdminInput,
   AdminLabel,
-  AdminSelect,
   AdminTextarea,
 } from "@/app/admin/_components/crud/admin-input";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   CmsButton,
   type CmsButtonProps,
@@ -132,14 +138,19 @@ export default function StyleguidePage() {
         <div className="grid max-w-xl gap-4">
           <div>
             <AdminLabel htmlFor="sg-input">Texto</AdminLabel>
-            <AdminInput id="sg-input" placeholder="Digite algo…" />
+            <Input id="sg-input" placeholder="Digite algo…" />
           </div>
           <div>
             <AdminLabel htmlFor="sg-select">Select</AdminLabel>
-            <AdminSelect id="sg-select" defaultValue="a">
-              <option value="a">Opção A</option>
-              <option value="b">Opção B</option>
-            </AdminSelect>
+            <Select defaultValue="a">
+              <SelectTrigger id="sg-select" className="w-full">
+                <SelectValue placeholder="Selecione..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="a">Opção A</SelectItem>
+                <SelectItem value="b">Opção B</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <AdminLabel htmlFor="sg-textarea">Textarea</AdminLabel>

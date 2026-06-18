@@ -1,12 +1,20 @@
 "use client";
 
-import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import {
-  AdminInput,
-  AdminLabel,
-  AdminSelect,
-} from "@/app/admin/_components/crud/admin-input";
+  AdminFormSection,
+  AdminFormSectionContent,
+  AdminFormSectionTitle,
+} from "@/app/admin/_components/crud/admin-form-section";
+import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { ProductStatus, I18nString } from "@/api/stetsom/model";
 
 interface Category {
@@ -66,9 +74,9 @@ export function ProductWizardStep1({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="flex-1">
       <AdminFormSection title="Identificação">
-        <div className="space-y-4">
+        <AdminFormSectionContent>
           <I18nInput
             label="Nome do produto"
             required
@@ -86,7 +94,7 @@ export function ProductWizardStep1({
 
           <div>
             <AdminLabel>SKU</AdminLabel>
-            <AdminInput
+            <Input
               value={info.sku}
               onChange={(e) => onPatch({ sku: e.target.value })}
               placeholder="Código único"
@@ -96,64 +104,81 @@ export function ProductWizardStep1({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <AdminLabel>Categoria *</AdminLabel>
-              <AdminSelect
+              <Select
                 value={info.category_id}
-                onChange={(e) =>
+                onValueChange={(value) =>
                   onPatch({
-                    category_id: e.target.value,
+                    category_id: value ?? "",
                     subcategory_id: "",
                     template_id: "",
                   })
                 }
               >
-                <option value="">Selecione...</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </AdminSelect>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecione..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Selecione...</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
               <AdminLabel>Linha (subcategoria)</AdminLabel>
-              <AdminSelect
+              <Select
                 value={info.subcategory_id}
-                onChange={(e) => onPatch({ subcategory_id: e.target.value })}
+                onValueChange={(value) =>
+                  onPatch({ subcategory_id: value ?? "" })
+                }
                 disabled={
                   !info.category_id || filteredSubcategories.length === 0
                 }
               >
-                <option value="">
-                  {filteredSubcategories.length === 0
-                    ? "Nenhuma"
-                    : "Selecione..."}
-                </option>
-                {filteredSubcategories.map((sub) => (
-                  <option key={sub.id} value={sub.id}>
-                    {sub.name}
-                  </option>
-                ))}
-              </AdminSelect>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecione..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">
+                    {filteredSubcategories.length === 0
+                      ? "Nenhuma"
+                      : "Selecione..."}
+                  </SelectItem>
+                  {filteredSubcategories.map((sub) => (
+                    <SelectItem key={sub.id} value={sub.id}>
+                      {sub.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </div>
 
-          <div>
-            <AdminLabel>Template de atributos</AdminLabel>
-            <AdminSelect
-              value={info.template_id}
-              onChange={(e) => onPatch({ template_id: e.target.value })}
-              disabled={!info.category_id || filteredTemplates.length === 0}
-            >
-              <option value="">
-                {filteredTemplates.length === 0 ? "Nenhum" : "Selecione..."}
-              </option>
-              {filteredTemplates.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                </option>
-              ))}
-            </AdminSelect>
+            <div>
+              <AdminLabel>Template de atributos</AdminLabel>
+              <Select
+                value={info.template_id}
+                onValueChange={(value) => onPatch({ template_id: value ?? "" })}
+                disabled={!info.category_id || filteredTemplates.length === 0}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecione..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">
+                    {filteredTemplates.length === 0 ? "Nenhum" : "Selecione..."}
+                  </SelectItem>
+                  {filteredTemplates.map((t) => (
+                    <SelectItem key={t.id} value={t.id}>
+                      {t.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="flex gap-6 pt-1">
@@ -176,16 +201,18 @@ export function ProductWizardStep1({
               <span className="text-sm text-foreground">Spotlight</span>
             </label>
           </div>
-        </div>
-      </AdminFormSection>
+        </AdminFormSectionContent>
 
-      <AdminFormSection title="Descrição">
-        <I18nInput
-          multiline
-          value={info.description}
-          onChange={(description) => onPatch({ description })}
-          placeholder="Descrição curta do produto..."
-        />
+        <AdminFormSectionTitle title="Descrição" className="border-t" />
+
+        <AdminFormSectionContent>
+          <I18nInput
+            multiline
+            value={info.description}
+            onChange={(description) => onPatch({ description })}
+            placeholder="Descrição curta do produto..."
+          />
+        </AdminFormSectionContent>
       </AdminFormSection>
     </div>
   );

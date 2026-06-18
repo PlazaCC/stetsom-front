@@ -10,10 +10,8 @@ import { UploadProgressList } from "@/components/upload-progress-list";
 import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
 import { AdminFormSection as AdminCard } from "@/app/admin/_components/crud/admin-form-section";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
-import {
-  AdminInput,
-  AdminLabel,
-} from "@/app/admin/_components/crud/admin-input";
+import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
+import { Input } from "@/components/ui/input";
 import {
   deleteApiLibraryId,
   getGetApiLibraryQueryKey,
@@ -557,7 +555,7 @@ function EditAssetModal({
           >
             <div>
               <AdminLabel>Nome do arquivo</AdminLabel>
-              <AdminInput
+              <Input
                 value={filename}
                 onChange={(e) => setFilename(e.target.value)}
                 maxLength={255}
@@ -571,7 +569,7 @@ function EditAssetModal({
             />
             <div>
               <AdminLabel>Tags (separadas por vírgula)</AdminLabel>
-              <AdminInput
+              <Input
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
                 placeholder="hero, amplificador, 2024"

@@ -2,11 +2,9 @@
 
 import { AdminDeleteAction } from "@/app/admin/_components/crud/admin-delete-action";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import {
-  AdminInput,
-  AdminLabel,
-} from "@/app/admin/_components/crud/admin-input";
+import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { Input } from "@/components/ui/input";
 import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-picker";
 import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
 import { AdminPanel } from "@/app/admin/_components/admin-panel";
@@ -211,7 +209,7 @@ function CategoryFormInner({
           <I18nInput label="Slug" value={slug} onChange={setSlug} />
           <div>
             <AdminLabel>Ordem</AdminLabel>
-            <AdminInput
+            <Input
               type="number"
               value={order}
               onChange={(e) => setOrder(Number(e.target.value))}

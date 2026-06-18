@@ -4,9 +4,9 @@ import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
 import { AdminPanel } from "@/app/admin/_components/admin-panel";
 import { AdminSaveBar } from "@/app/admin/_components/crud/admin-save-bar";
 import {
-  BlockBuilder,
+  BlockManager,
   type DraftBlock,
-} from "@/app/admin/_components/crud/block-builder";
+} from "@/app/admin/_components/crud/block-manager";
 import { PRODUCT_BLOCK_REGISTRY } from "@/app/admin/_components/crud/product-block-registry";
 import { AdminDeleteAction } from "@/app/admin/_components/crud/admin-delete-action";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
@@ -68,7 +68,7 @@ interface ProductMutationResult {
   status: string;
 }
 
-type Tab = 1 | 2 | 3 | 4 | 5;
+type Tab = 1 | 2 | 3 | 4 | 5 | 6;
 
 function buildInitialInfo(detail?: CmsProductDetailPayload): ProductInfo {
   const base: ProductInfo = {
@@ -214,7 +214,8 @@ const TAB_LABELS: Record<Tab, string> = {
   2: "Imagens",
   3: "Especificações técnicas",
   4: "Arquivos",
-  5: "Customização",
+  5: "Blocos da página",
+  6: "Customização",
 };
 
 export function ProductWizard({ initial, mode }: ProductWizardProps) {
@@ -304,7 +305,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     return () => window.removeEventListener("beforeunload", handler);
   }, [isDirty]);
 
-  const tabs: AdminWizardTab[] = ([1, 2, 3, 4, 5] as Tab[]).map((n) => ({
+  const tabs: AdminWizardTab[] = ([1, 2, 3, 4, 5, 6] as Tab[]).map((n) => ({
     label: TAB_LABELS[n],
   }));
 
@@ -519,91 +520,6 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     );
   }
 
-  const previewAside = (
-    <div className="space-y-4">
-      <AdminFormSection title="Prévia">
-        <div className="overflow-hidden rounded-md border border-border bg-muted">
-          {images[0]?.preview_url ? (
-            <div className="relative h-36 w-full">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={images[0].preview_url}
-                alt={info.name.pt}
-                className="h-full w-full object-cover"
-              />
-            </div>
-          ) : (
-            <div className="flex h-36 items-center justify-center">
-              <Package className="size-10 text-muted-foreground/40" />
-            </div>
-          )}
-        </div>
-        <dl className="mt-3 space-y-2 text-xs">
-          <div className="flex justify-between gap-2">
-            <dt className="shrink-0 text-muted-foreground">Nome</dt>
-            <dd className="truncate font-medium text-foreground">
-              {info.name.pt || "—"}
-            </dd>
-          </div>
-          <div className="flex justify-between gap-2">
-            <dt className="shrink-0 text-muted-foreground">Status</dt>
-            <dd className="font-medium text-foreground">
-              {info.status === "PUBLISHED"
-                ? "Publicado"
-                : info.status === "SCHEDULED"
-                  ? "Agendado"
-                  : "Rascunho"}
-            </dd>
-          </div>
-          {info.is_discontinued && (
-            <div className="flex justify-between gap-2">
-              <dt className="shrink-0 text-muted-foreground">Observação</dt>
-              <dd className="text-destructive">Descontinuado</dd>
-            </div>
-          )}
-          {category && (
-            <div className="flex justify-between gap-2">
-              <dt className="shrink-0 text-muted-foreground">Categoria</dt>
-              <dd className="truncate font-medium text-foreground">
-                {category.name}
-              </dd>
-            </div>
-          )}
-          {subcategory && (
-            <div className="flex justify-between gap-2">
-              <dt className="shrink-0 text-muted-foreground">Linha</dt>
-              <dd className="truncate font-medium text-foreground">
-                {subcategory.name}
-              </dd>
-            </div>
-          )}
-          <div className="flex justify-between gap-2">
-            <dt className="shrink-0 text-muted-foreground">Specs</dt>
-            <dd className="font-medium text-foreground">
-              {activeSpecs.length}
-            </dd>
-          </div>
-          <div className="flex justify-between gap-2">
-            <dt className="shrink-0 text-muted-foreground">Blocos</dt>
-            <dd className="font-medium text-foreground">{blocks.length}</dd>
-          </div>
-          <div className="flex justify-between gap-2">
-            <dt className="shrink-0 text-muted-foreground">Slug</dt>
-            <dd className="truncate font-mono text-foreground">
-              {info.slug.pt || "—"}
-            </dd>
-          </div>
-        </dl>
-      </AdminFormSection>
-
-      {productId && (
-        <div className="rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
-          {isDirty ? "✎ Alterações não salvas" : "✓ Salvo"}
-        </div>
-      )}
-    </div>
-  );
-
   return (
     <div className="flex h-full flex-col">
       <AdminPanel className="flex flex-col justify-between">
@@ -616,8 +532,19 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
       </AdminPanel>
 
       <AdminWizardPage
-        aside={previewAside}
-        className="flex flex-1 overflow-auto px-4 pb-5 lg:px-11.75"
+        aside={
+          <ProductWizardPreview
+            info={info}
+            images={images}
+            categoryName={category?.name}
+            subcategoryName={subcategory?.name}
+            specsCount={activeSpecs.length}
+            blocksCount={blocks.length}
+            productId={productId}
+            isDirty={isDirty}
+          />
+        }
+        className="flex flex-1 overflow-hidden px-4 py-5 lg:px-11.75"
       >
         {activeTab === 1 && (
           <ProductWizardStep1
@@ -661,29 +588,24 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
         )}
 
         {activeTab === 5 && (
-          <div className="space-y-6">
-            <AdminFormSection
-              title="Blocos de conteúdo"
-              description="Adicione e organize os blocos de conteúdo da página do produto."
-            >
-              <BlockBuilder
-                registry={PRODUCT_BLOCK_REGISTRY}
-                value={blocks}
-                onChange={(b) => {
-                  setBlocks(b);
-                  setIsDirty(true);
-                }}
-              />
-            </AdminFormSection>
+          <BlockManager
+            registry={PRODUCT_BLOCK_REGISTRY}
+            value={blocks}
+            onChange={(b) => {
+              setBlocks(b);
+              setIsDirty(true);
+            }}
+          />
+        )}
 
-            <ProductWizardStepPublish
-              info={info}
-              specs={activeSpecs}
-              categoryName={category?.name}
-              subcategoryName={subcategory?.name}
-              onPatch={patchInfo}
-            />
-          </div>
+        {activeTab === 6 && (
+          <ProductWizardStepPublish
+            info={info}
+            specs={activeSpecs}
+            categoryName={category?.name}
+            subcategoryName={subcategory?.name}
+            onPatch={patchInfo}
+          />
         )}
       </AdminWizardPage>
 
@@ -699,6 +621,111 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
         saveDraftLabel="Salvar rascunho"
         draftSavedPrefix="Salvo às"
       />
+    </div>
+  );
+}
+
+interface ProductWizardPreviewProps {
+  info: ProductInfo;
+  images: WizardProductImage[];
+  categoryName?: string;
+  subcategoryName?: string;
+  specsCount: number;
+  blocksCount: number;
+  productId: string | null;
+  isDirty: boolean;
+}
+
+function ProductWizardPreview({
+  info,
+  images,
+  categoryName,
+  subcategoryName,
+  specsCount,
+  blocksCount,
+  productId,
+  isDirty,
+}: ProductWizardPreviewProps) {
+  return (
+    <div className="space-y-4">
+      <AdminFormSection title="Prévia">
+        <div className="overflow-hidden rounded-md border border-border bg-muted">
+          {images[0]?.preview_url ? (
+            <div className="relative h-36 w-full">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={images[0].preview_url}
+                alt={info.name.pt}
+                className="h-full w-full object-cover"
+              />
+            </div>
+          ) : (
+            <div className="flex h-36 items-center justify-center">
+              <Package className="size-10 text-muted-foreground/40" />
+            </div>
+          )}
+        </div>
+        <dl className="mt-3 space-y-2 text-xs">
+          <div className="flex justify-between gap-2">
+            <dt className="shrink-0 text-muted-foreground">Nome</dt>
+            <dd className="truncate font-medium text-foreground">
+              {info.name.pt || "—"}
+            </dd>
+          </div>
+          <div className="flex justify-between gap-2">
+            <dt className="shrink-0 text-muted-foreground">Status</dt>
+            <dd className="font-medium text-foreground">
+              {info.status === "PUBLISHED"
+                ? "Publicado"
+                : info.status === "SCHEDULED"
+                  ? "Agendado"
+                  : "Rascunho"}
+            </dd>
+          </div>
+          {info.is_discontinued && (
+            <div className="flex justify-between gap-2">
+              <dt className="shrink-0 text-muted-foreground">Observação</dt>
+              <dd className="text-destructive">Descontinuado</dd>
+            </div>
+          )}
+          {categoryName && (
+            <div className="flex justify-between gap-2">
+              <dt className="shrink-0 text-muted-foreground">Categoria</dt>
+              <dd className="truncate font-medium text-foreground">
+                {categoryName}
+              </dd>
+            </div>
+          )}
+          {subcategoryName && (
+            <div className="flex justify-between gap-2">
+              <dt className="shrink-0 text-muted-foreground">Linha</dt>
+              <dd className="truncate font-medium text-foreground">
+                {subcategoryName}
+              </dd>
+            </div>
+          )}
+          <div className="flex justify-between gap-2">
+            <dt className="shrink-0 text-muted-foreground">Specs</dt>
+            <dd className="font-medium text-foreground">{specsCount}</dd>
+          </div>
+          <div className="flex justify-between gap-2">
+            <dt className="shrink-0 text-muted-foreground">Blocos</dt>
+            <dd className="font-medium text-foreground">{blocksCount}</dd>
+          </div>
+          <div className="flex justify-between gap-2">
+            <dt className="shrink-0 text-muted-foreground">Slug</dt>
+            <dd className="truncate font-mono text-foreground">
+              {info.slug.pt || "—"}
+            </dd>
+          </div>
+        </dl>
+      </AdminFormSection>
+
+      {productId && (
+        <div className="rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+          {isDirty ? "✎ Alterações não salvas" : "✓ Salvo"}
+        </div>
+      )}
     </div>
   );
 }

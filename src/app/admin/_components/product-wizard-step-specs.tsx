@@ -1,15 +1,24 @@
 "use client";
 
-import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import { AdminSelect } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { SortableList } from "@/app/admin/_components/crud/sortable-list";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
+import { Input } from "@/components/ui/input";
 import type {
   WizardProductSpec,
   WizardProductVariation,
 } from "@/app/admin/_components/product-wizard-types";
 import type { Attribute } from "@/api/stetsom/model";
 import { CMS_UI } from "@/lib/cms/constants";
-import { Plus, Trash2, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Layers, Plus, Trash2 } from "lucide-react";
 
 interface ProductWizardStepSpecsProps {
   variations: WizardProductVariation[];
@@ -49,67 +58,6 @@ function newVariation(
   };
 }
 
-function VariationTabs({
-  variations,
-  activeId,
-  onSelect,
-  onUpdate,
-  onRemove,
-  onAdd,
-}: {
-  variations: WizardProductVariation[];
-  activeId: string;
-  onSelect: (id: string) => void;
-  onUpdate: (id: string, patch: Partial<WizardProductVariation>) => void;
-  onRemove: (id: string) => void;
-  onAdd: () => void;
-}) {
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      {variations.map((v) => (
-        <div
-          key={v.id}
-          className={
-            v.id === activeId
-              ? "flex items-center gap-1 rounded border border-primary bg-primary/5 px-2 py-1"
-              : "flex items-center gap-1 rounded border border-border px-2 py-1"
-          }
-        >
-          {v.id === activeId ? (
-            <input
-              value={v.label}
-              onChange={(e) => onUpdate(v.id, { label: e.target.value })}
-              className="w-20 border-none bg-transparent text-sm font-medium text-foreground outline-none"
-              placeholder="Nome"
-            />
-          ) : (
-            <button type="button" onClick={() => onSelect(v.id)}>
-              <span className="text-sm text-muted-foreground">{v.label}</span>
-            </button>
-          )}
-          {variations.length > 1 && (
-            <button
-              type="button"
-              onClick={() => onRemove(v.id)}
-              className="ml-1 text-muted-foreground hover:text-destructive"
-            >
-              <X className="size-3" />
-            </button>
-          )}
-        </div>
-      ))}
-      <button
-        type="button"
-        onClick={onAdd}
-        className="flex items-center gap-1 rounded border border-dashed border-border px-2 py-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <Plus className="size-3" />
-        Variação
-      </button>
-    </div>
-  );
-}
-
 export function ProductWizardStepSpecs({
   variations,
   activeVariationId,
@@ -120,7 +68,14 @@ export function ProductWizardStepSpecs({
   const activeVariation =
     variations.find((v) => v.id === activeVariationId) ?? variations[0];
   const activeSpecs = activeVariation?.specs ?? [];
-  const highlightCount = activeSpecs.filter((s) => s.highlighted).length;
+  const attributeOptions = attributes.map((a) => ({
+    value: a.id,
+    label: a.name.pt,
+  }));
+
+  function reindex(list: WizardProductVariation[]): WizardProductVariation[] {
+    return list.map((v, i) => ({ ...v, order: i }));
+  }
 
   function patchActiveSpecs(
     updater: (specs: WizardProductSpec[]) => WizardProductSpec[],
@@ -133,17 +88,23 @@ export function ProductWizardStepSpecs({
     );
   }
 
+  function updateVariation(id: string, patch: Partial<WizardProductVariation>) {
+    onVariationsChange(
+      variations.map((v) => (v.id === id ? { ...v, ...patch } : v)),
+    );
+  }
+
   function addVariation() {
-    const next = [
+    const next = reindex([
       ...variations,
       newVariation(variations.length + 1, activeVariation?.specs ?? []),
-    ];
+    ]);
     onVariationsChange(next);
     onActiveVariationChange(next.at(-1)?.id ?? activeVariation?.id);
   }
 
   function removeVariation(id: string) {
-    const next = variations.filter((v) => v.id !== id);
+    const next = reindex(variations.filter((v) => v.id !== id));
     onVariationsChange(next);
     if (id === activeVariationId && next.length > 0) {
       onActiveVariationChange(next[0]!.id);
@@ -151,128 +112,212 @@ export function ProductWizardStepSpecs({
   }
 
   return (
-    <div className="space-y-6">
-      <AdminFormSection
-        title="Variações"
-        description="Gerencie as variações do produto (ex: 1 Ohm, 2 Ohms). Cada variação tem seus próprios valores técnicos."
-      >
-        <VariationTabs
-          variations={variations}
-          activeId={activeVariationId}
-          onSelect={onActiveVariationChange}
-          onUpdate={(id, patch) =>
-            onVariationsChange(
-              variations.map((v) => (v.id === id ? { ...v, ...patch } : v)),
-            )
-          }
-          onRemove={removeVariation}
-          onAdd={addVariation}
-        />
-      </AdminFormSection>
-
-      <AdminFormSection
-        title="Especificações Técnicas"
-        description={`Selecione o atributo e informe o valor. Até ${CMS_UI.MAX_HIGHLIGHTS} podem ser destacados no cabeçalho do produto.`}
-      >
-        <div className="space-y-2">
-          {activeSpecs.map((spec) => {
-            const highlightDisabled =
-              !spec.highlighted && highlightCount >= CMS_UI.MAX_HIGHLIGHTS;
-            return (
-              <div
-                key={spec.id}
-                className="flex items-end gap-3 rounded-md border border-border bg-card p-3"
-              >
-                <div className="w-48 shrink-0">
-                  <label className="mb-1 block text-xs font-medium text-muted-foreground">
-                    Atributo
-                  </label>
-                  <AdminSelect
-                    value={spec.attribute_id}
-                    onChange={(e) => {
-                      const attr = attributes.find(
-                        (a) => a.id === e.target.value,
-                      );
-                      patchActiveSpecs((specs) =>
-                        specs.map((s) =>
-                          s.id === spec.id
-                            ? {
-                                ...s,
-                                attribute_id: e.target.value,
-                                attribute_name: attr?.name,
-                              }
-                            : s,
-                        ),
-                      );
-                    }}
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+      {/* Card 1 — variations */}
+      <div className="rounded-[16px] border border-border bg-card lg:w-72 lg:shrink-0">
+        <div className="border-b border-border px-4 py-3">
+          <h3 className="text-sm font-semibold text-foreground">Variações</h3>
+        </div>
+        <div className="space-y-2 p-3">
+          <SortableList
+            items={variations}
+            getId={(v) => v.id}
+            onReorder={(items) => onVariationsChange(reindex(items))}
+            renderItem={(v, handle) => {
+              const isActive = v.id === activeVariationId;
+              return (
+                <div
+                  className={cn(
+                    "flex items-center gap-2 rounded-md border px-2.5 py-2 transition-colors",
+                    isActive
+                      ? "border-primary bg-primary/5"
+                      : "border-border bg-card hover:border-primary/40",
+                  )}
+                >
+                  {handle}
+                  <button
+                    type="button"
+                    onClick={() => onActiveVariationChange(v.id)}
+                    className="flex min-w-0 flex-1 items-center gap-2 text-left"
                   >
-                    <option value="">Selecione...</option>
-                    {attributes.map((a) => (
-                      <option key={a.id} value={a.id}>
-                        {a.name.pt}
-                      </option>
-                    ))}
-                  </AdminSelect>
+                    <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">
+                      {v.label || "Sem nome"}
+                    </span>
+                    <span className="shrink-0 text-2xs text-muted-foreground">
+                      {v.specs.length} specs
+                    </span>
+                  </button>
+                  {variations.length > 1 && (
+                    <button
+                      type="button"
+                      aria-label="Remover variação"
+                      onClick={() => removeVariation(v.id)}
+                      className="shrink-0 rounded p-1 text-muted-foreground hover:bg-muted hover:text-destructive"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  )}
                 </div>
-                <I18nInput
-                  className="flex-1"
-                  label="Valor"
-                  value={spec.value}
-                  onChange={(value) =>
-                    patchActiveSpecs((specs) =>
-                      specs.map((s) =>
-                        s.id === spec.id ? { ...s, value } : s,
-                      ),
-                    )
-                  }
-                  placeholder="Ex: 8000W RMS"
-                />
-                <label className="flex shrink-0 flex-col items-center gap-1 pb-2 text-xs text-muted-foreground">
-                  Destaque
-                  <input
-                    type="checkbox"
-                    checked={spec.highlighted}
-                    disabled={highlightDisabled}
-                    onChange={(e) =>
-                      patchActiveSpecs((specs) =>
-                        specs.map((s) =>
-                          s.id === spec.id
-                            ? { ...s, highlighted: e.target.checked }
-                            : s,
-                        ),
-                      )
-                    }
-                    className="size-4 accent-primary disabled:opacity-40"
-                  />
+              );
+            }}
+          />
+
+          <button
+            type="button"
+            onClick={addVariation}
+            className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          >
+            <Plus className="size-4" />
+            Adicionar variação
+          </button>
+        </div>
+      </div>
+
+      {/* Card 2 — specs of the selected variation */}
+      <div className="min-w-0 flex-1 rounded-[16px] border border-border bg-card">
+        {activeVariation ? (
+          <>
+            <div className="flex items-center gap-3 border-b border-border px-4 py-3">
+              <Layers className="size-4 shrink-0 text-muted-foreground" />
+              <span className="truncate text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                {activeVariation.label || "Variação"}
+              </span>
+              <span className="ml-auto shrink-0 text-xs text-muted-foreground">
+                {activeSpecs.length} specs
+              </span>
+            </div>
+
+            <div className="space-y-4 p-4">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                  Nome da variação
                 </label>
+                <Input
+                  value={activeVariation.label}
+                  onChange={(e) =>
+                    updateVariation(activeVariation.id, {
+                      label: e.target.value,
+                    })
+                  }
+                  placeholder="Ex: 2 Ohms"
+                />
+              </div>
+
+              <div>
+                <p className="mb-2 text-xs text-muted-foreground">
+                  {`Selecione o atributo e informe o valor. Até ${CMS_UI.MAX_HIGHLIGHTS} podem ser destacados no cabeçalho do produto.`}
+                </p>
+
+                <div className="space-y-2">
+                  {activeSpecs.map((spec) => {
+                    return (
+                      <div
+                        key={spec.id}
+                        className="flex flex-wrap items-end gap-3 rounded-md border border-border bg-card p-3"
+                      >
+                        <div className="flex-1 shrink-0">
+                          <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                            Atributo
+                          </label>
+                          <Combobox
+                            items={attributeOptions}
+                            value={
+                              attributeOptions.find(
+                                (o) => o.value === spec.attribute_id,
+                              ) ?? null
+                            }
+                            isItemEqualToValue={(a, b) => a.value === b.value}
+                            onValueChange={(val) => {
+                              const attr = val
+                                ? attributes.find((a) => a.id === val.value)
+                                : undefined;
+                              patchActiveSpecs((specs) =>
+                                specs.map((s) =>
+                                  s.id === spec.id
+                                    ? {
+                                        ...s,
+                                        attribute_id: val?.value ?? "",
+                                        attribute_name: attr?.name,
+                                      }
+                                    : s,
+                                ),
+                              );
+                            }}
+                          >
+                            <ComboboxInput
+                              className="w-full"
+                              placeholder="Selecione..."
+                            />
+                            <ComboboxContent>
+                              <ComboboxEmpty>
+                                Nenhum atributo encontrado.
+                              </ComboboxEmpty>
+                              <ComboboxList>
+                                {(option: { value: string; label: string }) => (
+                                  <ComboboxItem
+                                    key={option.value}
+                                    value={option}
+                                  >
+                                    {option.label}
+                                  </ComboboxItem>
+                                )}
+                              </ComboboxList>
+                            </ComboboxContent>
+                          </Combobox>
+                        </div>
+                        <I18nInput
+                          className="min-w-48 flex-1"
+                          label="Valor"
+                          value={spec.value}
+                          onChange={(value) =>
+                            patchActiveSpecs((specs) =>
+                              specs.map((s) =>
+                                s.id === spec.id ? { ...s, value } : s,
+                              ),
+                            )
+                          }
+                          placeholder="Ex: 8000W RMS"
+                        />
+
+                        <button
+                          type="button"
+                          aria-label="Remover"
+                          onClick={() =>
+                            patchActiveSpecs((specs) =>
+                              specs.filter((s) => s.id !== spec.id),
+                            )
+                          }
+                          className="pb-2 text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash2 className="size-4" />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+
                 <button
                   type="button"
-                  aria-label="Remover"
                   onClick={() =>
-                    patchActiveSpecs((specs) =>
-                      specs.filter((s) => s.id !== spec.id),
-                    )
+                    patchActiveSpecs((specs) => [
+                      ...specs,
+                      newSpec(specs.length),
+                    ])
                   }
-                  className="pb-2 text-muted-foreground hover:text-destructive"
+                  className="mt-3 flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
                 >
-                  <Trash2 className="size-4" />
+                  <Plus className="size-4" />
+                  Adicionar especificação
                 </button>
               </div>
-            );
-          })}
-        </div>
-
-        <button
-          type="button"
-          onClick={() =>
-            patchActiveSpecs((specs) => [...specs, newSpec(specs.length)])
-          }
-          className="mt-3 flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-        >
-          <Plus className="size-4" />
-          Adicionar especificação
-        </button>
-      </AdminFormSection>
+            </div>
+          </>
+        ) : (
+          <div className="flex h-full min-h-48 items-center justify-center p-8 text-center text-sm text-muted-foreground">
+            Selecione uma variação para editar.
+          </div>
+        )}
+      </div>
     </div>
   );
 }
