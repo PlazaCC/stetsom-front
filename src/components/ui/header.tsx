@@ -80,7 +80,7 @@ export function Header({ categories }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const t = useTranslations("Nav");
 
-  const navItems: CategoryNavItem[] =
+  const rawNavItems: CategoryNavItem[] =
     categories && categories.length
       ? [...categories]
           .sort((a, b) => a.order - b.order)
@@ -103,6 +103,13 @@ export function Header({ categories }: HeaderProps) {
           image: presentation.image,
           description: t(`categoryMenu.${presentation.key}.description`),
         }));
+
+  // The public categories endpoint can return the same slug more than once;
+  // dedupe so nav keys stay unique and menu entries are not duplicated.
+  const navItems = rawNavItems.filter(
+    (item, index, all) =>
+      all.findIndex((other) => other.slug === item.slug) === index,
+  );
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -127,7 +134,7 @@ export function Header({ categories }: HeaderProps) {
       <header className="sticky top-0 z-50 h-22 w-full border-b border-border bg-white">
         <Container className="flex h-full items-center justify-between">
           {/* Desktop header */}
-          <div className="hidden md:flex items-center gap-logo-nav">
+          <div className="hidden items-center gap-logo-nav md:flex">
             <Link href="/">
               <Logo width={158} height={35} priority />
             </Link>
@@ -175,17 +182,17 @@ export function Header({ categories }: HeaderProps) {
           </div>
 
           {/* Mobile header: hamburger | logo | search */}
-          <div className="flex items-center justify-between w-full md:hidden">
+          <div className="flex w-full items-center justify-between md:hidden">
             {searchOpen ? (
               <MobileSearchBar onClose={() => setSearchOpen(false)} />
             ) : (
               <>
-                <div className="w-10 flex items-center justify-start">
+                <div className="flex w-10 items-center justify-start">
                   <button
                     aria-label={t("openMenu")}
                     aria-expanded={mobileMenuOpen}
                     aria-controls="mobile-menu"
-                    className="inline-flex items-center justify-center w-10 h-10 text-icon-muted"
+                    className="inline-flex h-10 w-10 items-center justify-center text-icon-muted"
                     onClick={() => setMobileMenuOpen(true)}
                   >
                     <Menu size={22} />
@@ -196,10 +203,10 @@ export function Header({ categories }: HeaderProps) {
                   <Logo width={120} height={28} />
                 </Link>
 
-                <div className="w-10 flex items-center justify-end">
+                <div className="flex w-10 items-center justify-end">
                   <button
                     aria-label={t("search")}
-                    className="inline-flex items-center justify-center w-10 h-10 text-icon-muted"
+                    className="inline-flex h-10 w-10 items-center justify-center text-icon-muted"
                     onClick={() => setSearchOpen(true)}
                   >
                     <Search size={20} />
@@ -210,7 +217,7 @@ export function Header({ categories }: HeaderProps) {
           </div>
 
           {/* Right side (desktop) — language selector */}
-          <div className="hidden md:flex items-center">
+          <div className="hidden items-center md:flex">
             <LanguageSwitcher variant="light" />
           </div>
         </Container>
@@ -222,8 +229,8 @@ export function Header({ categories }: HeaderProps) {
         className={cn(
           "fixed inset-0 z-[55] bg-black/50 transition-opacity duration-300 md:hidden",
           mobileMenuOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none",
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0",
         )}
         onClick={() => setMobileMenuOpen(false)}
       />
@@ -257,7 +264,7 @@ function MobileDrawer({ open, onClose, navItems }: MobileDrawerProps) {
       aria-modal="true"
       aria-label={t("navAriaLabel")}
       className={cn(
-        "fixed left-0 top-0 z-[60] flex h-full w-4/5 max-w-xs flex-col bg-brand-dark transition-transform duration-300 md:hidden",
+        "fixed top-0 left-0 z-[60] flex h-full w-4/5 max-w-xs flex-col bg-brand-dark transition-transform duration-300 md:hidden",
         open ? "translate-x-0" : "-translate-x-full",
       )}
     >
@@ -268,7 +275,7 @@ function MobileDrawer({ open, onClose, navItems }: MobileDrawerProps) {
         </Link>
         <button
           aria-label={t("closeMenu")}
-          className="inline-flex items-center justify-center w-10 h-10 text-text-subtle-dark transition-colors hover:text-white"
+          className="inline-flex h-10 w-10 items-center justify-center text-text-subtle-dark transition-colors hover:text-white"
           onClick={onClose}
         >
           <X size={22} />
@@ -281,7 +288,7 @@ function MobileDrawer({ open, onClose, navItems }: MobileDrawerProps) {
         <div className="border-b border-white/10">
           <button
             onClick={() => setCategoriesOpen((o) => !o)}
-            className="flex w-full items-center justify-between py-4 font-sans-condensed font-black uppercase text-xl text-white transition-colors hover:text-brand"
+            className="flex w-full items-center justify-between py-4 font-sans-condensed text-xl font-black text-white uppercase transition-colors hover:text-brand"
           >
             {t("products")}
             <ChevronDown
@@ -324,7 +331,7 @@ function MobileDrawer({ open, onClose, navItems }: MobileDrawerProps) {
             href={link.href}
             onClick={onClose}
             className={cn(
-              "border-b border-white/10 py-4 font-sans-condensed font-black uppercase text-xl transition-colors",
+              "border-b border-white/10 py-4 font-sans-condensed text-xl font-black uppercase transition-colors",
               pathname === link.href || pathname.startsWith(link.href + "/")
                 ? "text-brand"
                 : "text-white hover:text-brand",
@@ -368,7 +375,7 @@ function MobileSearchBar({ onClose }: { onClose: () => void }) {
       <button
         type="button"
         aria-label={t("closeSearch")}
-        className="inline-flex items-center justify-center w-10 h-10 text-icon-muted"
+        className="inline-flex h-10 w-10 items-center justify-center text-icon-muted"
         onClick={onClose}
       >
         <X size={20} />
@@ -387,10 +394,10 @@ function MenuLink({ href, label }: { href: string; label: string }) {
     <Link
       href={href}
       className={cn(
-        "font-sans font-normal text-lg border-b-2 transition-colors mx-4",
+        "mx-4 border-b-2 font-sans text-lg font-normal transition-colors",
         active
-          ? "text-brand border-brand"
-          : "text-muted-foreground border-transparent hover:text-brand hover:border-brand",
+          ? "border-brand text-brand"
+          : "border-transparent text-muted-foreground hover:border-brand hover:text-brand",
       )}
     >
       {label}
@@ -412,10 +419,10 @@ function ListItem({
           <Link href={href}>
             <div className="flex gap-3">
               <div
-                className="size-16 rounded-sm shrink-0 bg-cover bg-center"
+                className="size-16 shrink-0 rounded-sm bg-cover bg-center"
                 style={{ backgroundImage: `url('${image}')` }}
               />
-              <div className="flex flex-col gap-1 text-sm flex-1">
+              <div className="flex flex-1 flex-col gap-1 text-sm">
                 <div className="leading-none font-medium">{title}</div>
                 <div className="line-clamp-2 text-muted-foreground">
                   {children}

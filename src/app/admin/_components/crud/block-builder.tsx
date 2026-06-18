@@ -36,6 +36,16 @@ interface BlockBuilderProps {
   onChange: (blocks: DraftBlock[]) => void;
   addLabel?: string;
   className?: string;
+  /**
+   * Optional custom "add block" menu. When provided, it replaces the default
+   * type list. `add(type, data?)` appends a block, merging `data` over the
+   * registry default — used by the product wizard to map Figma cards (e.g.
+   * Imagem Full / Imagem Side) to a single API type via `data.layout`.
+   */
+  renderMenu?: (helpers: {
+    add: (type: string, data?: Record<string, unknown>) => void;
+    close: () => void;
+  }) => React.ReactNode;
 }
 
 function generateId(): string {
@@ -53,6 +63,7 @@ export function BlockBuilder({
   onChange,
   addLabel = "Adicionar bloco",
   className,
+  renderMenu,
 }: BlockBuilderProps) {
   const [showMenu, setShowMenu] = useState(false);
 
@@ -60,7 +71,7 @@ export function BlockBuilder({
     return blocks.map((b, i) => ({ ...b, order: i }));
   }
 
-  function addBlock(type: string) {
+  function addBlock(type: string, extra?: Record<string, unknown>) {
     const def = registry[type];
     if (!def) return;
     onChange(
@@ -69,7 +80,7 @@ export function BlockBuilder({
         {
           id: generateId(),
           type,
-          data: { ...def.defaultData },
+          data: { ...def.defaultData, ...extra },
           order: value.length,
         },
       ]),
@@ -127,7 +138,11 @@ export function BlockBuilder({
         {addLabel}
       </button>
 
-      {showMenu && (
+      {showMenu &&
+        renderMenu &&
+        renderMenu({ add: addBlock, close: () => setShowMenu(false) })}
+
+      {showMenu && !renderMenu && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4"
           onClick={() => setShowMenu(false)}

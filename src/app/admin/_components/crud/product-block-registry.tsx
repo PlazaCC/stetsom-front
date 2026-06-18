@@ -69,7 +69,7 @@ function HeadingFields({
  */
 export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
   TEXT: {
-    label: "Texto",
+    label: "Texto / Descritiva",
     description: "Bloco de texto rico.",
     icon: FileText,
     defaultData: { content: "", title: "", align: "left" },
@@ -104,11 +104,27 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
   },
   IMAGE: {
     label: "Imagem",
-    description: "Imagem única.",
+    description: "Imagem que ocupa a largura ou lateral do layout.",
     icon: ImageIcon,
-    defaultData: { library_id: "", file_url: "", title: "", description: "" },
+    defaultData: {
+      library_id: "",
+      file_url: "",
+      title: "",
+      description: "",
+      layout: "full",
+    },
     Form: ({ data, onChange }) => (
       <div className="space-y-3">
+        <div>
+          <label className={fieldLabel}>Layout</label>
+          <AdminSelect
+            value={str(data, "layout") || "full"}
+            onChange={(e) => onChange({ ...data, layout: e.target.value })}
+          >
+            <option value="full">Imagem Full</option>
+            <option value="side">Imagem Side</option>
+          </AdminSelect>
+        </div>
         <HeadingFields data={data} onChange={onChange} />
         <LibraryAssetPicker
           type="IMAGE"
@@ -130,7 +146,7 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
   },
   VIDEO: {
     label: "Vídeo",
-    description: "Vídeo do YouTube embedado.",
+    description: "Exibe um vídeo incorporado por link (youtube / vimeo).",
     icon: Video,
     defaultData: { url: "", title: "", description: "" },
     Form: ({ data, onChange }) => (
@@ -154,8 +170,8 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
     ),
   },
   HTML: {
-    label: "HTML",
-    description: "Conteúdo HTML customizado.",
+    label: "Seção livre (HTML)",
+    description: "Permite inserir um conteúdo HTML personalizado.",
     icon: Code,
     defaultData: { content: "" },
     Form: ({ data, onChange }) => (
@@ -167,8 +183,8 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
     ),
   },
   MODEL3D: {
-    label: "Modelo 3D",
-    description: "Arquivo .glb interativo.",
+    label: "Arquivo 3D",
+    description: "Exibe um modelo 3d interativo (.glb / .gltf).",
     icon: Box,
     defaultData: {
       modelFile: "",
@@ -254,6 +270,7 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
     label: "Galeria",
     description: "Várias imagens.",
     icon: Images,
+    hideFromMenu: true,
     defaultData: { images: [], title: "", description: "" },
     Form: ({ data, onChange }) => {
       const images = Array.isArray(data.images)

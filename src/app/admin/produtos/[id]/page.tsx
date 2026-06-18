@@ -1,4 +1,4 @@
-import { ProductWizard } from "@/app/admin/_components/product-wizard";
+import { ProductWizard } from "@/app/admin/_components/product-wizard/wizard";
 import { serverOrvalClient } from "@/api/stetsom/orval-server";
 import type { CmsProductDetailPayload } from "@/api/stetsom/model";
 
