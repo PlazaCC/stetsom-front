@@ -14,7 +14,7 @@ import {
 } from "@/lib/page-blocks";
 import { getLocale, getTranslations } from "next-intl/server";
 import Image from "next/image";
-import { CompanyTimeline } from "../_components/company-timeline";
+import { TimelineCarousel } from "../_components/timeline-carousel";
 import { MilestonesMarquee } from "../_components/milestones-marquee";
 import { OurFactory } from "../_components/our-factory";
 import { OurFoundations } from "../_components/our-foundations";
@@ -150,7 +150,7 @@ export default async function SobrePage() {
         />
       )}
       {!timelineData.hidden && timelineData.events?.length ? (
-        <CompanyTimeline
+        <TimelineCarousel
           events={timelineData.events.map((e) => ({
             year: String(e.year),
             title: e.title,
