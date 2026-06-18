@@ -40,7 +40,6 @@ export default async function SuportePage() {
     serverOrvalClient<PartnerLocation[]>({
       method: "GET",
       url: "/api/partner-locations",
-      params: { type: "SERVICE_CENTER" },
     }).catch(() => [] as PartnerLocation[]),
   ]);
 
@@ -90,10 +89,7 @@ export default async function SuportePage() {
         />
       )}
       {!mapData.hidden && (
-        <SupportServiceCenters
-          serviceCenters={serviceCenters}
-          mapImage={mapData.mapImage}
-        />
+        <SupportServiceCenters serviceCenters={serviceCenters} />
       )}
       {!docData.hidden &&
       (docData.categories?.length || docData.files?.length) ? (

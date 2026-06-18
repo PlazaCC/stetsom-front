@@ -8,5 +8,9 @@ export default async function AdminCategoriaTemplateEditPage({
   params,
 }: PageProps) {
   const { id, templateId } = await params;
-  return <TemplateForm mode="edit" categoryId={id} templateId={templateId} />;
+  return (
+    <div className="px-4 py-4 lg:px-11.75 lg:py-7.25">
+      <TemplateForm mode="edit" categoryId={id} templateId={templateId} />
+    </div>
+  );
 }

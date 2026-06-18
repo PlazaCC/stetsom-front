@@ -170,7 +170,7 @@ export function PreviewPanel({
   }
 
   return (
-    <div className="rounded-[16px] border border-border bg-card">
+    <div className="flex h-full flex-col overflow-hidden rounded-card border border-border bg-card">
       <div className="flex items-center justify-between border-b border-border px-5 py-4">
         <h2 className="text-base font-semibold text-foreground">Preview</h2>
         <div className="flex items-center gap-2">
@@ -187,7 +187,7 @@ export function PreviewPanel({
       </div>
       {/* Inline frame is sized to its content so the only scroll is the app
           shell's <main>. The device preview has no internal scrollbar. */}
-      <div className="flex justify-center bg-muted p-3">
+      <div className="flex justify-center overflow-auto">
         <iframe
           ref={iframeRef}
           src={FRAME_URL}

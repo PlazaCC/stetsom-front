@@ -1,9 +1,8 @@
 "use client";
 
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import { BlockBuilder } from "@/app/admin/_components/crud/block-builder";
+import { BlockManager } from "@/app/admin/_components/crud/block-manager";
 import { PRODUCT_BLOCK_REGISTRY } from "@/app/admin/_components/crud/product-block-registry";
-import { BlockPickerModal } from "./block-picker-modal";
 import type { WizardAction, WizardState } from "./wizard-store";
 
 interface StepCustomizeProps {
@@ -17,14 +16,11 @@ export function StepCustomize({ state, dispatch }: StepCustomizeProps) {
       title="Blocos customizáveis"
       description="Adicione e organize os blocos que complementam a página do produto."
     >
-      <BlockBuilder
+      <BlockManager
         registry={PRODUCT_BLOCK_REGISTRY}
         value={state.blocks}
         onChange={(blocks) => dispatch({ type: "set_blocks", blocks })}
         addLabel="Adicione um bloco"
-        renderMenu={({ add, close }) => (
-          <BlockPickerModal onAdd={add} onClose={close} />
-        )}
       />
     </AdminFormSection>
   );

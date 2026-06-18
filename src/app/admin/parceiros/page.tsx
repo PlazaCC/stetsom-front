@@ -17,10 +17,8 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import {
-  AdminInput,
-  AdminLabel,
-} from "@/app/admin/_components/crud/admin-input";
+import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
+import { Input } from "@/components/ui/input";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminPagination } from "@/app/admin/_components/crud/admin-pagination";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
@@ -136,7 +134,7 @@ function PartnerLocationForm({
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <AdminLabel>Nome</AdminLabel>
-              <AdminInput
+              <Input
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -144,7 +142,7 @@ function PartnerLocationForm({
             </div>
             <div>
               <AdminLabel>Endereço</AdminLabel>
-              <AdminInput
+              <Input
                 required
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -153,7 +151,7 @@ function PartnerLocationForm({
             <div className="grid grid-cols-3 gap-3">
               <div className="col-span-2">
                 <AdminLabel>Cidade</AdminLabel>
-                <AdminInput
+                <Input
                   required
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
@@ -161,7 +159,7 @@ function PartnerLocationForm({
               </div>
               <div>
                 <AdminLabel>UF</AdminLabel>
-                <AdminInput
+                <Input
                   required
                   maxLength={2}
                   className="uppercase"
@@ -173,7 +171,7 @@ function PartnerLocationForm({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <AdminLabel>CEP</AdminLabel>
-                <AdminInput
+                <Input
                   required
                   value={zip}
                   onChange={(e) => setZip(e.target.value)}
@@ -184,12 +182,12 @@ function PartnerLocationForm({
                   {isRepresentative ? "Região" : "Especialidade"}
                 </AdminLabel>
                 {isRepresentative ? (
-                  <AdminInput
+                  <Input
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                   />
                 ) : (
-                  <AdminInput
+                  <Input
                     value={specialty}
                     onChange={(e) => setSpecialty(e.target.value)}
                   />
@@ -199,14 +197,14 @@ function PartnerLocationForm({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <AdminLabel>Telefone</AdminLabel>
-                <AdminInput
+                <Input
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
               <div>
                 <AdminLabel>E-mail</AdminLabel>
-                <AdminInput
+                <Input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -215,7 +213,7 @@ function PartnerLocationForm({
             </div>
             <div>
               <AdminLabel>Website</AdminLabel>
-              <AdminInput
+              <Input
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
               />
@@ -442,7 +440,7 @@ export default function AdminParceirosPage() {
   ];
 
   return (
-    <>
+    <div className="px-4 py-4 lg:px-11.75 lg:py-7.25">
       <AdminListPage
         title="Parceiros"
         icon={Building2}
@@ -571,6 +569,6 @@ export default function AdminParceirosPage() {
         }}
         onCancel={() => setDeleteTarget(undefined)}
       />
-    </>
+    </div>
   );
 }

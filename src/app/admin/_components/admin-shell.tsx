@@ -22,9 +22,7 @@ function PanelLayout({ children }: { children: React.ReactNode }) {
       <AdminSidebar open={navOpen} onClose={() => setNavOpen(false)} />
       <div className="flex flex-1 flex-col overflow-hidden">
         <AdminTopbar onMenuClick={() => setNavOpen(true)} />
-        <main className="flex-1 overflow-y-auto bg-background px-4 py-4 lg:px-11.75 lg:py-7.25">
-          {children}
-        </main>
+        <main className="flex-1 overflow-y-auto bg-background">{children}</main>
       </div>
     </div>
   );

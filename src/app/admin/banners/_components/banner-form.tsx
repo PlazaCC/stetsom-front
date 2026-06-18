@@ -2,13 +2,21 @@
 
 import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
 import { AdminPanel } from "@/app/admin/_components/admin-panel";
-import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import {
-  AdminInput,
-  AdminLabel,
-  AdminSelect,
-} from "@/app/admin/_components/crud/admin-input";
+  AdminFormSection,
+  AdminFormSectionContent,
+  AdminFormSectionTitle,
+} from "@/app/admin/_components/crud/admin-form-section";
+import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { Banner, BannerStatus, I18nString } from "@/api/stetsom/model";
 import { toDisplayLocale } from "@/lib/api/i18n-utils";
 import { ArrowLeft, Image, X } from "lucide-react";
@@ -137,7 +145,7 @@ function ImageUploadSlot({
             <button
               type="button"
               onClick={onClear}
-              className="absolute right-1 top-1 flex size-5 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+              className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
             >
               <X className="size-3" />
             </button>
@@ -217,10 +225,10 @@ export function BannerForm({
       <div className="grid grid-cols-[1fr_360px] gap-5">
         <div className="space-y-5">
           <AdminFormSection title="Informações do banner">
-            <div className="space-y-4">
+            <AdminFormSectionContent>
               <div>
                 <AdminLabel>Nome do banner *</AdminLabel>
-                <AdminInput
+                <Input
                   required
                   value={draft.name}
                   onChange={(e) => onDraftChange("name", e.target.value)}
@@ -231,7 +239,7 @@ export function BannerForm({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <AdminLabel>Produto associado (opcional)</AdminLabel>
-                  <AdminInput
+                  <Input
                     value={draft.product_id}
                     onChange={(e) =>
                       onDraftChange("product_id", e.target.value)
@@ -241,7 +249,7 @@ export function BannerForm({
                 </div>
                 <div>
                   <AdminLabel>URL de destino para produto</AdminLabel>
-                  <AdminInput
+                  <Input
                     value={draft.link_url}
                     onChange={(e) => onDraftChange("link_url", e.target.value)}
                     placeholder="/produtos/st-4000eq"
@@ -251,7 +259,7 @@ export function BannerForm({
 
               <div>
                 <AdminLabel>Link personalizado (opcional)</AdminLabel>
-                <AdminInput
+                <Input
                   type="url"
                   value={draft.href}
                   onChange={(e) => onDraftChange("href", e.target.value)}
@@ -273,7 +281,7 @@ export function BannerForm({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <AdminLabel>Etiqueta (opcional)</AdminLabel>
-                  <AdminInput
+                  <Input
                     value={draft.label}
                     onChange={(e) => onDraftChange("label", e.target.value)}
                     placeholder="Ex: LANÇAMENTO"
@@ -281,7 +289,7 @@ export function BannerForm({
                 </div>
                 <div>
                   <AdminLabel>Ordem</AdminLabel>
-                  <AdminInput
+                  <Input
                     type="number"
                     min={0}
                     value={draft.order}
@@ -299,142 +307,167 @@ export function BannerForm({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <AdminLabel>Idioma</AdminLabel>
-                  <AdminSelect
+                  <Select
                     value={draft.locale}
-                    onChange={(e) => onDraftChange("locale", e.target.value)}
+                    onValueChange={(value) =>
+                      onDraftChange("locale", value ?? "")
+                    }
                   >
-                    <option value="pt-BR">🇧🇷 Português (BR)</option>
-                    <option value="en">🇺🇸 English</option>
-                    <option value="es">🇪🇸 Español</option>
-                  </AdminSelect>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Selecione..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pt-BR">🇧🇷 Português (BR)</SelectItem>
+                      <SelectItem value="en">🇺🇸 English</SelectItem>
+                      <SelectItem value="es">🇪🇸 Español</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <AdminLabel>Status</AdminLabel>
-                  <AdminSelect
+                  <Select
                     value={draft.status}
-                    onChange={(e) => onDraftChange("status", e.target.value)}
+                    onValueChange={(value) =>
+                      onDraftChange("status", value ?? "")
+                    }
                   >
-                    <option value="ACTIVE">Ativo</option>
-                    <option value="INACTIVE">Inativo</option>
-                    <option value="SCHEDULED">Agendado</option>
-                  </AdminSelect>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Selecione..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ACTIVE">Ativo</SelectItem>
+                      <SelectItem value="INACTIVE">Inativo</SelectItem>
+                      <SelectItem value="SCHEDULED">Agendado</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
-            </div>
-          </AdminFormSection>
+            </AdminFormSectionContent>
 
-          <AdminFormSection
-            title="Período de exibição"
-            description="Deixe em branco para exibir indefinidamente."
-          >
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <AdminLabel>Início</AdminLabel>
-                <AdminInput
-                  type="date"
-                  value={draft.display_from}
-                  onChange={(e) =>
-                    onDraftChange("display_from", e.target.value)
-                  }
-                />
+            <AdminFormSectionTitle
+              title="Período de exibição"
+              description="Deixe em branco para exibir indefinidamente."
+              className="border-t"
+            />
+            <AdminFormSectionContent>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <AdminLabel>Início</AdminLabel>
+                  <Input
+                    type="date"
+                    value={draft.display_from}
+                    onChange={(e) =>
+                      onDraftChange("display_from", e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <AdminLabel>Fim</AdminLabel>
+                  <Input
+                    type="date"
+                    value={draft.display_until}
+                    onChange={(e) =>
+                      onDraftChange("display_until", e.target.value)
+                    }
+                  />
+                </div>
               </div>
-              <div>
-                <AdminLabel>Fim</AdminLabel>
-                <AdminInput
-                  type="date"
-                  value={draft.display_until}
-                  onChange={(e) =>
-                    onDraftChange("display_until", e.target.value)
-                  }
-                />
-              </div>
-            </div>
-          </AdminFormSection>
+            </AdminFormSectionContent>
 
-          <AdminFormSection title="Imagens">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <AdminLabel>Imagem desktop *</AdminLabel>
-                <ImageUploadSlot
-                  url={draft.desktop_image_url}
-                  label="Clique para selecionar"
-                  onFile={(file) => {
-                    const previewUrl = URL.createObjectURL(file);
-                    onDraftChange("desktop_image_url", previewUrl);
-                    onDesktopFile?.(file);
-                  }}
-                  onClear={
-                    draft.desktop_image_url
-                      ? () => {
-                          onDraftChange("desktop_image_url", "");
-                          onClearDesktopFile?.();
-                        }
-                      : undefined
-                  }
-                />
+            <AdminFormSectionTitle title="Imagens" className="border-t" />
+            <AdminFormSectionContent>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <AdminLabel>Imagem desktop *</AdminLabel>
+                  <ImageUploadSlot
+                    url={draft.desktop_image_url}
+                    label="Clique para selecionar"
+                    onFile={(file) => {
+                      const previewUrl = URL.createObjectURL(file);
+                      onDraftChange("desktop_image_url", previewUrl);
+                      onDesktopFile?.(file);
+                    }}
+                    onClear={
+                      draft.desktop_image_url
+                        ? () => {
+                            onDraftChange("desktop_image_url", "");
+                            onClearDesktopFile?.();
+                          }
+                        : undefined
+                    }
+                  />
+                </div>
+                <div>
+                  <AdminLabel>Imagem mobile (opcional)</AdminLabel>
+                  <ImageUploadSlot
+                    url={draft.mobile_image_url}
+                    label="Clique para selecionar"
+                    onFile={(file) => {
+                      const previewUrl = URL.createObjectURL(file);
+                      onDraftChange("mobile_image_url", previewUrl);
+                      onMobileFile?.(file);
+                    }}
+                    onClear={
+                      draft.mobile_image_url
+                        ? () => {
+                            onDraftChange("mobile_image_url", "");
+                            onClearMobileFile?.();
+                          }
+                        : undefined
+                    }
+                  />
+                </div>
               </div>
-              <div>
-                <AdminLabel>Imagem mobile (opcional)</AdminLabel>
-                <ImageUploadSlot
-                  url={draft.mobile_image_url}
-                  label="Clique para selecionar"
-                  onFile={(file) => {
-                    const previewUrl = URL.createObjectURL(file);
-                    onDraftChange("mobile_image_url", previewUrl);
-                    onMobileFile?.(file);
-                  }}
-                  onClear={
-                    draft.mobile_image_url
-                      ? () => {
-                          onDraftChange("mobile_image_url", "");
-                          onClearMobileFile?.();
-                        }
-                      : undefined
-                  }
-                />
-              </div>
-            </div>
+            </AdminFormSectionContent>
           </AdminFormSection>
         </div>
 
         {/* Preview side panel */}
         <div className="space-y-4">
           <AdminFormSection title="Prévia — Desktop">
-            <div className="overflow-hidden rounded-md border border-border bg-muted">
-              {draft.desktop_image_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={draft.desktop_image_url}
-                  alt="Preview desktop"
-                  className="h-36 w-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = "none";
-                  }}
-                />
-              ) : (
-                <div className="flex h-36 items-center justify-center">
-                  {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                  <Image className="size-10 text-muted-foreground/30" />
-                </div>
-              )}
-            </div>
-          </AdminFormSection>
-
-          {draft.mobile_image_url && (
-            <AdminFormSection title="Prévia — Mobile">
+            <AdminFormSectionContent>
               <div className="overflow-hidden rounded-md border border-border bg-muted">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={draft.mobile_image_url}
-                  alt="Preview mobile"
-                  className="h-24 w-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = "none";
-                  }}
-                />
+                {draft.desktop_image_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={draft.desktop_image_url}
+                    alt="Preview desktop"
+                    className="h-36 w-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                ) : (
+                  <div className="flex h-36 items-center justify-center">
+                    {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                    <Image className="size-10 text-muted-foreground/30" />
+                  </div>
+                )}
               </div>
-            </AdminFormSection>
-          )}
+            </AdminFormSectionContent>
+
+            {draft.mobile_image_url && (
+              <>
+                <AdminFormSectionTitle
+                  title="Prévia — Mobile"
+                  className="border-t"
+                />
+                <AdminFormSectionContent>
+                  <div className="overflow-hidden rounded-md border border-border bg-muted">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={draft.mobile_image_url}
+                      alt="Preview mobile"
+                      className="h-24 w-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  </div>
+                </AdminFormSectionContent>
+              </>
+            )}
+          </AdminFormSection>
         </div>
       </div>
 

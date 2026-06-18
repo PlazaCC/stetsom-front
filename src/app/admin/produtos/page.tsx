@@ -170,7 +170,7 @@ export default function AdminProdutos() {
 
   if (cmsProducts.isError) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
+      <div className="flex flex-col items-center justify-center gap-3 px-4 py-4 text-center lg:px-11.75 lg:py-7.25">
         <p className="text-sm font-medium text-destructive">
           Sessão expirada ou sem permissão.
         </p>
@@ -185,7 +185,7 @@ export default function AdminProdutos() {
   }
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 px-4 py-4 lg:px-11.75 lg:py-7.25">
       <ProdutosTabs />
       <AdminListPage
         title="Produtos"
@@ -231,7 +231,7 @@ export default function AdminProdutos() {
                   Filtrar
                 </button>
                 {filterOpen && (
-                  <div className="absolute left-0 top-10 z-10 w-44 rounded-md border border-border bg-card p-1 shadow-lg">
+                  <div className="absolute top-10 left-0 z-10 w-44 rounded-md border border-border bg-card p-1 shadow-lg">
                     {STATUS_OPTIONS.map((opt) => (
                       <button
                         key={opt.value}

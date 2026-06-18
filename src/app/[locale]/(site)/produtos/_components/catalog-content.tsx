@@ -48,12 +48,16 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
     sort,
     page,
     sidebarOpen,
+    showDiscontinued,
+    showExport,
     setActiveCategory,
     setActiveLine,
     setSearch,
     setSort,
     setPage,
     setSidebarOpen,
+    setShowDiscontinued,
+    setShowExport,
     clearFilters,
   } = useCatalogFilters();
 
@@ -111,25 +115,25 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
 
   return (
     <div>
-      <section className="relative overflow-hidden bg-brand-dark h-72 lg:h-84">
-        <div className="absolute inset-0 bg-radial-dark" />
-        <Image
+      <section className="relative h-72 overflow-hidden bg-brand-dark lg:h-84">
+        <div className="bg-radial-dark absolute inset-0" />
+        {/* <Image
           src={DEFAULT_HERO_IMAGE}
           alt={t("heroImageAlt")}
           fill
           className="object-cover opacity-45"
           sizes="100vw"
           priority
-        />
-        <div className="absolute inset-0 bg-gradient-fade-black" />
+        /> */}
+        <div className="bg-gradient-fade-black absolute inset-0" />
         <Container className="relative z-10 pt-8 md:pt-16 lg:pt-25.75">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-6 h-px bg-brand shrink-0" />
-            <span className="font-sans-condensed font-medium text-xs md:text-base uppercase text-brand">
+          <div className="mb-1 flex items-center gap-2">
+            <div className="h-px w-6 shrink-0 bg-brand" />
+            <span className="font-sans-condensed text-xs font-medium text-brand uppercase md:text-base">
               {t("heroLabel")}
             </span>
           </div>
-          <h1 className="font-sans-condensed font-black text-5xl md:text-6xl lg:text-[90px] leading-tight md:leading-16 lg:leading-18.5 uppercase text-white">
+          <h1 className="font-sans-condensed text-5xl leading-tight font-black text-white uppercase md:text-6xl md:leading-16 lg:text-[90px] lg:leading-18.5">
             {t("heroTitle")
               .split("\n")
               .map((line) => (
@@ -138,22 +142,19 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
                 </span>
               ))}
           </h1>
-          <span className="text-xs md:text-base text-text-subtle-dark mt-2 block">
-            <strong className="font-sans-condensed font-black text-xl text-white">
-              {totalProducts}
-            </strong>{" "}
+          <span className="mt-2 block text-xs text-text-subtle-dark md:text-base">
             {t("products", { count: totalProducts })}
           </span>
         </Container>
-        <div className="absolute right-0 bottom-0 font-sans-condensed font-black text-display-2xl sm:text-[150px] lg:text-[263px] text-watermark-text leading-none pointer-events-none select-none opacity-[0.08]">
-          PRO
+        <div className="pointer-events-none absolute -right-16 -bottom-16 font-sans-condensed text-display-2xl leading-none font-black text-watermark-text opacity-[0.08] select-none sm:text-[150px] lg:text-[263px]">
+          PRODUTOS
         </div>
-        <div className="absolute left-0 top-0 w-3.5 h-full bg-brand" />
+        <div className="absolute top-0 left-0 h-full w-3.5 bg-brand" />
       </section>
 
-      <section className="bg-white border-b border-border py-8">
+      <section className="border-b border-border bg-white py-8">
         <Container>
-          <p className="mb-5 font-sans-condensed text-xs font-black uppercase tracking-widest text-muted-foreground">
+          <p className="mb-5 font-sans-condensed text-xs font-black tracking-widest text-muted-foreground uppercase">
             {t("categories")}
           </p>
           <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8">
@@ -174,13 +175,13 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
                       isActive ? "bg-brand/10" : "bg-muted",
                     )}
                   >
-                    <span className="font-sans-condensed text-xs font-black uppercase text-muted-foreground">
+                    <span className="font-sans-condensed text-xs font-black text-muted-foreground uppercase">
                       {cat.name.slice(0, 2)}
                     </span>
                   </div>
                   <span
                     className={cn(
-                      "font-sans text-2xs font-medium leading-tight",
+                      "font-sans text-2xs leading-tight font-medium",
                       isActive ? "text-brand" : "text-muted-foreground",
                     )}
                   >
@@ -208,22 +209,26 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
               onClear={clearFilters}
               typeFilterOptions={typeFilterOptions}
               productLines={productLines}
+              showDiscontinued={showDiscontinued}
+              onShowDiscontinuedChange={setShowDiscontinued}
+              showExport={showExport}
+              onShowExportChange={setShowExport}
             />
 
-            <div className="flex-1 min-w-0">
-              <div className="flex gap-3 mb-4 lg:hidden">
-                <div className="flex-1 border border-border flex items-center h-10 px-3 gap-2">
-                  <Search size={14} className="text-icon-muted shrink-0" />
+            <div className="min-w-0 flex-1">
+              <div className="mb-4 flex gap-3 lg:hidden">
+                <div className="flex h-10 flex-1 items-center gap-2 border border-border px-3">
+                  <Search size={14} className="shrink-0 text-icon-muted" />
                   <input
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                     placeholder={t("searchPlaceholder")}
-                    className="border-none outline-none text-sm flex-1 text-brand-dark bg-transparent"
+                    className="flex-1 border-none bg-transparent text-sm text-brand-dark outline-none"
                   />
                 </div>
                 <button
                   onClick={() => setSidebarOpen((v) => !v)}
-                  className="border border-border flex items-center gap-2 px-3 h-10 text-sm text-muted-foreground"
+                  className="flex h-10 items-center gap-2 border border-border px-3 text-sm text-muted-foreground"
                 >
                   <SlidersHorizontal size={14} />
                   {t("filters")}
@@ -243,7 +248,7 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
 
               {productCards.length > 0 ? (
                 <>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5 md:gap-8">
+                  <div className="grid grid-cols-2 gap-5 md:grid-cols-3 md:gap-8 lg:grid-cols-3">
                     {productCards.map((product) => (
                       <ProductCard
                         key={product.id}
@@ -261,7 +266,7 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
                         type="button"
                         disabled={page <= 1}
                         onClick={() => setPage(page - 1)}
-                        className="border border-border px-4 h-10 text-sm font-medium text-muted-foreground transition-colors hover:text-brand disabled:opacity-40 disabled:hover:text-muted-foreground"
+                        className="h-10 border border-border px-4 text-sm font-medium text-muted-foreground transition-colors hover:text-brand disabled:opacity-40 disabled:hover:text-muted-foreground"
                       >
                         {t("paginationPrevious")}
                       </button>
@@ -275,7 +280,7 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
                         type="button"
                         disabled={page >= catalog.totalPages}
                         onClick={() => setPage(page + 1)}
-                        className="border border-border px-4 h-10 text-sm font-medium text-muted-foreground transition-colors hover:text-brand disabled:opacity-40 disabled:hover:text-muted-foreground"
+                        className="h-10 border border-border px-4 text-sm font-medium text-muted-foreground transition-colors hover:text-brand disabled:opacity-40 disabled:hover:text-muted-foreground"
                       >
                         {t("paginationNext")}
                       </button>
@@ -283,7 +288,7 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
                   )}
                 </>
               ) : (
-                <div className="text-center py-16 text-muted-foreground text-base">
+                <div className="py-16 text-center text-base text-muted-foreground">
                   {t("noProducts")}
                 </div>
               )}

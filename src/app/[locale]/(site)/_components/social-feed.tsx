@@ -45,7 +45,7 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
   const posts = section.posts ?? [];
 
   return (
-    <section className="flex justify-center overflow-x-hidden bg-off-white py-10 sm:py-12">
+    <section className="flex justify-center overflow-x-hidden bg-white py-10 sm:py-12">
       <Container>
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <SectionLabel
@@ -103,7 +103,7 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
                     )}
                   </div>
                   <div className="flex flex-col gap-1">
-                    <span className="text-2xs font-sans-condensed font-semibold uppercase text-muted-foreground">
+                    <span className="font-sans-condensed text-2xs font-semibold text-muted-foreground uppercase">
                       @{post.username ?? ""}
                     </span>
                     <span className="text-sm text-foreground">

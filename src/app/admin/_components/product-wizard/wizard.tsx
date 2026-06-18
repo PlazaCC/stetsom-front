@@ -13,13 +13,20 @@ import type {
   PostApiProductsBody,
   ProductStatus,
 } from "@/api/stetsom/model";
-import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
-import type { AdminStep } from "@/app/admin/_components/crud/admin-step-indicator";
+import { AdminDeleteAction } from "@/app/admin/_components/crud/admin-delete-action";
 import { AdminWizardPage } from "@/app/admin/_components/crud/admin-wizard-page";
+import {
+  AdminWizardTabs,
+  type AdminWizardTab,
+} from "@/app/admin/_components/crud/admin-wizard-tabs";
+import { AdminPanel } from "@/app/admin/_components/admin-panel";
+import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
+import { AdminSaveBar } from "@/app/admin/_components/crud/admin-save-bar";
 import { ProductWizardStepSuccess } from "@/app/admin/_components/product-wizard-step-success";
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { slugify } from "@/lib/utils/slugify";
 import { useMutation } from "@tanstack/react-query";
+import { Eye, Package } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useState } from "react";
 import { buildPreviewModel } from "./build-preview-model";
@@ -29,7 +36,6 @@ import { StepFiles } from "./step-files";
 import { StepGeneral } from "./step-general";
 import { StepPublish } from "./step-publish";
 import { StepSpecs } from "./step-specs";
-import { WizardFooter } from "./wizard-footer";
 import { syncBlocks, syncFiles, syncImages } from "./wizard-sync";
 import {
   buildPayload,
@@ -56,7 +62,7 @@ const STEP_LABELS = [
   "Dados gerais",
   "Especificações técnicas",
   "Arquivos",
-  "Customização",
+  "Blocos Customizados",
   "Publicação",
 ];
 
@@ -69,7 +75,6 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
 
   const [publishedResult, setPublishedResult] =
     useState<ProductMutationResult | null>(null);
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   useEffect(() => {
     // The admin shell owns the page scroll on its <main>, not the window.
@@ -172,14 +177,6 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     }
   }
 
-  function handleCancel() {
-    if (state.isDirty) {
-      setShowCancelConfirm(true);
-      return;
-    }
-    router.push("/admin/produtos");
-  }
-
   async function handleDelete() {
     if (!state.productId) return;
     try {
@@ -216,12 +213,6 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     );
   }
 
-  const steps: AdminStep[] = STEP_LABELS.map((label, i) => ({
-    label,
-    status:
-      state.step > i + 1 ? "done" : state.step === i + 1 ? "active" : "pending",
-  }));
-
   const hasSaved = !!state.productId;
   const previewModel = buildPreviewModel(state, categories);
   const previewSlug = state.slug.pt || slugify(state.name.pt);
@@ -230,10 +221,26 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
       ? `/api/draft?slug=${encodeURIComponent(previewSlug)}`
       : null;
 
+  const tabs: AdminWizardTab[] = STEP_LABELS.map((label) => ({ label }));
+  const title =
+    mode === "create"
+      ? "Novo Produto"
+      : `Editar: ${state.name.pt || "Produto"}`;
+
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex h-full flex-col">
+      <AdminPanel className="flex flex-col justify-between">
+        <AdminPageHeader title={title} />
+        <AdminWizardTabs
+          tabs={tabs}
+          activeIndex={state.step - 1}
+          onSelect={(index) =>
+            dispatch({ type: "go_to_step", step: (index + 1) as WizardStep })
+          }
+        />
+      </AdminPanel>
+
       <AdminWizardPage
-        steps={steps}
         aside={
           <PreviewPanel
             model={previewModel}
@@ -241,11 +248,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
             realPageHref={realPageHref}
           />
         }
-        onStepClick={(index) =>
-          dispatch({ type: "go_to_step", step: (index + 1) as WizardStep })
-        }
       >
-        <div className="space-y-5">
+        <div className="flex-1 space-y-5">
           {state.step === 1 && (
             <StepGeneral
               state={state}
@@ -269,46 +273,43 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           {state.step === 5 && (
             <StepPublish state={state} dispatch={dispatch} />
           )}
-
-          <WizardFooter
-            step={state.step}
-            isSaving={isSaving}
-            publishLabel={
-              mode === "create" ? "Publicar produto" : "Salvar alterações"
-            }
-            hasProductId={!!state.productId}
-            onSaveDraft={handleSaveDraft}
-            onCancel={handleCancel}
-            onBack={() =>
-              dispatch({
-                type: "go_to_step",
-                step: Math.max(state.step - 1, 1) as WizardStep,
-              })
-            }
-            onNext={() =>
-              dispatch({
-                type: "go_to_step",
-                step: Math.min(state.step + 1, 5) as WizardStep,
-              })
-            }
-            onPublish={handlePublish}
-            onDelete={handleDelete}
-            onPreview={handlePreview}
-          />
         </div>
       </AdminWizardPage>
 
-      <AdminConfirmDialog
-        open={showCancelConfirm}
-        title="Sair sem salvar?"
-        description="Você tem alterações não salvas. Deseja sair mesmo assim?"
-        confirmLabel="Sair"
-        destructive
-        onConfirm={() => {
-          setShowCancelConfirm(false);
-          router.push("/admin/produtos");
-        }}
-        onCancel={() => setShowCancelConfirm(false)}
+      <AdminSaveBar
+        onSaveDraft={handleSaveDraft}
+        onPublish={handlePublish}
+        isLoading={isSaving}
+        isDirty={state.isDirty}
+        publishLabel={
+          mode === "create" ? "Publicar produto" : "Salvar alterações"
+        }
+        saveDraftLabel="Salvar rascunho"
+        draftSavedPrefix="Salvo às"
+        actions={
+          <div className="flex items-center gap-2">
+            {hasSaved && (
+              <button
+                type="button"
+                onClick={handlePreview}
+                className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+              >
+                <Eye className="size-4" />
+                Pré-visualizar
+              </button>
+            )}
+            {mode === "edit" && state.productId && (
+              <AdminDeleteAction
+                label="Excluir produto"
+                confirmTitle={`Excluir "${state.name.pt}"?`}
+                confirmDescription="O produto será removido permanentemente. Esta ação não pode ser desfeita."
+                confirmLabel="Sim, excluir"
+                onConfirm={handleDelete}
+                isLoading={deleteMutation.isPending}
+              />
+            )}
+          </div>
+        }
       />
     </div>
   );

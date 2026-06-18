@@ -17,6 +17,8 @@ interface AdminSaveBarProps {
   backLabel?: string;
   draftSavedPrefix?: string;
   className?: string;
+  /** Secondary actions rendered on the left (e.g. delete, preview). */
+  actions?: React.ReactNode;
 }
 
 function formatTime(date: Date) {
@@ -40,11 +42,12 @@ export function AdminSaveBar({
   backLabel,
   draftSavedPrefix,
   className,
+  actions,
 }: AdminSaveBarProps) {
   return (
     <div
       className={cn(
-        "sticky bottom-0 z-10 flex items-center justify-between gap-4 border-t border-border bg-card px-6 py-4",
+        "z-10 flex items-center justify-between gap-4 border-t border-border bg-card px-6 py-4",
         className,
       )}
     >
@@ -65,6 +68,7 @@ export function AdminSaveBar({
             {draftSavedPrefix ?? "Saved at"} {formatTime(draftSavedAt)}
           </span>
         )}
+        {actions}
       </div>
 
       {/* Right: save draft + next/publish */}

@@ -2,10 +2,14 @@
 
 import { AdminDeleteAction } from "@/app/admin/_components/crud/admin-delete-action";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
+import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import {
-  AdminLabel,
-  AdminSelect,
-} from "@/app/admin/_components/crud/admin-input";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
 import { AdminPanel } from "@/app/admin/_components/admin-panel";
@@ -272,21 +276,25 @@ function TemplateFormInner({
             </div>
             {availableAttributes.length > 0 && (
               <div className="mt-2">
-                <AdminSelect
+                <Select
                   value=""
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      setSelectedAttrIds((prev) => [...prev, e.target.value]);
+                  onValueChange={(value) => {
+                    if (value) {
+                      setSelectedAttrIds((prev) => [...prev, value]);
                     }
                   }}
                 >
-                  <option value="">Adicionar atributo...</option>
-                  {availableAttributes.map((attr) => (
-                    <option key={attr.id} value={attr.id}>
-                      {attr.name.pt}
-                    </option>
-                  ))}
-                </AdminSelect>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Adicionar atributo..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableAttributes.map((attr) => (
+                      <SelectItem key={attr.id} value={attr.id}>
+                        {attr.name.pt}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             )}
           </div>

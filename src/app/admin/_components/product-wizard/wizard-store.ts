@@ -1,4 +1,4 @@
-import type { DraftBlock } from "@/app/admin/_components/crud/block-builder";
+import type { DraftBlock } from "@/app/admin/_components/crud/block-manager";
 import type {
   CmsProductDetailPayload,
   I18nString,

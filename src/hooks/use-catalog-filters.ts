@@ -15,6 +15,8 @@ export function useCatalogFilters() {
   const search = searchParams.get("q") || "";
   const sort = searchParams.get("sort") || "relevance";
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
+  const showDiscontinued = searchParams.get("discontinued") !== "0";
+  const showExport = searchParams.get("export") === "1";
 
   const pushParams = useCallback(
     (updater: (p: URLSearchParams) => void) => {
@@ -82,6 +84,26 @@ export function useCatalogFilters() {
     [pushParams],
   );
 
+  const setShowDiscontinued = useCallback(
+    (value: boolean) => {
+      pushParams((p) => {
+        if (!value) p.set("discontinued", "0");
+        else p.delete("discontinued");
+      });
+    },
+    [pushParams],
+  );
+
+  const setShowExport = useCallback(
+    (value: boolean) => {
+      pushParams((p) => {
+        if (value) p.set("export", "1");
+        else p.delete("export");
+      });
+    },
+    [pushParams],
+  );
+
   const clearFilters = useCallback(() => {
     router.replace(pathname, { scroll: false });
   }, [router, pathname]);
@@ -93,12 +115,16 @@ export function useCatalogFilters() {
     sort,
     page,
     sidebarOpen,
+    showDiscontinued,
+    showExport,
     setActiveCategory,
     setActiveLine,
     setSearch,
     setSort,
     setPage,
     setSidebarOpen,
+    setShowDiscontinued,
+    setShowExport,
     clearFilters,
   };
 }

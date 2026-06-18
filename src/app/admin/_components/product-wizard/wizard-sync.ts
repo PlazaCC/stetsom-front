@@ -13,7 +13,7 @@ import type {
   PostApiProductsIdBlocksBodyData,
   PostApiProductsIdBlocksBodyType,
 } from "@/api/stetsom/model";
-import type { DraftBlock } from "@/app/admin/_components/crud/block-builder";
+import type { DraftBlock } from "@/app/admin/_components/crud/block-manager";
 import type { WizardFile, WizardImage } from "./wizard-store";
 
 /** Reconcile product page-blocks via the block sub-resource endpoints. */

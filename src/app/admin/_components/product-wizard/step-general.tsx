@@ -39,14 +39,14 @@ export function StepGeneral({
   );
 
   return (
-    <div className="rounded-[16px] border border-border bg-card">
+    <div className="flex h-full flex-col overflow-hidden rounded-[16px] border border-border bg-card">
       <div className="border-b border-border px-6 py-4">
         <h2 className="text-xl font-bold text-foreground">
           Dados Gerais do Produto
         </h2>
       </div>
 
-      <div className="space-y-6 p-6">
+      <div className="flex-1 space-y-6 overflow-auto p-6">
         <ImageGallery
           images={state.images}
           onChange={(images: WizardImage[]) =>

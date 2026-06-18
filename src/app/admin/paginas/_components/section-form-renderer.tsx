@@ -1,12 +1,16 @@
 "use client";
 
 import type { I18nString } from "@/api/stetsom/model";
-import {
-  AdminInput,
-  AdminLabel,
-  AdminSelect,
-} from "@/app/admin/_components/crud/admin-input";
+import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-picker";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
 import { Plus, Trash2 } from "lucide-react";
@@ -63,7 +67,7 @@ function Field({ field, data, onChange }: FieldProps) {
       return (
         <div>
           <AdminLabel>{field.label}</AdminLabel>
-          <AdminInput
+          <Input
             type={field.inputType ?? "text"}
             placeholder={field.placeholder}
             value={asStr(data[field.key])}
@@ -76,17 +80,24 @@ function Field({ field, data, onChange }: FieldProps) {
       return (
         <div>
           <AdminLabel>{field.label}</AdminLabel>
-          <AdminSelect
+          <Select
             value={asStr(data[field.key])}
-            onChange={(e) => onChange({ ...data, [field.key]: e.target.value })}
+            onValueChange={(value) =>
+              onChange({ ...data, [field.key]: value ?? "" })
+            }
           >
-            <option value="">—</option>
-            {field.options.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </AdminSelect>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="—" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">—</SelectItem>
+              {field.options.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       );
 
@@ -111,7 +122,7 @@ function Field({ field, data, onChange }: FieldProps) {
           : {};
       return (
         <div className="space-y-4 rounded-md border border-border bg-muted/30 p-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
             {field.label}
           </p>
           {field.fields.map((sub) => (
@@ -166,7 +177,7 @@ function StringListField({
           return (
             <div className="flex items-center gap-2 rounded-md border border-border bg-card px-2 py-1.5">
               {handle}
-              <AdminInput
+              <Input
                 className="border-0 px-1 py-0.5 focus:ring-0"
                 placeholder={field.placeholder}
                 value={it.value}

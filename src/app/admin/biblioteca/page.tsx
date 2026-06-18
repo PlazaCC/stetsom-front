@@ -10,10 +10,8 @@ import { UploadProgressList } from "@/components/upload-progress-list";
 import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
 import { AdminFormSection as AdminCard } from "@/app/admin/_components/crud/admin-form-section";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
-import {
-  AdminInput,
-  AdminLabel,
-} from "@/app/admin/_components/crud/admin-input";
+import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
+import { Input } from "@/components/ui/input";
 import {
   deleteApiLibraryId,
   getGetApiLibraryQueryKey,
@@ -138,7 +136,7 @@ function PhotoCard({
             )}
           </button>
         </div>
-        <div className="absolute right-1.5 top-1.5 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="absolute top-1.5 right-1.5 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
           <button
             type="button"
             aria-label="Editar"
@@ -357,7 +355,7 @@ export default function AdminBibliotecaPage() {
 
   if (libraryError) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
+      <div className="flex flex-col items-center justify-center gap-3 px-4 py-4 text-center lg:px-11.75 lg:py-7.25">
         <p className="text-sm font-medium text-destructive">
           Sessão expirada ou sem permissão.
         </p>
@@ -384,6 +382,7 @@ export default function AdminBibliotecaPage() {
 
   return (
     <AdminListPage
+      className="px-4 py-4 lg:px-11.75 lg:py-7.25"
       title="Biblioteca"
       icon={Archive}
       toolbar={
@@ -556,7 +555,7 @@ function EditAssetModal({
           >
             <div>
               <AdminLabel>Nome do arquivo</AdminLabel>
-              <AdminInput
+              <Input
                 value={filename}
                 onChange={(e) => setFilename(e.target.value)}
                 maxLength={255}
@@ -570,7 +569,7 @@ function EditAssetModal({
             />
             <div>
               <AdminLabel>Tags (separadas por vírgula)</AdminLabel>
-              <AdminInput
+              <Input
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
                 placeholder="hero, amplificador, 2024"
