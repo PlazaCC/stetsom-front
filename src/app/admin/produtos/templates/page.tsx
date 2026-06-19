@@ -5,7 +5,6 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
-import { ProdutosTabs } from "@/app/admin/produtos/_components/produtos-tabs";
 import { useGetApiCategories, useGetApiTemplates } from "@/api/stetsom";
 import type { Template } from "@/api/stetsom";
 import { cn } from "@/lib/utils";
@@ -76,7 +75,6 @@ export default function AdminTemplatesPage() {
 
   return (
     <div className="flex flex-col gap-5 px-4 py-4 lg:px-11.75 lg:py-7.25">
-      <ProdutosTabs />
       <AdminListPage
         title="Templates"
         icon={LayoutTemplate}

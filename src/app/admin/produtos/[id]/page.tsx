@@ -1,4 +1,5 @@
 import { ProductWizard } from "@/app/admin/_components/product-wizard/wizard";
+import { SetRouteLabel } from "@/app/admin/_components/admin-route-meta";
 import { serverOrvalClient } from "@/api/stetsom/orval-server";
 import type { CmsProductDetailPayload } from "@/api/stetsom/model";
 
@@ -21,5 +22,10 @@ export default async function AdminProdutoEditPage({ params }: PageProps) {
     );
   }
 
-  return <ProductWizard mode="edit" initial={detail} />;
+  return (
+    <>
+      <SetRouteLabel label={detail.product.name.pt} />
+      <ProductWizard mode="edit" initial={detail} />
+    </>
+  );
 }

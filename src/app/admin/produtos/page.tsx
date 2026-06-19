@@ -12,7 +12,6 @@ import {
   type FilterChip,
 } from "@/app/admin/_components/crud/filter-chips";
 import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
-import { ProdutosTabs } from "@/app/admin/produtos/_components/produtos-tabs";
 import { useGetApiProductsAdmin } from "@/api/stetsom";
 import type { CmsProductRow, CmsProductRowStatus } from "@/api/stetsom/model";
 import { BrFlag, EsFlag, UsFlag } from "@/components/ui/flag-icons";
@@ -186,7 +185,6 @@ export default function AdminProdutos() {
 
   return (
     <div className="flex flex-col gap-5 px-4 py-4 lg:px-11.75 lg:py-7.25">
-      <ProdutosTabs />
       <AdminListPage
         title="Produtos"
         icon={Package}

@@ -8,7 +8,6 @@ import {
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
-import { ProdutosTabs } from "@/app/admin/produtos/_components/produtos-tabs";
 import {
   deleteApiAttributesId,
   getGetApiAttributesQueryKey,
@@ -206,7 +205,6 @@ export default function AdminAtributosPage() {
       />
 
       <div inert={isDialogOpen || undefined}>
-        <ProdutosTabs />
         <AdminListPage
           title="Atributos"
           icon={ListChecks}
