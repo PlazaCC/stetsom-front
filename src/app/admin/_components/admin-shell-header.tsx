@@ -1,7 +1,11 @@
 "use client";
 
 import { AdminTabs } from "@/app/admin/_components/crud/admin-tabs";
-import { useRouteLabels } from "@/app/admin/_components/admin-route-meta";
+import { AdminWizardTabs } from "@/app/admin/_components/crud/admin-wizard-tabs";
+import {
+  useHeaderStepTabs,
+  useRouteLabels,
+} from "@/app/admin/_components/admin-route-meta";
 import {
   buildBreadcrumb,
   resolveRoute,
@@ -25,13 +29,16 @@ interface AdminShellHeaderProps {
 export function AdminShellHeader({ className }: AdminShellHeaderProps) {
   const pathname = usePathname();
   const labels = useRouteLabels();
+  const stepTabs = useHeaderStepTabs();
   const route = resolveRoute(pathname);
 
   // Unmapped route — render nothing rather than a wrong/empty title.
   if (!route) return null;
 
   const crumbs = buildBreadcrumb(pathname, labels);
-  const tabs = resolveTabs(pathname);
+  // A page can contribute stateful step tabs; they take precedence over the
+  // route-based navigation tabs from config.
+  const tabs = stepTabs ? undefined : resolveTabs(pathname);
   const Icon = route.icon;
   // A runtime override (e.g. product name) wins over the static label.
   const title = labels[pathname] ?? route.label;
@@ -39,7 +46,7 @@ export function AdminShellHeader({ className }: AdminShellHeaderProps) {
   return (
     <div
       className={cn(
-        "relative z-10 flex flex-col gap-2 border-b bg-card",
+        "relative z-10 flex flex-col gap-0.5 border-b bg-card",
         className,
       )}
     >
@@ -75,7 +82,16 @@ export function AdminShellHeader({ className }: AdminShellHeaderProps) {
         )}
       </div>
 
-      {tabs && <AdminTabs items={tabs} className="border-b-0 px-5" />}
+      {stepTabs ? (
+        <AdminWizardTabs
+          tabs={stepTabs.steps.map((label) => ({ label }))}
+          activeIndex={stepTabs.activeIndex}
+          onSelect={stepTabs.onSelect}
+          className="px-5 lg:px-5"
+        />
+      ) : tabs && tabs.length > 0 ? (
+        <AdminTabs items={tabs} className="border-b-0 px-5" />
+      ) : null}
     </div>
   );
 }

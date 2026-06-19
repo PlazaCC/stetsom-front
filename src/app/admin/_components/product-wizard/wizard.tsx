@@ -15,20 +15,15 @@ import type {
 } from "@/api/stetsom/model";
 import { AdminDeleteAction } from "@/app/admin/_components/crud/admin-delete-action";
 import { AdminWizardPage } from "@/app/admin/_components/crud/admin-wizard-page";
-import {
-  AdminWizardTabs,
-  type AdminWizardTab,
-} from "@/app/admin/_components/crud/admin-wizard-tabs";
-import { AdminPanel } from "@/app/admin/_components/admin-panel";
-import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
 import { AdminSaveBar } from "@/app/admin/_components/crud/admin-save-bar";
 import { ProductWizardStepSuccess } from "@/app/admin/_components/product-wizard-step-success";
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { slugify } from "@/lib/utils/slugify";
 import { useMutation } from "@tanstack/react-query";
-import { Eye, Package } from "lucide-react";
+import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
+import { useRegisterStepTabs } from "@/app/admin/_components/admin-route-meta";
 import { buildPreviewModel } from "./build-preview-model";
 import { PreviewPanel } from "./preview-panel";
 import { StepCustomize } from "./step-customize";
@@ -47,6 +42,14 @@ import {
   type WizardStep,
 } from "./wizard-store";
 
+const STEP_LABELS = [
+  "Dados gerais",
+  "Especificações técnicas",
+  "Arquivos",
+  "Blocos Customizados",
+  "Publicação",
+];
+
 interface ProductWizardProps {
   initial?: CmsProductDetailPayload;
   mode: "create" | "edit";
@@ -57,14 +60,6 @@ interface ProductMutationResult {
   slug: string;
   status: ProductStatus;
 }
-
-const STEP_LABELS = [
-  "Dados gerais",
-  "Especificações técnicas",
-  "Arquivos",
-  "Blocos Customizados",
-  "Publicação",
-];
 
 export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const router = useRouter();
@@ -203,6 +198,22 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     );
   }
 
+  // Project the wizard steps into the shell header as stateful tabs. Cleared
+  // on the success screen so the header shows no tabs there.
+  const stepTabs = useMemo(
+    () =>
+      publishedResult
+        ? null
+        : {
+            steps: STEP_LABELS,
+            activeIndex: state.step - 1,
+            onSelect: (index: number) =>
+              dispatch({ type: "go_to_step", step: (index + 1) as WizardStep }),
+          },
+    [publishedResult, state.step],
+  );
+  useRegisterStepTabs(stepTabs);
+
   if (publishedResult) {
     return (
       <ProductWizardStepSuccess
@@ -221,25 +232,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
       ? `/api/draft?slug=${encodeURIComponent(previewSlug)}`
       : null;
 
-  const tabs: AdminWizardTab[] = STEP_LABELS.map((label) => ({ label }));
-  const title =
-    mode === "create"
-      ? "Novo Produto"
-      : `Editar: ${state.name.pt || "Produto"}`;
-
   return (
-    <div className="flex h-full flex-col">
-      <AdminPanel className="flex flex-col justify-between">
-        <AdminPageHeader title={title} />
-        <AdminWizardTabs
-          tabs={tabs}
-          activeIndex={state.step - 1}
-          onSelect={(index) =>
-            dispatch({ type: "go_to_step", step: (index + 1) as WizardStep })
-          }
-        />
-      </AdminPanel>
-
+    <div className="flex flex-1 flex-col overflow-hidden">
       <AdminWizardPage
         aside={
           <PreviewPanel

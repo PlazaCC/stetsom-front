@@ -12,12 +12,9 @@ import { useGetApiConfig } from "@/api/stetsom";
 import { patchApiConfig } from "@/api/stetsom/endpoints/config/config";
 import type { CmsConfig, PatchApiConfigBody } from "@/api/stetsom/model";
 import { useMutation } from "@tanstack/react-query";
-import { Settings } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/lib/api/error-utils";
-import { AdminPageHeader } from "../_components/admin-page-header";
-import { AdminPanel } from "../_components/admin-panel";
 
 function ConfigForm({ initialConfig }: { initialConfig: CmsConfig }) {
   const [config, setConfig] = useState<CmsConfig>(initialConfig);
@@ -165,10 +162,6 @@ export default function AdminConfiguracoesPage() {
 
   return (
     <div className="flex flex-col gap-5 px-4 py-4 lg:px-11.75 lg:py-7.25">
-      <AdminPanel className="p-5">
-        <AdminPageHeader title="Configurações" icon={Settings} />
-      </AdminPanel>
-
       {configQuery.isLoading || !configQuery.data ? (
         <div className="flex items-center justify-center py-16">
           <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />

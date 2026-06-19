@@ -7,7 +7,6 @@
  * Reference doc: docs/ia/figma/CMS_DESIGN_SYSTEM.md
  */
 
-import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
 import { AdminPanel } from "@/app/admin/_components/admin-panel";
 import {
   AdminLabel,
@@ -83,8 +82,6 @@ function Section({
 export default function StyleguidePage() {
   return (
     <div className="space-y-8 px-4 py-4 lg:px-11.75 lg:py-7.25">
-      <AdminPageHeader title="Design System" />
-
       <Section title="Tipografia (Geist)">
         <div className="space-y-1">
           <p className="text-2xl font-bold text-foreground">

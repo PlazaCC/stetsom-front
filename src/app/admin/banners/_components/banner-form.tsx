@@ -1,6 +1,5 @@
 "use client";
 
-import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
 import { AdminPanel } from "@/app/admin/_components/admin-panel";
 import {
   AdminFormSection,
@@ -207,11 +206,7 @@ export function BannerForm({
 }: BannerFormProps) {
   return (
     <div className="flex flex-col gap-5">
-      <AdminPanel className="flex items-center justify-between p-5">
-        <AdminPageHeader
-          title={isCreating ? "Novo banner" : "Editar banner"}
-          icon={Image}
-        />
+      <AdminPanel className="flex items-center justify-end p-5">
         <button
           type="button"
           onClick={onCancel}

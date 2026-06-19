@@ -77,14 +77,18 @@ export const config: Record<string, AppRouteStaticData> = {
     tabs: PRODUTOS_TABS,
     section: "admin",
   },
+  // Wizard routes own their tabs as in-page steps — `tabs: []` stops the
+  // Produtos area navigation tabs from being inherited here.
   "/admin/produtos/novo": {
     label: "Cadastrar produto",
     icon: Package,
+    tabs: [],
     section: "admin",
   },
   "/admin/produtos/[id]": {
     label: "Editar produto",
     icon: Package,
+    tabs: [],
     section: "admin",
   },
   "/admin/produtos/categorias": {

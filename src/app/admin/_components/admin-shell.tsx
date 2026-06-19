@@ -31,7 +31,7 @@ function PanelLayout({ children }: { children: React.ReactNode }) {
         <div className="flex flex-1 flex-col overflow-hidden">
           <AdminTopbar onMenuClick={() => setNavOpen(true)} />
 
-          <main className="flex-1 overflow-hidden bg-background">
+          <main className="flex flex-1 flex-col overflow-hidden bg-background">
             <AdminShellHeader />
             {children}
           </main>

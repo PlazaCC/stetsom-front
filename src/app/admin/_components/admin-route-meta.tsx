@@ -13,9 +13,22 @@ import {
 /** Runtime label overrides keyed by the live pathname (e.g. a fetched product name). */
 type RouteLabels = Record<string, string>;
 
+/**
+ * Stateful tab bar contributed by a page (e.g. the product wizard steps).
+ * Unlike the route-based tabs in `config`, these switch in-page state instead
+ * of navigating, so the page owns the active index and the select handler.
+ */
+export interface HeaderStepTabs {
+  steps: string[];
+  activeIndex: number;
+  onSelect: (index: number) => void;
+}
+
 interface RouteMetaValue {
   labels: RouteLabels;
   setLabel: (href: string, label: string | undefined) => void;
+  stepTabs: HeaderStepTabs | null;
+  setStepTabs: (value: HeaderStepTabs | null) => void;
 }
 
 const RouteMetaContext = createContext<RouteMetaValue | null>(null);
@@ -27,6 +40,7 @@ const RouteMetaContext = createContext<RouteMetaValue | null>(null);
  */
 export function AdminRouteMetaProvider({ children }: { children: ReactNode }) {
   const [labels, setLabels] = useState<RouteLabels>({});
+  const [stepTabs, setStepTabs] = useState<HeaderStepTabs | null>(null);
 
   const setLabel = useCallback((href: string, label: string | undefined) => {
     setLabels((prev) => {
@@ -42,7 +56,9 @@ export function AdminRouteMetaProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <RouteMetaContext.Provider value={{ labels, setLabel }}>
+    <RouteMetaContext.Provider
+      value={{ labels, setLabel, stepTabs, setStepTabs }}
+    >
       {children}
     </RouteMetaContext.Provider>
   );
@@ -50,6 +66,26 @@ export function AdminRouteMetaProvider({ children }: { children: ReactNode }) {
 
 export function useRouteLabels(): RouteLabels {
   return useContext(RouteMetaContext)?.labels ?? {};
+}
+
+export function useHeaderStepTabs(): HeaderStepTabs | null {
+  return useContext(RouteMetaContext)?.stepTabs ?? null;
+}
+
+/**
+ * Register a stateful tab bar for the shell header. Pass a memoized value
+ * (stable `steps`/`onSelect`, `activeIndex` derived from page state) so the
+ * effect only re-runs when the active tab changes. Cleared on unmount.
+ */
+export function useRegisterStepTabs(value: HeaderStepTabs | null) {
+  const ctx = useContext(RouteMetaContext);
+  const setStepTabs = ctx?.setStepTabs;
+
+  useEffect(() => {
+    if (!setStepTabs) return;
+    setStepTabs(value);
+    return () => setStepTabs(null);
+  }, [setStepTabs, value]);
 }
 
 /**

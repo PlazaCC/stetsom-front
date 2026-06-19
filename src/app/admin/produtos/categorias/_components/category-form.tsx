@@ -6,7 +6,6 @@ import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { Input } from "@/components/ui/input";
 import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-picker";
-import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
 import { AdminPanel } from "@/app/admin/_components/admin-panel";
 import { CategoryTemplatesSection } from "@/app/admin/produtos/categorias/_components/category-templates-section";
 import {
@@ -29,7 +28,6 @@ import type {
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { slugify } from "@/lib/utils/slugify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Tags } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -176,11 +174,7 @@ function CategoryFormInner({
 
   return (
     <div className="flex flex-col gap-5">
-      <AdminPanel className="flex items-center justify-between p-5">
-        <AdminPageHeader
-          title={isEdit ? "Editar categoria" : "Nova categoria"}
-          icon={Tags}
-        />
+      <AdminPanel className="flex items-center justify-end p-5">
         <div className="flex items-center gap-3">
           {isEdit && categoryId && (
             <AdminDeleteAction

@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
-import { AdminPageHeader } from "@/app/admin/_components/admin-page-header";
 import { AdminPanel } from "@/app/admin/_components/admin-panel";
 import {
   deleteApiTemplatesId,
@@ -25,7 +24,7 @@ import {
 import type { I18nString, TemplateAttrInput } from "@/api/stetsom/model";
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { GripVertical, LayoutTemplate, X } from "lucide-react";
+import { GripVertical, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -188,11 +187,7 @@ function TemplateFormInner({
 
   return (
     <div className="flex flex-col gap-5">
-      <AdminPanel className="flex items-center justify-between p-5">
-        <AdminPageHeader
-          title={isEdit ? "Editar template" : "Novo template"}
-          icon={LayoutTemplate}
-        />
+      <AdminPanel className="flex items-center justify-end p-5">
         <div className="flex items-center gap-3">
           {isEdit && templateId && (
             <AdminDeleteAction
