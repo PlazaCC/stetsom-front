@@ -41,6 +41,11 @@ interface ProductDetailViewProps {
   initialVariantId?: string;
   /** Product slug. When set, variant selectors become URL links to `?variation=`. */
   slug?: string;
+  /**
+   * CMS editor mode: stamp `data-editor-target` on editable regions so the
+   * product editor can select them. Inert (and absent) on the public site.
+   */
+  editable?: boolean;
 }
 
 /** `next/image` does not accept `blob:` sources, so the live preview falls back to `<img>`. */
@@ -60,7 +65,6 @@ function DetailImage({
   previewMode?: boolean;
 }) {
   if (previewMode) {
-     
     return (
       <img
         src={src}
@@ -86,9 +90,14 @@ export function ProductDetailView({
   previewMode = false,
   initialVariantId,
   slug,
+  editable = false,
 }: ProductDetailViewProps) {
   const t = useTranslations("ProductDetail");
   const { product, category, relatedProducts } = data;
+
+  /** Stamp a `data-editor-target` only in editor mode; inert otherwise. */
+  const ed = (target: string) =>
+    editable ? { "data-editor-target": target } : {};
 
   const sortedImages = [...product.images].sort((a, b) => a.order - b.order);
   const galleryImages = sortedImages
@@ -147,7 +156,10 @@ export function ProductDetailView({
             )}
           >
             <div className="flex shrink-0 flex-col gap-4 lg:w-111.75">
-              <div className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-card lg:h-89.5">
+              <div
+                {...ed("images")}
+                className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-card lg:h-89.5"
+              >
                 {thumbnailUrl && (
                   <DetailImage
                     src={thumbnailUrl}
@@ -191,20 +203,29 @@ export function ProductDetailView({
             </div>
 
             <div className="mt-6 flex-1 lg:mt-0 lg:max-w-119">
-              <p className="font-sans-condensed text-2xs font-black text-brand uppercase">
+              <p
+                {...ed("category")}
+                className="font-sans-condensed text-2xs font-black text-brand uppercase"
+              >
                 {category.name}
               </p>
-              <h1 className="mt-2 font-sans-condensed text-4xl leading-none font-black text-brand-dark uppercase lg:text-display-sm">
+              <h1
+                {...ed("title")}
+                className="mt-2 font-sans-condensed text-4xl leading-none font-black text-brand-dark uppercase lg:text-display-sm"
+              >
                 {product.name}
               </h1>
               {product.description && (
-                <p className="mt-4 text-sm text-text-subtle lg:text-base">
+                <p
+                  {...ed("description")}
+                  className="mt-4 text-sm text-text-subtle lg:text-base"
+                >
                   {product.description}
                 </p>
               )}
 
               {activeAttrs.length > 0 && (
-                <ul className="mt-4 flex flex-wrap gap-2">
+                <ul {...ed("specs")} className="mt-4 flex flex-wrap gap-2">
                   {activeAttrs.map((attr) => (
                     <li
                       key={attr.attribute_id}
@@ -250,7 +271,10 @@ export function ProductDetailView({
               )}
 
               {highlights.length > 0 && (
-                <div className="mt-6 grid grid-cols-3 gap-4 border-y border-border py-4">
+                <div
+                  {...ed("highlights")}
+                  className="mt-6 grid grid-cols-3 gap-4 border-y border-border py-4"
+                >
                   {highlights.map((attr) => (
                     <div key={attr.attribute_id}>
                       <p className="font-sans-condensed text-3xl leading-none font-black text-brand uppercase">
@@ -264,7 +288,7 @@ export function ProductDetailView({
                 </div>
               )}
 
-              <div className="mt-5 flex flex-wrap gap-3">
+              <div {...ed("files")} className="mt-5 flex flex-wrap gap-3">
                 {manualFile && (
                   <a
                     href={manualFile.file_url ?? "#"}
@@ -294,10 +318,11 @@ export function ProductDetailView({
             block={block}
             productName={product.name}
             fallbackImage={thumbnailUrl ?? ""}
+            editable={editable}
           />
         ))}
 
-      <section id="specifications" className="scroll-mt-38">
+      <section {...ed("specs")} id="specifications" className="scroll-mt-38">
         <div className="border-b border-zinc-200 px-5 py-3 lg:px-42.5">
           <p className="font-sans-condensed text-xs font-black tracking-widest text-muted-foreground uppercase">
             {t("techData")}

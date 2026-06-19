@@ -25,8 +25,17 @@ The admin shell owns the page scroll. `admin-shell.tsx` builds a fixed-viewport 
   ```
 
 - Sticky asides use `sticky top-N self-start` and flow inside `<main>`. Size their content to fit the shell scroll.
-- Embedded previews and iframes are sized to their content height, reported back over `postMessage`, never given a viewport-fixed inner scroll. Reference: `preview-panel.tsx` plus `[locale]/preview-produto/page.tsx`.
+- Embedded previews and iframes that flow inside `<main>` are sized to their content height, reported back over `postMessage`, never given a viewport-fixed inner scroll.
+
+## Exception — the product editor split view
+
+The product editor (`product-editor-layout.tsx`, mounted by `product-wizard/wizard.tsx`) is an intentional Elementor-style split view that fills `<main>` and does not let it scroll. It owns two independent scroll columns:
+
+- The preview canvas on the left (`preview-canvas.tsx`) is a real viewport. Its iframe is `h-full` and scrolls internally — it does **not** report its height. The `[locale]/preview-produto/page.tsx` frame must not use `100vh`/`100dvh` content, but it does own its own scrollbar here.
+- The 320px contextual panel on the right (`editor-panel.tsx`) scrolls independently.
+
+This does not regress the rule's intent. The two scrollbars sit in separate columns, `<main>` itself stays `overflow-hidden`, and there is no accidental nesting. The split view fills the shell exactly, so the window still never scrolls.
 
 ## Why
 
-Nested scroll containers inside the fixed shell produce two visible scrollbars side by side and break scroll-to-top. The product wizard preview regressed this once by giving its iframe a `100dvh` inner scroll. Keep the shell as the single scroll authority.
+Nested scroll containers inside the fixed shell produce two visible scrollbars side by side and break scroll-to-top. The product wizard preview regressed this once by giving its iframe a `100dvh` inner scroll. Keep the shell as the single scroll authority, except for the deliberate editor split view above.

@@ -40,6 +40,9 @@ interface BlockManagerProps {
   onChange: (blocks: DraftBlock[]) => void;
   addLabel?: string;
   className?: string;
+  /** Controlled selection. When `onSelectChange` is passed, the parent owns it. */
+  selectedId?: string | null;
+  onSelectChange?: (id: string | null) => void;
 }
 
 type DetailTab = "content" | "style";
@@ -66,10 +69,18 @@ export function BlockManager({
   onChange,
   addLabel = "Adicionar bloco",
   className,
+  selectedId: controlledSelectedId,
+  onSelectChange,
 }: BlockManagerProps) {
-  const [selectedId, setSelectedId] = useState<string | null>(
+  const controlled = onSelectChange !== undefined;
+  const [internalId, setInternalId] = useState<string | null>(
     value[0]?.id ?? null,
   );
+  const selectedId = controlled ? (controlledSelectedId ?? null) : internalId;
+  const setSelectedId = (id: string | null) => {
+    if (controlled) onSelectChange?.(id);
+    else setInternalId(id);
+  };
   const [detailTab, setDetailTab] = useState<DetailTab>("content");
   const [showMenu, setShowMenu] = useState(false);
 

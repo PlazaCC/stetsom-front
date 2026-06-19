@@ -12,12 +12,15 @@ interface BlockRendererProps {
   block: ProductBlock;
   productName: string;
   fallbackImage: string;
+  /** CMS editor mode: tag the block root as a selectable region. */
+  editable?: boolean;
 }
 
 export function BlockRenderer({
   block,
   productName,
   fallbackImage,
+  editable = false,
 }: BlockRendererProps) {
   const BlockComponent = BLOCK_COMPONENTS[block.type];
   if (!BlockComponent) return null;
@@ -33,6 +36,7 @@ export function BlockRenderer({
   const rootProps: BlockRootProps = {
     id: scope,
     "data-block-scope": scope,
+    ...(editable ? { "data-editor-target": `block:${block.block_id}` } : {}),
     className: cn(style.backgroundImageUrl && "bg-cover bg-center"),
     style: hasBackground
       ? {

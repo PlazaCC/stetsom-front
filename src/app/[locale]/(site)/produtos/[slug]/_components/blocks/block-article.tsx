@@ -25,6 +25,7 @@ export function BlockArticle({
     <article
       id={root.id}
       data-block-scope={root["data-block-scope"]}
+      data-editor-target={root["data-editor-target"]}
       className={cn(baseClass, root.className, className)}
       style={root.style}
       {...rest}

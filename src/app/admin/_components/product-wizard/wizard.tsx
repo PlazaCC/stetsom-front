@@ -14,7 +14,6 @@ import type {
   ProductStatus,
 } from "@/api/stetsom/model";
 import { AdminDeleteAction } from "@/app/admin/_components/crud/admin-delete-action";
-import { AdminWizardPage } from "@/app/admin/_components/crud/admin-wizard-page";
 import { AdminSaveBar } from "@/app/admin/_components/crud/admin-save-bar";
 import { ProductWizardStepSuccess } from "@/app/admin/_components/product-wizard-step-success";
 import { useAdminToast } from "@/hooks/use-admin-toast";
@@ -23,14 +22,11 @@ import { useMutation } from "@tanstack/react-query";
 import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useReducer, useState } from "react";
-import { useRegisterStepTabs } from "@/app/admin/_components/admin-route-meta";
 import { buildPreviewModel } from "./build-preview-model";
-import { PreviewPanel } from "./preview-panel";
-import { StepCustomize } from "./step-customize";
-import { StepFiles } from "./step-files";
-import { StepGeneral } from "./step-general";
-import { StepPublish } from "./step-publish";
-import { StepSpecs } from "./step-specs";
+import { EditorPanel } from "./editor-panel";
+import { escapeTarget, type EditorTarget } from "./editor-target";
+import { PreviewCanvas } from "./preview-canvas";
+import { ProductEditorLayout } from "./product-editor-layout";
 import { syncBlocks, syncFiles, syncImages } from "./wizard-sync";
 import {
   buildPayload,
@@ -39,16 +35,7 @@ import {
   initWizardState,
   wizardReducer,
   type PublishIntent,
-  type WizardStep,
 } from "./wizard-store";
-
-const STEP_LABELS = [
-  "Dados gerais",
-  "Especificações técnicas",
-  "Arquivos",
-  "Blocos Customizados",
-  "Publicação",
-];
 
 interface ProductWizardProps {
   initial?: CmsProductDetailPayload;
@@ -71,23 +58,29 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   const [publishedResult, setPublishedResult] =
     useState<ProductMutationResult | null>(null);
 
-  useEffect(() => {
-    // The admin shell owns the page scroll on its <main>, not the window.
-    document.querySelector("main")?.scrollTo({ top: 0, behavior: "smooth" });
-  }, [state.step]);
+  // What the contextual panel is focused on. Driven by clicks in the preview
+  // (intents) and by the panel's own section navigator.
+  const [selection, setSelection] = useState<EditorTarget>({ kind: "general" });
+  const [device, setDevice] = useState<"mobile" | "desktop">("desktop");
 
   const categoriesQuery = useGetApiCategories();
   const templatesQuery = useGetApiTemplates();
   const attributesQuery = useGetApiAttributes();
 
-  const rawCategories = categoriesQuery.data ?? [];
-  const categories = rawCategories.map((c) => ({ id: c.id, name: c.name }));
-  const lines = rawCategories.flatMap((c) =>
-    c.lines.map((l) => ({
-      id: l.line_id,
-      name: l.name,
-      category_id: c.id,
-    })),
+  const categories = useMemo(
+    () => (categoriesQuery.data ?? []).map((c) => ({ id: c.id, name: c.name })),
+    [categoriesQuery.data],
+  );
+  const lines = useMemo(
+    () =>
+      (categoriesQuery.data ?? []).flatMap((c) =>
+        c.lines.map((l) => ({
+          id: l.line_id,
+          name: l.name,
+          category_id: c.id,
+        })),
+      ),
+    [categoriesQuery.data],
   );
   const templates = templatesQuery.data ?? [];
   const attributes = attributesQuery.data ?? [];
@@ -117,6 +110,16 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
   }, [state.isDirty]);
+
+  // Escape collapses a drill-in selection back to its section root. Covers focus
+  // in the panel; the preview frame handles Escape for clicks on the canvas.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setSelection((s) => escapeTarget(s));
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   async function handleSave(
     intent: PublishIntent,
@@ -198,22 +201,6 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     );
   }
 
-  // Project the wizard steps into the shell header as stateful tabs. Cleared
-  // on the success screen so the header shows no tabs there.
-  const stepTabs = useMemo(
-    () =>
-      publishedResult
-        ? null
-        : {
-            steps: STEP_LABELS,
-            activeIndex: state.step - 1,
-            onSelect: (index: number) =>
-              dispatch({ type: "go_to_step", step: (index + 1) as WizardStep }),
-          },
-    [publishedResult, state.step],
-  );
-  useRegisterStepTabs(stepTabs);
-
   if (publishedResult) {
     return (
       <ProductWizardStepSuccess
@@ -233,78 +220,67 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
       : null;
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
-      <AdminWizardPage
-        aside={
-          <PreviewPanel
-            model={previewModel}
-            hasSavedProduct={hasSaved}
-            realPageHref={realPageHref}
-          />
-        }
-      >
-        <div className="flex flex-1 flex-col overflow-y-auto">
-          {state.step === 1 && (
-            <StepGeneral
-              state={state}
-              dispatch={dispatch}
-              categories={categories}
-              lines={lines}
+    <ProductEditorLayout
+      preview={
+        <PreviewCanvas
+          model={previewModel}
+          selection={selection}
+          onIntent={setSelection}
+          device={device}
+          onDeviceChange={setDevice}
+          hasSavedProduct={hasSaved}
+          realPageHref={realPageHref}
+        />
+      }
+      panel={
+        <EditorPanel
+          state={state}
+          dispatch={dispatch}
+          selection={selection}
+          onSelectionChange={setSelection}
+          categories={categories}
+          lines={lines}
+          attributes={attributes}
+          templates={templates}
+          footer={
+            <AdminSaveBar
+              onSaveDraft={handleSaveDraft}
+              onPublish={handlePublish}
+              isLoading={isSaving}
+              isDirty={state.isDirty}
+              className="px-4 py-3"
+              publishLabel={
+                mode === "create" ? "Publicar produto" : "Salvar alterações"
+              }
+              saveDraftLabel="Salvar rascunho"
+              draftSavedPrefix="Salvo às"
+              actions={
+                <div className="flex items-center gap-2">
+                  {hasSaved && (
+                    <button
+                      type="button"
+                      onClick={handlePreview}
+                      className="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+                    >
+                      <Eye className="size-4" />
+                    </button>
+                  )}
+                  {mode === "edit" && state.productId && (
+                    <AdminDeleteAction
+                      label="Excluir produto"
+                      confirmTitle={`Excluir "${state.name.pt}"?`}
+                      confirmDescription="O produto será removido permanentemente. Esta ação não pode ser desfeita."
+                      confirmLabel="Sim, excluir"
+                      onConfirm={handleDelete}
+                      isLoading={deleteMutation.isPending}
+                    />
+                  )}
+                </div>
+              }
             />
-          )}
-          {state.step === 2 && (
-            <StepSpecs
-              state={state}
-              dispatch={dispatch}
-              attributes={attributes}
-              templates={templates}
-            />
-          )}
-          {state.step === 3 && <StepFiles state={state} dispatch={dispatch} />}
-          {state.step === 4 && (
-            <StepCustomize state={state} dispatch={dispatch} />
-          )}
-          {state.step === 5 && (
-            <StepPublish state={state} dispatch={dispatch} />
-          )}
-        </div>
-      </AdminWizardPage>
-
-      <AdminSaveBar
-        onSaveDraft={handleSaveDraft}
-        onPublish={handlePublish}
-        isLoading={isSaving}
-        isDirty={state.isDirty}
-        publishLabel={
-          mode === "create" ? "Publicar produto" : "Salvar alterações"
-        }
-        saveDraftLabel="Salvar rascunho"
-        draftSavedPrefix="Salvo às"
-        actions={
-          <div className="flex items-center gap-2">
-            {hasSaved && (
-              <button
-                type="button"
-                onClick={handlePreview}
-                className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
-              >
-                <Eye className="size-4" />
-                Pré-visualizar
-              </button>
-            )}
-            {mode === "edit" && state.productId && (
-              <AdminDeleteAction
-                label="Excluir produto"
-                confirmTitle={`Excluir "${state.name.pt}"?`}
-                confirmDescription="O produto será removido permanentemente. Esta ação não pode ser desfeita."
-                confirmLabel="Sim, excluir"
-                onConfirm={handleDelete}
-                isLoading={deleteMutation.isPending}
-              />
-            )}
-          </div>
-        }
-      />
-    </div>
+          }
+        />
+      }
+    />
   );
 }

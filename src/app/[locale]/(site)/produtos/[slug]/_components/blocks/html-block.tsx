@@ -15,6 +15,7 @@ export function HtmlBlock({ block, rootProps }: BlockComponentProps) {
     <article
       id={rootProps.id}
       data-block-scope={rootProps["data-block-scope"]}
+      data-editor-target={rootProps["data-editor-target"]}
       className={cn("blockHtml", rootProps.className)}
       style={rootProps.style}
       dangerouslySetInnerHTML={{ __html: safeHtml }}

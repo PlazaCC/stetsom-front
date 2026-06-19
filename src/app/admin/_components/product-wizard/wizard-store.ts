@@ -113,6 +113,7 @@ export type WizardAction =
   | { type: "set_active_variation"; id: string }
   | { type: "apply_template"; specs: WizardSpec[] }
   | { type: "set_blocks"; blocks: DraftBlock[] }
+  | { type: "insert_block"; block: DraftBlock; index: number }
   | { type: "add_file"; file: WizardFile }
   | { type: "remove_file"; id: string }
   | { type: "toggle_file_active"; id: string }
@@ -328,6 +329,17 @@ export function wizardReducer(
 
     case "set_blocks":
       return { ...state, blocks: action.blocks, isDirty: true };
+
+    case "insert_block": {
+      const index = Math.max(0, Math.min(action.index, state.blocks.length));
+      const next = [...state.blocks];
+      next.splice(index, 0, action.block);
+      return {
+        ...state,
+        blocks: next.map((b, i) => ({ ...b, order: i })),
+        isDirty: true,
+      };
+    }
 
     case "add_file":
       return { ...state, files: [...state.files, action.file], isDirty: true };

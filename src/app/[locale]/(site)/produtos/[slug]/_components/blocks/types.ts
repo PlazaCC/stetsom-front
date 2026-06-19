@@ -5,6 +5,8 @@ import type { CSSProperties } from "react";
 export interface BlockRootProps {
   id: string;
   "data-block-scope": string;
+  /** Set in CMS editor mode so the editor can select this block. */
+  "data-editor-target"?: string;
   /** Background utility classes computed from the block style. */
   className?: string;
   style?: CSSProperties;
