@@ -1,17 +1,31 @@
 "use client";
 
-import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
-import { AdminSelect } from "@/app/admin/_components/crud/admin-input";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
-import type { Attribute } from "@/api/stetsom/model";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxTrigger,
+  ComboboxValue,
+} from "@/components/ui/combobox";
+import type { Attribute, I18nString } from "@/api/stetsom/model";
 import { Plus, Trash2 } from "lucide-react";
 import { ToggleSwitch } from "./toggle-switch";
 import { newSpec, type WizardSpec } from "./wizard-store";
+
+export type SpecLocale = "pt" | "en" | "es";
 
 interface SpecTableProps {
   specs: WizardSpec[];
   attributes: Attribute[];
   maxHighlights: number;
+  /** Locale edited across the whole table, chosen in the step header. */
+  locale: SpecLocale;
   onChange: (specs: WizardSpec[]) => void;
 }
 
@@ -23,6 +37,7 @@ export function SpecTable({
   specs,
   attributes,
   maxHighlights,
+  locale,
   onChange,
 }: SpecTableProps) {
   const highlightCount = specs.filter((s) => s.highlighted).length;
@@ -31,13 +46,20 @@ export function SpecTable({
     onChange(specs.map((s) => (s.id === id ? { ...s, ...patch } : s)));
   }
 
+  function setValue(spec: WizardSpec, text: string) {
+    const value: I18nString = { ...spec.value, pt: spec.value.pt ?? "" };
+    if (locale === "pt") value.pt = text;
+    else value[locale] = text || undefined;
+    update(spec.id, { value });
+  }
+
   return (
     <div className="overflow-hidden rounded-md border border-border">
       {/* Header */}
-      <div className="grid grid-cols-[1fr_1fr_80px_44px] gap-3 border-b border-border bg-muted px-3 py-2.5 text-2xs font-semibold tracking-wide text-muted-foreground uppercase">
+      <div className="grid grid-cols-[44px_1fr_1fr_80px] gap-3 border-b border-border bg-muted px-3 py-2.5 text-2xs font-semibold tracking-wide text-muted-foreground uppercase">
+        <span />
         <span>Atributo</span>
         <span>Valor</span>
-        <span className="text-center">Destaque</span>
         <span />
       </div>
 
@@ -46,42 +68,65 @@ export function SpecTable({
         getId={(s) => s.id}
         onReorder={(list) => onChange(reindex(list))}
         renderItem={(spec, handle) => {
-          const highlightDisabled =
-            !spec.highlighted && highlightCount >= maxHighlights;
           return (
-            <div className="grid grid-cols-[1fr_1fr_80px_44px] gap-3 border-b border-border bg-card px-3 py-2.5 last:border-b-0">
-              <AdminSelect
-                value={spec.attribute_id}
-                onChange={(e) => {
-                  const attr = attributes.find((a) => a.id === e.target.value);
+            <div className="grid grid-cols-[44px_1fr_1fr_80px] gap-3 border-b border-border bg-card px-3 py-1.5 last:border-b-0">
+              <div className="flex items-center [&_button]:cursor-grab [&_button]:active:cursor-grabbing">
+                {handle}
+              </div>
+
+              <Combobox
+                items={attributes}
+                value={
+                  attributes.find((a) => a.id === spec.attribute_id) ?? null
+                }
+                itemToStringLabel={(a: Attribute) => a.name.pt}
+                onValueChange={(attr: Attribute | null) =>
                   update(spec.id, {
-                    attribute_id: e.target.value,
+                    attribute_id: attr?.id ?? "",
                     attribute_name: attr?.name,
-                  });
-                }}
+                  })
+                }
               >
-                <option value="">Selecione...</option>
-                {attributes.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name.pt}
-                  </option>
-                ))}
-              </AdminSelect>
-              <I18nInput
-                value={spec.value}
-                onChange={(value) => update(spec.id, { value })}
-                placeholder="Valor"
-              />
-              <div className="flex items-center justify-center">
-                <ToggleSwitch
-                  checked={spec.highlighted}
-                  disabled={highlightDisabled}
-                  aria-label="Destacar especificação"
-                  onChange={(checked) =>
-                    update(spec.id, { highlighted: checked })
+                <ComboboxTrigger
+                  render={
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between font-normal"
+                    >
+                      <ComboboxValue>
+                        {(value: Attribute | null) =>
+                          value?.name.pt ?? (
+                            <span className="text-muted-foreground">
+                              Selecione...
+                            </span>
+                          )
+                        }
+                      </ComboboxValue>
+                    </Button>
                   }
                 />
-              </div>
+                <ComboboxContent>
+                  <ComboboxInput
+                    showTrigger={false}
+                    placeholder="Buscar atributo"
+                  />
+                  <ComboboxEmpty>Nenhum atributo encontrado.</ComboboxEmpty>
+                  <ComboboxList>
+                    {(a: Attribute) => (
+                      <ComboboxItem key={a.id} value={a}>
+                        {a.name.pt}
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
+
+              <Input
+                value={spec.value[locale] ?? ""}
+                onChange={(e) => setValue(spec, e.target.value)}
+                placeholder="Valor"
+              />
+
               <div className="flex items-center justify-end gap-1 text-muted-foreground">
                 <button
                   type="button"
@@ -93,9 +138,6 @@ export function SpecTable({
                 >
                   <Trash2 className="size-4" />
                 </button>
-                <div className="[&_button]:cursor-grab [&_button]:active:cursor-grabbing">
-                  {handle}
-                </div>
               </div>
             </div>
           );

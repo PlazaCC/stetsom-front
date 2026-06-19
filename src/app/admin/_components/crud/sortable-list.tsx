@@ -31,6 +31,8 @@ interface SortableListProps<T> {
   className?: string;
   /** Sortable strategy. Defaults to `verticalListSortingStrategy` for vertical lists. Use `rectSortingStrategy` for grids. */
   strategy?: SortingStrategy;
+  /** Non-sortable node rendered as the last cell, inside the same container (e.g. an add button). */
+  append?: React.ReactNode;
 }
 
 function SortableItem<T>({
@@ -88,6 +90,7 @@ export function SortableList<T>({
   renderItem,
   className,
   strategy = verticalListSortingStrategy,
+  append,
 }: SortableListProps<T>) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -121,6 +124,7 @@ export function SortableList<T>({
               renderItem={renderItem}
             />
           ))}
+          {append}
         </div>
       </SortableContext>
     </DndContext>

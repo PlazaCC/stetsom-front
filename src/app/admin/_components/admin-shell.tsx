@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { AdminShellHeader } from "./admin-shell-header";
 import { AdminRouteMetaProvider } from "./admin-route-meta";
 import { resolveRoute } from "@/lib/cms/resolve-route";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 function PanelLayout({ children }: { children: React.ReactNode }) {
   const [navOpen, setNavOpen] = useState(false);
@@ -23,21 +24,23 @@ function PanelLayout({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   return (
-    <AdminRouteMetaProvider>
-      <div className="flex h-screen overflow-hidden">
-        {showSidebar && (
-          <AdminSidebar open={navOpen} onClose={() => setNavOpen(false)} />
-        )}
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <AdminTopbar onMenuClick={() => setNavOpen(true)} />
+    <TooltipProvider>
+      <AdminRouteMetaProvider>
+        <div className="flex h-screen overflow-hidden">
+          {showSidebar && (
+            <AdminSidebar open={navOpen} onClose={() => setNavOpen(false)} />
+          )}
+          <div className="flex flex-1 flex-col overflow-hidden">
+            <AdminTopbar onMenuClick={() => setNavOpen(true)} />
 
-          <main className="flex flex-1 flex-col overflow-hidden bg-background">
-            <AdminShellHeader />
-            {children}
-          </main>
+            <main className="flex flex-1 flex-col overflow-hidden bg-background">
+              <AdminShellHeader />
+              {children}
+            </main>
+          </div>
         </div>
-      </div>
-    </AdminRouteMetaProvider>
+      </AdminRouteMetaProvider>
+    </TooltipProvider>
   );
 }
 

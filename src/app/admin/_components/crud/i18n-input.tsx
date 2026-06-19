@@ -1,17 +1,24 @@
 "use client";
 
 import type { I18nString } from "@/api/stetsom/model";
-import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { AdminLabel, AdminTextarea } from "./admin-input";
+import { Textarea } from "@/components/ui/textarea";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BrFlag, EsFlag, UsFlag } from "@/components/ui/flag-icons";
 
 type Locale = "pt" | "en" | "es";
 
-const LOCALES: { id: Locale; flag: string; required?: boolean }[] = [
-  { id: "pt", flag: "🇧🇷", required: true },
-  { id: "en", flag: "🇺🇸" },
-  { id: "es", flag: "🇪🇸" },
+const LOCALES: {
+  id: Locale;
+  Flag: React.ComponentType;
+  required?: boolean;
+  label: string;
+}[] = [
+  { id: "pt", Flag: BrFlag, label: "🇧🇷", required: true },
+  { id: "en", Flag: UsFlag, label: "🇺🇸" },
+  { id: "es", Flag: EsFlag, label: "🇪🇸" },
 ];
 
 interface I18nInputProps {
@@ -29,7 +36,7 @@ interface I18nInputProps {
  * Single field that edits an `I18nString` ({ pt, en?, es? }) through PT/EN/ES
  * tabs. PT is always required. Reused across every CMS form that persists a
  * multilingual value (products, categories, templates, attributes, banners,
- * blocks).
+ * blocks). Built on shadcn `Field`, `Tabs` and `Input`/`Textarea`.
  */
 export function I18nInput({
   label,
@@ -50,61 +57,70 @@ export function I18nInput({
     onChange(next);
   }
 
-  const Field = multiline ? AdminTextarea : Input;
-
   return (
-    <div className={className}>
-      <div className="flex items-end gap-2">
-        {label && (
-          <AdminLabel>
-            {label}
-            {required && <span className="ml-0.5 text-destructive">*</span>}
-          </AdminLabel>
-        )}
-        <div className="mb-1 flex gap-1">
-          {LOCALES.map((loc) => {
-            const filled = loc.id === "pt" ? !!current.pt : !!current[loc.id];
-            return (
-              <button
-                key={loc.id}
-                type="button"
-                onClick={() => setActive(loc.id)}
-                className={cn(
-                  "rounded px-2 py-0.5 text-xs font-semibold uppercase transition-colors",
-                  active === loc.id
-                    ? "bg-foreground text-background"
-                    : "bg-muted text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {loc.flag}
-                {filled && (
-                  <span
-                    className={cn(
-                      "ml-1 inline-block size-1.5 rounded-full",
-                      active === loc.id ? "bg-background" : "bg-primary",
-                    )}
-                  />
-                )}
-              </button>
-            );
-          })}
+    <Field className={className}>
+      <Tabs
+        value={active}
+        onValueChange={(v) => setActive(v as Locale)}
+        className="gap-1.5"
+      >
+        <div className="flex items-end gap-2">
+          {label && (
+            <FieldLabel className="mb-0">
+              {label}
+              {required && <span className="text-destructive">*</span>}
+            </FieldLabel>
+          )}
+          <TabsList className="ml-auto gap-0.5">
+            {LOCALES.map((loc) => {
+              const filled = loc.id === "pt" ? !!current.pt : !!current[loc.id];
+              return (
+                <TabsTrigger
+                  key={loc.id}
+                  value={loc.id}
+                  className="flex cursor-pointer gap-1.5"
+                >
+                  <loc.Flag />
+                  <span className="text-xs leading-2 font-semibold uppercase">
+                    {loc.label}
+                  </span>
+                  {!filled && (
+                    <span className="size-1.5 rounded-full bg-primary" />
+                  )}
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
         </div>
-      </div>
-      {/* Render only the active locale field. Keeping inactive fields mounted
-          but hidden (sr-only) collided with the input's w-full and produced a
-          full-width absolutely-positioned box off-screen, expanding the
-          document's horizontal scroll. The value lives in props, so switching
-          tabs loses nothing. */}
-      <Field
-        key={active}
-        className={cn(multiline && "min-h-24")}
-        required={active === "pt" && required}
-        placeholder={placeholder}
-        value={(active === "pt" ? current.pt : current[active]) ?? ""}
-        onChange={(
-          e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        ) => set(active, e.target.value)}
-      />
-    </div>
+
+        {/* Only the active panel is mounted (keepMounted={false}). Keeping
+            inactive fields mounted previously produced a full-width off-screen
+            box that expanded the document's horizontal scroll. */}
+        {LOCALES.map((loc) => {
+          const fieldValue =
+            (loc.id === "pt" ? current.pt : current[loc.id]) ?? "";
+          return (
+            <TabsContent key={loc.id} value={loc.id} keepMounted={false}>
+              {multiline ? (
+                <Textarea
+                  className="min-h-24"
+                  required={loc.required && required}
+                  placeholder={placeholder}
+                  value={fieldValue}
+                  onChange={(e) => set(loc.id, e.target.value)}
+                />
+              ) : (
+                <Input
+                  required={loc.required && required}
+                  placeholder={placeholder}
+                  value={fieldValue}
+                  onChange={(e) => set(loc.id, e.target.value)}
+                />
+              )}
+            </TabsContent>
+          );
+        })}
+      </Tabs>
+    </Field>
   );
 }

@@ -1,6 +1,10 @@
 "use client";
 
-import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
+import {
+  AdminFormSection,
+  AdminFormSectionContent,
+  AdminFormSectionTitle,
+} from "@/app/admin/_components/crud/admin-form-section";
 import { BookOpen, FileText } from "lucide-react";
 import { FileDropzone } from "./file-dropzone";
 import type { WizardAction, WizardState } from "./wizard-store";
@@ -15,8 +19,10 @@ export function StepFiles({ state, dispatch }: StepFilesProps) {
   const manuals = state.files.filter((f) => f.type === "MANUAL");
 
   return (
-    <div className="space-y-5">
-      <AdminFormSection title="Certificados">
+    <AdminFormSection>
+      <AdminFormSectionTitle title="Certificados" />
+
+      <AdminFormSectionContent>
         <FileDropzone
           type="CERTIFICATE"
           icon={FileText}
@@ -24,9 +30,10 @@ export function StepFiles({ state, dispatch }: StepFilesProps) {
           onAdd={(file) => dispatch({ type: "add_file", file })}
           onRemove={(id) => dispatch({ type: "remove_file", id })}
         />
-      </AdminFormSection>
+      </AdminFormSectionContent>
 
-      <AdminFormSection title="Manuais">
+      <AdminFormSectionTitle className="border-t" title="Manuais" />
+      <AdminFormSectionContent>
         <FileDropzone
           type="MANUAL"
           icon={BookOpen}
@@ -34,7 +41,19 @@ export function StepFiles({ state, dispatch }: StepFilesProps) {
           onAdd={(file) => dispatch({ type: "add_file", file })}
           onRemove={(id) => dispatch({ type: "remove_file", id })}
         />
-      </AdminFormSection>
-    </div>
+      </AdminFormSectionContent>
+
+      {/* TO-DO: Download de materiais */}
+      <AdminFormSectionTitle className="border-t" title="Downloads" />
+      <AdminFormSectionContent>
+        <FileDropzone
+          type="MANUAL"
+          icon={BookOpen}
+          files={manuals}
+          onAdd={(file) => dispatch({ type: "add_file", file })}
+          onRemove={(id) => dispatch({ type: "remove_file", id })}
+        />
+      </AdminFormSectionContent>
+    </AdminFormSection>
   );
 }

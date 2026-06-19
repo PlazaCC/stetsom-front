@@ -14,7 +14,7 @@ export function AdminWizardPage({
   return (
     <div
       className={cn(
-        "flex flex-1 gap-5 overflow-hidden px-4 py-5 lg:px-11.75",
+        "flex flex-1 gap-5 overflow-hidden px-4 py-5 lg:px-5",
         className,
       )}
     >

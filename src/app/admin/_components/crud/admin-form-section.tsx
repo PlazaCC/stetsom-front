@@ -38,7 +38,7 @@ export function AdminFormSectionTitle({
   className?: string;
 }) {
   return (
-    <div className={cn("border-b border-border px-6 py-2", className)}>
+    <div className={cn("border-b border-border px-6 py-2.5", className)}>
       {title && (
         <h2 className="text-sm font-semibold text-foreground">{title}</h2>
       )}

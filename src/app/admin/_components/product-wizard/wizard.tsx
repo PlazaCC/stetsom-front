@@ -243,7 +243,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           />
         }
       >
-        <div className="flex-1 space-y-5">
+        <div className="flex flex-1 flex-col overflow-y-auto">
           {state.step === 1 && (
             <StepGeneral
               state={state}

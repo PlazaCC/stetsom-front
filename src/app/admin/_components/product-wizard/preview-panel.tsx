@@ -187,16 +187,14 @@ export function PreviewPanel({
       </div>
       {/* Inline frame is sized to its content so the only scroll is the app
           shell's <main>. The device preview has no internal scrollbar. */}
-      <div className="flex justify-center overflow-auto">
-        <iframe
-          ref={iframeRef}
-          src={FRAME_URL}
-          title="Preview do produto"
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-          style={{ height: frameHeight }}
-          className="w-[375px] rounded-md border-0 bg-white shadow-sm"
-        />
-      </div>
+      <iframe
+        ref={iframeRef}
+        src={FRAME_URL}
+        title="Preview do produto"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+        style={{ height: frameHeight }}
+        className="w-full rounded-md border-0 bg-white shadow-sm"
+      />
     </div>
   );
 }

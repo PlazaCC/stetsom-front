@@ -6,6 +6,10 @@ import { Plus, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { BlockStyleForm } from "./block-style-form";
 import { SortableList } from "./sortable-list";
+import {
+  AdminFormSection,
+  AdminFormSectionContent,
+} from "./admin-form-section";
 
 export interface DraftBlock {
   id: string;
@@ -112,16 +116,13 @@ export function BlockManager({
   return (
     <div
       className={cn(
-        "flex flex-col gap-4 lg:flex-row lg:items-start",
+        "flex h-full flex-col gap-4 lg:flex-row lg:items-start",
         className,
       )}
     >
       {/* Card 1 — block list + actions */}
-      <div className="rounded-[16px] border border-border bg-card lg:w-72 lg:shrink-0">
-        <div className="border-b border-border px-4 py-3">
-          <h3 className="text-sm font-semibold text-foreground">Blocos</h3>
-        </div>
-        <div className="space-y-2 p-3">
+      <AdminFormSection title="Blocos" className="w-72! flex-initial">
+        <AdminFormSectionContent className="gap-2">
           {value.length === 0 ? (
             <div className="rounded-md border border-dashed border-border py-8 text-center text-sm text-muted-foreground">
               Nenhum bloco adicionado.
@@ -186,11 +187,11 @@ export function BlockManager({
             <Plus className="size-4" />
             {addLabel}
           </button>
-        </div>
-      </div>
+        </AdminFormSectionContent>
+      </AdminFormSection>
 
       {/* Card 2 — selected block editor */}
-      <div className="min-w-0 flex-1 rounded-[16px] border border-border bg-card">
+      <AdminFormSection title="">
         {selected && selectedDef && SelectedIcon && SelectedForm ? (
           <>
             <div className="flex items-center gap-3 border-b border-border px-4 py-3">
@@ -243,7 +244,7 @@ export function BlockManager({
               : "Selecione um bloco para editar."}
           </div>
         )}
-      </div>
+      </AdminFormSection>
 
       {/* Add-block type menu */}
       {showMenu && (
@@ -252,7 +253,7 @@ export function BlockManager({
           onClick={() => setShowMenu(false)}
         >
           <div
-            className="w-full max-w-2xl overflow-hidden rounded-[16px] border border-border bg-card shadow-xl"
+            className="w-full max-w-2xl overflow-hidden rounded-card border border-border bg-card shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-border px-5 py-4">

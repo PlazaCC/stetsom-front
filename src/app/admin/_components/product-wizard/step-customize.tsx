@@ -12,16 +12,11 @@ interface StepCustomizeProps {
 
 export function StepCustomize({ state, dispatch }: StepCustomizeProps) {
   return (
-    <AdminFormSection
-      title="Blocos customizáveis"
-      description="Adicione e organize os blocos que complementam a página do produto."
-    >
-      <BlockManager
-        registry={PRODUCT_BLOCK_REGISTRY}
-        value={state.blocks}
-        onChange={(blocks) => dispatch({ type: "set_blocks", blocks })}
-        addLabel="Adicione um bloco"
-      />
-    </AdminFormSection>
+    <BlockManager
+      registry={PRODUCT_BLOCK_REGISTRY}
+      value={state.blocks}
+      onChange={(blocks) => dispatch({ type: "set_blocks", blocks })}
+      addLabel="Adicione um bloco"
+    />
   );
 }
