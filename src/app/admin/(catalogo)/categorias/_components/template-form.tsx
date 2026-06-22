@@ -111,7 +111,7 @@ function TemplateFormInner({
   const [selectedAttrIds, setSelectedAttrIds] =
     useState<string[]>(initialAttrIds);
 
-  const backHref = `/admin/produtos/categorias/${categoryId}`;
+  const backHref = `/admin/categorias/${categoryId}`;
   const availableAttributes = allAttributes.filter(
     (a) => !selectedAttrIds.includes(a.id),
   );

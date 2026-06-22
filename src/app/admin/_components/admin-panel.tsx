@@ -7,8 +7,6 @@ interface AdminPanelProps {
 
 export function AdminPanel({ children, className }: AdminPanelProps) {
   return (
-    <div className={cn("relative z-10 border-b bg-card", className)}>
-      {children}
-    </div>
+    <div className={cn("relative z-10 border-b", className)}>{children}</div>
   );
 }

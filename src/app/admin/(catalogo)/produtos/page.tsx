@@ -1,24 +1,26 @@
 "use client";
 
+import Link from "next/link";
+import { Filter, Package, Plus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+
 import { AdminActionBar } from "@/app/admin/_components/crud/admin-action-bar";
 import {
   AdminDataTable,
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
-import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import {
   FilterChips,
   type FilterChip,
 } from "@/app/admin/_components/crud/filter-chips";
 import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
+
 import { useGetApiProductsAdmin } from "@/api/stetsom";
 import type { CmsProductRow, CmsProductRowStatus } from "@/api/stetsom/model";
+
 import { BrFlag, EsFlag, UsFlag } from "@/components/ui/flag-icons";
 import { cn } from "@/lib/utils";
-import { Filter, Package, Plus } from "lucide-react";
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
 
 const STATUS_OPTIONS: { value: CmsProductRowStatus; label: string }[] = [
   { value: "PUBLISHED", label: "Publicado" },
@@ -184,10 +186,14 @@ export default function AdminProdutos() {
   }
 
   return (
-    <div className="flex flex-col gap-5 px-4 py-4 lg:px-11.75 lg:py-7.25">
-      <AdminListPage
-        title="Produtos"
-        icon={Package}
+    <div className="px-4 py-4 lg:px-5 lg:py-5">
+      <AdminDataTable
+        columns={columns}
+        data={rows}
+        isLoading={cmsProducts.isLoading}
+        keyExtractor={(row) => row.id}
+        emptyTitle="Nenhum produto encontrado"
+        emptyDescription="Cadastre um novo produto ou ajuste os filtros."
         action={
           <AdminActionBar>
             <button
@@ -251,11 +257,6 @@ export default function AdminProdutos() {
                   </div>
                 )}
               </div>
-              {cmsProducts.data && (
-                <span className="ml-auto text-xs text-muted-foreground">
-                  {cmsProducts.data.total} itens
-                </span>
-              )}
             </div>
             <FilterChips
               chips={chips}
@@ -266,26 +267,17 @@ export default function AdminProdutos() {
             />
           </div>
         }
-      >
-        <AdminDataTable
-          columns={columns}
-          data={rows}
-          isLoading={cmsProducts.isLoading}
-          keyExtractor={(row) => row.id}
-          emptyTitle="Nenhum produto encontrado"
-          emptyDescription="Cadastre um novo produto ou ajuste os filtros."
-          pagination={
-            cmsProducts.data
-              ? {
-                  page,
-                  pageSize,
-                  total: cmsProducts.data.total,
-                  onPageChange: setPage,
-                }
-              : undefined
-          }
-        />
-      </AdminListPage>
+        pagination={
+          cmsProducts.data
+            ? {
+                page,
+                pageSize,
+                total: cmsProducts.data.total,
+                onPageChange: setPage,
+              }
+            : undefined
+        }
+      />
     </div>
   );
 }

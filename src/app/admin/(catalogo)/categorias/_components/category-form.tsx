@@ -7,11 +7,11 @@ import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { Input } from "@/components/ui/input";
 import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-picker";
 import { AdminPanel } from "@/app/admin/_components/admin-panel";
-import { CategoryTemplatesSection } from "@/app/admin/produtos/categorias/_components/category-templates-section";
+import { CategoryTemplatesSection } from "@/app/admin/(catalogo)/categorias/_components/category-templates-section";
 import {
   type DisplayLine,
   LinesManager,
-} from "@/app/admin/produtos/categorias/_components/lines-manager";
+} from "@/app/admin/(catalogo)/categorias/_components/lines-manager";
 import {
   deleteApiCategoriesId,
   getGetApiCategoriesQueryKey,
@@ -32,7 +32,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const LIST_HREF = "/admin/produtos/categorias";
+const LIST_HREF = "/admin/categorias";
 
 interface CategoryFormProps {
   mode: "create" | "edit";

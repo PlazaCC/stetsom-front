@@ -4,10 +4,9 @@ import {
   AdminDataTable,
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
-import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { useGetApiCategories, useGetApiTemplates } from "@/api/stetsom";
 import type { PublicCategory } from "@/api/stetsom/model";
-import { ImageIcon, Plus, Tags } from "lucide-react";
+import { ImageIcon, Plus } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminCategoriasPage() {
@@ -57,7 +56,7 @@ export default function AdminCategoriasPage() {
       className: "text-right",
       render: (c) => (
         <Link
-          href={`/admin/produtos/categorias/${c.id}`}
+          href={`/admin/categorias/${c.id}`}
           className="rounded border border-border px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"
         >
           Editar
@@ -67,29 +66,24 @@ export default function AdminCategoriasPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-5 px-4 py-4 lg:px-11.75 lg:py-7.25">
-      <AdminListPage
-        title="Categorias"
-        icon={Tags}
+    <div className="px-4 py-4 lg:px-5 lg:py-5">
+      <AdminDataTable
+        columns={columns}
+        data={categories}
+        isLoading={isLoading}
+        keyExtractor={(c) => c.id}
+        emptyTitle="Nenhuma categoria cadastrada"
+        emptyDescription="Categorias organizam o catálogo e suas linhas internas."
         action={
           <Link
-            href="/admin/produtos/categorias/nova"
+            href="/admin/categorias/nova"
             className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
           >
             <Plus className="size-4" />
             Nova categoria
           </Link>
         }
-      >
-        <AdminDataTable
-          columns={columns}
-          data={categories}
-          isLoading={isLoading}
-          keyExtractor={(c) => c.id}
-          emptyTitle="Nenhuma categoria cadastrada"
-          emptyDescription="Categorias organizam o catálogo e suas linhas internas."
-        />
-      </AdminListPage>
+      />
     </div>
   );
 }

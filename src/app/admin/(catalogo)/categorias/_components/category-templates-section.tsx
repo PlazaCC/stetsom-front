@@ -22,7 +22,7 @@ export function CategoryTemplatesSection({
       <div className="mb-2 flex items-center justify-between">
         <AdminLabel className="mb-0">Templates</AdminLabel>
         <Link
-          href={`/admin/produtos/categorias/${categoryId}/templates/novo`}
+          href={`/admin/categorias/${categoryId}/templates/novo`}
           className="flex h-8 items-center gap-1 rounded-md border border-border bg-card px-3 text-xs font-medium hover:bg-muted"
         >
           <Plus className="size-3.5" />
@@ -47,7 +47,7 @@ export function CategoryTemplatesSection({
               {template.attributes.length} atributos
             </span>
             <Link
-              href={`/admin/produtos/categorias/${categoryId}/templates/${template.id}`}
+              href={`/admin/categorias/${categoryId}/templates/${template.id}`}
               className="text-xs font-medium text-primary hover:underline"
             >
               Editar

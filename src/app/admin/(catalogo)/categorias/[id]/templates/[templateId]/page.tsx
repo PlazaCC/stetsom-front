@@ -1,4 +1,4 @@
-import { TemplateForm } from "@/app/admin/produtos/categorias/_components/template-form";
+import { TemplateForm } from "@/app/admin/(catalogo)/categorias/_components/template-form";
 
 interface PageProps {
   params: Promise<{ id: string; templateId: string }>;

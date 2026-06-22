@@ -25,7 +25,7 @@ export function AdminListPage({
 }: AdminListPageProps) {
   return (
     <div className={cn("flex flex-col gap-5", className)}>
-      <AdminPanel className="flex flex-col gap-4 p-5">
+      <AdminPanel className="flex flex-col gap-4">
         {action && (
           <div className="flex items-center justify-end">{action}</div>
         )}

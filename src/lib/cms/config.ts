@@ -12,6 +12,7 @@ import {
   Settings,
   Tags,
   Users,
+  Wrench,
   type LucideIcon,
 } from "lucide-react";
 
@@ -56,77 +57,50 @@ export type AppRouteStaticData = {
  * handled by `resolve-route.ts`.
  */
 
-const PRODUTOS_TABS: RouteTab[] = [
-  { href: "/admin/produtos", label: "Todos", icon: Package, exact: true },
-  { href: "/admin/produtos/categorias", label: "Categorias", icon: Tags },
-  {
-    href: "/admin/produtos/templates",
-    label: "Templates",
-    icon: LayoutTemplate,
-  },
-  { href: "/admin/produtos/atributos", label: "Atributos", icon: ListChecks },
-];
-
 export const config: Record<string, AppRouteStaticData> = {
   "/admin": { label: "Dashboard", icon: Home, section: "admin" },
 
-  // Produtos area — shares one tab bar across listing + configuration.
-  "/admin/produtos": {
-    label: "Produtos",
-    icon: Package,
-    tabs: PRODUTOS_TABS,
-    section: "admin",
-  },
-  // Wizard routes own their tabs as in-page steps — `tabs: []` stops the
-  // Produtos area navigation tabs from being inherited here.
+  // Catálogo — produtos, categorias, templates e atributos como rotas irmãs.
+  "/admin/produtos": { label: "Produtos", icon: Package, section: "admin" },
   "/admin/produtos/novo": {
     label: "Cadastrar produto",
     icon: Package,
-    tabs: [],
     section: "admin",
   },
   "/admin/produtos/[id]": {
     label: "Editar produto",
     icon: Package,
-    tabs: [],
     section: "admin",
   },
-  "/admin/produtos/categorias": {
-    label: "Categorias",
-    icon: Tags,
-    tabs: PRODUTOS_TABS,
-    section: "admin",
-  },
-  "/admin/produtos/categorias/nova": {
+  "/admin/categorias": { label: "Categorias", icon: Tags, section: "admin" },
+  "/admin/categorias/nova": {
     label: "Nova categoria",
     icon: Tags,
     section: "admin",
   },
-  "/admin/produtos/categorias/[id]": {
+  "/admin/categorias/[id]": {
     label: "Editar categoria",
     icon: Tags,
     section: "admin",
   },
-  "/admin/produtos/categorias/[id]/templates/novo": {
+  "/admin/categorias/[id]/templates/novo": {
     label: "Novo template",
     icon: LayoutTemplate,
     section: "admin",
   },
-  "/admin/produtos/categorias/[id]/templates/[templateId]": {
+  "/admin/categorias/[id]/templates/[templateId]": {
     label: "Editar template",
     icon: LayoutTemplate,
     section: "admin",
   },
-  "/admin/produtos/templates": {
+  "/admin/templates": {
     label: "Templates",
     icon: LayoutTemplate,
-    tabs: PRODUTOS_TABS,
     section: "admin",
   },
-  "/admin/produtos/atributos": {
+  "/admin/atributos": {
     label: "Atributos",
     icon: ListChecks,
-    tabs: PRODUTOS_TABS,
     section: "admin",
   },
 
@@ -143,15 +117,113 @@ export const config: Record<string, AppRouteStaticData> = {
     section: "admin",
   },
 
-  "/admin/biblioteca": { label: "Biblioteca", icon: Archive, section: "admin" },
+  "/admin/biblioteca": {
+    label: "Biblioteca",
+    icon: Archive,
+    section: "admin",
+    tabs: [
+      {
+        href: "/admin/biblioteca/fotos",
+        label: "Fotos",
+        icon: ImageIcon,
+        exact: true,
+      },
+      {
+        href: "/admin/biblioteca/manuais",
+        label: "Manuais",
+        icon: FileText,
+        exact: true,
+      },
+      {
+        href: "/admin/biblioteca/3d",
+        label: "Arquivos 3D",
+        icon: Archive,
+        exact: true,
+      },
+    ],
+  },
+  "/admin/biblioteca/fotos": {
+    label: "Biblioteca",
+    icon: Archive,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/biblioteca/manuais": {
+    label: "Biblioteca",
+    icon: Archive,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/biblioteca/3d": {
+    label: "Biblioteca",
+    icon: Archive,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
   "/admin/banners": { label: "Banners", icon: ImageIcon, section: "admin" },
-  "/admin/parceiros": { label: "Parceiros", icon: Building2, section: "admin" },
+  "/admin/parceiros": {
+    label: "Parceiros",
+    icon: Building2,
+    section: "admin",
+    tabs: [
+      {
+        href: "/admin/parceiros/representantes",
+        label: "Representantes",
+        icon: Building2,
+        exact: true,
+      },
+      {
+        href: "/admin/parceiros/assistencias",
+        label: "Assist. Técnicas",
+        icon: Wrench,
+        exact: true,
+      },
+    ],
+  },
+  "/admin/parceiros/representantes": {
+    label: "Parceiros",
+    icon: Building2,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/parceiros/assistencias": {
+    label: "Parceiros",
+    icon: Building2,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
   "/admin/usuarios": { label: "Usuários", icon: Users, section: "admin" },
   "/admin/historico": { label: "Histórico", icon: Clock, section: "admin" },
   "/admin/mensagens": {
     label: "Central de contato",
     icon: Mail,
     section: "admin",
+    tabs: [
+      {
+        href: "/admin/mensagens/contatos",
+        label: "Contatos",
+        icon: Mail,
+        exact: true,
+      },
+      {
+        href: "/admin/mensagens/departamentos",
+        label: "Departamentos",
+        icon: Building2,
+        exact: true,
+      },
+    ],
+  },
+  "/admin/mensagens/contatos": {
+    label: "Central de contato",
+    icon: Mail,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/mensagens/departamentos": {
+    label: "Central de contato",
+    icon: Mail,
+    section: "admin",
+    hideInBreadcrumb: true,
   },
   "/admin/configuracoes": {
     label: "Configurações",

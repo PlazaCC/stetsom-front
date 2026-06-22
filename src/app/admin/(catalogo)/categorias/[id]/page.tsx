@@ -1,4 +1,4 @@
-import { CategoryForm } from "@/app/admin/produtos/categorias/_components/category-form";
+import { CategoryForm } from "@/app/admin/(catalogo)/categorias/_components/category-form";
 
 interface PageProps {
   params: Promise<{ id: string }>;

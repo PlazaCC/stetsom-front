@@ -4,11 +4,10 @@ import {
   AdminDataTable,
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
-import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import { useGetApiCategories, useGetApiTemplates } from "@/api/stetsom";
 import type { Template } from "@/api/stetsom";
 import { cn } from "@/lib/utils";
-import { LayoutTemplate, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -64,7 +63,7 @@ export default function AdminTemplatesPage() {
       className: "text-right",
       render: (t) => (
         <Link
-          href={`/admin/produtos/categorias/${t.category_id}/templates/${t.id}`}
+          href={`/admin/categorias/${t.category_id}/templates/${t.id}`}
           className="rounded border border-border px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"
         >
           Editar
@@ -74,10 +73,14 @@ export default function AdminTemplatesPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-5 px-4 py-4 lg:px-11.75 lg:py-7.25">
-      <AdminListPage
-        title="Templates"
-        icon={LayoutTemplate}
+    <div className="px-4 py-4 lg:px-5 lg:py-5">
+      <AdminDataTable
+        columns={columns}
+        data={templates}
+        isLoading={isLoading}
+        keyExtractor={(t) => t.id}
+        emptyTitle="Nenhum template cadastrado"
+        emptyDescription="Templates definem os atributos técnicos de cada categoria."
         action={
           <div className="relative">
             <button
@@ -103,9 +106,7 @@ export default function AdminTemplatesPage() {
                     type="button"
                     onClick={() => {
                       setPickerOpen(false);
-                      router.push(
-                        `/admin/produtos/categorias/${cat.id}/templates/novo`,
-                      );
+                      router.push(`/admin/categorias/${cat.id}/templates/novo`);
                     }}
                     className={cn(
                       "block w-full rounded px-2 py-1.5 text-left text-sm hover:bg-muted",
@@ -118,16 +119,7 @@ export default function AdminTemplatesPage() {
             )}
           </div>
         }
-      >
-        <AdminDataTable
-          columns={columns}
-          data={templates}
-          isLoading={isLoading}
-          keyExtractor={(t) => t.id}
-          emptyTitle="Nenhum template cadastrado"
-          emptyDescription="Templates definem os atributos técnicos de cada categoria."
-        />
-      </AdminListPage>
+      />
     </div>
   );
 }
