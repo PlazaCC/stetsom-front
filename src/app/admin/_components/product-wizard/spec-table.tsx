@@ -59,10 +59,11 @@ export function SpecTable({
   return (
     <div className="overflow-hidden rounded-md border border-border">
       {!compact && (
-        <div className="grid grid-cols-[44px_1fr_1fr_80px] gap-3 border-b border-border bg-muted px-3 py-2.5 text-2xs font-semibold tracking-wide text-muted-foreground uppercase">
+        <div className="grid grid-cols-[44px_1fr_1fr_80px_44px] gap-3 border-b border-border bg-muted px-3 py-2.5 text-2xs font-semibold tracking-wide text-muted-foreground uppercase">
           <span />
           <span>Atributo</span>
           <span>Valor</span>
+          <span className="text-center">Destaque</span>
           <span />
         </div>
       )}
@@ -132,6 +133,15 @@ export function SpecTable({
             </button>
           );
 
+          const highlightToggle = (
+            <ToggleSwitch
+              checked={spec.highlighted}
+              onChange={(checked) => update(spec.id, { highlighted: checked })}
+              disabled={!spec.highlighted && highlightCount >= maxHighlights}
+              aria-label="Marcar como destaque"
+            />
+          );
+
           if (compact) {
             return (
               <div className="border-b border-border bg-card last:border-b-0">
@@ -140,6 +150,7 @@ export function SpecTable({
                     {handle}
                   </div>
                   <div className="min-w-0 flex-1">{attrCombobox}</div>
+                  {highlightToggle}
                   {deleteBtn}
                 </div>
                 <div className="border-t border-border px-3 pt-1.5 pb-2.5">
@@ -154,7 +165,7 @@ export function SpecTable({
           }
 
           return (
-            <div className="grid grid-cols-[44px_1fr_1fr_80px] gap-3 border-b border-border bg-card px-3 py-1.5 last:border-b-0">
+            <div className="grid grid-cols-[44px_1fr_1fr_80px_44px] gap-3 border-b border-border bg-card px-3 py-1.5 last:border-b-0">
               <div className="flex items-center [&_button]:cursor-grab [&_button]:active:cursor-grabbing">
                 {handle}
               </div>
@@ -164,6 +175,9 @@ export function SpecTable({
                 onChange={(e) => setValue(spec, e.target.value)}
                 placeholder="Valor"
               />
+              <div className="flex items-center justify-center">
+                {highlightToggle}
+              </div>
               <div className="flex items-center justify-end gap-1 text-muted-foreground">
                 {deleteBtn}
               </div>
