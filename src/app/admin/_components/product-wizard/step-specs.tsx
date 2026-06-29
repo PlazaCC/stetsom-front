@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/combobox";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BrFlag, EsFlag, UsFlag } from "@/components/ui/flag-icons";
+import { cn } from "@/lib/utils";
 
 const LOCALES: { id: SpecLocale; Flag: React.ComponentType; label: string }[] =
   [
@@ -36,6 +37,7 @@ interface StepSpecsProps {
   dispatch: React.Dispatch<WizardAction>;
   attributes: Attribute[];
   templates: Template[];
+  compact?: boolean;
 }
 
 function buildSpecs(tpl: Template, attributes: Attribute[]): WizardSpec[] {
@@ -56,6 +58,7 @@ export function StepSpecs({
   dispatch,
   attributes,
   templates,
+  compact = false,
 }: StepSpecsProps) {
   const [locale, setLocale] = useState<SpecLocale>("pt");
 
@@ -94,8 +97,8 @@ export function StepSpecs({
   }
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden rounded-card border border-border bg-card">
-      <div className="flex items-center justify-between border-b px-5 py-2.5">
+    <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b px-3 py-2.5">
         <h2 className="text-sm font-semibold">Especificações Técnicas</h2>
         <Combobox
           items={templates}
@@ -123,8 +126,13 @@ export function StepSpecs({
         </Combobox>
       </div>
 
-      <div className="flex items-center justify-between border-b border-border px-5 py-2.5">
-        <div className="flex items-center gap-4">
+      <div
+        className={cn(
+          "flex border-b border-border px-3 py-2.5",
+          compact ? "flex-col gap-2" : "flex-wrap items-center gap-x-4 gap-y-2",
+        )}
+      >
+        <div className="flex flex-wrap items-center gap-3">
           <span className="text-sm text-muted-foreground">
             Variações do produto
           </span>
@@ -151,13 +159,14 @@ export function StepSpecs({
         </Tabs>
       </div>
 
-      <div className="overflow-auto px-5 py-2.5">
+      <div className="overflow-auto px-3 py-2.5">
         <SpecTable
           specs={active.specs}
           attributes={attributes}
           maxHighlights={CMS_UI.MAX_HIGHLIGHTS}
           locale={locale}
           onChange={patchActiveSpecs}
+          compact={compact}
         />
       </div>
     </div>

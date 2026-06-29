@@ -35,12 +35,8 @@ export function StepPublish({ state, dispatch }: StepPublishProps) {
   const variations = state.variations.map((v) => v.label).join(", ");
 
   return (
-    <div className="rounded-[16px] border border-border bg-card">
-      <div className="border-b border-border px-6 py-4">
-        <h2 className="text-xl font-bold text-foreground">Publicação</h2>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
+    <div>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
         <div>
           <AdminLabel className="flex items-center gap-1.5">
             <CalendarDays className="size-4 text-muted-foreground" />

@@ -9,14 +9,14 @@ import { PreviewBanner } from "./_components/preview-banner";
 
 type ProdutoDetalhePageProps = {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<{ variation?: string; preview?: string }>;
+  searchParams: Promise<{ preview?: string }>;
 };
 
 export default async function ProdutoDetalhePage(
   props: ProdutoDetalhePageProps,
 ) {
   const { slug } = await props.params;
-  const { variation, preview } = await props.searchParams;
+  const { preview } = await props.searchParams;
   const locale = await getLocale();
   const apiLocale = toApiLocale(locale);
   const { isEnabled } = await draftMode();
@@ -35,11 +35,7 @@ export default async function ProdutoDetalhePage(
   return (
     <>
       <PreviewBanner />
-      <ProductDetailView
-        data={{ product, category, relatedProducts }}
-        initialVariantId={variation}
-        slug={slug}
-      />
+      <ProductDetailView data={{ product, category, relatedProducts }} />
     </>
   );
 }

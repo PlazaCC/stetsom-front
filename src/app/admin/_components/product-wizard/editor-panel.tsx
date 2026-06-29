@@ -38,6 +38,8 @@ interface EditorPanelProps {
   lines: LineOption[];
   attributes: Attribute[];
   templates: Template[];
+  /** Stacked layout for form sections — true when the panel is narrow. */
+  compact?: boolean;
   /** Sticky save actions rendered at the bottom of the panel. */
   footer?: React.ReactNode;
 }
@@ -59,12 +61,13 @@ export function EditorPanel({
   lines,
   attributes,
   templates,
+  compact = false,
   footer,
 }: EditorPanelProps) {
   const activeSection = targetToSection(selection);
 
   return (
-    <div className="flex h-full flex-col overflow-hidden">
+    <div className="flex h-full flex-col overflow-hidden border-r">
       {/* Section navigator — replaces the old shell step tabs. */}
       <nav className="flex shrink-0 items-stretch gap-0.5 border-b border-border bg-card px-2 py-2">
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
@@ -88,7 +91,7 @@ export function EditorPanel({
         })}
       </nav>
 
-      <div className="min-h-0 flex-1 overflow-y-auto p-3">
+      <div className="@container min-h-0 flex-1 overflow-y-auto p-3">
         {/* Keyed so each section change fades in. */}
         <div key={activeSection} className="animate-in duration-150 fade-in-0">
           {activeSection === "general" && (
@@ -97,11 +100,6 @@ export function EditorPanel({
               dispatch={dispatch}
               categories={categories}
               lines={lines}
-              field={selection.kind === "general" ? selection.field : undefined}
-              onOpenField={(f) =>
-                onSelectionChange({ kind: "general", field: f })
-              }
-              onBack={() => onSelectionChange({ kind: "general" })}
             />
           )}
           {activeSection === "specs" && (
@@ -110,6 +108,7 @@ export function EditorPanel({
               dispatch={dispatch}
               attributes={attributes}
               templates={templates}
+              compact={compact}
             />
           )}
           {activeSection === "files" && (

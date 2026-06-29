@@ -1,10 +1,5 @@
 "use client";
 
-import {
-  AdminFormSection,
-  AdminFormSectionContent,
-  AdminFormSectionTitle,
-} from "@/app/admin/_components/crud/admin-form-section";
 import { BookOpen, FileText } from "lucide-react";
 import { FileDropzone } from "./file-dropzone";
 import type { WizardAction, WizardState } from "./wizard-store";
@@ -19,10 +14,9 @@ export function StepFiles({ state, dispatch }: StepFilesProps) {
   const manuals = state.files.filter((f) => f.type === "MANUAL");
 
   return (
-    <AdminFormSection>
-      <AdminFormSectionTitle title="Certificados" />
-
-      <AdminFormSectionContent>
+    <div className="flex flex-col gap-6">
+      <section className="flex flex-col gap-3">
+        <p className="text-sm font-semibold text-foreground">Certificados</p>
         <FileDropzone
           type="CERTIFICATE"
           icon={FileText}
@@ -30,10 +24,10 @@ export function StepFiles({ state, dispatch }: StepFilesProps) {
           onAdd={(file) => dispatch({ type: "add_file", file })}
           onRemove={(id) => dispatch({ type: "remove_file", id })}
         />
-      </AdminFormSectionContent>
+      </section>
 
-      <AdminFormSectionTitle className="border-t" title="Manuais" />
-      <AdminFormSectionContent>
+      <section className="flex flex-col gap-3">
+        <p className="text-sm font-semibold text-foreground">Manuais</p>
         <FileDropzone
           type="MANUAL"
           icon={BookOpen}
@@ -41,11 +35,10 @@ export function StepFiles({ state, dispatch }: StepFilesProps) {
           onAdd={(file) => dispatch({ type: "add_file", file })}
           onRemove={(id) => dispatch({ type: "remove_file", id })}
         />
-      </AdminFormSectionContent>
+      </section>
 
-      {/* TO-DO: Download de materiais */}
-      <AdminFormSectionTitle className="border-t" title="Downloads" />
-      <AdminFormSectionContent>
+      <section className="flex flex-col gap-3">
+        <p className="text-sm font-semibold text-foreground">Downloads</p>
         <FileDropzone
           type="MANUAL"
           icon={BookOpen}
@@ -53,7 +46,7 @@ export function StepFiles({ state, dispatch }: StepFilesProps) {
           onAdd={(file) => dispatch({ type: "add_file", file })}
           onRemove={(id) => dispatch({ type: "remove_file", id })}
         />
-      </AdminFormSectionContent>
-    </AdminFormSection>
+      </section>
+    </div>
   );
 }

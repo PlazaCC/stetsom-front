@@ -221,6 +221,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
 
   return (
     <ProductEditorLayout
+      device={device}
       preview={
         <PreviewCanvas
           model={previewModel}
@@ -242,6 +243,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
           lines={lines}
           attributes={attributes}
           templates={templates}
+          compact={device === "desktop"}
           footer={
             <AdminSaveBar
               onSaveDraft={handleSaveDraft}

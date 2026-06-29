@@ -10,11 +10,9 @@ import type {
 import { Breadcrumb, type BreadcrumbItem } from "@/components/ui/breadcrumb";
 import { Container } from "@/components/ui/container";
 import { ProductCard } from "@/components/ui/product-card";
-import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useState } from "react";
 import { BlockRenderer } from "./block-renderer";
 import { StickySectionNav } from "./sticky-section-nav";
 
@@ -37,10 +35,6 @@ interface ProductDetailViewProps {
   data: ProductDetailViewData;
   /** Render with plain `<img>` (blob-safe) and drop navigation chrome. */
   previewMode?: boolean;
-  /** Active variant id from the URL on the public page. */
-  initialVariantId?: string;
-  /** Product slug. When set, variant selectors become URL links to `?variation=`. */
-  slug?: string;
   /**
    * CMS editor mode: stamp `data-editor-target` on editable regions so the
    * product editor can select them. Inert (and absent) on the public site.
@@ -88,8 +82,6 @@ function DetailImage({
 export function ProductDetailView({
   data,
   previewMode = false,
-  initialVariantId,
-  slug,
   editable = false,
 }: ProductDetailViewProps) {
   const t = useTranslations("ProductDetail");
@@ -115,23 +107,26 @@ export function ProductDetailView({
   const sortedVariants = [...product.variants].sort(
     (a, b) => a.order - b.order,
   );
-  const urlDriven = !!slug;
-  const [internalVariantId, setInternalVariantId] = useState<
-    string | undefined
-  >(initialVariantId ?? sortedVariants[0]?.variant_id);
-  const activeVariantId = urlDriven
-    ? (initialVariantId ?? sortedVariants[0]?.variant_id)
-    : internalVariantId;
-  const activeVariant =
-    sortedVariants.find((v) => v.variant_id === activeVariantId) ??
-    sortedVariants[0];
-  const activeAttrs = activeVariant
-    ? [...activeVariant.attributes].sort((a, b) => a.order - b.order)
+  const firstVariantAttrs = sortedVariants[0]
+    ? [...sortedVariants[0].attributes].sort((a, b) => a.order - b.order)
     : [];
-
-  const highlights = activeAttrs
+  const highlights = firstVariantAttrs
     .filter((attr) => product.highlight_attributes.includes(attr.attribute_id))
     .slice(0, 3);
+  const allAttrKeys = sortedVariants.reduce<
+    { attribute_id: string; attribute_name?: string | null }[]
+  >((acc, variant) => {
+    const sorted = [...variant.attributes].sort((a, b) => a.order - b.order);
+    for (const attr of sorted) {
+      if (!acc.some((a) => a.attribute_id === attr.attribute_id)) {
+        acc.push({
+          attribute_id: attr.attribute_id,
+          attribute_name: attr.attribute_name,
+        });
+      }
+    }
+    return acc;
+  }, []);
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: t("breadcrumbHome"), href: "/" },
@@ -224,49 +219,19 @@ export function ProductDetailView({
                 </p>
               )}
 
-              {activeAttrs.length > 0 && (
-                <ul {...ed("specs")} className="mt-4 flex flex-wrap gap-2">
-                  {activeAttrs.map((attr) => (
-                    <li
-                      key={attr.attribute_id}
-                      className="rounded-lg border border-muted px-3 py-1 text-xs text-brand-dark uppercase"
-                    >
-                      {attr.attribute_name ?? attr.attribute_id}: {attr.value}
-                    </li>
-                  ))}
-                </ul>
-              )}
-
               {sortedVariants.length > 1 && (
                 <div className="mt-4 flex flex-wrap items-center gap-2">
                   <span className="text-sm text-muted-foreground">
                     {t("variations")}
                   </span>
-                  {sortedVariants.map((item) => {
-                    const isActive =
-                      item.variant_id === activeVariant?.variant_id;
-                    const itemClass = isActive
-                      ? "rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground"
-                      : "rounded-md border border-border bg-transparent px-3 py-1.5 text-sm text-muted-foreground";
-                    return urlDriven ? (
-                      <Link
-                        key={item.variant_id}
-                        href={`/produtos/${slug}?variation=${encodeURIComponent(item.variant_id)}`}
-                        className={itemClass}
-                      >
-                        {item.name}
-                      </Link>
-                    ) : (
-                      <button
-                        key={item.variant_id}
-                        type="button"
-                        onClick={() => setInternalVariantId(item.variant_id)}
-                        className={itemClass}
-                      >
-                        {item.name}
-                      </button>
-                    );
-                  })}
+                  {sortedVariants.map((item) => (
+                    <span
+                      key={item.variant_id}
+                      className="rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground"
+                    >
+                      {item.name}
+                    </span>
+                  ))}
                 </div>
               )}
 
@@ -333,23 +298,57 @@ export function ProductDetailView({
             {t("techSpecifications")}
           </h2>
         </div>
-        {activeAttrs.length > 0 ? (
+        {allAttrKeys.length > 0 ? (
           <div className="bg-white pb-9">
             <div className="w-full overflow-x-auto">
-              {activeAttrs.map((attr, i) => (
+              {sortedVariants.length > 1 && (
                 <div
-                  key={attr.attribute_id}
+                  className="grid items-center gap-8 bg-brand-dark px-5 py-4.5 lg:px-42.5"
+                  style={{
+                    gridTemplateColumns: `1fr repeat(${sortedVariants.length}, minmax(120px, 1fr))`,
+                  }}
+                >
+                  <span />
+                  {sortedVariants.map((v) => (
+                    <span
+                      key={v.variant_id}
+                      className="font-sans text-sm font-bold text-white uppercase"
+                    >
+                      {v.name}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {allAttrKeys.map(({ attribute_id, attribute_name }, i) => (
+                <div
+                  key={attribute_id}
                   className={cn(
-                    "flex items-center gap-8 px-5 py-4.5 lg:px-42.5",
+                    "grid items-center gap-8 px-5 py-4.5 lg:px-42.5",
                     i % 2 === 0 ? "bg-muted" : "bg-white",
                   )}
+                  style={{
+                    gridTemplateColumns:
+                      sortedVariants.length > 1
+                        ? `1fr repeat(${sortedVariants.length}, minmax(120px, 1fr))`
+                        : "1fr 1fr",
+                  }}
                 >
-                  <span className="w-1/2 shrink-0 font-sans text-sm font-medium text-brand-dark capitalize">
-                    {attr.attribute_name ?? attr.attribute_id}
+                  <span className="font-sans text-sm font-medium text-brand-dark capitalize">
+                    {attribute_name ?? attribute_id}
                   </span>
-                  <span className="font-sans text-sm text-text-subtle">
-                    {attr.value || "—"}
-                  </span>
+                  {sortedVariants.map((v) => {
+                    const attr = v.attributes.find(
+                      (a) => a.attribute_id === attribute_id,
+                    );
+                    return (
+                      <span
+                        key={v.variant_id}
+                        className="font-sans text-sm text-text-subtle"
+                      >
+                        {attr?.value || "—"}
+                      </span>
+                    );
+                  })}
                 </div>
               ))}
             </div>
