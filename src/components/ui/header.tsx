@@ -2,391 +2,170 @@
 
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Menu, Search, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
+import { motion, useScroll, useMotionValueEvent } from "motion/react";
 import { useTranslations } from "next-intl";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { Container } from "./container";
 import { LanguageSwitcher } from "./language-switcher";
 import { Logo } from "./logo";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "./navigation-menu";
-import type { PublicCategory } from "@/api/stetsom/model";
 
-const DEFAULT_CATEGORY_IMAGE = "/figma-assets/raw/fill_THI4RN_1e666beb.png";
+const SCROLL_THRESHOLD = 10;
 
-type CategoryKey =
-  | "amplifiers"
-  | "processors"
-  | "crossovers"
-  | "controls"
-  | "powerSupplies"
-  | "mixers"
-  | "accessories";
+const NAV_LINKS = [
+  { href: "/produtos", labelKey: "products" },
+  { href: "/sobre", labelKey: "about" },
+  { href: "/suporte", labelKey: "support" },
+] as const;
 
-/**
- * Curated presentation for known category slugs. The public contract exposes
- * neither category images nor menu descriptions (only `icon_library_id`), so
- * this design content stays curated and is matched by slug. Unknown categories
- * fall back to the default image and render the name only.
- */
-const CATEGORY_PRESENTATION: Record<
-  string,
-  { image: string; key: CategoryKey }
-> = {
-  amplificadores: {
-    image: "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
-    key: "amplifiers",
-  },
-  processadores: {
-    image: "/figma-assets/raw/fill_THI4RN_1e666beb.png",
-    key: "processors",
-  },
-  crossovers: { image: "/figma-assets/raw/product-c.png", key: "crossovers" },
-  controles: {
-    image: "/figma-assets/raw/fill_THI4RN_1e666beb.png",
-    key: "controls",
-  },
-  "fontes-e-carregadores": {
-    image: "/figma-assets/raw/fill_THI4RN_1e666beb.png",
-    key: "powerSupplies",
-  },
-  "mesas-de-som": { image: "/figma-assets/raw/product-c.png", key: "mixers" },
-  acessorios: {
-    image: "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
-    key: "accessories",
-  },
-};
-
-type CategoryNavItem = {
-  slug: string;
-  label: string;
-  href: string;
-  image: string;
-  description?: string;
-};
-
-interface HeaderProps {
-  categories?: PublicCategory[];
-}
-
-export function Header({ categories }: HeaderProps) {
+export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("Nav");
 
-  const rawNavItems: CategoryNavItem[] =
-    categories && categories.length
-      ? [...categories]
-          .sort((a, b) => a.order - b.order)
-          .map((category) => {
-            const presentation = CATEGORY_PRESENTATION[category.slug];
-            return {
-              slug: category.slug,
-              label: category.name,
-              href: `/produtos?category=${category.slug}`,
-              image: presentation?.image ?? DEFAULT_CATEGORY_IMAGE,
-              description: presentation
-                ? t(`categoryMenu.${presentation.key}.description`)
-                : undefined,
-            };
-          })
-      : Object.entries(CATEGORY_PRESENTATION).map(([slug, presentation]) => ({
-          slug,
-          label: t(`categoryMenu.${presentation.key}.label`),
-          href: `/produtos?category=${slug}`,
-          image: presentation.image,
-          description: t(`categoryMenu.${presentation.key}.description`),
-        }));
+  // ── scroll tracking with motion ──────────────────────────────────────
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setScrolled(latest > SCROLL_THRESHOLD);
+  });
 
-  // The public categories endpoint can return the same slug more than once;
-  // dedupe so nav keys stay unique and menu entries are not duplicated.
-  const navItems = rawNavItems.filter(
-    (item, index, all) =>
-      all.findIndex((other) => other.slug === item.slug) === index,
-  );
-
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setMobileMenuOpen(false);
-        setSearchOpen(false);
-      }
+  // ── keyboard ─────────────────────────────────────────────────────────
+  function handleKey(e: React.KeyboardEvent) {
+    if (e.key === "Escape") {
+      setMobileMenuOpen(false);
     }
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, []);
+  }
 
-  useEffect(() => {
-    document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mobileMenuOpen]);
+  // ── close mobile menu on outside click ───────────────────────────────
+  function handleBackdropClick() {
+    setMobileMenuOpen(false);
+  }
+
+  // ── header appearance ────────────────────────────────────────────────
+  // On mobile, when the hamburger menu is open the header turns white to blend
+  // with the dropdown (desktop is unaffected since the menu is hidden).
+  const isWhite = scrolled || mobileMenuOpen;
+  const iconClass = isWhite ? "text-icon-muted" : "text-white";
+  const langVariant = isWhite ? ("dark" as const) : ("light" as const);
 
   return (
-    <>
-      <header className="sticky top-0 z-50 h-22 w-full border-b border-border bg-white">
+    <div onKeyDown={handleKey}>
+      <motion.header
+        className="fixed top-0 z-50 h-18 w-full"
+        animate={{
+          backgroundColor: isWhite
+            ? "rgba(255, 255, 255, 1)"
+            : "rgba(255, 255, 255, 0)",
+          boxShadow: isWhite
+            ? "0 1px 3px rgba(0, 0, 0, 0.1)"
+            : "0 0px 0px rgba(0, 0, 0, 0)",
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      >
         <Container className="flex h-full items-center justify-between">
-          {/* Desktop header */}
-          <div className="hidden items-center gap-logo-nav md:flex">
-            <Link href="/">
+          {/* Logo */}
+          <div className="flex items-center gap-8">
+            <Link href="/" className="shrink-0">
               <Logo width={158} height={35} priority />
             </Link>
 
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger
-                    nativeButton={false}
-                    render={
-                      <div>
-                        <MenuLink href="/produtos" label={t("products")} />
-                      </div>
-                    }
-                  />
-                  <NavigationMenuContent>
-                    <ul className="grid w-100 gap-2 md:w-125 md:grid-cols-2 lg:w-150">
-                      {navItems.map((cat) => (
-                        <ListItem
-                          key={cat.slug}
-                          title={cat.label}
-                          href={cat.href}
-                          image={cat.image}
-                        >
-                          {cat.description ?? ""}
-                        </ListItem>
-                      ))}
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-
-                <NavigationMenuItem>
-                  <NavigationMenuLink
-                    render={<MenuLink href="/sobre" label={t("about")} />}
-                  />
-                </NavigationMenuItem>
-
-                <NavigationMenuItem>
-                  <NavigationMenuLink
-                    render={<MenuLink href="/suporte" label={t("support")} />}
-                  />
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
+            {/* Desktop nav */}
+            <nav className="hidden items-center gap-8 md:flex">
+              {NAV_LINKS.map(({ href, labelKey }) => (
+                <DesktopNavLink key={href} href={href} scrolled={scrolled}>
+                  {t(labelKey)}
+                </DesktopNavLink>
+              ))}
+            </nav>
           </div>
 
-          {/* Mobile header: hamburger | logo | search */}
-          <div className="flex w-full items-center justify-between md:hidden">
-            {searchOpen ? (
-              <MobileSearchBar onClose={() => setSearchOpen(false)} />
-            ) : (
-              <>
-                <div className="flex w-10 items-center justify-start">
-                  <button
-                    aria-label={t("openMenu")}
-                    aria-expanded={mobileMenuOpen}
-                    aria-controls="mobile-menu"
-                    className="inline-flex h-10 w-10 items-center justify-center text-icon-muted"
-                    onClick={() => setMobileMenuOpen(true)}
-                  >
-                    <Menu size={22} />
-                  </button>
-                </div>
-
-                <Link href="/" className="shrink-0">
-                  <Logo width={120} height={28} />
-                </Link>
-
-                <div className="flex w-10 items-center justify-end">
-                  <button
-                    aria-label={t("search")}
-                    className="inline-flex h-10 w-10 items-center justify-center text-icon-muted"
-                    onClick={() => setSearchOpen(true)}
-                  >
-                    <Search size={20} />
-                  </button>
-                </div>
-              </>
-            )}
+          {/* Desktop right: search + language */}
+          <div className="hidden items-center gap-4 md:flex">
+            <DesktopSearchBar scrolled={scrolled} />
+            <LanguageSwitcher variant={langVariant} />
           </div>
 
-          {/* Right side (desktop) — language selector */}
-          <div className="hidden items-center md:flex">
-            <LanguageSwitcher variant="light" />
+          {/* Mobile: hamburger | logo | search icon */}
+          <div className="flex items-center gap-2 md:hidden">
+            <button
+              aria-label={t("openMenu")}
+              aria-expanded={mobileMenuOpen}
+              className={cn(
+                "inline-flex h-10 w-10 items-center justify-center",
+                iconClass,
+              )}
+              onClick={() => setMobileMenuOpen((o) => !o)}
+            >
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
           </div>
         </Container>
-      </header>
 
-      {/* Mobile backdrop */}
-      <div
-        aria-hidden="true"
-        className={cn(
-          "fixed inset-0 z-[55] bg-black/50 transition-opacity duration-300 md:hidden",
-          mobileMenuOpen
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0",
-        )}
-        onClick={() => setMobileMenuOpen(false)}
-      />
-
-      <MobileDrawer
-        open={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-        navItems={navItems}
-      />
-    </>
-  );
-}
-
-// ─── Mobile Drawer ────────────────────────────────────────────────────────────
-
-interface MobileDrawerProps {
-  open: boolean;
-  onClose: () => void;
-  navItems: CategoryNavItem[];
-}
-
-function MobileDrawer({ open, onClose, navItems }: MobileDrawerProps) {
-  const pathname = usePathname();
-  const t = useTranslations("Nav");
-  const [categoriesOpen, setCategoriesOpen] = useState(false);
-
-  return (
-    <nav
-      id="mobile-menu"
-      role="dialog"
-      aria-modal="true"
-      aria-label={t("navAriaLabel")}
-      className={cn(
-        "fixed top-0 left-0 z-[60] flex h-full w-4/5 max-w-xs flex-col bg-brand-dark transition-transform duration-300 md:hidden",
-        open ? "translate-x-0" : "-translate-x-full",
-      )}
-    >
-      {/* Drawer header */}
-      <div className="flex items-center justify-between border-b border-white/10 px-5 py-5">
-        <Link href="/" onClick={onClose}>
-          <Logo variant="dark" width={120} height={28} />
-        </Link>
-        <button
-          aria-label={t("closeMenu")}
-          className="inline-flex h-10 w-10 items-center justify-center text-text-subtle-dark transition-colors hover:text-white"
-          onClick={onClose}
-        >
-          <X size={22} />
-        </button>
-      </div>
-
-      {/* Nav links */}
-      <div className="flex flex-1 flex-col overflow-y-auto px-5 py-6">
-        {/* Produtos com accordion de categorias */}
-        <div className="border-b border-white/10">
-          <button
-            onClick={() => setCategoriesOpen((o) => !o)}
-            className="flex w-full items-center justify-between py-4 font-sans-condensed text-xl font-black text-white uppercase transition-colors hover:text-brand"
+        {/* Mobile dropdown menu */}
+        {mobileMenuOpen && (
+          <motion.div
+            ref={menuRef}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-18 left-0 w-full bg-white shadow-md md:hidden"
           >
-            {t("products")}
-            <ChevronDown
-              size={18}
-              className={cn(
-                "text-text-subtle-dark transition-transform duration-200",
-                categoriesOpen && "rotate-180",
-              )}
-            />
-          </button>
+            <div className="flex flex-col px-5 py-4">
+              {/* Search */}
+              <MobileSearchInline onClose={() => setMobileMenuOpen(false)} />
 
-          <div
-            className={cn(
-              "overflow-hidden transition-all duration-300",
-              categoriesOpen ? "max-h-96" : "max-h-0",
-            )}
-          >
-            <div className="flex flex-col pb-4 pl-4">
-              {navItems.map((cat) => (
-                <Link
-                  key={cat.slug}
-                  href={cat.href}
-                  onClick={onClose}
-                  className="py-2.5 font-sans text-sm text-text-subtle-dark transition-colors hover:text-white"
+              <div className="my-3 border-t border-border" />
+
+              {/* Nav links */}
+              {NAV_LINKS.map(({ href, labelKey }) => (
+                <MobileNavLink
+                  key={href}
+                  href={href}
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  {cat.label}
-                </Link>
+                  {t(labelKey)}
+                </MobileNavLink>
               ))}
+
+              <div className="my-3 border-t border-border" />
+
+              {/* Language switcher */}
+              <div className="py-2">
+                <LanguageSwitcher variant="dark" />
+              </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        )}
+      </motion.header>
 
-        {/* Sobre nós e Suporte */}
-        {[
-          { href: "/sobre", label: t("about") },
-          { href: "/suporte", label: t("support") },
-        ].map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            onClick={onClose}
-            className={cn(
-              "border-b border-white/10 py-4 font-sans-condensed text-xl font-black uppercase transition-colors",
-              pathname === link.href || pathname.startsWith(link.href + "/")
-                ? "text-brand"
-                : "text-white hover:text-brand",
-            )}
-          >
-            {link.label}
-          </Link>
-        ))}
-      </div>
-
-      {/* Drawer footer — language selector */}
-      <div className="border-t border-white/10 px-5 py-5">
-        <LanguageSwitcher variant="dark" />
-      </div>
-    </nav>
+      {/* Backdrop */}
+      {mobileMenuOpen && (
+        <motion.div
+          aria-hidden="true"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-40 bg-black/30 md:hidden"
+          onClick={handleBackdropClick}
+        />
+      )}
+    </div>
   );
 }
 
-// ─── Mobile Search Bar ────────────────────────────────────────────────────────
+// ─── Desktop Nav Link ─────────────────────────────────────────────────────────
+// Restored original hover style: red text + red border-bottom on hover
 
-function MobileSearchBar({ onClose }: { onClose: () => void }) {
-  const router = useRouter();
-  const t = useTranslations("Header");
-
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const q = (new FormData(e.currentTarget).get("q") as string).trim();
-    if (q) router.push(`/produtos?q=${encodeURIComponent(q)}`);
-    onClose();
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="flex w-full items-center gap-2">
-      <input
-        name="q"
-        type="search"
-        autoFocus
-        placeholder={t("searchPlaceholder")}
-        className="flex-1 border-b border-border bg-transparent py-1 font-sans text-sm text-foreground outline-none placeholder:text-muted-foreground"
-      />
-      <button
-        type="button"
-        aria-label={t("closeSearch")}
-        className="inline-flex h-10 w-10 items-center justify-center text-icon-muted"
-        onClick={onClose}
-      >
-        <X size={20} />
-      </button>
-    </form>
-  );
-}
-
-// ─── Desktop Sub-components ───────────────────────────────────────────────────
-
-function MenuLink({ href, label }: { href: string; label: string }) {
+function DesktopNavLink({
+  href,
+  children,
+  scrolled,
+}: {
+  href: string;
+  children: string;
+  scrolled: boolean;
+}) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(href + "/");
 
@@ -394,44 +173,103 @@ function MenuLink({ href, label }: { href: string; label: string }) {
     <Link
       href={href}
       className={cn(
-        "mx-4 border-b-2 font-sans text-lg font-normal transition-colors",
-        active
-          ? "border-brand text-brand"
-          : "border-transparent text-muted-foreground hover:border-brand hover:text-brand",
+        "border-b-2 font-sans text-lg font-normal transition-colors",
+        scrolled
+          ? active
+            ? "border-brand text-brand"
+            : "border-transparent text-muted-foreground hover:border-brand hover:text-brand"
+          : active
+            ? "border-brand text-white"
+            : "border-transparent text-white/80 hover:border-brand hover:text-white",
       )}
     >
-      {label}
+      {children}
     </Link>
   );
 }
 
-function ListItem({
-  title,
-  children,
+// ─── Mobile Nav Link ──────────────────────────────────────────────────────────
+
+function MobileNavLink({
   href,
-  image,
-  ...props
-}: React.ComponentPropsWithoutRef<"li"> & { href: string; image: string }) {
+  children,
+  onClick,
+}: {
+  href: string;
+  children: string;
+  onClick: () => void;
+}) {
+  const pathname = usePathname();
+  const active = pathname === href || pathname.startsWith(href + "/");
+
   return (
-    <li {...props}>
-      <NavigationMenuLink
-        render={
-          <Link href={href}>
-            <div className="flex gap-3">
-              <div
-                className="size-16 shrink-0 rounded-sm bg-cover bg-center"
-                style={{ backgroundImage: `url('${image}')` }}
-              />
-              <div className="flex flex-1 flex-col gap-1 text-sm">
-                <div className="leading-none font-medium">{title}</div>
-                <div className="line-clamp-2 text-muted-foreground">
-                  {children}
-                </div>
-              </div>
-            </div>
-          </Link>
-        }
+    <Link
+      href={href}
+      onClick={onClick}
+      className={cn(
+        "py-3 font-sans-condensed text-lg font-black uppercase transition-colors",
+        active ? "text-brand" : "text-brand-dark hover:text-brand",
+      )}
+    >
+      {children}
+    </Link>
+  );
+}
+
+// ─── Desktop Search Bar ───────────────────────────────────────────────────────
+
+function DesktopSearchBar({ scrolled }: { scrolled: boolean }) {
+  const router = useRouter();
+  const t = useTranslations("Header");
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const q = (new FormData(e.currentTarget).get("q") as string).trim();
+    if (q) router.push(`/produtos?q=${encodeURIComponent(q)}`);
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex items-center">
+      <input
+        name="q"
+        type="search"
+        placeholder={t("searchPlaceholder")}
+        className={cn(
+          "w-40 rounded-full border px-4 py-1.5 font-sans text-sm transition-all outline-none",
+          "focus:w-56 focus:border-brand",
+          scrolled
+            ? "border-border bg-muted text-foreground placeholder:text-muted-foreground"
+            : "border-white/30 bg-white/10 text-white placeholder:text-white/50",
+        )}
       />
-    </li>
+    </form>
+  );
+}
+
+// ─── Mobile Search Inline ─────────────────────────────────────────────────────
+
+function MobileSearchInline({ onClose }: { onClose: () => void }) {
+  const router = useRouter();
+  const t = useTranslations("Header");
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const q = (new FormData(e.currentTarget).get("q") as string).trim();
+    if (q) {
+      router.push(`/produtos?q=${encodeURIComponent(q)}`);
+      onClose();
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex items-center gap-2">
+      <Search size={18} className="shrink-0 text-icon-muted" />
+      <input
+        name="q"
+        type="search"
+        placeholder={t("searchPlaceholder")}
+        className="flex-1 bg-transparent py-2 font-sans text-sm text-foreground outline-none placeholder:text-muted-foreground"
+      />
+    </form>
   );
 }
