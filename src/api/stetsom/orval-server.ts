@@ -1,14 +1,15 @@
 /**
- * Server-side Orval client — for use in RSC and Server Actions only.
+ * Server-side Orval mutator — for RSC and Server Actions only.
  *
  * Reads the admin_token HttpOnly cookie via next/headers and calls
- * stetsom-api directly (no BFF proxy). Import this ONLY in server files;
- * importing in client components will throw because next/headers is
- * not available in the browser.
+ * stetsom-api directly (no BFF proxy). This is the mutator for the
+ * `stetsomServer` Orval target: the generated functions under ./server/**
+ * call serverOrvalClient. Import the generated functions (not this directly)
+ * from server files ONLY — next/headers is unavailable in the browser.
  *
  * Usage in a Server Component:
- *   import { serverOrvalClient } from "@/api/stetsom/orval-server";
- *   const data = await serverOrvalClient<Product[]>({ method: "GET", url: "/api/products" });
+ *   import { getApiProducts } from "@/api/stetsom/server/products-public/products-public";
+ *   const catalog = await getApiProducts({ page: 1, pageSize: 20, locale: "pt" });
  */
 import type { AxiosRequestConfig } from "axios";
 import Axios from "axios";
