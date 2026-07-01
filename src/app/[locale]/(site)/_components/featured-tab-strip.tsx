@@ -27,7 +27,7 @@ export function FeaturedTabStrip({
 }: FeaturedTabStripProps) {
   return (
     <>
-      <div
+      {/* <div
         role="tablist"
         className="inline-flex items-center gap-0 overflow-x-auto bg-muted rounded-lg p-1"
       >
@@ -48,13 +48,13 @@ export function FeaturedTabStrip({
             {tab.label}
           </button>
         ))}
-      </div>
+      </div> */}
       <Link
         href={ctaHref}
-        className="ml-4 inline-flex items-center gap-2 px-2 mb-2.5 text-base font-sans-condensed font-medium text-brand"
+        className="mb-2.5 ml-4 inline-flex items-center gap-2 px-2 font-sans-condensed text-base font-medium text-brand"
       >
         <span>{ctaLabel}</span>
-        <ArrowRight className="size-4 inline-block" strokeWidth={2.5} />
+        <ArrowRight className="inline-block size-4" strokeWidth={2.5} />
       </Link>
     </>
   );

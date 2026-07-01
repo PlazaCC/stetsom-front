@@ -50,7 +50,7 @@ export default async function Home() {
   const socialData = getPageBlock<HomeSocialBlockData>(blocks, "social");
   const faqData = getPageBlock<HomeFaqBlockData>(blocks, "faq");
 
-  const featuredProducts = featuredData.products ?? [];
+  const featuredProducts = (featuredData.products ?? []).slice(0, 4);
   const spotlightProduct = featuredData.spotlight ?? featuredProducts[0];
 
   return (
