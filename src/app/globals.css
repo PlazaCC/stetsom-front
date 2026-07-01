@@ -235,6 +235,7 @@
 }
 
 .hero-carousel .swiper-pagination-bullet {
+  position: relative;
   border: none;
   margin: 0;
   padding: 0;
@@ -243,12 +244,39 @@
   border-radius: 9999px;
   background: rgba(180, 180, 180, 0.6) !important;
   opacity: 1;
+  overflow: hidden;
   transition: all 200ms ease;
 }
 
 .hero-carousel .swiper-pagination-bullet.swiper-pagination-bullet-active {
   width: 26px !important;
   background: rgba(220, 220, 220, 0.9) !important;
+}
+
+/* Progress fill — animates left-to-right on the active bullet */
+.hero-carousel .swiper-pagination-bullet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgb(255, 255, 255);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.hero-carousel
+  .swiper-pagination-bullet.swiper-pagination-bullet-active::after {
+  animation: hero-bullet-progress var(--hero-bullet-duration, 5s) linear
+    forwards;
+}
+
+@keyframes hero-bullet-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
 @media (min-width: 640px) {

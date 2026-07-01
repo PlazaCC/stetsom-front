@@ -67,7 +67,12 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center gap-8">
             <Link href="/" className="shrink-0">
-              <Logo width={158} height={35} priority />
+              <Logo
+                variant={isWhite ? "white" : "dark"}
+                width={158}
+                height={35}
+                priority
+              />
             </Link>
 
             {/* Desktop nav */}

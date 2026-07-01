@@ -11,7 +11,7 @@ import "swiper/css/pagination";
 import { A11y, Autoplay, EffectFade, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-const HERO_HEIGHT_CLASS = "h-130 sm:h-155 lg:h-175";
+const HERO_HEIGHT_CLASS = "h-130 sm:h-155 lg:h-200";
 
 interface HeroCarouselProps {
   slides: HeroBannerSlide[];
@@ -96,12 +96,12 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
                 sizes="100vw"
                 priority={index === 0}
               />
-              <div className="absolute inset-0 z-10 bg-gradient-fade-black" />
+              <div className="bg-gradient-fade-black absolute inset-0 z-10" />
 
               {(slide.label || slide.title) && (
                 <div className="pointer-events-none absolute bottom-0 left-0 z-20 px-6 pb-12 sm:px-8 lg:px-42.5">
                   {slide.label && (
-                    <p className="font-sans-condensed font-medium text-sm uppercase text-brand">
+                    <p className="font-sans-condensed text-sm font-medium text-brand uppercase">
                       {slide.label}
                     </p>
                   )}
@@ -109,7 +109,7 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
                   {slide.title && (
                     <h2
                       className={cn(
-                        "font-sans-condensed text-3xl leading-none font-black whitespace-pre-line uppercase text-white sm:text-display-sm",
+                        "font-sans-condensed text-3xl leading-none font-black whitespace-pre-line text-white uppercase sm:text-display-sm",
                         slide.label ? "mt-2" : "mt-0",
                       )}
                     >
@@ -142,6 +142,11 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
       <div
         ref={paginationRef}
         className="hero-carousel-pagination swiper-pagination absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 sm:bottom-7"
+        style={
+          {
+            "--hero-bullet-duration": `${interval}ms`,
+          } as React.CSSProperties
+        }
       />
     </section>
   );

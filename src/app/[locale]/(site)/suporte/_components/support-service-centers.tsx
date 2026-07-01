@@ -14,7 +14,10 @@ export async function SupportServiceCenters({
   const t = await getTranslations("Support.serviceCenters");
 
   return (
-    <section className="w-full bg-white py-12">
+    <section
+      id="service-centers"
+      className="w-full scroll-mt-24 bg-white py-12"
+    >
       <Container>
         <SectionLabel label={t("label")} title={t("title")} />
         <p className="mt-2 text-sm text-text-subtle">{t("description")}</p>
