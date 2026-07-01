@@ -4,10 +4,17 @@ import { usePathname } from "next/navigation";
 import { AdminSidebar } from "./admin-sidebar";
 import { AdminTopbar } from "./admin-topbar";
 import { useState, useEffect } from "react";
+import { AdminShellHeader } from "./admin-shell-header";
+import { AdminRouteMetaProvider } from "./admin-route-meta";
+import { NavProgressBar } from "./nav-progress-bar";
+import { resolveRoute } from "@/lib/cms/resolve-route";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 function PanelLayout({ children }: { children: React.ReactNode }) {
   const [navOpen, setNavOpen] = useState(false);
   const pathname = usePathname();
+  const route = resolveRoute(pathname);
+  const showSidebar = route?.showSidebar !== false;
 
   // Fecha o drawer ao mudar de rota
   useEffect(() => {
@@ -18,15 +25,24 @@ function PanelLayout({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <AdminSidebar open={navOpen} onClose={() => setNavOpen(false)} />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <AdminTopbar onMenuClick={() => setNavOpen(true)} />
-        <main className="flex-1 overflow-y-auto bg-background px-4 py-4 lg:px-11.75 lg:py-7.25">
-          {children}
-        </main>
-      </div>
-    </div>
+    <TooltipProvider>
+      <AdminRouteMetaProvider>
+        <NavProgressBar />
+        <div className="flex h-screen overflow-hidden">
+          {showSidebar && (
+            <AdminSidebar open={navOpen} onClose={() => setNavOpen(false)} />
+          )}
+          <div className="flex flex-1 flex-col overflow-hidden">
+            <AdminTopbar onMenuClick={() => setNavOpen(true)} />
+
+            <main className="flex flex-1 flex-col overflow-hidden bg-background">
+              <AdminShellHeader />
+              {children}
+            </main>
+          </div>
+        </div>
+      </AdminRouteMetaProvider>
+    </TooltipProvider>
   );
 }
 

@@ -1,7 +1,10 @@
 "use client";
 
 import { AdminActionBar } from "@/app/admin/_components/crud/admin-action-bar";
-import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
+import {
+  AdminDataTable,
+  type AdminTableColumn,
+} from "@/app/admin/_components/crud/admin-data-table";
 import { AdminStatusToggle } from "@/app/admin/_components/crud/admin-status-toggle";
 import type {
   Banner,
@@ -214,6 +217,108 @@ export function BannersContent({
     await deleteBanner.mutateAsync(id);
   }
 
+  const columns: AdminTableColumn<Banner>[] = [
+    {
+      key: "preview",
+      header: "Preview",
+      className: "w-20",
+      render: () => (
+        <div className="flex h-10 w-16 items-center justify-center overflow-hidden rounded-md bg-muted">
+          <ImageIcon className="size-4 text-muted-foreground/40" />
+        </div>
+      ),
+    },
+    {
+      key: "name",
+      header: "Nome",
+      render: (banner) => (
+        <div>
+          <p className="font-medium text-foreground">{banner.name}</p>
+          {banner.link_url && (
+            <p className="mt-0.5 max-w-40 truncate text-xs text-muted-foreground">
+              {banner.link_url}
+            </p>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: "available_locales",
+      header: "Idioma",
+      render: (banner) => (
+        <span className="text-xs text-muted-foreground">
+          {toLocaleDisplay(banner.available_locales?.[0] ?? "pt-BR")}
+        </span>
+      ),
+    },
+    {
+      key: "display_from",
+      header: "Exibição",
+      render: (banner) => (
+        <span className="text-xs text-muted-foreground">
+          {formatDateRange(banner.display_from, banner.display_until)}
+        </span>
+      ),
+    },
+    {
+      key: "status",
+      header: "Status",
+      render: (banner) => (
+        <div className="flex items-center gap-2">
+          {banner.status !== "SCHEDULED" && (
+            <AdminStatusToggle
+              active={banner.status === "ACTIVE"}
+              onToggle={async () => {
+                const newStatus =
+                  banner.status === "ACTIVE"
+                    ? ("INACTIVE" as const)
+                    : ("ACTIVE" as const);
+                await updateBanner.mutateAsync({
+                  id: banner.id,
+                  body: { status: newStatus },
+                });
+                invalidate();
+              }}
+            />
+          )}
+          <span
+            className={cn(
+              "rounded-full px-2 py-0.5 text-xs font-medium",
+              statusBadgeClass(banner.status),
+            )}
+          >
+            {statusLabel(banner.status)}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: "actions",
+      header: "",
+      headerClassName: "text-right",
+      className: "text-right",
+      render: (banner) => (
+        <div className="flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={() => openEdit(banner)}
+            className="text-xs font-medium text-primary hover:underline"
+          >
+            Editar
+          </button>
+          <button
+            type="button"
+            onClick={() => setDeleteTarget(banner)}
+            disabled={deleteBanner.isPending}
+            className="text-xs font-medium text-destructive hover:underline disabled:opacity-50"
+          >
+            Excluir
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   if (isFormOpen) {
     return (
       <BannerForm
@@ -233,9 +338,12 @@ export function BannersContent({
 
   return (
     <>
-      <AdminListPage
-        title="Banners"
-        icon={ImageIcon}
+      <AdminDataTable
+        columns={columns}
+        data={banners}
+        keyExtractor={(banner) => banner.id}
+        emptyTitle="Nenhum banner cadastrado"
+        emptyDescription="Banners são exibidos no hero da página inicial."
         action={
           <AdminActionBar>
             <button
@@ -249,119 +357,7 @@ export function BannersContent({
             </button>
           </AdminActionBar>
         }
-        toolbar={
-          <p className="text-xs text-muted-foreground">
-            {banners.length} {banners.length === 1 ? "banner" : "banners"}{" "}
-            cadastrado{banners.length !== 1 ? "s" : ""}.
-          </p>
-        }
-      >
-        <div className="overflow-hidden rounded-[16px] border border-border bg-card">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border bg-muted/50">
-                  <th className="w-20 px-4 py-3 text-left text-xs font-medium text-muted-foreground">
-                    Preview
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
-                    Nome
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
-                    Idioma
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
-                    Exibição
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">
-                    Status
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground">
-                    Ações
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {banners.map((banner) => (
-                  <tr key={banner.id} className="hover:bg-muted/30">
-                    <td className="px-4 py-3">
-                      <div className="flex h-10 w-16 items-center justify-center overflow-hidden rounded-md bg-muted">
-                        <ImageIcon className="size-4 text-muted-foreground/40" />
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <p className="font-medium text-foreground">
-                        {banner.name}
-                      </p>
-                      {banner.link_url && (
-                        <p className="mt-0.5 max-w-40 truncate text-xs text-muted-foreground">
-                          {banner.link_url}
-                        </p>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground">
-                      {toLocaleDisplay(
-                        banner.available_locales?.[0] ?? "pt-BR",
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground">
-                      {formatDateRange(
-                        banner.display_from,
-                        banner.display_until,
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        {banner.status !== "SCHEDULED" && (
-                          <AdminStatusToggle
-                            active={banner.status === "ACTIVE"}
-                            onToggle={async () => {
-                              const newStatus =
-                                banner.status === "ACTIVE"
-                                  ? ("INACTIVE" as const)
-                                  : ("ACTIVE" as const);
-                              await updateBanner.mutateAsync({
-                                id: banner.id,
-                                body: { status: newStatus },
-                              });
-                              invalidate();
-                            }}
-                          />
-                        )}
-                        <span
-                          className={cn(
-                            "rounded-full px-2 py-0.5 text-xs font-medium",
-                            statusBadgeClass(banner.status),
-                          )}
-                        >
-                          {statusLabel(banner.status)}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-right space-x-2">
-                      <button
-                        type="button"
-                        onClick={() => openEdit(banner)}
-                        className="text-xs font-medium text-primary hover:underline"
-                      >
-                        Editar
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setDeleteTarget(banner)}
-                        disabled={deleteBanner.isPending}
-                        className="text-xs font-medium text-red-500 hover:underline disabled:opacity-50"
-                      >
-                        Excluir
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </AdminListPage>
+      />
       <AdminConfirmDialog
         open={deleteTarget !== null}
         title={`Excluir "${deleteTarget?.name ?? ""}"?`}

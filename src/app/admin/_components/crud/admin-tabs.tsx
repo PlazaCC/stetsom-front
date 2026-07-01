@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "motion/react";
 
 export interface AdminTabItem {
   href: string;
@@ -35,7 +36,7 @@ export function AdminTabs({ items, className }: AdminTabsProps) {
             key={href}
             href={href}
             className={cn(
-              "-mb-px flex shrink-0 items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors",
+              "relative -mb-px flex shrink-0 items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors",
               active
                 ? "border-primary text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground",
@@ -43,6 +44,12 @@ export function AdminTabs({ items, className }: AdminTabsProps) {
           >
             {Icon && <Icon className="size-4" />}
             {label}
+            {active && (
+              <motion.div
+                className="absolute bottom-0 left-0 flex h-0.75 w-full border-b-2 border-primary"
+                layoutId="header-tab-active-bar "
+              />
+            )}
           </Link>
         );
       })}

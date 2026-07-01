@@ -1,5 +1,9 @@
-import type { HeroBannerSlidesPayload, PagePayload } from "@/api/stetsom/model";
-import { serverOrvalClient } from "@/api/stetsom/orval-server";
+import type {
+  GetApiPagesSlug200,
+  HeroBannerSlidesPayload,
+} from "@/api/stetsom/model";
+import { getApiBannersActive } from "@/api/stetsom/server/banners-public/banners-public";
+import { getApiPagesSlug } from "@/api/stetsom/server/pages-public/pages-public";
 import { toApiLocale } from "@/lib/api/i18n-utils";
 import {
   getPageBlock,
@@ -20,27 +24,19 @@ export default async function Home() {
   const apiLocale = toApiLocale(locale);
 
   const [bannersRes, pageRes] = await Promise.all([
-    serverOrvalClient<HeroBannerSlidesPayload>({
-      method: "GET",
-      url: "/api/banners/active",
-      params: { locale: apiLocale },
-    }).catch((err) => {
+    getApiBannersActive({ locale: apiLocale }).catch((err) => {
       console.error("Failed to fetch home banners:", err);
       return { items: [], total: 0 } as HeroBannerSlidesPayload;
     }),
-    serverOrvalClient<PagePayload>({
-      method: "GET",
-      url: "/api/pages/home",
-      params: { locale: apiLocale },
-    }).catch(
+    getApiPagesSlug("home", { locale: apiLocale }).catch(
       () =>
         ({
           id: "",
           slug: "home",
-          title: { pt: "" },
+          title: "",
           blocks: [],
           updated_at: "",
-        }) as PagePayload,
+        }) satisfies GetApiPagesSlug200,
     ),
   ]);
 
@@ -50,7 +46,7 @@ export default async function Home() {
   const socialData = getPageBlock<HomeSocialBlockData>(blocks, "social");
   const faqData = getPageBlock<HomeFaqBlockData>(blocks, "faq");
 
-  const featuredProducts = featuredData.products ?? [];
+  const featuredProducts = (featuredData.products ?? []).slice(0, 4);
   const spotlightProduct = featuredData.spotlight ?? featuredProducts[0];
 
   return (

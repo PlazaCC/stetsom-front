@@ -41,6 +41,20 @@ const ALLOWED_MIMES = new Set([
   "model/gltf+json",
 ]);
 
+/** Fallback MIME by file extension — browsers don't recognize some types
+ *  (notably `.glb`/`.gltf`) and leave `file.type` empty. */
+const EXTENSION_MIME: Record<string, string> = {
+  glb: "model/gltf-binary",
+  gltf: "model/gltf+json",
+};
+
+/** The browser's MIME, or one inferred from the extension when it's missing. */
+function resolveMimeType(file: File): string {
+  if (file.type) return file.type;
+  const ext = file.name.split(".").pop()?.toLowerCase();
+  return (ext && EXTENSION_MIME[ext]) || "";
+}
+
 function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
@@ -105,7 +119,7 @@ export function useLibraryUpload() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         fileName: file.name,
-        mimeType: file.type,
+        mimeType: resolveMimeType(file),
         sizeBytes: file.size,
         scope: "library",
       }),
@@ -142,10 +156,11 @@ export function useLibraryUpload() {
   async function processFile(entry: UploadEntry, file: File): Promise<boolean> {
     const { id } = entry;
 
-    if (!ALLOWED_MIMES.has(file.type)) {
+    const mimeType = resolveMimeType(file);
+    if (!ALLOWED_MIMES.has(mimeType)) {
       patch(id, {
         status: "error",
-        error: `Tipo "${file.type}" não permitido.`,
+        error: `Tipo "${mimeType}" não permitido.`,
       });
       return false;
     }
@@ -201,10 +216,11 @@ export function useLibraryUpload() {
   ): Promise<boolean> {
     const { id } = entry;
 
-    if (!ALLOWED_MIMES.has(file.type)) {
+    const mimeType = resolveMimeType(file);
+    if (!ALLOWED_MIMES.has(mimeType)) {
       patch(id, {
         status: "error",
-        error: `Tipo "${file.type}" não permitido.`,
+        error: `Tipo "${mimeType}" não permitido.`,
       });
       return false;
     }

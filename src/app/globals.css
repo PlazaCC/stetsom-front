@@ -89,6 +89,10 @@
 
 :root {
   --footer: rgb(17, 17, 17);
+  /* Scrollbar — light theme */
+  --sb-track-color: #f5f5f5;
+  --sb-thumb-color: #e8132a;
+  --sb-size: 10px;
   /* CMS design tokens (raw values, faithful to Figma huD41oTL0FAa7xsNEK8tAM —
      remapped onto shadcn tokens via .cms {} in admin.css). Mantine-inspired. */
   --cms-primary: #4375e2; /* Mantine blue.6 — actions, active state, focus */
@@ -150,6 +154,10 @@
 }
 
 .dark {
+  /* Scrollbar — dark theme */
+  --sb-track-color: #212121;
+  --sb-thumb-color: #e8132a;
+  --sb-size: 12px;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -185,16 +193,40 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply !scroll-smooth border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply !scroll-smooth bg-background text-foreground;
   }
   html {
-    @apply font-sans;
+    @apply !scroll-smooth font-sans;
   }
   p {
     @apply leading-snug;
+  }
+
+  /* Custom scrollbar — applied app-wide (page + inner scroll areas).
+   Track/thumb colors come from --sb-* tokens, themed in :root and .dark. */
+  *::-webkit-scrollbar {
+    width: var(--sb-size);
+    height: var(--sb-size);
+  }
+
+  *::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-radius: 0px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 0px;
+  }
+
+  /* Firefox / browsers without ::-webkit-scrollbar support */
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+    }
   }
 }
 
@@ -203,20 +235,59 @@
 }
 
 .hero-carousel .swiper-pagination-bullet {
+  position: relative;
   border: none;
   margin: 0;
   padding: 0;
   height: 10px !important;
   width: 10px !important;
   border-radius: 9999px;
-  background: rgba(180, 180, 180, 0.6) !important;
+  background: rgba(255, 255, 255, 0.4) !important;
   opacity: 1;
-  transition: all 200ms ease;
+  overflow: hidden;
+  /* transition: all 200ms ease; */
+  transition:
+    width 600ms cubic-bezier(0.66, 0, 0.33, 1),
+    background 300ms linear;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.hero-carousel .swiper-pagination-bullet:hover {
+  background-color: rgba(255, 255, 255, 1) !important;
 }
 
 .hero-carousel .swiper-pagination-bullet.swiper-pagination-bullet-active {
   width: 26px !important;
-  background: rgba(220, 220, 220, 0.9) !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Progress fill — animates left-to-right on the active bullet */
+.hero-carousel .swiper-pagination-bullet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 1);
+  opacity: 0;
+  width: 0%;
+  min-width: 12px;
+  /* transform: scaleX(0); */
+  /* transform-origin: left center; */
+}
+
+.hero-carousel
+  .swiper-pagination-bullet.swiper-pagination-bullet-active::after {
+  opacity: 1;
+  animation: hero-bullet-progress var(--hero-bullet-duration, 5s) linear
+    forwards;
+}
+
+@keyframes hero-bullet-progress {
+  from {
+    width: 10px;
+  }
+  to {
+    width: 64px;
+  }
 }
 
 @media (min-width: 640px) {
@@ -225,12 +296,12 @@
   }
 
   .hero-carousel .swiper-pagination-bullet {
-    height: 14px !important;
-    width: 14px !important;
+    height: 10px !important;
+    width: 10px !important;
   }
 
   .hero-carousel .swiper-pagination-bullet.swiper-pagination-bullet-active {
-    width: 32px !important;
+    width: 64px !important;
   }
 }
 

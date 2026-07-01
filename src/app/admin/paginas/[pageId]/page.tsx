@@ -116,6 +116,7 @@ export default function AdminPageSectionsPage({
 
   return (
     <AdminListPage
+      className="px-4 py-4 lg:px-11.75 lg:py-7.25"
       title={label}
       icon={FileText}
       toolbar={
@@ -219,7 +220,7 @@ export default function AdminPageSectionsPage({
 
       {missingDefs.length > 0 && (
         <div className="mt-8">
-          <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <h2 className="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
             Seções disponíveis
           </h2>
           <div className="space-y-2">

@@ -1,5 +1,5 @@
-import type { PagePayload } from "@/api/stetsom/model";
-import { serverOrvalClient } from "@/api/stetsom/orval-server";
+import type { GetApiPagesSlug200 } from "@/api/stetsom/model";
+import { getApiPagesSlug } from "@/api/stetsom/server/pages-public/pages-public";
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
 import { toApiLocale } from "@/lib/api/i18n-utils";
@@ -14,7 +14,7 @@ import {
 } from "@/lib/page-blocks";
 import { getLocale, getTranslations } from "next-intl/server";
 import Image from "next/image";
-import { CompanyTimeline } from "../_components/company-timeline";
+import { TimelineCarousel } from "../_components/timeline-carousel";
 import { MilestonesMarquee } from "../_components/milestones-marquee";
 import { OurFactory } from "../_components/our-factory";
 import { OurFoundations } from "../_components/our-foundations";
@@ -26,19 +26,15 @@ export default async function SobrePage() {
   const apiLocale = toApiLocale(locale);
 
   const [pageRes, t] = await Promise.all([
-    serverOrvalClient<PagePayload>({
-      method: "GET",
-      url: "/api/pages/about",
-      params: { locale: apiLocale },
-    }).catch(
+    getApiPagesSlug("about", { locale: apiLocale }).catch(
       () =>
         ({
           id: "",
           slug: "about",
-          title: { pt: "" },
+          title: "",
           blocks: [],
           updated_at: "",
-        }) as PagePayload,
+        }) satisfies GetApiPagesSlug200,
     ),
     getTranslations("About"),
   ]);
@@ -54,8 +50,8 @@ export default async function SobrePage() {
   return (
     <div>
       {!heroData.hidden && (
-        <section className="relative bg-brand-dark h-109.75 overflow-hidden flex items-center">
-          {heroData.url && (
+        <section className="relative flex h-109.75 items-center overflow-hidden bg-brand-dark">
+          {/* {heroData.url && (
             <Image
               src={heroData.url}
               alt={heroData.imageAlt ?? "Stetsom"}
@@ -64,14 +60,14 @@ export default async function SobrePage() {
               sizes="100vw"
               priority
             />
-          )}
-          <div className="absolute inset-0 bg-gradient-dark-overlay" />
+          )} */}
+          <div className="bg-gradient-dark-overlay absolute inset-0" />
 
           <Container className="z-10">
             <div className="grid gap-10 lg:grid-cols-[1fr_428px] lg:items-end">
               <div>
                 <SectionLabel label={heroData.label ?? ""} />
-                <h1 className="font-sans-condensed font-black text-5xl leading-none uppercase text-white mt-1 lg:text-display-2xl">
+                <h1 className="mt-1 font-sans-condensed text-5xl leading-none font-black text-white uppercase lg:text-display-2xl">
                   {(heroData.title ?? "")
                     .split("\n")
                     .map(
@@ -100,21 +96,18 @@ export default async function SobrePage() {
               </div>
 
               {heroData.stats?.length ? (
-                <div className="relative border-t border-white/20 pt-5">
-                  <span className="pointer-events-none absolute right-0 -top-24 font-sans-condensed text-[112px] font-black leading-none text-white/10">
+                <div className="relative pt-5">
+                  <span className="pointer-events-none absolute -top-24 font-sans-condensed text-[112px] leading-none font-black text-white/10">
                     {heroData.foundedYear ?? "1989"}
                   </span>
-                  <div className="grid grid-cols-2 border border-white/20">
+                  <div className="grid grid-cols-2">
                     {heroData.stats.map((stat) => (
-                      <div
-                        key={stat.label}
-                        className="border border-white/20 px-4 py-4"
-                      >
+                      <div key={stat.label} className="px-4 py-4">
                         <p className="font-sans-condensed text-display-sm font-black text-white">
                           {stat.value.replace("+", "")}
                           <span className="text-brand">+</span>
                         </p>
-                        <p className="mt-1 text-sm font-sans font-medium uppercase text-text-subtle-dark">
+                        <p className="mt-1 font-sans text-sm font-medium text-text-subtle-dark uppercase">
                           {stat.label}
                         </p>
                       </div>
@@ -127,9 +120,9 @@ export default async function SobrePage() {
         </section>
       )}
 
-      {!heroData.hidden && heroData.milestones?.length ? (
+      {/* {!heroData.hidden && heroData.milestones?.length ? (
         <MilestonesMarquee items={heroData.milestones} />
-      ) : null}
+      ) : null} */}
 
       {!qualityData.hidden && qualityData.image_url && (
         <QualitySection
@@ -153,7 +146,7 @@ export default async function SobrePage() {
         />
       )}
       {!timelineData.hidden && timelineData.events?.length ? (
-        <CompanyTimeline
+        <TimelineCarousel
           events={timelineData.events.map((e) => ({
             year: String(e.year),
             title: e.title,

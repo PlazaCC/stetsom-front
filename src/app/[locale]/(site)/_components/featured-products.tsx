@@ -53,10 +53,10 @@ export function FeaturedProducts({
   }, [activeTab, featuredProducts]);
 
   return (
-    <section className="flex w-full justify-center bg-background py-12">
+    <section className="flex w-full justify-center bg-background pt-12 pb-24">
       <Container>
         <div className="mb-6 sm:mb-8">
-          <div className="hidden lg:flex items-stretch justify-between gap-6">
+          <div className="hidden items-stretch justify-between gap-6 lg:flex">
             <div className="max-w-80">
               <SectionLabel
                 label={section.label}
@@ -65,7 +65,7 @@ export function FeaturedProducts({
               />
             </div>
 
-            <div className="flex-1 flex items-end justify-end">
+            <div className="flex flex-1 items-end justify-end">
               <FeaturedTabStrip
                 tabs={tabs}
                 activeTab={activeTab}
@@ -76,7 +76,7 @@ export function FeaturedProducts({
             </div>
           </div>
 
-          <div className="lg:hidden flex flex-col gap-4">
+          <div className="flex flex-col gap-4 lg:hidden">
             <SectionLabel
               label={section.label}
               title={section.title}
@@ -95,30 +95,27 @@ export function FeaturedProducts({
           </div>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-[447px_1fr]">
+        <div className="grid gap-5 lg:flex lg:h-111.75">
           <Link
             href={spotlightProduct.href}
-            className="relative flex h-80 items-center justify-center overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-brand sm:h-95 lg:h-111.75"
+            className="relative flex aspect-square h-full items-center justify-center overflow-hidden rounded-2xl border border-border transition-colors hover:border-brand"
           >
             {spotlightProduct.thumbnail_url ? (
               <Image
                 src={spotlightProduct.thumbnail_url}
                 alt={spotlightProduct.name}
-                width={300}
-                height={300}
-                className="max-h-55 max-w-[75%] object-contain shadow-[0_8px_24px_rgba(0,0,0,0.15)] sm:max-h-65 lg:max-h-75"
+                width={620}
+                height={620}
+                className="h-full w-full object-contain"
               />
             ) : null}
-            <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/65 to-transparent px-4 pb-4 pt-12 sm:px-5">
-              <div className="font-sans-condensed text-xs font-black uppercase text-brand">
-                {spotlightProduct.category}
-              </div>
-              <div className="font-sans-condensed text-lg font-black uppercase leading-tight text-white sm:text-xl">
+            <div className="absolute right-0 bottom-0 left-0 px-4 pt-12 pb-4 sm:px-5">
+              <div className="font-sans-condensed text-lg leading-tight font-black tracking-wider uppercase sm:text-xl lg:text-2xl">
                 {spotlightProduct.name}
               </div>
             </div>
           </Link>
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
+          <div className="grid h-full flex-1 grid-cols-2 grid-rows-2 gap-3 sm:gap-4 lg:gap-5">
             {filteredProducts.length === 0 ? (
               <p className="col-span-2 flex items-center justify-center py-12 text-sm text-muted-foreground">
                 {t("emptyCategory")}
@@ -129,6 +126,7 @@ export function FeaturedProducts({
                   key={p.id}
                   name={p.name}
                   category={p.category}
+                  variants={p.variants}
                   img={p.thumbnail_url ?? undefined}
                   href={p.href}
                 />

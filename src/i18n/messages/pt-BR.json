@@ -84,7 +84,10 @@
     "paginationPrevious": "Anterior",
     "paginationNext": "Próxima",
     "paginationInfo": "Página {page} de {total}",
-    "emptyCategory": "Nenhum produto encontrado nesta categoria."
+    "emptyCategory": "Nenhum produto encontrado nesta categoria.",
+    "options": "Opções",
+    "showDiscontinued": "Exibir fora de linha",
+    "showExport": "Produtos de exportação"
   },
   "ProductDetail": {
     "overview": "Visão geral",
@@ -122,6 +125,7 @@
     "blockModel3dTitle": "Visualização interativa",
     "blockModel3dDescription": "Explore o produto em perspectiva completa para conferir conectores, acabamento e dimensões reais.",
     "blockModel3dOpen": "Abrir modelo",
+    "blockModel3dLoading": "Carregando modelo…",
     "thumbnail": "{name} — miniatura {index}"
   },
   "Support": {
@@ -175,7 +179,14 @@
       "searchPlaceholder": "Digite seu CEP ou cidade...",
       "noResults": "Nenhum posto encontrado.",
       "loadMore": "Carregar mais",
-      "mapAlt": "Mapa de postos autorizados"
+      "mapAlt": "Mapa de postos autorizados",
+      "typeServiceCenter": "Assistências Técnicas",
+      "typeRepresentative": "Representantes Comerciais",
+      "useMyLocation": "Usar minha localização",
+      "locating": "Localizando...",
+      "locationDenied": "Não foi possível obter sua localização.",
+      "distanceAway": "{km} km de distância",
+      "resultsCount": "{count} resultados"
     },
     "faq": {
       "noAnswer": "Não encontrou o que procura? Entre em contato com nosso suporte."

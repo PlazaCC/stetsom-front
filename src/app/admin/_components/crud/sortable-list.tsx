@@ -10,6 +10,7 @@ import {
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
+import type { SortingStrategy } from "@dnd-kit/sortable";
 import {
   SortableContext,
   arrayMove,
@@ -28,6 +29,10 @@ interface SortableListProps<T> {
   /** `handle` is the drag-handle element to place wherever you want. */
   renderItem: (item: T, handle: React.ReactNode) => React.ReactNode;
   className?: string;
+  /** Sortable strategy. Defaults to `verticalListSortingStrategy` for vertical lists. Use `rectSortingStrategy` for grids. */
+  strategy?: SortingStrategy;
+  /** Non-sortable node rendered as the last cell, inside the same container (e.g. an add button). */
+  append?: React.ReactNode;
 }
 
 function SortableItem<T>({
@@ -84,6 +89,8 @@ export function SortableList<T>({
   onReorder,
   renderItem,
   className,
+  strategy = verticalListSortingStrategy,
+  append,
 }: SortableListProps<T>) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -107,10 +114,7 @@ export function SortableList<T>({
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <SortableContext
-        items={items.map(getId)}
-        strategy={verticalListSortingStrategy}
-      >
+      <SortableContext items={items.map(getId)} strategy={strategy}>
         <div className={cn("space-y-2", className)}>
           {items.map((item) => (
             <SortableItem
@@ -120,6 +124,7 @@ export function SortableList<T>({
               renderItem={renderItem}
             />
           ))}
+          {append}
         </div>
       </SortableContext>
     </DndContext>

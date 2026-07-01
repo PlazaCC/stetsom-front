@@ -11,10 +11,14 @@ import {
   FileText,
   Home,
   Image,
+  LayoutGrid,
+  LayoutTemplate,
+  ListChecks,
   LogOut,
   Mail,
   Package,
   Settings,
+  Tags,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -30,7 +34,6 @@ interface NavLeaf {
 }
 
 interface NavNode extends NavLeaf {
-  /** When present, the item renders as a collapsible accordion group. */
   children?: NavLeaf[];
 }
 
@@ -38,13 +41,13 @@ const MAIN_NAV: NavNode[] = [
   { href: "/admin", label: "Home", icon: Home, exact: true },
   {
     href: "/admin/produtos",
-    label: "Produtos",
-    icon: Package,
+    label: "Catálogo",
+    icon: LayoutGrid,
     children: [
-      { href: "/admin/produtos", label: "Todos", exact: true },
-      { href: "/admin/produtos/categorias", label: "Categorias" },
-      { href: "/admin/produtos/templates", label: "Templates" },
-      { href: "/admin/produtos/atributos", label: "Atributos" },
+      { href: "/admin/produtos", label: "Produtos", icon: Package },
+      { href: "/admin/categorias", label: "Categorias", icon: Tags },
+      { href: "/admin/templates", label: "Templates", icon: LayoutTemplate },
+      { href: "/admin/atributos", label: "Atributos", icon: ListChecks },
     ],
   },
   { href: "/admin/paginas", label: "Páginas", icon: FileText },
@@ -84,7 +87,7 @@ function NavLink({
       onClick={onClose}
       className={cn(
         "flex items-center gap-2 rounded-md py-2 text-sm font-medium transition-colors",
-        indented ? "pl-9 pr-2" : "px-2",
+        indented ? "pr-2 pl-9" : "px-2",
         active
           ? "bg-cms-primary-subtle text-cms-primary"
           : "text-foreground/70 hover:bg-muted hover:text-foreground",
@@ -96,7 +99,6 @@ function NavLink({
   );
 }
 
-/** Collapsible accordion group. Auto-opens when a descendant route is active. */
 function NavGroup({ node, onClose }: { node: NavNode; onClose?: () => void }) {
   const pathname = usePathname();
   const Icon = node.icon;
@@ -188,7 +190,7 @@ export function AdminSidebar({
 
       <aside
         className={cn(
-          "shadow-cms-sidebar flex w-60 shrink-0 flex-col border-r border-border bg-card fixed inset-y-0 left-0 z-50 transition-transform lg:static lg:z-auto lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex w-60 shrink-0 flex-col border-r border-border bg-card shadow-cms-sidebar transition-transform lg:static lg:z-auto lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full",
           "lg:overflow-y-auto",
         )}
@@ -197,7 +199,7 @@ export function AdminSidebar({
           <div className="flex items-center gap-2">
             {/* Brand mark — intentional Stetsom red */}
             <BarChart2 className="size-5 text-brand" />
-            <span className="text-base font-bold uppercase text-foreground">
+            <span className="text-base font-bold text-foreground uppercase">
               CMS Stetsom
             </span>
           </div>
@@ -227,7 +229,7 @@ export function AdminSidebar({
           <button
             type="button"
             onClick={onClose}
-            className="lg:hidden absolute top-4 right-4 flex size-8 items-center justify-center rounded-md text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary"
+            className="absolute top-4 right-4 flex size-8 items-center justify-center rounded-md text-foreground hover:bg-muted focus:ring-2 focus:ring-primary focus:outline-none lg:hidden"
             aria-label="Fechar menu"
           >
             <svg

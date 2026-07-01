@@ -21,4 +21,6 @@ export interface ProductCardItem {
   status: ProductCardItemStatus;
   is_discontinued: boolean;
   highlighted_specs: ProductCardItemHighlightedSpecsItem[];
+  /** Variant names available for this product, e.g. "1 Ohm" */
+  variants: string[];
 }

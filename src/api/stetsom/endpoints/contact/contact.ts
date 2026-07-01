@@ -20,7 +20,7 @@ import type {
 
 import type {
   ApiErrorPayload,
-  PostApiContact200,
+  ContactSubmitResponse,
   PostApiContactBody,
   PublicDepartmentItem,
 } from "../../model";
@@ -44,7 +44,7 @@ export const getGetApiContactDepartmentsQueryKey = () => {
 
 export const getGetApiContactDepartmentsQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiContactDepartments>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(options?: {
   query?: Partial<
     UseQueryOptions<
@@ -73,11 +73,11 @@ export const getGetApiContactDepartmentsQueryOptions = <
 export type GetApiContactDepartmentsQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiContactDepartments>>
 >;
-export type GetApiContactDepartmentsQueryError = unknown;
+export type GetApiContactDepartmentsQueryError = ApiErrorPayload;
 
 export function useGetApiContactDepartments<
   TData = Awaited<ReturnType<typeof getApiContactDepartments>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options: {
     query: Partial<
@@ -102,7 +102,7 @@ export function useGetApiContactDepartments<
 };
 export function useGetApiContactDepartments<
   TData = Awaited<ReturnType<typeof getApiContactDepartments>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -127,7 +127,7 @@ export function useGetApiContactDepartments<
 };
 export function useGetApiContactDepartments<
   TData = Awaited<ReturnType<typeof getApiContactDepartments>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -148,7 +148,7 @@ export function useGetApiContactDepartments<
 
 export function useGetApiContactDepartments<
   TData = Awaited<ReturnType<typeof getApiContactDepartments>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -180,7 +180,7 @@ export const postApiContact = (
   postApiContactBody: PostApiContactBody,
   signal?: AbortSignal,
 ) => {
-  return orvalClient<PostApiContact200>({
+  return orvalClient<ContactSubmitResponse>({
     url: `/api/contact`,
     method: "POST",
     headers: { "Content-Type": "application/json" },

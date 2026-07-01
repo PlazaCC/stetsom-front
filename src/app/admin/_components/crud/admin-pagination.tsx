@@ -9,6 +9,8 @@ interface AdminPaginationProps {
   total: number;
   onPageChange: (page: number) => void;
   className?: string;
+  /** Hide the "N itens" count — use when the caller renders its own count. */
+  hideCount?: boolean;
 }
 
 function buildPageNumbers(current: number, total: number): (number | "...")[] {
@@ -34,6 +36,7 @@ export function AdminPagination({
   total,
   onPageChange,
   className,
+  hideCount = false,
 }: AdminPaginationProps) {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
@@ -45,10 +48,18 @@ export function AdminPagination({
     "flex size-8 items-center justify-center rounded-md text-sm font-medium transition-colors";
 
   return (
-    <div className={cn("flex items-center justify-between pt-2", className)}>
-      <span className="text-xs text-muted-foreground">
-        {total} {total === 1 ? "item" : "itens"}
-      </span>
+    <div
+      className={cn(
+        "flex items-center pt-2",
+        hideCount ? "justify-end" : "justify-between",
+        className,
+      )}
+    >
+      {!hideCount && (
+        <span className="text-xs text-muted-foreground">
+          {total} {total === 1 ? "item" : "itens"}
+        </span>
+      )}
 
       <div className="flex items-center gap-1">
         <button
@@ -78,7 +89,7 @@ export function AdminPagination({
                 btnBase,
                 p === page
                   ? "bg-foreground text-background"
-                  : "border border-border hover:bg-muted text-foreground",
+                  : "border border-border text-foreground hover:bg-muted",
               )}
             >
               {p}

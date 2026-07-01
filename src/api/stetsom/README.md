@@ -15,16 +15,21 @@ Config: `orval.config.ts`.
 
 ## Layout
 
+Two Orval targets from the same spec:
+
 ```
 src/api/stetsom/
-├── model/             # generated TypeScript types (Product, Banner, PagePayload…)
-├── endpoints/         # generated React Query hooks, split by OpenAPI tag
-├── orval-client.ts    # mutator for CLIENT components (routes via BFF proxy)
-├── orval-server.ts    # helper for SERVER components / Server Actions (direct call)
-└── index.ts           # barrel re-export
+├── model/             # generated TS types, shared by both targets (barrel: index.ts)
+├── endpoints/         # target `stetsom`: React Query hooks (client), mutator orvalClient (BFF)
+├── server/            # target `stetsomServer`: plain typed functions (RSC), mutator serverOrvalClient
+├── orval-client.ts    # CLIENT mutator — routes via BFF proxy (/api/bff/*)
+├── orval-server.ts    # SERVER mutator — direct call + cookie via next/headers + mock
+└── index.ts           # client barrel (models + hooks) — NEVER re-exports server/
 ```
 
-Do **not** edit `model/` or `endpoints/` — they are overwritten on regenerate.
+Do **not** edit `model/`, `endpoints/` or `server/` — overwritten on regenerate.
+`server/**` imports `next/headers`; import it ONLY from server code, never from the
+client barrel, or the client build fails.
 
 ## Usage
 
@@ -47,19 +52,18 @@ cookie as a Bearer header. The JWT never reaches the browser.
 
 ### Server Component / Server Action (direct, no proxy)
 
+Use the generated `server/**` functions — typed params and responses, no manual URLs:
+
 ```tsx
-import { serverOrvalClient } from "@/api/stetsom/orval-server";
-import type { ProductCatalogResponse } from "@/api/stetsom";
+import { getApiProducts } from "@/api/stetsom/server/products-public/products-public";
 
 export default async function Page() {
-  const products = await serverOrvalClient<ProductCatalogResponse>({
-    method: "GET",
-    url: "/api/products",
-    params: { page: 1, pageSize: 20 },
-  });
+  const products = await getApiProducts({ page: 1, pageSize: 20, locale: "pt" });
   // ...
 }
 ```
+
+These call `serverOrvalClient` (direct to stetsom-api, cookie injected server-side).
 
 ## Auth
 

@@ -15,6 +15,7 @@ const PAGES = Object.entries(PAGE_LABELS).map(([slug, title]) => ({
 export default function AdminPaginasPage() {
   return (
     <AdminListPage
+      className="px-4 py-4 lg:px-11.75 lg:py-7.25"
       title="Páginas"
       icon={FileText}
       toolbar={

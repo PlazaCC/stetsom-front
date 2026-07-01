@@ -84,7 +84,10 @@
     "paginationPrevious": "Previous",
     "paginationNext": "Next",
     "paginationInfo": "Page {page} of {total}",
-    "emptyCategory": "No products found in this category."
+    "emptyCategory": "No products found in this category.",
+    "options": "Options",
+    "showDiscontinued": "Show discontinued",
+    "showExport": "Export products"
   },
   "ProductDetail": {
     "overview": "Overview",
@@ -122,6 +125,7 @@
     "blockModel3dTitle": "Interactive view",
     "blockModel3dDescription": "Explore the product in full perspective to check connectors, finish and real dimensions.",
     "blockModel3dOpen": "Open model",
+    "blockModel3dLoading": "Loading model…",
     "thumbnail": "{name} — thumbnail {index}"
   },
   "Support": {
@@ -175,7 +179,14 @@
       "searchPlaceholder": "Enter your ZIP code or city...",
       "noResults": "No service centers found.",
       "loadMore": "Load more",
-      "mapAlt": "Map of authorized service centers"
+      "mapAlt": "Map of authorized service centers",
+      "typeServiceCenter": "Service Centers",
+      "typeRepresentative": "Sales Representatives",
+      "useMyLocation": "Use my location",
+      "locating": "Locating...",
+      "locationDenied": "Could not get your location.",
+      "distanceAway": "{km} km away",
+      "resultsCount": "{count} results"
     },
     "faq": {
       "noAnswer": "Didn't find what you're looking for? Contact our support team."

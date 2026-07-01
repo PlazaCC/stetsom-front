@@ -6,11 +6,15 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
+import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
+import { Input } from "@/components/ui/input";
 import {
-  AdminInput,
-  AdminLabel,
-  AdminSelect,
-} from "@/app/admin/_components/crud/admin-input";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
 import {
   getGetApiUsersQueryKey,
@@ -90,7 +94,7 @@ function UserForm({ user, onClose, onSave, isPending }: UserFormProps) {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <AdminLabel>Nome</AdminLabel>
-              <AdminInput
+              <Input
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -100,7 +104,7 @@ function UserForm({ user, onClose, onSave, isPending }: UserFormProps) {
               <>
                 <div>
                   <AdminLabel>E-mail</AdminLabel>
-                  <AdminInput
+                  <Input
                     type="email"
                     required
                     value={email}
@@ -109,7 +113,7 @@ function UserForm({ user, onClose, onSave, isPending }: UserFormProps) {
                 </div>
                 <div>
                   <AdminLabel>Senha</AdminLabel>
-                  <AdminInput
+                  <Input
                     type="password"
                     required
                     value={password}
@@ -120,14 +124,19 @@ function UserForm({ user, onClose, onSave, isPending }: UserFormProps) {
             )}
             <div>
               <AdminLabel>Perfil</AdminLabel>
-              <AdminSelect
+              <Select
                 value={role}
-                onChange={(e) => setRole(e.target.value as UserRole)}
+                onValueChange={(value) => value && setRole(value as UserRole)}
               >
-                <option value="SUPER_ADMIN">Super Admin</option>
-                <option value="ADMIN">Admin</option>
-                <option value="EDITOR">Editor</option>
-              </AdminSelect>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecione..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
+                  <SelectItem value="ADMIN">Admin</SelectItem>
+                  <SelectItem value="EDITOR">Editor</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="flex gap-3 pt-2">
               <button
@@ -260,7 +269,7 @@ export default function AdminUsuariosPage() {
   ];
 
   return (
-    <>
+    <div className="px-4 py-4 lg:px-11.75 lg:py-7.25">
       <AdminListPage
         title="Usuários"
         icon={Users}
@@ -315,6 +324,6 @@ export default function AdminUsuariosPage() {
         }}
         onCancel={() => setToggleTarget(undefined)}
       />
-    </>
+    </div>
   );
 }

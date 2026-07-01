@@ -143,6 +143,7 @@ export default function AdminHistoricoPage() {
 
   return (
     <AdminListPage
+      className="px-4 py-4 lg:px-11.75 lg:py-7.25"
       title="Histórico"
       icon={Clock}
       toolbar={
@@ -158,7 +159,7 @@ export default function AdminHistoricoPage() {
                 Filtrar por entidade
               </button>
               {filterOpen && (
-                <div className="absolute left-0 top-10 z-10 w-48 rounded-md border border-border bg-card p-1 shadow-lg">
+                <div className="absolute top-10 left-0 z-10 w-48 rounded-md border border-border bg-card p-1 shadow-lg">
                   {ENTITY_OPTIONS.map((ent) => (
                     <button
                       key={ent}

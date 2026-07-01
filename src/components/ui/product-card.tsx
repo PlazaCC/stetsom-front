@@ -1,59 +1,66 @@
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
 interface ProductCardProps {
   name: string;
   category: string;
-  spec?: string | null;
+  variants?: string[];
   badge?: string | null;
   img?: string;
   href?: string;
+  variantDirection?: "row" | "column";
 }
 
 export function ProductCard({
   name,
   category,
-  spec,
+  variants,
   badge,
   img,
   href = "/produtos",
+  variantDirection = "row",
 }: ProductCardProps) {
   return (
     <Link
       href={href}
-      className="group flex flex-col bg-white border border-border hover:border-brand hover:shadow-md rounded-lg overflow-hidden transition-all"
+      className="group flex flex-col overflow-hidden rounded-lg border border-border bg-white transition-all hover:border-brand hover:shadow-md"
     >
-      <div className="bg-card h-32 md:h-36 lg:h-40 flex items-center justify-center p-4">
+      <div className="flex flex-1 items-center justify-center p-4">
         {img ? (
           <Image
             src={img}
             alt={name}
             width={160}
             height={130}
-            className="object-contain max-h-32.5"
+            className="max-h-32.5 object-contain"
           />
         ) : (
-          <div className="w-24 h-20 bg-muted rounded" />
+          <div className="h-20 w-24 rounded bg-muted" />
         )}
       </div>
-      <div className="p-3">
-        <div className="font-sans-condensed font-black text-2xs uppercase text-brand mb-1">
-          {category}
-        </div>
-        <div className="font-sans-condensed font-black text-base uppercase text-brand-dark leading-tight">
+
+      <div
+        className={cn(
+          "flex justify-between border-t border-border bg-card p-3",
+          variantDirection === "column" && "flex-col gap-2",
+        )}
+      >
+        <div className="font-sans-condensed text-base leading-tight font-black text-brand-dark uppercase">
           {name}
         </div>
-        {spec && <div className="text-xs text-icon-muted mt-1.5">{spec}</div>}
-      </div>
-      <div className="border-t border-border px-3.5 py-2 flex justify-between items-center gap-2 mt-auto">
-        {badge && (
-          <span className="bg-brand text-white font-sans-condensed font-black text-2xs uppercase px-2.5 py-1">
-            {badge}
-          </span>
+        {variants && variants.length > 0 && (
+          <div className={"flex flex-wrap gap-1"}>
+            {variants.map((v) => (
+              <span
+                key={v}
+                className="rounded-[4px] border border-border bg-muted px-1.5 py-0.5 text-2xs font-bold text-text-subtle"
+              >
+                {v}
+              </span>
+            ))}
+          </div>
         )}
-        <span className="font-sans-condensed text-button-md text-brand font-semibold flex-shrink-0">
-          Ver mais ›
-        </span>
       </div>
     </Link>
   );

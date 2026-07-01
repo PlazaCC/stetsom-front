@@ -36,10 +36,10 @@ export function ProductWizardStepSuccess({
       title={title}
       subtitle={subtitle}
       actions={[
-        ...(result.status === "ACTIVE"
+        ...(result.status === "PUBLISHED"
           ? [
               {
-                label: "Ver no site",
+                label: "Abrir página atualizada",
                 href: `/produtos/${result.slug}`,
                 variant: "secondary" as const,
                 external: true,

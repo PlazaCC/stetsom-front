@@ -1,10 +1,27 @@
 "use client";
 
+import { YouTubeEmbed } from "@/components/ui/youtube-embed";
+import { getYouTubeEmbedUrl } from "@/lib/utils/product";
 import { Box, Code, FileText, ImageIcon, Images, Video } from "lucide-react";
-import type { BlockRegistry } from "./block-builder";
-import { AdminInput } from "./admin-input";
+import dynamic from "next/dynamic";
+import type { BlockRegistry } from "./block-manager";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { AdminTextarea } from "./admin-input";
 import { AdminTextEditor } from "./admin-text-editor";
 import { LibraryAssetPicker } from "./library-asset-picker";
+
+// three.js is client-only and heavy — load the 3D preview lazily, never on SSR.
+const Model3DViewer = dynamic(
+  () => import("@/components/ui/model-3d-viewer").then((m) => m.Model3DViewer),
+  { ssr: false },
+);
 
 const fieldLabel = "mb-1 block text-xs font-medium text-muted-foreground";
 
@@ -12,37 +29,125 @@ function str(data: Record<string, unknown>, key: string): string {
   return typeof data[key] === "string" ? (data[key] as string) : "";
 }
 
+/** Shared optional title + description fields (IMAGE, VIDEO, GALLERY). */
+function HeadingFields({
+  data,
+  onChange,
+}: {
+  data: Record<string, unknown>;
+  onChange: (data: Record<string, unknown>) => void;
+}) {
+  return (
+    <>
+      <div>
+        <label className={fieldLabel}>Título (opcional)</label>
+        <Input
+          value={str(data, "title")}
+          onChange={(e) => onChange({ ...data, title: e.target.value })}
+          placeholder="Título do bloco"
+        />
+      </div>
+      <div>
+        <label className={fieldLabel}>Descrição (opcional)</label>
+        <AdminTextarea
+          rows={2}
+          value={str(data, "description")}
+          onChange={(e) => onChange({ ...data, description: e.target.value })}
+          placeholder="Descrição do bloco"
+        />
+      </div>
+    </>
+  );
+}
+
 /**
  * Product page-block types and their editors. Data shapes follow the ClickUp
  * data model (products.page_blocks[].data):
- *   IMAGE   { library_id, file_url?, backgroundColor }
- *   VIDEO   { url, backgroundColor }
+ *   IMAGE   { library_id, file_url?, title?, description? }
+ *   VIDEO   { url, title?, description? }
  *   HTML    { content }
- *   MODEL3D { modelFile, file_url?, backgroundColor }
+ *   MODEL3D { modelFile, file_url?, backgroundColor, backgroundImage, backgroundImageUrl }
  *   TEXT    { content }
- *   GALLERY { images: { library_id, file_url? }[] }
+ *   GALLERY { images: { library_id, file_url? }[], title?, description? }
+ *
+ * Every block also carries an optional `data.style` object (fullWidth,
+ * backgroundColor, backgroundImageUrl, customId, customCss) edited in the
+ * shared "Estilização" tab. MODEL3D's backgroundColor/Image feed the 3D canvas
+ * and are distinct from the universal wrapper styling.
  */
 export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
   TEXT: {
-    label: "Texto",
+    label: "Texto / Descritiva",
     description: "Bloco de texto rico.",
     icon: FileText,
-    defaultData: { content: "" },
+    defaultData: { content: "", title: "", align: "left" },
     Form: ({ data, onChange }) => (
-      <AdminTextEditor
-        value={str(data, "content")}
-        onChange={(v) => onChange({ ...data, content: v })}
-        placeholder="Conteúdo do bloco..."
-      />
+      <div className="space-y-3">
+        <div>
+          <label className={fieldLabel}>Título (opcional)</label>
+          <Input
+            value={str(data, "title")}
+            onChange={(e) => onChange({ ...data, title: e.target.value })}
+            placeholder="Título do bloco"
+          />
+        </div>
+        <AdminTextEditor
+          value={str(data, "content")}
+          onChange={(v) => onChange({ ...data, content: v })}
+          placeholder="Conteúdo do bloco..."
+        />
+        <div>
+          <label className={fieldLabel}>Alinhamento</label>
+          <Select
+            value={str(data, "align") || "left"}
+            onValueChange={(value) =>
+              onChange({ ...data, align: value ?? "left" })
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="left">Esquerda</SelectItem>
+              <SelectItem value="center">Centro</SelectItem>
+              <SelectItem value="right">Direita</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
     ),
   },
   IMAGE: {
     label: "Imagem",
-    description: "Imagem única com cor de fundo.",
+    description: "Imagem que ocupa a largura ou lateral do layout.",
     icon: ImageIcon,
-    defaultData: { library_id: "", file_url: "", backgroundColor: "" },
+    defaultData: {
+      library_id: "",
+      file_url: "",
+      title: "",
+      description: "",
+      layout: "full",
+    },
     Form: ({ data, onChange }) => (
       <div className="space-y-3">
+        <div>
+          <label className={fieldLabel}>Layout</label>
+          <Select
+            value={str(data, "layout") || "full"}
+            onValueChange={(value) =>
+              onChange({ ...data, layout: value ?? "full" })
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="full">Imagem Full</SelectItem>
+              <SelectItem value="side">Imagem Side</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <HeadingFields data={data} onChange={onChange} />
         <LibraryAssetPicker
           type="IMAGE"
           variant="image"
@@ -58,50 +163,37 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
             })
           }
         />
-        <div>
-          <label className={fieldLabel}>Cor de fundo (opcional)</label>
-          <AdminInput
-            value={str(data, "backgroundColor")}
-            onChange={(e) =>
-              onChange({ ...data, backgroundColor: e.target.value })
-            }
-            placeholder="#121212"
-          />
-        </div>
       </div>
     ),
   },
   VIDEO: {
     label: "Vídeo",
-    description: "Vídeo do YouTube ou Vimeo.",
+    description: "Exibe um vídeo incorporado por link (youtube / vimeo).",
     icon: Video,
-    defaultData: { url: "", backgroundColor: "" },
+    defaultData: { url: "", title: "", description: "" },
     Form: ({ data, onChange }) => (
       <div className="space-y-3">
+        <HeadingFields data={data} onChange={onChange} />
         <div>
-          <label className={fieldLabel}>URL do vídeo</label>
-          <AdminInput
+          <label className={fieldLabel}>URL do vídeo (YouTube)</label>
+          <Input
             value={str(data, "url")}
             onChange={(e) => onChange({ ...data, url: e.target.value })}
             placeholder="https://www.youtube.com/watch?v=..."
           />
         </div>
-        <div>
-          <label className={fieldLabel}>Cor de fundo (opcional)</label>
-          <AdminInput
-            value={str(data, "backgroundColor")}
-            onChange={(e) =>
-              onChange({ ...data, backgroundColor: e.target.value })
-            }
-            placeholder="#121212"
-          />
-        </div>
+        {getYouTubeEmbedUrl(str(data, "url")) ? (
+          <div>
+            <label className={fieldLabel}>Pré-visualização</label>
+            <YouTubeEmbed url={str(data, "url")} />
+          </div>
+        ) : null}
       </div>
     ),
   },
   HTML: {
-    label: "HTML",
-    description: "Conteúdo HTML customizado.",
+    label: "Seção livre (HTML)",
+    description: "Permite inserir um conteúdo HTML personalizado.",
     icon: Code,
     defaultData: { content: "" },
     Form: ({ data, onChange }) => (
@@ -113,10 +205,16 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
     ),
   },
   MODEL3D: {
-    label: "Modelo 3D",
-    description: "Arquivo .glb interativo.",
+    label: "Arquivo 3D",
+    description: "Exibe um modelo 3d interativo (.glb / .gltf).",
     icon: Box,
-    defaultData: { modelFile: "", file_url: "", backgroundColor: "" },
+    defaultData: {
+      modelFile: "",
+      file_url: "",
+      backgroundColor: "",
+      backgroundImage: "",
+      backgroundImageUrl: "",
+    },
     Form: ({ data, onChange }) => (
       <div className="space-y-3">
         <LibraryAssetPicker
@@ -137,14 +235,56 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
         />
         <div>
           <label className={fieldLabel}>Cor de fundo (opcional)</label>
-          <AdminInput
-            value={str(data, "backgroundColor")}
-            onChange={(e) =>
-              onChange({ ...data, backgroundColor: e.target.value })
+          <div className="flex items-center gap-2">
+            <input
+              type="color"
+              aria-label="Selecionar cor de fundo"
+              value={str(data, "backgroundColor") || "#121212"}
+              onChange={(e) =>
+                onChange({ ...data, backgroundColor: e.target.value })
+              }
+              className="h-9 w-10 shrink-0 cursor-pointer rounded border border-border bg-card"
+            />
+            <Input
+              value={str(data, "backgroundColor")}
+              onChange={(e) =>
+                onChange({ ...data, backgroundColor: e.target.value })
+              }
+              placeholder="#121212"
+            />
+          </div>
+        </div>
+        <div>
+          <label className={fieldLabel}>Imagem de fundo (opcional)</label>
+          <LibraryAssetPicker
+            type="IMAGE"
+            variant="image"
+            value={{
+              library_id: str(data, "backgroundImage"),
+              file_url: str(data, "backgroundImageUrl"),
+            }}
+            onChange={(a) =>
+              onChange({
+                ...data,
+                backgroundImage: a?.library_id ?? "",
+                backgroundImageUrl: a?.file_url ?? "",
+              })
             }
-            placeholder="#121212"
           />
         </div>
+        {str(data, "file_url") ? (
+          <div>
+            <label className={fieldLabel}>Pré-visualização</label>
+            <div className="h-64 overflow-hidden rounded-md border border-border">
+              <Model3DViewer
+                key={str(data, "file_url")}
+                url={str(data, "file_url")}
+                backgroundColor={str(data, "backgroundColor") || undefined}
+                backgroundImage={str(data, "backgroundImageUrl") || undefined}
+              />
+            </div>
+          </div>
+        ) : null}
       </div>
     ),
   },
@@ -152,13 +292,15 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
     label: "Galeria",
     description: "Várias imagens.",
     icon: Images,
-    defaultData: { images: [] },
+    hideFromMenu: true,
+    defaultData: { images: [], title: "", description: "" },
     Form: ({ data, onChange }) => {
       const images = Array.isArray(data.images)
         ? (data.images as { library_id: string; file_url?: string }[])
         : [];
       return (
         <div className="space-y-2">
+          <HeadingFields data={data} onChange={onChange} />
           {images.map((img, i) => (
             <LibraryAssetPicker
               key={i}

@@ -1,5 +1,6 @@
-import type { PagePayload, PartnerLocation } from "@/api/stetsom/model";
-import { serverOrvalClient } from "@/api/stetsom/orval-server";
+import type { GetApiPagesSlug200, PartnerLocation } from "@/api/stetsom/model";
+import { getApiPagesSlug } from "@/api/stetsom/server/pages-public/pages-public";
+import { getApiPartnerLocations } from "@/api/stetsom/server/partner-locations-public/partner-locations-public";
 import { toApiLocale } from "@/lib/api/i18n-utils";
 import {
   getPageBlock,
@@ -23,25 +24,17 @@ export default async function SuportePage() {
   const apiLocale = toApiLocale(locale);
 
   const [pageRes, serviceCenters] = await Promise.all([
-    serverOrvalClient<PagePayload>({
-      method: "GET",
-      url: "/api/pages/support",
-      params: { locale: apiLocale },
-    }).catch(
+    getApiPagesSlug("support", { locale: apiLocale }).catch(
       () =>
         ({
           id: "",
           slug: "support",
-          title: { pt: "" },
+          title: "",
           blocks: [],
           updated_at: "",
-        }) as PagePayload,
+        }) satisfies GetApiPagesSlug200,
     ),
-    serverOrvalClient<PartnerLocation[]>({
-      method: "GET",
-      url: "/api/partner-locations",
-      params: { type: "SERVICE_CENTER" },
-    }).catch(() => [] as PartnerLocation[]),
+    getApiPartnerLocations().catch(() => [] as PartnerLocation[]),
   ]);
 
   const blocks = pageRes.blocks ?? [];
@@ -90,10 +83,7 @@ export default async function SuportePage() {
         />
       )}
       {!mapData.hidden && (
-        <SupportServiceCenters
-          serviceCenters={serviceCenters}
-          mapImage={mapData.mapImage}
-        />
+        <SupportServiceCenters serviceCenters={serviceCenters} />
       )}
       {!docData.hidden &&
       (docData.categories?.length || docData.files?.length) ? (

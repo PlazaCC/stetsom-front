@@ -1,10 +1,17 @@
 "use client";
 
 import { useGetApiDashboard } from "@/api/stetsom";
-import { Image, Mail, Package, Plus, Upload } from "lucide-react";
+import {
+  Image,
+  Mail,
+  Package,
+  Plus,
+  Upload,
+  type LucideIcon,
+} from "lucide-react";
 import Link from "next/link";
 
-const QUICK_ICONS: Record<string, React.ElementType> = {
+const QUICK_ICONS: Record<string, LucideIcon> = {
   package: Package,
   image: Image,
   upload: Upload,
@@ -22,12 +29,16 @@ export default function AdminHome() {
   const dashboard = useGetApiDashboard();
 
   if (dashboard.isLoading) {
-    return <div className="text-muted-foreground">Carregando dashboard...</div>;
+    return (
+      <div className="px-4 py-4 text-muted-foreground lg:px-11.75 lg:py-7.25">
+        Carregando dashboard...
+      </div>
+    );
   }
 
   if (dashboard.isError || !dashboard.data) {
     return (
-      <div className="text-destructive">
+      <div className="px-4 py-4 text-destructive lg:px-11.75 lg:py-7.25">
         Não foi possível carregar o dashboard.
       </div>
     );
@@ -37,7 +48,7 @@ export default function AdminHome() {
     dashboard.data;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-4 py-4 lg:px-11.75 lg:py-7.25">
       <header>
         <h1 className="text-4xl font-bold text-foreground">
           {dashboard.data.title}
@@ -48,7 +59,7 @@ export default function AdminHome() {
       </header>
 
       {/* Metrics */}
-      <section className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         {metrics.map((metric) => (
           <article
             key={metric.id}
@@ -65,7 +76,7 @@ export default function AdminHome() {
               </div>
             )}
             <div className="min-w-0">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">
+              <p className="text-xs tracking-wide text-muted-foreground uppercase">
                 {metric.label}
               </p>
               <p className="mt-1 text-3xl font-bold text-foreground">
@@ -81,7 +92,7 @@ export default function AdminHome() {
         ))}
       </section>
 
-      <div className="grid gap-6 grid-cols-1 lg:grid-cols-[1fr_320px]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
         <div className="space-y-6">
           {/* Recent activities */}
           <section className="rounded-[16px] border border-border bg-card p-5">
@@ -151,14 +162,14 @@ export default function AdminHome() {
                     className="flex items-start gap-3 rounded-md border border-border p-3"
                   >
                     <div className="flex size-8 shrink-0 flex-col items-center justify-center rounded-md bg-muted text-center">
-                      <span className="text-xs font-semibold leading-none text-foreground">
+                      <span className="text-xs leading-none font-semibold text-foreground">
                         {formatDate(item.date).split(" ")[0]}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {formatDate(item.date).split(" ")[1]}
                       </span>
                     </div>
-                    <p className="text-xs text-foreground leading-snug">
+                    <p className="text-xs leading-snug text-foreground">
                       {item.label}
                     </p>
                   </li>

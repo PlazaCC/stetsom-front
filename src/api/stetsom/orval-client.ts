@@ -8,8 +8,9 @@
  *   /api/products        → /api/bff/products
  *   /api/banners/:id     → /api/bff/banners/:id
  *
- * For Server Components / Server Actions use `serverOrvalClient`
- * from "@/api/stetsom/orval-server" (direct call, no proxy).
+ * For Server Components / Server Actions use the generated functions under
+ * "@/api/stetsom/server/**" (stetsomServer target → serverOrvalClient, direct
+ * call, no proxy).
  */
 import type { AxiosError, AxiosRequestConfig } from "axios";
 import Axios from "axios";
