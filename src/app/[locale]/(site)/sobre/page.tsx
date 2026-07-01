@@ -1,5 +1,5 @@
-import type { PagePayload } from "@/api/stetsom/model";
-import { serverOrvalClient } from "@/api/stetsom/orval-server";
+import type { GetApiPagesSlug200 } from "@/api/stetsom/model";
+import { getApiPagesSlug } from "@/api/stetsom/server/pages-public/pages-public";
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
 import { toApiLocale } from "@/lib/api/i18n-utils";
@@ -26,19 +26,15 @@ export default async function SobrePage() {
   const apiLocale = toApiLocale(locale);
 
   const [pageRes, t] = await Promise.all([
-    serverOrvalClient<PagePayload>({
-      method: "GET",
-      url: "/api/pages/about",
-      params: { locale: apiLocale },
-    }).catch(
+    getApiPagesSlug("about", { locale: apiLocale }).catch(
       () =>
         ({
           id: "",
           slug: "about",
-          title: { pt: "" },
+          title: "",
           blocks: [],
           updated_at: "",
-        }) as PagePayload,
+        }) satisfies GetApiPagesSlug200,
     ),
     getTranslations("About"),
   ]);

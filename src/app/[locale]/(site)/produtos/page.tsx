@@ -1,5 +1,6 @@
 import { getLocale } from "next-intl/server";
-import { serverOrvalClient } from "@/api/stetsom/orval-server";
+import { getApiCategories } from "@/api/stetsom/server/categories-public/categories-public";
+import { getApiProducts } from "@/api/stetsom/server/products-public/products-public";
 import type {
   ProductCatalogResponse,
   PublicCategory,
@@ -31,24 +32,16 @@ export default async function ProdutosPage({
   const page = Math.max(1, Number(sp.page) || 1);
 
   const [categories, catalog] = await Promise.all([
-    serverOrvalClient<PublicCategory[]>({
-      method: "GET",
-      url: "/api/categories",
-      params: { locale: apiLocale },
-    }).catch(() => [] as PublicCategory[]),
-    serverOrvalClient<ProductCatalogResponse>({
-      method: "GET",
-      url: "/api/products",
-      params: {
-        q,
-        category,
-        line,
-        sort,
-        status: "PUBLISHED",
-        page,
-        pageSize: PAGE_SIZE,
-        locale: apiLocale,
-      },
+    getApiCategories({ locale: apiLocale }).catch(() => [] as PublicCategory[]),
+    getApiProducts({
+      q,
+      category,
+      line,
+      sort,
+      status: "PUBLISHED",
+      page,
+      pageSize: PAGE_SIZE,
+      locale: apiLocale,
     }).catch(
       () =>
         ({

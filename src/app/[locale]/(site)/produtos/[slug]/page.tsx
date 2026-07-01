@@ -1,5 +1,5 @@
-import { serverOrvalClient } from "@/api/stetsom/orval-server";
-import type { GetApiProductsSlug200 } from "@/api/stetsom/model";
+import { getApiProductsSlug } from "@/api/stetsom/server/products-public/products-public";
+import type { GetApiProductsSlugParams } from "@/api/stetsom/model";
 import { toApiLocale } from "@/lib/api/i18n-utils";
 import { getLocale } from "next-intl/server";
 import { draftMode } from "next/headers";
@@ -22,11 +22,10 @@ export default async function ProdutoDetalhePage(
   const { isEnabled } = await draftMode();
   const isPreview = preview === "true" || isEnabled;
 
-  const payload = await serverOrvalClient<GetApiProductsSlug200>({
-    method: "GET",
-    url: `/api/products/${slug}`,
-    params: { locale: apiLocale, ...(isPreview && { preview: "true" }) },
-  }).catch(() => null);
+  const payload = await getApiProductsSlug(slug, {
+    locale: apiLocale,
+    ...(isPreview && { preview: "true" }),
+  } as GetApiProductsSlugParams).catch(() => null);
 
   if (!payload) notFound();
 
