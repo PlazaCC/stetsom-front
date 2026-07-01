@@ -23,6 +23,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("Nav");
+  const pathname = usePathname();
 
   // ── scroll tracking with motion ──────────────────────────────────────
   const { scrollY } = useScroll();
@@ -45,7 +46,9 @@ export function Header() {
   // ── header appearance ────────────────────────────────────────────────
   // On mobile, when the hamburger menu is open the header turns white to blend
   // with the dropdown (desktop is unaffected since the menu is hidden).
-  const isWhite = scrolled || mobileMenuOpen;
+  // On /produtos the header is always white (sticky catalog bar context).
+  const isProdutos = pathname.startsWith("/produtos/");
+  const isWhite = isProdutos || scrolled || mobileMenuOpen;
   const iconClass = isWhite ? "text-icon-muted" : "text-white";
   const langVariant = isWhite ? ("dark" as const) : ("light" as const);
 
@@ -78,7 +81,7 @@ export function Header() {
             {/* Desktop nav */}
             <nav className="hidden items-center gap-8 md:flex">
               {NAV_LINKS.map(({ href, labelKey }) => (
-                <DesktopNavLink key={href} href={href} scrolled={scrolled}>
+                <DesktopNavLink key={href} href={href} isWhite={isWhite}>
                   {t(labelKey)}
                 </DesktopNavLink>
               ))}
@@ -87,7 +90,7 @@ export function Header() {
 
           {/* Desktop right: search + language */}
           <div className="hidden items-center gap-4 md:flex">
-            <DesktopSearchBar scrolled={scrolled} />
+            <DesktopSearchBar isWhite={isWhite} />
             <LanguageSwitcher variant={langVariant} />
           </div>
 
@@ -115,7 +118,7 @@ export function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-18 left-0 w-full bg-white shadow-md md:hidden"
+            className="absolute top-16 left-0 w-full bg-white shadow-md md:hidden"
           >
             <div className="flex flex-col px-5 py-4">
               {/* Search */}
@@ -165,11 +168,11 @@ export function Header() {
 function DesktopNavLink({
   href,
   children,
-  scrolled,
+  isWhite,
 }: {
   href: string;
   children: string;
-  scrolled: boolean;
+  isWhite: boolean;
 }) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(href + "/");
@@ -179,7 +182,7 @@ function DesktopNavLink({
       href={href}
       className={cn(
         "border-b-2 font-sans text-lg font-normal transition-colors",
-        scrolled
+        isWhite
           ? active
             ? "border-brand text-brand"
             : "border-transparent text-muted-foreground hover:border-brand hover:text-brand"
@@ -223,7 +226,7 @@ function MobileNavLink({
 
 // ─── Desktop Search Bar ───────────────────────────────────────────────────────
 
-function DesktopSearchBar({ scrolled }: { scrolled: boolean }) {
+function DesktopSearchBar({ isWhite }: { isWhite: boolean }) {
   const router = useRouter();
   const t = useTranslations("Header");
 
@@ -242,7 +245,7 @@ function DesktopSearchBar({ scrolled }: { scrolled: boolean }) {
         className={cn(
           "w-40 rounded-full border px-4 py-1.5 font-sans text-sm transition-all outline-none",
           "focus:w-56 focus:border-brand",
-          scrolled
+          isWhite
             ? "border-border bg-muted text-foreground placeholder:text-muted-foreground"
             : "border-white/30 bg-white/10 text-white placeholder:text-white/50",
         )}

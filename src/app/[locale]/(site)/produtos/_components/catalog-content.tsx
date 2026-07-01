@@ -7,11 +7,10 @@ import type {
 import { Container } from "@/components/ui/container";
 import { ProductCard } from "@/components/ui/product-card";
 import { useCatalogFilters } from "@/hooks/use-catalog-filters";
-import { cn } from "@/lib/utils";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
+import { CatalogCategoryBar } from "./catalog-category-bar";
 import { CatalogMobileFilter } from "./catalog-mobile-filter";
 import { CatalogSidebar } from "./catalog-sidebar";
 
@@ -19,10 +18,6 @@ interface CategoryOption {
   name: string;
   slug: string;
 }
-
-// Hero background is a static design asset — the public catalog payload does not
-// expose a hero image, so this stays a constant rather than a hardcoded contract value.
-const DEFAULT_HERO_IMAGE = "/figma-assets/raw/fill_CGM3WO_6a0a1876.png";
 
 const SEARCH_DEBOUNCE_MS = 400;
 
@@ -152,47 +147,11 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
         <div className="absolute top-0 left-0 h-full w-3.5 bg-brand" />
       </section>
 
-      <section className="border-b border-border bg-white py-8">
-        <Container>
-          <p className="mb-5 font-sans-condensed text-xs font-black tracking-widest text-muted-foreground uppercase">
-            {t("categories")}
-          </p>
-          <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8">
-            {categoryOptions.map((cat) => {
-              const isActive = activeCategory === cat.slug;
-              return (
-                <button
-                  key={cat.slug}
-                  onClick={() => setActiveCategory(cat.slug)}
-                  className={cn(
-                    "flex flex-col items-center gap-2 rounded p-2 text-center transition-colors",
-                    isActive ? "bg-brand/10" : "hover:bg-muted",
-                  )}
-                >
-                  <div
-                    className={cn(
-                      "flex aspect-square w-full items-center justify-center overflow-hidden rounded",
-                      isActive ? "bg-brand/10" : "bg-muted",
-                    )}
-                  >
-                    <span className="font-sans-condensed text-xs font-black text-muted-foreground uppercase">
-                      {cat.name.slice(0, 2)}
-                    </span>
-                  </div>
-                  <span
-                    className={cn(
-                      "font-sans text-2xs leading-tight font-medium",
-                      isActive ? "text-brand" : "text-muted-foreground",
-                    )}
-                  >
-                    {cat.name}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </Container>
-      </section>
+      <CatalogCategoryBar
+        categories={categoryOptions}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+      />
 
       <section className="bg-white pt-6 pb-12">
         <Container>

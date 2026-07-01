@@ -228,6 +228,16 @@
       scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
     }
   }
+
+  /* Hide scrollbar while keeping scroll functionality */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .hero-carousel-pagination {

@@ -132,14 +132,14 @@ export default async function Footer() {
 
           {footerColumns.map(({ title, links }) => (
             <div key={title} className="flex min-w-32 flex-col gap-3">
-              <span className="mb-1 font-sans text-xl font-medium uppercase text-white">
+              <span className="mb-1 font-sans text-base font-medium text-white uppercase">
                 {title}
               </span>
               {links.map(({ label, href }) => (
                 <Link
                   key={label || href}
                   href={href}
-                  className="text-lg hover:underline text-text-subtle-dark transition-colors hover:text-white"
+                  className="text-base text-text-subtle-dark transition-colors hover:text-white hover:underline"
                 >
                   {label}
                 </Link>
@@ -149,11 +149,11 @@ export default async function Footer() {
         </div>
 
         <div className="flex flex-col gap-3 border-t border-white/10 pt-5 lg:flex-row lg:items-center lg:justify-between">
-          <span className="text-lg font-medium text-text-subtle-dark">
+          <span className="text-sm font-medium text-text-subtle-dark">
             {t("copyright", { year })}
           </span>
 
-          <div className="flex flex-wrap items-center gap-y-1 text-lg font-medium text-text-subtle-dark">
+          <div className="flex flex-wrap items-center gap-y-1 text-sm font-medium text-text-subtle-dark">
             {copyrightLinks.map(({ label, href }, index) => (
               <div key={label} className="flex items-center">
                 {index > 0 ? <span className="px-2">|</span> : null}
