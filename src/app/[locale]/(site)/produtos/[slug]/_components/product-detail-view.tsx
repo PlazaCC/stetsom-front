@@ -140,7 +140,7 @@ export function ProductDetailView({
 
   return (
     <>
-      <section className="bg-card py-6 lg:py-8">
+      <section className="bg-card py-6 lg:py-24">
         <Container>
           {!previewMode && <Breadcrumb items={breadcrumbItems} />}
 
@@ -380,9 +380,11 @@ export function ProductDetailView({
                   key={p.id}
                   name={p.name}
                   category={p.category}
+                  variants={p.variants}
                   badge={p.is_discontinued ? "Discontinued" : undefined}
                   img={p.thumbnail_url ?? undefined}
                   href={p.href}
+                  variantDirection="column"
                 />
               ))}
             </div>

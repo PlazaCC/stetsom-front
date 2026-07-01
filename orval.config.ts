@@ -1,7 +1,7 @@
 import { defineConfig } from "orval";
 import dotenv from "dotenv";
 
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 
 const apiBase = process.env.CMS_API_BASE_URL ?? "http://localhost:3333";
 

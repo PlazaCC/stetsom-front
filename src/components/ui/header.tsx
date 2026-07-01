@@ -52,7 +52,7 @@ export function Header() {
   return (
     <div onKeyDown={handleKey}>
       <motion.header
-        className="fixed top-0 z-50 h-18 w-full"
+        className="fixed top-0 z-50 h-16 w-full"
         animate={{
           backgroundColor: isWhite
             ? "rgba(255, 255, 255, 1)"

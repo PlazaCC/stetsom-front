@@ -60,7 +60,7 @@ export function StickySectionNav() {
   };
 
   return (
-    <div className="sticky top-22 z-40 w-full border-t border-zinc-200 bg-white">
+    <div className="sticky top-16 z-40 w-full border-t border-zinc-200 bg-white">
       <div className="flex justify-center gap-5 px-5 py-4 lg:px-42.5">
         {sections.map(({ id, label }) => (
           <button

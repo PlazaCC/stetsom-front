@@ -126,6 +126,7 @@ export function FeaturedProducts({
                   key={p.id}
                   name={p.name}
                   category={p.category}
+                  variants={p.variants}
                   img={p.thumbnail_url ?? undefined}
                   href={p.href}
                 />

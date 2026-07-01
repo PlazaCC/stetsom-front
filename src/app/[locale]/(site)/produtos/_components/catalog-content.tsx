@@ -254,8 +254,10 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
                         key={product.id}
                         name={product.name}
                         category={product.category}
+                        variants={product.variants}
                         img={product.thumbnail_url ?? undefined}
                         href={product.href}
+                        variantDirection="column"
                       />
                     ))}
                   </div>
