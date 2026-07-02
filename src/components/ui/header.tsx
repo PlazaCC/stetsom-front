@@ -64,7 +64,7 @@ export function Header() {
             ? "0 1px 3px rgba(0, 0, 0, 0.1)"
             : "0 0px 0px rgba(0, 0, 0, 0)",
         }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
       >
         <Container className="flex h-full items-center justify-between">
           {/* Logo */}
