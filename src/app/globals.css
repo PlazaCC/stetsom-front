@@ -266,7 +266,8 @@
 }
 
 .hero-carousel .swiper-pagination-bullet.swiper-pagination-bullet-active {
-  width: 26px !important;
+  --hero-bullet-end: 36px;
+  width: 36px !important;
   background: rgba(255, 255, 255, 0.6) !important;
 }
 
@@ -279,9 +280,7 @@
   background: rgba(255, 255, 255, 1);
   opacity: 0;
   width: 0%;
-  min-width: 12px;
-  /* transform: scaleX(0); */
-  /* transform-origin: left center; */
+  min-width: 10px;
 }
 
 .hero-carousel
@@ -296,7 +295,7 @@
     width: 10px;
   }
   to {
-    width: 64px;
+    width: var(--hero-bullet-end, 36px);
   }
 }
 
@@ -311,6 +310,7 @@
   }
 
   .hero-carousel .swiper-pagination-bullet.swiper-pagination-bullet-active {
+    --hero-bullet-end: 64px;
     width: 64px !important;
   }
 }

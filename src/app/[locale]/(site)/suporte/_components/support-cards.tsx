@@ -6,6 +6,7 @@ import {
   FileText,
   MapPin,
   MessageCircle,
+  MessageCircleMore,
   type LucideIcon,
 } from "lucide-react";
 
@@ -19,8 +20,8 @@ const ICON_BY_KEYWORD: Record<string, LucideIcon> = {
   download: FileText,
   posto: MapPin,
   autorizados: MapPin,
-  fale: MessageCircle,
-  contato: MessageCircle,
+  fale: MessageCircleMore,
+  contato: MessageCircleMore,
 };
 
 const HREF_BY_KEYWORD: Record<string, string> = {
@@ -80,10 +81,10 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
                 <p className="flex-1 text-sm leading-relaxed text-text-subtle">
                   {card.description}
                 </p>
-                <div className="mt-6 flex items-center justify-end">
+                <div className="relative mt-6">
                   <ArrowUpRight
-                    size={18}
-                    className="text-text-subtle transition-colors duration-200 group-hover:text-brand"
+                    size={32}
+                    className="absolute right-0 bottom-0 text-text-subtle transition-colors duration-200 group-hover:text-brand"
                   />
                 </div>
               </Link>
