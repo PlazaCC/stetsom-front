@@ -67,26 +67,24 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
                 key={card.title}
                 href={href}
                 className={cn(
-                  "group flex min-h-56 flex-col border border-border bg-white p-6",
+                  "group relative flex flex-col gap-1 border border-border bg-white p-4",
                   "transition-colors duration-200",
                   "hover:border-b-brand",
                 )}
               >
-                <div className="mb-5 flex size-10 items-center justify-center rounded-lg bg-muted">
-                  <Icon size={20} className="text-brand" />
+                <div className="flex size-10 items-center justify-center rounded-xs bg-muted">
+                  <Icon strokeWidth={2} size={36} className="text-brand" />
                 </div>
-                <h3 className="mb-3 font-sans-condensed text-section-title font-black text-brand-dark uppercase">
+                <h3 className="font-sans-condensed text-3xl font-bold text-brand-dark uppercase">
                   {card.title}
                 </h3>
                 <p className="flex-1 text-sm leading-relaxed text-text-subtle">
                   {card.description}
                 </p>
-                <div className="relative mt-6">
-                  <ArrowUpRight
-                    size={32}
-                    className="absolute right-0 bottom-0 text-text-subtle transition-colors duration-200 group-hover:text-brand"
-                  />
-                </div>
+                <ArrowUpRight
+                  size={32}
+                  className="absolute right-1 bottom-1 text-text-subtle transition-colors duration-200 group-hover:text-brand"
+                />
               </Link>
             );
           })}
