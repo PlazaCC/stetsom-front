@@ -75,7 +75,7 @@ export function LibraryAssetPicker({
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="rounded border border-border px-2 py-1 text-xs font-medium hover:bg-muted"
+            className="shrink-0 rounded border border-border px-2 py-1 text-xs font-medium hover:bg-muted"
           >
             Trocar
           </button>
@@ -83,7 +83,7 @@ export function LibraryAssetPicker({
             type="button"
             aria-label="Remover"
             onClick={() => onChange(null)}
-            className="text-muted-foreground hover:text-destructive"
+            className="shrink-0 text-muted-foreground hover:text-destructive"
           >
             <Trash2 className="size-4" />
           </button>

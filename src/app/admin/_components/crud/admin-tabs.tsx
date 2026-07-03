@@ -28,7 +28,12 @@ export function AdminTabs({ items, className }: AdminTabsProps) {
   const pathname = usePathname();
 
   return (
-    <nav className={cn("flex gap-1 border-b border-border", className)}>
+    <nav
+      className={cn(
+        "flex gap-1 overflow-x-auto border-b border-border",
+        className,
+      )}
+    >
       {items.map(({ href, label, icon: Icon, exact }) => {
         const active = exact ? pathname === href : pathname.startsWith(href);
         return (
@@ -36,7 +41,7 @@ export function AdminTabs({ items, className }: AdminTabsProps) {
             key={href}
             href={href}
             className={cn(
-              "relative -mb-px flex shrink-0 items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors",
+              "relative -mb-px flex shrink-0 items-center gap-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors",
               active
                 ? "border-primary text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground",

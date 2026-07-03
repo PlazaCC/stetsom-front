@@ -18,7 +18,17 @@ const NAV_LINKS = [
   { href: "/suporte", labelKey: "support" },
 ] as const;
 
-export function Header() {
+interface HeaderProps {
+  // Resolved by SiteLayout from GET /api/config/public. Defaults cover the
+  // case where the admin hasn't uploaded a CMS logo for this locale yet.
+  logoDark?: string;
+  logoWhite?: string;
+}
+
+export function Header({
+  logoDark = "/logo.png",
+  logoWhite = "/logo-white.png",
+}: HeaderProps = {}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -71,7 +81,7 @@ export function Header() {
           <div className="flex items-center gap-8">
             <Link href="/" className="shrink-0">
               <Logo
-                variant={isWhite ? "white" : "dark"}
+                src={isWhite ? logoWhite : logoDark}
                 width={158}
                 height={35}
                 priority

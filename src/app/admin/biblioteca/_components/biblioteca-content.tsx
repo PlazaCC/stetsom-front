@@ -281,9 +281,9 @@ const UPLOAD_CONFIG: Record<
   }
 > = {
   photos: {
-    accept: "image/jpeg,image/png,image/webp,image/gif",
+    accept: "image/jpeg,image/png,image/webp,image/gif,image/svg+xml",
     label: "Clique ou arraste imagens para a biblioteca",
-    description: "PNG, JPG, WebP, GIF — máx. 10 MB",
+    description: "PNG, JPG, WebP, GIF, SVG — máx. 10 MB",
     icon: Image,
     libraryType: LibraryAssetType.IMAGE,
   },

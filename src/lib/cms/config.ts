@@ -229,6 +229,44 @@ export const config: Record<string, AppRouteStaticData> = {
     label: "Configurações",
     icon: Settings,
     section: "admin",
+    tabs: [
+      {
+        href: "/admin/configuracoes/identidade-visual",
+        label: "Identidade Visual",
+        icon: ImageIcon,
+        exact: true,
+      },
+      {
+        href: "/admin/configuracoes/empresa",
+        label: "Empresa",
+        icon: Building2,
+        exact: true,
+      },
+      {
+        href: "/admin/configuracoes/redes-sociais",
+        label: "Redes Sociais",
+        icon: Mail,
+        exact: true,
+      },
+    ],
+  },
+  "/admin/configuracoes/identidade-visual": {
+    label: "Configurações",
+    icon: Settings,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/configuracoes/empresa": {
+    label: "Configurações",
+    icon: Settings,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/configuracoes/redes-sociais": {
+    label: "Configurações",
+    icon: Settings,
+    section: "admin",
+    hideInBreadcrumb: true,
   },
   "/admin/styleguide": {
     label: "Design System",

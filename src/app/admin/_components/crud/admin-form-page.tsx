@@ -12,9 +12,11 @@ export function AdminFormPage({
   className,
 }: AdminFormPageProps) {
   return (
-    <div className={cn("flex gap-5", className)}>
+    <div className={cn("flex flex-col gap-5 xl:flex-row", className)}>
       <div className="min-w-0 flex-1 space-y-4">{children}</div>
-      {aside && <aside className="w-97 shrink-0 space-y-4">{aside}</aside>}
+      {aside && (
+        <aside className="w-full space-y-4 xl:w-97 xl:shrink-0">{aside}</aside>
+      )}
     </div>
   );
 }
