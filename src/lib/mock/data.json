@@ -7035,6 +7035,55 @@
     "updated_at": "2026-06-17T06:46:42.820Z",
     "updated_by": "6a28d3ce7ed2feca02f806b4"
   },
+  "legal-pages": [
+    {
+      "id": "legal_privacy",
+      "slug": "politica-de-privacidade",
+      "title": {
+        "pt": "Política de Privacidade",
+        "en": "Privacy Policy",
+        "es": "Política de Privacidad"
+      },
+      "content": {
+        "pt": "<h2>Política de Privacidade</h2><p>A Stetsom valoriza a sua privacidade. Coletamos apenas os dados necessários para prestar nossos serviços.</p><h3>Dados coletados</h3><ul><li>Nome e e-mail</li><li>Dados de navegação</li></ul>",
+        "en": "<h2>Privacy Policy</h2><p>Stetsom values your privacy. We collect only the data required to provide our services.</p>"
+      },
+      "order": 0,
+      "published": true,
+      "created_at": "2026-07-01T12:00:00.000Z",
+      "updated_at": "2026-07-01T12:00:00.000Z"
+    },
+    {
+      "id": "legal_terms",
+      "slug": "termos-de-uso",
+      "title": {
+        "pt": "Termos de Uso",
+        "en": "Terms of Use",
+        "es": "Términos de Uso"
+      },
+      "content": {
+        "pt": "<h2>Termos de Uso</h2><p>Ao utilizar este site você concorda com os termos descritos abaixo.</p>"
+      },
+      "order": 1,
+      "published": true,
+      "created_at": "2026-07-01T12:00:00.000Z",
+      "updated_at": "2026-07-01T12:00:00.000Z"
+    }
+  ],
+  "legal-pages--public": [
+    { "slug": "politica-de-privacidade", "title": "Política de Privacidade" },
+    { "slug": "termos-de-uso", "title": "Termos de Uso" }
+  ],
+  "legal-pages--public--politica-de-privacidade": {
+    "slug": "politica-de-privacidade",
+    "title": "Política de Privacidade",
+    "html": "<h2>Política de Privacidade</h2><p>A Stetsom valoriza a sua privacidade. Coletamos apenas os dados necessários para prestar nossos serviços.</p><h3>Dados coletados</h3><ul><li>Nome e e-mail</li><li>Dados de navegação</li></ul>"
+  },
+  "legal-pages--public--termos-de-uso": {
+    "slug": "termos-de-uso",
+    "title": "Termos de Uso",
+    "html": "<h2>Termos de Uso</h2><p>Ao utilizar este site você concorda com os termos descritos abaixo.</p>"
+  },
   "banners": {
     "items": [
       {

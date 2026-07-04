@@ -52,6 +52,7 @@ export default defineConfig({
           "Pages Public",
           "Banners Public",
           "Partner Locations Public",
+          "Legal Pages Public",
           "Config Public",
           "Contact",
         ],

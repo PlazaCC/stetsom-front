@@ -22,6 +22,7 @@ export * from "./endpoints/categories/categories";
 export * from "./endpoints/config/config";
 export * from "./endpoints/contact/contact";
 export * from "./endpoints/dashboard/dashboard";
+export * from "./endpoints/legal-pages/legal-pages";
 export * from "./endpoints/library/library";
 export * from "./endpoints/messages/messages";
 export * from "./endpoints/pages/pages";

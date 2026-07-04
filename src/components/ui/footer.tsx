@@ -1,3 +1,4 @@
+import type { PublicLegalPageListItem } from "@/api/stetsom/model";
 import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 import { Logo } from "./logo";
@@ -77,11 +78,14 @@ interface FooterProps {
   logoDark?: string;
   // Social profile URLs from the CMS config. Only filled entries are rendered.
   socials?: Partial<Record<SocialKey, string | undefined>>;
+  // Published legal pages (slug + locale-resolved title) from the API.
+  legalPages?: PublicLegalPageListItem[];
 }
 
 export default async function Footer({
   logoDark = "/logo.png",
   socials,
+  legalPages = [],
 }: FooterProps = {}) {
   const t = await getTranslations("Footer");
   const year = new Date().getFullYear();
@@ -126,11 +130,10 @@ export default async function Footer({
     },
   ];
 
-  const copyrightLinks = [
-    { label: t("privacyPolicy"), href: "#" },
-    { label: t("termsOfUse"), href: "#" },
-    { label: t("cookies"), href: "#" },
-  ];
+  const legalLinks = legalPages.map((page) => ({
+    label: page.title,
+    href: `/legal/${page.slug}`,
+  }));
 
   return (
     <footer className="bg-footer">
@@ -188,19 +191,21 @@ export default async function Footer({
             {t("copyright", { year })}
           </span>
 
-          <div className="flex flex-wrap items-center gap-y-1 text-sm font-medium text-text-subtle-dark">
-            {copyrightLinks.map(({ label, href }, index) => (
-              <div key={label} className="flex items-center">
-                {index > 0 ? <span className="px-2">|</span> : null}
-                <Link
-                  href={href}
-                  className="transition-colors hover:text-white"
-                >
-                  {label}
-                </Link>
-              </div>
-            ))}
-          </div>
+          {legalLinks.length > 0 && (
+            <div className="flex flex-wrap items-center gap-y-1 text-sm font-medium text-text-subtle-dark">
+              {legalLinks.map(({ label, href }, index) => (
+                <div key={href} className="flex items-center">
+                  {index > 0 ? <span className="px-2">|</span> : null}
+                  <Link
+                    href={href}
+                    className="transition-colors hover:text-white"
+                  >
+                    {label}
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </footer>

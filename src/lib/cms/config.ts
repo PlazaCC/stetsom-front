@@ -9,6 +9,7 @@ import {
   ListChecks,
   Mail,
   Package,
+  Scale,
   Settings,
   Tags,
   Users,
@@ -248,6 +249,12 @@ export const config: Record<string, AppRouteStaticData> = {
         icon: Mail,
         exact: true,
       },
+      {
+        href: "/admin/configuracoes/paginas-legais",
+        label: "Páginas Legais",
+        icon: Scale,
+        exact: true,
+      },
     ],
   },
   "/admin/configuracoes/identidade-visual": {
@@ -263,6 +270,12 @@ export const config: Record<string, AppRouteStaticData> = {
     hideInBreadcrumb: true,
   },
   "/admin/configuracoes/redes-sociais": {
+    label: "Configurações",
+    icon: Settings,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/configuracoes/paginas-legais": {
     label: "Configurações",
     icon: Settings,
     section: "admin",
