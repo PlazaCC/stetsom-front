@@ -30,7 +30,7 @@ export function AdminTabs({ items, className }: AdminTabsProps) {
   return (
     <nav
       className={cn(
-        "flex gap-1 overflow-x-auto border-b border-border",
+        "flex scrollbar-none gap-1 overflow-x-auto overflow-y-hidden border-b border-border",
         className,
       )}
     >
@@ -41,7 +41,7 @@ export function AdminTabs({ items, className }: AdminTabsProps) {
             key={href}
             href={href}
             className={cn(
-              "relative -mb-px flex shrink-0 items-center gap-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors",
+              "relative flex shrink-0 items-center gap-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors",
               active
                 ? "border-primary text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground",
