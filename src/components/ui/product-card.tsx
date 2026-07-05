@@ -21,6 +21,8 @@ export function ProductCard({
   href = "/produtos",
   variantDirection = "row",
 }: ProductCardProps) {
+  const uniqueVariants = variants ? Array.from(new Set(variants)) : [];
+
   return (
     <Link
       href={href}
@@ -49,9 +51,9 @@ export function ProductCard({
         <div className="font-sans-condensed text-base leading-tight font-black text-brand-dark uppercase">
           {name}
         </div>
-        {variants && variants.length > 0 && (
+        {uniqueVariants.length > 0 && (
           <div className={"flex flex-wrap gap-1"}>
-            {variants.map((v) => (
+            {uniqueVariants.map((v) => (
               <span
                 key={v}
                 className="rounded-[4px] border border-border bg-muted px-1.5 py-0.5 text-2xs font-bold text-text-subtle"
