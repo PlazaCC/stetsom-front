@@ -19,6 +19,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { AssetRedirectsTab } from "./asset-redirects-tab";
 import { AssetTypeIcon } from "./asset-type-icon";
 import { AssetVersionsTab } from "./asset-versions-tab";
 import { assetAltText, getCurrentVersionUrl, isImageAsset } from "./lib";
@@ -34,6 +35,7 @@ const formSchema = z.object({
     es: z.string().optional(),
   }),
   tags: z.string(),
+  redirect_paths: z.array(z.string()),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -50,7 +52,7 @@ export function EditAssetDialog({
   onClose,
   onSaved,
 }: EditAssetDialogProps) {
-  const [tab, setTab] = useState<"data" | "versions">("data");
+  const [tab, setTab] = useState<"data" | "versions" | "redirects">("data");
   const toast = useAdminToast();
 
   const form = useForm<FormValues>({
@@ -59,6 +61,7 @@ export function EditAssetDialog({
       filename: asset.filename,
       alt: asset.alt ?? { pt: "" },
       tags: asset.tags.join(", "),
+      redirect_paths: asset.redirect_paths ?? [],
     },
   });
 
@@ -70,6 +73,9 @@ export function EditAssetDialog({
         tags: values.tags
           .split(",")
           .map((t) => t.trim())
+          .filter(Boolean),
+        redirect_paths: values.redirect_paths
+          .map((p) => p.trim())
           .filter(Boolean),
       }),
     onSuccess: () => {
@@ -92,9 +98,9 @@ export function EditAssetDialog({
     >
       <DialogContent
         showCloseButton
-        className="w-full max-w-3xl overflow-hidden p-0 sm:max-w-3xl md:max-h-[85vh]"
+        className="max-h-[85vh] w-[95vw] overflow-hidden p-0 md:h-[70vh] md:w-[60vw] md:max-w-none"
       >
-        <div className="grid md:grid-cols-[1fr_360px]">
+        <div className="grid md:h-full md:grid-cols-[1fr_380px]">
           {/* Preview */}
           <div className="flex min-h-60 items-center justify-center overflow-hidden bg-muted p-4 md:min-h-0">
             {isImageAsset(asset) && previewUrl ? (
@@ -102,7 +108,7 @@ export function EditAssetDialog({
               <img
                 src={previewUrl}
                 alt={assetAltText(asset)}
-                className="max-h-[75vh] w-full object-contain"
+                className="max-h-[60vh] w-full object-contain md:max-h-full"
               />
             ) : (
               <div className="flex flex-col items-center gap-3 text-muted-foreground">
@@ -132,6 +138,9 @@ export function EditAssetDialog({
                   <TabsTrigger value="data">Dados</TabsTrigger>
                   <TabsTrigger value="versions">
                     Versões ({asset.versions.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="redirects">
+                    Redirecionamentos ({(asset.redirect_paths ?? []).length})
                   </TabsTrigger>
                 </TabsList>
 
@@ -177,6 +186,19 @@ export function EditAssetDialog({
 
                   <TabsContent value="versions">
                     <AssetVersionsTab asset={asset} onUploaded={onSaved} />
+                  </TabsContent>
+
+                  <TabsContent value="redirects">
+                    <Controller
+                      control={form.control}
+                      name="redirect_paths"
+                      render={({ field }) => (
+                        <AssetRedirectsTab
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
                   </TabsContent>
                 </div>
               </Tabs>

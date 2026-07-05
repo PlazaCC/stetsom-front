@@ -3,6 +3,7 @@
 import type {
   CompleteUploadInput,
   LibraryAsset,
+  LibraryAssetType,
   UploadPresignResponse,
 } from "@/api/stetsom/model";
 import {
@@ -47,13 +48,16 @@ const ALLOWED_MIMES = new Set([
   "application/pdf",
   "model/gltf-binary",
   "model/gltf+json",
+  "application/zip",
+  "application/x-zip-compressed",
 ]);
 
 /** Fallback MIME by file extension — browsers don't recognize some types
- *  (notably `.glb`/`.gltf`) and leave `file.type` empty. */
+ *  (notably `.glb`/`.gltf`/`.zip`) and leave `file.type` empty. */
 const EXTENSION_MIME: Record<string, string> = {
   glb: "model/gltf-binary",
   gltf: "model/gltf+json",
+  zip: "application/zip",
 };
 
 /** The browser's MIME, or one inferred from the extension when it's missing. */
@@ -160,8 +164,14 @@ export function useLibraryUpload() {
     return { presign, dims };
   }
 
-  /** Full flow ending in a brand-new library asset (step 3 = /upload/complete). */
-  async function processFile(entry: UploadEntry, file: File): Promise<boolean> {
+  /** Full flow ending in a brand-new library asset (step 3 = /upload/complete).
+   *  Pass `type` to pin the asset type (e.g. MANUAL vs CATALOG vs CERTIFICATE,
+   *  all `application/pdf`); otherwise the backend infers it from the MIME. */
+  async function processFile(
+    entry: UploadEntry,
+    file: File,
+    type?: LibraryAssetType,
+  ): Promise<boolean> {
     const { id } = entry;
 
     const mimeType = resolveMimeType(file);
@@ -181,7 +191,7 @@ export function useLibraryUpload() {
       const completeBody: CompleteUploadInput = {
         filename: file.name,
         file_url: presign.file_url,
-        type: presign.assetType,
+        type: type ?? presign.assetType,
         size_bytes: file.size,
         ...(dims ?? {}),
       };
@@ -255,7 +265,7 @@ export function useLibraryUpload() {
     }
   }
 
-  async function upload(files: File[]): Promise<void> {
+  async function upload(files: File[], type?: LibraryAssetType): Promise<void> {
     if (files.length === 0) return;
 
     const newEntries: UploadEntry[] = files.map((file) => ({
@@ -283,7 +293,7 @@ export function useLibraryUpload() {
           const entry = newEntries[i];
           if (!file || !entry) continue;
           // Await each file processing to keep per-file error handling linear
-          const success = await processFile(entry, file);
+          const success = await processFile(entry, file, type);
           if (success) anySuccess = true;
         }
       });

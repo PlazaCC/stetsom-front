@@ -255,6 +255,8 @@ export * from "./publicVariant";
 export * from "./publicVariantAttr";
 export * from "./publicVariantAttrInput";
 export * from "./publicVariantInput";
+export * from "./redirectEntry";
+export * from "./redirectEntryInput";
 export * from "./template";
 export * from "./templateAttr";
 export * from "./templateAttrInput";

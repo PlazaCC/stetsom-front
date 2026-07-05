@@ -15,6 +15,7 @@ export interface LibraryAssetInput {
   type: LibraryAssetInputType;
   alt?: I18nStringInput;
   tags: string[];
+  redirect_paths?: string[];
   current_version_id: string;
   versions: AssetVersionInput[];
   created_at: string;

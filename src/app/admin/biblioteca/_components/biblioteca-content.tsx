@@ -51,6 +51,10 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
 
   const { upload, entries, isUploading, clearDone } = useLibraryUpload();
 
+  // Pin the tab's asset type on upload — the backend infers type from MIME, and
+  // MANUAL / CATALOG / CERTIFICATE all share `application/pdf`.
+  const uploadTyped = (files: File[]) => upload(files, config.libraryType);
+
   // Drop completed uploads shortly after the real asset is fetched into the grid.
   useEffect(() => {
     if (entries.some((e) => e.status === "done")) {
@@ -99,7 +103,7 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
   return (
     <LibraryDropzone
       accept={config.accept}
-      onDrop={upload}
+      onDrop={uploadTyped}
       className="flex min-h-0 flex-1 flex-col"
     >
       <LibraryContentHeader
@@ -111,7 +115,7 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
         accept={config.accept}
         uploadLabel={config.uploadLabel}
         searchPlaceholder={config.searchPlaceholder}
-        onUpload={upload}
+        onUpload={uploadTyped}
         disabled={isUploading}
       />
 

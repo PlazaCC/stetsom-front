@@ -81,7 +81,6 @@ const FILE_TYPE_OPTIONS = [
   { value: "MANUAL", label: "Manual" },
   { value: "CATALOG", label: "Catálogo" },
   { value: "CERTIFICATE", label: "Certificado" },
-  { value: "OTHER", label: "Outro" },
 ];
 
 const socialFields: FieldSpec[] = [

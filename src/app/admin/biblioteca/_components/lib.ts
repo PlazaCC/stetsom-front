@@ -1,7 +1,15 @@
 import type { LibraryAsset } from "@/api/stetsom/model";
 import { LibraryAssetType } from "@/api/stetsom/model";
 
-export type Tab = "photos" | "manuals" | "3d-models";
+export type Tab =
+  | "photos"
+  | "videos"
+  | "3d-models"
+  | "manuals"
+  | "catalogs"
+  | "certificates"
+  | "image-packs"
+  | "category-icons";
 export type ViewMode = "grid" | "table";
 
 /** Items per page. Numbered pagination lives at the bottom of the scroll area. */
@@ -15,20 +23,23 @@ export interface TabConfig {
   libraryType: LibraryAssetType;
 }
 
+const IMAGE_ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/svg+xml";
+const PDF_ACCEPT = "application/pdf";
+
 export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
   photos: {
-    accept: "image/jpeg,image/png,image/webp,image/gif,image/svg+xml",
+    accept: IMAGE_ACCEPT,
     uploadLabel: "Enviar imagens",
     emptyLabel: "Nenhuma foto encontrada.",
     searchPlaceholder: "Buscar por nome",
     libraryType: LibraryAssetType.IMAGE,
   },
-  manuals: {
-    accept: "application/pdf",
-    uploadLabel: "Enviar PDFs",
-    emptyLabel: "Nenhum manual encontrado.",
+  videos: {
+    accept: "video/mp4,video/webm",
+    uploadLabel: "Enviar vídeos",
+    emptyLabel: "Nenhum vídeo encontrado.",
     searchPlaceholder: "Buscar por nome",
-    libraryType: LibraryAssetType.PDF,
+    libraryType: LibraryAssetType.VIDEO,
   },
   "3d-models": {
     accept: "model/gltf-binary,model/gltf+json,.glb,.gltf",
@@ -36,6 +47,41 @@ export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
     emptyLabel: "Nenhum modelo 3D encontrado.",
     searchPlaceholder: "Buscar por nome",
     libraryType: LibraryAssetType.MODEL3D,
+  },
+  manuals: {
+    accept: PDF_ACCEPT,
+    uploadLabel: "Enviar manuais",
+    emptyLabel: "Nenhum manual encontrado.",
+    searchPlaceholder: "Buscar por nome",
+    libraryType: LibraryAssetType.MANUAL,
+  },
+  catalogs: {
+    accept: PDF_ACCEPT,
+    uploadLabel: "Enviar catálogos",
+    emptyLabel: "Nenhum catálogo encontrado.",
+    searchPlaceholder: "Buscar por nome",
+    libraryType: LibraryAssetType.CATALOG,
+  },
+  certificates: {
+    accept: PDF_ACCEPT,
+    uploadLabel: "Enviar certificados",
+    emptyLabel: "Nenhum certificado encontrado.",
+    searchPlaceholder: "Buscar por nome",
+    libraryType: LibraryAssetType.CERTIFICATE,
+  },
+  "image-packs": {
+    accept: "application/zip,application/x-zip-compressed,.zip",
+    uploadLabel: "Enviar packs",
+    emptyLabel: "Nenhum pack de imagens encontrado.",
+    searchPlaceholder: "Buscar por nome",
+    libraryType: LibraryAssetType.IMAGE_PACK,
+  },
+  "category-icons": {
+    accept: "image/svg+xml,image/png,image/webp",
+    uploadLabel: "Enviar ícones",
+    emptyLabel: "Nenhum ícone de categoria encontrado.",
+    searchPlaceholder: "Buscar por nome",
+    libraryType: LibraryAssetType.CATEGORY_ICON,
   },
 };
 
