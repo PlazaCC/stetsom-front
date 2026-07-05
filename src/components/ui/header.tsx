@@ -3,9 +3,10 @@
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Menu, Search, X } from "lucide-react";
-import { motion, useScroll, useMotionValueEvent } from "motion/react";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useTranslations } from "next-intl";
-import { FormEvent, useRef, useState } from "react";
+import type { SubmitEvent } from "react";
+import { useState } from "react";
 import { Container } from "./container";
 import { LanguageSwitcher } from "./language-switcher";
 import { Logo } from "./logo";
@@ -30,8 +31,8 @@ export function Header({
   logoWhite = "/logo-white.png",
 }: HeaderProps = {}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("Nav");
   const pathname = usePathname();
 
@@ -45,22 +46,25 @@ export function Header({
   function handleKey(e: React.KeyboardEvent) {
     if (e.key === "Escape") {
       setMobileMenuOpen(false);
+      setMobileSearchOpen(false);
     }
   }
 
   // ── close mobile menu on outside click ───────────────────────────────
   function handleBackdropClick() {
     setMobileMenuOpen(false);
+    setMobileSearchOpen(false);
   }
 
   // ── header appearance ────────────────────────────────────────────────
-  // On mobile, when the hamburger menu is open the header turns white to blend
-  // with the dropdown (desktop is unaffected since the menu is hidden).
-  // On /produtos the header is always white (sticky catalog bar context).
+  // On mobile, when the hamburger menu or search is open the header turns
+  // white to blend with the dropdown (desktop is unaffected since both are
+  // hidden). On /produtos the header is always white (sticky catalog bar
+  // context).
   const isProdutos = pathname.startsWith("/produtos/");
-  const isWhite = isProdutos || scrolled || mobileMenuOpen;
+  const isWhite = isProdutos || scrolled || mobileMenuOpen || mobileSearchOpen;
   const iconClass = isWhite ? "text-icon-muted" : "text-white";
-  const langVariant = isWhite ? ("dark" as const) : ("light" as const);
+  const langVariant = isWhite ? ("light" as const) : ("dark" as const);
 
   return (
     <div onKeyDown={handleKey}>
@@ -77,8 +81,8 @@ export function Header({
         transition={{ duration: 0.2, ease: "easeInOut" }}
       >
         <Container className="flex h-full items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-8">
+          {/* Desktop: logo + nav (left) */}
+          <div className="hidden items-center gap-8 md:flex">
             <Link href="/" className="shrink-0">
               <Logo
                 src={isWhite ? logoWhite : logoDark}
@@ -88,8 +92,7 @@ export function Header({
               />
             </Link>
 
-            {/* Desktop nav */}
-            <nav className="hidden items-center gap-8 md:flex">
+            <nav className="flex items-center gap-8">
               {NAV_LINKS.map(({ href, labelKey }) => (
                 <DesktopNavLink key={href} href={href} isWhite={isWhite}>
                   {t(labelKey)}
@@ -104,8 +107,8 @@ export function Header({
             <LanguageSwitcher variant={langVariant} />
           </div>
 
-          {/* Mobile: hamburger | logo | search icon */}
-          <div className="flex items-center gap-2 md:hidden">
+          {/* Mobile: hamburger | logo (centered) | search icon */}
+          <div className="relative flex w-full items-center justify-between md:hidden">
             <button
               aria-label={t("openMenu")}
               aria-expanded={mobileMenuOpen}
@@ -113,23 +116,47 @@ export function Header({
                 "inline-flex h-10 w-10 items-center justify-center",
                 iconClass,
               )}
-              onClick={() => setMobileMenuOpen((o) => !o)}
+              onClick={() => {
+                setMobileMenuOpen((o) => !o);
+                setMobileSearchOpen(false);
+              }}
             >
               {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+
+            <Link href="/" className="absolute left-1/2 -translate-x-1/2">
+              <Logo src={isWhite ? logoWhite : logoDark} priority />
+            </Link>
+
+            <button
+              aria-label={t("openSearch")}
+              aria-expanded={mobileSearchOpen}
+              className={cn(
+                "inline-flex h-10 w-10 items-center justify-center",
+                iconClass,
+              )}
+              onClick={() => {
+                setMobileSearchOpen((o) => !o);
+                setMobileMenuOpen(false);
+              }}
+            >
+              <Search size={22} />
             </button>
           </div>
         </Container>
 
+        {/* Mobile dedicated search dropdown */}
+        {mobileSearchOpen && (
+          <MobileDropdownPanel>
+            <div className="px-5 py-4">
+              <MobileSearchInline onClose={() => setMobileSearchOpen(false)} />
+            </div>
+          </MobileDropdownPanel>
+        )}
+
         {/* Mobile dropdown menu */}
         {mobileMenuOpen && (
-          <motion.div
-            ref={menuRef}
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-16 left-0 w-full bg-white shadow-md md:hidden"
-          >
+          <MobileDropdownPanel>
             <div className="flex flex-col px-5 py-4">
               {/* Search */}
               <MobileSearchInline onClose={() => setMobileMenuOpen(false)} />
@@ -150,16 +177,16 @@ export function Header({
               <div className="my-3 border-t border-border" />
 
               {/* Language switcher */}
-              <div className="py-2">
+              <div className="flex justify-end py-2">
                 <LanguageSwitcher variant="dark" />
               </div>
             </div>
-          </motion.div>
+          </MobileDropdownPanel>
         )}
       </motion.header>
 
       {/* Backdrop */}
-      {mobileMenuOpen && (
+      {(mobileMenuOpen || mobileSearchOpen) && (
         <motion.div
           aria-hidden="true"
           initial={{ opacity: 0 }}
@@ -172,8 +199,23 @@ export function Header({
   );
 }
 
+// ─── Mobile Dropdown Panel ────────────────────────────────────────────────────
+
+function MobileDropdownPanel({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.2 }}
+      className="absolute top-16 left-0 w-full bg-white shadow-md md:hidden"
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 // ─── Desktop Nav Link ─────────────────────────────────────────────────────────
-// Restored original hover style: red text + red border-bottom on hover
 
 function DesktopNavLink({
   href,
@@ -240,7 +282,7 @@ function DesktopSearchBar({ isWhite }: { isWhite: boolean }) {
   const router = useRouter();
   const t = useTranslations("Header");
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     const q = (new FormData(e.currentTarget).get("q") as string).trim();
     if (q) router.push(`/produtos?q=${encodeURIComponent(q)}`);
@@ -253,7 +295,7 @@ function DesktopSearchBar({ isWhite }: { isWhite: boolean }) {
         type="search"
         placeholder={t("searchPlaceholder")}
         className={cn(
-          "w-40 rounded-full border px-4 py-1.5 font-sans text-sm transition-all outline-none",
+          "w-40 rounded-full border px-4 py-2 font-sans text-sm transition-all outline-none",
           "focus:w-56 focus:border-brand",
           isWhite
             ? "border-border bg-muted text-foreground placeholder:text-muted-foreground"
@@ -270,7 +312,7 @@ function MobileSearchInline({ onClose }: { onClose: () => void }) {
   const router = useRouter();
   const t = useTranslations("Header");
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     const q = (new FormData(e.currentTarget).get("q") as string).trim();
     if (q) {

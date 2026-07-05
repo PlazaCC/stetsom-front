@@ -1,12 +1,12 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { type Locale, routing } from "@/i18n/routing";
-import { LocaleFlag } from "./flag-icons";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { LocaleFlag } from "./flag-icons";
 
 const LOCALE_CODES: Record<Locale, string> = {
   "pt-BR": "PT",
@@ -51,18 +51,17 @@ export function LanguageSwitcher({ variant = "light" }: LanguageSwitcherProps) {
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "flex items-center gap-1.5 rounded border px-3 py-1.5 text-xs font-medium transition-colors",
+          "flex items-center gap-3 rounded-full border px-2 py-1.5 transition-colors",
           isLight
             ? "border-border text-muted-foreground hover:border-brand hover:text-brand-dark"
             : "border-white/20 text-text-subtle-dark hover:border-brand hover:text-white",
         )}
       >
-        <LocaleFlag locale={locale} />
-        <span className="font-sans font-semibold uppercase tracking-wide">
-          {LOCALE_CODES[locale]}
+        <span className="h-6.75 w-9.5 shrink-0 overflow-hidden rounded-2xl [&>svg]:h-full [&>svg]:w-full">
+          <LocaleFlag locale={locale} />
         </span>
         <ChevronDown
-          size={12}
+          size={10}
           className={cn(
             "transition-transform duration-200",
             open && "rotate-180",
@@ -73,10 +72,10 @@ export function LanguageSwitcher({ variant = "light" }: LanguageSwitcherProps) {
       {open && (
         <div
           className={cn(
-            "absolute right-0 top-full mt-1.5 z-50 min-w-32 rounded border shadow-md overflow-hidden",
+            "absolute top-full right-0 z-50 mt-1.5 min-w-32 overflow-hidden rounded border shadow-md",
             isLight
-              ? "bg-white border-border"
-              : "bg-brand-dark border-white/10",
+              ? "border-border bg-white"
+              : "border-white/10 bg-brand-dark",
           )}
         >
           {routing.locales.map((loc) => (
@@ -88,18 +87,18 @@ export function LanguageSwitcher({ variant = "light" }: LanguageSwitcherProps) {
                 "flex w-full items-center gap-2.5 px-3 py-2 text-xs font-medium transition-colors",
                 loc === locale
                   ? isLight
-                    ? "text-brand bg-brand/5"
-                    : "text-brand bg-white/5"
+                    ? "bg-brand/5 text-brand"
+                    : "bg-white/5 text-brand"
                   : isLight
                     ? "text-muted-foreground hover:bg-muted hover:text-brand-dark"
                     : "text-text-subtle-dark hover:bg-white/5 hover:text-white",
               )}
             >
               <LocaleFlag locale={loc as Locale} />
-              <span className="font-sans font-semibold uppercase tracking-wide">
+              <span className="font-sans font-semibold tracking-wide uppercase">
                 {LOCALE_CODES[loc as Locale]}
               </span>
-              <span className="ml-auto font-sans text-[11px] normal-case tracking-normal opacity-70">
+              <span className="ml-auto font-sans text-[11px] tracking-normal normal-case opacity-70">
                 {t(loc)}
               </span>
             </button>
