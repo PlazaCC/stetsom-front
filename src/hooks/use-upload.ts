@@ -10,7 +10,7 @@ import {
   postApiLibraryIdVersions,
 } from "@/api/stetsom";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export type UploadStage =
   | "idle"
@@ -27,7 +27,14 @@ export type UploadEntry = {
   progress: number;
   error?: string;
   asset?: LibraryAsset;
+  /** Local object URL for an image preview while the upload is in flight. */
+  previewUrl?: string;
 };
+
+/** Object URL for image files (for an optimistic preview); `undefined` otherwise. */
+function makePreviewUrl(file: File): string | undefined {
+  return file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined;
+}
 
 const ALLOWED_MIMES = new Set([
   "image/jpeg",
@@ -256,6 +263,7 @@ export function useLibraryUpload() {
       fileName: file.name,
       status: "idle" as UploadStage,
       progress: 0,
+      previewUrl: makePreviewUrl(file),
     }));
 
     setEntries((prev) => [...prev, ...newEntries]);
@@ -295,6 +303,7 @@ export function useLibraryUpload() {
       fileName: file.name,
       status: "idle",
       progress: 0,
+      previewUrl: makePreviewUrl(file),
     };
     setEntries((prev) => [...prev, entry]);
 
@@ -307,11 +316,28 @@ export function useLibraryUpload() {
     return success;
   }
 
-  function clearFinished() {
-    setEntries((prev) =>
-      prev.filter((e) => e.status !== "done" && e.status !== "error"),
-    );
-  }
+  const clearFinished = useCallback(() => {
+    setEntries((prev) => {
+      prev.forEach((e) => {
+        if ((e.status === "done" || e.status === "error") && e.previewUrl) {
+          URL.revokeObjectURL(e.previewUrl);
+        }
+      });
+      return prev.filter((e) => e.status !== "done" && e.status !== "error");
+    });
+  }, []);
+
+  /** Remove only successfully-completed entries; keeps errored ones visible. */
+  const clearDone = useCallback(() => {
+    setEntries((prev) => {
+      prev.forEach((e) => {
+        if (e.status === "done" && e.previewUrl) {
+          URL.revokeObjectURL(e.previewUrl);
+        }
+      });
+      return prev.filter((e) => e.status !== "done");
+    });
+  }, []);
 
   const isUploading = entries.some((e) => ACTIVE_STATUSES.includes(e.status));
 
@@ -326,5 +352,6 @@ export function useLibraryUpload() {
     doneCount,
     errorCount,
     clearFinished,
+    clearDone,
   };
 }
