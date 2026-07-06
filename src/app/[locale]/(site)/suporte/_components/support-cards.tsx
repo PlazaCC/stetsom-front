@@ -5,7 +5,6 @@ import {
   ArrowUpRight,
   FileText,
   MapPin,
-  MessageCircle,
   MessageCircleMore,
   type LucideIcon,
 } from "lucide-react";
@@ -78,7 +77,7 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
                 <h3 className="font-sans-condensed text-3xl font-bold text-brand-dark uppercase">
                   {card.title}
                 </h3>
-                <p className="flex-1 text-sm leading-relaxed text-text-subtle">
+                <p className="max-w-3xs flex-1 text-sm leading-relaxed text-text-subtle">
                   {card.description}
                 </p>
                 <ArrowUpRight

@@ -6,6 +6,7 @@ import { getApiConfigPublic } from "@/api/stetsom/server/config-public/config-pu
 import { getApiLegalPagesPublic } from "@/api/stetsom/server/legal-pages-public/legal-pages-public";
 import { Header } from "@/components/ui/header";
 import Footer from "@/components/ui/footer";
+import { WarrantyFloat } from "@/components/ui/warranty-float";
 import { toApiLocale } from "@/lib/api/i18n-utils";
 import { getLocale } from "next-intl/server";
 
@@ -33,6 +34,7 @@ export default async function SiteLayout({
     <>
       <Header logoDark={config.logo_dark} logoWhite={config.logo_white} />
       <main className="flex-1">{children}</main>
+      <WarrantyFloat />
       <Footer
         logoDark={config.logo_dark}
         socials={{
