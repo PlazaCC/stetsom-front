@@ -90,7 +90,7 @@ export async function SupportDocumentation({
                         {file.name ??
                           `${getFilePrefix(file.type)} — ${t("fileDocVersion", { version: file.version })}`}
                       </p>
-                      <span className="rounded bg-muted px-1.5 py-0.5 font-sans text-2xs font-bold uppercase tracking-wide text-muted-foreground">
+                      <span className="rounded bg-muted px-1.5 py-0.5 font-sans text-2xs font-bold tracking-wide text-muted-foreground uppercase">
                         V{file.version}
                       </span>
                     </div>
@@ -102,7 +102,7 @@ export async function SupportDocumentation({
                 </div>
                 <Link
                   href={file.file_url}
-                  className="inline-flex shrink-0 items-center gap-1.5 font-sans text-2xs font-bold uppercase tracking-[0.6px] text-brand transition-colors hover:text-brand/80"
+                  className="inline-flex shrink-0 items-center gap-1.5 font-sans text-2xs font-bold tracking-[0.6px] text-brand uppercase transition-colors hover:text-brand/80"
                 >
                   <Download size={14} />
                   {t("downloadLabel")}

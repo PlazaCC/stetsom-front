@@ -17,6 +17,7 @@ import { CatalogSidebar } from "./catalog-sidebar";
 interface CategoryOption {
   name: string;
   slug: string;
+  iconUrl?: string | null;
 }
 
 const SEARCH_DEBOUNCE_MS = 400;
@@ -25,7 +26,7 @@ function toCategoryOptions(
   categories: CategoryOption[],
   allLabel: string,
 ): CategoryOption[] {
-  return [{ name: allLabel, slug: "todos" }, ...categories];
+  return [{ name: allLabel, slug: "todos", iconUrl: null }, ...categories];
 }
 
 interface CatalogContentProps {
@@ -74,7 +75,12 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
   }, [searchInput, search, setSearch]);
 
   const categoryItems: CategoryOption[] = useMemo(
-    () => categories.map((c) => ({ name: c.name, slug: c.slug })),
+    () =>
+      categories.map((c) => ({
+        name: c.name,
+        slug: c.slug,
+        iconUrl: c.icon_url,
+      })),
     [categories],
   );
 

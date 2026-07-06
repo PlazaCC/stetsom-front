@@ -22,8 +22,8 @@ export function CatalogMobileFilter({
   const t = useTranslations("Catalog");
 
   return (
-    <div className="lg:hidden mb-4 border border-border rounded p-4 bg-off-white">
-      <p className="font-sans-condensed font-black text-xs uppercase text-brand-dark mb-3">
+    <div className="mb-4 rounded border border-border bg-off-white p-4 lg:hidden">
+      <p className="mb-3 font-sans-condensed text-xs font-black text-brand-dark uppercase">
         {t("categories")}
       </p>
       <div className="flex flex-wrap gap-2">
@@ -32,10 +32,10 @@ export function CatalogMobileFilter({
             key={cat.slug}
             onClick={() => onCategoryChange(cat.slug)}
             className={cn(
-              "font-sans text-sm px-3 py-1 border transition-colors",
+              "border px-3 py-1 font-sans text-sm transition-colors",
               activeCategory === cat.slug
-                ? "bg-brand-dark text-white border-brand-dark"
-                : "bg-white text-muted-foreground border-border hover:border-muted-foreground",
+                ? "border-brand-dark bg-brand-dark text-white"
+                : "border-border bg-white text-muted-foreground hover:border-muted-foreground",
             )}
           >
             {cat.name}

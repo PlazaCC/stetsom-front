@@ -22,9 +22,9 @@ interface FaqProps {
 
 export function Faq({ items, section }: Readonly<FaqProps>) {
   return (
-    <section className="bg-off-white py-12 justify-center flex">
+    <section className="flex justify-center bg-off-white py-12">
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
+        <div className="grid grid-cols-1 gap-20 lg:grid-cols-2">
           <div>
             <SectionLabel
               label={section.label}

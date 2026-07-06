@@ -22,7 +22,7 @@ interface OurFactoryProps {
 
 export function OurFactory({ jobsCta }: OurFactoryProps) {
   return (
-    <section className="relative bg-brand-dark overflow-hidden">
+    <section className="relative overflow-hidden bg-brand-dark">
       <Image
         src={jobsCta?.image ?? FACTORY_IMAGE}
         alt={jobsCta?.imageAlt ?? "Fábrica Stetsom"}
@@ -31,9 +31,9 @@ export function OurFactory({ jobsCta }: OurFactoryProps) {
         sizes="100vw"
         priority
       />
-      <div className="absolute inset-0 bg-radial-dark-alt" />
+      <div className="bg-radial-dark-alt absolute inset-0" />
       <Container className="relative z-10 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
           <div>
             {jobsCta && (
               <>
@@ -42,7 +42,7 @@ export function OurFactory({ jobsCta }: OurFactoryProps) {
                   title={jobsCta.title ?? ""}
                   dark
                 />
-                <p className="text-base text-text-subtle-dark mt-6 mb-8">
+                <p className="mt-6 mb-8 text-base text-text-subtle-dark">
                   {jobsCta.description}
                 </p>
                 <CTAButton
@@ -55,7 +55,7 @@ export function OurFactory({ jobsCta }: OurFactoryProps) {
               </>
             )}
           </div>
-          <div className="relative h-72 lg:h-96 rounded-sm overflow-hidden bg-surface-elevated">
+          <div className="relative h-72 overflow-hidden rounded-sm bg-surface-elevated lg:h-96">
             <Image
               src={MAP_IMAGE}
               alt="Localização Stetsom"

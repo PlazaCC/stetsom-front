@@ -40,8 +40,8 @@ export function QualitySection({
   return (
     <section className="bg-off-white py-20">
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          <div className="relative aspect-square w-full rounded-sm bg-muted flex items-center justify-center overflow-hidden">
+        <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-2">
+          <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-sm bg-muted">
             <Image
               src={section.image}
               alt={section.imageAlt}
@@ -50,11 +50,11 @@ export function QualitySection({
             />
             <div className="absolute bottom-5 left-5 flex flex-col gap-2">
               <div className="flex h-15 w-15 items-center justify-center bg-brand">
-                <span className="font-sans-condensed text-xl font-black uppercase leading-none text-white">
+                <span className="font-sans-condensed text-xl leading-none font-black text-white uppercase">
                   {foundingYear ?? "1989"}
                 </span>
               </div>
-              <span className="font-sans-condensed text-xs font-black uppercase tracking-widest text-white drop-shadow-md">
+              <span className="font-sans-condensed text-xs font-black tracking-widest text-white uppercase drop-shadow-md">
                 {foundingLabel}
               </span>
             </div>
@@ -63,24 +63,21 @@ export function QualitySection({
           <div>
             <SectionLabel label={section.label} title={section.title} />
 
-            <p className="text-base text-text-subtle mt-6">
+            <p className="mt-6 text-base text-text-subtle">
               {section.description}
             </p>
 
-            <div className="grid grid-cols-1 gap-6 mt-10">
+            <div className="mt-10 grid grid-cols-1 gap-6">
               {values.map((value, index) => {
                 const Icon = ICONS[value.icon];
 
                 return (
                   <div key={value.id ?? index} className="flex gap-4">
-                    <div className="flex h-8 w-8 shrink-0 bg-muted items-center justify-center rounded-md font-bold">
-                      <Icon
-                        className="h-6 w-6 text-brand "
-                        aria-hidden="true"
-                      />
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted font-bold">
+                      <Icon className="h-6 w-6 text-brand" aria-hidden="true" />
                     </div>
                     <div>
-                      <h3 className="font-sans-condensed font-black text-lg uppercase text-brand-dark mb-1">
+                      <h3 className="mb-1 font-sans-condensed text-lg font-black text-brand-dark uppercase">
                         {value.title}
                       </h3>
                       <p className="text-base text-text-subtle">

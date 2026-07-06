@@ -21,12 +21,12 @@ export function CareersCTA({ section }: Readonly<CareersCTAProps>) {
   return (
     <section className="bg-white py-20">
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
           {/* Texto Esquerda */}
           <div>
             <SectionLabel label={section.label} title={section.title} />
 
-            <p className="text-base text-text-subtle mt-6 mb-8">
+            <p className="mt-6 mb-8 text-base text-text-subtle">
               {section.description}
             </p>
 
@@ -40,7 +40,7 @@ export function CareersCTA({ section }: Readonly<CareersCTAProps>) {
           </div>
 
           {/* Imagem Direita */}
-          <div className="relative aspect-square w-full rounded-sm bg-muted flex items-center justify-center">
+          <div className="relative flex aspect-square w-full items-center justify-center rounded-sm bg-muted">
             <Image
               src={section.image}
               alt={section.imageAlt}

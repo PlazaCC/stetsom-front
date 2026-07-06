@@ -49,7 +49,7 @@ export function OurHistory({ section }: Readonly<OurHistoryProps>) {
 
       {/* Desktop: image flush-left (no left padding), content padded right */}
       <div className="hidden lg:flex lg:min-h-132">
-        <div className="flex mx-auto">
+        <div className="mx-auto flex">
           <div className="relative w-182.75 shrink-0 self-stretch overflow-hidden">
             <Image
               src={section.image}
@@ -59,7 +59,7 @@ export function OurHistory({ section }: Readonly<OurHistoryProps>) {
               sizes="731px"
             />
           </div>
-          <div className="flex flex-1 items-center py-16 pl-22.75 pr-42.5">
+          <div className="flex flex-1 items-center py-16 pr-42.5 pl-22.75">
             <div className="w-full max-w-122">
               <SectionLabel
                 label={section.label}
