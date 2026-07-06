@@ -95,11 +95,9 @@ Skills in `.claude/skills/` are auto-discovered by the harness. Quick reference:
 | `screen-audit` | `/screen-audit` | Audit screens/flows vs Figma — matrix + plan before any code |
 | `graphify` | `/graphify` | (Re)generate the codebase knowledge graph |
 
-Full delivery workflow: `docs/ia/AI-DRIVEN-WORKFLOW.md`
-
 ## Multi-Agent Coordination
 
-Both Claude Code (CLI) and VSCode Copilot Chat agents operate in this repo.
+Both Claude Code (CLI) and VSCode Copilot Chat agents operate in this repo. Rules and skills use a **symlink pattern** — one real copy, one mirror:
 
-- Claude Code rules: `.claude/rules/` (auto-loaded by harness)
-- VSCode agent skills: `.agents/skills/`
+- **Real files:** `.agents/rules/` and `.agents/skills/` — edit these
+- **Symlink mirrors:** `.claude/rules/` and `.claude/skills/` — never a second real copy; changes to `.agents/` propagate automatically

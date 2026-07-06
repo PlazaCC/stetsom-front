@@ -14,13 +14,12 @@ before adding a screen, form, dialog, table, or any `src/components/ui` primitiv
 - **Style is `base-nova`** (Base UI under the hood, **not** Radix). Every primitive
   wraps `@base-ui/react/*` and uses `cn()` + `cva`. When you add a component with the
   CLI it pulls the Base UI variant — don't hand-write a Radix version.
-- **Never hardcode colors/sizes.** Use tokens (`.claude/rules/tailwind.md`,
-  `docs/ia/figma/DESIGN_SYSTEM.md`). `cn()` (`@/lib/utils`) merges classes with
+- **Never hardcode colors/sizes.** Use tokens (`.claude/rules/tailwind.md`). `cn()` (`@/lib/utils`) merges classes with
   tailwind-merge, so later utilities win over a primitive's defaults.
 - **Server Component by default**; add `"use client"` only for state/effects/handlers.
 - Presentational primitives live in `src/components/ui/`; route-specific sections in
   `src/app/<route>/_components/`. See `.claude/rules/component-architecture.md`.
-- The admin shell owns the page scroll (`.claude/rules/admin-shell-scroll.md`). Don't
+- The admin shell owns the page scroll — `<main>` is the only scroll container. Don't
   nest scroll containers unless the screen deliberately fills `<main>` and owns a single
   inner scroll (see the biblioteca and product-editor layouts).
 
@@ -167,5 +166,5 @@ Rules:
 ## Reference rules
 
 `.claude/rules/`: `component-architecture.md`, `styling-practices.md`, `tailwind.md`,
-`naming-conventions.md`, `api-integration.md`, `i18n-multilanguage.md`,
-`admin-shell-scroll.md`, `product-data-schema.md`.
+`code-conventions.md`, `api-integration.md`, `i18n-multilanguage.md`,
+`product-data-schema.md`.

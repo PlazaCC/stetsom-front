@@ -69,28 +69,26 @@ Capture output. Include failures verbatim in the report.
 
 Check each changed file against the rules in `.claude/rules/`:
 
-### Path Alias (`.claude/rules/path-alias.md`)
+### Path Alias & Code (`.claude/rules/code-conventions.md`)
 - `@/*` maps to `src/` — never `@/src/...`
+- No `any` — use `unknown`
+- `type` for data shapes; `interface` for extensible contracts
+- Props types declared above the component
 
 ### Next.js App Router (`.claude/rules/next-app-router.md`)
 - `params` and `searchParams` must be `await`ed
 - Do not edit generated `types/*.d.ts` files
 - `"use client"` only when hooks or event handlers are present
 
-### React Components (`.claude/rules/react-components.md`)
+### React Components (`.claude/rules/component-architecture.md`)
 - Server Component by default
 - Named exports (except page/layout)
 - `cn()` for conditional class merging
 
-### Tailwind v4 (`.claude/rules/tailwind-v4.md`)
+### Tailwind v4 (`.claude/rules/tailwind.md`)
 - No arbitrary colors — use brand tokens (`bg-brand`, `bg-brand-dark`, `bg-off-white`)
 - No `tailwind.config.*` changes — all config in `globals.css`
 - `font-sans-condensed` for headings and spec numbers
-
-### TypeScript (`.claude/rules/typescript.md`)
-- No `any`
-- Props types declared above the component
-- No barrel `index.ts` files
 
 ### General
 - `pnpm` — never `npm install` or `yarn add`

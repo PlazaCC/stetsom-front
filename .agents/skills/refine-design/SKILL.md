@@ -33,9 +33,7 @@ Pulls **live design context directly from the Figma MCP** and translates it into
 - Use directly in Step 2.
 
 **If no URL was provided:**
-- Read `docs/ia/figma/meta.json` to get `figmaFileKey` and the node IDs for the relevant page/section from `websiteSection.pages`.
-- Construct the target: `fileKey = huD41oTL0FAa7xsNEK8tAM`, `nodeId` = the section or frame node from `meta.json`.
-- DO NOT read `DESIGN_SYSTEM_REFERENCE.md` or any other local snapshot as the source of truth — use them only to know which node IDs to query.
+- Use the Figma MCP (`get_figma_data`) directly — the fileKey and node IDs are in the Figma URL or can be passed by the user.
 
 > If the `/figma` skill is available, invoke it first to understand the MCP API capabilities before calling tools directly.
 
@@ -131,10 +129,8 @@ Before handing off, confirm the spec:
 
 ### Step 6 — Update Local Context Files (if stale)
 
-After fetching live data, check whether local files are outdated:
+After fetching live data, check whether local context is stale:
 
-- `docs/ia/figma/DESIGN_SYSTEM_REFERENCE.md` — update color/typography sections if Figma values differ
-- `docs/ia/figma/PAGES_REFERENCE.md` — update node IDs or section descriptions if changed
 - `src/app/globals.css` — add missing CSS custom properties for any new tokens found
 
 Only update what actually changed. Do not rewrite entire files from scratch.
@@ -163,7 +159,7 @@ B) Executar agora mesmo sem criar tasks
 
 ## Hard Constraints
 
-- NEVER use `docs/ia/figma/*.json` or `DESIGN_SYSTEM_REFERENCE.md` as the design source — always MCP
+- NEVER use local snapshot files as the design source — always MCP
 - NEVER use arbitrary color values (`bg-[#E8132A]`) — always project tokens
 - NEVER create new CSS variables without adding them to `src/app/globals.css`
 - Figma px values for dimensions → Tailwind canonical (N/4 formula)

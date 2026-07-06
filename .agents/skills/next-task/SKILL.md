@@ -7,7 +7,7 @@ description: Use to start or resume implementation of the next available task �
 
 ## Overview
 
-Picks the next available task from `docs/ia/tasks/` and drives its full implementation cycle.
+Picks the next available task from the task list and drives its full implementation cycle.
 
 **Core principle:** One task at a time. Finish before moving on.
 
@@ -25,12 +25,7 @@ Picks the next available task from `docs/ia/tasks/` and drives its full implemen
 
 ### Step 1 — Find the Next Task
 
-```bash
-# List task files
-ls docs/ia/tasks/
-```
-
-Read each task file and find the first with `Status: TODO` or `Status: IN_PROGRESS`. Prioritize `IN_PROGRESS` tasks.
+Read the next task file and find the first with `Status: TODO` or `Status: IN_PROGRESS`. Prioritize `IN_PROGRESS` tasks.
 
 If no tasks exist → "No tasks in the backlog. Run `/brainstorm` to create one."
 

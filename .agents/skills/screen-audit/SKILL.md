@@ -36,33 +36,28 @@ When in doubt, err on the side of **larger scope**. A missed screen is worse tha
 
 ---
 
-## Phase 0 — Load Navigation Maps
+## Phase 0 — Resolve Figma Data
 
-Before any MCP or file reads, load the two local Figma navigation files:
+Use the Figma MCP to get the authoritative list of screens. The Figma file key is `huD41oTL0FAa7xsNEK8tAM`.
 
-```
-Read: docs/ia/figma/FIGMA_GRAPH.md   → section trees, node IDs, React component mappings
-Read: docs/ia/figma/meta.json        → pageSections, figmaComponents, cmsPages node IDs
-```
+You have two options:
 
-These are **navigation maps only** — never treat values here as design specifications.
-All authoritative design data comes from live Figma MCP calls and `.raw/figma-design/` baseline images.
+**Option A — Use the `/refine-design` skill** (preferred for a broad audit):
+Run the `/refine-design` skill first to fetch all relevant frames and establish the current Figma state.
 
-**Key node references from `meta.json`:**
+**Option B — Use Figma MCP tools directly:**
+- `get_figma_data` with the file key to retrieve the hierarchy and node details
+- `download_figma_images` to get screenshots for comparison
 
-Public website pages:
-- home desktop: `1071:10273`, mobile: `1071:9993`
-- produtos desktop: `1071:12220`, mobile: `1071:11704`
-- produto-selecionado desktop: `1071:11152`, mobile: `1071:10877`
-- sobre desktop: `1071:11430`, mobile: `1071:9757`
-- suporte desktop: `1071:10546`, mobile: `1071:11920`
-- 404: `1195:4200`
+Key Figma root nodes:
+- **Website root:** `1090:25874`
+- **CMS/admin screens:** use `get_figma_data` to discover CMS node IDs from the file hierarchy
 
-CMS admin screens (from `meta.json[cmsPages]`):
-- login, dashboard, produtos-lista, wizard step 1–4
-- banners-lista, banners-registrar
-- biblioteca-fotos, biblioteca-manuais, biblioteca-3d
-- mensagens-lista, historico
+For each screen found in Figma, record:
+- Screen name / route
+- Expected navigation entry (sidebar link, breadcrumb, etc.)
+- Key UI elements: columns, form fields, filters, tabs, buttons, modals
+- Data displayed: what entity fields are shown
 
 ---
 
@@ -70,7 +65,7 @@ CMS admin screens (from `meta.json[cmsPages]`):
 
 Fetch the CMS and/or site frames from Figma to get the authoritative list of screens that **should** exist.
 
-Use `mcp__Framelink_Figma_MCP__download_figma_images` or `mcp__Framelink_Figma_MCP__get_figma_data` with node IDs from `meta.json`.
+Use `get_figma_data` with the file key (`huD41oTL0FAa7xsNEK8tAM`) to retrieve the Figma hierarchy and discover all relevant frames.
 
 **IMPORTANT:** Max 2 frames per MCP call to avoid timeouts. Batch calls accordingly.
 
@@ -273,9 +268,9 @@ Execute the plan phase by phase:
 
 ---
 
-## Phase 8 — Changelog
+## Phase 8 — Audit Record
 
-Append one entry to `docs/ia/context.json` (read first, append to log array, write back):
+Write a summary of the audit to the task description or related documentation for future reference:
 
 ```json
 {
@@ -295,11 +290,9 @@ Append one entry to `docs/ia/context.json` (read first, append to log array, wri
 
 **File key:** `huD41oTL0FAa7xsNEK8tAM`
 **Website root:** `1090:25874`
-**CMS root:** see `meta.json[cmsPages]` for all CMS node IDs
+**CMS admin screens:** use `get_figma_data` to discover CMS node IDs from the file hierarchy under the CMS root.
 
-Navigation maps:
-- `docs/ia/figma/FIGMA_GRAPH.md` — human-readable, section trees per page
-- `docs/ia/figma/meta.json` — machine-readable, all node IDs
+Use the `/refine-design` skill or Figma MCP tools (`get_figma_data` / `download_figma_images`) directly to retrieve the current design data instead of relying on static local files.
 
 Baseline images (if present):
 - `.raw/figma-design/<page-slug>/desktop.png` + `mobile.png`

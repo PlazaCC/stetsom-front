@@ -1,24 +1,34 @@
 {
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "allow": [
       "mcp__plugin_context7_context7__resolve-library-id",
       "mcp__plugin_context7_context7__query-docs",
       "mcp__Framelink_Figma_MCP__get_figma_data",
-      "Bash(python *)"
-    ]
+      "Bash(python *)",
+      "WebFetch(domain:orval.dev)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs"
+    ],
+    "defaultMode": "bypassPermissions"
   },
   "mcpServers": {
     "Framelink_Figma_MCP": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "figma-developer-mcp", "--figma-api-key=${FIGMA_API_KEY}", "--stdio"],
+      "args": [
+        "-y",
+        "figma-developer-mcp",
+        "--figma-api-key=${FIGMA_API_KEY}",
+        "--stdio"
+      ],
       "env": {}
     },
     "playwright": {
       "type": "stdio",
       "command": "npx",
-      "args": ["@playwright/mcp@latest"],
+      "args": [
+        "@playwright/mcp@latest"
+      ],
       "env": {}
     },
     "plaza.mcp": {
@@ -28,7 +38,12 @@
     "io.github.upstash/context7": {
       "type": "stdio",
       "command": "cmd",
-      "args": ["/c", "npx", "-y", "@upstash/context7-mcp@1.0.31"],
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@upstash/context7-mcp@1.0.31"
+      ],
       "env": {
         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       }

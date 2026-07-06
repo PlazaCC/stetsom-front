@@ -78,23 +78,7 @@ Ask the user to confirm the plan before writing code **only when** the split is 
 - Keep imports sorted: external packages → internal `@/` aliases
 - After each extracted file, verify no TypeScript errors via `pnpm build` or IDE diagnostics (if available)
 
-### 5. Update context.json
-
-Append one entry to `docs/ia/context.json` covering the full refactor batch:
-
-```json
-{
-  "ts": "<ISO8601 UTC>",
-  "agent": "claude-sonnet-4-6",
-  "type": "refactor",
-  "summary": "Modularize <ComponentName> into <N> focused files",
-  "files": ["<relative paths of created/modified files>"],
-  "rationale": "File exceeded single-responsibility threshold; extracted reusable sub-components",
-  "outcome": "Reduced main file from ~Xlines to ~Ylines; extracted Z reusable components"
-}
-```
-
-### 6. Report
+### 5. Report
 
 Summarize what was split, why, and what the caller should verify:
 
@@ -117,8 +101,7 @@ Verify: ProductGrid still renders correctly at /produtos; no prop type errors.
 
 ## References
 
-- [React Component Conventions](./.claude/rules/react-components.md)
-- [Path Alias](./.claude/rules/path-alias.md)
-- [Tailwind v4 Tokens](./.claude/rules/tailwind-v4.md)
-- [TypeScript Conventions](./.claude/rules/typescript.md)
+- [Component Architecture](./.claude/rules/component-architecture.md)
+- [Code Conventions](./.claude/rules/code-conventions.md)
+- [Tailwind v4](./.claude/rules/tailwind.md)
 - [LLM Context Changelog](./.claude/rules/llm-owned-context-json.md)

@@ -83,7 +83,6 @@ Update task status to `REVIEW` in task file.
 - Max 3 review loops before escalating to user
 - Never force-push or amend published commits
 - If `/next-task` finds no TODO tasks, report "Nothing to deliver" and exit
-- Always append an entry to `docs/ia/context.json` upon completion
 
 ---
 
@@ -92,4 +91,4 @@ Update task status to `REVIEW` in task file.
 **Chains:** `/next-task` → `/create-pr` → `/code-review`
 **Optional pre-step:** `/refine-design` (if task has design pass flag)
 **Called after:** `/create-task`
-**Updates:** task file status → `REVIEW`, `docs/ia/context.json` log
+**Updates:** task file status → `REVIEW`
