@@ -4,6 +4,7 @@ import {
   AdminDataTable,
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { useGetApiCategories, useGetApiTemplates } from "@/api/stetsom";
 import type { Template } from "@/api/stetsom";
 import { cn } from "@/lib/utils";
@@ -73,7 +74,7 @@ export default function AdminTemplatesPage() {
   ];
 
   return (
-    <div className="px-4 py-4 lg:px-5 lg:py-5">
+    <AdminPageLayout>
       <AdminDataTable
         columns={columns}
         data={templates}
@@ -95,7 +96,7 @@ export default function AdminTemplatesPage() {
             {pickerOpen && (
               <div
                 ref={pickerRef}
-                className="absolute top-11 right-0 z-10 w-56 rounded-md border border-border bg-card p-1 shadow-lg"
+                className="absolute top-11 right-0 z-10 w-56 rounded-md border border-border bg-card p-1 shadow-cms-card-lg"
               >
                 <p className="px-2 py-1.5 text-xs text-muted-foreground">
                   Escolha a categoria
@@ -120,6 +121,6 @@ export default function AdminTemplatesPage() {
           </div>
         }
       />
-    </div>
+    </AdminPageLayout>
   );
 }

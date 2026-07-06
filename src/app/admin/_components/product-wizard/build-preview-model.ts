@@ -1,4 +1,5 @@
 import type {
+  Attribute,
   I18nString,
   ProductBlock,
   ProductFile,
@@ -29,8 +30,17 @@ function pick(value?: I18nString | null): string {
 export function buildPreviewModel(
   state: WizardState,
   categories: PreviewCategory[],
+  attributes: Attribute[],
 ): ProductDetailViewData {
   const category = categories.find((c) => c.id === state.category_id);
+
+  function resolveAttrName(
+    spec: WizardState["variations"][number]["specs"][number],
+  ): string | undefined {
+    if (spec.attribute_name) return pick(spec.attribute_name);
+    const attr = attributes.find((a) => a.id === spec.attribute_id);
+    return attr ? pick(attr.name) : undefined;
+  }
 
   const variants: PublicVariant[] = state.variations.map((v) => ({
     variant_id: v.id,
@@ -40,7 +50,7 @@ export function buildPreviewModel(
       .filter((s) => s.attribute_id || pick(s.value))
       .map((s) => ({
         attribute_id: s.attribute_id || s.id,
-        attribute_name: s.attribute_name ? pick(s.attribute_name) : undefined,
+        attribute_name: resolveAttrName(s),
         value: pick(s.value),
         order: s.order,
         highlighted: s.highlighted,

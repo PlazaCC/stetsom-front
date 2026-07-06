@@ -4,7 +4,7 @@ import {
   AdminDataTable,
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
-import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import {
   FilterChips,
   type FilterChip,
@@ -12,7 +12,7 @@ import {
 import { useGetApiAudit } from "@/api/stetsom";
 import type { AuditEntry, AuditEntryAction } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
-import { Clock, Filter } from "lucide-react";
+import { Filter } from "lucide-react";
 import { useState } from "react";
 
 const ACTION_META: Record<
@@ -142,60 +142,7 @@ export default function AdminHistoricoPage() {
     : [];
 
   return (
-    <AdminListPage
-      className="px-4 py-4 lg:px-11.75 lg:py-7.25"
-      title="Histórico"
-      icon={Clock}
-      toolbar={
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setFilterOpen((o) => !o)}
-                className="flex h-9 items-center gap-1.5 rounded-md bg-foreground px-3 text-sm font-medium text-background"
-              >
-                <Filter className="size-4" />
-                Filtrar por entidade
-              </button>
-              {filterOpen && (
-                <div className="absolute top-10 left-0 z-10 w-48 rounded-md border border-border bg-card p-1 shadow-lg">
-                  {ENTITY_OPTIONS.map((ent) => (
-                    <button
-                      key={ent}
-                      type="button"
-                      onClick={() => {
-                        setEntity(ent);
-                        setPage(1);
-                        setFilterOpen(false);
-                      }}
-                      className={cn(
-                        "block w-full rounded px-2 py-1.5 text-left text-sm hover:bg-muted",
-                        entity === ent && "font-semibold text-primary",
-                      )}
-                    >
-                      {ENTITY_LABELS[ent]}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-            {audit.data && (
-              <span className="ml-auto text-xs text-muted-foreground">
-                {audit.data.total} entradas
-              </span>
-            )}
-          </div>
-          <FilterChips
-            chips={chips}
-            onRemove={() => {
-              setEntity(null);
-              setPage(1);
-            }}
-          />
-        </div>
-      }
-    >
+    <AdminPageLayout>
       <AdminDataTable
         columns={columns}
         data={entries}
@@ -203,6 +150,55 @@ export default function AdminHistoricoPage() {
         keyExtractor={(e) => e.id}
         emptyTitle="Nenhuma entrada registrada"
         emptyDescription="As ações dos usuários no CMS aparecerão aqui."
+        toolbar={
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setFilterOpen((o) => !o)}
+                  className="flex h-9 items-center gap-1.5 rounded-md bg-foreground px-3 text-sm font-medium text-background"
+                >
+                  <Filter className="size-4" />
+                  Filtrar por entidade
+                </button>
+                {filterOpen && (
+                  <div className="absolute top-10 left-0 z-10 w-48 rounded-md border border-border bg-card p-1 shadow-cms-card-lg">
+                    {ENTITY_OPTIONS.map((ent) => (
+                      <button
+                        key={ent}
+                        type="button"
+                        onClick={() => {
+                          setEntity(ent);
+                          setPage(1);
+                          setFilterOpen(false);
+                        }}
+                        className={cn(
+                          "block w-full rounded px-2 py-1.5 text-left text-sm hover:bg-muted",
+                          entity === ent && "font-semibold text-primary",
+                        )}
+                      >
+                        {ENTITY_LABELS[ent]}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {audit.data && (
+                <span className="ml-auto text-xs text-muted-foreground">
+                  {audit.data.total} entradas
+                </span>
+              )}
+            </div>
+            <FilterChips
+              chips={chips}
+              onRemove={() => {
+                setEntity(null);
+                setPage(1);
+              }}
+            />
+          </div>
+        }
         pagination={
           audit.data
             ? {
@@ -214,6 +210,6 @@ export default function AdminHistoricoPage() {
             : undefined
         }
       />
-    </AdminListPage>
+    </AdminPageLayout>
   );
 }

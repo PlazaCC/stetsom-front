@@ -4,6 +4,7 @@ import {
   AdminDataTable,
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { useGetApiCategories, useGetApiTemplates } from "@/api/stetsom";
 import type { PublicCategory } from "@/api/stetsom/model";
 import { ImageIcon, Plus } from "lucide-react";
@@ -66,7 +67,7 @@ export default function AdminCategoriasPage() {
   ];
 
   return (
-    <div className="px-4 py-4 lg:px-5 lg:py-5">
+    <AdminPageLayout>
       <AdminDataTable
         columns={columns}
         data={categories}
@@ -84,6 +85,6 @@ export default function AdminCategoriasPage() {
           </Link>
         }
       />
-    </div>
+    </AdminPageLayout>
   );
 }

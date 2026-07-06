@@ -89,11 +89,15 @@ export function SpecTable({
                 render={
                   <Button
                     variant="outline"
-                    className="w-full justify-between font-normal"
+                    className="w-full justify-between overflow-hidden font-normal"
                   >
                     <ComboboxValue>
                       {(value: Attribute | null) =>
-                        value?.name.pt ?? (
+                        value?.name.pt ? (
+                          <span className="block truncate">
+                            {value.name.pt}
+                          </span>
+                        ) : (
                           <span className="text-muted-foreground">
                             Selecione...
                           </span>

@@ -5,8 +5,16 @@ import {
   AdminDataTable,
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
-import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   deleteApiAttributesId,
   getGetApiAttributesQueryKey,
@@ -41,34 +49,26 @@ function AttributeForm({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4">
-      <div className="w-full max-w-md">
-        <AdminFormSection
-          title={attribute ? "Editar Atributo" : "Novo Atributo"}
-          className="shadow-xl"
-        >
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <I18nInput label="Nome" required value={name} onChange={setName} />
-            <div className="flex gap-3 pt-2">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 rounded-md border border-border py-2 text-sm font-medium text-foreground hover:bg-muted"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                disabled={isPending}
-                className="flex-1 rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-60"
-              >
-                {isPending ? "Salvando..." : "Salvar"}
-              </button>
-            </div>
-          </form>
-        </AdminFormSection>
-      </div>
-    </div>
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>
+            {attribute ? "Editar Atributo" : "Novo Atributo"}
+          </DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <I18nInput label="Nome" required value={name} onChange={setName} />
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Salvando..." : "Salvar"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -178,7 +178,7 @@ export default function AdminAtributosPage() {
   ];
 
   return (
-    <div className="px-4 py-4 lg:px-5 lg:py-5">
+    <AdminPageLayout>
       {formOpen && (
         <AttributeForm
           attribute={editing}
@@ -220,6 +220,6 @@ export default function AdminAtributosPage() {
           </button>
         }
       />
-    </div>
+    </AdminPageLayout>
   );
 }

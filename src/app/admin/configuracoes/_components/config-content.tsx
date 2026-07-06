@@ -1,12 +1,13 @@
 "use client";
 
-import { AdminFormPage } from "@/app/admin/_components/crud/admin-form-page";
 import {
   AdminFormSection,
   AdminFormSectionContent,
   AdminFormSectionTitle,
 } from "@/app/admin/_components/crud/admin-form-section";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-picker";
 import { Input } from "@/components/ui/input";
 import { useGetApiConfig } from "@/api/stetsom";
@@ -53,8 +54,7 @@ function ConfigForm({
     }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function handleSave() {
     updateConfig(config as PatchApiConfigBody, {
       onSuccess: () => toast.success("Configurações salvas com sucesso"),
       onError: (err) =>
@@ -65,32 +65,27 @@ function ConfigForm({
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <AdminFormPage
-        aside={
-          <div className="space-y-4">
-            <AdminFormSection title="Publicação">
-              <AdminFormSectionContent>
-                <p className="text-xs text-muted-foreground">
-                  As configurações afetam todas as páginas do site imediatamente
-                  após salvar.
-                </p>
-                <button
-                  type="submit"
-                  disabled={isPending}
-                  className="w-full rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-50"
-                >
-                  {isPending ? "Salvando..." : "Salvar configurações"}
-                </button>
-              </AdminFormSectionContent>
-            </AdminFormSection>
-          </div>
-        }
+    <AdminPageLayout
+      footer={
+        <EditorFooter
+          onPrimary={handleSave}
+          primaryLabel="Salvar configurações"
+          isPrimaryLoading={isPending}
+        />
+      }
+    >
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSave();
+        }}
+        className="space-y-5"
       >
         {activeTab === "identidade-visual" && (
           <AdminFormSection
             title="Identidade Visual"
             description="Logo exibida no cabeçalho e rodapé do site, por idioma."
+            raw
           >
             <AdminFormSectionContent>
               <AdminFormSectionTitle
@@ -171,6 +166,7 @@ function ConfigForm({
           <AdminFormSection
             title="Informações da Empresa"
             description="Dados de contato e identificação exibidos no site."
+            raw
           >
             <AdminFormSectionContent>
               <div>
@@ -227,6 +223,7 @@ function ConfigForm({
           <AdminFormSection
             title="Redes Sociais"
             description="URLs completas dos perfis oficiais."
+            raw
           >
             <AdminFormSectionContent>
               <div>
@@ -276,27 +273,27 @@ function ConfigForm({
             </AdminFormSectionContent>
           </AdminFormSection>
         )}
-      </AdminFormPage>
-    </form>
+      </form>
+    </AdminPageLayout>
   );
 }
 
 export function ConfigContent({ activeTab }: { activeTab: ConfigTab }) {
   const configQuery = useGetApiConfig();
 
+  if (configQuery.isLoading || !configQuery.data) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-5 px-4 py-4 lg:px-11.75 lg:py-7.25">
-      {configQuery.isLoading || !configQuery.data ? (
-        <div className="flex items-center justify-center py-16">
-          <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
-        </div>
-      ) : (
-        <ConfigForm
-          key={configQuery.dataUpdatedAt}
-          activeTab={activeTab}
-          initialConfig={configQuery.data}
-        />
-      )}
-    </div>
+    <ConfigForm
+      key={configQuery.dataUpdatedAt}
+      activeTab={activeTab}
+      initialConfig={configQuery.data}
+    />
   );
 }

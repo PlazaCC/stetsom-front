@@ -7,21 +7,19 @@ import {
   useGetApiPagesSlugCms,
 } from "@/api/stetsom";
 import type { PageBlock } from "@/api/stetsom/model";
-import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
+import { SetRouteLabel } from "@/app/admin/_components/admin-route-meta";
+import {
+  ADMIN_PAGE_CONTENT_PADDING_NO_TOP,
+  AdminPageHeader,
+  AdminPageLayout,
+} from "@/app/admin/_components/crud/admin-page-layout";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
 import {
   findSectionDef,
   getPageSections,
 } from "@/app/admin/paginas/_components/section-field-spec";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  ExternalLink,
-  Eye,
-  EyeOff,
-  FileText,
-  LayoutTemplate,
-  Plus,
-} from "lucide-react";
+import { ExternalLink, Eye, EyeOff, LayoutTemplate, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { use, useState } from "react";
@@ -115,28 +113,31 @@ export default function AdminPageSectionsPage({
   }
 
   return (
-    <AdminListPage
-      className="px-4 py-4 lg:px-11.75 lg:py-7.25"
-      title={label}
-      icon={FileText}
-      toolbar={
-        <div className="flex items-center gap-3">
-          <p className="text-xs text-muted-foreground">
-            Arraste para reordenar. Use o olho para mostrar/ocultar uma seção.
-            As alterações ficam visíveis no site imediatamente.
-          </p>
-          <a
-            href={publicHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-          >
-            <ExternalLink className="size-3" />
-            Ver no site
-          </a>
-        </div>
+    <AdminPageLayout
+      header={
+        <AdminPageHeader
+          toolbar={
+            <div className="flex items-center gap-3">
+              <p className="text-xs text-muted-foreground">
+                Arraste para reordenar. Use o olho para mostrar/ocultar uma
+                seção. As alterações ficam visíveis no site imediatamente.
+              </p>
+              <a
+                href={publicHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+              >
+                <ExternalLink className="size-3" />
+                Ver no site
+              </a>
+            </div>
+          }
+        />
       }
+      contentClassName={ADMIN_PAGE_CONTENT_PADDING_NO_TOP}
     >
+      <SetRouteLabel label={label} />
       <div className="mb-2">
         <Link
           href="/admin/paginas"
@@ -252,6 +253,6 @@ export default function AdminPageSectionsPage({
           </div>
         </div>
       )}
-    </AdminListPage>
+    </AdminPageLayout>
   );
 }

@@ -1,7 +1,11 @@
 "use client";
 
-import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
-import { FileText, ExternalLink } from "lucide-react";
+import {
+  ADMIN_PAGE_CONTENT_PADDING_NO_TOP,
+  AdminPageHeader,
+  AdminPageLayout,
+} from "@/app/admin/_components/crud/admin-page-layout";
+import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { PAGE_LABELS, PAGE_PUBLIC_HREFS } from "./_components/page-constants";
 
@@ -14,15 +18,17 @@ const PAGES = Object.entries(PAGE_LABELS).map(([slug, title]) => ({
 
 export default function AdminPaginasPage() {
   return (
-    <AdminListPage
-      className="px-4 py-4 lg:px-11.75 lg:py-7.25"
-      title="Páginas"
-      icon={FileText}
-      toolbar={
-        <p className="text-xs text-muted-foreground">
-          Gerencie o conteúdo das seções das páginas institucionais do site.
-        </p>
+    <AdminPageLayout
+      header={
+        <AdminPageHeader
+          toolbar={
+            <p className="text-xs text-muted-foreground">
+              Gerencie o conteúdo das seções das páginas institucionais do site.
+            </p>
+          }
+        />
       }
+      contentClassName={ADMIN_PAGE_CONTENT_PADDING_NO_TOP}
     >
       <div className="overflow-hidden rounded-[16px] border border-border bg-card">
         <table className="w-full text-sm">
@@ -80,6 +86,6 @@ export default function AdminPaginasPage() {
           </tbody>
         </table>
       </div>
-    </AdminListPage>
+    </AdminPageLayout>
   );
 }

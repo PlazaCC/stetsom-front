@@ -11,6 +11,8 @@ export interface PublicLineInput {
   name: string;
   slug: string;
   icon_library_id?: string;
+  /** @nullable */
+  icon_url?: string | null;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991

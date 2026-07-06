@@ -2,7 +2,7 @@
 
 import type { ProductDetailViewData } from "@/app/[locale]/(site)/produtos/[slug]/_components/product-detail-view";
 import { cn } from "@/lib/utils";
-import { ExternalLink, Monitor, Smartphone } from "lucide-react";
+import { Monitor, Smartphone } from "lucide-react";
 import { useEffect, useRef } from "react";
 import {
   PREVIEW_INTENT,
@@ -27,13 +27,7 @@ interface PreviewCanvasProps {
   onIntent: (target: EditorTarget) => void;
   device: Device;
   onDeviceChange: (device: Device) => void;
-  hasSavedProduct: boolean;
-  /** `/api/draft` URL that opens the real page in Draft Mode. Null when unsaved. */
-  realPageHref: string | null;
 }
-
-const iconButton =
-  "rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground";
 
 function DeviceToggle({
   device,
@@ -43,7 +37,7 @@ function DeviceToggle({
   onChange: (device: Device) => void;
 }) {
   return (
-    <div className="inline-flex rounded-md border border-border p-0.5">
+    <div className="inline-flex gap-0.5">
       {(
         [
           { id: "mobile", icon: Smartphone },
@@ -56,10 +50,10 @@ function DeviceToggle({
           aria-label={id}
           onClick={() => onChange(id)}
           className={cn(
-            "rounded p-1.5 transition-colors",
+            "rounded-md px-1 py-1.5 transition-colors",
             device === id
-              ? "bg-muted text-foreground"
-              : "text-muted-foreground hover:text-foreground",
+              ? "bg-primary/10 text-primary"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground",
           )}
         >
           <Icon className="size-4" />
@@ -75,8 +69,6 @@ export function PreviewCanvas({
   onIntent,
   device,
   onDeviceChange,
-  hasSavedProduct,
-  realPageHref,
 }: PreviewCanvasProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const modelRef = useRef(model);
@@ -137,22 +129,12 @@ export function PreviewCanvas({
 
   return (
     <div className="flex h-full flex-col overflow-hidden bg-muted">
-      <div className="flex shrink-0 items-center justify-between border-b border-border bg-card px-4 py-2.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-border bg-card px-2 py-2">
         <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
           Pré-visualização
         </span>
         <div className="flex items-center gap-2">
           <DeviceToggle device={device} onChange={onDeviceChange} />
-          {hasSavedProduct && realPageHref && (
-            <button
-              type="button"
-              onClick={() => window.open(realPageHref, "_blank", "noopener")}
-              className={iconButton}
-              title="Abrir página real em nova aba"
-            >
-              <ExternalLink className="size-4" />
-            </button>
-          )}
         </div>
       </div>
 
@@ -161,7 +143,7 @@ export function PreviewCanvas({
       <div
         className={cn(
           "flex flex-1 overflow-hidden",
-          device === "mobile" ? "justify-center py-4" : "",
+          device === "mobile" ? "justify-center overflow-x-hidden py-4" : "",
         )}
       >
         <div

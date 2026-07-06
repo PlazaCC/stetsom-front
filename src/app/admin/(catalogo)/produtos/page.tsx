@@ -9,6 +9,7 @@ import {
   AdminDataTable,
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import {
   FilterChips,
@@ -186,7 +187,7 @@ export default function AdminProdutos() {
   }
 
   return (
-    <div className="px-4 py-4 lg:px-5 lg:py-5">
+    <AdminPageLayout>
       <AdminDataTable
         columns={columns}
         data={rows}
@@ -235,7 +236,7 @@ export default function AdminProdutos() {
                   Filtrar
                 </button>
                 {filterOpen && (
-                  <div className="absolute top-10 left-0 z-10 w-44 rounded-md border border-border bg-card p-1 shadow-lg">
+                  <div className="absolute top-10 left-0 z-10 w-44 rounded-md border border-border bg-card p-1 shadow-cms-card-lg">
                     {STATUS_OPTIONS.map((opt) => (
                       <button
                         key={opt.value}
@@ -278,6 +279,6 @@ export default function AdminProdutos() {
             : undefined
         }
       />
-    </div>
+    </AdminPageLayout>
   );
 }

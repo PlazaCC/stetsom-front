@@ -19,11 +19,11 @@ export function SectionLabel({
     <div className={cn("flex flex-col gap-1", className)}>
       <div className="flex items-center gap-2">
         <div
-          className={cn("w-6 h-px shrink-0", dark ? "bg-brand" : "bg-brand")}
+          className={cn("h-px w-6 shrink-0", dark ? "bg-brand" : "bg-brand")}
         />
         <span
           className={cn(
-            "font-sans-condensed font-normal text-base uppercase leading-none",
+            "font-sans-condensed text-base leading-none font-normal uppercase",
             dark ? "text-brand" : "text-brand",
           )}
         >
@@ -33,7 +33,7 @@ export function SectionLabel({
       {title && (
         <div
           className={cn(
-            "font-sans-condensed font-black text-display-sm uppercase leading-none mt-0.5 whitespace-pre-line",
+            "mt-0.5 font-sans-condensed text-display-sm leading-none font-black whitespace-pre-line uppercase",
             dark ? "text-white" : "text-brand-dark",
           )}
         >
@@ -43,7 +43,7 @@ export function SectionLabel({
       {subtitle && (
         <p
           className={cn(
-            "font-medium text-base mt-1",
+            "mt-1 text-base font-medium",
             dark ? "text-text-subtle-dark" : "text-text-subtle",
           )}
         >

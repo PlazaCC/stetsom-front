@@ -4,13 +4,14 @@ import {
   patchApiPagesSlugBlocksBlockId,
   useGetApiPagesSlugCms,
 } from "@/api/stetsom";
-import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
-import { AdminSaveBar } from "@/app/admin/_components/crud/admin-save-bar";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { AdminSuccessPage } from "@/app/admin/_components/crud/admin-success-page";
+import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { findSectionDef } from "@/app/admin/paginas/_components/section-field-spec";
 import { SectionFormRenderer } from "@/app/admin/paginas/_components/section-form-renderer";
-import { CheckCircle2, FileText, Info } from "lucide-react";
+import { CheckCircle2, Info } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { PAGE_PUBLIC_HREFS } from "../../_components/page-constants";
 
@@ -25,6 +26,7 @@ export default function AdminSectionEditorPage({
   params: Promise<PageParams>;
 }) {
   const { pageId, sectionId } = use(params);
+  const router = useRouter();
   const { data: page, isLoading } = useGetApiPagesSlugCms(pageId);
   const [localData, setLocalData] = useState<Record<string, unknown> | null>(
     null,
@@ -98,23 +100,15 @@ export default function AdminSectionEditorPage({
 
   if (isLoading) {
     return (
-      <AdminListPage
-        className="px-4 py-4 lg:px-11.75 lg:py-7.25"
-        title="Carregando..."
-        icon={FileText}
-      >
+      <AdminPageLayout>
         <div className="h-64 animate-pulse rounded-[12px] bg-muted" />
-      </AdminListPage>
+      </AdminPageLayout>
     );
   }
 
   if (!block) {
     return (
-      <AdminListPage
-        className="px-4 py-4 lg:px-11.75 lg:py-7.25"
-        title="Seção não encontrada"
-        icon={FileText}
-      >
+      <AdminPageLayout>
         <p className="text-sm text-muted-foreground">
           A seção solicitada não existe ou não pôde ser carregada.
         </p>
@@ -124,7 +118,7 @@ export default function AdminSectionEditorPage({
         >
           ← Voltar às seções
         </Link>
-      </AdminListPage>
+      </AdminPageLayout>
     );
   }
 
@@ -132,19 +126,21 @@ export default function AdminSectionEditorPage({
   const sectionData = localData ?? block.data ?? {};
 
   return (
-    <AdminListPage
-      className="px-4 py-4 lg:px-11.75 lg:py-7.25"
-      title={def?.label ?? block.section_id}
-      icon={def?.icon ?? FileText}
-      toolbar={
-        <div className="flex items-center gap-2">
-          <Link
-            href={`/admin/paginas/${pageId}`}
-            className="text-xs text-muted-foreground hover:text-foreground"
-          >
-            ← {page?.title?.pt ?? pageId}
-          </Link>
-        </div>
+    <AdminPageLayout
+      footer={
+        <EditorFooter
+          onBack={() => router.push(`/admin/paginas/${pageId}`)}
+          backLabel={`← ${page?.title?.pt ?? pageId}`}
+          statusText={
+            savedAt
+              ? `Salvo às ${savedAt.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`
+              : undefined
+          }
+          onPrimary={handleSave}
+          primaryLabel="Salvar alterações"
+          isPrimaryLoading={isSaving}
+          isPrimaryDisabled={!isDirty}
+        />
       }
     >
       {def?.autoNote && (
@@ -169,15 +165,6 @@ export default function AdminSectionEditorPage({
       {saveError && (
         <p className="mt-3 text-sm text-destructive">{saveError}</p>
       )}
-
-      <AdminSaveBar
-        onPublish={handleSave}
-        isLoading={isSaving}
-        isDirty={isDirty}
-        draftSavedAt={savedAt}
-        publishLabel="Salvar alterações"
-        draftSavedPrefix="Salvo às"
-      />
-    </AdminListPage>
+    </AdminPageLayout>
   );
 }

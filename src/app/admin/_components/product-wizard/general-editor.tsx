@@ -19,6 +19,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 import { GripVertical, Info } from "lucide-react";
 import { ImageGallery } from "./image-gallery";
 import type { WizardAction, WizardImage, WizardState } from "./wizard-store";
@@ -39,6 +40,7 @@ interface GeneralEditorProps {
   dispatch: React.Dispatch<WizardAction>;
   categories: CategoryOption[];
   lines: LineOption[];
+  compact?: boolean;
 }
 
 export function GeneralEditor({
@@ -46,6 +48,7 @@ export function GeneralEditor({
   dispatch,
   categories,
   lines,
+  compact = false,
 }: GeneralEditorProps) {
   const categoryLines = lines.filter(
     (l) => l.category_id === state.category_id,
@@ -90,13 +93,20 @@ export function GeneralEditor({
         placeholder="Descrição do produto..."
       />
 
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4">
+      <div
+        className={cn(
+          "grid gap-4",
+          compact
+            ? "grid-cols-1"
+            : "grid-cols-[repeat(auto-fit,minmax(150px,1fr))]",
+        )}
+      >
         <Field>
           <FieldLabel>Categoria</FieldLabel>
           <FieldContent>
             <Combobox
               items={categories}
-              defaultValue={currentCategory}
+              value={currentCategory}
               itemToStringLabel={(item: CategoryOption) => item.name}
               onValueChange={(value: CategoryOption | null) =>
                 dispatch({
@@ -126,7 +136,7 @@ export function GeneralEditor({
             <Combobox
               key={state.category_id}
               items={categoryLines}
-              defaultValue={currentLine}
+              value={currentLine}
               itemToStringLabel={(item: LineOption) => item.name}
               onValueChange={(value: LineOption | null) =>
                 dispatch({

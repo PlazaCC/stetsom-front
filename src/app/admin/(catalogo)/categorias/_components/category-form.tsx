@@ -1,12 +1,12 @@
 "use client";
 
-import { AdminDeleteAction } from "@/app/admin/_components/crud/admin-delete-action";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { Input } from "@/components/ui/input";
 import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-picker";
-import { AdminPanel } from "@/app/admin/_components/admin-panel";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { CategoryTemplatesSection } from "@/app/admin/(catalogo)/categorias/_components/category-templates-section";
 import {
   type DisplayLine,
@@ -28,7 +28,6 @@ import type {
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { slugify } from "@/lib/utils/slugify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -155,8 +154,7 @@ function CategoryFormInner({
     onError: (e) => toast.apiError(e, "Não foi possível excluir a categoria"),
   });
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function handleSave() {
     const body = {
       name,
       slug: slug.pt ? slug : { pt: slugify(name.pt) },
@@ -173,32 +171,40 @@ function CategoryFormInner({
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <div className="flex flex-col gap-5">
-      <AdminPanel className="flex items-center justify-end p-5">
-        <div className="flex items-center gap-3">
-          {isEdit && categoryId && (
-            <AdminDeleteAction
-              label="Excluir categoria"
-              confirmTitle={`Excluir "${name.pt}"?`}
-              confirmDescription="A categoria será removida permanentemente. Esta ação não pode ser desfeita."
-              onConfirm={() => deleteMutation.mutate(categoryId)}
-              isLoading={deleteMutation.isPending}
-            />
-          )}
-          <Link
-            href={LIST_HREF}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-          >
-            ← Voltar
-          </Link>
-        </div>
-      </AdminPanel>
-
+    <AdminPageLayout
+      footer={
+        <EditorFooter
+          onBack={() => router.push(LIST_HREF)}
+          deleteAction={
+            isEdit && categoryId
+              ? {
+                  label: "Excluir categoria",
+                  confirmTitle: `Excluir "${name.pt}"?`,
+                  confirmDescription:
+                    "A categoria será removida permanentemente. Esta ação não pode ser desfeita.",
+                  onConfirm: () => deleteMutation.mutate(categoryId),
+                  isLoading: deleteMutation.isPending,
+                }
+              : undefined
+          }
+          onPrimary={handleSave}
+          primaryLabel={isPending ? "Salvando..." : "Salvar"}
+          isPrimaryLoading={isPending}
+        />
+      }
+    >
       <AdminFormSection
         title="Dados da categoria"
         description="Categorias organizam o catálogo e suas linhas internas."
+        className="h-auto flex-none overflow-visible"
       >
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSave();
+          }}
+          className="space-y-4"
+        >
           <I18nInput label="Nome" required value={name} onChange={setName} />
           <I18nInput label="Slug" value={slug} onChange={setSlug} />
           <div>
@@ -227,24 +233,8 @@ function CategoryFormInner({
               <CategoryTemplatesSection categoryId={categoryId} />
             </>
           )}
-
-          <div className="flex gap-3 pt-2">
-            <Link
-              href={LIST_HREF}
-              className="flex-1 rounded-md border border-border py-2 text-center text-sm font-medium text-foreground hover:bg-muted"
-            >
-              Cancelar
-            </Link>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="flex-1 rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-60"
-            >
-              {isPending ? "Salvando..." : "Salvar"}
-            </button>
-          </div>
         </form>
       </AdminFormSection>
-    </div>
+    </AdminPageLayout>
   );
 }

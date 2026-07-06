@@ -9,6 +9,8 @@ import {
 } from "@/api/stetsom";
 import type { LegalPage } from "@/api/stetsom/model";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { LegalEditor } from "@/components/editor/legal/legal-editor";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -16,7 +18,7 @@ import { getApiErrorMessage } from "@/lib/api/error-utils";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
-import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -202,11 +204,39 @@ export function LegalPagesContent() {
   }
 
   return (
-    <div className="flex flex-col gap-5 px-4 py-4 lg:px-11.75 lg:py-7.25">
+    <AdminPageLayout
+      footer={
+        draft ? (
+          <EditorFooter
+            onBack={() => {
+              setSelectedId(null);
+              setDraft(null);
+            }}
+            deleteAction={
+              draft.id
+                ? {
+                    label: "Excluir página",
+                    confirmTitle: `Excluir "${draft.title.pt || draft.slug}"?`,
+                    confirmDescription:
+                      "A página será removida permanentemente. Esta ação não pode ser desfeita.",
+                    onConfirm: () => deleteMutation.mutate(draft.id!),
+                    isLoading: deleteMutation.isPending,
+                  }
+                : undefined
+            }
+            onPrimary={handleSave}
+            primaryLabel={
+              saveMutation.isPending ? "Salvando..." : "Salvar página"
+            }
+            isPrimaryLoading={saveMutation.isPending}
+          />
+        ) : undefined
+      }
+    >
       <div className="flex flex-col gap-5 xl:flex-row">
         {/* List */}
-        <aside className="w-full space-y-2 xl:w-80 xl:shrink-0">
-          <div className="flex items-center justify-between">
+        <aside className="flex w-full flex-col overflow-hidden rounded-[16px] border border-border bg-card xl:w-80 xl:shrink-0">
+          <div className="flex items-center justify-between border-b border-border px-6 py-2.5">
             <h2 className="text-sm font-semibold text-foreground">
               Páginas legais
             </h2>
@@ -220,85 +250,77 @@ export function LegalPagesContent() {
             </button>
           </div>
 
-          {listQuery.isLoading ? (
-            <div className="flex items-center justify-center py-10">
-              <div className="size-5 animate-spin rounded-full border-2 border-border border-t-primary" />
-            </div>
-          ) : pages.length === 0 && selectedId !== NEW_ID ? (
-            <p className="rounded-md border border-dashed border-border px-3 py-8 text-center text-xs text-muted-foreground">
-              Nenhuma página legal cadastrada.
-            </p>
-          ) : (
-            <ul className="space-y-1.5">
-              {pages.map((page, index) => (
-                <li
-                  key={page.id}
-                  className={cn(
-                    "flex items-center gap-1 rounded-md border px-2 py-2",
-                    selectedId === page.id
-                      ? "border-primary bg-muted"
-                      : "border-border",
-                  )}
-                >
-                  <div className="flex flex-col">
-                    <button
-                      type="button"
-                      aria-label="Mover para cima"
-                      disabled={index === 0 || reorderMutation.isPending}
-                      onClick={() => move(index, -1)}
-                      className="text-muted-foreground hover:text-foreground disabled:opacity-30"
-                    >
-                      <ChevronUp className="size-3.5" />
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="Mover para baixo"
-                      disabled={
-                        index === pages.length - 1 || reorderMutation.isPending
-                      }
-                      onClick={() => move(index, 1)}
-                      className="text-muted-foreground hover:text-foreground disabled:opacity-30"
-                    >
-                      <ChevronDown className="size-3.5" />
-                    </button>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => selectPage(page)}
-                    className="min-w-0 flex-1 text-left"
-                  >
-                    <span className="block truncate text-sm font-medium text-foreground">
-                      {page.title.pt || page.slug}
-                    </span>
-                    <span className="block truncate text-2xs text-muted-foreground">
-                      /{page.slug}
-                    </span>
-                  </button>
-                  <span
+          <div className="flex-1 overflow-auto p-3">
+            {listQuery.isLoading ? (
+              <div className="flex items-center justify-center py-10">
+                <div className="size-5 animate-spin rounded-full border-2 border-border border-t-primary" />
+              </div>
+            ) : pages.length === 0 && selectedId !== NEW_ID ? (
+              <p className="rounded-md border border-dashed border-border px-3 py-8 text-center text-xs text-muted-foreground">
+                Nenhuma página legal cadastrada.
+              </p>
+            ) : (
+              <ul className="space-y-1.5">
+                {pages.map((page, index) => (
+                  <li
+                    key={page.id}
                     className={cn(
-                      "rounded-full px-2 py-0.5 text-2xs font-semibold",
-                      page.published
-                        ? "bg-brand/10 text-brand"
-                        : "bg-muted text-muted-foreground",
+                      "flex items-center gap-1 rounded-md border px-2 py-2",
+                      selectedId === page.id
+                        ? "border-primary bg-muted"
+                        : "border-border",
                     )}
                   >
-                    {page.published ? "Publicado" : "Rascunho"}
-                  </span>
-                  <button
-                    type="button"
-                    aria-label="Remover"
-                    onClick={() => {
-                      if (confirm(`Remover "${page.title.pt || page.slug}"?`))
-                        deleteMutation.mutate(page.id);
-                    }}
-                    className="text-muted-foreground hover:text-destructive"
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+                    <div className="flex flex-col">
+                      <button
+                        type="button"
+                        aria-label="Mover para cima"
+                        disabled={index === 0 || reorderMutation.isPending}
+                        onClick={() => move(index, -1)}
+                        className="text-muted-foreground hover:text-foreground disabled:opacity-30"
+                      >
+                        <ChevronUp className="size-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Mover para baixo"
+                        disabled={
+                          index === pages.length - 1 ||
+                          reorderMutation.isPending
+                        }
+                        onClick={() => move(index, 1)}
+                        className="text-muted-foreground hover:text-foreground disabled:opacity-30"
+                      >
+                        <ChevronDown className="size-3.5" />
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => selectPage(page)}
+                      className="min-w-0 flex-1 text-left"
+                    >
+                      <span className="block truncate text-sm font-medium text-foreground">
+                        {page.title.pt || page.slug}
+                      </span>
+                      <span className="block truncate text-2xs text-muted-foreground">
+                        /{page.slug}
+                      </span>
+                    </button>
+                    <span
+                      className={cn(
+                        "rounded-full px-2 py-0.5 text-2xs font-semibold",
+                        page.published
+                          ? "bg-brand/10 text-brand"
+                          : "bg-muted text-muted-foreground",
+                      )}
+                    >
+                      {page.published ? "Publicado" : "Rascunho"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </aside>
 
         {/* Editor */}
@@ -379,31 +401,10 @@ export function LegalPagesContent() {
                   }
                 />
               </div>
-
-              <div className="flex justify-end gap-3 border-t border-border pt-4">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedId(null);
-                    setDraft(null);
-                  }}
-                  className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSave}
-                  disabled={saveMutation.isPending}
-                  className="rounded-md bg-foreground px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-50"
-                >
-                  {saveMutation.isPending ? "Salvando..." : "Salvar página"}
-                </button>
-              </div>
             </div>
           )}
         </div>
       </div>
-    </div>
+    </AdminPageLayout>
   );
 }

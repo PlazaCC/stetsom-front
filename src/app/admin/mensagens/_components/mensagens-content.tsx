@@ -6,6 +6,7 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminDrawer } from "@/app/admin/_components/crud/admin-drawer";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import {
   getGetApiMessagesQueryKey,
   patchApiMessagesId,
@@ -186,36 +187,38 @@ export function MensagensContent({ activeTab }: MensagensContentProps) {
   );
 
   return (
-    <div className="px-4 py-4 lg:px-5 lg:py-5">
-      {activeTab === "contatos" ? (
-        <AdminDataTable
-          columns={contactColumns}
-          data={messages}
-          isLoading={messagesQuery.isLoading}
-          keyExtractor={(m) => m.id}
-          emptyTitle="Nenhuma mensagem"
-          emptyDescription="As mensagens enviadas pelo site aparecerão aqui."
-          action={settingsAction}
-          toolbar={
-            unread > 0 ? (
-              <span className="text-xs text-muted-foreground">
-                <span className="font-semibold text-primary">{unread}</span>{" "}
-                {unread === 1 ? "não lida" : "não lidas"}
-              </span>
-            ) : undefined
-          }
-        />
-      ) : (
-        <AdminDataTable
-          columns={deptColumns}
-          data={deptRows}
-          isLoading={messagesQuery.isLoading}
-          keyExtractor={(d) => d.slug}
-          emptyTitle="Nenhum departamento configurado"
-          emptyDescription="Configure os departamentos de encaminhamento abaixo."
-          action={settingsAction}
-        />
-      )}
+    <>
+      <AdminPageLayout>
+        {activeTab === "contatos" ? (
+          <AdminDataTable
+            columns={contactColumns}
+            data={messages}
+            isLoading={messagesQuery.isLoading}
+            keyExtractor={(m) => m.id}
+            emptyTitle="Nenhuma mensagem"
+            emptyDescription="As mensagens enviadas pelo site aparecerão aqui."
+            action={settingsAction}
+            toolbar={
+              unread > 0 ? (
+                <span className="text-xs text-muted-foreground">
+                  <span className="font-semibold text-primary">{unread}</span>{" "}
+                  {unread === 1 ? "não lida" : "não lidas"}
+                </span>
+              ) : undefined
+            }
+          />
+        ) : (
+          <AdminDataTable
+            columns={deptColumns}
+            data={deptRows}
+            isLoading={messagesQuery.isLoading}
+            keyExtractor={(d) => d.slug}
+            emptyTitle="Nenhum departamento configurado"
+            emptyDescription="Configure os departamentos de encaminhamento abaixo."
+            action={settingsAction}
+          />
+        )}
+      </AdminPageLayout>
 
       <AdminDrawer
         open={!!selected}
@@ -291,6 +294,6 @@ export function MensagensContent({ activeTab }: MensagensContentProps) {
           initialDepartments={configQuery.data?.contact_departments ?? []}
         />
       )}
-    </div>
+    </>
   );
 }

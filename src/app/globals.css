@@ -372,3 +372,22 @@
     width: max-content;
   }
 }
+
+/* Recolors an arbitrary black/grayscale icon asset (CMS uploads can be SVG
+   or raster, so `currentColor` isn't reliable) to match brand tokens.
+   Defined with `@utility` (not `@layer utilities`) so variants like
+   `group-hover:` are generated for them.
+   `icon-tint-brand` first flattens the source to solid black (so a
+   multi-tone icon converges to one flat color, not a shaded gradient),
+   then applies a filter chain solved empirically against real filter
+   rendering for an exact black -> rgb(232,19,42) (--color-brand) match. */
+@utility icon-tint-black {
+  filter: grayscale(1) brightness(0);
+  transition: filter 150ms ease;
+}
+
+@utility icon-tint-brand {
+  filter: grayscale(1) brightness(0) invert(39%) sepia(81%) saturate(543%)
+    hue-rotate(305deg) brightness(77%) contrast(164%);
+  transition: filter 150ms ease;
+}

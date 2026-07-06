@@ -13,13 +13,13 @@ import type {
   PostApiProductsBody,
   ProductStatus,
 } from "@/api/stetsom/model";
-import { AdminDeleteAction } from "@/app/admin/_components/crud/admin-delete-action";
-import { AdminSaveBar } from "@/app/admin/_components/crud/admin-save-bar";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { ProductWizardStepSuccess } from "@/app/admin/_components/product-wizard-step-success";
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { slugify } from "@/lib/utils/slugify";
 import { useMutation } from "@tanstack/react-query";
-import { Eye } from "lucide-react";
+import { Eye, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { buildPreviewModel } from "./build-preview-model";
@@ -61,7 +61,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   // What the contextual panel is focused on. Driven by clicks in the preview
   // (intents) and by the panel's own section navigator.
   const [selection, setSelection] = useState<EditorTarget>({ kind: "general" });
-  const [device, setDevice] = useState<"mobile" | "desktop">("desktop");
+  const [device, setDevice] = useState<"mobile" | "desktop">("mobile");
 
   const categoriesQuery = useGetApiCategories();
   const templatesQuery = useGetApiTemplates();
@@ -212,77 +212,80 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   }
 
   const hasSaved = !!state.productId;
-  const previewModel = buildPreviewModel(state, categories);
-  const previewSlug = state.slug.pt || slugify(state.name.pt);
-  const realPageHref =
-    hasSaved && previewSlug
-      ? `/api/draft?slug=${encodeURIComponent(previewSlug)}`
-      : null;
+  const previewModel = buildPreviewModel(state, categories, attributes);
 
   return (
-    <ProductEditorLayout
-      device={device}
-      preview={
-        <PreviewCanvas
-          model={previewModel}
-          selection={selection}
-          onIntent={setSelection}
-          device={device}
-          onDeviceChange={setDevice}
-          hasSavedProduct={hasSaved}
-          realPageHref={realPageHref}
-        />
-      }
-      panel={
-        <EditorPanel
-          state={state}
-          dispatch={dispatch}
-          selection={selection}
-          onSelectionChange={setSelection}
-          categories={categories}
-          lines={lines}
-          attributes={attributes}
-          templates={templates}
-          compact={device === "desktop"}
-          footer={
-            <AdminSaveBar
-              onSaveDraft={handleSaveDraft}
-              onPublish={handlePublish}
-              isLoading={isSaving}
-              isDirty={state.isDirty}
-              className="px-4 py-3"
-              publishLabel={
-                mode === "create" ? "Publicar produto" : "Salvar alterações"
-              }
-              saveDraftLabel="Salvar rascunho"
-              draftSavedPrefix="Salvo às"
-              actions={
-                <div className="flex items-center gap-2">
-                  {hasSaved && (
-                    <button
-                      type="button"
-                      onClick={handlePreview}
-                      className="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
-                    >
-                      <Eye className="size-4" />
-                    </button>
-                  )}
-                  {mode === "edit" && state.productId && (
-                    <AdminDeleteAction
-                      label="Excluir produto"
-                      confirmTitle={`Excluir "${state.name.pt}"?`}
-                      confirmDescription="O produto será removido permanentemente. Esta ação não pode ser desfeita."
-                      confirmLabel="Sim, excluir"
-                      onConfirm={handleDelete}
-                      isLoading={deleteMutation.isPending}
-                    />
-                  )}
-                </div>
-              }
-            />
+    <AdminPageLayout
+      contentClassName="overflow-hidden p-0"
+      footer={
+        <EditorFooter
+          onBack={() => router.push("/admin/produtos")}
+          previewAction={
+            hasSaved
+              ? {
+                  key: "preview",
+                  label: "Visualizar",
+                  icon: Eye,
+                  onClick: handlePreview,
+                }
+              : undefined
           }
+          saveDraftAction={
+            state.isDirty
+              ? {
+                  key: "save-draft",
+                  label: "Salvar rascunho",
+                  icon: Save,
+                  onClick: handleSaveDraft,
+                }
+              : undefined
+          }
+          deleteAction={
+            mode === "edit" && state.productId
+              ? {
+                  label: "Excluir produto",
+                  confirmTitle: `Excluir "${state.name.pt}"?`,
+                  confirmDescription:
+                    "O produto será removido permanentemente. Esta ação não pode ser desfeita.",
+                  confirmLabel: "Sim, excluir",
+                  onConfirm: handleDelete,
+                  isLoading: deleteMutation.isPending,
+                }
+              : undefined
+          }
+          onPrimary={handlePublish}
+          primaryLabel={
+            mode === "create" ? "Publicar produto" : "Salvar alterações"
+          }
+          isPrimaryLoading={isSaving}
         />
       }
-    />
+    >
+      <ProductEditorLayout
+        device={device}
+        preview={
+          <PreviewCanvas
+            model={previewModel}
+            selection={selection}
+            onIntent={setSelection}
+            device={device}
+            onDeviceChange={setDevice}
+          />
+        }
+        panel={
+          <EditorPanel
+            state={state}
+            dispatch={dispatch}
+            selection={selection}
+            onSelectionChange={setSelection}
+            categories={categories}
+            lines={lines}
+            attributes={attributes}
+            templates={templates}
+            compact={device === "desktop"}
+          />
+        }
+      />
+    </AdminPageLayout>
   );
 }

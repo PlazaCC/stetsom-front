@@ -5,6 +5,7 @@ import {
   AdminDataTable,
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { AdminStatusToggle } from "@/app/admin/_components/crud/admin-status-toggle";
 import type {
   Banner,
@@ -27,7 +28,6 @@ import { toApiLocale } from "@/lib/api/i18n-utils";
 import { cn } from "@/lib/utils";
 import { Image as ImageIcon, Plus } from "lucide-react";
 import { useState } from "react";
-import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
 import {
   BannerFormState,
   BannerForm,
@@ -56,7 +56,6 @@ export function BannersContent({
   const [draft, setDraft] = useState<BannerFormState>(EMPTY_FORM_STATE);
   const [desktopImageFile, setDesktopImageFile] = useState<File | null>(null);
   const [mobileImageFile, setMobileImageFile] = useState<File | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<Banner | null>(null);
 
   function invalidate() {
     queryClient.invalidateQueries({ queryKey: getGetApiBannersQueryKey() });
@@ -306,14 +305,6 @@ export function BannersContent({
           >
             Editar
           </button>
-          <button
-            type="button"
-            onClick={() => setDeleteTarget(banner)}
-            disabled={deleteBanner.isPending}
-            className="text-xs font-medium text-destructive hover:underline disabled:opacity-50"
-          >
-            Excluir
-          </button>
         </div>
       ),
     },
@@ -332,12 +323,21 @@ export function BannersContent({
         onMobileFile={setMobileImageFile}
         onClearDesktopFile={() => setDesktopImageFile(null)}
         onClearMobileFile={() => setMobileImageFile(null)}
+        onDelete={
+          editingBanner
+            ? async () => {
+                await handleDelete(editingBanner.id);
+                closeForm();
+              }
+            : undefined
+        }
+        isDeleting={deleteBanner.isPending}
       />
     );
   }
 
   return (
-    <>
+    <AdminPageLayout>
       <AdminDataTable
         columns={columns}
         data={banners}
@@ -358,18 +358,6 @@ export function BannersContent({
           </AdminActionBar>
         }
       />
-      <AdminConfirmDialog
-        open={deleteTarget !== null}
-        title={`Excluir "${deleteTarget?.name ?? ""}"?`}
-        confirmLabel="Sim, excluir"
-        destructive
-        isPending={deleteBanner.isPending}
-        onConfirm={() => {
-          if (deleteTarget) handleDelete(deleteTarget.id);
-          setDeleteTarget(null);
-        }}
-        onCancel={() => setDeleteTarget(null)}
-      />
-    </>
+    </AdminPageLayout>
   );
 }

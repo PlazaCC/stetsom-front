@@ -1,12 +1,13 @@
 "use client";
 
-import { AdminPanel } from "@/app/admin/_components/admin-panel";
 import {
   AdminFormSection,
   AdminFormSectionContent,
   AdminFormSectionTitle,
 } from "@/app/admin/_components/crud/admin-form-section";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import type { Banner, BannerStatus, I18nString } from "@/api/stetsom/model";
 import { toDisplayLocale } from "@/lib/api/i18n-utils";
-import { ArrowLeft, Image, X } from "lucide-react";
+import { Image, X } from "lucide-react";
 import { useRef } from "react";
 
 /**
@@ -190,6 +191,8 @@ interface BannerFormProps {
   onMobileFile?: (file: File) => void;
   onClearDesktopFile?: () => void;
   onClearMobileFile?: () => void;
+  onDelete?: () => void;
+  isDeleting?: boolean;
 }
 
 export function BannerForm({
@@ -203,23 +206,36 @@ export function BannerForm({
   onMobileFile,
   onClearDesktopFile,
   onClearMobileFile,
+  onDelete,
+  isDeleting,
 }: BannerFormProps) {
   return (
-    <div className="flex flex-col gap-5">
-      <AdminPanel className="flex items-center justify-end p-5">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" />
-          Voltar para lista
-        </button>
-      </AdminPanel>
-
+    <AdminPageLayout
+      footer={
+        <EditorFooter
+          onBack={onCancel}
+          deleteAction={
+            !isCreating && onDelete
+              ? {
+                  label: "Excluir banner",
+                  confirmTitle: `Excluir "${draft.name}"?`,
+                  confirmDescription:
+                    "O banner será removido permanentemente. Esta ação não pode ser desfeita.",
+                  confirmLabel: "Sim, excluir",
+                  onConfirm: onDelete,
+                  isLoading: isDeleting,
+                }
+              : undefined
+          }
+          onPrimary={onSave}
+          primaryLabel={isCreating ? "Criar banner" : "Salvar alterações"}
+          isPrimaryLoading={isSaving}
+        />
+      }
+    >
       <div className="grid grid-cols-[1fr_360px] gap-5">
         <div className="space-y-5">
-          <AdminFormSection title="Informações do banner">
+          <AdminFormSection title="Informações do banner" raw>
             <AdminFormSectionContent>
               <div>
                 <AdminLabel>Nome do banner *</AdminLabel>
@@ -419,7 +435,7 @@ export function BannerForm({
 
         {/* Preview side panel */}
         <div className="space-y-4">
-          <AdminFormSection title="Prévia — Desktop">
+          <AdminFormSection title="Prévia — Desktop" raw>
             <AdminFormSectionContent>
               <div className="overflow-hidden rounded-md border border-border bg-muted">
                 {draft.desktop_image_url ? (
@@ -465,24 +481,6 @@ export function BannerForm({
           </AdminFormSection>
         </div>
       </div>
-
-      <AdminPanel className="flex items-center justify-end gap-3 px-5 py-3">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
-        >
-          Cancelar
-        </button>
-        <button
-          type="button"
-          onClick={onSave}
-          disabled={isSaving}
-          className="rounded-md bg-foreground px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-50"
-        >
-          {isCreating ? "Criar banner" : "Salvar alterações"}
-        </button>
-      </AdminPanel>
-    </div>
+    </AdminPageLayout>
   );
 }

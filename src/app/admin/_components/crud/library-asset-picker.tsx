@@ -151,7 +151,7 @@ function PickerModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4">
-      <div className="flex max-h-[80vh] w-full max-w-3xl flex-col overflow-hidden rounded-[16px] border border-border bg-card shadow-xl">
+      <div className="flex max-h-[80vh] w-full max-w-3xl flex-col overflow-hidden rounded-card border border-border bg-card shadow-cms-card-lg">
         <div className="flex items-center justify-between border-b border-border px-5 py-3">
           <div className="flex gap-1">
             <button

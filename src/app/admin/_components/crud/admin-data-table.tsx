@@ -88,10 +88,10 @@ export function AdminDataTable<T>({
   });
 
   return (
-    <div className={cn("flex flex-col", className)}>
+    <div className={cn("flex h-full min-h-0 flex-col", className)}>
       {/* ── Top bar ──────────────────────────────────────────────────────────── */}
       {(toolbar || action) && (
-        <div className="flex items-start justify-between gap-4 pb-3">
+        <div className="flex shrink-0 items-start justify-between gap-4 pb-3">
           <div className="min-w-0 flex-1">{toolbar}</div>
           {action && <div className="shrink-0">{action}</div>}
         </div>
@@ -103,10 +103,13 @@ export function AdminDataTable<T>({
        * sticky positioning for the <thead>. The rounded border is purely cosmetic;
        * the negligible colour bleed at the corners is imperceptible (bg-muted vs
        * bg-card differ by ~8 lightness points).
+       *
+       * Height comes from the flex chain (min-h-0 flex-1), not a magic max-h
+       * calc — the parent page provides the bounded height via AdminPageLayout.
        */}
 
-      <div className="rounded-lg border border-border">
-        <div className="max-h-[calc(100dvh-16rem)] overflow-y-auto bg-card">
+      <div className="flex min-h-0 flex-1 flex-col rounded-lg border border-border">
+        <div className="min-h-0 flex-1 overflow-y-auto bg-card">
           {isLoading ? (
             <div className="flex items-center justify-center py-16">
               <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
@@ -178,7 +181,7 @@ export function AdminDataTable<T>({
 
       {/* ── Footer ───────────────────────────────────────────────────────────── */}
       {pagination && (
-        <div className="flex items-center justify-between pt-3 text-sm text-muted-foreground">
+        <div className="flex shrink-0 items-center justify-between pt-3 text-sm text-muted-foreground">
           <span>
             {pagination.total}{" "}
             {pagination.total === 1 ? "resultado" : "resultados"}

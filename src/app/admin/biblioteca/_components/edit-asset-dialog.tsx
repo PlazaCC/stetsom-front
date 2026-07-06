@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -122,7 +123,7 @@ export function EditAssetDialog({
 
           {/* Right column */}
           <div className="flex min-h-0 flex-col border-t md:border-t-0 md:border-l">
-            <DialogHeader className="border-b px-5 py-4">
+            <DialogHeader className="border-b p-4">
               <DialogTitle className="truncate pr-8">
                 {asset.filename}
               </DialogTitle>
@@ -144,7 +145,7 @@ export function EditAssetDialog({
                   </TabsTrigger>
                 </TabsList>
 
-                <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
+                <div className="min-h-0 flex-1 overflow-y-auto p-4">
                   <TabsContent value="data" className="flex flex-col gap-4">
                     <Field data-invalid={!!form.formState.errors.filename}>
                       <FieldLabel htmlFor="asset-filename">
@@ -203,14 +204,14 @@ export function EditAssetDialog({
                 </div>
               </Tabs>
 
-              <div className="flex justify-end gap-2 border-t bg-muted/50 px-5 py-3">
+              <DialogFooter className="mx-0 mb-0 rounded-none">
                 <Button type="button" variant="outline" onClick={onClose}>
                   Cancelar
                 </Button>
                 <Button type="submit" disabled={mutation.isPending}>
                   {mutation.isPending ? "Salvando…" : "Salvar"}
                 </Button>
-              </div>
+              </DialogFooter>
             </form>
           </div>
         </div>

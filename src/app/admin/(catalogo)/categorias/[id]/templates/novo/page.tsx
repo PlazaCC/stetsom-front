@@ -8,9 +8,5 @@ export default async function AdminCategoriaTemplateNovoPage({
   params,
 }: PageProps) {
   const { id } = await params;
-  return (
-    <div className="px-4 py-4 lg:px-11.75 lg:py-7.25">
-      <TemplateForm mode="create" categoryId={id} />
-    </div>
-  );
+  return <TemplateForm mode="create" categoryId={id} />;
 }

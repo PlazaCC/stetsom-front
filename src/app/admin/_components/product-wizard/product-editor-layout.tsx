@@ -26,7 +26,9 @@ export function ProductEditorLayout({
   className,
 }: ProductEditorLayoutProps) {
   return (
-    <div className={cn("flex min-h-0 flex-1 overflow-hidden", className)}>
+    <div
+      className={cn("flex h-full min-h-0 flex-1 overflow-hidden", className)}
+    >
       <aside
         className={cn(
           "flex flex-col overflow-hidden border-l border-border bg-card transition-[width] duration-200",

@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
 import { Plus, Trash2, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BlockStyleForm } from "./block-style-form";
 import { SortableList } from "./sortable-list";
 import {
@@ -43,6 +43,8 @@ interface BlockManagerProps {
   /** Controlled selection. When `onSelectChange` is passed, the parent owns it. */
   selectedId?: string | null;
   onSelectChange?: (id: string | null) => void;
+  /** Stacked layout — true when the parent panel is narrow. */
+  compact?: boolean;
 }
 
 type DetailTab = "content" | "style";
@@ -71,6 +73,7 @@ export function BlockManager({
   className,
   selectedId: controlledSelectedId,
   onSelectChange,
+  compact = false,
 }: BlockManagerProps) {
   const controlled = onSelectChange !== undefined;
   const [internalId, setInternalId] = useState<string | null>(
@@ -123,16 +126,31 @@ export function BlockManager({
   const selectedDef = selected ? registry[selected.type] : null;
   const SelectedIcon = selectedDef?.icon;
   const SelectedForm = selectedDef?.Form;
+  const editorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (selectedId && editorRef.current) {
+      editorRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [selectedId]);
 
   return (
     <div
       className={cn(
-        "flex h-full flex-col gap-4 lg:flex-row lg:items-start",
+        "flex h-full flex-col gap-4",
+        !compact && "lg:flex-row lg:items-start",
         className,
       )}
     >
       {/* Card 1 — block list + actions */}
-      <AdminFormSection title="Blocos" className="w-72! flex-initial">
+      <AdminFormSection
+        title="Blocos"
+        className={cn(compact ? "w-full" : "w-72!")}
+        raw
+      >
         <AdminFormSectionContent className="gap-2">
           {value.length === 0 ? (
             <div className="rounded-md border border-dashed border-border py-8 text-center text-sm text-muted-foreground">
@@ -202,59 +220,61 @@ export function BlockManager({
       </AdminFormSection>
 
       {/* Card 2 — selected block editor */}
-      <AdminFormSection title="">
-        {selected && selectedDef && SelectedIcon && SelectedForm ? (
-          <>
-            <div className="flex items-center gap-3 border-b border-border px-4 py-3">
-              <SelectedIcon className="size-4 shrink-0 text-muted-foreground" />
-              <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                {selectedDef.label}
-              </span>
-              <span className="ml-auto text-xs text-muted-foreground">
-                #{selected.order + 1}
-              </span>
-            </div>
+      <AdminFormSection title="" raw>
+        <div ref={editorRef}>
+          {selected && selectedDef && SelectedIcon && SelectedForm ? (
+            <>
+              <div className="flex items-center gap-3 border-b border-border px-4 py-3">
+                <SelectedIcon className="size-4 shrink-0 text-muted-foreground" />
+                <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                  {selectedDef.label}
+                </span>
+                <span className="ml-auto text-xs text-muted-foreground">
+                  #{selected.order + 1}
+                </span>
+              </div>
 
-            <div className="flex gap-1 border-b border-border px-4 pt-3">
-              {DETAIL_TABS.map(({ id, label }) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setDetailTab(id)}
-                  className={cn(
-                    "-mb-px border-b-2 px-3 py-2 text-xs font-semibold transition-colors",
-                    detailTab === id
-                      ? "border-primary text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground",
-                  )}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
+              <div className="flex gap-1 border-b border-border px-4 pt-3">
+                {DETAIL_TABS.map(({ id, label }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setDetailTab(id)}
+                    className={cn(
+                      "-mb-px border-b-2 px-3 py-2 text-xs font-semibold transition-colors",
+                      detailTab === id
+                        ? "border-primary text-foreground"
+                        : "border-transparent text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
 
-            <div className="p-4">
-              {detailTab === "content" ? (
-                <SelectedForm
-                  data={selected.data}
-                  onChange={(d) => updateData(selected.id, d)}
-                />
-              ) : (
-                <BlockStyleForm
-                  blockType={selected.type}
-                  data={selected.data}
-                  onChange={(d) => updateData(selected.id, d)}
-                />
-              )}
+              <div className="p-4">
+                {detailTab === "content" ? (
+                  <SelectedForm
+                    data={selected.data}
+                    onChange={(d) => updateData(selected.id, d)}
+                  />
+                ) : (
+                  <BlockStyleForm
+                    blockType={selected.type}
+                    data={selected.data}
+                    onChange={(d) => updateData(selected.id, d)}
+                  />
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="flex h-full min-h-48 items-center justify-center p-8 text-center text-sm text-muted-foreground">
+              {value.length === 0
+                ? "Adicione um bloco para começar."
+                : "Selecione um bloco para editar."}
             </div>
-          </>
-        ) : (
-          <div className="flex h-full min-h-48 items-center justify-center p-8 text-center text-sm text-muted-foreground">
-            {value.length === 0
-              ? "Adicione um bloco para começar."
-              : "Selecione um bloco para editar."}
-          </div>
-        )}
+          )}
+        </div>
       </AdminFormSection>
 
       {/* Add-block type menu */}
@@ -264,7 +284,7 @@ export function BlockManager({
           onClick={() => setShowMenu(false)}
         >
           <div
-            className="w-full max-w-2xl overflow-hidden rounded-card border border-border bg-card shadow-xl"
+            className="w-full max-w-2xl overflow-hidden rounded-card border border-border bg-card shadow-cms-card-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-border px-5 py-4">

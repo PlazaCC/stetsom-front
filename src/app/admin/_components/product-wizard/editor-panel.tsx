@@ -40,8 +40,6 @@ interface EditorPanelProps {
   templates: Template[];
   /** Stacked layout for form sections — true when the panel is narrow. */
   compact?: boolean;
-  /** Sticky save actions rendered at the bottom of the panel. */
-  footer?: React.ReactNode;
 }
 
 const NAV_ITEMS: { id: EditorSection; label: string; icon: LucideIcon }[] = [
@@ -62,7 +60,6 @@ export function EditorPanel({
   attributes,
   templates,
   compact = false,
-  footer,
 }: EditorPanelProps) {
   const activeSection = targetToSection(selection);
 
@@ -100,6 +97,7 @@ export function EditorPanel({
               dispatch={dispatch}
               categories={categories}
               lines={lines}
+              compact={compact}
             />
           )}
           {activeSection === "specs" && (
@@ -112,7 +110,7 @@ export function EditorPanel({
             />
           )}
           {activeSection === "files" && (
-            <StepFiles state={state} dispatch={dispatch} />
+            <StepFiles state={state} dispatch={dispatch} compact={compact} />
           )}
           {activeSection === "blocks" &&
             (selection.kind === "addBlock" ? (
@@ -147,15 +145,14 @@ export function EditorPanel({
                     id ? { kind: "block", blockId: id } : { kind: "blocks" },
                   )
                 }
+                compact={compact}
               />
             ))}
           {activeSection === "publish" && (
-            <StepPublish state={state} dispatch={dispatch} />
+            <StepPublish state={state} dispatch={dispatch} compact={compact} />
           )}
         </div>
       </div>
-
-      {footer && <div className="shrink-0">{footer}</div>}
     </div>
   );
 }
