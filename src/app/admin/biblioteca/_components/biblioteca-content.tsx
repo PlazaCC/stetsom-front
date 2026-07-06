@@ -7,6 +7,7 @@ import {
 } from "@/api/stetsom";
 import type { LibraryAsset } from "@/api/stetsom/model";
 import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { AdminPagination } from "@/app/admin/_components/crud/admin-pagination";
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { useLibraryUpload } from "@/hooks/use-upload";
@@ -93,20 +94,23 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
       onDrop={uploadTyped}
       className="flex min-h-0 flex-1 flex-col"
     >
-      <LibraryContentHeader
-        query={query}
-        onQueryChange={handleSearch}
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-        total={total}
-        accept={config.accept}
-        uploadLabel={config.uploadLabel}
-        searchPlaceholder={config.searchPlaceholder}
-        onUpload={uploadTyped}
-        disabled={isUploading}
-      />
-
-      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
+      <AdminPageLayout
+        header={
+          <LibraryContentHeader
+            query={query}
+            onQueryChange={handleSearch}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            total={total}
+            accept={config.accept}
+            uploadLabel={config.uploadLabel}
+            searchPlaceholder={config.searchPlaceholder}
+            onUpload={uploadTyped}
+            disabled={isUploading}
+          />
+        }
+        contentClassName="px-5 py-5"
+      >
         {isError ? (
           <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
             <p className="text-sm font-medium text-destructive">
@@ -150,7 +154,7 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
             className="mt-4"
           />
         )}
-      </div>
+      </AdminPageLayout>
 
       {editTarget && (
         <EditAssetDialog

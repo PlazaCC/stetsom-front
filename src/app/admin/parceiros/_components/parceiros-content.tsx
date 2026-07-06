@@ -27,10 +27,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
-import { cn } from "@/lib/utils";
+import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Building2, Plus, Wrench } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 
 const PAGE_SIZE = 10;
@@ -57,21 +61,6 @@ const TAB_CONFIG: Record<
     emptyDescription: "Crie uma assistência técnica para exibir no site.",
   },
 };
-
-function StatusBadge({ active }: { active: boolean }) {
-  return (
-    <span
-      className={cn(
-        "rounded-full border px-2 py-0.5 text-xs font-medium",
-        active
-          ? "border-cms-step-done bg-cms-step-done text-white"
-          : "border-cms-step-pending bg-cms-step-pending text-muted-foreground",
-      )}
-    >
-      {active ? "Ativo" : "Inativo"}
-    </span>
-  );
-}
 
 interface PartnerLocationFormProps {
   type: PartnerLocationType;
@@ -387,7 +376,9 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
     {
       key: "is_active",
       header: "Status",
-      render: (l) => <StatusBadge active={l.is_active} />,
+      render: (l) => (
+        <StatusBadge status={l.is_active ? "ACTIVE" : "INACTIVE"} />
+      ),
     },
     {
       key: "actions",
@@ -395,29 +386,18 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
       headerClassName: "text-right",
       className: "text-right",
       render: (l) => (
-        <div className="flex items-center justify-end gap-3">
-          <button
-            type="button"
-            onClick={() => openEdit(l)}
-            className="text-xs font-medium text-primary hover:underline"
-          >
-            Editar
-          </button>
-          <button
-            type="button"
-            onClick={() => setToggleTarget(l)}
-            className="text-xs font-medium text-muted-foreground hover:underline"
-          >
+        <AdminRowActions>
+          <AdminRowAction onClick={() => openEdit(l)}>Editar</AdminRowAction>
+          <AdminRowAction onClick={() => setToggleTarget(l)}>
             {l.is_active ? "Desativar" : "Ativar"}
-          </button>
-          <button
-            type="button"
+          </AdminRowAction>
+          <AdminRowAction
+            variant="destructive"
             onClick={() => setDeleteTarget(l)}
-            className="text-xs font-medium text-destructive hover:underline"
           >
             Excluir
-          </button>
-        </div>
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];

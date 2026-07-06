@@ -80,20 +80,6 @@ export function bannerToFormState(b: Banner): BannerFormState {
   };
 }
 
-export function statusLabel(status: BannerStatus): string {
-  if (status === "ACTIVE") return "Ativo";
-  if (status === "SCHEDULED") return "Agendado";
-  return "Inativo";
-}
-
-export function statusBadgeClass(status: BannerStatus): string {
-  if (status === "ACTIVE")
-    return "border border-cms-step-done bg-cms-step-done text-white";
-  if (status === "SCHEDULED")
-    return "border border-cms-active-item bg-cms-active-item text-foreground";
-  return "bg-muted text-muted-foreground border border-border";
-}
-
 export function formatDateRange(from?: string, until?: string): string {
   if (!from && !until) return "—";
   const fmt = (s: string) =>

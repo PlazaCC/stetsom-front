@@ -5,6 +5,10 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
 import { useGetApiCategories, useGetApiTemplates } from "@/api/stetsom";
 import type { PublicCategory } from "@/api/stetsom/model";
 import { ImageIcon, Plus } from "lucide-react";
@@ -23,11 +27,20 @@ export default function AdminCategoriasPage() {
       key: "icon",
       header: "Ícone",
       className: "w-16",
-      render: () => (
-        <div className="flex size-10 items-center justify-center rounded-md bg-muted">
-          <ImageIcon className="size-5 text-muted-foreground/50" />
-        </div>
-      ),
+      render: (c) =>
+        c.icon_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={c.icon_url}
+            alt=""
+            loading="lazy"
+            className="size-10 rounded-md object-cover"
+          />
+        ) : (
+          <div className="flex size-10 items-center justify-center rounded-md bg-muted">
+            <ImageIcon className="size-5 text-muted-foreground/50" />
+          </div>
+        ),
     },
     {
       key: "name",
@@ -56,12 +69,11 @@ export default function AdminCategoriasPage() {
       headerClassName: "text-right",
       className: "text-right",
       render: (c) => (
-        <Link
-          href={`/admin/categorias/${c.id}`}
-          className="rounded border border-border px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"
-        >
-          Editar
-        </Link>
+        <AdminRowActions>
+          <AdminRowAction href={`/admin/categorias/${c.id}`}>
+            Editar
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];

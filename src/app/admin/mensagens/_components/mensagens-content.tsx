@@ -8,6 +8,11 @@ import {
 import { AdminDrawer } from "@/app/admin/_components/crud/admin-drawer";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
+import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
+import {
   getGetApiMessagesQueryKey,
   patchApiMessagesId,
   useGetApiConfig,
@@ -133,9 +138,10 @@ export function MensagensContent({ activeTab }: MensagensContentProps) {
       key: "department",
       header: "Setor responsável",
       render: (m) => (
-        <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium text-foreground">
-          {departmentLabel(m.department)}
-        </span>
+        <StatusBadge
+          status={m.department}
+          label={departmentLabel(m.department)}
+        />
       ),
     },
     {
@@ -144,13 +150,11 @@ export function MensagensContent({ activeTab }: MensagensContentProps) {
       headerClassName: "text-right",
       className: "text-right",
       render: (m) => (
-        <button
-          type="button"
-          onClick={() => handleOpen(m)}
-          className="text-xs font-medium text-primary hover:underline"
-        >
-          Ver mensagem
-        </button>
+        <AdminRowActions>
+          <AdminRowAction onClick={() => handleOpen(m)}>
+            Ver mensagem
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];

@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetApiLibrary } from "@/api/stetsom";
+import { useGetApiLibrary, useGetApiLibraryId } from "@/api/stetsom";
 import type {
   GetApiLibraryType,
   I18nString,
@@ -51,17 +51,28 @@ export function LibraryAssetPicker({
 }: LibraryAssetPickerProps) {
   const [open, setOpen] = useState(false);
 
+  // The consumer may seed `value` with only a `library_id` (e.g. an entity
+  // whose CMS payload carries the id but not the resolved URL). Resolve the
+  // asset on demand so the saved preview renders instead of an empty picker.
+  const needsResolve = Boolean(value?.library_id && !value?.file_url);
+  const { data: resolvedAsset, isLoading: isResolving } = useGetApiLibraryId(
+    value?.library_id ?? "",
+    { query: { enabled: needsResolve } },
+  );
+  const previewUrl =
+    value?.file_url ?? (resolvedAsset ? currentUrl(resolvedAsset) : "");
+
   return (
     <div className={className}>
       {label && <AdminLabel>{label}</AdminLabel>}
 
-      {value?.file_url ? (
+      {previewUrl ? (
         <div className="flex items-center gap-3 rounded-md border border-border bg-card p-2">
           {variant === "image" ? (
             <div className="relative size-16 shrink-0 overflow-hidden rounded bg-muted">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={value.file_url}
+                src={previewUrl}
                 alt=""
                 className="h-full w-full object-cover"
               />
@@ -70,7 +81,7 @@ export function LibraryAssetPicker({
             <FileText className="size-6 shrink-0 text-muted-foreground" />
           )}
           <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
-            {value.file_url.split("/").pop()}
+            {previewUrl.split("/").pop()}
           </span>
           <button
             type="button"
@@ -87,6 +98,11 @@ export function LibraryAssetPicker({
           >
             <Trash2 className="size-4" />
           </button>
+        </div>
+      ) : needsResolve && isResolving ? (
+        <div className="flex items-center gap-3 rounded-md border border-border bg-card p-2">
+          <div className="size-16 shrink-0 animate-pulse rounded bg-muted" />
+          <div className="h-3 w-24 animate-pulse rounded bg-muted" />
         </div>
       ) : (
         <button

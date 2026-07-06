@@ -11,6 +11,7 @@ import type { LegalPage } from "@/api/stetsom/model";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
+import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import { LegalEditor } from "@/components/editor/legal/legal-editor";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -310,16 +311,9 @@ export function LegalPagesContent() {
                         /{page.slug}
                       </span>
                     </button>
-                    <span
-                      className={cn(
-                        "rounded-full px-2 py-0.5 text-2xs font-semibold",
-                        page.published
-                          ? "bg-brand/10 text-brand"
-                          : "bg-muted text-muted-foreground",
-                      )}
-                    >
-                      {page.published ? "Publicado" : "Rascunho"}
-                    </span>
+                    <StatusBadge
+                      status={page.published ? "PUBLISHED" : "DRAFT"}
+                    />
                   </li>
                 ))}
               </ul>

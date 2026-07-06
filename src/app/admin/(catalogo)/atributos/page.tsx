@@ -6,6 +6,10 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { Button } from "@/components/ui/button";
 import {
@@ -154,25 +158,22 @@ export default function AdminAtributosPage() {
       headerClassName: "text-right",
       className: "text-right",
       render: (a) => (
-        <div className="flex items-center justify-end gap-3">
-          <button
-            type="button"
+        <AdminRowActions>
+          <AdminRowAction
             onClick={() => {
               setEditing(a);
               setFormOpen(true);
             }}
-            className="text-xs font-medium text-primary hover:underline"
           >
             Editar
-          </button>
-          <button
-            type="button"
+          </AdminRowAction>
+          <AdminRowAction
+            variant="destructive"
             onClick={() => setDeleteTarget(a)}
-            className="text-xs font-medium text-destructive hover:underline"
           >
             Excluir
-          </button>
-        </div>
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];
