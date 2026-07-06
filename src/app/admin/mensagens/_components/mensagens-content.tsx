@@ -64,7 +64,14 @@ export function MensagensContent({ activeTab }: MensagensContentProps) {
       ...prev,
       [id]: { ...prev[id], is_read: true },
     }));
-    markReadMutation.mutate(id);
+    markReadMutation.mutate(id, {
+      onError: () => {
+        setLocalOverrides((prev) => ({
+          ...prev,
+          [id]: { ...prev[id], is_read: false },
+        }));
+      },
+    });
   }
 
   function handleOpen(message: ContactMessage) {

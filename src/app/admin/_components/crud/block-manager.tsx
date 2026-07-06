@@ -96,10 +96,7 @@ export function BlockManager({
     if (!def) return;
     const id = generateId();
     onChange(
-      reindex([
-        ...value,
-        { id, type, data: { ...def.defaultData }, order: value.length },
-      ]),
+      reindex([...value, { id, type, data: { ...def.defaultData }, order: 0 }]),
     );
     setSelectedId(id);
     setDetailTab("content");

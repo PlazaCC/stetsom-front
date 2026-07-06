@@ -50,13 +50,13 @@ export function StickySectionNav() {
 
   const scrollTo = (id: string) => {
     if (id === "overview") {
-      window.scrollTo({ top: 0 });
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
     const el = document.getElementById(id);
     if (!el) return;
     const top = el.getBoundingClientRect().top + window.scrollY - 152;
-    window.scrollTo({ top });
+    window.scrollTo({ top, behavior: "smooth" });
   };
 
   return (

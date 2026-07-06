@@ -47,7 +47,7 @@ export function BlockStyleForm({
   }
 
   const bem = BLOCK_BEM_CLASSES[blockType];
-  const classes = bem ? [bem.base, ...bem.elements] : [];
+  const classes = bem ? [bem.base, ...(bem.elements ?? [])] : [];
 
   function appendRule(className: string) {
     const current = str(style.customCss).trimEnd();

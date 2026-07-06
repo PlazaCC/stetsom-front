@@ -22,7 +22,9 @@ export async function proxy(request: NextRequest) {
             : false;
 
       if (!isValid) {
-        return NextResponse.redirect(new URL("/admin/login", request.url));
+        const loginUrl = new URL("/admin/login", request.url);
+        loginUrl.searchParams.set("redirect", pathname);
+        return NextResponse.redirect(loginUrl);
       }
     }
 

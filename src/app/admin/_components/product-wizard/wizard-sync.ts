@@ -75,7 +75,10 @@ export async function syncImages(
         headers: upload.headers as Record<string, string>,
         body: img.file,
       });
-    } else if (img.image_id && img.order !== index) {
+    } else if (
+      img.image_id &&
+      initialImageIds.indexOf(img.image_id) !== index
+    ) {
       await patchApiProductsIdImagesImageId(id, img.image_id, { order: index });
     }
   }

@@ -47,17 +47,6 @@ export function StepFiles({
           onRemove={(id) => dispatch({ type: "remove_file", id })}
         />
       </section>
-
-      <section className="flex flex-col gap-3">
-        <p className="text-sm font-semibold text-foreground">Downloads</p>
-        <FileDropzone
-          type="MANUAL"
-          icon={BookOpen}
-          files={manuals}
-          onAdd={(file) => dispatch({ type: "add_file", file })}
-          onRemove={(id) => dispatch({ type: "remove_file", id })}
-        />
-      </section>
     </div>
   );
 }

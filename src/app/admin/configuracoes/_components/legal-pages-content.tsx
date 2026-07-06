@@ -162,14 +162,18 @@ export function LegalPagesContent() {
 
   const reorderMutation = useMutation({
     mutationFn: async (args: { a: LegalPage; b: LegalPage }) => {
-      await patchApiLegalPagesId(args.a.id, { order: args.b.order });
+      const tempOrder = -1;
+      await patchApiLegalPagesId(args.a.id, { order: tempOrder });
       await patchApiLegalPagesId(args.b.id, { order: args.a.order });
+      await patchApiLegalPagesId(args.a.id, { order: args.b.order });
     },
     onSuccess: () => invalidate(),
-    onError: (err) =>
+    onError: (err) => {
+      invalidate();
       toast.error("Erro ao reordenar", {
         description: getApiErrorMessage(err, "Tente novamente."),
-      }),
+      });
+    },
   });
 
   function move(index: number, dir: -1 | 1) {

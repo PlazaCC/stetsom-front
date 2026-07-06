@@ -4,6 +4,7 @@ import { ImagePlus, X } from "lucide-react";
 import { rectSortingStrategy } from "@dnd-kit/sortable";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
 import type { WizardImage } from "./wizard-store";
+import { useEffect, useRef } from "react";
 
 interface ImageGalleryProps {
   images: WizardImage[];
@@ -24,6 +25,20 @@ function makeImage(file: File, order: number): WizardImage {
 }
 
 export function ImageGallery({ images, onChange }: ImageGalleryProps) {
+  // Revoke blob URLs on unmount to avoid memory leaks.
+  const blobUrlsRef = useRef<string[]>([]);
+  useEffect(() => {
+    blobUrlsRef.current = images
+      .filter((img) => img.preview_url.startsWith("blob:"))
+      .map((img) => img.preview_url);
+  });
+  useEffect(() => {
+    return () => {
+      for (const url of blobUrlsRef.current) {
+        URL.revokeObjectURL(url);
+      }
+    };
+  }, []);
   // No maximum: append every selected file and let the upload slot stay.
   function addImages(files: FileList | null) {
     if (!files || files.length === 0) return;

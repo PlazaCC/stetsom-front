@@ -55,7 +55,20 @@ function ConfigForm({
   }
 
   function handleSave() {
-    updateConfig(config as PatchApiConfigBody, {
+    const body: PatchApiConfigBody = {
+      company_name: config.company_name,
+      company_email: config.company_email,
+      company_phone: config.company_phone,
+      company_whatsapp: config.company_whatsapp,
+      company_address: config.company_address,
+      social_instagram: config.social_instagram || undefined,
+      social_facebook: config.social_facebook || undefined,
+      social_youtube: config.social_youtube || undefined,
+      social_linkedin: config.social_linkedin || undefined,
+      logo_dark: config.logo_dark,
+      logo_white: config.logo_white,
+    };
+    updateConfig(body, {
       onSuccess: () => toast.success("Configurações salvas com sucesso"),
       onError: (err) =>
         toast.error("Erro ao salvar configurações", {
@@ -281,7 +294,7 @@ function ConfigForm({
 export function ConfigContent({ activeTab }: { activeTab: ConfigTab }) {
   const configQuery = useGetApiConfig();
 
-  if (configQuery.isLoading || !configQuery.data) {
+  if (configQuery.isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center">
         <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
@@ -289,9 +302,26 @@ export function ConfigContent({ activeTab }: { activeTab: ConfigTab }) {
     );
   }
 
+  if (!configQuery.data) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 py-16 text-center">
+        <p className="text-sm font-medium text-destructive">
+          Erro ao carregar configurações.
+        </p>
+        <button
+          type="button"
+          onClick={() => configQuery.refetch()}
+          className="text-sm text-primary underline underline-offset-4"
+        >
+          Tentar novamente
+        </button>
+      </div>
+    );
+  }
+
   return (
     <ConfigForm
-      key={configQuery.dataUpdatedAt}
+      key="config-form"
       activeTab={activeTab}
       initialConfig={configQuery.data}
     />

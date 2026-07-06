@@ -138,10 +138,17 @@ export function useLibraryUpload() {
     });
 
     if (!presignRes.ok) {
-      const err = (await presignRes.json()) as { error?: { message?: string } };
-      throw new Error(
-        err.error?.message ?? `Presign falhou (${presignRes.status})`,
-      );
+      let errorMessage: string;
+      try {
+        const err = (await presignRes.json()) as {
+          error?: { message?: string };
+        };
+        errorMessage =
+          err.error?.message ?? `Presign falhou (${presignRes.status})`;
+      } catch {
+        errorMessage = `Presign falhou (${presignRes.status})`;
+      }
+      throw new Error(errorMessage);
     }
 
     const presign = (await presignRes.json()) as UploadPresignResponse;
@@ -203,13 +210,18 @@ export function useLibraryUpload() {
       });
 
       if (!completeRes.ok) {
-        const err = (await completeRes.json()) as {
-          error?: { message?: string };
-        };
-        throw new Error(
-          err.error?.message ??
-            `Registro na biblioteca falhou (${completeRes.status})`,
-        );
+        let errorMessage: string;
+        try {
+          const err = (await completeRes.json()) as {
+            error?: { message?: string };
+          };
+          errorMessage =
+            err.error?.message ??
+            `Registro na biblioteca falhou (${completeRes.status})`;
+        } catch {
+          errorMessage = `Registro na biblioteca falhou (${completeRes.status})`;
+        }
+        throw new Error(errorMessage);
       }
 
       const { asset } = (await completeRes.json()) as { asset: LibraryAsset };

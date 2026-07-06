@@ -64,8 +64,7 @@ export function ServiceCentersExplorer({
   );
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<LatLng | null>(null);
-  // Starts as "loading" because geolocation is requested on mount.
-  const [geoStatus, setGeoStatus] = useState<GeoStatus>("loading");
+  const [geoStatus, setGeoStatus] = useState<GeoStatus>("idle");
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const prevSelectedRef = useRef<string | null>(null);

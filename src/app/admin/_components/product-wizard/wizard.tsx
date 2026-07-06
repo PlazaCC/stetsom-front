@@ -137,9 +137,16 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     }
 
     if (id) {
-      await syncBlocks(id, state.blocks, state.initialBlockIds);
-      await syncImages(id, state.images, state.initialImageIds);
-      await syncFiles(id, state.files, state.initialFileIds);
+      try {
+        await syncBlocks(id, state.blocks, state.initialBlockIds);
+        await syncImages(id, state.images, state.initialImageIds);
+        await syncFiles(id, state.files, state.initialFileIds);
+      } catch (syncErr) {
+        adminToast.apiError(
+          syncErr,
+          "Produto salvo, mas houve erro ao sincronizar blocos/mídias.",
+        );
+      }
     }
 
     dispatch({ type: "mark_saved", productId: id!, status });

@@ -254,9 +254,9 @@ export function ProductDetailView({
               )}
 
               <div {...ed("files")} className="mt-5 flex flex-wrap gap-3">
-                {manualFile && (
+                {manualFile && manualFile.file_url && (
                   <a
-                    href={manualFile.file_url ?? "#"}
+                    href={manualFile.file_url}
                     className="inline-flex h-10 items-center rounded-sm bg-brand px-5 font-sans text-button-md font-bold tracking-[0.8px] text-white uppercase transition-colors hover:bg-brand/90"
                   >
                     {t("manual")}

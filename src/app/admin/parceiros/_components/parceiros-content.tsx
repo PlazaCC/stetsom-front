@@ -496,7 +496,7 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
             ? `Desativar ${tab.noun}?`
             : `Ativar ${tab.noun}?`
         }
-        description={`${toggleTarget?.name} será ${toggleTarget?.is_active ? "desativado" : "ativado"}.`}
+        description={`${toggleTarget?.name} será ${toggleTarget?.is_active ? (tab.noun.endsWith("a") ? "desativada" : "desativado") : tab.noun.endsWith("a") ? "ativada" : "ativado"}.`}
         confirmLabel={toggleTarget?.is_active ? "Desativar" : "Ativar"}
         destructive={toggleTarget?.is_active}
         isPending={toggleMutation.isPending}

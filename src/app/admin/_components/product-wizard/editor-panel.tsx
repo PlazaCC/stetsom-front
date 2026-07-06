@@ -89,69 +89,64 @@ export function EditorPanel({
       </nav>
 
       <div className="@container min-h-0 flex-1 overflow-y-auto p-3">
-        {/* Keyed so each section change fades in. */}
-        <div key={activeSection} className="animate-in duration-150 fade-in-0">
-          {activeSection === "general" && (
-            <GeneralEditor
-              state={state}
-              dispatch={dispatch}
-              categories={categories}
-              lines={lines}
+        {activeSection === "general" && (
+          <GeneralEditor
+            state={state}
+            dispatch={dispatch}
+            categories={categories}
+            lines={lines}
+            compact={compact}
+          />
+        )}
+        {activeSection === "specs" && (
+          <StepSpecs
+            state={state}
+            dispatch={dispatch}
+            attributes={attributes}
+            templates={templates}
+            compact={compact}
+          />
+        )}
+        {activeSection === "files" && (
+          <StepFiles state={state} dispatch={dispatch} compact={compact} />
+        )}
+        {activeSection === "blocks" &&
+          (selection.kind === "addBlock" ? (
+            <AddBlockPicker
+              onCancel={() => onSelectionChange({ kind: "blocks" })}
+              onPick={(type) => {
+                const block = {
+                  id: generateBlockId(),
+                  type,
+                  data: { ...PRODUCT_BLOCK_REGISTRY[type]!.defaultData },
+                  order: selection.index,
+                };
+                dispatch({
+                  type: "insert_block",
+                  block,
+                  index: selection.index,
+                });
+                onSelectionChange({ kind: "block", blockId: block.id });
+              }}
+            />
+          ) : (
+            <BlockManager
+              registry={PRODUCT_BLOCK_REGISTRY}
+              value={state.blocks}
+              onChange={(blocks) => dispatch({ type: "set_blocks", blocks })}
+              addLabel="Adicione um bloco"
+              selectedId={selection.kind === "block" ? selection.blockId : null}
+              onSelectChange={(id) =>
+                onSelectionChange(
+                  id ? { kind: "block", blockId: id } : { kind: "blocks" },
+                )
+              }
               compact={compact}
             />
-          )}
-          {activeSection === "specs" && (
-            <StepSpecs
-              state={state}
-              dispatch={dispatch}
-              attributes={attributes}
-              templates={templates}
-              compact={compact}
-            />
-          )}
-          {activeSection === "files" && (
-            <StepFiles state={state} dispatch={dispatch} compact={compact} />
-          )}
-          {activeSection === "blocks" &&
-            (selection.kind === "addBlock" ? (
-              <AddBlockPicker
-                onCancel={() => onSelectionChange({ kind: "blocks" })}
-                onPick={(type) => {
-                  const block = {
-                    id: generateBlockId(),
-                    type,
-                    data: { ...PRODUCT_BLOCK_REGISTRY[type]!.defaultData },
-                    order: selection.index,
-                  };
-                  dispatch({
-                    type: "insert_block",
-                    block,
-                    index: selection.index,
-                  });
-                  onSelectionChange({ kind: "block", blockId: block.id });
-                }}
-              />
-            ) : (
-              <BlockManager
-                registry={PRODUCT_BLOCK_REGISTRY}
-                value={state.blocks}
-                onChange={(blocks) => dispatch({ type: "set_blocks", blocks })}
-                addLabel="Adicione um bloco"
-                selectedId={
-                  selection.kind === "block" ? selection.blockId : null
-                }
-                onSelectChange={(id) =>
-                  onSelectionChange(
-                    id ? { kind: "block", blockId: id } : { kind: "blocks" },
-                  )
-                }
-                compact={compact}
-              />
-            ))}
-          {activeSection === "publish" && (
-            <StepPublish state={state} dispatch={dispatch} compact={compact} />
-          )}
-        </div>
+          ))}
+        {activeSection === "publish" && (
+          <StepPublish state={state} dispatch={dispatch} compact={compact} />
+        )}
       </div>
     </div>
   );

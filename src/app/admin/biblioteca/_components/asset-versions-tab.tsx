@@ -33,9 +33,14 @@ export function AssetVersionsTab({ asset, onUploaded }: AssetVersionsTabProps) {
     e.target.value = "";
     if (!file) return;
     setBusy(true);
-    const ok = await uploadVersion(asset.id, file);
-    setBusy(false);
-    if (ok) onUploaded();
+    try {
+      const ok = await uploadVersion(asset.id, file);
+      if (ok) onUploaded();
+    } catch {
+      // Error toast is handled by useUploadVersion
+    } finally {
+      setBusy(false);
+    }
   }
 
   function isCurrent(version: AssetVersion) {

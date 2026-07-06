@@ -32,7 +32,6 @@ export function ImageBlock({
           <img
             src={src}
             alt={`${productName} visual ${i + 1}`}
-            sizes="(max-width: 1024px) 100vw, 1100px"
             className="blockImage__image h-auto w-full"
           />
         </div>

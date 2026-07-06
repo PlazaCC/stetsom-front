@@ -67,10 +67,16 @@ export function EditAssetDialog({
   });
 
   const mutation = useMutation({
-    mutationFn: (values: FormValues) =>
-      patchApiLibraryId(asset.id, {
+    mutationFn: (values: FormValues) => {
+      const alt: { pt: string; en?: string; es?: string } = {
+        pt: values.alt.pt,
+      };
+      if (values.alt.en) alt.en = values.alt.en;
+      if (values.alt.es) alt.es = values.alt.es;
+      const hasAnyAlt = Object.values(alt).some((v) => v.length > 0);
+      return patchApiLibraryId(asset.id, {
         filename: values.filename.trim(),
-        alt: values.alt.pt ? values.alt : undefined,
+        alt: hasAnyAlt ? alt : undefined,
         tags: values.tags
           .split(",")
           .map((t) => t.trim())
@@ -78,7 +84,8 @@ export function EditAssetDialog({
         redirect_paths: values.redirect_paths
           .map((p) => p.trim())
           .filter(Boolean),
-      }),
+      });
+    },
     onSuccess: () => {
       toast.success("Asset atualizado");
       onSaved();

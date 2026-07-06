@@ -87,16 +87,23 @@ export function TimelineCarousel({
   }, [totalEvents]);
 
   // --- Keyboard ---
+  const activeIndexRef = useRef(activeIndex);
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!totalEvents) return;
-      if (e.key === "ArrowLeft" && activeIndex > 0) handlePrevious();
-      else if (e.key === "ArrowRight" && activeIndex < totalEvents - 1)
+      if (e.key === "ArrowLeft" && activeIndexRef.current > 0) handlePrevious();
+      else if (
+        e.key === "ArrowRight" &&
+        activeIndexRef.current < totalEvents - 1
+      )
         handleNext();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleNext, handlePrevious, activeIndex, totalEvents]);
+  }, [handleNext, handlePrevious, totalEvents]);
 
   // --- Empty state ---
   if (!totalEvents) return null;
@@ -119,8 +126,8 @@ export function TimelineCarousel({
               <h2 className="font-sans-condensed text-[40px] leading-none font-black text-white">
                 {t("timelineTitle")
                   .split("\n")
-                  .map((line) => (
-                    <span key={line} className="block">
+                  .map((line, i) => (
+                    <span key={i} className="block">
                       {line}
                     </span>
                   ))}

@@ -5,7 +5,7 @@ import {
   getGetApiLibraryQueryKey,
   useGetApiLibrary,
 } from "@/api/stetsom";
-import type { LibraryAsset, LibraryPayload } from "@/api/stetsom/model";
+import type { LibraryAsset } from "@/api/stetsom/model";
 import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
 import { AdminPagination } from "@/app/admin/_components/crud/admin-pagination";
 import { useAdminToast } from "@/hooks/use-admin-toast";
@@ -72,19 +72,6 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
   const deleteMutation = useMutation({
     mutationFn: (asset: LibraryAsset) => deleteApiLibraryId(asset.id),
     onSuccess: (_data, asset) => {
-      // Drop the asset from every cached library list immediately so the grid
-      // updates without waiting for a refetch, then resync total/pagination.
-      queryClient.setQueriesData<LibraryPayload>(
-        { queryKey: getGetApiLibraryQueryKey() },
-        (prev) =>
-          prev
-            ? {
-                ...prev,
-                items: prev.items.filter((a) => a.id !== asset.id),
-                total: Math.max(0, prev.total - 1),
-              }
-            : prev,
-      );
       invalidateLibrary();
       toast.deleted(asset.filename);
       setDeleteTarget(undefined);

@@ -13,11 +13,11 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/admin/produtos", request.url));
   }
 
-  draft.enable();
-
   if (!slug) {
     return NextResponse.json({ error: "slug is required" }, { status: 400 });
   }
+
+  draft.enable();
 
   return NextResponse.redirect(
     new URL(`/produtos/${slug}?preview=true`, request.url),

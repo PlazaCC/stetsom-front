@@ -14,24 +14,29 @@ const LOCALE_PREFIX = /^\/(?:en|es)(?=\/|$)/;
 
 let cache: { map: Map<string, string>; at: number } | null = null;
 
-async function fetchRedirects(): Promise<RedirectEntry[]> {
-  const base = process.env.CMS_API_BASE_URL;
-  if (!base) return [];
-  const res = await fetch(`${base}/api/redirects`, {
-    headers: { Accept: "application/json" },
-    // Middleware runtime: rely on the in-module TTL cache below, not the Data Cache.
-    cache: "no-store",
-  });
-  if (!res.ok) return [];
-  return (await res.json()) as RedirectEntry[];
-}
-
 async function getRedirectMap(): Promise<Map<string, string>> {
   const now = Date.now();
   if (cache && now - cache.at < TTL_MS) return cache.map;
 
+  const base = process.env.CMS_API_BASE_URL;
+  if (!base) return cache?.map ?? new Map();
+
   try {
-    const entries = await fetchRedirects();
+    const fetchRes = await fetch(`${base}/api/redirects`, {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    });
+    if (!fetchRes.ok) return cache?.map ?? new Map();
+    const raw = (await fetchRes.json()) as unknown[];
+    const entries = raw.filter(
+      (e): e is RedirectEntry =>
+        typeof e === "object" &&
+        e !== null &&
+        "path" in e &&
+        "target_url" in e &&
+        typeof (e as Record<string, unknown>).path === "string" &&
+        typeof (e as Record<string, unknown>).target_url === "string",
+    );
     const map = new Map<string, string>();
     for (const entry of entries) {
       map.set(normalizeRedirectPath(entry.path), entry.target_url);
