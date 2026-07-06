@@ -17,7 +17,10 @@ import { config as dotenv } from "dotenv";
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 dotenv({ path: path.join(ROOT, ".env.local"), quiet: true });
 
-const BASE = (process.env.CMS_API_BASE_URL ?? "http://localhost:3333").replace(/\/$/, "");
+const BASE = (process.env.CMS_API_BASE_URL ?? "http://localhost:3333").replace(
+  /\/$/,
+  "",
+);
 const EMAIL = process.env.MOCK_DUMP_EMAIL;
 const PASSWORD = process.env.MOCK_DUMP_PASSWORD;
 const DATA_FILE = path.join(ROOT, "src/lib/mock/data.json");
@@ -36,7 +39,8 @@ function key(apiPath) {
 
 async function dump(apiPath, { token = null, params = {} } = {}) {
   const url = new URL(`${BASE}${apiPath}`);
-  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v));
+  for (const [k, v] of Object.entries(params))
+    url.searchParams.set(k, String(v));
 
   const headers = { Accept: "application/json" };
   if (token) headers.Authorization = `Bearer ${token}`;
@@ -63,7 +67,9 @@ async function dump(apiPath, { token = null, params = {} } = {}) {
 
 function save() {
   fs.writeFileSync(DATA_FILE, JSON.stringify(store, null, 2) + "\n");
-  console.log(`\n  📦 data.json — ${Object.keys(store).length} keys, ${(fs.statSync(DATA_FILE).size / 1024).toFixed(1)} KB`);
+  console.log(
+    `\n  📦 data.json — ${Object.keys(store).length} keys, ${(fs.statSync(DATA_FILE).size / 1024).toFixed(1)} KB`,
+  );
 }
 
 async function main() {
@@ -74,24 +80,31 @@ async function main() {
   await dump("/api/categories");
   await dump("/api/partner-locations");
   await dump("/api/banners/active", { params: { locale: "pt" } });
-  await dump("/api/pages/home",    { params: { locale: "pt" } });
-  await dump("/api/pages/about",   { params: { locale: "pt" } });
+  await dump("/api/pages/home", { params: { locale: "pt" } });
+  await dump("/api/pages/about", { params: { locale: "pt" } });
   await dump("/api/pages/catalog", { params: { locale: "pt" } });
   await dump("/api/pages/support", { params: { locale: "pt" } });
 
-  const catalog = await dump("/api/products", { params: { pageSize: MAX_PRODUCT_DETAILS, page: 1, locale: "pt" } });
+  const catalog = await dump("/api/products", {
+    params: { pageSize: MAX_PRODUCT_DETAILS, page: 1, locale: "pt" },
+  });
   if (catalog?.items?.length) {
     const items = catalog.items.slice(0, MAX_PRODUCT_DETAILS);
-    console.log(`\n  📄  ${items.length} product detail pages (capped at ${MAX_PRODUCT_DETAILS}):`);
+    console.log(
+      `\n  📄  ${items.length} product detail pages (capped at ${MAX_PRODUCT_DETAILS}):`,
+    );
     for (const item of items) {
       const slug = typeof item.slug === "object" ? item.slug.pt : item.slug;
-      if (slug) await dump(`/api/products/${slug}`, { params: { locale: "pt" } });
+      if (slug)
+        await dump(`/api/products/${slug}`, { params: { locale: "pt" } });
     }
   }
 
   // ── Admin ─────────────────────────────────────────────────────────────────
   if (!EMAIL || !PASSWORD) {
-    console.log("\n⚠️   MOCK_DUMP_EMAIL / MOCK_DUMP_PASSWORD not set — skipping admin endpoints.");
+    console.log(
+      "\n⚠️   MOCK_DUMP_EMAIL / MOCK_DUMP_PASSWORD not set — skipping admin endpoints.",
+    );
     save();
     printDone();
     return;
@@ -105,7 +118,9 @@ async function main() {
   });
 
   if (!loginRes.ok) {
-    console.error(`  ✗  Login failed (${loginRes.status}) — skipping admin endpoints.`);
+    console.error(
+      `  ✗  Login failed (${loginRes.status}) — skipping admin endpoints.`,
+    );
     save();
     printDone();
     return;
@@ -116,7 +131,10 @@ async function main() {
 
   console.log("🛡️   Admin:");
   await dump("/api/dashboard", { token });
-  await dump("/api/products/admin", { token, params: { page: 1, pageSize: 100 } });
+  await dump("/api/products/admin", {
+    token,
+    params: { page: 1, pageSize: 100 },
+  });
   await dump("/api/banners", { token, params: { limit: 100 } });
   await dump("/api/library", { token, params: { limit: 100 } });
   await dump("/api/messages", { token, params: { limit: 100 } });
@@ -135,7 +153,9 @@ async function main() {
   const adminCatalog = store["products--admin"];
   if (adminCatalog?.items?.length) {
     const adminItems = adminCatalog.items.slice(0, MAX_PRODUCT_DETAILS);
-    console.log(`\n  📄  ${adminItems.length} admin product detail pages (capped at ${MAX_PRODUCT_DETAILS}):`);
+    console.log(
+      `\n  📄  ${adminItems.length} admin product detail pages (capped at ${MAX_PRODUCT_DETAILS}):`,
+    );
     for (const item of adminItems) {
       if (item.id) await dump(`/api/products/admin/${item.id}`, { token });
     }
@@ -146,7 +166,9 @@ async function main() {
 }
 
 function printDone() {
-  console.log("\n✅  Done! Set USE_MOCK_DATA=1 in .env.local and restart: pnpm dev\n");
+  console.log(
+    "\n✅  Done! Set USE_MOCK_DATA=1 in .env.local and restart: pnpm dev\n",
+  );
 }
 
 main().catch((err) => {
