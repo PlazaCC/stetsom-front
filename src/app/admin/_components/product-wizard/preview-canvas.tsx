@@ -37,26 +37,27 @@ function DeviceToggle({
   onChange: (device: Device) => void;
 }) {
   return (
-    <div className="inline-flex gap-0.5">
+    <div className="inline-flex items-center rounded-md bg-muted">
       {(
         [
-          { id: "mobile", icon: Smartphone },
-          { id: "desktop", icon: Monitor },
+          { id: "mobile", icon: Smartphone, label: "Mobile" },
+          { id: "desktop", icon: Monitor, label: "Desktop" },
         ] as const
-      ).map(({ id, icon: Icon }) => (
+      ).map(({ id, icon: Icon, label }) => (
         <button
           key={id}
           type="button"
           aria-label={id}
           onClick={() => onChange(id)}
           className={cn(
-            "rounded-md px-1 py-1.5 transition-colors",
+            "flex flex-col items-center gap-1 rounded px-1 py-1.5 text-2xs font-medium transition-colors",
             device === id
               ? "bg-primary/10 text-primary"
               : "text-muted-foreground hover:bg-muted hover:text-foreground",
           )}
         >
           <Icon className="size-4" />
+          {label}
         </button>
       ))}
     </div>
