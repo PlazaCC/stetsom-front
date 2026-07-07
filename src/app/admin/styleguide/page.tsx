@@ -9,9 +9,17 @@
 
 import { AdminPanel } from "@/app/admin/_components/admin-panel";
 import {
+  AdminDataTable,
+  type AdminTableColumn,
+} from "@/app/admin/_components/crud/admin-data-table";
+import {
   AdminLabel,
   AdminTextarea,
 } from "@/app/admin/_components/crud/admin-input";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -60,6 +68,59 @@ const STATUSES = [
   "ACTIVE",
   "INACTIVE",
   "DISCONTINUED",
+];
+
+type SampleRow = {
+  id: string;
+  name: string;
+  category: string;
+  status: string;
+};
+
+const SAMPLE_ROWS: SampleRow[] = [
+  {
+    id: "1",
+    name: "ST-4000EQ",
+    category: "Amplificadores",
+    status: "PUBLISHED",
+  },
+  { id: "2", name: "Vulcan 5K", category: "Amplificadores", status: "DRAFT" },
+  { id: "3", name: "HL-1200", category: "Alto-falantes", status: "SCHEDULED" },
+  { id: "4", name: "NX-2000", category: "Módulos", status: "INACTIVE" },
+];
+
+const TABLE_COLUMNS: AdminTableColumn<SampleRow>[] = [
+  {
+    key: "name",
+    header: "Nome",
+    render: (row) => (
+      <span className="font-medium text-foreground">{row.name}</span>
+    ),
+  },
+  {
+    key: "category",
+    header: "Categoria",
+    render: (row) => (
+      <span className="text-muted-foreground">{row.category}</span>
+    ),
+  },
+  {
+    key: "status",
+    header: "Status",
+    render: (row) => <StatusBadge status={row.status} />,
+  },
+  {
+    key: "actions",
+    header: "",
+    headerClassName: "text-right",
+    className: "text-right",
+    render: () => (
+      <AdminRowActions>
+        <AdminRowAction>Editar</AdminRowAction>
+        <AdminRowAction variant="destructive">Excluir</AdminRowAction>
+      </AdminRowActions>
+    ),
+  },
 ];
 
 function Section({
@@ -161,6 +222,18 @@ export default function StyleguidePage() {
           {STATUSES.map((s) => (
             <StatusBadge key={s} status={s} />
           ))}
+        </div>
+      </Section>
+
+      <Section title="Tabelas">
+        {/* AdminDataTable needs a bounded-height parent to render its scroll body. */}
+        <div className="h-64">
+          <AdminDataTable
+            columns={TABLE_COLUMNS}
+            data={SAMPLE_ROWS}
+            keyExtractor={(row) => row.id}
+            emptyTitle="Nenhum registro"
+          />
         </div>
       </Section>
     </div>

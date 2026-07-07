@@ -5,11 +5,14 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
 import { useGetApiCategories, useGetApiTemplates } from "@/api/stetsom";
 import type { Template } from "@/api/stetsom";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -63,12 +66,13 @@ export default function AdminTemplatesPage() {
       headerClassName: "text-right",
       className: "text-right",
       render: (t) => (
-        <Link
-          href={`/admin/categorias/${t.category_id}/templates/${t.id}`}
-          className="rounded border border-border px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"
-        >
-          Editar
-        </Link>
+        <AdminRowActions>
+          <AdminRowAction
+            href={`/admin/categorias/${t.category_id}/templates/${t.id}`}
+          >
+            Editar
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];

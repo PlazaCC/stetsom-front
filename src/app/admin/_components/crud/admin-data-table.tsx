@@ -99,84 +99,75 @@ export function AdminDataTable<T>({
 
       {/* ── Table ────────────────────────────────────────────────────────────── */}
       {/*
-       * No overflow-hidden here. overflow-hidden (and overflow-clip) both block
-       * sticky positioning for the <thead>. The rounded border is purely cosmetic;
-       * the negligible colour bleed at the corners is imperceptible (bg-muted vs
-       * bg-card differ by ~8 lightness points).
-       *
-       * Height comes from the flex chain (min-h-0 flex-1), not a magic max-h
-       * calc — the parent page provides the bounded height via AdminPageLayout.
+       * The scroll container IS the rounded/bordered card. overflow-y-auto clips
+       * descendants (including the sticky <thead>) to the border-radius, and
+       * position:sticky sticks relative to this same element — so the corners
+       * clip cleanly AND the header keeps pinning. Height comes from the flex
+       * chain (min-h-0 flex-1); the parent page bounds it via AdminPageLayout.
        */}
-
-      <div className="flex min-h-0 flex-1 flex-col rounded-lg border border-border">
-        <div className="min-h-0 flex-1 overflow-y-auto bg-card">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-16">
-              <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
-            </div>
-          ) : data.length === 0 ? (
-            <AdminEmptyState
-              title={emptyTitle}
-              description={emptyDescription}
-            />
-          ) : (
-            <table className="w-full text-sm">
-              {/*
-               * sticky top-0 — sticks to the top of <main> (the shell's single
-               * scroll container). bg-muted is opaque so rows scrolling beneath
-               * are fully covered. shadow-sm gives visual separation from body.
-               */}
-              <TableHeader className="sticky top-0 z-10 bg-muted shadow-sm">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className="hover:bg-muted">
-                    {headerGroup.headers.map((header) => {
-                      const col = columnMap.get(header.id);
-                      return (
-                        <TableHead
-                          key={header.id}
-                          className={cn(
-                            "h-auto bg-muted px-4 py-3 text-xs font-medium text-muted-foreground",
-                            col?.headerClassName,
-                          )}
-                        >
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                        </TableHead>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} className="hover:bg-muted/30">
-                    {row.getVisibleCells().map((cell) => {
-                      const col = columnMap.get(cell.column.id);
-                      return (
-                        <TableCell
-                          key={cell.id}
-                          className={cn(
-                            "px-4 py-3 whitespace-normal",
-                            col?.className,
-                          )}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </table>
-          )}
-        </div>
+      <div className="min-h-0 flex-1 overflow-y-auto rounded-card border border-border bg-card shadow-cms-card">
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
+          </div>
+        ) : data.length === 0 ? (
+          <AdminEmptyState title={emptyTitle} description={emptyDescription} />
+        ) : (
+          <table className="w-full text-sm">
+            {/*
+             * bg-muted is opaque so rows scrolling beneath are fully covered;
+             * shadow-sm gives visual separation from the body.
+             */}
+            <TableHeader className="sticky top-0 z-10 bg-muted shadow-sm">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className="hover:bg-muted">
+                  {headerGroup.headers.map((header) => {
+                    const col = columnMap.get(header.id);
+                    return (
+                      <TableHead
+                        key={header.id}
+                        className={cn(
+                          "h-auto bg-muted px-4 py-3 text-xs font-medium text-muted-foreground",
+                          col?.headerClassName,
+                        )}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id} className="hover:bg-muted/30">
+                  {row.getVisibleCells().map((cell) => {
+                    const col = columnMap.get(cell.column.id);
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          "px-4 py-3 whitespace-normal",
+                          col?.className,
+                        )}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </table>
+        )}
       </div>
 
       {/* ── Footer ───────────────────────────────────────────────────────────── */}

@@ -1,6 +1,7 @@
 "use client";
 
 import type { LibraryAsset } from "@/api/stetsom/model";
+import { AdminEmptyState } from "@/app/admin/_components/crud/admin-empty-state";
 import { AssetTypeIcon } from "./asset-type-icon";
 import {
   assetAltText,
@@ -43,8 +44,19 @@ export function AssetTable({
   onEdit,
   onDelete,
 }: AssetTableProps) {
+  if (assets.length === 0) {
+    return (
+      <div className="overflow-hidden rounded-card border border-border bg-card shadow-cms-card">
+        <AdminEmptyState
+          title={emptyLabel}
+          description="Faça upload de arquivos usando o botão na parte superior."
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="overflow-hidden rounded-xl border bg-card">
+    <div className="overflow-hidden rounded-card border border-border bg-card shadow-cms-card">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b bg-muted/50 text-left text-xs font-medium text-muted-foreground">
@@ -107,16 +119,6 @@ export function AssetTable({
               </td>
             </tr>
           ))}
-          {assets.length === 0 && (
-            <tr>
-              <td
-                colSpan={5}
-                className="px-4 py-10 text-center text-sm text-muted-foreground"
-              >
-                {emptyLabel}
-              </td>
-            </tr>
-          )}
         </tbody>
       </table>
     </div>

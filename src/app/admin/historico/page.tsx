@@ -9,41 +9,12 @@ import {
   FilterChips,
   type FilterChip,
 } from "@/app/admin/_components/crud/filter-chips";
+import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import { useGetApiAudit } from "@/api/stetsom";
-import type { AuditEntry, AuditEntryAction } from "@/api/stetsom/model";
+import type { AuditEntry } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
 import { Filter } from "lucide-react";
 import { useState } from "react";
-
-const ACTION_META: Record<
-  AuditEntryAction,
-  { label: string; className: string }
-> = {
-  CREATE: {
-    label: "Criou",
-    className: "border-cms-step-done bg-cms-step-done text-white",
-  },
-  UPDATE: {
-    label: "Editou",
-    className: "border-cms-active-item bg-cms-active-item text-foreground",
-  },
-  DELETE: {
-    label: "Excluiu",
-    className: "border-border bg-muted text-muted-foreground",
-  },
-  PUBLISH: {
-    label: "Publicou",
-    className: "border-cms-step-done bg-cms-step-done text-white",
-  },
-  LOGIN: {
-    label: "Entrou",
-    className: "border-border bg-muted text-muted-foreground",
-  },
-  LOGOUT: {
-    label: "Saiu",
-    className: "border-border bg-muted text-muted-foreground",
-  },
-};
 
 const ENTITY_LABELS: Record<string, string> = {
   products: "Produtos",
@@ -87,19 +58,7 @@ const columns: AdminTableColumn<AuditEntry>[] = [
   {
     key: "action",
     header: "Ação",
-    render: (e) => {
-      const meta = ACTION_META[e.action];
-      return (
-        <span
-          className={cn(
-            "inline-flex rounded-full border px-2 py-0.5 text-xs font-medium",
-            meta.className,
-          )}
-        >
-          {meta.label}
-        </span>
-      );
-    },
+    render: (e) => <StatusBadge status={e.action} />,
   },
   {
     key: "action_sentence",

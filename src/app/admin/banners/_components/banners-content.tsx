@@ -6,7 +6,12 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
 import { AdminStatusToggle } from "@/app/admin/_components/crud/admin-status-toggle";
+import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import type {
   Banner,
   BannersPayload,
@@ -25,7 +30,6 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useInlineUpload } from "@/hooks/use-inline-upload";
 import { toApiLocale } from "@/lib/api/i18n-utils";
-import { cn } from "@/lib/utils";
 import { Image as ImageIcon, Plus } from "lucide-react";
 import { useState } from "react";
 import {
@@ -34,8 +38,6 @@ import {
   EMPTY_FORM_STATE,
   bannerToFormState,
   formatDateRange,
-  statusBadgeClass,
-  statusLabel,
 } from "./banner-form";
 
 function toLocaleDisplay(locale: string): string {
@@ -280,14 +282,7 @@ export function BannersContent({
               }}
             />
           )}
-          <span
-            className={cn(
-              "rounded-full px-2 py-0.5 text-xs font-medium",
-              statusBadgeClass(banner.status),
-            )}
-          >
-            {statusLabel(banner.status)}
-          </span>
+          <StatusBadge status={banner.status} />
         </div>
       ),
     },
@@ -297,15 +292,11 @@ export function BannersContent({
       headerClassName: "text-right",
       className: "text-right",
       render: (banner) => (
-        <div className="flex items-center justify-end gap-3">
-          <button
-            type="button"
-            onClick={() => openEdit(banner)}
-            className="text-xs font-medium text-primary hover:underline"
-          >
+        <AdminRowActions>
+          <AdminRowAction onClick={() => openEdit(banner)}>
             Editar
-          </button>
-        </div>
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];

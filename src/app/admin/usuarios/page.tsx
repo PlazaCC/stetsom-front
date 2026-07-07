@@ -24,6 +24,11 @@ import {
 } from "@/components/ui/select";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
+import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
+import {
   getGetApiUsersQueryKey,
   useGetApiUsers,
   postApiUsers,
@@ -35,7 +40,6 @@ import type {
   PatchApiUsersIdBody,
   UserRole,
 } from "@/api/stetsom/model";
-import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -50,21 +54,6 @@ function RoleBadge({ role }: { role: UserRole }) {
   return (
     <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-foreground">
       {ROLE_LABELS[role]}
-    </span>
-  );
-}
-
-function StatusBadge({ active }: { active: boolean }) {
-  return (
-    <span
-      className={cn(
-        "rounded-full border px-2 py-0.5 text-xs font-medium",
-        active
-          ? "border-cms-step-done bg-cms-step-done text-white"
-          : "border-cms-step-pending bg-cms-step-pending text-muted-foreground",
-      )}
-    >
-      {active ? "Ativo" : "Inativo"}
     </span>
   );
 }
@@ -226,7 +215,9 @@ export default function AdminUsuariosPage() {
     {
       key: "is_active",
       header: "Status",
-      render: (u) => <StatusBadge active={u.is_active} />,
+      render: (u) => (
+        <StatusBadge status={u.is_active ? "ACTIVE" : "INACTIVE"} />
+      ),
     },
     {
       key: "last_login",
@@ -245,22 +236,12 @@ export default function AdminUsuariosPage() {
       headerClassName: "text-right",
       className: "text-right",
       render: (u) => (
-        <div className="flex items-center justify-end gap-3">
-          <button
-            type="button"
-            onClick={() => openEdit(u)}
-            className="text-xs font-medium text-primary hover:underline"
-          >
-            Editar
-          </button>
-          <button
-            type="button"
-            onClick={() => setToggleTarget(u)}
-            className="text-xs font-medium text-muted-foreground hover:underline"
-          >
+        <AdminRowActions>
+          <AdminRowAction onClick={() => openEdit(u)}>Editar</AdminRowAction>
+          <AdminRowAction onClick={() => setToggleTarget(u)}>
             {u.is_active ? "Desativar" : "Ativar"}
-          </button>
-        </div>
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];
