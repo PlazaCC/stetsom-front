@@ -1,6 +1,7 @@
 "use client";
 
 import { Container } from "@/components/ui/container";
+import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
@@ -9,7 +10,6 @@ import {
   TimelineCarouselCard,
   type TimelineCarouselEvent,
 } from "./timeline-carousel-card";
-import { Progress } from "@/components/ui/progress";
 
 interface TimelineCarouselProps {
   events: TimelineCarouselEvent[];
@@ -123,7 +123,7 @@ export function TimelineCarousel({
                   {t("timelineLabel")}
                 </span>
               </div>
-              <h2 className="font-sans-condensed text-[40px] leading-none font-black text-white">
+              <h2 className="font-sans-condensed text-display-sm leading-none font-black text-white">
                 {t("timelineTitle")
                   .split("\n")
                   .map((line, i) => (
@@ -136,7 +136,7 @@ export function TimelineCarousel({
 
             {/* Right: description + nav */}
             <div className="flex flex-col items-end gap-4 lg:justify-center">
-              <p className="max-w-[335px] text-sm leading-normal text-text-subtle-dark">
+              <p className="max-w-83.75 text-sm leading-normal text-text-subtle-dark">
                 {t("timelineDescription")}
               </p>
 
@@ -208,7 +208,7 @@ export function TimelineCarousel({
           {totalEvents > 1 && (
             <Progress
               value={(activeIndex / (totalEvents - 1)) * 100}
-              className="flex-col items-stretch gap-0 px-[15px]"
+              className="flex-col items-stretch gap-0 px-3.75"
               trackClassName="h-0.5 rounded-none bg-[#616161]"
               indicatorClassName="bg-brand"
             />

@@ -19,14 +19,6 @@ interface SupportHeroProps {
 export function SupportHero({ hero }: Readonly<SupportHeroProps>) {
   return (
     <section className="bg-radial-dark relative flex h-84 w-full items-center overflow-hidden">
-      {/* <Image
-        src={hero.image}
-        alt="Hero Support"
-        fill
-        className="object-cover object-center opacity-35"
-        sizes="100vw"
-        priority
-      /> */}
       <div className="bg-gradient-fade-black absolute inset-0" />
       <span className="pointer-events-none absolute -right-16 -bottom-16 flex items-center justify-center text-center font-sans-condensed text-display-2xl leading-none font-black text-watermark-text uppercase opacity-[0.08] select-none sm:text-[150px] lg:text-[263px]">
         {hero.watermarkText}
