@@ -93,7 +93,7 @@
   --footer: rgb(17, 17, 17);
   /* Scrollbar — light theme */
   --sb-track-color: #f5f5f5;
-  --sb-thumb-color: #e8132a;
+  --sb-thumb-color: rgb(18, 18, 18);
   --sb-size: 10px;
   /* CMS design tokens (raw values, faithful to Figma huD41oTL0FAa7xsNEK8tAM —
      remapped onto shadcn tokens via .cms {} in admin.css). Mantine-inspired. */
@@ -158,7 +158,7 @@
 .dark {
   /* Scrollbar — dark theme */
   --sb-track-color: #212121;
-  --sb-thumb-color: #e8132a;
+  --sb-thumb-color: rgb(18, 18, 18);
   --sb-size: 12px;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);

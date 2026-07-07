@@ -110,6 +110,7 @@ function TemplateFormInner({
   const [selectedAttrIds, setSelectedAttrIds] =
     useState<string[]>(initialAttrIds);
 
+  // Categories no longer have a per-id route — deep-link with a query param.
   const backHref = `/admin/categorias?category=${categoryId}`;
   const availableAttributes = allAttributes.filter(
     (a) => !selectedAttrIds.includes(a.id),

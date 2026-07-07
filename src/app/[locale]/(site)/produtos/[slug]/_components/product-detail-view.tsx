@@ -153,7 +153,7 @@ export function ProductDetailView({
             <div className="flex shrink-0 flex-col gap-4 lg:w-111.75">
               <div
                 {...ed("images")}
-                className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-card lg:h-89.5"
+                className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-card lg:h-120"
               >
                 {thumbnailUrl && (
                   <DetailImage

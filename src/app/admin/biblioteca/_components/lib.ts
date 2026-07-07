@@ -127,5 +127,8 @@ export function assetAltText(asset: LibraryAsset): string {
 // ── Type helpers ─────────────────────────────────────────────────────────────
 
 export function isImageAsset(asset: LibraryAsset): boolean {
-  return asset.type === LibraryAssetType.IMAGE;
+  return (
+    asset.type === LibraryAssetType.IMAGE ||
+    asset.type === LibraryAssetType.CATEGORY_ICON
+  );
 }
