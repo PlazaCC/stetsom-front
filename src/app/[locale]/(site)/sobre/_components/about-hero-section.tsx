@@ -16,11 +16,11 @@ interface AboutHeroSectionProps {
 
 export function AboutHeroSection({ section }: Readonly<AboutHeroSectionProps>) {
   return (
-    <section className="relative flex h-109.75 items-center overflow-hidden bg-brand-dark">
+    <section className="relative flex h-160 items-center overflow-hidden bg-brand-dark md:h-115">
       <div className="bg-gradient-dark-overlay absolute inset-0" />
 
       <Container className="z-10">
-        <div className="grid gap-10 lg:grid-cols-[1fr_428px] lg:items-end">
+        <div className="grid lg:grid-cols-[1fr_428px] lg:items-end lg:gap-10">
           <div>
             <SectionLabel label={section.label ?? ""} />
             <h1 className="mt-1 font-sans-condensed text-5xl leading-none font-black text-white uppercase lg:text-display-2xl">
@@ -52,7 +52,7 @@ export function AboutHeroSection({ section }: Readonly<AboutHeroSectionProps>) {
 
           {section.stats?.length ? (
             <div className="relative pt-5">
-              <span className="pointer-events-none absolute -top-24 font-sans-condensed text-[112px] leading-none font-black text-white/10">
+              <span className="pointer-events-none absolute -right-8 -bottom-20 font-sans-condensed text-[130px] leading-none font-black text-white/10 lg:-top-24 lg:right-0 lg:bottom-0">
                 {section.foundedYear ?? "1989"}
               </span>
               <div className="grid grid-cols-2">

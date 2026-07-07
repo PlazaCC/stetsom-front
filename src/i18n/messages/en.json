@@ -72,7 +72,7 @@
     "clearAll": "Clear all",
     "searchPlaceholder": "Search product...",
     "allCategories": "New",
-    "products": "{count} products",
+    "products": "<number>{count}</number> <label>products</label>",
     "sortBy": "Sort by",
     "sortRelevance": "Most relevant",
     "sortNewest": "Newest",

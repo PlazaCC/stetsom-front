@@ -1,9 +1,7 @@
 import { Container } from "@/components/ui/container";
-import { SectionLabel } from "@/components/ui/section-label";
-import Image from "next/image";
 
 type SupportHeroData = {
-  image: string;
+  image?: string;
   badge?: string;
   label?: string;
   title: string;
@@ -18,25 +16,37 @@ interface SupportHeroProps {
 
 export function SupportHero({ hero }: Readonly<SupportHeroProps>) {
   return (
-    <section className="bg-radial-dark relative flex h-84 w-full items-center overflow-hidden">
+    <section className="relative h-84 w-full overflow-hidden bg-brand-dark">
+      <div className="bg-radial-dark absolute inset-0" />
       <div className="bg-gradient-fade-black absolute inset-0" />
-      <span className="pointer-events-none absolute -right-16 -bottom-16 flex items-center justify-center text-center font-sans-condensed text-display-2xl leading-none font-black text-watermark-text uppercase opacity-[0.08] select-none sm:text-[150px] lg:text-[263px]">
+      <Container className="relative z-10 flex h-full flex-col justify-center pb-4 md:flex-row md:items-end md:justify-between md:pb-12 lg:py-10">
+        <div className="py-4">
+          {hero.label && (
+            <div className="mb-1 flex items-center gap-2">
+              <div className="h-px w-6 shrink-0 bg-brand" />
+              <span className="font-sans-condensed text-xs font-medium text-brand uppercase md:text-base">
+                {hero.label}
+              </span>
+            </div>
+          )}
+          <h1 className="font-sans-condensed text-display-sm leading-10 font-black text-white uppercase md:text-[90px] md:leading-18.5">
+            {hero.title.split("\n").map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </h1>
+        </div>
+        {hero.description && (
+          <p className="max-w-120 text-base text-text-subtle-dark">
+            {hero.description}
+          </p>
+        )}
+      </Container>
+      <span className="pointer-events-none absolute -right-18 -bottom-2 font-sans-condensed text-display-2xl leading-none font-black text-watermark-text uppercase opacity-[0.08] select-none md:-right-22 md:-bottom-16 md:text-[263px]">
         {hero.watermarkText}
       </span>
-      <div className="absolute top-0 left-0 h-full w-3.5 bg-bar-accent" />
-      <Container className="relative z-10">
-        <SectionLabel label={hero.label ?? ""} />
-        <h1 className="mt-1 font-sans-condensed text-5xl leading-none font-black text-white uppercase lg:text-[90px] lg:leading-18.5">
-          {hero.title.split("\n").map((line) => (
-            <span key={line} className="block">
-              {line}
-            </span>
-          ))}
-        </h1>
-        <p className="mt-4 max-w-120 text-base text-text-subtle-dark lg:ml-auto">
-          {hero.description}
-        </p>
-      </Container>
+      <div className="absolute top-0 left-0 hidden h-full w-3.5 bg-bar-accent md:block" />
     </section>
   );
 }

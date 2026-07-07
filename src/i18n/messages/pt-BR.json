@@ -72,7 +72,7 @@
     "clearAll": "Limpar tudo",
     "searchPlaceholder": "Buscar produto...",
     "allCategories": "Novidades",
-    "products": "{count} produtos",
+    "products": "<number>{count}</number> <label>produtos</label>",
     "sortBy": "Ordenar por",
     "sortRelevance": "Mais relevantes",
     "sortNewest": "Mais recentes",
