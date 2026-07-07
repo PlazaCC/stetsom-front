@@ -1,17 +1,5 @@
 "use client";
 
-import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
-import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
-import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import {
   deleteApiTemplatesId,
   getGetApiTemplatesQueryKey,
@@ -22,6 +10,18 @@ import {
   useGetApiTemplates,
 } from "@/api/stetsom";
 import type { I18nString, TemplateAttrInput } from "@/api/stetsom/model";
+import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
+import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
+import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { GripVertical, X } from "lucide-react";
@@ -110,7 +110,7 @@ function TemplateFormInner({
   const [selectedAttrIds, setSelectedAttrIds] =
     useState<string[]>(initialAttrIds);
 
-  const backHref = `/admin/categorias/${categoryId}`;
+  const backHref = `/admin/categorias?category=${categoryId}`;
   const availableAttributes = allAttributes.filter(
     (a) => !selectedAttrIds.includes(a.id),
   );

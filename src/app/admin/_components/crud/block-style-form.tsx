@@ -4,6 +4,11 @@ import { BLOCK_BEM_CLASSES } from "@/lib/utils/product";
 import { Input } from "@/components/ui/input";
 import { AdminTextarea } from "./admin-input";
 import { LibraryAssetPicker } from "./library-asset-picker";
+import {
+  readLibraryAssetRef,
+  writeLibraryAssetRef,
+  type LibraryAssetRef,
+} from "./library-asset-ref";
 
 const fieldLabel = "mb-1 block text-xs font-medium text-muted-foreground";
 
@@ -15,6 +20,13 @@ type StyleData = {
   customId?: string;
   customCss?: string;
 };
+
+type BlockBackgroundImageAsset = LibraryAssetRef;
+
+const BACKGROUND_IMAGE_KEYS = {
+  libraryIdKey: "backgroundImage",
+  fileUrlKey: "backgroundImageUrl",
+} as const;
 
 interface BlockStyleFormProps {
   /** Block type, used to surface the available BEM classes. */
@@ -90,15 +102,20 @@ export function BlockStyleForm({
         <LibraryAssetPicker
           type="IMAGE"
           variant="image"
-          value={{
-            library_id: str(style.backgroundImage),
-            file_url: str(style.backgroundImageUrl),
-          }}
+          value={
+            readLibraryAssetRef(
+              style as Record<string, unknown>,
+              BACKGROUND_IMAGE_KEYS,
+            ) satisfies BlockBackgroundImageAsset
+          }
           onChange={(a) =>
-            update({
-              backgroundImage: a?.library_id ?? "",
-              backgroundImageUrl: a?.file_url ?? "",
-            })
+            update(
+              writeLibraryAssetRef(
+                style as Record<string, unknown>,
+                BACKGROUND_IMAGE_KEYS,
+                a,
+              ) as Partial<StyleData>,
+            )
           }
         />
       </div>

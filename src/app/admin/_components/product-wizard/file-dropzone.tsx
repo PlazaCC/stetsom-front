@@ -3,7 +3,9 @@
 import { AdminFileUpload } from "@/app/admin/_components/crud/admin-file-upload";
 import type { LibraryAssetType } from "@/api/stetsom/model";
 import { FileText, Loader2, X, type LucideIcon } from "lucide-react";
-import { useTypedUpload } from "./use-typed-upload";
+import { useEffect, useRef } from "react";
+import { useLibraryUpload } from "@/hooks/use-upload";
+import { currentAssetUrl } from "@/app/admin/_components/crud/library-asset-ref";
 import type { WizardFile } from "./wizard-store";
 
 interface FileDropzoneProps {
@@ -24,22 +26,34 @@ export function FileDropzone({
   onAdd,
   onRemove,
 }: FileDropzoneProps) {
-  const { upload, entries, isUploading } = useTypedUpload();
+  const { upload, entries, isUploading } = useLibraryUpload();
+  const notified = useRef(new Set<string>());
 
-  async function handleUpload(incoming: File[]) {
-    for (const file of incoming) {
-      const asset = await upload(file, type);
-      if (asset) {
+  // Surface each finished upload as a WizardFile exactly once, regardless of
+  // how many times this effect re-runs while other entries are still in flight.
+  useEffect(() => {
+    for (const entry of entries) {
+      if (
+        entry.status === "done" &&
+        entry.asset &&
+        !notified.current.has(entry.id)
+      ) {
+        notified.current.add(entry.id);
+        const asset = entry.asset;
         onAdd({
-          id: `file-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-          library_id: asset.library_id,
-          file_url: asset.file_url,
+          id: `file-${asset.id}`,
+          library_id: asset.id,
+          file_url: currentAssetUrl(asset),
           filename: asset.filename,
           type,
           is_active: true,
         });
       }
     }
+  }, [entries, type, onAdd]);
+
+  function handleUpload(incoming: File[]) {
+    void upload(incoming, type);
   }
 
   const pending = entries.filter((e) => e.status !== "done");
@@ -54,7 +68,7 @@ export function FileDropzone({
         disabled={isUploading}
         label="Drag & drop files or Browse"
         description="Arraste aqui para adicionar um ou mais arquivos"
-        onUpload={(incoming) => void handleUpload(incoming)}
+        onUpload={handleUpload}
       />
 
       {pending.map((e) => (

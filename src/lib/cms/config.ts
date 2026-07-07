@@ -79,16 +79,6 @@ export const config: Record<string, AppRouteStaticData> = {
     section: "admin",
   },
   "/admin/categorias": { label: "Categorias", icon: Tags, section: "admin" },
-  "/admin/categorias/nova": {
-    label: "Nova categoria",
-    icon: Tags,
-    section: "admin",
-  },
-  "/admin/categorias/[id]": {
-    label: "Editar categoria",
-    icon: Tags,
-    section: "admin",
-  },
   "/admin/categorias/[id]/templates/novo": {
     label: "Novo template",
     icon: LayoutTemplate,
