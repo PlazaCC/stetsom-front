@@ -16,6 +16,12 @@ import {
 import { AdminTextarea } from "./admin-input";
 import { AdminTextEditor } from "./admin-text-editor";
 import { LibraryAssetPicker } from "./library-asset-picker";
+import {
+  readLibraryAssetRef,
+  writeLibraryAssetRef,
+  type LibraryAssetRef,
+  type LibraryPickedAsset,
+} from "./library-asset-ref";
 
 // three.js is client-only and heavy — load the 3D preview lazily, never on SSR.
 const Model3DViewer = dynamic(
@@ -28,6 +34,24 @@ const fieldLabel = "mb-1 block text-xs font-medium text-muted-foreground";
 function str(data: Record<string, unknown>, key: string): string {
   return typeof data[key] === "string" ? (data[key] as string) : "";
 }
+
+type ProductImageBlockAsset = LibraryAssetRef;
+type Model3DFileAsset = LibraryAssetRef;
+type Model3DBackgroundAsset = LibraryAssetRef;
+type GalleryImageAsset = LibraryPickedAsset;
+
+const IMAGE_BLOCK_ASSET_KEYS = {
+  libraryIdKey: "library_id",
+  fileUrlKey: "file_url",
+} as const;
+const MODEL3D_FILE_KEYS = {
+  libraryIdKey: "modelFile",
+  fileUrlKey: "file_url",
+} as const;
+const MODEL3D_BACKGROUND_KEYS = {
+  libraryIdKey: "backgroundImage",
+  fileUrlKey: "backgroundImageUrl",
+} as const;
 
 /** Shared optional title + description fields (IMAGE, VIDEO, GALLERY). */
 function HeadingFields({
@@ -151,16 +175,14 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
         <LibraryAssetPicker
           type="IMAGE"
           variant="image"
-          value={{
-            library_id: str(data, "library_id"),
-            file_url: str(data, "file_url"),
-          }}
+          value={
+            readLibraryAssetRef(
+              data,
+              IMAGE_BLOCK_ASSET_KEYS,
+            ) satisfies ProductImageBlockAsset
+          }
           onChange={(a) =>
-            onChange({
-              ...data,
-              library_id: a?.library_id ?? "",
-              file_url: a?.file_url ?? "",
-            })
+            onChange(writeLibraryAssetRef(data, IMAGE_BLOCK_ASSET_KEYS, a))
           }
         />
       </div>
@@ -221,16 +243,14 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
           type="MODEL3D"
           variant="file"
           accept=".glb,model/gltf-binary"
-          value={{
-            library_id: str(data, "modelFile"),
-            file_url: str(data, "file_url"),
-          }}
+          value={
+            readLibraryAssetRef(
+              data,
+              MODEL3D_FILE_KEYS,
+            ) satisfies Model3DFileAsset
+          }
           onChange={(a) =>
-            onChange({
-              ...data,
-              modelFile: a?.library_id ?? "",
-              file_url: a?.file_url ?? "",
-            })
+            onChange(writeLibraryAssetRef(data, MODEL3D_FILE_KEYS, a))
           }
         />
         <div>
@@ -259,16 +279,14 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
           <LibraryAssetPicker
             type="IMAGE"
             variant="image"
-            value={{
-              library_id: str(data, "backgroundImage"),
-              file_url: str(data, "backgroundImageUrl"),
-            }}
+            value={
+              readLibraryAssetRef(
+                data,
+                MODEL3D_BACKGROUND_KEYS,
+              ) satisfies Model3DBackgroundAsset
+            }
             onChange={(a) =>
-              onChange({
-                ...data,
-                backgroundImage: a?.library_id ?? "",
-                backgroundImageUrl: a?.file_url ?? "",
-              })
+              onChange(writeLibraryAssetRef(data, MODEL3D_BACKGROUND_KEYS, a))
             }
           />
         </div>
@@ -296,7 +314,7 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
     defaultData: { images: [], title: "", description: "" },
     Form: ({ data, onChange }) => {
       const images = Array.isArray(data.images)
-        ? (data.images as { library_id: string; file_url?: string }[])
+        ? (data.images as GalleryImageAsset[])
         : [];
       return (
         <div className="space-y-2">

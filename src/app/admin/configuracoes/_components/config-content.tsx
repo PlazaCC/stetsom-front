@@ -1,5 +1,12 @@
 "use client";
 
+import { useGetApiConfig } from "@/api/stetsom";
+import { patchApiConfig } from "@/api/stetsom/endpoints/config/config";
+import type {
+  CmsConfig,
+  I18nString,
+  PatchApiConfigBody,
+} from "@/api/stetsom/model";
 import {
   AdminFormSection,
   AdminFormSectionContent,
@@ -9,23 +16,23 @@ import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-picker";
+import type { LibraryUrlOnlyRef } from "@/app/admin/_components/crud/library-asset-ref";
 import { Input } from "@/components/ui/input";
-import { useGetApiConfig } from "@/api/stetsom";
-import { patchApiConfig } from "@/api/stetsom/endpoints/config/config";
-import type {
-  CmsConfig,
-  I18nString,
-  PatchApiConfigBody,
-} from "@/api/stetsom/model";
+import { getApiErrorMessage } from "@/lib/api/error-utils";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { getApiErrorMessage } from "@/lib/api/error-utils";
 
 export type ConfigTab = "identidade-visual" | "empresa" | "redes-sociais";
 
 type LogoField = "logo_dark" | "logo_white";
 type LogoLocale = keyof I18nString;
+
+type CompanyLogoAsset = LibraryUrlOnlyRef;
+
+function logoRef(url?: string): CompanyLogoAsset {
+  return { file_url: url };
+}
 
 function ConfigForm({
   activeTab,
@@ -110,7 +117,7 @@ function ConfigForm({
                   label="Português"
                   type="IMAGE"
                   variant="image"
-                  value={{ file_url: config.logo_dark?.pt }}
+                  value={logoRef(config.logo_dark?.pt)}
                   onChange={(asset) =>
                     handleLogoChange("logo_dark", "pt", asset?.file_url ?? "")
                   }
@@ -119,7 +126,7 @@ function ConfigForm({
                   label="Inglês"
                   type="IMAGE"
                   variant="image"
-                  value={{ file_url: config.logo_dark?.en }}
+                  value={logoRef(config.logo_dark?.en)}
                   onChange={(asset) =>
                     handleLogoChange("logo_dark", "en", asset?.file_url ?? "")
                   }
@@ -128,7 +135,7 @@ function ConfigForm({
                   label="Espanhol"
                   type="IMAGE"
                   variant="image"
-                  value={{ file_url: config.logo_dark?.es }}
+                  value={logoRef(config.logo_dark?.es)}
                   onChange={(asset) =>
                     handleLogoChange("logo_dark", "es", asset?.file_url ?? "")
                   }
@@ -147,7 +154,7 @@ function ConfigForm({
                   label="Português"
                   type="IMAGE"
                   variant="image"
-                  value={{ file_url: config.logo_white?.pt }}
+                  value={logoRef(config.logo_white?.pt)}
                   onChange={(asset) =>
                     handleLogoChange("logo_white", "pt", asset?.file_url ?? "")
                   }
@@ -156,7 +163,7 @@ function ConfigForm({
                   label="Inglês"
                   type="IMAGE"
                   variant="image"
-                  value={{ file_url: config.logo_white?.en }}
+                  value={logoRef(config.logo_white?.en)}
                   onChange={(asset) =>
                     handleLogoChange("logo_white", "en", asset?.file_url ?? "")
                   }
@@ -165,7 +172,7 @@ function ConfigForm({
                   label="Espanhol"
                   type="IMAGE"
                   variant="image"
-                  value={{ file_url: config.logo_white?.es }}
+                  value={logoRef(config.logo_white?.es)}
                   onChange={(asset) =>
                     handleLogoChange("logo_white", "es", asset?.file_url ?? "")
                   }

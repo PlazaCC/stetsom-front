@@ -1,11 +1,7 @@
 "use client";
 
 import { useGetApiLibrary, useGetApiLibraryId } from "@/api/stetsom";
-import type {
-  GetApiLibraryType,
-  I18nString,
-  LibraryAsset,
-} from "@/api/stetsom/model";
+import type { GetApiLibraryType, LibraryAsset } from "@/api/stetsom/model";
 import { useLibraryUpload } from "@/hooks/use-upload";
 import { cn } from "@/lib/utils";
 import { FileText, ImageIcon, Trash2, Upload, X } from "lucide-react";
@@ -13,31 +9,23 @@ import { useState } from "react";
 import { AdminFileUpload } from "./admin-file-upload";
 import { AdminLabel } from "./admin-input";
 import { AdminSearchInput } from "./admin-search-input";
-
-export interface PickedAsset {
-  library_id: string;
-  file_url: string;
-  alt?: I18nString;
-}
+import {
+  currentAssetUrl,
+  type LibraryAssetRef,
+  type LibraryPickedAsset,
+} from "./library-asset-ref";
 
 interface LibraryAssetPickerProps {
   label?: string;
   /** Currently selected asset (preview only needs the URL). */
-  value?: { library_id?: string; file_url?: string } | null;
-  onChange: (asset: PickedAsset | null) => void;
+  value?: LibraryAssetRef | null;
+  onChange: (asset: LibraryPickedAsset | null) => void;
   /** Library type filter + presign scope hint. */
   type?: GetApiLibraryType;
   /** "image" shows a thumbnail; "file" shows a filename row. */
   variant?: "image" | "file";
   accept?: string;
   className?: string;
-}
-
-function currentUrl(asset: LibraryAsset): string {
-  const v =
-    asset.versions.find((x) => x.version_id === asset.current_version_id) ??
-    asset.versions[0];
-  return v?.file_url ?? "";
 }
 
 export function LibraryAssetPicker({
@@ -60,7 +48,7 @@ export function LibraryAssetPicker({
     { query: { enabled: needsResolve } },
   );
   const previewUrl =
-    value?.file_url ?? (resolvedAsset ? currentUrl(resolvedAsset) : "");
+    value?.file_url ?? (resolvedAsset ? currentAssetUrl(resolvedAsset) : "");
 
   return (
     <div className={className}>
@@ -143,7 +131,7 @@ function PickerModal({
   type: GetApiLibraryType;
   accept: string;
   onClose: () => void;
-  onPick: (asset: PickedAsset) => void;
+  onPick: (asset: LibraryPickedAsset) => void;
 }) {
   const [tab, setTab] = useState<"library" | "upload">("library");
   const [q, setQ] = useState("");
@@ -155,7 +143,7 @@ function PickerModal({
   function pickAsset(asset: LibraryAsset) {
     onPick({
       library_id: asset.id,
-      file_url: currentUrl(asset),
+      file_url: currentAssetUrl(asset),
       alt: asset.alt,
     });
   }
@@ -279,7 +267,7 @@ function AssetThumb({
   asset: LibraryAsset;
   onClick: () => void;
 }) {
-  const url = currentUrl(asset);
+  const url = currentAssetUrl(asset);
   const isImage = asset.type === "IMAGE" || asset.type === "CATEGORY_ICON";
   return (
     <button
