@@ -43,6 +43,11 @@ interface BlockManagerProps {
   /** Controlled selection. When `onSelectChange` is passed, the parent owns it. */
   selectedId?: string | null;
   onSelectChange?: (id: string | null) => void;
+  /** Controlled add-block menu. Without these, uses internal `showMenu` state. */
+  menuOpen?: boolean;
+  onMenuOpenChange?: (open: boolean) => void;
+  /** When set, the picked block is inserted at this index instead of appended. */
+  insertIndex?: number | null;
   /** Stacked layout — true when the parent panel is narrow. */
   compact?: boolean;
 }
@@ -73,6 +78,9 @@ export function BlockManager({
   className,
   selectedId: controlledSelectedId,
   onSelectChange,
+  menuOpen,
+  onMenuOpenChange,
+  insertIndex = null,
   compact = false,
 }: BlockManagerProps) {
   const controlled = onSelectChange !== undefined;
@@ -86,6 +94,12 @@ export function BlockManager({
   };
   const [detailTab, setDetailTab] = useState<DetailTab>("content");
   const [showMenu, setShowMenu] = useState(false);
+  const menuControlled = menuOpen !== undefined;
+  const menuVisible = menuControlled ? menuOpen : showMenu;
+  const setMenu = (open: boolean) => {
+    if (menuControlled) onMenuOpenChange?.(open);
+    else setShowMenu(open);
+  };
 
   function reindex(blocks: DraftBlock[]): DraftBlock[] {
     return blocks.map((b, i) => ({ ...b, order: i }));
@@ -95,12 +109,21 @@ export function BlockManager({
     const def = registry[type];
     if (!def) return;
     const id = generateId();
-    onChange(
-      reindex([...value, { id, type, data: { ...def.defaultData }, order: 0 }]),
-    );
+    const block = { id, type, data: { ...def.defaultData }, order: 0 };
+    const next =
+      insertIndex != null
+        ? reindex([
+            ...value.slice(0, insertIndex),
+            block,
+            ...value.slice(insertIndex),
+          ])
+        : reindex([...value, block]);
+    // Close before selecting: in controlled mode both update `selection` and the
+    // last write wins, so the new block ends up selected (not reset to "blocks").
+    setMenu(false);
+    onChange(next);
     setSelectedId(id);
     setDetailTab("content");
-    setShowMenu(false);
   }
 
   function removeBlock(id: string) {
@@ -207,7 +230,7 @@ export function BlockManager({
 
           <button
             type="button"
-            onClick={() => setShowMenu(true)}
+            onClick={() => setMenu(true)}
             className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
           >
             <Plus className="size-4" />
@@ -275,10 +298,10 @@ export function BlockManager({
       </AdminFormSection>
 
       {/* Add-block type menu */}
-      {showMenu && (
+      {menuVisible && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4"
-          onClick={() => setShowMenu(false)}
+          onClick={() => setMenu(false)}
         >
           <div
             className="w-full max-w-2xl overflow-hidden rounded-card border border-border bg-card shadow-cms-card-lg"
@@ -291,7 +314,7 @@ export function BlockManager({
               <button
                 type="button"
                 aria-label="Fechar"
-                onClick={() => setShowMenu(false)}
+                onClick={() => setMenu(false)}
                 className="cursor-pointer rounded p-1 text-muted-foreground hover:bg-muted hover:text-brand"
               >
                 <X className="size-4" />

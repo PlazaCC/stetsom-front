@@ -292,7 +292,7 @@ export function ProductDetailView({
         </Container>
       </section>
 
-      <StickySectionNav />
+      <StickySectionNav previewMode={previewMode} />
 
       {blocks.length > 0 &&
         blocks.map((block) => (
