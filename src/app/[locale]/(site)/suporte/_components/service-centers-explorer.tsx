@@ -1,13 +1,22 @@
 "use client";
 
 import type { PartnerLocation } from "@/api/stetsom/model";
-import { PartnerLocationType } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
+import {
+  type Bounds,
+  type GeocodeSuggestion,
+  type LatLng,
+  extractCepDigits,
+  formatCepInput,
+  haversineKm,
+  isLikelyCep,
+} from "@/lib/geocode";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { LocateFixed, MapPin } from "lucide-react";
+import { LocateFixed, Search, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { GeocodeDropdown } from "./geocode-dropdown";
 
 const ServiceCenterMap = dynamic(
   () => import("./service-center-map").then((m) => m.ServiceCenterMap),
@@ -19,13 +28,8 @@ const ServiceCenterMap = dynamic(
   },
 );
 
-const TYPE_FILTERS = [
-  PartnerLocationType.SERVICE_CENTER,
-  PartnerLocationType.REPRESENTATIVE,
-] as const;
-
-type LatLng = { lat: number; lng: number };
 type GeoStatus = "idle" | "loading" | "denied";
+type NearbyPartner = PartnerLocation & { distance?: number };
 
 const GEO_OPTS: PositionOptions = {
   enableHighAccuracy: false,
@@ -37,40 +41,38 @@ interface ServiceCentersExplorerProps {
   serviceCenters: PartnerLocation[];
 }
 
-function toRad(value: number) {
-  return (value * Math.PI) / 180;
-}
-
-function haversineKm(a: LatLng, b: LatLng) {
-  const R = 6371;
-  const dLat = toRad(b.lat - a.lat);
-  const dLng = toRad(b.lng - a.lng);
-  const lat1 = toRad(a.lat);
-  const lat2 = toRad(b.lat);
-  const h =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(h));
-}
-
 export function ServiceCentersExplorer({
   serviceCenters,
 }: ServiceCentersExplorerProps) {
   const t = useTranslations("Support.serviceCenters");
 
   const [query, setQuery] = useState("");
-  const [activeType, setActiveType] = useState<PartnerLocationType | null>(
-    null,
-  );
+  const [selectedLocation, setSelectedLocation] =
+    useState<GeocodeSuggestion | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<LatLng | null>(null);
   const [geoStatus, setGeoStatus] = useState<GeoStatus>("idle");
+  const [suggestions, setSuggestions] = useState<GeocodeSuggestion[]>([]);
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const [geocodeLoading, setGeocodeLoading] = useState(false);
+  const [isCepMode, setIsCepMode] = useState(false);
+  const [viewportBounds, setViewportBounds] = useState<Bounds | null>(null);
+  const [showAll, setShowAll] = useState(false);
+  const [fitAllCount, setFitAllCount] = useState(0);
 
   const scrollRef = useRef<HTMLDivElement>(null);
-  const prevSelectedRef = useRef<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleGeoSuccess = (pos: GeolocationPosition) => {
     setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+    setSelectedLocation({
+      displayName: "Minha localização atual",
+      city: "",
+      state: "",
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude,
+    });
+    setQuery("Minha localização atual");
     setGeoStatus("idle");
   };
   const handleGeoError = () => setGeoStatus("denied");
@@ -88,129 +90,221 @@ export function ServiceCentersExplorer({
     );
   };
 
-  // Ask for the user's location on mount to surface nearby results. State is
-  // only set from the async geolocation callbacks, never synchronously here.
-  useEffect(() => {
-    if (!("geolocation" in navigator)) return;
-    navigator.geolocation.getCurrentPosition(
-      handleGeoSuccess,
-      handleGeoError,
-      GEO_OPTS,
-    );
+  const cepDigits = extractCepDigits(query);
+  const cepComplete = cepDigits.length === 8;
+  const missingCount = 8 - cepDigits.length;
+  const showDropdown =
+    suggestionsOpen || geocodeLoading || (isCepMode && cepDigits.length > 0);
+
+  const fetchGeocode = useCallback(async (q: string) => {
+    const raw = extractCepDigits(q);
+    const searchQuery = isLikelyCep(q) && raw.length >= 3 ? raw : q;
+    if (searchQuery.trim().length < (isLikelyCep(q) ? 3 : 2)) {
+      setSuggestions([]);
+      setSuggestionsOpen(false);
+      return;
+    }
+    setGeocodeLoading(true);
+    try {
+      const res = await fetch(
+        `/api/bff/geocode/search?q=${encodeURIComponent(searchQuery)}`,
+      );
+      if (!res.ok) {
+        setSuggestions([]);
+        return;
+      }
+      const data: { results: GeocodeSuggestion[] } = await res.json();
+      setSuggestions(data.results);
+      setSuggestionsOpen(true);
+    } catch {
+      setSuggestions([]);
+    } finally {
+      setGeocodeLoading(false);
+    }
   }, []);
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const base = serviceCenters.filter((p) => {
-      if (activeType && p.type !== activeType) return false;
-      if (!q) return true;
-      return (
-        p.name.toLowerCase().includes(q) ||
-        p.city.toLowerCase().includes(q) ||
-        p.state.toLowerCase().includes(q) ||
-        p.address.toLowerCase().includes(q) ||
-        p.zip.toLowerCase().includes(q)
+  const debounceTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const handleInputChange = (raw: string) => {
+    const cepMode = isLikelyCep(raw) && !raw.startsWith("Minha localização");
+    setIsCepMode(cepMode);
+
+    if (cepMode) {
+      const formatted = formatCepInput(raw);
+      setQuery(formatted);
+    } else {
+      setQuery(raw);
+    }
+
+    setSelectedLocation(null);
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+
+    const minLength = cepMode ? 3 : 2;
+    if (
+      raw.replace(/\D/g, "").length >= minLength ||
+      (!cepMode && raw.length >= minLength)
+    ) {
+      debounceTimer.current = setTimeout(() => fetchGeocode(raw), 300);
+    } else {
+      setSuggestions([]);
+      setSuggestionsOpen(false);
+    }
+  };
+
+  const selectSuggestion = (suggestion: GeocodeSuggestion) => {
+    setQuery(suggestion.displayName);
+    setIsCepMode(false);
+    setSelectedLocation(suggestion);
+    setSelectedId(null);
+    setShowAll(false);
+    setSuggestionsOpen(false);
+    resetScroll();
+  };
+
+  const searchLocation: LatLng | null = useMemo(() => {
+    if (selectedLocation && !selectedLocation.city && userLocation)
+      return userLocation;
+    if (selectedLocation)
+      return { lat: selectedLocation.lat, lng: selectedLocation.lng };
+    return null;
+  }, [selectedLocation, userLocation]);
+
+  const filtered: NearbyPartner[] = useMemo(() => {
+    let base = serviceCenters;
+
+    if (selectedLocation?.city && selectedLocation?.state) {
+      base = base.filter(
+        (p) =>
+          p.city.toLowerCase() === selectedLocation.city.toLowerCase() &&
+          p.state.toLowerCase() === selectedLocation.state.toLowerCase(),
       );
-    });
+    }
 
-    if (!userLocation) return base;
+    const location =
+      selectedLocation && !selectedLocation.city
+        ? (userLocation ?? null)
+        : selectedLocation
+          ? { lat: selectedLocation.lat, lng: selectedLocation.lng }
+          : userLocation;
 
-    return [...base].sort((a, b) => {
-      const da =
-        a.lat != null && a.lng != null
-          ? haversineKm(userLocation, { lat: a.lat, lng: a.lng })
-          : Number.POSITIVE_INFINITY;
-      const db =
-        b.lat != null && b.lng != null
-          ? haversineKm(userLocation, { lat: b.lat, lng: b.lng })
-          : Number.POSITIVE_INFINITY;
-      return da - db;
-    });
-  }, [serviceCenters, query, activeType, userLocation]);
+    if (!location) return base;
 
-  // Locations with coordinates feed the map pins; mirror the active filters.
+    return [...base]
+      .map((p) => {
+        const distance =
+          p.lat != null && p.lng != null
+            ? haversineKm(location, { lat: p.lat, lng: p.lng })
+            : undefined;
+        return { ...p, distance };
+      })
+      .sort(
+        (a, b) =>
+          (a.distance ?? Number.POSITIVE_INFINITY) -
+          (b.distance ?? Number.POSITIVE_INFINITY),
+      );
+  }, [serviceCenters, selectedLocation, userLocation]);
+
+  const visibleFiltered: NearbyPartner[] = useMemo(() => {
+    if (!viewportBounds) return filtered;
+    return filtered.filter(
+      (p) =>
+        p.lat == null ||
+        p.lng == null ||
+        (p.lat >= viewportBounds.south &&
+          p.lat <= viewportBounds.north &&
+          p.lng >= viewportBounds.west &&
+          p.lng <= viewportBounds.east),
+    );
+  }, [filtered, viewportBounds]);
+
+  const reordered: NearbyPartner[] = useMemo(() => {
+    if (selectedId) {
+      const item = visibleFiltered.find((p) => p.id === selectedId);
+      return item ? [item] : visibleFiltered;
+    }
+    if (showAll) return filtered;
+    return visibleFiltered;
+  }, [visibleFiltered, selectedId, showAll, filtered]);
+
   const mappable = useMemo(
     () => filtered.filter((p) => p.lat != null && p.lng != null),
     [filtered],
   );
 
-  // React Compiler can't memoize TanStack Virtual's returned functions; opting
-  // this hook out is expected and safe — its output is only used locally here.
   // eslint-disable-next-line react-hooks/incompatible-library
   const rowVirtualizer = useVirtualizer({
-    count: filtered.length,
+    count: reordered.length,
     getScrollElement: () => scrollRef.current,
     estimateSize: () => 100,
     overscan: 8,
-    getItemKey: (index) => filtered[index].id,
+    getItemKey: (index) => reordered[index].id,
   });
 
   const resetScroll = () => rowVirtualizer.scrollToOffset(0);
 
-  // Scroll the selected card into view, but only when the selection itself
-  // changes (e.g. a pin click) — not on every filter/sort change.
   useEffect(() => {
-    if (selectedId && selectedId !== prevSelectedRef.current) {
-      const index = filtered.findIndex((p) => p.id === selectedId);
-      if (index >= 0) rowVirtualizer.scrollToIndex(index, { align: "auto" });
-    }
-    prevSelectedRef.current = selectedId;
-  }, [selectedId, filtered, rowVirtualizer]);
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    };
+  }, []);
 
   const virtualRows = rowVirtualizer.getVirtualItems();
 
   return (
     <div className="mt-8 flex flex-col gap-6 lg:flex-row lg:gap-8">
       <div className="flex h-125 flex-col gap-3 lg:h-150 lg:w-96">
-        <div className="flex h-10 items-center gap-2 border border-border bg-white px-3">
-          <MapPin size={14} className="shrink-0 text-icon-muted" />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              resetScroll();
-            }}
-            placeholder={t("searchPlaceholder")}
-            className="flex-1 border-none bg-transparent text-sm outline-none placeholder:text-icon-muted"
-          />
-        </div>
-
-        <div className="flex flex-wrap gap-4">
-          {TYPE_FILTERS.map((type) => {
-            const active = activeType === type;
-            return (
+        <div className="relative">
+          <div className="flex h-10 items-center gap-2 border border-border bg-white px-3">
+            <Search size={14} className="shrink-0 text-icon-muted" />
+            <input
+              ref={inputRef}
+              type="text"
+              inputMode={isCepMode ? "numeric" : "text"}
+              value={query}
+              onChange={(e) => {
+                handleInputChange(e.target.value);
+                resetScroll();
+              }}
+              onFocus={() => {
+                if (suggestions.length > 0 || isCepMode)
+                  setSuggestionsOpen(true);
+              }}
+              placeholder="Buscar cidade, estado ou CEP"
+              className="flex-1 border-none bg-transparent text-sm outline-none placeholder:text-icon-muted"
+            />
+            {query && (
               <button
-                key={type}
                 type="button"
                 onClick={() => {
-                  setActiveType(active ? null : type);
+                  setQuery("");
+                  setSelectedLocation(null);
+                  setSuggestions([]);
+                  setSuggestionsOpen(false);
+                  setIsCepMode(false);
+                  inputRef.current?.focus();
+                }}
+              >
+                <X size={14} className="text-icon-muted" />
+              </button>
+            )}
+          </div>
+
+          {showDropdown && (
+            <div className="absolute top-full right-0 left-0 z-10 mt-1 max-h-48 overflow-y-auto border border-border bg-white shadow-lg">
+              <GeocodeDropdown
+                isCepMode={isCepMode}
+                geocodeLoading={geocodeLoading}
+                cepComplete={cepComplete}
+                missingCount={missingCount}
+                suggestions={suggestions}
+                query={query}
+                onSelect={(s) => {
+                  selectSuggestion(s);
                   resetScroll();
                 }}
-                className="flex items-center gap-2 text-sm"
-              >
-                <span
-                  className={cn(
-                    "size-3 rounded-full border-2 transition-colors",
-                    active
-                      ? "border-brand bg-brand"
-                      : "border-icon-muted bg-transparent",
-                  )}
-                />
-                <span
-                  className={cn(
-                    active
-                      ? "font-semibold text-brand-dark"
-                      : "text-text-subtle",
-                  )}
-                >
-                  {type === PartnerLocationType.SERVICE_CENTER
-                    ? t("typeServiceCenter")
-                    : t("typeRepresentative")}
-                </span>
-              </button>
-            );
-          })}
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-between gap-2">
@@ -223,7 +317,9 @@ export function ServiceCentersExplorer({
             {geoStatus === "loading" ? t("locating") : t("useMyLocation")}
           </button>
           <span className="text-2xs text-text-subtle">
-            {t("resultsCount", { count: filtered.length })}
+            {t("resultsCount", {
+              count: showAll ? filtered.length : visibleFiltered.length,
+            })}
           </span>
         </div>
 
@@ -235,6 +331,15 @@ export function ServiceCentersExplorer({
           <p className="border border-border bg-white px-4 py-3 text-sm text-text-subtle">
             {t("noResults")}
           </p>
+        ) : visibleFiltered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-4 border border-border bg-white px-6 py-12">
+            <Search size={48} className="text-icon-muted" />
+            <p className="text-center text-sm leading-relaxed text-text-subtle">
+              Informe sua localização ou navegue pelo mapa
+              <br />
+              para encontrar assistências técnicas
+            </p>
+          </div>
         ) : (
           <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
             <div
@@ -242,14 +347,8 @@ export function ServiceCentersExplorer({
               style={{ height: rowVirtualizer.getTotalSize() }}
             >
               {virtualRows.map((virtualRow) => {
-                const posto = filtered[virtualRow.index];
-                const distance =
-                  userLocation && posto.lat != null && posto.lng != null
-                    ? haversineKm(userLocation, {
-                        lat: posto.lat,
-                        lng: posto.lng,
-                      })
-                    : null;
+                const posto = reordered[virtualRow.index];
+                const distance = posto.distance;
                 return (
                   <div
                     key={virtualRow.key}
@@ -260,7 +359,10 @@ export function ServiceCentersExplorer({
                   >
                     <button
                       type="button"
-                      onClick={() => setSelectedId(posto.id)}
+                      onClick={() => {
+                        setSelectedId(posto.id);
+                        setShowAll(false);
+                      }}
                       className={cn(
                         "flex w-full flex-col gap-0.5 border bg-white px-4 py-3 text-left transition-colors",
                         selectedId === posto.id
@@ -296,6 +398,23 @@ export function ServiceCentersExplorer({
                 );
               })}
             </div>
+            {selectedId || showAll ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedId(null);
+                  if (showAll) {
+                    setShowAll(false);
+                  } else {
+                    setShowAll(true);
+                    setFitAllCount((c) => c + 1);
+                  }
+                }}
+                className="flex w-full items-center justify-center gap-1.5 border border-dashed border-border bg-white px-4 py-2 text-xs text-brand transition-colors hover:text-brand-dark"
+              >
+                {showAll ? "Filtrar pelo mapa" : "Mostrar todos"}
+              </button>
+            ) : null}
           </div>
         )}
       </div>
@@ -303,9 +422,14 @@ export function ServiceCentersExplorer({
       <div className="flex-1">
         <ServiceCenterMap
           locations={mappable}
-          userLocation={userLocation}
+          searchLocation={searchLocation}
           selectedId={selectedId}
-          onSelectLocation={setSelectedId}
+          onSelectLocation={(id) => {
+            setSelectedId(id);
+            setShowAll(false);
+          }}
+          onBoundsChange={setViewportBounds}
+          fitAllTrigger={fitAllCount}
         />
       </div>
     </div>
