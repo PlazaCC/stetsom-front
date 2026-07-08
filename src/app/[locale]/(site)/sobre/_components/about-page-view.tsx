@@ -16,11 +16,11 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { EditableSection } from "../../_components/editable-section";
 import { MilestonesMarquee } from "../../_components/milestones-marquee";
-import { OurFactory } from "../../_components/our-factory";
-import { OurFoundations } from "../../_components/our-foundations";
-import { QualitySection } from "../../_components/quality-section";
+import { OurFactory } from "./our-factory";
+import { OurFoundations } from "./our-foundations";
+import { QualitySection } from "./quality-section";
 import { SocialFeed } from "../../_components/social-feed";
-import { TimelineCarousel } from "../../_components/timeline-carousel";
+import { TimelineCarousel } from "./timeline-carousel";
 
 export interface AboutPageViewData {
   blocks: PageBlock[];

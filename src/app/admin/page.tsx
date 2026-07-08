@@ -1,7 +1,12 @@
 "use client";
 
-import { useGetApiDashboard } from "@/api/stetsom";
+import { useGetApiAudit, useGetApiDashboard } from "@/api/stetsom";
+import type { AuditEntry } from "@/api/stetsom/model";
+import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
+import { cn } from "@/lib/utils";
 import {
+  ArrowRight,
+  History,
   Image,
   Mail,
   Package,
@@ -18,15 +23,97 @@ const QUICK_ICONS: Record<string, LucideIcon> = {
   mail: Mail,
 };
 
-function formatDate(iso: string) {
+const ACTION_COLORS: Record<string, string> = {
+  CREATE: "border-l-green-500",
+  UPDATE: "border-l-blue-500",
+  DELETE: "border-l-muted-foreground/30",
+  PUBLISH: "border-l-emerald-500",
+  LOGIN: "border-l-amber-500",
+  LOGOUT: "border-l-muted-foreground/20",
+};
+
+function timeAgo(iso: string): string {
+  const now = Date.now();
+  const then = new Date(iso).getTime();
+  const diffMs = now - then;
+  if (diffMs < 0) return "agora";
+  const diffSec = Math.floor(diffMs / 1000);
+  if (diffSec < 10) return "agora";
+  if (diffSec < 60) return `há ${diffSec}s`;
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `há ${diffMin}min`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `há ${diffHr}h`;
+  const diffDay = Math.floor(diffHr / 24);
+  if (diffDay < 7) return `há ${diffDay}d`;
   return new Date(iso).toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "short",
   });
 }
 
+function AuditActivityCard({ entry }: { entry: AuditEntry }) {
+  const borderColor =
+    ACTION_COLORS[entry.action] ?? "border-l-muted-foreground/20";
+
+  return (
+    <div
+      className={cn(
+        "-mx-3 flex items-start gap-3 rounded-r-md border-l-2 px-3 py-2 pl-3 transition-colors hover:bg-muted/50",
+        borderColor,
+      )}
+    >
+      <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-xs font-semibold text-foreground">
+        {entry.user_avatar ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={entry.user_avatar}
+            alt={entry.user_name}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          entry.user_name.charAt(0).toUpperCase()
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <span className="truncate text-sm font-medium text-foreground">
+            {entry.user_name}
+          </span>
+          <StatusBadge status={entry.action} />
+        </div>
+        <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
+          {entry.action_sentence}
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground/60">
+          {timeAgo(entry.created_at)}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function RecentActivitiesSkeleton() {
+  return (
+    <div className="space-y-4">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="flex items-start gap-3 py-2 pl-3">
+          <div className="size-8 shrink-0 animate-pulse rounded-full bg-muted" />
+          <div className="flex-1 space-y-2">
+            <div className="h-4 w-32 animate-pulse rounded bg-muted" />
+            <div className="h-3 w-48 animate-pulse rounded bg-muted" />
+            <div className="h-3 w-16 animate-pulse rounded bg-muted" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function AdminHome() {
   const dashboard = useGetApiDashboard();
+  const recentAudit = useGetApiAudit({ limit: 5 });
+  const auditEntries = recentAudit.data?.items ?? [];
 
   if (dashboard.isLoading) {
     return (
@@ -44,8 +131,7 @@ export default function AdminHome() {
     );
   }
 
-  const { metrics, recentActivities, scheduleItems, quickActions } =
-    dashboard.data;
+  const { metrics, scheduleItems, quickActions } = dashboard.data;
 
   return (
     <div className="space-y-6 px-4 py-4 lg:px-11.75 lg:py-7.25">
@@ -63,7 +149,7 @@ export default function AdminHome() {
         {metrics.map((metric) => (
           <article
             key={metric.id}
-            className="flex items-start gap-4 rounded-[16px] border border-border bg-card p-5"
+            className="flex items-start gap-4 rounded-[16px] border border-border bg-card p-5 transition-shadow hover:shadow-cms-card"
           >
             {metric.thumbnail_url && (
               <div className="size-12 shrink-0 overflow-hidden rounded-md bg-muted">
@@ -96,33 +182,44 @@ export default function AdminHome() {
         <div className="space-y-6">
           {/* Recent activities */}
           <section className="rounded-[16px] border border-border bg-card p-5">
-            <h2 className="text-xl font-bold text-foreground">
-              Atividades recentes
-            </h2>
-            <ul className="mt-4 space-y-3">
-              {recentActivities.length === 0 ? (
-                <li className="py-6 text-center text-sm text-muted-foreground">
-                  Nenhuma atividade recente.
-                </li>
-              ) : (
-                recentActivities.map((activity) => (
-                  <li
-                    key={activity.id}
-                    className="rounded-md border border-border p-3"
-                  >
-                    <p className="text-sm font-medium text-foreground">
-                      {activity.title}
-                    </p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      {activity.description}
-                    </p>
-                    <p className="mt-1.5 text-xs text-muted-foreground">
-                      {new Date(activity.timestamp).toLocaleString("pt-BR")}
-                    </p>
-                  </li>
-                ))
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-foreground">
+                Atividades recentes
+              </h2>
+              {recentAudit.data && (
+                <span className="text-xs text-muted-foreground/60">
+                  {recentAudit.data.total} registros
+                </span>
               )}
-            </ul>
+            </div>
+
+            {recentAudit.isLoading ? (
+              <RecentActivitiesSkeleton />
+            ) : auditEntries.length === 0 ? (
+              <div className="flex flex-col items-center gap-2 py-8 text-center text-sm text-muted-foreground">
+                <History className="size-8 text-muted-foreground/30" />
+                <p>Nenhuma atividade registrada.</p>
+                <p className="text-xs text-muted-foreground/60">
+                  As ações dos usuários no CMS aparecerão aqui.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-1">
+                {auditEntries.map((entry) => (
+                  <AuditActivityCard key={entry.id} entry={entry} />
+                ))}
+              </div>
+            )}
+
+            {auditEntries.length > 0 && (
+              <Link
+                href="/admin/historico"
+                className="mt-4 flex items-center justify-center gap-1.5 rounded-md border border-border py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                Ver todas as atividades
+                <ArrowRight className="size-4" />
+              </Link>
+            )}
           </section>
         </div>
 
@@ -181,4 +278,11 @@ export default function AdminHome() {
       </div>
     </div>
   );
+}
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "short",
+  });
 }

@@ -217,6 +217,16 @@ export const config: Record<string, AppRouteStaticData> = {
     hideInBreadcrumb: true,
   },
   "/admin/banners": { label: "Banners", icon: ImageIcon, section: "admin" },
+  "/admin/banners/novo": {
+    label: "Cadastrar banner",
+    icon: ImageIcon,
+    section: "admin",
+  },
+  "/admin/banners/[id]": {
+    label: "Editar banner",
+    icon: ImageIcon,
+    section: "admin",
+  },
   "/admin/parceiros": {
     label: "Parceiros",
     icon: Building2,

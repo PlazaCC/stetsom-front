@@ -120,3 +120,13 @@ This is the **sole security boundary** for the *dedicated* route handlers (`/api
 - Public components: use `PublicProductDetailPayload`, `PublicCategorySchema`. Never call `pickLocale` — the API already resolved it.
 - CMS components: use `I18nString` types. Display all languages for editing.
 - Include `?locale=` query param in public site data fetches. Add locale to React Query `queryKey` for locale-variant hooks.
+
+## Endpoint Lifecycle
+
+1. **Add to stetsom-api** — nova rota, schema, use-case, repositório (se aplicável)
+2. **Rodar `pnpm api:generate` no stetsom-front** — Orval lê de `{CMS_API_BASE_URL}/docs/json` e gera types + hooks
+3. **Usar no frontend** — importar types de `@/api/stetsom/model` e hooks de `@/api/stetsom` (React Query) ou funções de `@/api/stetsom/server` (RSC)
+
+Regra: nunca editar `model/`, `endpoints/` ou `server/` manualmente — tudo é sobrescrito no regenerate.
+
+Se a stetsom-api não estiver rodando, o `pnpm api:generate` falha. Rodar local com `pnpm dev` em ambos os projetos. Para alterações que só dependem de types (sem query de BD real), mock data é suficiente.`
