@@ -101,6 +101,8 @@ export function buildPreviewModel(
       page_blocks,
       files,
       highlight_attributes: [...highlightIds],
+      app_store_url: state.app_store_url || null,
+      play_store_url: state.play_store_url || null,
     },
     category: {
       name: category?.name ?? "",

@@ -10,9 +10,15 @@ import type {
 import { Breadcrumb, type BreadcrumbItem } from "@/components/ui/breadcrumb";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ProductCard } from "@/components/ui/product-card";
 import { cn } from "@/lib/utils";
-import { GitCompareArrows } from "lucide-react";
+import { ChevronDown, GitCompareArrows, Smartphone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -31,6 +37,8 @@ export interface ProductDetailViewData {
     page_blocks: ProductBlock[];
     files: ProductFile[];
     highlight_attributes: string[];
+    app_store_url?: string | null;
+    play_store_url?: string | null;
   };
   category: { name: string; slug: string };
   relatedProducts: ProductCardItem[];
@@ -65,7 +73,9 @@ function DetailImage({
 }) {
   if (previewMode) {
     return (
-      <Image
+       
+      // arbitrary remote hosts aren't valid for next/image in the live preview.
+      <img
         src={src}
         alt={alt}
         className={cn("absolute inset-0 h-full w-full", className)}
@@ -114,6 +124,12 @@ export function ProductDetailView({
   const manualFile =
     files.find((f) => f.type === "MANUAL" && f.is_active) ??
     files.find((f) => f.type === "MANUAL");
+
+  // App-store links are per-product and optional; a missing/blank link hides
+  // its menu item, and the whole button hides when neither is set.
+  const appStoreUrl = product.app_store_url?.trim() || null;
+  const playStoreUrl = product.play_store_url?.trim() || null;
+  const hasAppLinks = Boolean(appStoreUrl || playStoreUrl);
 
   const sortedVariants = [...product.variants].sort(
     (a, b) => a.order - b.order,
@@ -286,6 +302,53 @@ export function ProductDetailView({
                 >
                   {t("downloadPhotos")}
                 </button>
+                {hasAppLinks && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={
+                        <button
+                          type="button"
+                          className="inline-flex h-10 items-center gap-2 rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold tracking-[0.8px] text-brand-dark uppercase"
+                        >
+                          <Smartphone size={16} />
+                          {t("downloadApp")}
+                          <ChevronDown size={16} />
+                        </button>
+                      }
+                    />
+                    <DropdownMenuContent
+                      align="start"
+                      className="w-auto min-w-48"
+                    >
+                      {appStoreUrl && (
+                        <DropdownMenuItem
+                          render={
+                            <a
+                              href={appStoreUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            />
+                          }
+                        >
+                          {t("downloadIos")}
+                        </DropdownMenuItem>
+                      )}
+                      {playStoreUrl && (
+                        <DropdownMenuItem
+                          render={
+                            <a
+                              href={playStoreUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            />
+                          }
+                        >
+                          {t("downloadAndroid")}
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
             </div>
           </div>

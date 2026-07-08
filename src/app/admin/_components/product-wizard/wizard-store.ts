@@ -64,6 +64,10 @@ export interface WizardState {
   category_id: string;
   line_id: string;
   template_id: string;
+  /** iOS App Store link for this product. Empty string when unset. */
+  app_store_url: string;
+  /** Android Play Store link for this product. Empty string when unset. */
+  play_store_url: string;
   is_discontinued: boolean;
   /** No UI in the wizard. Preserved across edits, default false on create. */
   is_featured: boolean;
@@ -96,6 +100,8 @@ export type WizardInfoPatch = Partial<
     | "category_id"
     | "line_id"
     | "template_id"
+    | "app_store_url"
+    | "play_store_url"
     | "is_discontinued"
     | "is_featured"
     | "is_spotlight"
@@ -234,6 +240,8 @@ export function initWizardState(
     category_id: p?.category_id ?? "",
     line_id: p?.line_id ?? "",
     template_id: p?.template_id ?? "",
+    app_store_url: p?.app_store_url ?? "",
+    play_store_url: p?.play_store_url ?? "",
     is_discontinued: p?.is_discontinued ?? false,
     is_featured: p?.is_featured ?? false,
     is_spotlight: p?.is_spotlight ?? false,
@@ -419,6 +427,8 @@ export function buildPayload(
     category_id: state.category_id,
     line_id: state.line_id || null,
     template_id: state.template_id || null,
+    app_store_url: state.app_store_url.trim() || null,
+    play_store_url: state.play_store_url.trim() || null,
     status,
     is_discontinued: state.is_discontinued,
     is_featured: state.is_featured,

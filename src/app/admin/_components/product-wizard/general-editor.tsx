@@ -148,6 +148,49 @@ export function GeneralEditor({
           "grid gap-4",
           compact
             ? "grid-cols-1"
+            : "grid-cols-[repeat(auto-fit,minmax(200px,1fr))]",
+        )}
+      >
+        <Field>
+          <FieldLabel>URL App Store</FieldLabel>
+          <FieldContent>
+            <AdminInput
+              type="url"
+              value={state.app_store_url}
+              onChange={(e) =>
+                dispatch({
+                  type: "patch_info",
+                  patch: { app_store_url: e.target.value },
+                })
+              }
+              placeholder="https://apps.apple.com/..."
+            />
+          </FieldContent>
+        </Field>
+
+        <Field>
+          <FieldLabel>URL Play Store</FieldLabel>
+          <FieldContent>
+            <AdminInput
+              type="url"
+              value={state.play_store_url}
+              onChange={(e) =>
+                dispatch({
+                  type: "patch_info",
+                  patch: { play_store_url: e.target.value },
+                })
+              }
+              placeholder="https://play.google.com/..."
+            />
+          </FieldContent>
+        </Field>
+      </div>
+
+      <div
+        className={cn(
+          "grid gap-4",
+          compact
+            ? "grid-cols-1"
             : "grid-cols-[repeat(auto-fit,minmax(150px,1fr))]",
         )}
       >
