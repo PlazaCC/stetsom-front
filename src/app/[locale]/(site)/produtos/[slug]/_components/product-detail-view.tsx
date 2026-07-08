@@ -13,6 +13,7 @@ import { ProductCard } from "@/components/ui/product-card";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useState } from "react";
 import { BlockRenderer } from "./block-renderer";
 import { StickySectionNav } from "./sticky-section-nav";
 
@@ -98,6 +99,12 @@ export function ProductDetailView({
     .filter(Boolean) as string[];
   const thumbnailUrl = sortedImages[0]?.image_url ?? null;
 
+  // The gallery is keyed by index rather than resetting via an effect — an
+  // out-of-range index (e.g. the editor removes images) just falls back to 0.
+  const [activeIndex, setActiveIndex] = useState(0);
+  const safeIndex = activeIndex < galleryImages.length ? activeIndex : 0;
+  const activeImage = galleryImages[safeIndex] ?? thumbnailUrl;
+
   const blocks = [...product.page_blocks].sort((a, b) => a.order - b.order);
   const files = product.files ?? [];
   const manualFile =
@@ -153,11 +160,11 @@ export function ProductDetailView({
             <div className="flex shrink-0 flex-col gap-4 lg:w-111.75">
               <div
                 {...ed("images")}
-                className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-card lg:h-120"
+                className="relative flex h-80 w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-card sm:h-100 lg:h-120"
               >
-                {thumbnailUrl && (
+                {activeImage && (
                   <DetailImage
-                    src={thumbnailUrl}
+                    src={activeImage}
                     alt={product.name}
                     priority
                     sizes="(max-width: 1024px) 100vw, 447px"
@@ -173,7 +180,14 @@ export function ProductDetailView({
                     <button
                       key={`${image}-${index}`}
                       type="button"
-                      className="relative h-19 w-19 shrink-0 overflow-hidden rounded border border-border bg-card"
+                      aria-pressed={index === safeIndex}
+                      onClick={() => setActiveIndex(index)}
+                      className={cn(
+                        "relative h-19 w-19 shrink-0 overflow-hidden rounded bg-card",
+                        index === safeIndex
+                          ? "border-2 border-primary"
+                          : "border border-border",
+                      )}
                     >
                       <DetailImage
                         src={image}

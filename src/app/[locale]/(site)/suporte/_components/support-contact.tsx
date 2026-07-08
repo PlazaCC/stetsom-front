@@ -1,9 +1,8 @@
 import type { PublicDepartmentItem } from "@/api/stetsom/model";
-import { getApiContactDepartments } from "@/api/stetsom/server/contact/contact";
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
 import { Mail, Phone } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import { ContactForm } from "./contact-form";
 
 const CONTACT_INFO_ICONS = {
@@ -27,17 +26,15 @@ type ContactInfoData = {
 interface SupportContactProps {
   contact: SupportContactData;
   contactInfo?: ContactInfoData;
+  departments: PublicDepartmentItem[];
 }
 
-export async function SupportContact({
+export function SupportContact({
   contact,
   contactInfo,
+  departments,
 }: Readonly<SupportContactProps>) {
-  const t = await getTranslations("Support.contact");
-
-  const departments = await getApiContactDepartments().catch(
-    () => [] as PublicDepartmentItem[],
-  );
+  const t = useTranslations("Support.contact");
 
   const infoItems = contactInfo
     ? ([

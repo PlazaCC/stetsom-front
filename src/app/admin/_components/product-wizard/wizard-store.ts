@@ -7,6 +7,7 @@ import type {
   PostApiProductsBody,
   ProductStatus,
 } from "@/api/stetsom/model";
+import { reindexByOrder } from "@/lib/utils/reindex";
 import { slugify } from "@/lib/utils/slugify";
 
 export type WizardLocale = "pt" | "en" | "es";
@@ -120,10 +121,6 @@ export type WizardAction =
   | { type: "mark_saved"; productId: string; status: ProductStatus };
 
 const DEFAULT_VARIATION_ID = "variation-default";
-
-function reindexSpecs(specs: WizardSpec[]): WizardSpec[] {
-  return specs.map((s, i) => ({ ...s, order: i }));
-}
 
 export function newSpec(order: number): WizardSpec {
   return {
@@ -313,7 +310,7 @@ export function wizardReducer(
             (s) => !existingIds.has(s.attribute_id),
           );
           if (missing.length === 0) return v;
-          const merged = reindexSpecs([
+          const merged = reindexByOrder([
             ...v.specs,
             ...missing.map((s, i) => ({
               ...s,

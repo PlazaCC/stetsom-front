@@ -14,6 +14,7 @@ import {
   ComboboxValue,
 } from "@/components/ui/combobox";
 import type { Attribute, I18nString } from "@/api/stetsom/model";
+import { reindexByOrder } from "@/lib/utils/reindex";
 import { Plus, Trash2 } from "lucide-react";
 import { ToggleSwitch } from "./toggle-switch";
 import { newSpec, type WizardSpec } from "./wizard-store";
@@ -29,10 +30,6 @@ interface SpecTableProps {
   onChange: (specs: WizardSpec[]) => void;
   /** Stacked layout: attribute on top, value below, separated by border-b. */
   compact?: boolean;
-}
-
-function reindex(specs: WizardSpec[]): WizardSpec[] {
-  return specs.map((s, i) => ({ ...s, order: i }));
 }
 
 export function SpecTable({
@@ -71,7 +68,7 @@ export function SpecTable({
       <SortableList
         items={specs}
         getId={(s) => s.id}
-        onReorder={(list) => onChange(reindex(list))}
+        onReorder={(list) => onChange(reindexByOrder(list))}
         renderItem={(spec, handle) => {
           const attrCombobox = (
             <Combobox
@@ -129,7 +126,7 @@ export function SpecTable({
               type="button"
               aria-label="Remover especificação"
               onClick={() =>
-                onChange(reindex(specs.filter((s) => s.id !== spec.id)))
+                onChange(reindexByOrder(specs.filter((s) => s.id !== spec.id)))
               }
               className="shrink-0 rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
             >
@@ -146,23 +143,35 @@ export function SpecTable({
             />
           );
 
+          const valueInput = (
+            <Input
+              value={spec.value[locale] ?? ""}
+              onChange={(e) => setValue(spec, e.target.value)}
+              placeholder="Valor"
+            />
+          );
+
+          const dragHandle = (
+            <div className="flex shrink-0 items-center [&_button]:cursor-grab [&_button]:active:cursor-grabbing">
+              {handle}
+            </div>
+          );
+
+          // Compact stacks the value below its own row (attribute/toggle/delete
+          // share one line); the full table lays every field out as one grid row.
+          // The two are different DOM shapes, not just different classes, so they
+          // stay as separate returns — only the leaf nodes above are shared.
           if (compact) {
             return (
               <div className="border-b border-border bg-card last:border-b-0">
                 <div className="flex items-center gap-2 px-3 py-2">
-                  <div className="flex shrink-0 items-center [&_button]:cursor-grab [&_button]:active:cursor-grabbing">
-                    {handle}
-                  </div>
+                  {dragHandle}
                   <div className="min-w-0 flex-1">{attrCombobox}</div>
                   {highlightToggle}
                   {deleteBtn}
                 </div>
                 <div className="border-t border-border px-3 pt-1.5 pb-2.5">
-                  <Input
-                    value={spec.value[locale] ?? ""}
-                    onChange={(e) => setValue(spec, e.target.value)}
-                    placeholder="Valor"
-                  />
+                  {valueInput}
                 </div>
               </div>
             );
@@ -170,15 +179,9 @@ export function SpecTable({
 
           return (
             <div className="grid grid-cols-[44px_1fr_1fr_80px_44px] gap-3 border-b border-border bg-card px-3 py-1.5 last:border-b-0">
-              <div className="flex items-center [&_button]:cursor-grab [&_button]:active:cursor-grabbing">
-                {handle}
-              </div>
+              {dragHandle}
               {attrCombobox}
-              <Input
-                value={spec.value[locale] ?? ""}
-                onChange={(e) => setValue(spec, e.target.value)}
-                placeholder="Valor"
-              />
+              {valueInput}
               <div className="flex items-center justify-center">
                 {highlightToggle}
               </div>

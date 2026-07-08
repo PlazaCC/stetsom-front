@@ -1,35 +1,32 @@
 "use client";
 
-import type { ProductDetailViewData } from "@/app/[locale]/(site)/produtos/[slug]/_components/product-detail-view";
 import { usePreviewBridge } from "@/hooks/use-preview-bridge";
 import { cn } from "@/lib/utils";
 import { Monitor, Smartphone } from "lucide-react";
 import {
-  PREVIEW_INTENT,
-  PREVIEW_MODEL,
-  PREVIEW_READY,
-  PREVIEW_SELECTION,
-  type EditorTarget,
-} from "./editor-target";
+  PAGE_PREVIEW_INTENT,
+  PAGE_PREVIEW_MODEL,
+  PAGE_PREVIEW_READY,
+  PAGE_PREVIEW_SELECTION,
+  type PageEditorTarget,
+  type PagePreviewModel,
+} from "./page-editor-target";
 
-/** Same-origin route that renders the product view from the pushed model. */
-const FRAME_URL = "/preview-produto";
+const FRAME_URL = "/preview-pagina";
 
 const MESSAGE_TYPES = {
-  ready: PREVIEW_READY,
-  model: PREVIEW_MODEL,
-  selection: PREVIEW_SELECTION,
-  intent: PREVIEW_INTENT,
+  ready: PAGE_PREVIEW_READY,
+  model: PAGE_PREVIEW_MODEL,
+  selection: PAGE_PREVIEW_SELECTION,
+  intent: PAGE_PREVIEW_INTENT,
 };
 
 type Device = "mobile" | "desktop";
 
-interface PreviewCanvasProps {
-  model: ProductDetailViewData;
-  /** Current panel selection, mirrored into the frame to highlight the region. */
-  selection: EditorTarget;
-  /** A region/block was clicked in the preview. */
-  onIntent: (target: EditorTarget) => void;
+interface PagePreviewCanvasProps {
+  model: PagePreviewModel;
+  selection: PageEditorTarget;
+  onIntent: (target: PageEditorTarget) => void;
   device: Device;
   onDeviceChange: (device: Device) => void;
 }
@@ -69,14 +66,14 @@ function DeviceToggle({
   );
 }
 
-export function PreviewCanvas({
+export function PagePreviewCanvas({
   model,
   selection,
   onIntent,
   device,
   onDeviceChange,
-}: PreviewCanvasProps) {
-  const iframeRef = usePreviewBridge<ProductDetailViewData, EditorTarget>(
+}: PagePreviewCanvasProps) {
+  const iframeRef = usePreviewBridge<PagePreviewModel, PageEditorTarget>(
     MESSAGE_TYPES,
     model,
     selection,
@@ -94,8 +91,6 @@ export function PreviewCanvas({
         </div>
       </div>
 
-      {/* The canvas scrolls internally — the iframe is a real viewport, not
-          sized to its content. See admin-shell-scroll.md (editor exception). */}
       <div
         className={cn(
           "flex flex-1 overflow-hidden",
@@ -111,7 +106,7 @@ export function PreviewCanvas({
           <iframe
             ref={iframeRef}
             src={FRAME_URL}
-            title="Preview do produto"
+            title="Preview da página"
             sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
             className="h-full w-full border-0 bg-white"
           />

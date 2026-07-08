@@ -7,7 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
 type FAQItem = { id: string; q: string; a: string };
 
@@ -20,8 +20,8 @@ interface SupportFAQProps {
   };
 }
 
-export async function SupportFAQ({ faq }: Readonly<SupportFAQProps>) {
-  const t = await getTranslations("Support.faq");
+export function SupportFAQ({ faq }: Readonly<SupportFAQProps>) {
+  const t = useTranslations("Support.faq");
 
   return (
     <section className="w-full bg-off-white py-12">

@@ -3,16 +3,13 @@
 import { ImagePlus, X } from "lucide-react";
 import { rectSortingStrategy } from "@dnd-kit/sortable";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
+import { reindexByOrder } from "@/lib/utils/reindex";
 import type { WizardImage } from "./wizard-store";
 import { useEffect, useRef } from "react";
 
 interface ImageGalleryProps {
   images: WizardImage[];
   onChange: (images: WizardImage[]) => void;
-}
-
-function reindex(list: WizardImage[]): WizardImage[] {
-  return list.map((img, i) => ({ ...img, order: i }));
 }
 
 function makeImage(file: File, order: number): WizardImage {
@@ -45,11 +42,11 @@ export function ImageGallery({ images, onChange }: ImageGalleryProps) {
     const added = Array.from(files).map((file, i) =>
       makeImage(file, images.length + i),
     );
-    onChange(reindex([...images, ...added]));
+    onChange(reindexByOrder([...images, ...added]));
   }
 
   function removeImage(id: string) {
-    onChange(reindex(images.filter((img) => img.id !== id)));
+    onChange(reindexByOrder(images.filter((img) => img.id !== id)));
   }
 
   const nextSlotIndex = images.length + 1;
@@ -58,7 +55,7 @@ export function ImageGallery({ images, onChange }: ImageGalleryProps) {
     <SortableList
       items={images}
       getId={(img) => img.id}
-      onReorder={(list) => onChange(reindex(list))}
+      onReorder={(list) => onChange(reindexByOrder(list))}
       strategy={rectSortingStrategy}
       className="grid grid-cols-2 gap-3 space-y-0 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6"
       append={

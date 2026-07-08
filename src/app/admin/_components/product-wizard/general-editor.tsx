@@ -43,6 +43,56 @@ interface GeneralEditorProps {
   compact?: boolean;
 }
 
+interface EntityComboboxProps<T extends { id: string; name: string }> {
+  label: string;
+  items: T[];
+  value: T | null;
+  onValueChange: (value: T | null) => void;
+  placeholder: string;
+  emptyMessage: string;
+  disabled?: boolean;
+  /** Remounts the combobox (clearing its internal input) when this changes. */
+  resetKey?: string;
+}
+
+function EntityCombobox<T extends { id: string; name: string }>({
+  label,
+  items,
+  value,
+  onValueChange,
+  placeholder,
+  emptyMessage,
+  disabled,
+  resetKey,
+}: EntityComboboxProps<T>) {
+  return (
+    <Field>
+      <FieldLabel>{label}</FieldLabel>
+      <FieldContent>
+        <Combobox
+          key={resetKey}
+          items={items}
+          value={value}
+          itemToStringLabel={(item: T) => item.name}
+          onValueChange={onValueChange}
+        >
+          <ComboboxInput placeholder={placeholder} disabled={disabled} />
+          <ComboboxContent>
+            <ComboboxEmpty>{emptyMessage}</ComboboxEmpty>
+            <ComboboxList>
+              {(item: T) => (
+                <ComboboxItem key={item.id} value={item}>
+                  {item.name}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      </FieldContent>
+    </Field>
+  );
+}
+
 export function GeneralEditor({
   state,
   dispatch,
@@ -101,69 +151,37 @@ export function GeneralEditor({
             : "grid-cols-[repeat(auto-fit,minmax(150px,1fr))]",
         )}
       >
-        <Field>
-          <FieldLabel>Categoria</FieldLabel>
-          <FieldContent>
-            <Combobox
-              items={categories}
-              value={currentCategory}
-              itemToStringLabel={(item: CategoryOption) => item.name}
-              onValueChange={(value: CategoryOption | null) =>
-                dispatch({
-                  type: "patch_info",
-                  patch: { category_id: value?.id ?? "" },
-                })
-              }
-            >
-              <ComboboxInput placeholder="Selecione uma categoria" />
-              <ComboboxContent>
-                <ComboboxEmpty>Nenhuma categoria encontrada.</ComboboxEmpty>
-                <ComboboxList>
-                  {(item: CategoryOption) => (
-                    <ComboboxItem key={item.id} value={item}>
-                      {item.name}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
-          </FieldContent>
-        </Field>
+        <EntityCombobox
+          label="Categoria"
+          items={categories}
+          value={currentCategory}
+          onValueChange={(value) =>
+            dispatch({
+              type: "patch_info",
+              patch: { category_id: value?.id ?? "" },
+            })
+          }
+          placeholder="Selecione uma categoria"
+          emptyMessage="Nenhuma categoria encontrada."
+        />
 
-        <Field>
-          <FieldLabel>Linha</FieldLabel>
-          <FieldContent>
-            <Combobox
-              key={state.category_id}
-              items={categoryLines}
-              value={currentLine}
-              itemToStringLabel={(item: LineOption) => item.name}
-              onValueChange={(value: LineOption | null) =>
-                dispatch({
-                  type: "patch_info",
-                  patch: { line_id: value?.id ?? "" },
-                })
-              }
-            >
-              <ComboboxInput
-                placeholder={
-                  categoryLines.length ? "Selecione uma linha" : "Nenhuma linha"
-                }
-                disabled={!categoryLines.length}
-              />
-              <ComboboxContent>
-                <ComboboxEmpty>Nenhuma linha encontrada.</ComboboxEmpty>
-                <ComboboxList>
-                  {(item: LineOption) => (
-                    <ComboboxItem key={item.id} value={item}>
-                      {item.name}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
-          </FieldContent>
-        </Field>
+        <EntityCombobox
+          resetKey={state.category_id}
+          label="Linha"
+          items={categoryLines}
+          value={currentLine}
+          onValueChange={(value) =>
+            dispatch({
+              type: "patch_info",
+              patch: { line_id: value?.id ?? "" },
+            })
+          }
+          placeholder={
+            categoryLines.length ? "Selecione uma linha" : "Nenhuma linha"
+          }
+          emptyMessage="Nenhuma linha encontrada."
+          disabled={!categoryLines.length}
+        />
       </div>
 
       <div className="flex flex-col gap-2">

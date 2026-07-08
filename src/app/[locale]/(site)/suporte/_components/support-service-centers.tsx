@@ -1,17 +1,17 @@
 import type { PartnerLocation } from "@/api/stetsom/model";
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import { ServiceCentersExplorer } from "./service-centers-explorer";
 
 interface SupportServiceCentersProps {
   serviceCenters: PartnerLocation[];
 }
 
-export async function SupportServiceCenters({
+export function SupportServiceCenters({
   serviceCenters,
 }: Readonly<SupportServiceCentersProps>) {
-  const t = await getTranslations("Support.serviceCenters");
+  const t = useTranslations("Support.serviceCenters");
 
   return (
     <section

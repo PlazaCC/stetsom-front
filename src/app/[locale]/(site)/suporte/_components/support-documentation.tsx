@@ -3,7 +3,7 @@ import { SectionLabel } from "@/components/ui/section-label";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Download, FileText, Search } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
 type DocCategory = { id: string; title: string; label: string; slug: string };
 type DocFile = {
@@ -21,11 +21,11 @@ interface SupportDocumentationProps {
   files: DocFile[];
 }
 
-export async function SupportDocumentation({
+export function SupportDocumentation({
   categories,
   files,
 }: Readonly<SupportDocumentationProps>) {
-  const t = await getTranslations("Support.documentation");
+  const t = useTranslations("Support.documentation");
 
   function getFileTypeName(type: string) {
     if (type === "MANUAL") return t("typeManual");
