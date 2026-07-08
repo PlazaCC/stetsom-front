@@ -88,7 +88,21 @@
     "emptyCategory": "No products found in this category.",
     "options": "Options",
     "showDiscontinued": "Show discontinued",
-    "showExport": "Export products"
+    "showExport": "Export products",
+    "compare": "Compare products",
+    "compareSelect": "Select 2 products to compare",
+    "compareSelected": "{count} of 2 selected",
+    "compareCancel": "Cancel comparison",
+    "compareReplace": "Replace",
+    "compareVariant": "Variant",
+    "compareNoDescription": "No description available",
+    "compareClose": "Close comparison",
+    "compareInstruction": "Click a product from the catalog to add it to the comparison",
+    "compareInstructionSecond": "Select one more product to compare",
+    "compareBadge": "Compare",
+    "compareBadgeSelected": "Selected",
+    "compareRemove": "Remove",
+    "compareLoadError": "Error loading product data. Please try again."
   },
   "ProductDetail": {
     "overview": "Overview",
@@ -127,7 +141,8 @@
     "blockModel3dDescription": "Explore the product in full perspective to check connectors, finish and real dimensions.",
     "blockModel3dOpen": "Open model",
     "blockModel3dLoading": "Loading model…",
-    "thumbnail": "{name} — thumbnail {index}"
+    "thumbnail": "{name} — thumbnail {index}",
+    "compare": "Compare"
   },
   "Support": {
     "contact": {

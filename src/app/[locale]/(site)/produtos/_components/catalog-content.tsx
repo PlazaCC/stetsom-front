@@ -7,13 +7,18 @@ import type {
 import { Container } from "@/components/ui/container";
 import { useCatalogFilters } from "@/hooks/use-catalog-filters";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CatalogHero } from "./catalog-hero";
 import { CatalogCategoryBar } from "./catalog-category-bar";
 import { CatalogMobileActions } from "./catalog-mobile-actions";
 import { CatalogMobileFilter } from "./catalog-mobile-filter";
 import { CatalogProductsList } from "./catalog-products-list";
 import { CatalogSidebar } from "./catalog-sidebar";
+import {
+  CompareProvider,
+  useCompareContext,
+} from "./product-compare/compare-provider";
+import { CompareModal } from "./product-compare/compare-modal";
 
 interface CategoryOption {
   name: string;
@@ -35,7 +40,7 @@ interface CatalogContentProps {
   catalog: ProductCatalogResponse;
 }
 
-export function CatalogContent({ categories, catalog }: CatalogContentProps) {
+function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
   const t = useTranslations("Catalog");
 
   const {
@@ -114,6 +119,56 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
 
   const productCards = catalog.items;
 
+  // Build a slug → ProductCardItem lookup map for the compare modal
+  const catalogMap = useMemo(() => {
+    const map = new Map<string, (typeof productCards)[number]>();
+    for (const p of productCards) {
+      map.set(p.slug, p);
+    }
+    return map;
+  }, [productCards]);
+
+  // Compare context
+  const { mode, selectedSlugs } = useCompareContext();
+  const prevSelectedRef = useRef<string[]>([]);
+
+  // When first product is selected in compare mode, auto-filter by its category
+  useEffect(() => {
+    if (mode !== "selecting") return;
+    const prev = prevSelectedRef.current;
+    const curr = selectedSlugs;
+
+    // A product was added (first one)
+    if (curr.length === 1 && prev.length === 0) {
+      const product = catalogMap.get(curr[0]);
+      if (product) {
+        // Find the category slug from the categories list by name
+        const catSlug = categories.find(
+          (c) => c.name === product.category,
+        )?.slug;
+        if (catSlug && catSlug !== activeCategory) {
+          setActiveCategory(catSlug);
+        }
+      }
+    }
+
+    // All products removed — reset category
+    if (curr.length === 0 && prev.length > 0) {
+      if (activeCategory !== "todos") {
+        setActiveCategory("todos");
+      }
+    }
+
+    prevSelectedRef.current = curr;
+  }, [
+    selectedSlugs,
+    mode,
+    catalogMap,
+    categories,
+    activeCategory,
+    setActiveCategory,
+  ]);
+
   return (
     <div>
       <CatalogHero totalProducts={catalog.total} />
@@ -173,6 +228,17 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
           </div>
         </Container>
       </section>
+
+      {/* Compare modal overlay */}
+      <CompareModal catalogMap={catalogMap} />
     </div>
+  );
+}
+
+export function CatalogContent({ categories, catalog }: CatalogContentProps) {
+  return (
+    <CompareProvider>
+      <CatalogContentInner categories={categories} catalog={catalog} />
+    </CompareProvider>
   );
 }

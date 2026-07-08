@@ -11,8 +11,10 @@ import { Breadcrumb, type BreadcrumbItem } from "@/components/ui/breadcrumb";
 import { Container } from "@/components/ui/container";
 import { ProductCard } from "@/components/ui/product-card";
 import { cn } from "@/lib/utils";
+import { GitCompareArrows } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { BlockRenderer } from "./block-renderer";
 import { StickySectionNav } from "./sticky-section-nav";
@@ -20,6 +22,7 @@ import { StickySectionNav } from "./sticky-section-nav";
 /** Locale-resolved, public-shaped product payload consumed by the detail view. */
 export interface ProductDetailViewData {
   product: {
+    slug: string;
     name: string;
     description?: string | null;
     images: ProductImage[];
@@ -300,6 +303,21 @@ export function ProductDetailView({
             editable={editable}
           />
         ))}
+
+      <section className="border-t border-border bg-white">
+        <Container>
+          <Link
+            href={`/produtos?category=${encodeURIComponent(category.slug)}&first_comparation_product_slug=${product.slug}`}
+            className="group inline-flex w-full cursor-pointer items-center justify-center gap-2 border-2 border-brand px-6 py-3 font-sans text-button-md font-bold tracking-[0.8px] text-brand-dark uppercase transition-colors hover:bg-brand hover:text-white"
+          >
+            <GitCompareArrows
+              size={18}
+              className="text-brand transition-colors group-hover:text-white"
+            />
+            {t("compare")}
+          </Link>
+        </Container>
+      </section>
 
       <section {...ed("specs")} id="specifications" className="scroll-mt-38">
         <div className="border-b border-zinc-200 px-5 py-3 lg:px-42.5">

@@ -93,6 +93,7 @@ export function buildPreviewModel(
 
   return {
     product: {
+      slug: pick(state.slug) || "",
       name: pick(state.name) || "Produto sem nome",
       description: pick(state.description) || null,
       images,

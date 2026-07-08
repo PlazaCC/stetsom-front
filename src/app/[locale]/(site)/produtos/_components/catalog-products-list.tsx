@@ -3,6 +3,7 @@
 import type { ProductCatalogResponse } from "@/api/stetsom/model";
 import { ProductCard } from "@/components/ui/product-card";
 import { useTranslations } from "next-intl";
+import { useCompareContext } from "./product-compare/compare-provider";
 
 interface CatalogProductsListProps {
   products: ProductCatalogResponse["items"];
@@ -18,6 +19,10 @@ export function CatalogProductsList({
   onPageChange,
 }: CatalogProductsListProps) {
   const t = useTranslations("Catalog");
+  const compare = useCompareContext();
+  const { mode, selectedSlugs, selectProduct, isProductSelected } = compare;
+
+  const isSelecting = mode === "selecting";
 
   if (products.length === 0) {
     return (
@@ -39,6 +44,14 @@ export function CatalogProductsList({
             img={product.thumbnail_url ?? undefined}
             href={product.href}
             variantDirection="column"
+            compareMode={isSelecting}
+            isCompareSelected={isProductSelected(product.slug)}
+            compareDisabled={
+              selectedSlugs.length >= 2 && !isProductSelected(product.slug)
+            }
+            onCompareToggle={() => selectProduct(product.slug)}
+            compareLabel={t("compareBadge")}
+            compareSelectedLabel={t("compareBadgeSelected")}
           />
         ))}
       </div>
