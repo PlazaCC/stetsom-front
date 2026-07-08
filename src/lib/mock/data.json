@@ -7071,8 +7071,14 @@
     }
   ],
   "legal-pages--public": [
-    { "slug": "politica-de-privacidade", "title": "Política de Privacidade" },
-    { "slug": "termos-de-uso", "title": "Termos de Uso" }
+    {
+      "slug": "politica-de-privacidade",
+      "title": "Política de Privacidade"
+    },
+    {
+      "slug": "termos-de-uso",
+      "title": "Termos de Uso"
+    }
   ],
   "legal-pages--public--politica-de-privacidade": {
     "slug": "politica-de-privacidade",
@@ -39724,5 +39730,17 @@
       "created_at": "2026-06-11T08:11:10.014Z",
       "updated_at": "2026-06-11T08:11:10.014Z"
     }
+  },
+  "config--public": {
+    "company_email": "contato@stetsom.com.br",
+    "company_phone": "(16) 3371-9300",
+    "company_whatsapp": "5516999999999",
+    "company_address": "Rua Exemplo, 1000 - Batatais/SP",
+    "logo_dark": "/logo.png",
+    "logo_white": "/logo-white.png",
+    "social_instagram": "stetsombrasil",
+    "social_facebook": "stetsom",
+    "social_youtube": "@stetsom",
+    "social_linkedin": "company/stetsom"
   }
 }

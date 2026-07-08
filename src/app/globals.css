@@ -317,6 +317,12 @@
   }
 }
 
+/* Social feed Swiper: allow cards to peek beyond the container */
+.social-feed-swiper.swiper,
+.social-feed-swiper .swiper-wrapper {
+  overflow: visible !important;
+}
+
 @layer utilities {
   .bg-gradient-dark-overlay {
     background: linear-gradient(

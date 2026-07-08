@@ -58,9 +58,9 @@ export function CatalogCategoryBar({
   onCategoryChange,
 }: CatalogCategoryBarProps) {
   return (
-    <section className="border-b border-border bg-white py-6">
+    <section className="border-b border-border bg-white py-4 lg:py-6">
       <Container className="scrollbar-none overflow-x-auto">
-        <div className="flex w-max gap-5">
+        <div className="flex w-max gap-3 lg:gap-5">
           {categories.map((cat) => {
             const isActive = activeCategory === cat.slug;
             const icon = resolveCategoryIcon(cat);
@@ -73,17 +73,17 @@ export function CatalogCategoryBar({
                 type="button"
                 onClick={() => onCategoryChange(cat.slug)}
                 className={cn(
-                  "group flex size-30.75 shrink-0 cursor-pointer flex-col items-center justify-center gap-3 rounded-[12px] border px-2 py-3 text-center transition-colors",
+                  "group flex size-20 shrink-0 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-lg border px-1.5 py-2 text-center transition-colors lg:size-26 lg:gap-3 lg:px-2 lg:py-3",
                   isActive
                     ? "border-brand bg-brand/10"
                     : "border-border hover:border-brand hover:bg-brand/10",
                 )}
               >
-                <span className="flex h-16.75 w-full items-center justify-center">
+                <span className="flex h-11 w-full items-center justify-center lg:h-20">
                   {icon.kind === "lucide" ? (
                     <icon.Icon
-                      size={icon.size}
-                      className={cn("shrink-0", stateTextClass)}
+                      size={isActive ? 24 : 22}
+                      className={cn("shrink-0 lg:size-10", stateTextClass)}
                     />
                   ) : (
                     <Image
@@ -91,13 +91,13 @@ export function CatalogCategoryBar({
                       alt=""
                       width={icon.width}
                       height={icon.height}
-                      className="h-auto max-h-16.75 w-auto max-w-full object-contain"
+                      className="h-auto max-h-11 w-auto max-w-full object-contain lg:max-h-18 lg:w-auto"
                     />
                   )}
                 </span>
                 <span
                   className={cn(
-                    "font-sans text-base leading-tight font-medium whitespace-nowrap",
+                    "font-sans text-2xs leading-tight font-medium whitespace-nowrap lg:text-sm",
                     stateTextClass,
                   )}
                 >

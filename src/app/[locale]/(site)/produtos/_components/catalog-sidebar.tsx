@@ -65,7 +65,7 @@ export function CatalogSidebar({
         <button
           type="button"
           onClick={onClear}
-          className="font-sans text-sm font-light text-brand underline underline-offset-2"
+          className="font-sans text-sm font-light underline-offset-2 hover:text-brand hover:underline"
         >
           {t("clearAll")}
         </button>
@@ -159,7 +159,11 @@ export function CatalogSidebar({
             >
               <Checkbox
                 checked={activeCategory === cat.slug}
-                onCheckedChange={() => onCategoryChange(cat.slug)}
+                onCheckedChange={() =>
+                  onCategoryChange(
+                    activeCategory === cat.slug ? "todos" : cat.slug,
+                  )
+                }
               />
               {cat.name}
             </label>

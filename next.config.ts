@@ -7,18 +7,25 @@ const storageHostname = process.env.STORAGE_PUBLIC_HOSTNAME?.trim()
 
 const nextConfig: NextConfig = {
   images: {
-    ...(storageHostname
-      ? {
-          remotePatterns: [
+    remotePatterns: [
+      ...(storageHostname
+        ? [
             {
               protocol: 'https' as const,
               hostname: storageHostname,
               port: '',
               pathname: '/**',
             },
-          ],
-        }
-      : {}),
+          ]
+        : []),
+      // Instagram CDN images (social feed)
+      {
+        protocol: 'https' as const,
+        hostname: '*.cdninstagram.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
     // Logos may be uploaded as SVG. next/image blocks SVG optimization by
     // default (XSS risk from untrusted SVG markup) — the CSP below neuters
     // scripts in the served SVG so it's safe to opt back in.

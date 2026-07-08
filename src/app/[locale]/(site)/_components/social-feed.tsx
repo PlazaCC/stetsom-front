@@ -8,6 +8,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
+import { getMockSocialFeedPosts } from "@/lib/mock/instagram/mock";
 
 type SocialPost = {
   id: string;
@@ -23,6 +24,8 @@ type SocialPost = {
   opacity?: number;
   href?: string;
 };
+
+export type { SocialPost };
 
 type SocialFeedSection = {
   handle: string;
@@ -42,10 +45,13 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
   const dateFormatter = new Intl.DateTimeFormat(locale, {
     dateStyle: "medium",
   });
-  const posts = section.posts ?? [];
+
+  // Fall back to mock data when no real posts are available
+  const posts =
+    section.posts.length > 0 ? section.posts : getMockSocialFeedPosts();
 
   return (
-    <section className="flex justify-center overflow-x-hidden bg-white py-10 sm:py-12">
+    <section className="flex justify-center bg-white py-10 sm:py-12">
       <Container>
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <SectionLabel
@@ -71,7 +77,7 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
             slidesPerView="auto"
             spaceBetween={24}
             grabCursor
-            className="w-full overflow-hidden"
+            className="social-feed-swiper w-full"
           >
             {posts.map((post) => (
               <SwiperSlide
@@ -106,7 +112,7 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
                     <span className="font-sans-condensed text-2xs font-semibold text-muted-foreground uppercase">
                       @{post.username ?? ""}
                     </span>
-                    <span className="text-sm text-foreground">
+                    <span className="line-clamp-3 text-sm text-foreground">
                       {post.caption ?? ""}
                     </span>
                     <time
