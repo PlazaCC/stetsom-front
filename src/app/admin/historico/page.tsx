@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { Filter } from "lucide-react";
 import { useState } from "react";
 
+// SSOT: must match the 13 entity keys from docs/frontend-contracts.md (AuditEntity type)
 const ENTITY_LABELS: Record<string, string> = {
   products: "Produtos",
   banners: "Banners",
@@ -25,6 +26,11 @@ const ENTITY_LABELS: Record<string, string> = {
   attributes: "Atributos",
   users: "Usuários",
   library: "Biblioteca",
+  "legal-pages": "Páginas legais",
+  "partner-locations": "Parceiros",
+  messages: "Mensagens",
+  config: "Configurações",
+  auth: "Autenticação",
 };
 
 const ENTITY_OPTIONS = Object.keys(ENTITY_LABELS);

@@ -11,4 +11,6 @@ export type AdminDashboardPayloadInputRecentActivitiesItem = {
   title: string;
   description: string;
   timestamp: string;
+  user_name: string;
+  action: string;
 };
