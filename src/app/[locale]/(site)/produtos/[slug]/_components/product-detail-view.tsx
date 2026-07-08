@@ -9,6 +9,7 @@ import type {
 } from "@/api/stetsom/model";
 import { Breadcrumb, type BreadcrumbItem } from "@/components/ui/breadcrumb";
 import { Container } from "@/components/ui/container";
+import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/ui/product-card";
 import { cn } from "@/lib/utils";
 import { GitCompareArrows } from "lucide-react";
@@ -308,13 +309,11 @@ export function ProductDetailView({
         <Container>
           <Link
             href={`/produtos?category=${encodeURIComponent(category.slug)}&first_comparation_product_slug=${product.slug}`}
-            className="group inline-flex w-full cursor-pointer items-center justify-center gap-2 border-2 border-brand px-6 py-3 font-sans text-button-md font-bold tracking-[0.8px] text-brand-dark uppercase transition-colors hover:bg-brand hover:text-white"
           >
-            <GitCompareArrows
-              size={18}
-              className="text-brand transition-colors group-hover:text-white"
-            />
-            {t("compare")}
+            <Button variant="brand-outline" size="md" className="w-full">
+              <GitCompareArrows size={18} />
+              {t("compare")}
+            </Button>
           </Link>
         </Container>
       </section>

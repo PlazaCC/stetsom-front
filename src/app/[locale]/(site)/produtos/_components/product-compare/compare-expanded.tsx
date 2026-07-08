@@ -6,6 +6,14 @@ import { ArrowLeftRight, X } from "lucide-react";
 import { useCompareContext } from "./compare-provider";
 import { CompareColumn } from "./compare-column";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { getApiProductsSlug } from "@/api/stetsom/endpoints/products-public/products-public";
 import type {
   LocaleInput,
@@ -76,15 +84,16 @@ function MobileProductHeader({
 
   return (
     <div className="flex min-w-0 flex-1 flex-col rounded border border-border p-2">
-      <button
-        type="button"
+      <Button
+        variant="ghost"
+        size="xs"
         onClick={onReplace}
-        className="mb-1 flex cursor-pointer items-center gap-1 self-start rounded px-1.5 py-0.5 text-2xs font-medium text-muted-foreground transition-colors hover:text-brand-dark"
+        className="mb-1 h-auto self-start px-1.5 py-0.5 text-2xs"
         title={t("compareReplace")}
       >
         <ArrowLeftRight size={10} />
         <span className="hidden sm:inline">{t("compareReplace")}</span>
-      </button>
+      </Button>
       <div className="flex items-center gap-2">
         {thumb ? (
           <Image
@@ -107,24 +116,24 @@ function MobileProductHeader({
         </div>
       </div>
       {sorted.length > 1 && (
-        <select
+        <Select
           value={variantId}
-          onChange={(e) => onVariantChange(e.target.value)}
-          className="mt-1 h-7 w-full appearance-none rounded-sm border border-border bg-card px-1.5 pr-6 text-2xs font-semibold text-brand-dark outline-none"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23999999' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\")",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "right 4px center",
-            backgroundSize: "10px",
-          }}
+          onValueChange={(val) => val && onVariantChange(val)}
         >
-          {sorted.map((v) => (
-            <option key={v.variant_id} value={v.variant_id}>
-              {v.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger size="sm" className="mt-1 w-full">
+            <SelectValue>
+              {sorted.find((v) => v.variant_id === variantId)?.name ??
+                sorted[0]?.name}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {sorted.map((v) => (
+              <SelectItem key={v.variant_id} value={v.variant_id}>
+                {v.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       )}
     </div>
   );
@@ -170,7 +179,7 @@ export function CompareExpanded({ catalogMap }: CompareExpandedProps) {
     : null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 py-4 sm:py-8">
+    <div className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-black/50 py-4 sm:py-8">
       <div className="mx-2 w-full max-w-5xl rounded-lg bg-white shadow-sm sm:mx-4">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-6 sm:py-4">

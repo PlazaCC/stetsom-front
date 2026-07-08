@@ -23,7 +23,7 @@ export function AboutHeroSection({ section }: Readonly<AboutHeroSectionProps>) {
         <div className="grid lg:grid-cols-[1fr_428px] lg:items-end lg:gap-10">
           <div>
             <SectionLabel label={section.label ?? ""} />
-            <h1 className="mt-1 font-sans-condensed text-5xl leading-none font-black text-white uppercase lg:text-display-2xl">
+            <h1 className="mt-1 font-sans-condensed text-5xl leading-18.5 font-black text-white uppercase lg:text-display-2xl">
               {(section.title ?? "")
                 .split("\n")
                 .map((line: string, lineIdx: number, allLines: string[]) => {

@@ -10,6 +10,14 @@ import { ArrowLeftRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 interface CompareColumnProduct {
   slug: string;
@@ -63,15 +71,15 @@ export function CompareColumn({ product, onReplace }: CompareColumnProps) {
     <div className="flex min-w-0 flex-1 flex-col rounded-lg border border-border bg-white">
       {/* Replace button */}
       <div className="relative flex items-center justify-end p-2">
-        <button
-          type="button"
+        <Button
+          variant="ghost"
+          size="icon-sm"
           onClick={onReplace}
-          className="absolute top-2 left-2 z-10 flex cursor-pointer items-center gap-1 rounded bg-white/90 px-2 py-1 text-2xs font-semibold text-muted-foreground shadow-xs transition-colors hover:text-brand-dark"
+          className="absolute top-2 left-2 z-10 bg-white/90 shadow-xs"
           title={t("compareReplace")}
         >
           <ArrowLeftRight size={12} />
-          {t("compareReplace")}
-        </button>
+        </Button>
       </div>
 
       {/* Image */}
@@ -109,24 +117,25 @@ export function CompareColumn({ product, onReplace }: CompareColumnProps) {
             <label className="mb-1 block font-sans text-2xs font-medium text-muted-foreground uppercase">
               {t("compareVariant")}
             </label>
-            <select
+            <Select
               value={selectedVariantId}
-              onChange={(e) => setSelectedVariantId(e.target.value)}
-              className="h-9 w-full appearance-none rounded-sm border border-border bg-card px-2.5 pr-7 text-sm font-semibold text-brand-dark outline-none focus:border-brand"
-              style={{
-                backgroundImage:
-                  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\")",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "right 8px center",
-                backgroundSize: "12px",
-              }}
+              onValueChange={(val) => val && setSelectedVariantId(val)}
             >
-              {sortedVariants.map((v) => (
-                <option key={v.variant_id} value={v.variant_id}>
-                  {v.name}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="w-full">
+                <SelectValue>
+                  {sortedVariants.find(
+                    (v) => v.variant_id === selectedVariantId,
+                  )?.name ?? sortedVariants[0]?.name}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {sortedVariants.map((v) => (
+                  <SelectItem key={v.variant_id} value={v.variant_id}>
+                    {v.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         )}
 

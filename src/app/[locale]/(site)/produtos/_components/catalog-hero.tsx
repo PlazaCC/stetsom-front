@@ -14,7 +14,7 @@ export function CatalogHero({ totalProducts }: CatalogHeroProps) {
     <section className="relative h-84 overflow-hidden bg-brand-dark">
       <div className="bg-radial-dark absolute inset-0" />
       <div className="bg-gradient-fade-black absolute inset-0" />
-      <Container className="relative z-10 mx-auto flex h-full max-w-360 flex-col justify-end pb-4 md:flex-row md:items-end md:justify-between md:pb-12 lg:pb-16">
+      <Container className="relative z-10 mx-auto flex h-full max-w-360 flex-col justify-end pb-4 md:flex-row md:items-end md:justify-between md:pb-16">
         <div className="py-4">
           <div className="mb-1 flex items-center gap-2">
             <div className="h-px w-6 shrink-0 bg-brand" />
@@ -22,7 +22,7 @@ export function CatalogHero({ totalProducts }: CatalogHeroProps) {
               {t("heroLabel")}
             </span>
           </div>
-          <h1 className="font-sans-condensed text-6xl font-black text-white uppercase md:text-6xl md:text-[90px] md:leading-16">
+          <h1 className="font-sans-condensed text-6xl font-black text-white uppercase md:text-6xl md:text-[90px] md:leading-18.5">
             {t("heroTitle")
               .split("\n")
               .map((line) => (

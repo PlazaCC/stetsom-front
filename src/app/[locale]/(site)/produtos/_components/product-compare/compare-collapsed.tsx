@@ -6,6 +6,7 @@ import { GitCompareArrows, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useCompareContext } from "./compare-provider";
+import { Button } from "@/components/ui/button";
 
 interface CompareCollapsedProps {
   /** Map of slug → ProductCardItem for lookup */
@@ -21,7 +22,7 @@ export function CompareCollapsed({ catalogMap }: CompareCollapsedProps) {
     .filter(Boolean) as ProductCardItem[];
 
   return (
-    <div className="pointer-events-none fixed top-0 right-0 left-0 z-50 flex justify-center">
+    <div className="pointer-events-none fixed top-0 right-0 left-0 z-[60] flex justify-center">
       <div className="pointer-events-auto mx-4 mt-4 w-full max-w-xl rounded-lg border border-border bg-white p-4 shadow-lg">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -31,14 +32,10 @@ export function CompareCollapsed({ catalogMap }: CompareCollapsedProps) {
               {t("compare")}
             </span>
           </div>
-          <button
-            type="button"
-            onClick={exitCompareMode}
-            className="flex cursor-pointer items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-brand-dark"
-          >
+          <Button variant="ghost" size="xs" onClick={exitCompareMode}>
             <X size={14} />
             {t("compareClose")}
-          </button>
+          </Button>
         </div>
 
         {/* Count indicator + instruction */}
@@ -91,14 +88,15 @@ export function CompareCollapsed({ catalogMap }: CompareCollapsedProps) {
                     {item.category}
                   </p>
                 </div>
-                <button
-                  type="button"
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
                   onClick={() => removeProduct(item.slug)}
-                  className="flex cursor-pointer items-center justify-center rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-brand-dark"
                   title={t("compareRemove")}
+                  className="shrink-0"
                 >
                   <X size={12} />
-                </button>
+                </Button>
               </div>
             ))}
           </div>
