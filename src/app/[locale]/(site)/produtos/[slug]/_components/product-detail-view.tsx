@@ -65,7 +65,7 @@ function DetailImage({
 }) {
   if (previewMode) {
     return (
-      <img
+      <Image
         src={src}
         alt={alt}
         className={cn("absolute inset-0 h-full w-full", className)}
@@ -319,11 +319,6 @@ export function ProductDetailView({
       </section>
 
       <section {...ed("specs")} id="specifications" className="scroll-mt-38">
-        <div className="border-b border-zinc-200 px-5 py-3 lg:px-42.5">
-          <p className="font-sans-condensed text-xs font-black tracking-widest text-muted-foreground uppercase">
-            {t("techData")}
-          </p>
-        </div>
         <div className="bg-off-white px-5 py-4 lg:px-42.5">
           <h2 className="font-sans-condensed text-display-sm leading-none font-black text-brand-dark uppercase">
             {t("techSpecifications")}
@@ -396,11 +391,6 @@ export function ProductDetailView({
         className="scroll-mt-38 bg-off-white py-10 md:py-12 lg:py-16"
       >
         <Container>
-          <div className="border-b border-zinc-200 pb-3">
-            <p className="font-sans-condensed text-xs font-black tracking-widest text-muted-foreground uppercase">
-              {t("recommendations")}
-            </p>
-          </div>
           <h2 className="mt-4 font-sans-condensed text-display-sm leading-none font-black text-brand-dark uppercase">
             {t("related")}
           </h2>

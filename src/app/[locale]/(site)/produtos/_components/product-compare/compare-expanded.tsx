@@ -7,13 +7,6 @@ import { useCompareContext } from "./compare-provider";
 import { CompareColumn } from "./compare-column";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 import { getApiProductsSlug } from "@/api/stetsom/endpoints/products-public/products-public";
 import type {
   LocaleInput,
@@ -116,24 +109,24 @@ function MobileProductHeader({
         </div>
       </div>
       {sorted.length > 1 && (
-        <Select
+        <select
           value={variantId}
-          onValueChange={(val) => val && onVariantChange(val)}
+          onChange={(e) => onVariantChange(e.target.value)}
+          className="mt-1 h-7 w-full appearance-none rounded-sm border border-border bg-card px-1.5 pr-5 text-2xs font-semibold text-brand-dark outline-none"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23999999' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\")",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right 4px center",
+            backgroundSize: "10px",
+          }}
         >
-          <SelectTrigger size="sm" className="mt-1 w-full">
-            <SelectValue>
-              {sorted.find((v) => v.variant_id === variantId)?.name ??
-                sorted[0]?.name}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {sorted.map((v) => (
-              <SelectItem key={v.variant_id} value={v.variant_id}>
-                {v.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          {sorted.map((v) => (
+            <option key={v.variant_id} value={v.variant_id}>
+              {v.name}
+            </option>
+          ))}
+        </select>
       )}
     </div>
   );
@@ -179,66 +172,62 @@ export function CompareExpanded({ catalogMap }: CompareExpandedProps) {
     : null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-black/50 py-4 sm:py-8">
-      <div className="mx-2 w-full max-w-5xl rounded-lg bg-white shadow-sm sm:mx-4">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-6 sm:py-4">
-          <span className="font-sans-condensed text-xs font-black text-brand-dark uppercase sm:text-sm">
-            {t("compare")}
-          </span>
-          <button
-            type="button"
-            onClick={exitCompareMode}
-            className="flex cursor-pointer items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-brand-dark sm:text-sm"
-          >
-            <X size={14} className="sm:hidden" />
-            <X size={16} className="hidden sm:block" />
-            {t("compareClose")}
-          </button>
-        </div>
+    <div className="max-h-[calc(100vh-2rem)] overflow-y-auto rounded-card bg-white shadow-sm">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-6 sm:py-4">
+        <span className="font-sans-condensed text-xs font-black text-brand-dark uppercase sm:text-sm">
+          {t("compare")}
+        </span>
+        <button
+          type="button"
+          onClick={exitCompareMode}
+          className="flex cursor-pointer items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-brand-dark sm:text-sm"
+        >
+          <X size={14} className="sm:hidden" />
+          <X size={16} className="hidden sm:block" />
+          {t("compareClose")}
+        </button>
+      </div>
 
-        {/* Content */}
-        <div className="p-3 sm:p-4">
-          {isLoading ? (
-            <div className="flex flex-col gap-4 md:flex-row md:gap-4">
-              <CompareColumnSkeleton />
-              <CompareColumnSkeleton />
+      <div className="p-3 sm:p-4">
+        {isLoading ? (
+          <div className="flex flex-col gap-4 md:flex-row md:gap-4">
+            <CompareColumnSkeleton />
+            <CompareColumnSkeleton />
+          </div>
+        ) : isError ? (
+          <div className="rounded-lg bg-white p-8 text-center">
+            <p className="text-sm text-muted-foreground">
+              {t("compareLoadError")}
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* Desktop: two full CompareColumn components */}
+            <div className="hidden flex-col gap-4 md:flex md:flex-row">
+              {productA && (
+                <CompareColumn
+                  product={productA}
+                  onReplace={() => removeProduct(slugA)}
+                />
+              )}
+              {productB && (
+                <CompareColumn
+                  product={productB}
+                  onReplace={() => removeProduct(slugB)}
+                />
+              )}
             </div>
-          ) : isError ? (
-            <div className="rounded-lg bg-white p-8 text-center">
-              <p className="text-sm text-muted-foreground">
-                {t("compareLoadError")}
-              </p>
-            </div>
-          ) : (
-            <>
-              {/* Desktop: two full CompareColumn components */}
-              <div className="hidden flex-col gap-4 md:flex md:flex-row">
-                {productA && (
-                  <CompareColumn
-                    product={productA}
-                    onReplace={() => removeProduct(slugA)}
-                  />
-                )}
-                {productB && (
-                  <CompareColumn
-                    product={productB}
-                    onReplace={() => removeProduct(slugB)}
-                  />
-                )}
-              </div>
 
-              {/* Mobile: compact side-by-side + unified specs table */}
-              <UnifiedCompareMobile
-                productA={productA}
-                productB={productB}
-                onReplaceA={() => removeProduct(slugA)}
-                onReplaceB={() => removeProduct(slugB)}
-                className="md:hidden"
-              />
-            </>
-          )}
-        </div>
+            {/* Mobile: compact side-by-side + unified specs table */}
+            <UnifiedCompareMobile
+              productA={productA}
+              productB={productB}
+              onReplaceA={() => removeProduct(slugA)}
+              onReplaceB={() => removeProduct(slugB)}
+              className="md:hidden"
+            />
+          </>
+        )}
       </div>
     </div>
   );
