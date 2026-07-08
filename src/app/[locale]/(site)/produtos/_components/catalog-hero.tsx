@@ -22,7 +22,7 @@ export function CatalogHero({ totalProducts }: CatalogHeroProps) {
               {t("heroLabel")}
             </span>
           </div>
-          <h1 className="font-sans-condensed text-6xl font-black text-white uppercase md:text-6xl md:text-[90px] md:leading-16 md:leading-18.5">
+          <h1 className="font-sans-condensed text-6xl font-black text-white uppercase md:text-6xl md:text-[90px] md:leading-16">
             {t("heroTitle")
               .split("\n")
               .map((line) => (

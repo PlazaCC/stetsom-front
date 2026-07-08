@@ -103,16 +103,9 @@ export function CompareColumn({ product, onReplace }: CompareColumnProps) {
           {product.name}
         </h3>
 
-        {/* Description */}
-        {product.description && (
-          <p className="line-clamp-3 text-xs leading-relaxed text-text-subtle">
-            {product.description}
-          </p>
-        )}
-
         {/* Variant selector */}
         {sortedVariants.length > 1 && (
-          <div className="mt-auto border-t border-border pt-3">
+          <div className="border-t border-border pt-3">
             <label className="mb-1 block font-sans text-2xs font-medium text-muted-foreground uppercase">
               {t("compareVariant")}
             </label>
