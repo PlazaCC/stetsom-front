@@ -16,11 +16,15 @@ export type WizardStep = 1 | 2 | 3 | 4 | 5;
 
 export type WizardMode = "create" | "edit";
 
-/** A product gallery image — either persisted (`image_id`) or pending upload (`file`). */
+/**
+ * A product gallery image, always backed by a library asset (`library_id`).
+ * `image_id` is set once the link is persisted on the product; new picks carry
+ * only the `library_id` until saved.
+ */
 export interface WizardImage {
   id: string;
   image_id?: string;
-  file?: File;
+  library_id: string;
   preview_url: string;
   order: number;
 }
@@ -57,6 +61,8 @@ export interface WizardState {
   mode: WizardMode;
   productId: string | null;
 
+  /** Manufacturer stock-keeping unit. Empty string when unset. */
+  sku: string;
   name: I18nString;
   slug: I18nString;
   slugTouched: boolean;
@@ -94,6 +100,7 @@ export interface WizardState {
 export type WizardInfoPatch = Partial<
   Pick<
     WizardState,
+    | "sku"
     | "name"
     | "slug"
     | "description"
@@ -190,6 +197,7 @@ function hydrateImages(detail?: CmsProductDetailPayload): WizardImage[] {
     .map((img) => ({
       id: img.image_id,
       image_id: img.image_id,
+      library_id: img.library_id,
       preview_url: img.image_url ?? "",
       order: img.order,
     }));
@@ -233,6 +241,7 @@ export function initWizardState(
     mode,
     productId: p?.id ?? null,
 
+    sku: p?.sku ?? "",
     name: p?.name ?? { pt: "" },
     slug: p?.slug ?? { pt: "" },
     slugTouched: !!p?.slug?.pt,
@@ -421,6 +430,7 @@ export function buildPayload(
   }
 
   return {
+    sku: state.sku.trim() || null,
     name: state.name,
     slug: state.slug.pt ? state.slug : { pt: slugify(state.name.pt) },
     description: state.description.pt ? state.description : undefined,

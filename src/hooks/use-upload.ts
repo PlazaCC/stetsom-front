@@ -52,19 +52,22 @@ const ALLOWED_MIMES = new Set([
   "application/x-zip-compressed",
 ]);
 
-/** Fallback MIME by file extension — browsers don't recognize some types
- *  (notably `.glb`/`.gltf`/`.zip`) and leave `file.type` empty. */
+/** Canonical MIME by file extension. Browsers are inconsistent for these
+ *  binary types — `.glb`/`.gltf`/`.zip` are often left empty or reported with
+ *  OS-specific variants (e.g. `application/x-zip-compressed`,
+ *  `application/octet-stream`) — so we always pin them by extension. */
 const EXTENSION_MIME: Record<string, string> = {
   glb: "model/gltf-binary",
   gltf: "model/gltf+json",
   zip: "application/zip",
 };
 
-/** The browser's MIME, or one inferred from the extension when it's missing. */
+/** The MIME to send: pinned by extension for our special binary types, else the
+ *  browser's, else inferred from the extension when the browser leaves it empty. */
 function resolveMimeType(file: File): string {
-  if (file.type) return file.type;
   const ext = file.name.split(".").pop()?.toLowerCase();
-  return (ext && EXTENSION_MIME[ext]) || "";
+  if (ext && EXTENSION_MIME[ext]) return EXTENSION_MIME[ext];
+  return file.type || "";
 }
 
 function generateId(): string {

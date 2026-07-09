@@ -117,21 +117,46 @@ export function GeneralEditor({
         placeholder="Ex: ST-4000EQ"
       />
 
-      <Field>
-        <FieldLabel>Slug (URL)</FieldLabel>
-        <FieldContent>
-          <AdminInput
-            value={state.slug.pt}
-            onChange={(e) =>
-              dispatch({
-                type: "patch_info",
-                patch: { slug: { ...state.slug, pt: e.target.value } },
-              })
-            }
-            placeholder="st-4000eq"
-          />
-        </FieldContent>
-      </Field>
+      <div
+        className={cn(
+          "grid gap-4",
+          compact
+            ? "grid-cols-1"
+            : "grid-cols-[repeat(auto-fit,minmax(200px,1fr))]",
+        )}
+      >
+        <Field>
+          <FieldLabel>SKU</FieldLabel>
+          <FieldContent>
+            <AdminInput
+              value={state.sku}
+              onChange={(e) =>
+                dispatch({
+                  type: "patch_info",
+                  patch: { sku: e.target.value },
+                })
+              }
+              placeholder="Ex: ST-4000EQ-1"
+            />
+          </FieldContent>
+        </Field>
+
+        <Field>
+          <FieldLabel>Slug (URL)</FieldLabel>
+          <FieldContent>
+            <AdminInput
+              value={state.slug.pt}
+              onChange={(e) =>
+                dispatch({
+                  type: "patch_info",
+                  patch: { slug: { ...state.slug, pt: e.target.value } },
+                })
+              }
+              placeholder="st-4000eq"
+            />
+          </FieldContent>
+        </Field>
+      </div>
 
       <I18nInput
         label="Descrição"

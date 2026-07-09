@@ -3,7 +3,6 @@
 import { YouTubeEmbed } from "@/components/ui/youtube-embed";
 import { getYouTubeEmbedUrl } from "@/lib/utils/product";
 import { Box, Code, FileText, ImageIcon, Images, Video } from "lucide-react";
-import dynamic from "next/dynamic";
 import type { BlockRegistry } from "./block-manager";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,12 +21,6 @@ import {
   type LibraryAssetRef,
   type LibraryPickedAsset,
 } from "./library-asset-ref";
-
-// three.js is client-only and heavy — load the 3D preview lazily, never on SSR.
-const Model3DViewer = dynamic(
-  () => import("@/components/ui/model-3d-viewer").then((m) => m.Model3DViewer),
-  { ssr: false },
-);
 
 const fieldLabel = "mb-1 block text-xs font-medium text-muted-foreground";
 
@@ -290,19 +283,6 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
             }
           />
         </div>
-        {str(data, "file_url") ? (
-          <div>
-            <label className={fieldLabel}>Pré-visualização</label>
-            <div className="h-64 overflow-hidden rounded-md border border-border">
-              <Model3DViewer
-                key={str(data, "file_url")}
-                url={str(data, "file_url")}
-                backgroundColor={str(data, "backgroundColor") || undefined}
-                backgroundImage={str(data, "backgroundImageUrl") || undefined}
-              />
-            </div>
-          </div>
-        ) : null}
       </div>
     ),
   },

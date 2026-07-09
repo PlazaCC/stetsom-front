@@ -127,6 +127,8 @@ export function ProductDetailView({
     files.find((f) => f.type === "IMAGE_PACK" && f.is_active) ??
     files.find((f) => f.type === "IMAGE_PACK");
 
+  console.log(product.files);
+
   // App-store links are per-product and optional; a missing/blank link hides
   // its menu item, and the whole button hides when neither is set.
   const appStoreUrl = product.app_store_url?.trim() || null;

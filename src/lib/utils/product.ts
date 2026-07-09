@@ -1,5 +1,9 @@
 type TextBlockData = { title?: string; content?: string; align?: string };
-type ImageBlockData = { images?: string[]; caption?: string };
+type ImageBlockData = {
+  images?: string[];
+  caption?: string;
+  layout?: "full" | "side";
+};
 type GalleryBlockData = { images: string[] };
 type Model3dBlockData = {
   url?: string;
@@ -48,6 +52,7 @@ export const BLOCK_BEM_CLASSES: Record<
     elements: [
       "blockImage__title",
       "blockImage__description",
+      "blockImage__content",
       "blockImage__item",
       "blockImage__image",
       "blockImage__caption",
@@ -109,6 +114,7 @@ export function toImageBlockData(
   return {
     images: isStringArray(data.images) ? data.images : undefined,
     caption: typeof data.caption === "string" ? data.caption : undefined,
+    layout: data.layout === "side" ? "side" : "full",
   };
 }
 

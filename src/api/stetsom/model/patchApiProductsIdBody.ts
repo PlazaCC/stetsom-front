@@ -13,6 +13,11 @@ import type { PatchApiProductsIdBodyStatus } from "./patchApiProductsIdBodyStatu
 import type { PatchApiProductsIdBodyVariantsItem } from "./patchApiProductsIdBodyVariantsItem";
 
 export type PatchApiProductsIdBody = {
+  /**
+   * @maxLength 100
+   * @nullable
+   */
+  sku?: string | null;
   name?: PatchApiProductsIdBodyName;
   slug?: PatchApiProductsIdBodySlug;
   description?: PatchApiProductsIdBodyDescription;

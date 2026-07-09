@@ -274,7 +274,7 @@ export function CategoriesContent({
         ) : undefined
       }
     >
-      <div className="flex flex-col gap-5 xl:flex-row">
+      <div className="flex flex-col items-start gap-5 xl:flex-row">
         <aside className="flex w-full flex-col overflow-hidden rounded-card border border-border bg-card xl:w-80 xl:shrink-0">
           <div className="flex items-center justify-between border-b border-border px-6 py-2.5">
             <h2 className="text-sm font-semibold text-foreground">

@@ -108,7 +108,7 @@ export function LibraryAssetPicker({
       )}
 
       {open && (
-        <PickerModal
+        <LibraryPickerModal
           type={type}
           accept={accept}
           onClose={() => setOpen(false)}
@@ -122,14 +122,18 @@ export function LibraryAssetPicker({
   );
 }
 
-function PickerModal({
+/**
+ * The "gallery wizard" modal: browse/search existing library assets or upload a
+ * new one, then pick it. Reused by the product gallery and file steps.
+ */
+export function LibraryPickerModal({
   type,
-  accept,
+  accept = "image/*",
   onClose,
   onPick,
 }: {
   type: GetApiLibraryType;
-  accept: string;
+  accept?: string;
   onClose: () => void;
   onPick: (asset: LibraryPickedAsset) => void;
 }) {
@@ -228,7 +232,7 @@ function PickerModal({
                 accept={accept}
                 multiple={false}
                 clearOnUpload
-                onUpload={(files) => void upload.upload(files)}
+                onUpload={(files) => void upload.upload(files, type)}
               />
               {upload.entries.map((e) => (
                 <div
