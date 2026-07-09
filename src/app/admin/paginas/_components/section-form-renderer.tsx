@@ -16,6 +16,7 @@ import type { LibraryUrlOnlyRef } from "@/app/admin/_components/crud/library-ass
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
 import { Plus, Trash2 } from "lucide-react";
 import type { FieldSpec } from "./section-field-spec";
+import { FaqItemsField } from "./faq-items-field";
 
 type Data = Record<string, unknown>;
 type Item = Record<string, unknown>;
@@ -147,6 +148,9 @@ function Field({ field, data, onChange }: FieldProps) {
 
     case "list":
       return <ListField field={field} data={data} onChange={onChange} />;
+
+    case "faq-items":
+      return <FaqItemsField field={field} />;
 
     default:
       return null;

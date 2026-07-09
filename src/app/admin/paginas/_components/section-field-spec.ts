@@ -54,7 +54,15 @@ export type FieldSpec =
       addLabel: string;
       placeholder?: string;
     }
-  | { kind: "group"; key: string; label: string; fields: FieldSpec[] };
+  | { kind: "group"; key: string; label: string; fields: FieldSpec[] }
+  | {
+      kind: "faq-items";
+      key: string;
+      label: string;
+      addLabel: string;
+      itemFields: FieldSpec[];
+      itemTitleKey?: string;
+    };
 
 export interface SectionDef {
   /** Persisted `section_id` — must match what the public page reads. */
@@ -193,10 +201,17 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
               inputType: "url",
               placeholder: "/suporte",
             },
+            {
+              kind: "text",
+              key: "maxItems",
+              label: "Máximo de itens visíveis",
+              inputType: "text",
+              placeholder: "3",
+            },
           ],
         },
         {
-          kind: "list",
+          kind: "faq-items",
           key: "items",
           label: "Perguntas",
           addLabel: "Adicionar pergunta",
@@ -522,16 +537,16 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
           fields: [
             { kind: "i18n", key: "label", label: "Rótulo" },
             { kind: "i18n", key: "title", label: "Título" },
-            { kind: "i18n", key: "subtitle", label: "Subtítulo" },
             {
               kind: "i18n",
-              key: "supportButtonLabel",
-              label: "Texto do botão de suporte",
+              key: "subtitle",
+              label: "Subtítulo",
+              multiline: true,
             },
           ],
         },
         {
-          kind: "list",
+          kind: "faq-items",
           key: "items",
           label: "Perguntas",
           addLabel: "Adicionar pergunta",

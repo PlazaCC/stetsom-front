@@ -11,6 +11,7 @@ import {
   useGetApiPartnerLocations,
   useGetApiPagesSlug,
 } from "@/api/stetsom";
+import { useGetApiFaqs } from "@/api/stetsom/endpoints/faq-public/faq-public";
 import type { PageBlock } from "@/api/stetsom/model";
 import { SetRouteLabel } from "@/app/admin/_components/admin-route-meta";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
@@ -85,6 +86,7 @@ export function PageEditorContent({
   const { data: departments = [] } = useGetApiContactDepartments({
     query: { enabled: isSupport },
   });
+  const { data: faqItems = [] } = useGetApiFaqs();
 
   const [localBlocks, setLocalBlocks] = useState<PageBlock[] | null>(null);
   const [selection, setSelection] = useState<PageEditorTarget>(null);
@@ -195,6 +197,7 @@ export function PageEditorContent({
     serviceCenters,
     departments,
     publicPage?.blocks,
+    faqItems,
   );
 
   return (

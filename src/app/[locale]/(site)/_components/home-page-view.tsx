@@ -1,15 +1,15 @@
 "use client";
 
-import type { HeroBannerSlide, PageBlock } from "@/api/stetsom/model";
+import type { FaqItem, HeroBannerSlide, PageBlock } from "@/api/stetsom/model";
 import {
   getPageBlock,
-  type HomeFaqBlockData,
+  type FaqBlockData,
   type HomeFeaturedBlockData,
   type HomeHistoryBlockData,
   type HomeSocialBlockData,
 } from "@/lib/page-blocks";
 import { EditableSection } from "./editable-section";
-import { Faq } from "./faq";
+import { FaqSection } from "./faq-section";
 import { FeaturedProducts } from "./featured-products";
 import HeroCarousel from "./hero-carousel";
 import { OurHistory } from "./our-history";
@@ -18,6 +18,7 @@ import { SocialFeed } from "./social-feed";
 export interface HomePageViewData {
   blocks: PageBlock[];
   banners: HeroBannerSlide[];
+  faqItems: FaqItem[];
 }
 
 interface HomePageViewProps {
@@ -30,12 +31,12 @@ export function HomePageView({
   data,
   editable = false,
 }: Readonly<HomePageViewProps>) {
-  const { blocks, banners } = data;
+  const { blocks, banners, faqItems } = data;
 
   const featuredData = getPageBlock<HomeFeaturedBlockData>(blocks, "featured");
   const historyData = getPageBlock<HomeHistoryBlockData>(blocks, "history");
   const socialData = getPageBlock<HomeSocialBlockData>(blocks, "social");
-  const faqData = getPageBlock<HomeFaqBlockData>(blocks, "faq");
+  const faqData = getPageBlock<FaqBlockData>(blocks, "faq");
 
   const featuredProducts = (featuredData.products ?? []).slice(0, 4);
   const spotlightProduct = featuredData.spotlight ?? featuredProducts[0];
@@ -92,18 +93,19 @@ export function HomePageView({
           />
         </EditableSection>
       )}
-      {!faqData.hidden && faqData.items?.length ? (
+      {!faqData.hidden && faqItems.length ? (
         <EditableSection target="section:faq" editable={editable}>
-          <Faq
-            items={faqData.items as Array<{ id: string; q: string; a: string }>}
+          <FaqSection
+            items={faqItems.slice(
+              0,
+              Number(faqData.section?.maxItems) || faqItems.length,
+            )}
             section={{
               label: faqData.section?.label ?? "",
               title: faqData.section?.title ?? "",
               subtitle: faqData.section?.subtitle,
               ctaHref: faqData.section?.ctaHref ?? "#",
-              ctaLabel: faqData.section?.ctaLabel ?? "Ver mais",
-              buttonText: faqData.section?.ctaLabel ?? "Ver todas as perguntas",
-              buttonHref: faqData.section?.ctaHref,
+              ctaLabel: faqData.section?.ctaLabel ?? "",
             }}
           />
         </EditableSection>
