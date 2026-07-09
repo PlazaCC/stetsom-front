@@ -1,24 +1,25 @@
 "use client";
 
 import type {
+  FaqItem,
   PageBlock,
   PartnerLocation,
   PublicDepartmentItem,
 } from "@/api/stetsom/model";
 import {
   getPageBlock,
+  type FaqBlockData,
   type SupportCardsBlockData,
   type SupportContactBlockData,
   type SupportDocBlockData,
-  type SupportFaqBlockData,
   type SupportHeroBlockData,
   type SupportServiceCentersBlockData,
 } from "@/lib/page-blocks";
 import { EditableSection } from "../../_components/editable-section";
+import { FaqSection } from "../../_components/faq-section";
 import { SupportCards } from "./support-cards";
 import { SupportContact } from "./support-contact";
 import { SupportDocumentation } from "./support-documentation";
-import { SupportFAQ } from "./support-faq";
 import { SupportHero } from "./support-hero";
 import { SupportServiceCenters } from "./support-service-centers";
 
@@ -26,6 +27,7 @@ export interface SupportPageViewData {
   blocks: PageBlock[];
   serviceCenters: PartnerLocation[];
   departments: PublicDepartmentItem[];
+  faqItems: FaqItem[];
 }
 
 interface SupportPageViewProps {
@@ -38,13 +40,13 @@ export function SupportPageView({
   data,
   editable = false,
 }: Readonly<SupportPageViewProps>) {
-  const { blocks, serviceCenters, departments } = data;
+  const { blocks, serviceCenters, departments, faqItems } = data;
 
   const heroData = getPageBlock<SupportHeroBlockData>(blocks, "hero");
   const cardsData = getPageBlock<SupportCardsBlockData>(blocks, "cards");
   const contactData = getPageBlock<SupportContactBlockData>(blocks, "contact");
   const docData = getPageBlock<SupportDocBlockData>(blocks, "documentation");
-  const faqData = getPageBlock<SupportFaqBlockData>(blocks, "faq");
+  const faqData = getPageBlock<FaqBlockData>(blocks, "faq");
   const mapData = getPageBlock<SupportServiceCentersBlockData>(
     blocks,
     "service_centers",
@@ -105,18 +107,20 @@ export function SupportPageView({
           />
         </EditableSection>
       ) : null}
-      {!faqData.hidden && (
+      {!faqData.hidden && faqItems.length ? (
         <EditableSection target="section:faq" editable={editable}>
-          <SupportFAQ
-            faq={{
-              label: faqData.section?.label,
-              title: faqData.section?.title,
-              supportButtonLabel: faqData.section?.supportButtonLabel,
-              items: faqData.items ?? [],
+          <FaqSection
+            items={faqItems}
+            section={{
+              label: faqData.section?.label ?? "",
+              title: faqData.section?.title ?? "",
+              subtitle: faqData.section?.subtitle,
+              ctaHref: faqData.section?.ctaHref,
+              ctaLabel: faqData.section?.ctaLabel,
             }}
           />
         </EditableSection>
-      )}
+      ) : null}
     </div>
   );
 }

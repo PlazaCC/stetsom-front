@@ -55,6 +55,7 @@ export default defineConfig({
           "Legal Pages Public",
           "Config Public",
           "Contact",
+          "FAQ Public",
         ],
       },
     },

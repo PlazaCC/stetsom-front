@@ -53,6 +53,5 @@ return <>
 ## i18n in Public Pages
 
 - Import translation functions from `next-intl`: `getTranslations` (server), `useTranslations` (client)
-- Always pass the namespace key: `await getTranslations("Support.faq")`
 - Use `t.rich()` for messages with HTML link placeholders
 - Add new messages to all three locale files (`pt-BR`, `en`, `es`) simultaneously

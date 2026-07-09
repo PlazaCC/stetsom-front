@@ -1,4 +1,5 @@
 import type {
+  FaqItem,
   HeroBannerSlide,
   I18nString,
   PageBlock,
@@ -22,6 +23,8 @@ function resolveFieldValue(value: unknown, field: FieldSpec): unknown {
         (value as Record<string, unknown>) ?? {},
         field.fields,
       );
+    case "faq-items":
+      return null;
     case "list": {
       const items = Array.isArray(value)
         ? (value as Record<string, unknown>[])
@@ -72,6 +75,7 @@ export function buildPagePreviewModel(
   serviceCenters: PartnerLocation[],
   departments: PublicDepartmentItem[],
   publicBlocks?: PageBlock[],
+  faqItems?: FaqItem[],
 ): PagePreviewModel | null {
   const resolvedBlocks = blocks.map((b) => {
     const pb = publicBlocks?.find((p) => p.section_id === b.section_id);
@@ -80,13 +84,21 @@ export function buildPagePreviewModel(
 
   switch (pageId) {
     case "home":
-      return { pageId: "home", data: { blocks: resolvedBlocks, banners } };
+      return {
+        pageId: "home",
+        data: { blocks: resolvedBlocks, banners, faqItems: faqItems ?? [] },
+      };
     case "about":
       return { pageId: "about", data: { blocks: resolvedBlocks } };
     case "support":
       return {
         pageId: "support",
-        data: { blocks: resolvedBlocks, serviceCenters, departments },
+        data: {
+          blocks: resolvedBlocks,
+          serviceCenters,
+          departments,
+          faqItems: faqItems ?? [],
+        },
       };
     default:
       return null;

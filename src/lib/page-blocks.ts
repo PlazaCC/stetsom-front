@@ -8,6 +8,8 @@ export function getPageBlock<T extends Record<string, unknown>>(
     {}) as Partial<T>;
 }
 
+export type FaqItem = { id: string; q: string; a: string };
+
 // ── Home page ──────────────────────────────────────────────────────────────
 
 export type HomeHeroBlockData = {
@@ -48,7 +50,7 @@ export type HomeSocialBlockData = {
   posts?: Array<{ id: string; image: string; likes?: number; href?: string }>;
 };
 
-export type HomeFaqBlockData = {
+export type FaqBlockData = {
   hidden?: boolean;
   section?: {
     label?: string;
@@ -56,8 +58,8 @@ export type HomeFaqBlockData = {
     subtitle?: string;
     ctaLabel?: string;
     ctaHref?: string;
+    maxItems?: number;
   };
-  items?: Array<{ id: string; q: string; a: string }>;
 };
 
 // ── About page ─────────────────────────────────────────────────────────────
@@ -175,17 +177,6 @@ export type SupportDocBlockData = {
     fileSize?: string;
     category_slug?: string;
   }>;
-};
-
-export type SupportFaqBlockData = {
-  hidden?: boolean;
-  section?: {
-    label?: string;
-    title?: string;
-    subtitle?: string;
-    supportButtonLabel?: string;
-  };
-  items?: Array<{ id: string; q: string; a: string }>;
 };
 
 export type SupportServiceCentersBlockData = {

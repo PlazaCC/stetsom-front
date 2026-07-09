@@ -43,5 +43,6 @@ A knowledge graph lives in `graphify-out/` (`GRAPH_REPORT.md`, `graph.html`, `gr
 
 - Admin UI: shadcn/ui (base-nova) with custom CMS primitives in `src/app/admin/_components/`.
 - BFF: `src/app/api/bff/[...path]` proxies Orval client calls to stetsom-api, injecting `admin_token` cookie as `Authorization: Bearer`.
-- Mock mode: `USE_MOCK_DATA=1` in `.env.local`; GETs from `src/lib/mock/*.ts`; refresh with `pnpm mock:dump`.
+- Mock mode: `USE_MOCK_DATA=1` in `.env.local`; GETs from `src/lib/mock/*.ts`.
+  **Mock data (`data.json`) is generated — DO NOT EDIT.** Run `pnpm mock:dump` to sync.
 - Root conventions: `docs/ARCHITECTURE.md` + `.agents/rules/*.md`.
