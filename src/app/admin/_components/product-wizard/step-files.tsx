@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { BookOpen, FileText } from "lucide-react";
+import { BookOpen, FileArchive, FileText } from "lucide-react";
 import { FileDropzone } from "./file-dropzone";
 import type { WizardAction, WizardState } from "./wizard-store";
 
@@ -18,6 +18,7 @@ export function StepFiles({
 }: StepFilesProps) {
   const certificates = state.files.filter((f) => f.type === "CERTIFICATE");
   const manuals = state.files.filter((f) => f.type === "MANUAL");
+  const imagePacks = state.files.filter((f) => f.type === "IMAGE_PACK");
 
   return (
     <div
@@ -43,6 +44,21 @@ export function StepFiles({
           type="MANUAL"
           icon={BookOpen}
           files={manuals}
+          onAdd={(file) => dispatch({ type: "add_file", file })}
+          onRemove={(id) => dispatch({ type: "remove_file", id })}
+        />
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <p className="text-sm font-semibold text-foreground">
+          Imagens para download
+        </p>
+        <FileDropzone
+          type="IMAGE_PACK"
+          icon={FileArchive}
+          accept=".zip"
+          multiple={false}
+          files={imagePacks}
           onAdd={(file) => dispatch({ type: "add_file", file })}
           onRemove={(id) => dispatch({ type: "remove_file", id })}
         />

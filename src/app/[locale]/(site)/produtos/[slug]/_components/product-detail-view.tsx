@@ -73,7 +73,6 @@ function DetailImage({
 }) {
   if (previewMode) {
     return (
-       
       // arbitrary remote hosts aren't valid for next/image in the live preview.
       <img
         src={src}
@@ -124,6 +123,9 @@ export function ProductDetailView({
   const manualFile =
     files.find((f) => f.type === "MANUAL" && f.is_active) ??
     files.find((f) => f.type === "MANUAL");
+  const imagePackFile =
+    files.find((f) => f.type === "IMAGE_PACK" && f.is_active) ??
+    files.find((f) => f.type === "IMAGE_PACK");
 
   // App-store links are per-product and optional; a missing/blank link hides
   // its menu item, and the whole button hides when neither is set.
@@ -296,12 +298,15 @@ export function ProductDetailView({
                     {t("manual")}
                   </a>
                 )}
-                <button
-                  type="button"
-                  className="inline-flex h-10 items-center rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold tracking-[0.8px] text-brand-dark uppercase"
-                >
-                  {t("downloadPhotos")}
-                </button>
+                {imagePackFile?.file_url && (
+                  <a
+                    href={imagePackFile.file_url}
+                    download
+                    className="inline-flex h-10 items-center rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold tracking-[0.8px] text-brand-dark uppercase transition-colors hover:bg-muted"
+                  >
+                    {t("downloadPhotos")}
+                  </a>
+                )}
                 {hasAppLinks && (
                   <DropdownMenu>
                     <DropdownMenuTrigger

@@ -1,13 +1,13 @@
 "use client";
 
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Menu, Search, X } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useTranslations } from "next-intl";
-import type { SubmitEvent } from "react";
 import { useState } from "react";
 import { Container } from "./container";
+import { HeaderSearch } from "./header/header-search";
 import { LanguageSwitcher } from "./language-switcher";
 import { Logo } from "./logo";
 
@@ -103,7 +103,7 @@ export function Header({
 
           {/* Desktop right: search + language */}
           <div className="hidden items-center gap-4 md:flex">
-            <DesktopSearchBar isWhite={isWhite} />
+            <HeaderSearch variant="desktop" isWhite={isWhite} />
             <LanguageSwitcher variant={langVariant} />
           </div>
 
@@ -149,7 +149,10 @@ export function Header({
         {mobileSearchOpen && (
           <MobileDropdownPanel>
             <div className="px-5 py-4">
-              <MobileSearchInline onClose={() => setMobileSearchOpen(false)} />
+              <HeaderSearch
+                variant="mobile"
+                onNavigate={() => setMobileSearchOpen(false)}
+              />
             </div>
           </MobileDropdownPanel>
         )}
@@ -159,7 +162,10 @@ export function Header({
           <MobileDropdownPanel>
             <div className="flex flex-col px-5 py-4">
               {/* Search */}
-              <MobileSearchInline onClose={() => setMobileMenuOpen(false)} />
+              <HeaderSearch
+                variant="mobile"
+                onNavigate={() => setMobileMenuOpen(false)}
+              />
 
               <div className="my-3 border-t border-border" />
 
@@ -273,63 +279,5 @@ function MobileNavLink({
     >
       {children}
     </Link>
-  );
-}
-
-// ─── Desktop Search Bar ───────────────────────────────────────────────────────
-
-function DesktopSearchBar({ isWhite }: { isWhite: boolean }) {
-  const router = useRouter();
-  const t = useTranslations("Header");
-
-  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const q = (new FormData(e.currentTarget).get("q") as string).trim();
-    if (q) router.push(`/produtos?q=${encodeURIComponent(q)}`);
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="flex items-center">
-      <input
-        name="q"
-        type="search"
-        placeholder={t("searchPlaceholder")}
-        className={cn(
-          "w-40 rounded-full border px-4 py-2 font-sans text-sm transition-all outline-none",
-          "focus:w-56 focus:border-brand",
-          isWhite
-            ? "border-border bg-muted text-foreground placeholder:text-muted-foreground"
-            : "border-white/30 bg-white/10 text-white placeholder:text-white/50",
-        )}
-      />
-    </form>
-  );
-}
-
-// ─── Mobile Search Inline ─────────────────────────────────────────────────────
-
-function MobileSearchInline({ onClose }: { onClose: () => void }) {
-  const router = useRouter();
-  const t = useTranslations("Header");
-
-  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const q = (new FormData(e.currentTarget).get("q") as string).trim();
-    if (q) {
-      router.push(`/produtos?q=${encodeURIComponent(q)}`);
-      onClose();
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2">
-      <Search size={18} className="shrink-0 text-icon-muted" />
-      <input
-        name="q"
-        type="search"
-        placeholder={t("searchPlaceholder")}
-        className="flex-1 bg-transparent py-2 font-sans text-sm text-foreground outline-none placeholder:text-muted-foreground"
-      />
-    </form>
   );
 }

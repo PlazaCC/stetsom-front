@@ -13,6 +13,7 @@ interface FileDropzoneProps {
   icon: LucideIcon;
   files: WizardFile[];
   accept?: string;
+  multiple?: boolean;
   onAdd: (file: WizardFile) => void;
   onRemove: (id: string) => void;
 }
@@ -23,6 +24,7 @@ export function FileDropzone({
   icon,
   files,
   accept = ".pdf",
+  multiple = true,
   onAdd,
   onRemove,
 }: FileDropzoneProps) {
@@ -63,7 +65,7 @@ export function FileDropzone({
       <AdminFileUpload
         icon={icon}
         accept={accept}
-        multiple
+        multiple={multiple}
         clearOnUpload
         disabled={isUploading}
         label="Drag & drop files or Browse"

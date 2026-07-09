@@ -41,7 +41,10 @@
   },
   "Header": {
     "searchPlaceholder": "Buscar productos...",
-    "closeSearch": "Cerrar búsqueda"
+    "closeSearch": "Cerrar búsqueda",
+    "searching": "Buscando...",
+    "noResults": "Ningún producto encontrado",
+    "viewMore": "Ver +{count} resultados"
   },
   "Footer": {
     "description": "Potencia sin límite desde 1989. Fabricamos los mejores amplificadores automotivos de Brasil.",

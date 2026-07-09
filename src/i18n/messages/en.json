@@ -41,7 +41,10 @@
   },
   "Header": {
     "searchPlaceholder": "Search products...",
-    "closeSearch": "Close search"
+    "closeSearch": "Close search",
+    "searching": "Searching...",
+    "noResults": "No products found",
+    "viewMore": "View +{count} results"
   },
   "Footer": {
     "description": "Unlimited power since 1989. We manufacture the best automotive amplifiers in Brazil.",
