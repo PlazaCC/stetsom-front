@@ -57,7 +57,7 @@ export function ProductCard({
         {compareMode && (
           <span
             className={cn(
-              "absolute top-2 right-2 flex items-center gap-1 rounded-sm px-2 py-0.5 font-sans-condensed text-2xs leading-tight font-black uppercase transition-colors",
+              "absolute top-2 right-2 flex items-center gap-1 rounded-sm px-2 py-0.5 font-sans-condensed text-2xs leading-tight font-semibold uppercase transition-colors",
               isCompareSelected
                 ? "bg-brand-dark text-white"
                 : compareDisabled

@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export type TimelineCarouselEvent = {
   id?: string;
@@ -28,27 +29,50 @@ export function TimelineCarouselCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "relative h-full w-full cursor-pointer overflow-hidden rounded-2xl transition-all duration-500",
+        "relative h-full w-full cursor-pointer overflow-hidden rounded-sm transition-all duration-500 lg:rounded-2xl",
         isActive &&
-          "ring-[1px] ring-[linear-gradient(156deg,rgba(96,93,93,1)_0%,rgba(175,174,174,1)_100%)]",
+          "ring-[0.8px] ring-[linear-gradient(156deg,rgba(96,93,93,1)_0%,rgba(175,174,174,1)_100%)] lg:ring-[1px]",
       )}
     >
-      <div className="absolute inset-0 flex items-center justify-center bg-surface-elevated">
-        <svg
-          width="32"
-          height="32"
-          viewBox="0 0 32 32"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M16 6v20M6 16h20"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
+      {/* Image or fallback */}
+      <div className="absolute inset-0 bg-surface-elevated">
+        {event.image ? (
+          <Image
+            src={event.image}
+            alt={event.imageAlt ?? event.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 335px, 421px"
           />
-        </svg>
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M16 6v20M6 16h20"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+        )}
       </div>
+
+      {/* Gradient overlay for image readability */}
+      {event.image && (
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
+      )}
+
+      {/* Dark overlay on active card for extra legibility */}
+      {isActive && (
+        <div className="pointer-events-none absolute inset-0 bg-black/40" />
+      )}
 
       <div className="absolute top-2 right-4.5 left-4.5 z-10 flex flex-col items-start gap-[-5px]">
         <span

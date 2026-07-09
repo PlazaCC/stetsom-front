@@ -49,11 +49,12 @@ export function TimelineCarousel({
   const isDesktop = containerWidth >= 1024;
 
   // Card sizes
-  const cardActiveW = isDesktop ? 421 : 280;
-  const cardInactiveW = isDesktop ? 292 : 200;
+  const cardActiveW = isDesktop ? 421 : 335;
+  const cardInactiveW = isDesktop ? 292 : 220;
   const cardGap = isDesktop ? 36 : 12;
-  const cardActiveH = 373;
-  const cardInactiveH = isDesktop ? 297 : 260;
+  // Consistent aspect ratio across mobile and desktop (active ≈ 1.13:1, inactive ≈ 0.98:1)
+  const cardActiveH = isDesktop ? 373 : 297;
+  const cardInactiveH = isDesktop ? 297 : Math.round(220 * (297 / 292));
   const step = cardInactiveW + cardGap;
 
   // Translate: desktop = edge-stop left-aligned; mobile = centered, no edge-stop
@@ -67,9 +68,14 @@ export function TimelineCarousel({
       ? containerWidth / 2 - cardActiveW / 2 - clampedIdx * step
       : 0;
 
+  // --- Touch / Drag swipe refs ---
+  const isSwipingRef = useRef(false);
+  const dragStartXRef = useRef(0);
+
   // --- Navigation ---
   const goTo = useCallback(
     (index: number) => {
+      if (isSwipingRef.current) return;
       if (!totalEvents) return;
       setActiveIndex(Math.min(Math.max(index, 0), totalEvents - 1));
     },
@@ -85,6 +91,42 @@ export function TimelineCarousel({
     if (!totalEvents) return;
     setActiveIndex((prev) => Math.min(prev + 1, totalEvents - 1));
   }, [totalEvents]);
+
+  // --- Touch / Drag swipe handlers ---
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    dragStartXRef.current = e.clientX;
+    isSwipingRef.current = false;
+  }, []);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    const delta = Math.abs(e.clientX - dragStartXRef.current);
+    if (delta > 10) {
+      isSwipingRef.current = true;
+    }
+  }, []);
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (!isSwipingRef.current) {
+        isSwipingRef.current = false;
+        return;
+      }
+
+      const delta = e.clientX - dragStartXRef.current;
+      if (delta > 50) {
+        handlePrevious();
+      } else if (delta < -50) {
+        handleNext();
+      }
+
+      // Keep the flag through the click event, reset after
+      setTimeout(() => {
+        isSwipingRef.current = false;
+      }, 0);
+    },
+    [handleNext, handlePrevious],
+  );
 
   // --- Keyboard ---
   const activeIndexRef = useRef(activeIndex);
@@ -112,11 +154,11 @@ export function TimelineCarousel({
     <section className="relative overflow-hidden bg-brand-dark py-12">
       <div className="bg-radial-dark-alt absolute inset-0" />
       <Container className="relative z-10">
-        <div className="flex flex-col gap-9">
+        <div className="flex flex-col gap-4">
           {/* Header */}
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-start lg:justify-between">
             {/* Left: label + title */}
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <span className="inline-block h-px w-6 bg-brand" />
                 <span className="font-sans-condensed text-base font-normal text-brand uppercase">
@@ -124,18 +166,12 @@ export function TimelineCarousel({
                 </span>
               </div>
               <h2 className="font-sans-condensed text-display-sm leading-none font-black text-white">
-                {t("timelineTitle")
-                  .split("\n")
-                  .map((line, i) => (
-                    <span key={i} className="block">
-                      {line}
-                    </span>
-                  ))}
+                {t("timelineTitle")}
               </h2>
             </div>
 
             {/* Right: description + nav */}
-            <div className="flex flex-col items-end gap-4 lg:justify-center">
+            <div className="flex flex-col gap-4 md:items-end lg:justify-center">
               <p className="max-w-83.75 text-sm leading-normal text-text-subtle-dark">
                 {t("timelineDescription")}
               </p>
@@ -168,7 +204,12 @@ export function TimelineCarousel({
               className="relative"
               style={{ height: cardActiveH }}
             >
-              <div className="absolute inset-0 overflow-visible">
+              <div
+                className="absolute inset-0 [touch-action:pan-y] overflow-visible"
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+              >
                 <motion.div
                   className="flex"
                   style={{ gap: cardGap }}

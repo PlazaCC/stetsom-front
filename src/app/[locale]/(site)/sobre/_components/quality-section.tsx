@@ -41,22 +41,22 @@ export function QualitySection({
     <section className="bg-off-white py-20">
       <Container>
         <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-2">
-          <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-sm bg-muted">
+          <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden bg-muted">
             <Image
               src={section.image}
               alt={section.imageAlt}
               fill
               className="object-cover"
             />
-            <div className="absolute bottom-5 left-5 flex flex-col gap-2">
-              <div className="flex h-15 w-15 items-center justify-center bg-brand">
-                <span className="font-sans-condensed text-xl leading-none font-black text-white uppercase">
+            <div className="absolute right-0 bottom-0 flex flex-col gap-2">
+              <div className="flex flex-col items-center justify-center bg-brand px-2 pb-1">
+                <span className="font-sans-condensed text-6xl leading-none font-black text-white uppercase">
                   {foundingYear ?? "1989"}
                 </span>
+                <span className="font-sans-condensed text-xs tracking-widest text-white uppercase drop-shadow-md">
+                  {foundingLabel}
+                </span>
               </div>
-              <span className="font-sans-condensed text-xs font-black tracking-widest text-white uppercase drop-shadow-md">
-                {foundingLabel}
-              </span>
             </div>
           </div>
 

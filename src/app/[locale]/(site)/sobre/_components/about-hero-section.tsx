@@ -16,14 +16,14 @@ interface AboutHeroSectionProps {
 
 export function AboutHeroSection({ section }: Readonly<AboutHeroSectionProps>) {
   return (
-    <section className="relative flex h-160 items-center overflow-hidden bg-brand-dark md:h-115">
+    <section className="relative flex h-160 items-center overflow-hidden bg-brand-dark md:h-100">
       <div className="bg-gradient-dark-overlay absolute inset-0" />
 
-      <Container className="z-10">
+      <Container className="relative z-10 flex h-full flex-col justify-center md:flex-row md:items-end md:justify-between md:pb-6">
         <div className="grid lg:grid-cols-[1fr_428px] lg:items-end lg:gap-10">
           <div>
             <SectionLabel label={section.label ?? ""} />
-            <h1 className="mt-1 font-sans-condensed text-5xl leading-18.5 font-black text-white uppercase lg:text-display-2xl">
+            <h1 className="mt-1 font-sans-condensed text-5xl font-black text-white uppercase md:leading-18.5 lg:text-display-2xl">
               {(section.title ?? "")
                 .split("\n")
                 .map((line: string, lineIdx: number, allLines: string[]) => {

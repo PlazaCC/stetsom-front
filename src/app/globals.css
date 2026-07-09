@@ -317,12 +317,9 @@
   }
 }
 
-/* Social feed Swiper: allow cards to peek beyond the container on larger screens only */
-@media (min-width: 640px) {
-  .social-feed-swiper.swiper,
-  .social-feed-swiper .swiper-wrapper {
-    overflow: visible !important;
-  }
+.social-feed-swiper.swiper,
+.social-feed-swiper .swiper-wrapper {
+  overflow: visible !important;
 }
 
 @layer utilities {
