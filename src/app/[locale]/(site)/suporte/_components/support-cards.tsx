@@ -55,7 +55,7 @@ function pickHref(title: string): string {
 
 export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
   return (
-    <section className="w-full bg-off-white py-8 lg:py-16">
+    <section className="w-full bg-off-white py-8 lg:py-12">
       <Container className="flex justify-center">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {cards.map((card) => {
