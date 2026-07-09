@@ -63,6 +63,7 @@ function DetailImage({
   sizes,
   priority,
   previewMode,
+  style,
 }: {
   src: string;
   alt: string;
@@ -70,6 +71,7 @@ function DetailImage({
   sizes?: string;
   priority?: boolean;
   previewMode?: boolean;
+  style?: React.CSSProperties;
 }) {
   if (previewMode) {
     return (
@@ -78,6 +80,7 @@ function DetailImage({
         src={src}
         alt={alt}
         className={cn("absolute inset-0 h-full w-full", className)}
+        style={style}
       />
     );
   }
@@ -89,7 +92,73 @@ function DetailImage({
       sizes={sizes}
       priority={priority}
       className={className}
+      style={style}
     />
+  );
+}
+
+/**
+ * Main gallery image with a hover-to-zoom effect: while the pointer is over
+ * the frame the image scales up and its transform-origin tracks the cursor, so
+ * moving the mouse pans across the magnified image within the square. Falls
+ * back to a static image on touch (no hover) and when `disabled` (editor mode).
+ */
+function ZoomableImage({
+  src,
+  alt,
+  sizes,
+  previewMode,
+  disabled,
+}: {
+  src: string;
+  alt: string;
+  sizes?: string;
+  previewMode?: boolean;
+  disabled?: boolean;
+}) {
+  const [zoomed, setZoomed] = useState(false);
+  const [origin, setOrigin] = useState("50% 50%");
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setOrigin(`${x}% ${y}%`);
+  };
+
+  if (disabled) {
+    return (
+      <DetailImage
+        src={src}
+        alt={alt}
+        priority
+        sizes={sizes}
+        className="object-contain p-6"
+        previewMode={previewMode}
+      />
+    );
+  }
+
+  return (
+    <div
+      className="absolute inset-0 cursor-zoom-in"
+      onMouseEnter={() => setZoomed(true)}
+      onMouseLeave={() => setZoomed(false)}
+      onMouseMove={handleMove}
+    >
+      <DetailImage
+        src={src}
+        alt={alt}
+        priority
+        sizes={sizes}
+        className="object-contain p-6 transition-transform duration-100 ease-out"
+        style={{
+          transformOrigin: origin,
+          transform: zoomed ? "scale(2.2)" : "scale(1)",
+        }}
+        previewMode={previewMode}
+      />
+    </div>
   );
 }
 
@@ -126,8 +195,6 @@ export function ProductDetailView({
   const imagePackFile =
     files.find((f) => f.type === "IMAGE_PACK" && f.is_active) ??
     files.find((f) => f.type === "IMAGE_PACK");
-
-  console.log(product.files);
 
   // App-store links are per-product and optional; a missing/blank link hides
   // its menu item, and the whole button hides when neither is set.
@@ -187,13 +254,13 @@ export function ProductDetailView({
                 className="relative flex h-80 w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-card sm:h-100 lg:h-120"
               >
                 {activeImage && (
-                  <DetailImage
+                  <ZoomableImage
+                    key={activeImage}
                     src={activeImage}
                     alt={product.name}
-                    priority
                     sizes="(max-width: 1024px) 100vw, 447px"
-                    className="object-contain p-6"
                     previewMode={previewMode}
+                    disabled={editable}
                   />
                 )}
               </div>
