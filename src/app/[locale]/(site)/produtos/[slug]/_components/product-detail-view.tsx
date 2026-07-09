@@ -442,19 +442,6 @@ export function ProductDetailView({
           />
         ))}
 
-      <section className="border-t border-border bg-white">
-        <Container>
-          <Link
-            href={`/produtos?category=${encodeURIComponent(category.slug)}&first_comparation_product_slug=${product.slug}`}
-          >
-            <Button variant="brand-outline" size="md" className="w-full">
-              <GitCompareArrows size={18} />
-              {t("compare")}
-            </Button>
-          </Link>
-        </Container>
-      </section>
-
       <section {...ed("specs")} id="specifications" className="scroll-mt-38">
         <div className="bg-off-white px-5 py-4 lg:px-42.5">
           <h2 className="font-sans-condensed text-display-sm leading-none font-black text-brand-dark uppercase">
@@ -528,9 +515,19 @@ export function ProductDetailView({
         className="scroll-mt-38 bg-off-white py-10 md:py-12 lg:py-16"
       >
         <Container>
-          <h2 className="mt-4 font-sans-condensed text-display-sm leading-none font-black text-brand-dark uppercase">
-            {t("related")}
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="mt-4 font-sans-condensed text-display-sm leading-none font-black text-brand-dark uppercase">
+              {t("related")}
+            </h2>
+            <Link
+              href={`/produtos?category=${encodeURIComponent(category.slug)}&first_comparation_product_slug=${product.slug}`}
+            >
+              <Button variant="brand-outline" size="md">
+                <GitCompareArrows size={18} />
+                {t("compare")}
+              </Button>
+            </Link>
+          </div>
           {relatedProducts && relatedProducts.length > 0 ? (
             <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-5">
               {relatedProducts.slice(0, 6).map((p) => (
