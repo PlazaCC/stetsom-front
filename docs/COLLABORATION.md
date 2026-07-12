@@ -41,13 +41,12 @@ On merge, the **release workflow** runs automatically:
 1. `semantic-release` analyzes commits since the last tag
 2. Determines the next version (`feat:` = minor bump, `fix:` = patch bump)
 3. Creates a Git tag (e.g. `v0.2.0`)
-4. Generates release notes from commits
+4. Generates release notes from commit history
 5. Creates a GitHub Release
-6. Updates `CHANGELOG.md` and `package.json` version
-7. Vercel deploys `main` to production
-8. **Auto-syncs `develop`** by merging `main` back into `develop` — branches never diverge
+6. Vercel deploys `main` to production (single deploy — no extra commit)
+7. **Auto-syncs `develop`** by merging `main` back into `develop` — branches never diverge
 
-No manual version bumping. No manual changelog. No manual tags. No manual sync.
+No manual version bumping. No extra commits on main. No manual tags. No manual sync.
 
 ## Versioning
 
@@ -57,7 +56,7 @@ Versioning is fully automated via `semantic-release`:
 - `fix:` commits → **patch** bump (`0.1.0` → `0.1.1`)
 - Breaking changes (footer `BREAKING CHANGE:`) → major bump
 
-Tags are created automatically on each release. `CHANGELOG.md` is generated from commit history and committed back to the repo.
+Tags are created automatically. Release notes are published on the GitHub Release page.
 
 ## Hotfixes
 
