@@ -2,6 +2,7 @@
 
 import type { GeocodeSuggestion } from "@/lib/geocode";
 import { Loader2, MapPin, Search, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface GeocodeDropdownProps {
   isCepMode: boolean;
@@ -22,12 +23,14 @@ export function GeocodeDropdown({
   query,
   onSelect,
 }: GeocodeDropdownProps) {
+  const t = useTranslations("Support.serviceCenters");
+
   if (isCepMode) {
     if (geocodeLoading) {
       return (
         <div className="flex items-center gap-2 px-3 py-2 text-xs text-icon-muted">
           <Loader2 size={12} className="animate-spin" />
-          <span>Buscando por CEP...</span>
+          <span>{t("locatingByCep")}</span>
         </div>
       );
     }
@@ -35,10 +38,7 @@ export function GeocodeDropdown({
       return (
         <div className="flex items-center gap-2 px-3 py-2 text-xs text-icon-muted">
           <Search size={12} />
-          <span>
-            Faltam {missingCount} dígito
-            {missingCount !== 1 ? "s" : ""} do CEP
-          </span>
+          <span>{t("missingCepDigits", { count: missingCount })}</span>
         </div>
       );
     }
@@ -46,7 +46,7 @@ export function GeocodeDropdown({
       return (
         <div className="flex items-center gap-2 px-3 py-2 text-xs text-icon-muted">
           <X size={12} />
-          <span>CEP não encontrado</span>
+          <span>{t("cepNotFound")}</span>
         </div>
       );
     }
@@ -69,7 +69,7 @@ export function GeocodeDropdown({
     return (
       <div className="flex items-center gap-2 px-3 py-2 text-xs text-icon-muted">
         <Loader2 size={12} className="animate-spin" />
-        <span>Buscando por cidades...</span>
+        <span>{t("searchingCities")}</span>
       </div>
     );
   }
@@ -78,7 +78,7 @@ export function GeocodeDropdown({
     return (
       <div className="flex items-center gap-2 px-3 py-2 text-xs text-icon-muted">
         <X size={12} />
-        <span>Nenhuma cidade encontrada</span>
+        <span>{t("noCitiesFound")}</span>
       </div>
     );
   }

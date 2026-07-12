@@ -1,0 +1,1 @@
+../../.agents/rules/admin-page-structure.md

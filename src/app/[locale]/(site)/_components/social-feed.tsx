@@ -8,7 +8,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
-import { getMockSocialFeedPosts } from "@/lib/mock/instagram/mock";
 
 type SocialPost = {
   id: string;
@@ -46,9 +45,7 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
     dateStyle: "medium",
   });
 
-  // Fall back to mock data when no real posts are available
-  const posts =
-    section.posts.length > 0 ? section.posts : getMockSocialFeedPosts();
+  const posts = section.posts;
 
   return (
     <section className="flex justify-center overflow-x-hidden bg-white py-10 sm:py-12">

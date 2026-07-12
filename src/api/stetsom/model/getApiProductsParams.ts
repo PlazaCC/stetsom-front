@@ -27,5 +27,6 @@ export type GetApiProductsParams = {
   locale?: LocaleInput;
   is_featured?: boolean;
   is_spotlight?: boolean;
+  is_discontinued?: boolean;
   sort?: GetApiProductsSort;
 };

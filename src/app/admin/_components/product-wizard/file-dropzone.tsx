@@ -85,7 +85,7 @@ export function FileDropzone({
           onClose={() => setPickerOpen(false)}
           onPick={(asset) => {
             onAdd({
-              id: `file-${asset.library_id}`,
+              id: crypto.randomUUID(),
               library_id: asset.library_id,
               file_url: asset.file_url,
               filename: asset.file_url.split("/").pop(),

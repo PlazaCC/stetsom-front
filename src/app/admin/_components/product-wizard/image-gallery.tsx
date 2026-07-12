@@ -19,7 +19,7 @@ export function ImageGallery({ images, onChange }: ImageGalleryProps) {
 
   function addImage(asset: LibraryPickedAsset) {
     const added: WizardImage = {
-      id: `img-${asset.library_id}`,
+      id: crypto.randomUUID(),
       library_id: asset.library_id,
       preview_url: asset.file_url ?? "",
       order: images.length,
@@ -75,7 +75,7 @@ export function ImageGallery({ images, onChange }: ImageGalleryProps) {
               </span>
             )}
             <div className="absolute inset-0 flex items-start justify-end gap-1 bg-black/0 p-1.5 opacity-0 transition-all group-hover:bg-black/20 group-hover:opacity-100">
-              <div className="[&_button]:!active:cursor-grabbing flex size-7 items-center justify-center rounded-full bg-black/60 text-white hover:bg-primary/80 [&_button]:!cursor-grab">
+              <div className="flex size-7 items-center justify-center rounded-full bg-black/60 text-white hover:bg-primary/80 [&_button]:cursor-grab [&_button]:active:cursor-grabbing">
                 {handle}
               </div>
               <button

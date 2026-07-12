@@ -7,16 +7,18 @@ import {
   postApiLegalPages,
   useGetApiLegalPages,
 } from "@/api/stetsom";
-import type { LegalPage } from "@/api/stetsom/model";
+import type { I18nString, LegalPage } from "@/api/stetsom/model";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
+import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import { LegalEditor } from "@/components/editor/legal/legal-editor";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { getApiErrorMessage } from "@/lib/api/error-utils";
 import { cn } from "@/lib/utils";
+import { slugify } from "@/lib/utils/slugify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
 import { ChevronDown, ChevronUp, Plus } from "lucide-react";
@@ -36,30 +38,17 @@ const NEW_ID = "__new__";
 type Draft = {
   id: string | null;
   slug: string;
-  title: Record<LocaleKey, string>;
+  title: I18nString;
   content: Record<LocaleKey, string>;
   published: boolean;
   order: number;
 };
 
-function slugify(value: string): string {
-  return value
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
 function draftFromPage(page: LegalPage): Draft {
   return {
     id: page.id,
     slug: page.slug,
-    title: {
-      pt: page.title.pt ?? "",
-      en: page.title.en ?? "",
-      es: page.title.es ?? "",
-    },
+    title: page.title,
     content: {
       pt: page.content.pt ?? "",
       en: page.content.en ?? "",
@@ -74,7 +63,7 @@ function emptyDraft(order: number): Draft {
   return {
     id: null,
     slug: "",
-    title: { pt: "", en: "", es: "" },
+    title: { pt: "" },
     content: { pt: "", en: "", es: "" },
     published: false,
     order,
@@ -114,11 +103,9 @@ export function LegalPagesContent() {
 
   const saveMutation = useMutation({
     mutationFn: async (d: Draft) => {
-      const title: { pt: string; en?: string; es?: string } = {
-        pt: d.title.pt.trim(),
-      };
-      if (d.title.en.trim()) title.en = d.title.en.trim();
-      if (d.title.es.trim()) title.es = d.title.es.trim();
+      const title: I18nString = { pt: d.title.pt.trim() };
+      if (d.title.en?.trim()) title.en = d.title.en.trim();
+      if (d.title.es?.trim()) title.es = d.title.es.trim();
 
       const content: { pt: string; en?: string; es?: string } = {
         pt: sanitize(d.content.pt),
@@ -183,16 +170,13 @@ export function LegalPagesContent() {
     reorderMutation.mutate({ a: pages[index], b: pages[target] });
   }
 
-  function handleTitleChange(value: string) {
+  function handleTitleChange(value: I18nString) {
     setDraft((prev) => {
       if (!prev) return prev;
-      const next = { ...prev, title: { ...prev.title, [activeLocale]: value } };
+      const next = { ...prev, title: value };
       // Auto-fill slug from the pt title while it tracks the title.
-      if (
-        activeLocale === "pt" &&
-        (prev.slug === "" || prev.slug === slugify(prev.title.pt))
-      ) {
-        next.slug = slugify(value);
+      if (prev.slug === "" || prev.slug === slugify(prev.title.pt)) {
+        next.slug = slugify(value.pt);
       }
       return next;
     });
@@ -353,7 +337,15 @@ export function LegalPagesContent() {
                 </div>
               </div>
 
-              {/* Locale tabs */}
+              <I18nInput
+                label="Título"
+                required
+                value={draft.title}
+                onChange={handleTitleChange}
+                placeholder="Política de Privacidade"
+              />
+
+              {/* Locale tabs — content editor only (rich text can't live inside I18nInput) */}
               <div className="flex gap-1 border-b border-border">
                 {LOCALES.map(({ key, label }) => (
                   <button
@@ -371,15 +363,6 @@ export function LegalPagesContent() {
                     {key === "pt" && <span className="text-brand"> *</span>}
                   </button>
                 ))}
-              </div>
-
-              <div>
-                <AdminLabel>Título ({activeLocale.toUpperCase()})</AdminLabel>
-                <Input
-                  value={draft.title[activeLocale]}
-                  onChange={(e) => handleTitleChange(e.target.value)}
-                  placeholder="Política de Privacidade"
-                />
               </div>
 
               <div>

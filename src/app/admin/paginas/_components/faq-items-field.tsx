@@ -4,15 +4,14 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   deleteApiFaqsId,
+  getGetApiFaqsAdminQueryKey,
   patchApiFaqsId,
   patchApiFaqsReorder,
   postApiFaqs,
+  useGetApiFaqsAdmin,
 } from "@/api/stetsom/endpoints/faq/faq";
-import {
-  getGetApiFaqsQueryKey,
-  useGetApiFaqs,
-} from "@/api/stetsom/endpoints/faq-public/faq-public";
 import type { I18nString } from "@/api/stetsom/model";
+import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
@@ -28,8 +27,8 @@ type FaqMutationBody = { q: I18nString; a: I18nString; order?: number };
 
 export function FaqItemsField({ field }: Readonly<FaqItemsFieldProps>) {
   const queryClient = useQueryClient();
-  const queryKey = getGetApiFaqsQueryKey();
-  const { data: items = [] } = useGetApiFaqs();
+  const queryKey = getGetApiFaqsAdminQueryKey();
+  const { data: items = [] } = useGetApiFaqsAdmin();
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editQ, setEditQ] = useState<I18nString>({ pt: "" });
@@ -37,6 +36,7 @@ export function FaqItemsField({ field }: Readonly<FaqItemsFieldProps>) {
   const [newQ, setNewQ] = useState<I18nString>({ pt: "" });
   const [newA, setNewA] = useState<I18nString>({ pt: "" });
   const [isAdding, setIsAdding] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const createMutation = useMutation({
     mutationFn: (body: FaqMutationBody) => postApiFaqs(body),
@@ -81,8 +81,8 @@ export function FaqItemsField({ field }: Readonly<FaqItemsFieldProps>) {
 
   function startEdit(item: (typeof items)[number]) {
     setEditingId(item.id);
-    setEditQ({ pt: item.q });
-    setEditA({ pt: item.a });
+    setEditQ(item.q);
+    setEditA(item.a);
   }
 
   function cancelEdit() {
@@ -131,9 +131,9 @@ export function FaqItemsField({ field }: Readonly<FaqItemsFieldProps>) {
               </div>
             ) : (
               <div className="flex-1">
-                <p className="text-sm font-medium">{item.q}</p>
+                <p className="text-sm font-medium">{item.q.pt}</p>
                 <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
-                  {item.a}
+                  {item.a.pt}
                 </p>
               </div>
             )}
@@ -151,17 +151,29 @@ export function FaqItemsField({ field }: Readonly<FaqItemsFieldProps>) {
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => {
-                  if (confirm("Remover esta pergunta?")) {
-                    deleteMutation.mutate(item.id);
-                  }
-                }}
+                onClick={() => setDeleteTarget(item.id)}
               >
                 <Trash2 className="size-4" />
               </Button>
             </div>
           </div>
         )}
+      />
+
+      <AdminConfirmDialog
+        open={deleteTarget !== null}
+        title="Remover esta pergunta?"
+        description="Esta ação não pode ser desfeita."
+        confirmLabel="Remover"
+        destructive
+        isPending={deleteMutation.isPending}
+        onConfirm={() => {
+          if (!deleteTarget) return;
+          deleteMutation.mutate(deleteTarget, {
+            onSuccess: () => setDeleteTarget(null),
+          });
+        }}
+        onCancel={() => setDeleteTarget(null)}
       />
 
       {isAdding ? (

@@ -20,6 +20,8 @@ export * from "./adminDashboardPayloadQuickActionsItem";
 export * from "./adminDashboardPayloadRecentActivitiesItem";
 export * from "./adminDashboardPayloadScheduleItemsItem";
 export * from "./adminDashboardPayloadScheduleItemsItemType";
+export * from "./adminFaqItem";
+export * from "./adminFaqItemInput";
 export * from "./adminUser";
 export * from "./adminUserInput";
 export * from "./adminUsersPayload";

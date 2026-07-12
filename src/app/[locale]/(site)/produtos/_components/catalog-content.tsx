@@ -202,8 +202,6 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
 
             <div className="min-w-0 flex-1">
               <CatalogMobileActions
-                search={searchInput}
-                onSearchChange={setSearchInput}
                 onToggleFilters={() => setSidebarOpen((value) => !value)}
               />
 

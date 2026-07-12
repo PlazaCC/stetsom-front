@@ -60,7 +60,7 @@ const DETAIL_TABS: { id: DetailTab; label: string }[] = [
 ];
 
 function generateId(): string {
-  return `block-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  return `block-${crypto.randomUUID()}`;
 }
 
 /**
@@ -166,78 +166,76 @@ export function BlockManager({
       )}
     >
       {/* Card 1 — block list + actions */}
-      <AdminFormSection
-        title="Blocos"
-        className={cn(compact ? "w-full" : "w-72!")}
-        raw
-      >
-        <AdminFormSectionContent className="gap-2">
-          {value.length === 0 ? (
-            <div className="rounded-md border border-dashed border-border py-8 text-center text-sm text-muted-foreground">
-              Nenhum bloco adicionado.
-            </div>
-          ) : (
-            <SortableList
-              items={value}
-              getId={(b) => b.id}
-              onReorder={(items) => onChange(reindex(items))}
-              renderItem={(block, handle) => {
-                const def = registry[block.type];
-                if (!def) return null;
-                const Icon = def.icon;
-                const isActive = block.id === selectedId;
-                return (
-                  <div
-                    className={cn(
-                      "flex items-center gap-2 rounded-md border px-2.5 py-2 transition-colors",
-                      isActive
-                        ? "border-primary bg-primary/5"
-                        : "border-border bg-card hover:border-primary/40",
-                    )}
-                  >
-                    {handle}
-                    <button
-                      type="button"
-                      onClick={() => selectBlock(block.id)}
-                      className="flex min-w-0 flex-1 items-center gap-2 text-left"
+      <div className={cn(compact ? "w-full" : "w-72 shrink-0")}>
+        <AdminFormSection title="Blocos" className="w-full" raw>
+          <AdminFormSectionContent className="gap-2">
+            {value.length === 0 ? (
+              <div className="rounded-md border border-dashed border-border py-8 text-center text-sm text-muted-foreground">
+                Nenhum bloco adicionado.
+              </div>
+            ) : (
+              <SortableList
+                items={value}
+                getId={(b) => b.id}
+                onReorder={(items) => onChange(reindex(items))}
+                renderItem={(block, handle) => {
+                  const def = registry[block.type];
+                  if (!def) return null;
+                  const Icon = def.icon;
+                  const isActive = block.id === selectedId;
+                  return (
+                    <div
+                      className={cn(
+                        "flex items-center gap-2 rounded-md border px-2.5 py-2 transition-colors",
+                        isActive
+                          ? "border-primary bg-primary/5"
+                          : "border-border bg-card hover:border-primary/40",
+                      )}
                     >
-                      <Icon
-                        className={cn(
-                          "size-4 shrink-0",
-                          isActive ? "text-primary" : "text-muted-foreground",
-                        )}
-                      />
-                      <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">
-                        {def.label}
-                      </span>
-                      <span className="shrink-0 text-2xs text-muted-foreground">
-                        #{block.order + 1}
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="Remover bloco"
-                      onClick={() => removeBlock(block.id)}
-                      className="shrink-0 rounded p-1 text-muted-foreground hover:bg-muted hover:text-destructive"
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
-                  </div>
-                );
-              }}
-            />
-          )}
+                      {handle}
+                      <button
+                        type="button"
+                        onClick={() => selectBlock(block.id)}
+                        className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                      >
+                        <Icon
+                          className={cn(
+                            "size-4 shrink-0",
+                            isActive ? "text-primary" : "text-muted-foreground",
+                          )}
+                        />
+                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">
+                          {def.label}
+                        </span>
+                        <span className="shrink-0 text-2xs text-muted-foreground">
+                          #{block.order + 1}
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Remover bloco"
+                        onClick={() => removeBlock(block.id)}
+                        className="shrink-0 rounded p-1 text-muted-foreground hover:bg-muted hover:text-destructive"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    </div>
+                  );
+                }}
+              />
+            )}
 
-          <button
-            type="button"
-            onClick={() => setMenu(true)}
-            className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-          >
-            <Plus className="size-4" />
-            {addLabel}
-          </button>
-        </AdminFormSectionContent>
-      </AdminFormSection>
+            <button
+              type="button"
+              onClick={() => setMenu(true)}
+              className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+            >
+              <Plus className="size-4" />
+              {addLabel}
+            </button>
+          </AdminFormSectionContent>
+        </AdminFormSection>
+      </div>
 
       {/* Card 2 — selected block editor */}
       <AdminFormSection title="" raw>

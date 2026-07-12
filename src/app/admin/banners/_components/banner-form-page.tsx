@@ -98,9 +98,7 @@ export function BannerFormPage(props: Props) {
         : undefined,
       link_url: draft.link_url || null,
       href: draft.href || null,
-      title: (draft.title as I18nString).pt
-        ? (draft.title as I18nString)
-        : undefined,
+      title: draft.title.pt ? draft.title : undefined,
       label: draft.label || null,
       order: draft.order ?? 0,
       status: draft.status,
@@ -130,9 +128,7 @@ export function BannerFormPage(props: Props) {
         : undefined,
       link_url: draft.link_url || null,
       href: draft.href || null,
-      title: (draft.title as I18nString).pt
-        ? (draft.title as I18nString)
-        : undefined,
+      title: draft.title.pt ? draft.title : undefined,
       label: draft.label || null,
       order: draft.order ?? undefined,
       status: draft.status,

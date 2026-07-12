@@ -1,7 +1,15 @@
-import { draftMode } from "next/headers";
+import { unauthorizedResponse } from "@/lib/api/route-utils";
+import { cookies, draftMode } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("admin_token")?.value;
+
+  if (!token) {
+    return unauthorizedResponse();
+  }
+
   const { searchParams } = new URL(request.url);
   const slug = searchParams.get("slug");
   const exit = searchParams.get("exit") === "true";

@@ -2,12 +2,43 @@
 
 import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { cva } from "class-variance-authority";
 import { Loader2, Search } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import type { ProductCardItem } from "@/api/stetsom/model";
 import { useSearchSuggestions } from "./use-search-suggestions";
+
+const searchInputVariants = cva("font-sans text-sm outline-none", {
+  variants: {
+    variant: {
+      desktop:
+        "w-40 rounded-full border px-4 py-2 transition-all focus:w-56 focus:border-brand",
+      mobile:
+        "flex-1 bg-transparent py-2 text-foreground placeholder:text-muted-foreground",
+    },
+    isWhite: {
+      true: "",
+      false: "",
+    },
+  },
+  compoundVariants: [
+    {
+      variant: "desktop",
+      isWhite: true,
+      className:
+        "border-border bg-muted text-foreground placeholder:text-muted-foreground",
+    },
+    {
+      variant: "desktop",
+      isWhite: false,
+      className:
+        "border-white/30 bg-white/10 text-white placeholder:text-white/50",
+    },
+  ],
+  defaultVariants: { variant: "mobile", isWhite: true },
+});
 
 interface HeaderSearchProps {
   variant: "desktop" | "mobile";
@@ -75,17 +106,7 @@ export function HeaderSearch({
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setOpen(true)}
           placeholder={t("searchPlaceholder")}
-          className={cn(
-            isDesktop
-              ? cn(
-                  "w-40 rounded-full border px-4 py-2 font-sans text-sm transition-all outline-none",
-                  "focus:w-56 focus:border-brand",
-                  isWhite
-                    ? "border-border bg-muted text-foreground placeholder:text-muted-foreground"
-                    : "border-white/30 bg-white/10 text-white placeholder:text-white/50",
-                )
-              : "flex-1 bg-transparent py-2 font-sans text-sm text-foreground outline-none placeholder:text-muted-foreground",
-          )}
+          className={searchInputVariants({ variant, isWhite })}
         />
       </form>
 

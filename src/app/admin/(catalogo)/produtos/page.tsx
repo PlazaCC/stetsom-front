@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Filter, Package, Plus } from "lucide-react";
+import { Filter, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { AdminActionBar } from "@/app/admin/_components/crud/admin-action-bar";

@@ -22,9 +22,9 @@ interface ProductCardProps {
 
 export function ProductCard({
   name,
-  category: _category,
+  category,
   variants,
-  badge: _badge,
+  badge,
   img,
   href = "/produtos",
   variantDirection = "row",
@@ -53,6 +53,13 @@ export function ProductCard({
           <div className="h-20 w-24 rounded bg-muted" />
         )}
 
+        {/* Status badge (e.g. NOVO, DESCONTINUADO) */}
+        {badge && !compareMode && (
+          <span className="absolute top-2 left-2 rounded-sm bg-brand px-2 py-0.5 font-sans-condensed text-2xs leading-tight font-black text-white uppercase">
+            {badge}
+          </span>
+        )}
+
         {/* Compare badge overlay */}
         {compareMode && (
           <span
@@ -78,8 +85,13 @@ export function ProductCard({
           variantDirection === "column" && "flex-col gap-2",
         )}
       >
-        <div className="font-sans-condensed text-base leading-tight font-black text-brand-dark uppercase">
-          {name}
+        <div>
+          <div className="font-sans-condensed text-2xs font-black text-brand uppercase">
+            {category}
+          </div>
+          <div className="font-sans-condensed text-base leading-tight font-black text-brand-dark uppercase">
+            {name}
+          </div>
         </div>
         {uniqueVariants.length > 0 && (
           <div className="flex flex-wrap gap-1">

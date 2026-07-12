@@ -208,7 +208,17 @@
       "locating": "Locating...",
       "locationDenied": "Could not get your location.",
       "distanceAway": "{km} km away",
-      "resultsCount": "{count} results"
+      "resultsCount": "{count} results",
+      "searchLocationPlaceholder": "Search city, state, or ZIP code",
+      "locatingByCep": "Searching by ZIP code...",
+      "missingCepDigits": "{count, plural, one {# digit} other {# digits}} left for the ZIP code",
+      "cepNotFound": "ZIP code not found",
+      "searchingCities": "Searching cities...",
+      "noCitiesFound": "No cities found",
+      "currentLocation": "My current location",
+      "emptyStateHint": "Enter your location or browse the map to find service centers",
+      "showAll": "Show all",
+      "filterByMap": "Filter by map"
     },
     "faq": {
       "noAnswer": "Didn't find what you're looking for? Contact our support team."

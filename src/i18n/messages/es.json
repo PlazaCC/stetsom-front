@@ -208,7 +208,17 @@
       "locating": "Localizando...",
       "locationDenied": "No se pudo obtener tu ubicación.",
       "distanceAway": "{km} km de distancia",
-      "resultsCount": "{count} resultados"
+      "resultsCount": "{count} resultados",
+      "searchLocationPlaceholder": "Buscar ciudad, estado o código postal",
+      "locatingByCep": "Buscando por código postal...",
+      "missingCepDigits": "Faltan {count, plural, one {# dígito} other {# dígitos}} del código postal",
+      "cepNotFound": "Código postal no encontrado",
+      "searchingCities": "Buscando ciudades...",
+      "noCitiesFound": "Ninguna ciudad encontrada",
+      "currentLocation": "Mi ubicación actual",
+      "emptyStateHint": "Ingrese su ubicación o navegue el mapa para encontrar centros de servicio técnico",
+      "showAll": "Mostrar todos",
+      "filterByMap": "Filtrar por mapa"
     },
     "faq": {
       "noAnswer": "¿No encontró lo que busca? Póngase en contacto con nuestro equipo de soporte."

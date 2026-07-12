@@ -208,7 +208,17 @@
       "locating": "Localizando...",
       "locationDenied": "Não foi possível obter sua localização.",
       "distanceAway": "{km} km de distância",
-      "resultsCount": "{count} resultados"
+      "resultsCount": "{count} resultados",
+      "searchLocationPlaceholder": "Buscar cidade, estado ou CEP",
+      "locatingByCep": "Buscando por CEP...",
+      "missingCepDigits": "Faltam {count, plural, one {# dígito} other {# dígitos}} do CEP",
+      "cepNotFound": "CEP não encontrado",
+      "searchingCities": "Buscando por cidades...",
+      "noCitiesFound": "Nenhuma cidade encontrada",
+      "currentLocation": "Minha localização atual",
+      "emptyStateHint": "Informe sua localização ou navegue pelo mapa para encontrar assistências técnicas",
+      "showAll": "Mostrar todos",
+      "filterByMap": "Filtrar pelo mapa"
     },
     "faq": {
       "noAnswer": "Não encontrou o que procura? Entre em contato com nosso suporte."

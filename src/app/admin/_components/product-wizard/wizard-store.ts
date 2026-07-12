@@ -137,7 +137,7 @@ const DEFAULT_VARIATION_ID = "variation-default";
 
 export function newSpec(order: number): WizardSpec {
   return {
-    id: `spec-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    id: `spec-${crypto.randomUUID()}`,
     attribute_id: "",
     value: { pt: "" },
     order,
@@ -150,11 +150,11 @@ export function newVariation(
   baseSpecs: WizardSpec[] = [],
 ): WizardVariation {
   return {
-    id: `variation-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    id: `variation-${crypto.randomUUID()}`,
     label: `${order} Ohm`,
     order,
     specs: baseSpecs.map((spec, index) => ({
-      id: `spec-${Date.now()}-${Math.random().toString(36).slice(2, 7)}-${index}`,
+      id: `spec-${crypto.randomUUID()}`,
       attribute_id: spec.attribute_id,
       attribute_name: spec.attribute_name,
       value: { pt: "" },
@@ -331,7 +331,7 @@ export function wizardReducer(
             ...v.specs,
             ...missing.map((s, i) => ({
               ...s,
-              id: `spec-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+              id: `spec-${crypto.randomUUID()}`,
               order: v.specs.length + i,
               value: { pt: "" },
               highlighted: false,

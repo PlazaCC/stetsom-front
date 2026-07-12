@@ -66,13 +66,13 @@ export function ServiceCentersExplorer({
   const handleGeoSuccess = (pos: GeolocationPosition) => {
     setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
     setSelectedLocation({
-      displayName: "Minha localização atual",
+      displayName: t("currentLocation"),
       city: "",
       state: "",
       lat: pos.coords.latitude,
       lng: pos.coords.longitude,
     });
-    setQuery("Minha localização atual");
+    setQuery(t("currentLocation"));
     setGeoStatus("idle");
   };
   const handleGeoError = () => setGeoStatus("denied");
@@ -126,7 +126,7 @@ export function ServiceCentersExplorer({
   const debounceTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const handleInputChange = (raw: string) => {
-    const cepMode = isLikelyCep(raw) && !raw.startsWith("Minha localização");
+    const cepMode = isLikelyCep(raw) && raw !== t("currentLocation");
     setIsCepMode(cepMode);
 
     if (cepMode) {
@@ -269,7 +269,7 @@ export function ServiceCentersExplorer({
                 if (suggestions.length > 0 || isCepMode)
                   setSuggestionsOpen(true);
               }}
-              placeholder="Buscar cidade, estado ou CEP"
+              placeholder={t("searchLocationPlaceholder")}
               className="flex-1 border-none bg-transparent text-sm outline-none placeholder:text-icon-muted"
             />
             {query && (
@@ -335,9 +335,7 @@ export function ServiceCentersExplorer({
           <div className="flex flex-col items-center justify-center gap-4 border border-border bg-white px-6 py-12">
             <Search size={48} className="text-icon-muted" />
             <p className="text-center text-sm leading-relaxed text-text-subtle">
-              Informe sua localização ou navegue pelo mapa
-              <br />
-              para encontrar assistências técnicas
+              {t("emptyStateHint")}
             </p>
           </div>
         ) : (
@@ -412,7 +410,7 @@ export function ServiceCentersExplorer({
                 }}
                 className="flex w-full items-center justify-center gap-1.5 border border-dashed border-border bg-white px-4 py-2 text-xs text-brand transition-colors hover:text-brand-dark"
               >
-                {showAll ? "Filtrar pelo mapa" : "Mostrar todos"}
+                {showAll ? t("filterByMap") : t("showAll")}
               </button>
             ) : null}
           </div>

@@ -1,0 +1,1 @@
+../../.agents/rules/admin-ui-patterns.md

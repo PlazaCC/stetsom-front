@@ -22,6 +22,31 @@ const SEARCH_PIN_CLASS =
 type LatLng = { lat: number; lng: number };
 type Bounds = { north: number; south: number; east: number; west: number };
 
+function buildPopupContent(loc: PartnerLocation): HTMLElement {
+  const container = document.createElement("div");
+
+  const name = document.createElement("strong");
+  name.className = "text-sm";
+  name.textContent = loc.name;
+  container.appendChild(name);
+
+  const lines = [
+    loc.address,
+    loc.city ? `${loc.city}, ${loc.state}` : undefined,
+    loc.phone,
+  ].filter((line): line is string => Boolean(line));
+
+  for (const line of lines) {
+    container.appendChild(document.createElement("br"));
+    const span = document.createElement("span");
+    span.className = "text-xs";
+    span.textContent = line;
+    container.appendChild(span);
+  }
+
+  return container;
+}
+
 interface ServiceCenterMapProps {
   locations: PartnerLocation[];
   searchLocation: LatLng | null;
@@ -79,11 +104,12 @@ export function ServiceCenterMap({
     emitBounds();
     map.on("move", emitBounds);
     mapRef.current = map;
+    const markers = markersRef.current;
 
     return () => {
       map.remove();
       mapRef.current = null;
-      markersRef.current.clear();
+      markers.clear();
       searchMarkerRef.current = null;
       popupRef.current = null;
     };
@@ -124,17 +150,7 @@ export function ServiceCenterMap({
 
         const popup = new maplibregl.Popup({ closeButton: false, offset: 18 })
           .setLngLat([loc.lng as number, loc.lat as number])
-          .setHTML(
-            [
-              `<strong class="text-sm">${loc.name}</strong>`,
-              loc.address && `<span class="text-xs">${loc.address}</span>`,
-              loc.city &&
-                `<span class="text-xs">${loc.city}, ${loc.state}</span>`,
-              loc.phone && `<span class="text-xs">${loc.phone}</span>`,
-            ]
-              .filter(Boolean)
-              .join("<br/>"),
-          )
+          .setDOMContent(buildPopupContent(loc))
           .addTo(map);
         popupRef.current = popup;
       });

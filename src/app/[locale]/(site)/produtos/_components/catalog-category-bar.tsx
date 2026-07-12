@@ -2,7 +2,14 @@
 
 import { Container } from "@/components/ui/container";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, type LucideIcon, Star } from "lucide-react";
+import {
+  Cpu,
+  LayoutDashboard,
+  type LucideIcon,
+  Star,
+  Volume2,
+  Waves,
+} from "lucide-react";
 import Image from "next/image";
 
 interface CategoryOption {
@@ -24,19 +31,9 @@ const DEFAULT_CATEGORY_ICON: CategoryIcon = {
 };
 
 const STATIC_CATEGORY_ICONS: Record<string, CategoryIcon> = {
-  amplificadores: {
-    kind: "image",
-    src: "/amplifier.svg",
-    width: 89,
-    height: 66,
-  },
-  processadores: {
-    kind: "image",
-    src: "/processor.svg",
-    width: 107,
-    height: 64,
-  },
-  crossovers: { kind: "image", src: "/crossover.svg", width: 93, height: 63 },
+  amplificadores: { kind: "lucide", Icon: Volume2, size: 67 },
+  processadores: { kind: "lucide", Icon: Cpu, size: 67 },
+  crossovers: { kind: "lucide", Icon: Waves, size: 67 },
 };
 
 function resolveCategoryIcon(cat: CategoryOption): CategoryIcon {

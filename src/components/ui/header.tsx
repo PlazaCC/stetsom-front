@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Menu, Search, X } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container } from "./container";
 import { HeaderSearch } from "./header/header-search";
 import { LanguageSwitcher } from "./language-switcher";
@@ -41,6 +41,15 @@ export function Header({
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > SCROLL_THRESHOLD);
   });
+
+  // ── lock body scroll while a mobile panel is open ────────────────────
+  useEffect(() => {
+    const shouldLock = mobileMenuOpen || mobileSearchOpen;
+    document.body.style.overflow = shouldLock ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen, mobileSearchOpen]);
 
   // ── keyboard ─────────────────────────────────────────────────────────
   function handleKey(e: React.KeyboardEvent) {
@@ -112,6 +121,7 @@ export function Header({
             <button
               aria-label={t("openMenu")}
               aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-nav-menu"
               className={cn(
                 "inline-flex h-10 w-10 items-center justify-center",
                 iconClass,
@@ -131,6 +141,7 @@ export function Header({
             <button
               aria-label={t("openSearch")}
               aria-expanded={mobileSearchOpen}
+              aria-controls="mobile-search-panel"
               className={cn(
                 "inline-flex h-10 w-10 items-center justify-center",
                 iconClass,
@@ -147,7 +158,7 @@ export function Header({
 
         {/* Mobile dedicated search dropdown */}
         {mobileSearchOpen && (
-          <MobileDropdownPanel>
+          <MobileDropdownPanel id="mobile-search-panel" label={t("openSearch")}>
             <div className="px-5 py-4">
               <HeaderSearch
                 variant="mobile"
@@ -159,7 +170,7 @@ export function Header({
 
         {/* Mobile dropdown menu */}
         {mobileMenuOpen && (
-          <MobileDropdownPanel>
+          <MobileDropdownPanel id="mobile-nav-menu" label={t("openMenu")}>
             <div className="flex flex-col px-5 py-4">
               {/* Search */}
               <HeaderSearch
@@ -207,9 +218,21 @@ export function Header({
 
 // ─── Mobile Dropdown Panel ────────────────────────────────────────────────────
 
-function MobileDropdownPanel({ children }: { children: React.ReactNode }) {
+function MobileDropdownPanel({
+  id,
+  label,
+  children,
+}: {
+  id: string;
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <motion.div
+      id={id}
+      role="dialog"
+      aria-modal="true"
+      aria-label={label}
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}

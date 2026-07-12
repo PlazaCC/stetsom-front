@@ -6,14 +6,10 @@ import { CompareTriggerButton } from "./product-compare/compare-trigger-button";
 import { useCompareContext } from "./product-compare/compare-provider";
 
 interface CatalogMobileActionsProps {
-  search: string;
-  onSearchChange: (value: string) => void;
   onToggleFilters: () => void;
 }
 
 export function CatalogMobileActions({
-  search: _search,
-  onSearchChange: _onSearchChange,
   onToggleFilters,
 }: CatalogMobileActionsProps) {
   const t = useTranslations("Catalog");

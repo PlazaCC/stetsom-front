@@ -28,7 +28,7 @@ interface CompareExpandedProps {
 /** Fetches full product details for a slug using the public API. */
 function useProductDetail(slug: string, locale: LocaleInput) {
   return useQuery({
-    queryKey: ["compare-product", slug],
+    queryKey: ["compare-product", slug, locale],
     queryFn: ({ signal }) => getApiProductsSlug(slug, { locale }, signal),
     enabled: !!slug,
   });

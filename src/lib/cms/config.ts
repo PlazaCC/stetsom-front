@@ -107,11 +107,6 @@ export const config: Record<string, AppRouteStaticData> = {
     icon: FileText,
     section: "admin",
   },
-  "/admin/paginas/[pageId]/[sectionId]": {
-    label: "Editar seção",
-    icon: FileText,
-    section: "admin",
-  },
 
   "/admin/biblioteca": {
     label: "Biblioteca",

@@ -19,6 +19,7 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
+  AdminFaqItem,
   ApiErrorPayload,
   FaqItem,
   PatchApiFaqsIdBody,
@@ -157,6 +158,147 @@ export function usePostApiFaqs<
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
   const queryOptions = getPostApiFaqsQueryOptions(postApiFaqsBody, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary List FAQ items with full I18nString (ordered)
+ */
+export const getApiFaqsAdmin = (signal?: AbortSignal) => {
+  return orvalClient<AdminFaqItem[]>({
+    url: `/api/faqs/admin`,
+    method: "GET",
+    signal,
+  });
+};
+
+export const getGetApiFaqsAdminQueryKey = () => {
+  return [`/api/faqs/admin`] as const;
+};
+
+export const getGetApiFaqsAdminQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiFaqsAdmin>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getApiFaqsAdmin>>, TError, TData>
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetApiFaqsAdminQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiFaqsAdmin>>> = ({
+    signal,
+  }) => getApiFaqsAdmin(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiFaqsAdmin>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiFaqsAdminQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiFaqsAdmin>>
+>;
+export type GetApiFaqsAdminQueryError = unknown;
+
+export function useGetApiFaqsAdmin<
+  TData = Awaited<ReturnType<typeof getApiFaqsAdmin>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiFaqsAdmin>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiFaqsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiFaqsAdmin>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiFaqsAdmin<
+  TData = Awaited<ReturnType<typeof getApiFaqsAdmin>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiFaqsAdmin>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiFaqsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiFaqsAdmin>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiFaqsAdmin<
+  TData = Awaited<ReturnType<typeof getApiFaqsAdmin>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiFaqsAdmin>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List FAQ items with full I18nString (ordered)
+ */
+
+export function useGetApiFaqsAdmin<
+  TData = Awaited<ReturnType<typeof getApiFaqsAdmin>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiFaqsAdmin>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiFaqsAdminQueryOptions(options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,

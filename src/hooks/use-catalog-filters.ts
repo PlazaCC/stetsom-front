@@ -94,6 +94,8 @@ export function useCatalogFilters() {
     [pushParams],
   );
 
+  // TODO(backend): no export-line concept exists in the product schema yet —
+  // this filter changes the URL but has no effect on the returned catalog.
   const setShowExport = useCallback(
     (value: boolean) => {
       pushParams((p) => {
