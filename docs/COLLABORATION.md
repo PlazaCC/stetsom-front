@@ -36,27 +36,21 @@ When you are ready to ship to production:
 3. Review the preview URL — validate the site visually
 4. Merge the PR using **merge commit**
 
-On merge, the **release workflow** runs automatically:
+On merge:
 
-1. `semantic-release` analyzes commits since the last tag
-2. Determines the next version (`feat:` = minor bump, `fix:` = patch bump)
-3. Creates a Git tag (e.g. `v0.2.0`)
-4. Generates release notes from commit history
-5. Creates a GitHub Release
-6. Vercel deploys `main` to production (single deploy — no extra commit)
-7. **Auto-syncs `develop`** by merging `main` back into `develop` — branches never diverge
+- Vercel deploys `main` to production
+- `sync-develop.yml` fast-forwards `develop` to `main` — branches never diverge
 
-No manual version bumping. No extra commits on main. No manual tags. No manual sync.
+No extra commits. No manual back-merge. No bot noise.
 
 ## Versioning
 
-Versioning is fully automated via `semantic-release`:
+Tags are created manually for milestone releases:
 
-- `feat:` commits → **minor** bump (`0.1.0` → `0.2.0`)
-- `fix:` commits → **patch** bump (`0.1.0` → `0.1.1`)
-- Breaking changes (footer `BREAKING CHANGE:`) → major bump
-
-Tags are created automatically. Release notes are published on the GitHub Release page.
+```bash
+git tag v0.2.0
+git push origin v0.2.0
+```
 
 ## Hotfixes
 
