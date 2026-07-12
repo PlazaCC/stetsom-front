@@ -1,9 +1,9 @@
 ---
 name: code-review
-description: Use when a feature branch is complete and ready for PR — runs a full diff-based review of the current branch against main, reads every changed file, validates against project rules, and produces a concrete action plan. Do NOT use on main branch.
+description: Use before a release to validate the diff from develop against main — runs a full diff-based review, reads every changed file, validates against project rules, and produces a concrete action plan. Do NOT use on main or develop branches unless reviewing a release PR.
 ---
 
-# Code Review — Branch vs Main
+# Code Review — Pre-Release Diff vs Main
 
 ## Overview
 
@@ -15,15 +15,15 @@ Full review of current branch diff against `main`, grounded in actual file conte
 
 ---
 
-## Step 0 — Guard: Confirm Not on Main
+## Step 0 — Guard: Confirm Context
 
 ```bash
 git branch --show-current
 ```
 
-If output is `main` or `master`: **STOP.** Report:
+If output is `main` or `develop`: **STOP.** Report:
 
-> "You are on `main`. Switch to your feature branch before running code review."
+> "You are on `<branch>`. Code review compares a release PR (`develop`→`main`) against `main`. Run `/release` first to open the PR, or switch to the PR branch."
 
 Do not continue.
 
@@ -173,5 +173,7 @@ NEEDS_FIXES = at least one Critical issue or validator failure.
 
 ## Integration
 
-**Called after:** `/create-pr`
-**If NEEDS_FIXES:** fix items → run `/create-pr` again → run `/code-review` again. Repeat until APPROVED.
+**Called before:** `/release`
+**Purpose:** Validate that all changes on `develop` are safe to release
+**If NEEDS_FIXES:** fix items directly on `develop` → push → run `/code-review` again. Repeat until APPROVED.
+**When APPROVED:** proceed to `/release` to open and merge the PR

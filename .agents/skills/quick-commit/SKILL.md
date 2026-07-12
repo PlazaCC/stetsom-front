@@ -51,7 +51,7 @@ Analyze the diff and recent commits to understand project style. Generate a mess
 - Summary under 70 characters, imperative mood
 - Body explains *why* (not what) — bullet points if needed
 - Written in English (consistent with project convention)
-- Reference issue/task numbers if present in branch name (`feat/task-05-...` → references task-05)
+- Reference issue/task numbers if present in commit history
 
 ### Step 3 — Output the Message
 

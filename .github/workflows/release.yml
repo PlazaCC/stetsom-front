@@ -1,25 +1,28 @@
-name: CI
+name: Release
 
 on:
   push:
     branches:
       - main
-      - develop
-  pull_request:
-    branches:
-      - '**'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
 
 jobs:
-  build-and-lint:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Install pnpm
+      - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -36,3 +39,9 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
