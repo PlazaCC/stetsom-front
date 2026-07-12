@@ -34,33 +34,30 @@ When you are ready to ship to production:
 1. Run `/create-pr` — this opens a PR from `develop` into `main`
 2. Vercel creates a **preview deployment** automatically for the PR
 3. Review the preview URL — validate the site visually
-4. Merge the PR using **merge commit** (Settings → General → Pull Requests → Allow merge commits)
+4. Merge the PR using **merge commit**
 
-On merge, Vercel deploys `main` to production automatically.
+On merge, the **release workflow** runs automatically:
 
-### Keeping branches synchronized
+1. `semantic-release` analyzes commits since the last tag
+2. Determines the next version (`feat:` = minor bump, `fix:` = patch bump)
+3. Creates a Git tag (e.g. `v0.2.0`)
+4. Generates release notes from commits
+5. Creates a GitHub Release
+6. Updates `CHANGELOG.md` and `package.json` version
+7. Vercel deploys `main` to production
+8. **Auto-syncs `develop`** by merging `main` back into `develop` — branches never diverge
 
-After merging a release PR, `develop` will show "1 commit behind main" (the merge commit). To sync:
-
-```bash
-git checkout develop
-git pull origin develop
-git merge main
-git push origin develop
-```
-
-This is normal Git Flow behavior — the merge commit only exists on `main` until you back-merge.
+No manual version bumping. No manual changelog. No manual tags. No manual sync.
 
 ## Versioning
 
-Tags are created manually for milestone releases:
+Versioning is fully automated via `semantic-release`:
 
-```bash
-git tag v0.2.0
-git push origin v0.2.0
-```
+- `feat:` commits → **minor** bump (`0.1.0` → `0.2.0`)
+- `fix:` commits → **patch** bump (`0.1.0` → `0.1.1`)
+- Breaking changes (footer `BREAKING CHANGE:`) → major bump
 
-No automated version bumping or changelog generation.
+Tags are created automatically on each release. `CHANGELOG.md` is generated from commit history and committed back to the repo.
 
 ## Hotfixes
 

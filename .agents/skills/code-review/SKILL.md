@@ -23,7 +23,7 @@ git branch --show-current
 
 If output is `main` or `develop`: **STOP.** Report:
 
-> "You are on `<branch>`. Code review compares a release PR (`develop`→`main`) against `main`. Run `/release` first to open the PR, or switch to the PR branch."
+> "You are on `<branch>`. Code review compares a release PR (`develop`→`main`) against `main`. Run `/create-pr` first to open the PR, or switch to the PR branch."
 
 Do not continue.
 
@@ -173,7 +173,7 @@ NEEDS_FIXES = at least one Critical issue or validator failure.
 
 ## Integration
 
-**Called before:** `/release`
+**Called before:** `/create-pr`
 **Purpose:** Validate that all changes on `develop` are safe to release
 **If NEEDS_FIXES:** fix items directly on `develop` → push → run `/code-review` again. Repeat until APPROVED.
-**When APPROVED:** proceed to `/release` to open and merge the PR
+**When APPROVED:** proceed to `/create-pr` to open and merge the PR
