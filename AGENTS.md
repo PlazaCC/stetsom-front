@@ -37,9 +37,11 @@ A knowledge graph lives in `graphify-out/` (`GRAPH_REPORT.md`, `graph.html`, `gr
 
 ## AI-Driven Workflow
 
-**Cycle:** `/brainstorm` → implement on `develop` → preview → `/release` → merge.
+**Cycle:** `/brainstorm` → implement on `develop` → `/release` (PR develop→main) → preview → merge.
 
-All development happens directly on `develop` (trunk-based). No feature branches by default. The only PR is the release PR from `develop` into `main`. Vercel auto-deploys on push to `main`.
+All development happens directly on `develop` (trunk-based). No feature branches by default. The only PR is the release PR from `develop` into `main`. Vercel deploys on push to `main`. Branches stay synchronized automatically via `sync-develop.yml`.
+
+See `docs/COLLABORATION.md` for the full Git Flow and branching conventions.
 
 ## Architecture Decisions
 

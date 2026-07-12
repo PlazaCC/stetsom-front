@@ -86,7 +86,7 @@ Git Flow conventions are documented in `docs/COLLABORATION.md`. Quick summary:
 
 - **`develop`** — active development, commit directly here (trunk-based)
 - **`main`** — production, only receives merges from `develop` or hotfix PRs
-- **Release:** `/release` opens a PR `develop`→`main`; merge triggers semantic-release + Vercel deploy + auto-sync
+- **Release:** `/release` opens a PR `develop`→`main`; merge triggers Vercel deploy + auto-sync
 
 ## Skills
 
