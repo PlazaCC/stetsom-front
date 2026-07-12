@@ -31,31 +31,36 @@ All commits must follow [Conventional Commits](https://www.conventionalcommits.o
 
 When you are ready to ship to production:
 
-1. Run `/release` — this opens a PR from `develop` into `main`
+1. Run `/create-pr` — this opens a PR from `develop` into `main`
 2. Vercel creates a **preview deployment** automatically for the PR
 3. Review the preview URL — validate the site visually
-4. Merge the PR
+4. Merge the PR using **merge commit** (Settings → General → Pull Requests → Allow merge commits)
 
-On merge, the **release workflow** runs automatically:
+On merge, Vercel deploys `main` to production automatically.
 
-1. `semantic-release` analyzes commits since the last tag
-2. Determines the next version (`feat:` = minor bump, `fix:` = patch bump)
-3. Creates a Git tag (e.g. `v0.2.0`)
-4. Generates release notes from commits
-5. Creates a GitHub Release
-6. Updates `CHANGELOG.md` and `package.json` version
-7. Vercel deploys `main` to production
+### Keeping branches synchronized
 
-No manual version bumping. No manual changelog. No manual tags.
+After merging a release PR, `develop` will show "1 commit behind main" (the merge commit). To sync:
 
-## Versioning (pre-1.0)
+```bash
+git checkout develop
+git pull origin develop
+git merge main
+git push origin develop
+```
 
-While we are below `1.0.0`, version bumps follow this convention:
+This is normal Git Flow behavior — the merge commit only exists on `main` until you back-merge.
 
-- `feat:` commits → **minor** bump (`0.1.0` → `0.2.0`)
-- `fix:` commits → **patch** bump (`0.1.0` → `0.1.1`)
+## Versioning
 
-Breaking changes (footer `BREAKING CHANGE:`) will still trigger a major bump even pre-1.0, but we avoid them.
+Tags are created manually for milestone releases:
+
+```bash
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+No automated version bumping or changelog generation.
 
 ## Hotfixes
 

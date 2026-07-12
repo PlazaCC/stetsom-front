@@ -91,8 +91,3 @@ This regenerates `src/lib/mock/data.json` from the live API. Commit the updated 
 **Can't log into admin CMS on dev:**
 - The mock login uses any value for the `admin_token` cookie
 - Make sure `JWT_ACCESS_SECRET` and `JWT_REFRESH_SECRET` are set in Vercel
-
-**Release PR didn't create a tag:**
-- Check that the PR was merged (not closed without merging)
-- Check that `.github/workflows/release.yml` runs on `push: main`
-- Check GitHub Actions logs for semantic-release errors

@@ -1,23 +1,22 @@
 ---
-name: release
-description: Use when develop is ready to ship — opens a release PR from develop into main with a conventional description. Vercel creates a preview automatically. Merge the PR to trigger automatic versioning, tagging, and production deployment.
+name: create-pr
+description: Use when develop is ready to ship — opens a release PR from develop into main with a conventional description. Vercel creates a preview automatically. Merge the PR to deploy to production.
 ---
 
-# Release — Develop → Main PR
+# Create PR — Develop → Main
 
 ## Overview
 
 Opens a pull request from `develop` into `main`. This is the **only** type of PR in the trunk-based Git Flow — there are no feature-branch PRs.
 
-On merge, `semantic-release` auto-tags the version, generates release notes, and Vercel deploys to production.
+On merge, Vercel deploys `main` to production automatically.
 
 ---
 
 ## When to Use
 
 - When `develop` has accumulated changes ready to ship
-- When you want to preview what will go to production
-- Before merging a release into `main`
+- When you want a preview deployment before going to production
 
 ---
 
@@ -72,15 +71,11 @@ Output the generated title and body as copy-paste ready blocks — **do not run 
 ```markdown
 ## Summary
 
-<bullet points of changes since last release>
+<bullet points of changes>
 
 ## What changed
 
 <key features, fixes, refactors>
-
-## Why
-
-<rationale for this release>
 
 ## Checklist
 
@@ -88,7 +83,7 @@ Output the generated title and body as copy-paste ready blocks — **do not run 
 - [ ] ESLint passes
 - [ ] Build passes
 - [ ] Preview URL approved
-- [ ] Ready to release
+- [ ] Ready to merge
 ```
 
 ---
@@ -99,9 +94,9 @@ After presenting the copy-paste blocks, **always ask**:
 
 > **What would you like to do next?**
 >
-> **A)** Open the release PR now (`gh pr create` will run)
-> **B)** Review preview URL first (share the Vercel preview link for validation)
-> **C)** Run code-review first (runs the `code-review` skill before the PR)
+> **A)** Open the PR now (`gh pr create` will run)
+> **B)** Review preview URL first
+> **C)** Run code-review first
 
 Wait for the user's answer before taking any action.
 
@@ -122,32 +117,32 @@ EOF
 
 ## What happens after merge
 
-Once the PR is merged into `main`:
+- Vercel auto-deploys `main` to production
+- Development continues on `develop`
 
-1. `.github/workflows/release.yml` runs on the push to `main`
-2. `semantic-release` analyzes commits since the last tag
-3. Determines version bump: `feat:` → minor, `fix:` → patch
-4. Creates Git tag (e.g., `v0.2.0`)
-5. Generates release notes from commit history
-6. Creates GitHub Release
-7. Updates `CHANGELOG.md` and `package.json`
-8. Commits those changes back to `main`
-9. Vercel auto-deploys `main` to production
+To keep branches in sync after the merge:
+
+```bash
+git checkout develop
+git pull origin develop
+git merge main
+git push origin develop
+```
 
 ---
 
 ## Title Convention
 
-- Use `release: <version>` format
-- The actual version is determined by semantic-release after merge
+- Use imperative mood: `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`
+- Keep under 70 characters
 - Examples:
+  - `feat: add product detail page`
+  - `fix: await params in sobre/page.tsx`
   - `release: develop → main`
-  - `release: v0.2.0`
 
 ---
 
 ## Integration
 
 **Called after:** development on `develop` is complete
-**After merge:** `/code-review` on the release branch (optional, for final sanity check)
-**Automated by:** `.github/workflows/release.yml` (tagging, changelog, GitHub Release)
+**After merge:** merge main back into develop to keep branches synchronized

@@ -88,4 +88,4 @@ CI runs on every push to `develop` and `main`, and on all pull requests. Pipelin
 
 All deployments are handled by [Vercel](https://vercel.com). No manual deploy steps.
 
-Releases are automated: merge the release PR into `main` and `semantic-release` creates a Git tag, GitHub Release, and `CHANGELOG.md` entry automatically. See `docs/COLLABORATION.md` for the full workflow.
+See `docs/COLLABORATION.md` for the full Git Flow and release workflow.

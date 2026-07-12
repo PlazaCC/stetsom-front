@@ -80,13 +80,14 @@ Last run: 2026-05-12 · 58 files · 172 nodes · 32 communities
 Key insight: `cn()` is the central utility (41 edges, present in virtually every component).
 Regenerate with `/graphify` after major structural changes.
 
-## Collaboration & Release
+## Collaboration
 
-Git Flow conventions and the automated release pipeline are documented in `docs/COLLABORATION.md`. Quick summary:
+Git Flow conventions are documented in `docs/COLLABORATION.md`. Quick summary:
 
 - **`develop`** — active development, commit directly here (trunk-based)
 - **`main`** — production, only receives merges from `develop` or hotfix PRs
-- **Release:** `/release` opens a PR `develop`→`main`; on merge, `semantic-release` auto-tags, generates release notes, and Vercel deploys to production
+- **Release:** `/create-pr` opens a PR `develop`→`main`; merge to deploy to production
+- After merging a release, merge `main` back into `develop` to keep branches synchronized
 
 ## Skills
 
@@ -94,7 +95,7 @@ Skills in `.claude/skills/` are auto-discovered by the harness. Quick reference:
 
 | Skill | Trigger | When to use |
 |---|---|---|
-| `release` | `/release` | Open a release PR from `develop` into `main` |
+| `create-pr` | `/create-pr` | Open a release PR from `develop` into `main` |
 | `code-review` | `/code-review` | Review diff from current branch vs `develop` |
 | `brainstorm` | `/brainstorm` | Refine a new feature idea before starting |
 | `modularize` | `/modularize` | Refactor large components into focused modules |
