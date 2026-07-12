@@ -1,12 +1,13 @@
 "use client";
 
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Menu, Search, X } from "lucide-react";
-import { motion, useScroll, useMotionValueEvent } from "motion/react";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useTranslations } from "next-intl";
-import { FormEvent, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Container } from "./container";
+import { HeaderSearch } from "./header/header-search";
 import { LanguageSwitcher } from "./language-switcher";
 import { Logo } from "./logo";
 
@@ -18,11 +19,22 @@ const NAV_LINKS = [
   { href: "/suporte", labelKey: "support" },
 ] as const;
 
-export function Header() {
+interface HeaderProps {
+  // Resolved by SiteLayout from GET /api/config/public. Defaults cover the
+  // case where the admin hasn't uploaded a CMS logo for this locale yet.
+  logoDark?: string;
+  logoWhite?: string;
+}
+
+export function Header({
+  logoDark = "/logo.png",
+  logoWhite = "/logo-white.png",
+}: HeaderProps = {}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("Nav");
+  const pathname = usePathname();
 
   // ── scroll tracking with motion ──────────────────────────────────────
   const { scrollY } = useScroll();
@@ -30,24 +42,38 @@ export function Header() {
     setScrolled(latest > SCROLL_THRESHOLD);
   });
 
+  // ── lock body scroll while a mobile panel is open ────────────────────
+  useEffect(() => {
+    const shouldLock = mobileMenuOpen || mobileSearchOpen;
+    document.body.style.overflow = shouldLock ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen, mobileSearchOpen]);
+
   // ── keyboard ─────────────────────────────────────────────────────────
   function handleKey(e: React.KeyboardEvent) {
     if (e.key === "Escape") {
       setMobileMenuOpen(false);
+      setMobileSearchOpen(false);
     }
   }
 
   // ── close mobile menu on outside click ───────────────────────────────
   function handleBackdropClick() {
     setMobileMenuOpen(false);
+    setMobileSearchOpen(false);
   }
 
   // ── header appearance ────────────────────────────────────────────────
-  // On mobile, when the hamburger menu is open the header turns white to blend
-  // with the dropdown (desktop is unaffected since the menu is hidden).
-  const isWhite = scrolled || mobileMenuOpen;
+  // On mobile, when the hamburger menu or search is open the header turns
+  // white to blend with the dropdown (desktop is unaffected since both are
+  // hidden). On /produtos the header is always white (sticky catalog bar
+  // context).
+  const isProdutos = pathname.startsWith("/produtos/");
+  const isWhite = isProdutos || scrolled || mobileMenuOpen || mobileSearchOpen;
   const iconClass = isWhite ? "text-icon-muted" : "text-white";
-  const langVariant = isWhite ? ("dark" as const) : ("light" as const);
+  const langVariant = isWhite ? ("light" as const) : ("dark" as const);
 
   return (
     <div onKeyDown={handleKey}>
@@ -61,24 +87,23 @@ export function Header() {
             ? "0 1px 3px rgba(0, 0, 0, 0.1)"
             : "0 0px 0px rgba(0, 0, 0, 0)",
         }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
       >
         <Container className="flex h-full items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-8">
+          {/* Desktop: logo + nav (left) */}
+          <div className="hidden items-center gap-8 md:flex">
             <Link href="/" className="shrink-0">
               <Logo
-                variant={isWhite ? "white" : "dark"}
+                src={isWhite ? logoWhite : logoDark}
                 width={158}
                 height={35}
                 priority
               />
             </Link>
 
-            {/* Desktop nav */}
-            <nav className="hidden items-center gap-8 md:flex">
+            <nav className="flex items-center gap-8">
               {NAV_LINKS.map(({ href, labelKey }) => (
-                <DesktopNavLink key={href} href={href} scrolled={scrolled}>
+                <DesktopNavLink key={href} href={href} isWhite={isWhite}>
                   {t(labelKey)}
                 </DesktopNavLink>
               ))}
@@ -87,39 +112,71 @@ export function Header() {
 
           {/* Desktop right: search + language */}
           <div className="hidden items-center gap-4 md:flex">
-            <DesktopSearchBar scrolled={scrolled} />
+            <HeaderSearch variant="desktop" isWhite={isWhite} />
             <LanguageSwitcher variant={langVariant} />
           </div>
 
-          {/* Mobile: hamburger | logo | search icon */}
-          <div className="flex items-center gap-2 md:hidden">
+          {/* Mobile: hamburger | logo (centered) | search icon */}
+          <div className="relative flex w-full items-center justify-between md:hidden">
             <button
               aria-label={t("openMenu")}
               aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-nav-menu"
               className={cn(
                 "inline-flex h-10 w-10 items-center justify-center",
                 iconClass,
               )}
-              onClick={() => setMobileMenuOpen((o) => !o)}
+              onClick={() => {
+                setMobileMenuOpen((o) => !o);
+                setMobileSearchOpen(false);
+              }}
             >
               {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+
+            <Link href="/" className="absolute left-1/2 -translate-x-1/2">
+              <Logo src={isWhite ? logoWhite : logoDark} priority />
+            </Link>
+
+            <button
+              aria-label={t("openSearch")}
+              aria-expanded={mobileSearchOpen}
+              aria-controls="mobile-search-panel"
+              className={cn(
+                "inline-flex h-10 w-10 items-center justify-center",
+                iconClass,
+              )}
+              onClick={() => {
+                setMobileSearchOpen((o) => !o);
+                setMobileMenuOpen(false);
+              }}
+            >
+              <Search size={22} />
             </button>
           </div>
         </Container>
 
+        {/* Mobile dedicated search dropdown */}
+        {mobileSearchOpen && (
+          <MobileDropdownPanel id="mobile-search-panel" label={t("openSearch")}>
+            <div className="px-5 py-4">
+              <HeaderSearch
+                variant="mobile"
+                onNavigate={() => setMobileSearchOpen(false)}
+              />
+            </div>
+          </MobileDropdownPanel>
+        )}
+
         {/* Mobile dropdown menu */}
         {mobileMenuOpen && (
-          <motion.div
-            ref={menuRef}
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-18 left-0 w-full bg-white shadow-md md:hidden"
-          >
+          <MobileDropdownPanel id="mobile-nav-menu" label={t("openMenu")}>
             <div className="flex flex-col px-5 py-4">
               {/* Search */}
-              <MobileSearchInline onClose={() => setMobileMenuOpen(false)} />
+              <HeaderSearch
+                variant="mobile"
+                onNavigate={() => setMobileMenuOpen(false)}
+              />
 
               <div className="my-3 border-t border-border" />
 
@@ -137,16 +194,16 @@ export function Header() {
               <div className="my-3 border-t border-border" />
 
               {/* Language switcher */}
-              <div className="py-2">
+              <div className="flex justify-end py-2">
                 <LanguageSwitcher variant="dark" />
               </div>
             </div>
-          </motion.div>
+          </MobileDropdownPanel>
         )}
       </motion.header>
 
       {/* Backdrop */}
-      {mobileMenuOpen && (
+      {(mobileMenuOpen || mobileSearchOpen) && (
         <motion.div
           aria-hidden="true"
           initial={{ opacity: 0 }}
@@ -159,17 +216,44 @@ export function Header() {
   );
 }
 
+// ─── Mobile Dropdown Panel ────────────────────────────────────────────────────
+
+function MobileDropdownPanel({
+  id,
+  label,
+  children,
+}: {
+  id: string;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <motion.div
+      id={id}
+      role="dialog"
+      aria-modal="true"
+      aria-label={label}
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.2 }}
+      className="absolute top-16 left-0 w-full bg-white shadow-md md:hidden"
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 // ─── Desktop Nav Link ─────────────────────────────────────────────────────────
-// Restored original hover style: red text + red border-bottom on hover
 
 function DesktopNavLink({
   href,
   children,
-  scrolled,
+  isWhite,
 }: {
   href: string;
   children: string;
-  scrolled: boolean;
+  isWhite: boolean;
 }) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(href + "/");
@@ -179,7 +263,7 @@ function DesktopNavLink({
       href={href}
       className={cn(
         "border-b-2 font-sans text-lg font-normal transition-colors",
-        scrolled
+        isWhite
           ? active
             ? "border-brand text-brand"
             : "border-transparent text-muted-foreground hover:border-brand hover:text-brand"
@@ -218,63 +302,5 @@ function MobileNavLink({
     >
       {children}
     </Link>
-  );
-}
-
-// ─── Desktop Search Bar ───────────────────────────────────────────────────────
-
-function DesktopSearchBar({ scrolled }: { scrolled: boolean }) {
-  const router = useRouter();
-  const t = useTranslations("Header");
-
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const q = (new FormData(e.currentTarget).get("q") as string).trim();
-    if (q) router.push(`/produtos?q=${encodeURIComponent(q)}`);
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="flex items-center">
-      <input
-        name="q"
-        type="search"
-        placeholder={t("searchPlaceholder")}
-        className={cn(
-          "w-40 rounded-full border px-4 py-1.5 font-sans text-sm transition-all outline-none",
-          "focus:w-56 focus:border-brand",
-          scrolled
-            ? "border-border bg-muted text-foreground placeholder:text-muted-foreground"
-            : "border-white/30 bg-white/10 text-white placeholder:text-white/50",
-        )}
-      />
-    </form>
-  );
-}
-
-// ─── Mobile Search Inline ─────────────────────────────────────────────────────
-
-function MobileSearchInline({ onClose }: { onClose: () => void }) {
-  const router = useRouter();
-  const t = useTranslations("Header");
-
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const q = (new FormData(e.currentTarget).get("q") as string).trim();
-    if (q) {
-      router.push(`/produtos?q=${encodeURIComponent(q)}`);
-      onClose();
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2">
-      <Search size={18} className="shrink-0 text-icon-muted" />
-      <input
-        name="q"
-        type="search"
-        placeholder={t("searchPlaceholder")}
-        className="flex-1 bg-transparent py-2 font-sans text-sm text-foreground outline-none placeholder:text-muted-foreground"
-      />
-    </form>
   );
 }

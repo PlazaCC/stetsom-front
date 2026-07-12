@@ -1,6 +1,6 @@
 ---
 name: create-pr
-description: 'Use when the implementation of a feature or bugfix is complete and you need to generate a professional, conventional pull request description summarizing the changes against the main branch. Also updates the related task status to DONE in docs/ia/tasks/ and appends a changelog entry to docs/ia/context.json.'
+description: 'Use when the implementation of a feature or bugfix is complete and you need to generate a professional, conventional pull request description summarizing the changes against the main branch.'
 ---
 
 # Create PR — Conventional Pull Request Generator
@@ -128,37 +128,6 @@ EOF
 
 ---
 
-### Step 7 — Mark Task as DONE and Update context.json
-
-After the PR is successfully created:
-
-1. **Identify the task file** — look for a file in `docs/ia/tasks/` whose name matches the current branch (e.g. branch `feat/task-05-novidades-tabs` → `task-05-novidades-tabs.md`). If no exact match, infer from the branch name or the PR scope.
-
-2. **Update the task status** — change the status line in the task file:
-
-   ```
-   **Status:** REVIEW  →  **Status:** DONE
-   ```
-
-   or from any previous status (`TODO`, `IN_PROGRESS`, `REVIEW`) to `DONE`.
-
-3. **Append to `docs/ia/context.json`** — read the file first, then push a new entry to the end of the `"log"` array:
-   ```json
-   {
-     "ts": "<ISO8601 UTC now>",
-     "agent": "claude-sonnet-4-6",
-     "type": "chore",
-     "summary": "Mark <task-id> as DONE after PR #<number> was opened",
-     "files": ["docs/ia/tasks/<task-file>.md"],
-     "rationale": "PR created and ready for review — task delivery complete",
-     "outcome": "Task status is DONE; PR #<number> is open for review at <pr-url>"
-   }
-   ```
-
-> **Important:** Always read `docs/ia/context.json` before writing — never reconstruct from memory.
-
----
-
 ## Common Mistakes
 
 | Mistake                                  | Fix                                                     |
@@ -170,12 +139,10 @@ After the PR is successfully created:
 | Creating PR with errors                  | Run validators first — fix before opening.              |
 | Auto-creating PR without showing content | Always show copy-paste blocks in Step 4 first.          |
 | Skipping the user prompt                 | Always ask A/B in Step 5 before running `gh pr create`. |
-| Forgetting to update task                | Always run Step 7 after the PR is created.              |
 
 ---
 
 ## Integration
 
-**Called after:** `/poc-next-task` (implementation complete)
 **Called before:** `/code-review`
 **If review finds fixes:** address them → run `/create-pr` again → run `/code-review`. Repeat until APPROVED.

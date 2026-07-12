@@ -16,4 +16,5 @@ export type PatchApiLibraryIdBody = {
   /** @nullable */
   alt?: PatchApiLibraryIdBodyAlt;
   tags?: string[];
+  redirect_paths?: string[];
 };

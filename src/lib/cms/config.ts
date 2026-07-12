@@ -1,5 +1,8 @@
 import {
   Archive,
+  Award,
+  BookOpen,
+  BookText,
   Building2,
   Clock,
   FileText,
@@ -9,9 +12,12 @@ import {
   ListChecks,
   Mail,
   Package,
+  Scale,
   Settings,
+  Shapes,
   Tags,
   Users,
+  Video,
   Wrench,
   type LucideIcon,
 } from "lucide-react";
@@ -73,16 +79,6 @@ export const config: Record<string, AppRouteStaticData> = {
     section: "admin",
   },
   "/admin/categorias": { label: "Categorias", icon: Tags, section: "admin" },
-  "/admin/categorias/nova": {
-    label: "Nova categoria",
-    icon: Tags,
-    section: "admin",
-  },
-  "/admin/categorias/[id]": {
-    label: "Editar categoria",
-    icon: Tags,
-    section: "admin",
-  },
   "/admin/categorias/[id]/templates/novo": {
     label: "Novo template",
     icon: LayoutTemplate,
@@ -111,11 +107,6 @@ export const config: Record<string, AppRouteStaticData> = {
     icon: FileText,
     section: "admin",
   },
-  "/admin/paginas/[pageId]/[sectionId]": {
-    label: "Editar seção",
-    icon: FileText,
-    section: "admin",
-  },
 
   "/admin/biblioteca": {
     label: "Biblioteca",
@@ -129,15 +120,45 @@ export const config: Record<string, AppRouteStaticData> = {
         exact: true,
       },
       {
-        href: "/admin/biblioteca/manuais",
-        label: "Manuais",
-        icon: FileText,
+        href: "/admin/biblioteca/videos",
+        label: "Vídeos",
+        icon: Video,
         exact: true,
       },
       {
         href: "/admin/biblioteca/3d",
         label: "Arquivos 3D",
         icon: Archive,
+        exact: true,
+      },
+      {
+        href: "/admin/biblioteca/manuais",
+        label: "Manuais",
+        icon: BookOpen,
+        exact: true,
+      },
+      {
+        href: "/admin/biblioteca/catalogos",
+        label: "Catálogos",
+        icon: BookText,
+        exact: true,
+      },
+      {
+        href: "/admin/biblioteca/certificados",
+        label: "Certificados",
+        icon: Award,
+        exact: true,
+      },
+      {
+        href: "/admin/biblioteca/packs",
+        label: "Packs de imagem",
+        icon: Package,
+        exact: true,
+      },
+      {
+        href: "/admin/biblioteca/icones",
+        label: "Ícones de categoria",
+        icon: Shapes,
         exact: true,
       },
     ],
@@ -148,7 +169,37 @@ export const config: Record<string, AppRouteStaticData> = {
     section: "admin",
     hideInBreadcrumb: true,
   },
+  "/admin/biblioteca/videos": {
+    label: "Biblioteca",
+    icon: Archive,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
   "/admin/biblioteca/manuais": {
+    label: "Biblioteca",
+    icon: Archive,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/biblioteca/catalogos": {
+    label: "Biblioteca",
+    icon: Archive,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/biblioteca/certificados": {
+    label: "Biblioteca",
+    icon: Archive,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/biblioteca/packs": {
+    label: "Biblioteca",
+    icon: Archive,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/biblioteca/icones": {
     label: "Biblioteca",
     icon: Archive,
     section: "admin",
@@ -161,6 +212,16 @@ export const config: Record<string, AppRouteStaticData> = {
     hideInBreadcrumb: true,
   },
   "/admin/banners": { label: "Banners", icon: ImageIcon, section: "admin" },
+  "/admin/banners/novo": {
+    label: "Cadastrar banner",
+    icon: ImageIcon,
+    section: "admin",
+  },
+  "/admin/banners/[id]": {
+    label: "Editar banner",
+    icon: ImageIcon,
+    section: "admin",
+  },
   "/admin/parceiros": {
     label: "Parceiros",
     icon: Building2,
@@ -229,6 +290,56 @@ export const config: Record<string, AppRouteStaticData> = {
     label: "Configurações",
     icon: Settings,
     section: "admin",
+    tabs: [
+      {
+        href: "/admin/configuracoes/identidade-visual",
+        label: "Identidade Visual",
+        icon: ImageIcon,
+        exact: true,
+      },
+      {
+        href: "/admin/configuracoes/empresa",
+        label: "Empresa",
+        icon: Building2,
+        exact: true,
+      },
+      {
+        href: "/admin/configuracoes/redes-sociais",
+        label: "Redes Sociais",
+        icon: Mail,
+        exact: true,
+      },
+      {
+        href: "/admin/configuracoes/paginas-legais",
+        label: "Páginas Legais",
+        icon: Scale,
+        exact: true,
+      },
+    ],
+  },
+  "/admin/configuracoes/identidade-visual": {
+    label: "Configurações",
+    icon: Settings,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/configuracoes/empresa": {
+    label: "Configurações",
+    icon: Settings,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/configuracoes/redes-sociais": {
+    label: "Configurações",
+    icon: Settings,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/configuracoes/paginas-legais": {
+    label: "Configurações",
+    icon: Settings,
+    section: "admin",
+    hideInBreadcrumb: true,
   },
   "/admin/styleguide": {
     label: "Design System",

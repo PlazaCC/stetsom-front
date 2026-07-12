@@ -10,7 +10,7 @@ argument-hint: '<feature name or description>'
 
 Turns a refined idea (from `/brainstorm`) into a concrete, tracked task ready for execution.
 
-**Output:** a task entry in `docs/ia/tasks/` + a git branch ready for implementation.
+**Output:** a task entry + a git branch ready for implementation.
 
 ---
 
@@ -40,7 +40,7 @@ Example: `TASK-20260512-product-detail-page`
 
 ### Step 3 — Create Task File
 
-Write to `docs/ia/tasks/<task-id>.md`:
+Write a task file (e.g. `<task-id>.md`):
 
 ```markdown
 # <Task ID>: <Feature Name>

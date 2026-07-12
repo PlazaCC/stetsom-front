@@ -2,10 +2,11 @@ import { Container } from "@/components/ui/container";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import {
+  ArrowRight,
   ArrowUpRight,
   FileText,
   MapPin,
-  MessageCircle,
+  MessageCircleMore,
   type LucideIcon,
 } from "lucide-react";
 
@@ -19,8 +20,8 @@ const ICON_BY_KEYWORD: Record<string, LucideIcon> = {
   download: FileText,
   posto: MapPin,
   autorizados: MapPin,
-  fale: MessageCircle,
-  contato: MessageCircle,
+  fale: MessageCircleMore,
+  contato: MessageCircleMore,
 };
 
 const HREF_BY_KEYWORD: Record<string, string> = {
@@ -54,9 +55,9 @@ function pickHref(title: string): string {
 
 export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
   return (
-    <section className="w-full bg-off-white py-16">
-      <Container>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+    <section className="w-full bg-off-white py-8 lg:py-12">
+      <Container className="flex justify-center">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {cards.map((card) => {
             const Icon = pickIcon(card.title);
             const href = pickHref(card.title);
@@ -66,26 +67,31 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
                 key={card.title}
                 href={href}
                 className={cn(
-                  "group flex min-h-56 flex-col border border-border bg-white p-6",
+                  "group relative flex max-w-83.75 flex-row items-center gap-4 border border-border bg-white p-2 md:flex-col md:items-start md:gap-1 lg:p-4",
                   "transition-colors duration-200",
                   "hover:border-b-brand",
                 )}
               >
-                <div className="mb-5 flex size-10 items-center justify-center rounded-lg bg-muted">
-                  <Icon size={20} className="text-brand" />
+                <div className="flex size-10 items-center justify-center rounded-xs bg-muted">
+                  <Icon strokeWidth={1.5} size={36} className="text-brand" />
                 </div>
-                <h3 className="mb-3 font-sans-condensed text-section-title font-black text-brand-dark uppercase">
-                  {card.title}
-                </h3>
-                <p className="flex-1 text-sm leading-relaxed text-text-subtle">
-                  {card.description}
-                </p>
-                <div className="mt-6 flex items-center justify-end">
-                  <ArrowUpRight
-                    size={18}
-                    className="text-text-subtle transition-colors duration-200 group-hover:text-brand"
-                  />
+                <div>
+                  <h3 className="font-sans-condensed text-xl font-bold text-brand-dark uppercase lg:text-3xl">
+                    {card.title}
+                  </h3>
+                  <p className="max-w-2xs flex-1 text-xs leading-tight text-text-subtle lg:text-sm lg:leading-relaxed">
+                    {card.description}
+                  </p>
                 </div>
+                <ArrowUpRight
+                  size={32}
+                  className="absolute right-1 bottom-1 hidden text-text-subtle transition-colors duration-200 group-hover:text-brand md:block"
+                />
+                <ArrowRight
+                  size={20}
+                  strokeWidth={3}
+                  className="text-[#666666] md:hidden"
+                />
               </Link>
             );
           })}

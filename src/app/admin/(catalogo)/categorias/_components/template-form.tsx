@@ -1,17 +1,5 @@
 "use client";
 
-import { AdminDeleteAction } from "@/app/admin/_components/crud/admin-delete-action";
-import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
-import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
-import { AdminPanel } from "@/app/admin/_components/admin-panel";
 import {
   deleteApiTemplatesId,
   getGetApiTemplatesQueryKey,
@@ -22,10 +10,21 @@ import {
   useGetApiTemplates,
 } from "@/api/stetsom";
 import type { I18nString, TemplateAttrInput } from "@/api/stetsom/model";
+import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
+import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
+import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { GripVertical, X } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -111,7 +110,8 @@ function TemplateFormInner({
   const [selectedAttrIds, setSelectedAttrIds] =
     useState<string[]>(initialAttrIds);
 
-  const backHref = `/admin/categorias/${categoryId}`;
+  // Categories no longer have a per-id route — deep-link with a query param.
+  const backHref = `/admin/categorias?category=${categoryId}`;
   const availableAttributes = allAttributes.filter(
     (a) => !selectedAttrIds.includes(a.id),
   );
@@ -170,8 +170,7 @@ function TemplateFormInner({
     });
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function handleSave() {
     const attributes: TemplateAttrInput[] = selectedAttrIds.map((id, i) => ({
       attribute_id: id,
       order: i,
@@ -186,32 +185,40 @@ function TemplateFormInner({
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <div className="flex flex-col gap-5">
-      <AdminPanel className="flex items-center justify-end p-5">
-        <div className="flex items-center gap-3">
-          {isEdit && templateId && (
-            <AdminDeleteAction
-              label="Excluir template"
-              confirmTitle={`Excluir "${name.pt}"?`}
-              confirmDescription="O template será removido permanentemente. Esta ação não pode ser desfeita."
-              onConfirm={() => deleteMutation.mutate()}
-              isLoading={deleteMutation.isPending}
-            />
-          )}
-          <Link
-            href={backHref}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-          >
-            ← Voltar
-          </Link>
-        </div>
-      </AdminPanel>
-
+    <AdminPageLayout
+      footer={
+        <EditorFooter
+          onBack={() => router.push(backHref)}
+          deleteAction={
+            isEdit && templateId
+              ? {
+                  label: "Excluir template",
+                  confirmTitle: `Excluir "${name.pt}"?`,
+                  confirmDescription:
+                    "O template será removido permanentemente. Esta ação não pode ser desfeita.",
+                  onConfirm: () => deleteMutation.mutate(),
+                  isLoading: deleteMutation.isPending,
+                }
+              : undefined
+          }
+          onPrimary={handleSave}
+          primaryLabel={isPending ? "Salvando..." : "Salvar"}
+          isPrimaryLoading={isPending}
+        />
+      }
+    >
       <AdminFormSection
         title="Dados do template"
         description={`Atributos técnicos da categoria "${categoryName}".`}
+        className="h-auto flex-none overflow-visible"
       >
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSave();
+          }}
+          className="space-y-4"
+        >
           <div>
             <AdminLabel>Categoria</AdminLabel>
             <p className="rounded-md border border-border bg-muted/50 px-3 py-2 text-sm text-foreground">
@@ -293,23 +300,8 @@ function TemplateFormInner({
               </div>
             )}
           </div>
-          <div className="flex gap-3 pt-2">
-            <Link
-              href={backHref}
-              className="flex-1 rounded-md border border-border py-2 text-center text-sm font-medium text-foreground hover:bg-muted"
-            >
-              Cancelar
-            </Link>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="flex-1 rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-60"
-            >
-              {isPending ? "Salvando..." : "Salvar"}
-            </button>
-          </div>
         </form>
       </AdminFormSection>
-    </div>
+    </AdminPageLayout>
   );
 }

@@ -32,7 +32,6 @@ import type {
   PostApiProductsBody,
   PostApiProductsIdBlocksBody,
   PostApiProductsIdFilesBody,
-  PostApiProductsIdImages201,
   PostApiProductsIdImagesBody,
   ProductBlock,
   ProductFile,
@@ -863,7 +862,7 @@ export const postApiProductsIdImages = (
   postApiProductsIdImagesBody: PostApiProductsIdImagesBody,
   signal?: AbortSignal,
 ) => {
-  return orvalClient<PostApiProductsIdImages201>({
+  return orvalClient<ProductImage>({
     url: `/api/products/${id}/images`,
     method: "POST",
     headers: { "Content-Type": "application/json" },

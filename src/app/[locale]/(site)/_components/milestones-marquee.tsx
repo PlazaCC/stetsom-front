@@ -11,7 +11,7 @@ export function MilestonesMarquee({ items }: Readonly<MilestonesMarqueeProps>) {
         {[...items, ...items].map((text, i) => (
           <span
             key={`${text}-${i}`}
-            className="shrink-0 font-sans-condensed text-2xl font-black uppercase tracking-widest text-white/20"
+            className="shrink-0 font-sans-condensed text-2xl font-black tracking-widest text-white/20 uppercase"
           >
             {text}
           </span>

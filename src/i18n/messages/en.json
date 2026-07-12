@@ -5,6 +5,7 @@
     "support": "Support",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
+    "openSearch": "Open search",
     "search": "Search",
     "navAriaLabel": "Navigation menu",
     "categoryMenu": {
@@ -40,7 +41,10 @@
   },
   "Header": {
     "searchPlaceholder": "Search products...",
-    "closeSearch": "Close search"
+    "closeSearch": "Close search",
+    "searching": "Searching...",
+    "noResults": "No products found",
+    "viewMore": "View +{count} results"
   },
   "Footer": {
     "description": "Unlimited power since 1989. We manufacture the best automotive amplifiers in Brazil.",
@@ -70,8 +74,8 @@
     "filters": "Filters",
     "clearAll": "Clear all",
     "searchPlaceholder": "Search product...",
-    "allCategories": "All",
-    "products": "{count} products",
+    "allCategories": "New",
+    "products": "<number>{count}</number> <label>products</label>",
     "sortBy": "Sort by",
     "sortRelevance": "Most relevant",
     "sortNewest": "Newest",
@@ -87,7 +91,21 @@
     "emptyCategory": "No products found in this category.",
     "options": "Options",
     "showDiscontinued": "Show discontinued",
-    "showExport": "Export products"
+    "showExport": "Export products",
+    "compare": "Compare products",
+    "compareSelect": "Select 2 products to compare",
+    "compareSelected": "{count} of 2 selected",
+    "compareCancel": "Cancel comparison",
+    "compareReplace": "Replace",
+    "compareVariant": "Variant",
+    "compareNoDescription": "No description available",
+    "compareClose": "Close comparison",
+    "compareInstruction": "Click a product from the catalog to add it to the comparison",
+    "compareInstructionSecond": "Select one more product to compare",
+    "compareBadge": "Compare",
+    "compareBadgeSelected": "Selected",
+    "compareRemove": "Remove",
+    "compareLoadError": "Error loading product data. Please try again."
   },
   "ProductDetail": {
     "overview": "Overview",
@@ -97,6 +115,9 @@
     "filesAvailable": "{count, plural, one {# file available} other {# files available}}",
     "manual": "Access product manual",
     "downloadPhotos": "Download photos",
+    "downloadApp": "Download app",
+    "downloadIos": "Download iOS",
+    "downloadAndroid": "Download Android",
     "variations": "Product variations",
     "breadcrumbHome": "Home",
     "breadcrumbProducts": "Products",
@@ -126,7 +147,8 @@
     "blockModel3dDescription": "Explore the product in full perspective to check connectors, finish and real dimensions.",
     "blockModel3dOpen": "Open model",
     "blockModel3dLoading": "Loading model…",
-    "thumbnail": "{name} — thumbnail {index}"
+    "thumbnail": "{name} — thumbnail {index}",
+    "compare": "Compare"
   },
   "Support": {
     "contact": {
@@ -186,7 +208,17 @@
       "locating": "Locating...",
       "locationDenied": "Could not get your location.",
       "distanceAway": "{km} km away",
-      "resultsCount": "{count} results"
+      "resultsCount": "{count} results",
+      "searchLocationPlaceholder": "Search city, state, or ZIP code",
+      "locatingByCep": "Searching by ZIP code...",
+      "missingCepDigits": "{count, plural, one {# digit} other {# digits}} left for the ZIP code",
+      "cepNotFound": "ZIP code not found",
+      "searchingCities": "Searching cities...",
+      "noCitiesFound": "No cities found",
+      "currentLocation": "My current location",
+      "emptyStateHint": "Enter your location or browse the map to find service centers",
+      "showAll": "Show all",
+      "filterByMap": "Filter by map"
     },
     "faq": {
       "noAnswer": "Didn't find what you're looking for? Contact our support team."

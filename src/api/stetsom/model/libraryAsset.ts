@@ -15,6 +15,7 @@ export interface LibraryAsset {
   type: LibraryAssetType;
   alt?: I18nString;
   tags: string[];
+  redirect_paths: string[];
   current_version_id: string;
   versions: AssetVersion[];
   created_at: string;

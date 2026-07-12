@@ -9,6 +9,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { ChevronDown, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { CompareTriggerButton } from "./product-compare/compare-trigger-button";
 
 interface CategoryOption {
   name: string;
@@ -54,6 +55,9 @@ export function CatalogSidebar({
 
   return (
     <aside className="hidden w-90 shrink-0 flex-col gap-5 lg:flex">
+      {/* Compare button at the top above all filters */}
+      <CompareTriggerButton variant="sidebar" />
+
       <div className="flex items-center justify-between">
         <h2 className="font-sans text-lg font-bold text-foreground">
           {t("filters")}
@@ -61,7 +65,7 @@ export function CatalogSidebar({
         <button
           type="button"
           onClick={onClear}
-          className="font-sans text-sm font-light text-brand underline underline-offset-2"
+          className="font-sans text-sm font-light underline-offset-2 hover:text-brand hover:underline"
         >
           {t("clearAll")}
         </button>
@@ -155,7 +159,11 @@ export function CatalogSidebar({
             >
               <Checkbox
                 checked={activeCategory === cat.slug}
-                onCheckedChange={() => onCategoryChange(cat.slug)}
+                onCheckedChange={() =>
+                  onCategoryChange(
+                    activeCategory === cat.slug ? "todos" : cat.slug,
+                  )
+                }
               />
               {cat.name}
             </label>

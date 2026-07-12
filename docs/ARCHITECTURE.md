@@ -109,9 +109,11 @@ Navigation links, `useRouter`, and `usePathname` must be imported from `@/i18n/n
 
 Set `USE_MOCK_DATA=1` in `.env.local` to serve GET requests from local fixtures without a running API. Mutations return `{ _mock: true }`.
 
-- Fixture file: `src/lib/mock/data.json` — keyed by URL path segments joined with `--`
-- Loader: `src/lib/mock/loader.ts` exports `loadMockData(segments)`, cached at module level
-- Refresh: `pnpm mock:dump` (requires real API credentials)
+- Fixtures: `src/lib/mock/*.ts` — consumed by `src/lib/api/providers/mock-provider.ts`
+- Mock payloads conform to Orval-generated types from `@/api/stetsom/model`
+- Refresh: `pnpm mock:dump` (requires real API credentials in `.env.local`)
+
+The mock provider is active by default when `CMS_API_BASE_URL` is unset (local dev without backend).
 
 ---
 
@@ -123,7 +125,7 @@ Tailwind CSS v4 with no config file. All tokens are declared in `src/app/globals
 - Typography scale: `text-display-*`, `text-section-title`, `text-button-md`, `text-2xs`
 - Font families: `font-sans` (Barlow), `font-sans-condensed` (Barlow Condensed)
 
-Figma node IDs and section-to-component maps are in `docs/ia/figma/FIGMA_GRAPH.md`. Use node IDs from that file when inspecting Figma. Do not fetch the full file.
+CMS admin styles are scoped under a `.cms` CSS class applied in `src/app/admin/layout.tsx`, with shadcn tokens remapped in `src/app/admin/admin.css`. Use the Figma MCP (`/refine-design` skill) to inspect design when needed.
 
 ---
 
@@ -144,4 +146,4 @@ Figma node IDs and section-to-component maps are in `docs/ia/figma/FIGMA_GRAPH.m
 
 **Server Components by default.** App Router Server Components enable data fetching at render time without client-side waterfalls. `"use client"` is added only where interactivity requires it.
 
-**Single JSON fixture for mock mode.** `data.json` keyed by URL path is easy to inspect, diff, and regenerate. There is no per-route fixture file, which keeps the mock surface minimal.
+**Mock fixtures via provider pattern.** Fixtures in `src/lib/mock/*.ts` conform to Orval-generated types, keeping the mock surface type-safe and in sync with the API contract. The mock provider is the default when no API URL is configured.

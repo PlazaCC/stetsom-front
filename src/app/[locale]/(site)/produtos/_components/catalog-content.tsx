@@ -5,24 +5,26 @@ import type {
   PublicCategory,
 } from "@/api/stetsom/model";
 import { Container } from "@/components/ui/container";
-import { ProductCard } from "@/components/ui/product-card";
 import { useCatalogFilters } from "@/hooks/use-catalog-filters";
-import { cn } from "@/lib/utils";
-import { Search, SlidersHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { CatalogHero } from "./catalog-hero";
+import { CatalogCategoryBar } from "./catalog-category-bar";
+import { CatalogMobileActions } from "./catalog-mobile-actions";
 import { CatalogMobileFilter } from "./catalog-mobile-filter";
+import { CatalogProductsList } from "./catalog-products-list";
 import { CatalogSidebar } from "./catalog-sidebar";
+import {
+  CompareProvider,
+  useCompareContext,
+} from "./product-compare/compare-provider";
+import { CompareModal } from "./product-compare/compare-modal";
 
 interface CategoryOption {
   name: string;
   slug: string;
+  iconUrl?: string | null;
 }
-
-// Hero background is a static design asset — the public catalog payload does not
-// expose a hero image, so this stays a constant rather than a hardcoded contract value.
-const DEFAULT_HERO_IMAGE = "/figma-assets/raw/fill_CGM3WO_6a0a1876.png";
 
 const SEARCH_DEBOUNCE_MS = 400;
 
@@ -30,7 +32,7 @@ function toCategoryOptions(
   categories: CategoryOption[],
   allLabel: string,
 ): CategoryOption[] {
-  return [{ name: allLabel, slug: "todos" }, ...categories];
+  return [{ name: allLabel, slug: "todos", iconUrl: null }, ...categories];
 }
 
 interface CatalogContentProps {
@@ -38,7 +40,7 @@ interface CatalogContentProps {
   catalog: ProductCatalogResponse;
 }
 
-export function CatalogContent({ categories, catalog }: CatalogContentProps) {
+function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
   const t = useTranslations("Catalog");
 
   const {
@@ -79,7 +81,12 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
   }, [searchInput, search, setSearch]);
 
   const categoryItems: CategoryOption[] = useMemo(
-    () => categories.map((c) => ({ name: c.name, slug: c.slug })),
+    () =>
+      categories.map((c) => ({
+        name: c.name,
+        slug: c.slug,
+        iconUrl: c.icon_url,
+      })),
     [categories],
   );
 
@@ -111,88 +118,66 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
   }, [categories, activeCategorySlug]);
 
   const productCards = catalog.items;
-  const totalProducts = catalog.total;
+
+  // Build a slug → ProductCardItem lookup map for the compare modal
+  const catalogMap = useMemo(() => {
+    const map = new Map<string, (typeof productCards)[number]>();
+    for (const p of productCards) {
+      map.set(p.slug, p);
+    }
+    return map;
+  }, [productCards]);
+
+  // Compare context
+  const { mode, selectedSlugs } = useCompareContext();
+  const prevSelectedRef = useRef<string[]>([]);
+
+  // When first product is selected in compare mode, auto-filter by its category
+  useEffect(() => {
+    if (mode !== "selecting") return;
+    const prev = prevSelectedRef.current;
+    const curr = selectedSlugs;
+
+    // A product was added (first one)
+    if (curr.length === 1 && prev.length === 0) {
+      const product = catalogMap.get(curr[0]);
+      if (product) {
+        // Find the category slug from the categories list by name
+        const catSlug = categories.find(
+          (c) => c.name === product.category,
+        )?.slug;
+        if (catSlug && catSlug !== activeCategory) {
+          setActiveCategory(catSlug);
+        }
+      }
+    }
+
+    // All products removed — reset category
+    if (curr.length === 0 && prev.length > 0) {
+      if (activeCategory !== "todos") {
+        setActiveCategory("todos");
+      }
+    }
+
+    prevSelectedRef.current = curr;
+  }, [
+    selectedSlugs,
+    mode,
+    catalogMap,
+    categories,
+    activeCategory,
+    setActiveCategory,
+  ]);
 
   return (
     <div>
-      <section className="relative h-72 overflow-hidden bg-brand-dark lg:h-84">
-        <div className="bg-radial-dark absolute inset-0" />
-        {/* <Image
-          src={DEFAULT_HERO_IMAGE}
-          alt={t("heroImageAlt")}
-          fill
-          className="object-cover opacity-45"
-          sizes="100vw"
-          priority
-        /> */}
-        <div className="bg-gradient-fade-black absolute inset-0" />
-        <Container className="relative z-10 pt-8 md:pt-16 lg:pt-25.75">
-          <div className="mb-1 flex items-center gap-2">
-            <div className="h-px w-6 shrink-0 bg-brand" />
-            <span className="font-sans-condensed text-xs font-medium text-brand uppercase md:text-base">
-              {t("heroLabel")}
-            </span>
-          </div>
-          <h1 className="font-sans-condensed text-5xl leading-tight font-black text-white uppercase md:text-6xl md:leading-16 lg:text-[90px] lg:leading-18.5">
-            {t("heroTitle")
-              .split("\n")
-              .map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
-              ))}
-          </h1>
-          <span className="mt-2 block text-xs text-text-subtle-dark md:text-base">
-            {t("products", { count: totalProducts })}
-          </span>
-        </Container>
-        <div className="pointer-events-none absolute -right-16 -bottom-16 font-sans-condensed text-display-2xl leading-none font-black text-watermark-text opacity-[0.08] select-none sm:text-[150px] lg:text-[263px]">
-          PRODUTOS
-        </div>
-        <div className="absolute top-0 left-0 h-full w-3.5 bg-brand" />
-      </section>
+      <CatalogHero totalProducts={catalog.total} />
 
-      <section className="border-b border-border bg-white py-8">
-        <Container>
-          <p className="mb-5 font-sans-condensed text-xs font-black tracking-widest text-muted-foreground uppercase">
-            {t("categories")}
-          </p>
-          <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8">
-            {categoryOptions.map((cat) => {
-              const isActive = activeCategory === cat.slug;
-              return (
-                <button
-                  key={cat.slug}
-                  onClick={() => setActiveCategory(cat.slug)}
-                  className={cn(
-                    "flex flex-col items-center gap-2 rounded p-2 text-center transition-colors",
-                    isActive ? "bg-brand/10" : "hover:bg-muted",
-                  )}
-                >
-                  <div
-                    className={cn(
-                      "flex aspect-square w-full items-center justify-center overflow-hidden rounded",
-                      isActive ? "bg-brand/10" : "bg-muted",
-                    )}
-                  >
-                    <span className="font-sans-condensed text-xs font-black text-muted-foreground uppercase">
-                      {cat.name.slice(0, 2)}
-                    </span>
-                  </div>
-                  <span
-                    className={cn(
-                      "font-sans text-2xs leading-tight font-medium",
-                      isActive ? "text-brand" : "text-muted-foreground",
-                    )}
-                  >
-                    {cat.name}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </Container>
-      </section>
+      <CatalogCategoryBar
+        categories={categoryOptions}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+      />
 
       <section className="bg-white pt-6 pb-12">
         <Container>
@@ -216,24 +201,9 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
             />
 
             <div className="min-w-0 flex-1">
-              <div className="mb-4 flex gap-3 lg:hidden">
-                <div className="flex h-10 flex-1 items-center gap-2 border border-border px-3">
-                  <Search size={14} className="shrink-0 text-icon-muted" />
-                  <input
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    placeholder={t("searchPlaceholder")}
-                    className="flex-1 border-none bg-transparent text-sm text-brand-dark outline-none"
-                  />
-                </div>
-                <button
-                  onClick={() => setSidebarOpen((v) => !v)}
-                  className="flex h-10 items-center gap-2 border border-border px-3 text-sm text-muted-foreground"
-                >
-                  <SlidersHorizontal size={14} />
-                  {t("filters")}
-                </button>
-              </div>
+              <CatalogMobileActions
+                onToggleFilters={() => setSidebarOpen((value) => !value)}
+              />
 
               {sidebarOpen && (
                 <CatalogMobileFilter
@@ -246,58 +216,27 @@ export function CatalogContent({ categories, catalog }: CatalogContentProps) {
                 />
               )}
 
-              {productCards.length > 0 ? (
-                <>
-                  <div className="grid grid-cols-2 gap-5 md:grid-cols-3 md:gap-8 lg:grid-cols-3">
-                    {productCards.map((product) => (
-                      <ProductCard
-                        key={product.id}
-                        name={product.name}
-                        category={product.category}
-                        variants={product.variants}
-                        img={product.thumbnail_url ?? undefined}
-                        href={product.href}
-                        variantDirection="column"
-                      />
-                    ))}
-                  </div>
-
-                  {catalog.totalPages > 1 && (
-                    <div className="mt-10 flex items-center justify-center gap-4">
-                      <button
-                        type="button"
-                        disabled={page <= 1}
-                        onClick={() => setPage(page - 1)}
-                        className="h-10 border border-border px-4 text-sm font-medium text-muted-foreground transition-colors hover:text-brand disabled:opacity-40 disabled:hover:text-muted-foreground"
-                      >
-                        {t("paginationPrevious")}
-                      </button>
-                      <span className="font-sans text-sm text-muted-foreground">
-                        {t("paginationInfo", {
-                          page,
-                          total: catalog.totalPages,
-                        })}
-                      </span>
-                      <button
-                        type="button"
-                        disabled={page >= catalog.totalPages}
-                        onClick={() => setPage(page + 1)}
-                        className="h-10 border border-border px-4 text-sm font-medium text-muted-foreground transition-colors hover:text-brand disabled:opacity-40 disabled:hover:text-muted-foreground"
-                      >
-                        {t("paginationNext")}
-                      </button>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="py-16 text-center text-base text-muted-foreground">
-                  {t("noProducts")}
-                </div>
-              )}
+              <CatalogProductsList
+                products={productCards}
+                currentPage={page}
+                totalPages={catalog.totalPages}
+                onPageChange={setPage}
+              />
             </div>
           </div>
         </Container>
       </section>
+
+      {/* Compare modal overlay */}
+      <CompareModal catalogMap={catalogMap} />
     </div>
+  );
+}
+
+export function CatalogContent({ categories, catalog }: CatalogContentProps) {
+  return (
+    <CompareProvider>
+      <CatalogContentInner categories={categories} catalog={catalog} />
+    </CompareProvider>
   );
 }

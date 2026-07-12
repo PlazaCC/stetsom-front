@@ -22,6 +22,8 @@ export * from "./endpoints/categories/categories";
 export * from "./endpoints/config/config";
 export * from "./endpoints/contact/contact";
 export * from "./endpoints/dashboard/dashboard";
+export * from "./endpoints/faq/faq";
+export * from "./endpoints/legal-pages/legal-pages";
 export * from "./endpoints/library/library";
 export * from "./endpoints/messages/messages";
 export * from "./endpoints/pages/pages";
@@ -34,9 +36,13 @@ export * from "./endpoints/users/users";
 // ── React Query hooks — Public Site ──────────────────────────────────────────
 export * from "./endpoints/banners-public/banners-public";
 export * from "./endpoints/categories-public/categories-public";
+export * from "./endpoints/config-public/config-public";
+export * from "./endpoints/faq-public/faq-public";
+export * from "./endpoints/geocode/geocode";
 export * from "./endpoints/pages-public/pages-public";
 export * from "./endpoints/partner-locations-public/partner-locations-public";
 export * from "./endpoints/products-public/products-public";
+export * from "./endpoints/redirects-public/redirects-public";
 
 // ── Error helpers ─────────────────────────────────────────────────────────────
 export { OrvalApiError, toApiError } from "./orval-client";

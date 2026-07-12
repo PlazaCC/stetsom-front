@@ -6,6 +6,12 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminDrawer } from "@/app/admin/_components/crud/admin-drawer";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
+import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import {
   getGetApiMessagesQueryKey,
   patchApiMessagesId,
@@ -63,7 +69,14 @@ export function MensagensContent({ activeTab }: MensagensContentProps) {
       ...prev,
       [id]: { ...prev[id], is_read: true },
     }));
-    markReadMutation.mutate(id);
+    markReadMutation.mutate(id, {
+      onError: () => {
+        setLocalOverrides((prev) => ({
+          ...prev,
+          [id]: { ...prev[id], is_read: false },
+        }));
+      },
+    });
   }
 
   function handleOpen(message: ContactMessage) {
@@ -125,9 +138,10 @@ export function MensagensContent({ activeTab }: MensagensContentProps) {
       key: "department",
       header: "Setor responsável",
       render: (m) => (
-        <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium text-foreground">
-          {departmentLabel(m.department)}
-        </span>
+        <StatusBadge
+          status={m.department}
+          label={departmentLabel(m.department)}
+        />
       ),
     },
     {
@@ -136,13 +150,11 @@ export function MensagensContent({ activeTab }: MensagensContentProps) {
       headerClassName: "text-right",
       className: "text-right",
       render: (m) => (
-        <button
-          type="button"
-          onClick={() => handleOpen(m)}
-          className="text-xs font-medium text-primary hover:underline"
-        >
-          Ver mensagem
-        </button>
+        <AdminRowActions>
+          <AdminRowAction onClick={() => handleOpen(m)}>
+            Ver mensagem
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];
@@ -186,36 +198,38 @@ export function MensagensContent({ activeTab }: MensagensContentProps) {
   );
 
   return (
-    <div className="px-4 py-4 lg:px-5 lg:py-5">
-      {activeTab === "contatos" ? (
-        <AdminDataTable
-          columns={contactColumns}
-          data={messages}
-          isLoading={messagesQuery.isLoading}
-          keyExtractor={(m) => m.id}
-          emptyTitle="Nenhuma mensagem"
-          emptyDescription="As mensagens enviadas pelo site aparecerão aqui."
-          action={settingsAction}
-          toolbar={
-            unread > 0 ? (
-              <span className="text-xs text-muted-foreground">
-                <span className="font-semibold text-primary">{unread}</span>{" "}
-                {unread === 1 ? "não lida" : "não lidas"}
-              </span>
-            ) : undefined
-          }
-        />
-      ) : (
-        <AdminDataTable
-          columns={deptColumns}
-          data={deptRows}
-          isLoading={messagesQuery.isLoading}
-          keyExtractor={(d) => d.slug}
-          emptyTitle="Nenhum departamento configurado"
-          emptyDescription="Configure os departamentos de encaminhamento abaixo."
-          action={settingsAction}
-        />
-      )}
+    <>
+      <AdminPageLayout>
+        {activeTab === "contatos" ? (
+          <AdminDataTable
+            columns={contactColumns}
+            data={messages}
+            isLoading={messagesQuery.isLoading}
+            keyExtractor={(m) => m.id}
+            emptyTitle="Nenhuma mensagem"
+            emptyDescription="As mensagens enviadas pelo site aparecerão aqui."
+            action={settingsAction}
+            toolbar={
+              unread > 0 ? (
+                <span className="text-xs text-muted-foreground">
+                  <span className="font-semibold text-primary">{unread}</span>{" "}
+                  {unread === 1 ? "não lida" : "não lidas"}
+                </span>
+              ) : undefined
+            }
+          />
+        ) : (
+          <AdminDataTable
+            columns={deptColumns}
+            data={deptRows}
+            isLoading={messagesQuery.isLoading}
+            keyExtractor={(d) => d.slug}
+            emptyTitle="Nenhum departamento configurado"
+            emptyDescription="Configure os departamentos de encaminhamento abaixo."
+            action={settingsAction}
+          />
+        )}
+      </AdminPageLayout>
 
       <AdminDrawer
         open={!!selected}
@@ -291,6 +305,6 @@ export function MensagensContent({ activeTab }: MensagensContentProps) {
           initialDepartments={configQuery.data?.contact_departments ?? []}
         />
       )}
-    </div>
+    </>
   );
 }

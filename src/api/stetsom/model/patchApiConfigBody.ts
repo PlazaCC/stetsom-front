@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { DepartmentConfigItemInput } from "./departmentConfigItemInput";
+import type { I18nStringInput } from "./i18nStringInput";
 
 export type PatchApiConfigBody = {
   company_name?: string;
@@ -16,6 +17,11 @@ export type PatchApiConfigBody = {
   social_instagram?: string;
   social_facebook?: string;
   social_youtube?: string;
+  social_linkedin?: string;
   /** Contact form department routing — each entry maps a slug to an internal email */
   contact_departments?: DepartmentConfigItemInput[];
+  /** Logo variant for light backgrounds, by locale */
+  logo_dark?: I18nStringInput;
+  /** Logo variant for dark backgrounds, by locale */
+  logo_white?: I18nStringInput;
 };

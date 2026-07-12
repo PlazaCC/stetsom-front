@@ -9,16 +9,27 @@ import type {
 } from "@/api/stetsom/model";
 import { Breadcrumb, type BreadcrumbItem } from "@/components/ui/breadcrumb";
 import { Container } from "@/components/ui/container";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ProductCard } from "@/components/ui/product-card";
 import { cn } from "@/lib/utils";
+import { ChevronDown, GitCompareArrows, Smartphone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 import { BlockRenderer } from "./block-renderer";
 import { StickySectionNav } from "./sticky-section-nav";
 
 /** Locale-resolved, public-shaped product payload consumed by the detail view. */
 export interface ProductDetailViewData {
   product: {
+    slug: string;
     name: string;
     description?: string | null;
     images: ProductImage[];
@@ -26,6 +37,8 @@ export interface ProductDetailViewData {
     page_blocks: ProductBlock[];
     files: ProductFile[];
     highlight_attributes: string[];
+    app_store_url?: string | null;
+    play_store_url?: string | null;
   };
   category: { name: string; slug: string };
   relatedProducts: ProductCardItem[];
@@ -50,6 +63,7 @@ function DetailImage({
   sizes,
   priority,
   previewMode,
+  style,
 }: {
   src: string;
   alt: string;
@@ -57,13 +71,16 @@ function DetailImage({
   sizes?: string;
   priority?: boolean;
   previewMode?: boolean;
+  style?: React.CSSProperties;
 }) {
   if (previewMode) {
     return (
+      // arbitrary remote hosts aren't valid for next/image in the live preview.
       <img
         src={src}
         alt={alt}
         className={cn("absolute inset-0 h-full w-full", className)}
+        style={style}
       />
     );
   }
@@ -75,7 +92,73 @@ function DetailImage({
       sizes={sizes}
       priority={priority}
       className={className}
+      style={style}
     />
+  );
+}
+
+/**
+ * Main gallery image with a hover-to-zoom effect: while the pointer is over
+ * the frame the image scales up and its transform-origin tracks the cursor, so
+ * moving the mouse pans across the magnified image within the square. Falls
+ * back to a static image on touch (no hover) and when `disabled` (editor mode).
+ */
+function ZoomableImage({
+  src,
+  alt,
+  sizes,
+  previewMode,
+  disabled,
+}: {
+  src: string;
+  alt: string;
+  sizes?: string;
+  previewMode?: boolean;
+  disabled?: boolean;
+}) {
+  const [zoomed, setZoomed] = useState(false);
+  const [origin, setOrigin] = useState("50% 50%");
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setOrigin(`${x}% ${y}%`);
+  };
+
+  if (disabled) {
+    return (
+      <DetailImage
+        src={src}
+        alt={alt}
+        priority
+        sizes={sizes}
+        className="object-contain p-6"
+        previewMode={previewMode}
+      />
+    );
+  }
+
+  return (
+    <div
+      className="absolute inset-0 cursor-zoom-in"
+      onMouseEnter={() => setZoomed(true)}
+      onMouseLeave={() => setZoomed(false)}
+      onMouseMove={handleMove}
+    >
+      <DetailImage
+        src={src}
+        alt={alt}
+        priority
+        sizes={sizes}
+        className="object-contain p-6 transition-transform duration-100 ease-out"
+        style={{
+          transformOrigin: origin,
+          transform: zoomed ? "scale(2.2)" : "scale(1)",
+        }}
+        previewMode={previewMode}
+      />
+    </div>
   );
 }
 
@@ -98,11 +181,26 @@ export function ProductDetailView({
     .filter(Boolean) as string[];
   const thumbnailUrl = sortedImages[0]?.image_url ?? null;
 
+  // The gallery is keyed by index rather than resetting via an effect — an
+  // out-of-range index (e.g. the editor removes images) just falls back to 0.
+  const [activeIndex, setActiveIndex] = useState(0);
+  const safeIndex = activeIndex < galleryImages.length ? activeIndex : 0;
+  const activeImage = galleryImages[safeIndex] ?? thumbnailUrl;
+
   const blocks = [...product.page_blocks].sort((a, b) => a.order - b.order);
   const files = product.files ?? [];
   const manualFile =
     files.find((f) => f.type === "MANUAL" && f.is_active) ??
     files.find((f) => f.type === "MANUAL");
+  const imagePackFile =
+    files.find((f) => f.type === "IMAGE_PACK" && f.is_active) ??
+    files.find((f) => f.type === "IMAGE_PACK");
+
+  // App-store links are per-product and optional; a missing/blank link hides
+  // its menu item, and the whole button hides when neither is set.
+  const appStoreUrl = product.app_store_url?.trim() || null;
+  const playStoreUrl = product.play_store_url?.trim() || null;
+  const hasAppLinks = Boolean(appStoreUrl || playStoreUrl);
 
   const sortedVariants = [...product.variants].sort(
     (a, b) => a.order - b.order,
@@ -153,16 +251,16 @@ export function ProductDetailView({
             <div className="flex shrink-0 flex-col gap-4 lg:w-111.75">
               <div
                 {...ed("images")}
-                className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-card lg:h-89.5"
+                className="relative flex h-80 w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-card sm:h-100 lg:h-120"
               >
-                {thumbnailUrl && (
-                  <DetailImage
-                    src={thumbnailUrl}
+                {activeImage && (
+                  <ZoomableImage
+                    key={activeImage}
+                    src={activeImage}
                     alt={product.name}
-                    priority
                     sizes="(max-width: 1024px) 100vw, 447px"
-                    className="object-contain p-6"
                     previewMode={previewMode}
+                    disabled={editable}
                   />
                 )}
               </div>
@@ -173,7 +271,14 @@ export function ProductDetailView({
                     <button
                       key={`${image}-${index}`}
                       type="button"
-                      className="relative h-19 w-19 shrink-0 overflow-hidden rounded border border-border bg-card"
+                      aria-pressed={index === safeIndex}
+                      onClick={() => setActiveIndex(index)}
+                      className={cn(
+                        "relative h-19 w-19 shrink-0 overflow-hidden rounded bg-card",
+                        index === safeIndex
+                          ? "border-2 border-primary"
+                          : "border border-border",
+                      )}
                     >
                       <DetailImage
                         src={image}
@@ -254,27 +359,77 @@ export function ProductDetailView({
               )}
 
               <div {...ed("files")} className="mt-5 flex flex-wrap gap-3">
-                {manualFile && (
+                {manualFile && manualFile.file_url && (
                   <a
-                    href={manualFile.file_url ?? "#"}
+                    href={manualFile.file_url}
                     className="inline-flex h-10 items-center rounded-sm bg-brand px-5 font-sans text-button-md font-bold tracking-[0.8px] text-white uppercase transition-colors hover:bg-brand/90"
                   >
                     {t("manual")}
                   </a>
                 )}
-                <button
-                  type="button"
-                  className="inline-flex h-10 items-center rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold tracking-[0.8px] text-brand-dark uppercase"
-                >
-                  {t("downloadPhotos")}
-                </button>
+                {imagePackFile?.file_url && (
+                  <a
+                    href={imagePackFile.file_url}
+                    download
+                    className="inline-flex h-10 items-center rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold tracking-[0.8px] text-brand-dark uppercase transition-colors hover:bg-muted"
+                  >
+                    {t("downloadPhotos")}
+                  </a>
+                )}
+                {hasAppLinks && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={
+                        <button
+                          type="button"
+                          className="inline-flex h-10 items-center gap-2 rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold tracking-[0.8px] text-brand-dark uppercase"
+                        >
+                          <Smartphone size={16} />
+                          {t("downloadApp")}
+                          <ChevronDown size={16} />
+                        </button>
+                      }
+                    />
+                    <DropdownMenuContent
+                      align="start"
+                      className="w-auto min-w-48"
+                    >
+                      {appStoreUrl && (
+                        <DropdownMenuItem
+                          render={
+                            <a
+                              href={appStoreUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            />
+                          }
+                        >
+                          {t("downloadIos")}
+                        </DropdownMenuItem>
+                      )}
+                      {playStoreUrl && (
+                        <DropdownMenuItem
+                          render={
+                            <a
+                              href={playStoreUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            />
+                          }
+                        >
+                          {t("downloadAndroid")}
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
             </div>
           </div>
         </Container>
       </section>
 
-      <StickySectionNav />
+      <StickySectionNav previewMode={previewMode} />
 
       {blocks.length > 0 &&
         blocks.map((block) => (
@@ -288,11 +443,6 @@ export function ProductDetailView({
         ))}
 
       <section {...ed("specs")} id="specifications" className="scroll-mt-38">
-        <div className="border-b border-zinc-200 px-5 py-3 lg:px-42.5">
-          <p className="font-sans-condensed text-xs font-black tracking-widest text-muted-foreground uppercase">
-            {t("techData")}
-          </p>
-        </div>
         <div className="bg-off-white px-5 py-4 lg:px-42.5">
           <h2 className="font-sans-condensed text-display-sm leading-none font-black text-brand-dark uppercase">
             {t("techSpecifications")}
@@ -365,14 +515,19 @@ export function ProductDetailView({
         className="scroll-mt-38 bg-off-white py-10 md:py-12 lg:py-16"
       >
         <Container>
-          <div className="border-b border-zinc-200 pb-3">
-            <p className="font-sans-condensed text-xs font-black tracking-widest text-muted-foreground uppercase">
-              {t("recommendations")}
-            </p>
+          <div className="flex items-center justify-between">
+            <h2 className="mt-4 font-sans-condensed text-display-sm leading-none font-black text-brand-dark uppercase">
+              {t("related")}
+            </h2>
+            <Link
+              href={`/produtos?category=${encodeURIComponent(category.slug)}&first_comparation_product_slug=${product.slug}`}
+            >
+              <Button variant="brand-outline" size="md">
+                <GitCompareArrows size={18} />
+                {t("compare")}
+              </Button>
+            </Link>
           </div>
-          <h2 className="mt-4 font-sans-condensed text-display-sm leading-none font-black text-brand-dark uppercase">
-            {t("related")}
-          </h2>
           {relatedProducts && relatedProducts.length > 0 ? (
             <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-5">
               {relatedProducts.slice(0, 6).map((p) => (

@@ -44,7 +44,7 @@ export function AdminDrawer({
         role="dialog"
         aria-modal="true"
         className={cn(
-          "fixed right-0 top-0 z-50 flex h-screen flex-col border-l border-border bg-card shadow-xl transition-transform duration-200",
+          "fixed top-0 right-0 z-50 flex h-screen flex-col border-l border-border bg-card shadow-cms-card-lg transition-transform duration-200",
           width,
           open ? "translate-x-0" : "translate-x-full",
           className,

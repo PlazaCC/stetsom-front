@@ -28,15 +28,27 @@ function formatLocales(locales: string[]): string {
 interface StepPublishProps {
   state: WizardState;
   dispatch: React.Dispatch<WizardAction>;
+  compact?: boolean;
 }
 
-export function StepPublish({ state, dispatch }: StepPublishProps) {
+export function StepPublish({
+  state,
+  dispatch,
+  compact = false,
+}: StepPublishProps) {
   const locales = formatLocales(deriveLocales(state));
   const variations = state.variations.map((v) => v.label).join(", ");
 
   return (
     <div>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
+      <div
+        className={cn(
+          "grid gap-6",
+          compact
+            ? "grid-cols-1"
+            : "grid-cols-[repeat(auto-fill,minmax(250px,1fr))]",
+        )}
+      >
         <div>
           <AdminLabel className="flex items-center gap-1.5">
             <CalendarDays className="size-4 text-muted-foreground" />

@@ -78,6 +78,23 @@ async function handle(
       cache: "no-store",
     });
 
+    // 204/205/304 carry no body. Building a Response with a body (even "") for
+    // these statuses throws "null body status cannot have body", which would
+    // surface as a spurious 500 even though the upstream op succeeded (e.g. a
+    // successful DELETE returning 204).
+    if (
+      upstream.status === 204 ||
+      upstream.status === 205 ||
+      upstream.status === 304
+    ) {
+      const empty = new NextResponse(null, { status: upstream.status });
+      for (const h of FORWARDED_HEADERS) {
+        const v = upstream.headers.get(h);
+        if (v) empty.headers.set(h, v);
+      }
+      return empty;
+    }
+
     const resContentType = upstream.headers.get("content-type") ?? "";
     const isJson = resContentType.includes("application/json");
 

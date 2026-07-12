@@ -6,10 +6,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import type { FaqItem } from "@/lib/page-blocks";
 
-type FAQItem = { id: string; q: string; a: string };
-
-export function FaqAccordion({ items }: { items: FAQItem[] }) {
+export function FaqAccordion({ items }: { items: FaqItem[] }) {
   return (
     <Accordion>
       {items.map(({ id, q, a }, index) => (

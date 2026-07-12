@@ -19,6 +19,8 @@ export default async function ProdutosPage({
     line?: string;
     sort?: string;
     page?: string;
+    discontinued?: string;
+    // export?: string; // TODO(backend): no export-line concept in the schema yet — toggle has no effect
   }>;
 }) {
   const [sp, locale] = await Promise.all([searchParams, getLocale()]);
@@ -30,6 +32,7 @@ export default async function ProdutosPage({
   const line = sp.line && sp.line !== "todas" ? sp.line : undefined;
   const sort = sp.sort === "newest" ? "newest" : undefined;
   const page = Math.max(1, Number(sp.page) || 1);
+  const is_discontinued = sp.discontinued === "0" ? false : undefined;
 
   const [categories, catalog] = await Promise.all([
     getApiCategories({ locale: apiLocale }).catch(() => [] as PublicCategory[]),
@@ -39,6 +42,7 @@ export default async function ProdutosPage({
       line,
       sort,
       status: "PUBLISHED",
+      is_discontinued,
       page,
       pageSize: PAGE_SIZE,
       locale: apiLocale,

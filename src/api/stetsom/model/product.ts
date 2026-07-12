@@ -31,6 +31,10 @@ export interface Product {
   line_id?: string | null;
   /** @nullable */
   template_id?: string | null;
+  /** @nullable */
+  app_store_url?: string | null;
+  /** @nullable */
+  play_store_url?: string | null;
   highlight_attributes: string[];
   images: ProductImage[];
   variants: Variant[];

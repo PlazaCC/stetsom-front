@@ -2,7 +2,6 @@
 
 import { cn } from "@/lib/utils";
 import { resolveTextAlignClass, toTextBlockData } from "@/lib/utils/product";
-import { useTranslations } from "next-intl";
 
 import { BlockArticle } from "./block-article";
 import type { BlockComponentProps } from "./types";
@@ -12,7 +11,6 @@ export function TextBlock({
   fullWidth,
   rootProps,
 }: BlockComponentProps) {
-  const t = useTranslations("ProductDetail");
   const data = toTextBlockData(block.data);
 
   if (!data.content && !data.title) return null;

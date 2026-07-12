@@ -1,7 +1,7 @@
 import { defineConfig } from "orval";
 import dotenv from "dotenv";
 
-dotenv.config({ path: ".env" });
+dotenv.config({ path: [".env.local", ".env"] });
 
 const apiBase = process.env.CMS_API_BASE_URL ?? "http://localhost:3333";
 
@@ -52,7 +52,10 @@ export default defineConfig({
           "Pages Public",
           "Banners Public",
           "Partner Locations Public",
+          "Legal Pages Public",
+          "Config Public",
           "Contact",
+          "FAQ Public",
         ],
       },
     },

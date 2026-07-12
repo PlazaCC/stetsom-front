@@ -5,6 +5,7 @@
     "support": "Soporte",
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú",
+    "openSearch": "Abrir búsqueda",
     "search": "Buscar",
     "navAriaLabel": "Menú de navegación",
     "categoryMenu": {
@@ -40,7 +41,10 @@
   },
   "Header": {
     "searchPlaceholder": "Buscar productos...",
-    "closeSearch": "Cerrar búsqueda"
+    "closeSearch": "Cerrar búsqueda",
+    "searching": "Buscando...",
+    "noResults": "Ningún producto encontrado",
+    "viewMore": "Ver +{count} resultados"
   },
   "Footer": {
     "description": "Potencia sin límite desde 1989. Fabricamos los mejores amplificadores automotivos de Brasil.",
@@ -70,8 +74,8 @@
     "filters": "Filtros",
     "clearAll": "Limpiar todo",
     "searchPlaceholder": "Buscar producto...",
-    "allCategories": "Todos",
-    "products": "{count} productos",
+    "allCategories": "Novedades",
+    "products": "<number>{count}</number> <label>productos</label>",
     "sortBy": "Ordenar por",
     "sortRelevance": "Más relevantes",
     "sortNewest": "Más recientes",
@@ -87,7 +91,21 @@
     "emptyCategory": "No se encontraron productos en esta categoría.",
     "options": "Opciones",
     "showDiscontinued": "Mostrar descontinuados",
-    "showExport": "Productos de exportación"
+    "showExport": "Productos de exportación",
+    "compare": "Comparar productos",
+    "compareSelect": "Seleccione 2 productos para comparar",
+    "compareSelected": "{count} de 2 seleccionados",
+    "compareCancel": "Cancelar comparación",
+    "compareReplace": "Sustituir",
+    "compareVariant": "Variación",
+    "compareNoDescription": "Sin descripción disponible",
+    "compareClose": "Cerrar comparación",
+    "compareInstruction": "Haga clic en un producto del catálogo para añadirlo a la comparación",
+    "compareInstructionSecond": "Seleccione un producto más para comparar",
+    "compareBadge": "Comparar",
+    "compareBadgeSelected": "Seleccionado",
+    "compareRemove": "Eliminar",
+    "compareLoadError": "Error al cargar los datos del producto. Intente de nuevo."
   },
   "ProductDetail": {
     "overview": "Vista general",
@@ -97,6 +115,9 @@
     "filesAvailable": "{count, plural, one {# archivo disponible} other {# archivos disponibles}}",
     "manual": "Acceder al manual del producto",
     "downloadPhotos": "Descargar fotos",
+    "downloadApp": "Descargar aplicación",
+    "downloadIos": "Descargar iOS",
+    "downloadAndroid": "Descargar Android",
     "variations": "Variaciones del producto",
     "breadcrumbHome": "Inicio",
     "breadcrumbProducts": "Productos",
@@ -126,7 +147,8 @@
     "blockModel3dDescription": "Explore el producto en perspectiva completa para verificar conectores, acabado y dimensiones reales.",
     "blockModel3dOpen": "Abrir modelo",
     "blockModel3dLoading": "Cargando modelo…",
-    "thumbnail": "{name} — miniatura {index}"
+    "thumbnail": "{name} — miniatura {index}",
+    "compare": "Comparar"
   },
   "Support": {
     "contact": {
@@ -186,7 +208,17 @@
       "locating": "Localizando...",
       "locationDenied": "No se pudo obtener tu ubicación.",
       "distanceAway": "{km} km de distancia",
-      "resultsCount": "{count} resultados"
+      "resultsCount": "{count} resultados",
+      "searchLocationPlaceholder": "Buscar ciudad, estado o código postal",
+      "locatingByCep": "Buscando por código postal...",
+      "missingCepDigits": "Faltan {count, plural, one {# dígito} other {# dígitos}} del código postal",
+      "cepNotFound": "Código postal no encontrado",
+      "searchingCities": "Buscando ciudades...",
+      "noCitiesFound": "Ninguna ciudad encontrada",
+      "currentLocation": "Mi ubicación actual",
+      "emptyStateHint": "Ingrese su ubicación o navegue el mapa para encontrar centros de servicio técnico",
+      "showAll": "Mostrar todos",
+      "filterByMap": "Filtrar por mapa"
     },
     "faq": {
       "noAnswer": "¿No encontró lo que busca? Póngase en contacto con nuestro equipo de soporte."

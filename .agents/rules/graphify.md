@@ -1,15 +1,12 @@
-# Graphify Usage for Non-Claude Agents
+---
+description: 'Use when regenerating or querying the graphify knowledge graph, or to understand per-agent (Claude Code / VSCode Copilot / Codex) graphify capabilities and the PreToolUse hook enforcement.'
+---
+
+# Graphify — Knowledge Graph Usage
 
 ## Overview
 
-This document explains how VSCode Copilot Chat agents should use the graphify knowledge graph. Note that VSCode Copilot Chat agents have **read-only access** to the graph — they cannot regenerate it.
-
-## Access
-
-**Read the graph:**
-- `graphify-out/graph.json` — Full graph data (JSON)
-- `graphify-out/graph.html` — Interactive visualization (open in browser)
-- `graphify-out/GRAPH_REPORT.md` — Human-readable summary (god nodes, communities, knowledge gaps)
+Graphify builds a codebase knowledge graph in `graphify-out/` (`graph.json`, `graph.html`, `GRAPH_REPORT.md`). PreToolUse hooks in `.claude/settings.json` enforce graphify-first queries before grep/find/read on source files — see "PreToolUse Hook Enforcement" below.
 
 **Stetsom Front specific:**
 - **God nodes:** `cn()` (41 edges), `Button()` (7 edges), `buttonVariants` (6 edges)
@@ -17,184 +14,71 @@ This document explains how VSCode Copilot Chat agents should use the graphify kn
 
 ## How to Use
 
-### 1. Codebase Orientation (New Area)
+1. **Codebase orientation** — read `GRAPH_REPORT.md` first, identify the relevant community, check its god nodes.
+2. **Impact analysis** — find the target symbol in `graph.json`, check its edges; high-degree targets are ripple-effect risks.
+3. **Finding hidden dependencies** — check the "Surprising Connections" / INFERRED edges before refactoring.
 
-1. Read `graphify-out/GRAPH_REPORT.md`
-2. Identify which community your target file belongs to
-3. Look up its god nodes to understand what it depends on
-
-Example:
 ```bash
-# Read the report first
-cat graphify-out/GRAPH_REPORT.md
-
-# The report will show communities like:
-# - Utilities (contains cn, navigation, dropdowns)
-# - Pages & Routes (product listing, route types)
-# - UI Components (hero, FAQ, support page)
-# - Technology Stack (Next.js config, fonts, providers)
+graphify query "<question>"       # scoped subgraph
+graphify explain "<concept>"
+graphify path "<A>" "<B>"
 ```
 
-### 2. Impact Analysis (Before a Change)
+### When to Use vs Grep
 
-1. Find your target symbol in `graph.json` under `"nodes"`
-2. Look at all edges where it appears as `source` or `target`
-3. Any `target` nodes with high `degree` are high-risk ripple targets
+✅ Exploring an unfamiliar area, understanding dependencies, finding usages, tracing call chains, spotting hidden coupling.
+❌ Modifying/debugging specific lines (graph is read-only), needing exact line numbers, literal string search, needing to see actual code.
 
-Example (JSON query):
-```json
-{
-  "nodes": [
-    {
-      "id": "cn",
-      "type": "function",
-      "degree": 41,
-      "edges": [...]
-    }
-  ]
-}
+## Per-Agent Capabilities
+
+| Agent | Can query | Can regenerate | Notes |
+|---|---|---|---|
+| Claude Code CLI | Yes | Yes (`/graphify` skill or `graphify . --update`) | PreToolUse hooks in `.claude/settings.json` apply to all its tool calls |
+| VSCode Copilot Chat | Yes — reads `graph.json` / `GRAPH_REPORT.md` directly | No — ask Claude Code CLI to rebuild | Skills/rules auto-discovered from `.agents/skills/`, `.agents/rules/` |
+| Codex | Same as VSCode Copilot Chat | No | Depends on `multi_agent = true` in `~/.codex/config.toml`; use `AGENTS.md` for guidance |
+
+## PreToolUse Hook Enforcement
+
+`.claude/settings.json` wires two PreToolUse hooks for Claude Code CLI:
+- **Bash matcher** — fires on commands containing `grep`, `rg`, `find`, `fd`, `ack`, `ag`
+- **Read/Glob matcher** — fires on reads/globs of source-like paths (`.ts`, `.js`, `.md`, etc.)
+
+Both inject additional context nudging toward `graphify query` first when `graphify-out/graph.json` exists. Include the same instruction in subagent prompts that explore code:
+
+```markdown
+Before using grep, run: `graphify query "<your question>"`
 ```
-
-### 3. Finding Hidden Dependencies
-
-The GRAPH_REPORT.md "Surprising Connections" section lists inferred edges that aren't obvious from reading the code. Check these before refactoring.
-
-Example edge:
-```
-cn ↔ Button
-Relation: INFERRED — "Common Tailwind utility function used throughout UI components"
-```
-
-## Recommended Workflow
-
-### For VSCode Copilot Chat Agents
-
-**Step 1:** Always start with graphify when exploring codebase
-```bash
-graphify query "what components use the cn utility?"
-```
-
-**Step 2:** Read the output
-- JSON: Use graph.json directly (parse it)
-- Markdown: Read GRAPH_REPORT.md for high-level insights
-
-**Step 3:** Only read files if graphify doesn't have enough info
-```bash
-# AFTER graphify has oriented you
-grep -r "cn(" src/
-```
-
-**Step 4:** Document your findings
-- Mention which graph nodes you used
-- Note any surprising connections discovered
-
-### When to Use Graphify
-
-✅ **Do use graphify when:**
-- Exploring unfamiliar codebase area
-- Understanding dependencies between components
-- Finding all usages of a specific utility/function
-- Understanding Tailwind class mergers
-- Looking for hidden coupling
-
-❌ **Don't use graphify when:**
-- Modifying/debugging specific lines (graphify is read-only)
-- Need exact line numbers (graphify shows files, not line numbers)
-- Looking for literal strings in code
-- Need to see actual code implementation
-
-## Graph Structure (Frontend)
-
-**God nodes (most-connected abstractions):**
-1. `cn()` — Universal Tailwind class merger (41 edges)
-   - Found in: `src/lib/utils.ts`
-   - Used in: virtually every component
-   - **Touch carefully:** Changing this affects the entire UI
-
-2. `Button()` — Button component (7 edges)
-   - Found in: `src/components/ui/button.tsx`
-   - Used in: navigation, forms, calls-to-action
-
-3. `buttonVariants` — Button variants (6 edges)
-   - Found in: `src/components/ui/button.tsx`
-   - Used in: consistent button styling across app
-
-**Main communities:**
-- Utilities (contains `cn`, navigation, dropdowns)
-- Pages & Routes (product listing, route types)
-- UI Components (hero, FAQ, support page)
-- Technology Stack (Next.js config, fonts, providers)
 
 ## Regenerating the Graph
 
-**You CANNOT regenerate the graph** — use Claude Code CLI instead.
+Primary path, in Claude Code CLI:
 
-To regenerate:
 ```bash
-# In Claude Code CLI
-cd /path/to/stetsom-front
 /graphify
 ```
 
-## Subagent Integration
+Under the hood (also runnable directly in a Claude Code CLI terminal):
 
-When invoking subagents (especially Codex), include graphify context:
-```markdown
-## Instructions for Subagent
-
-1. Before using any Read/Glob commands:
-   ```bash
-   graphify query "<your exploration question>"
-   ```
-
-2. Read the graph output:
-   - `graphify-out/GRAPH_REPORT.md` for overview
-   - `graphify-out/graph.json` for detailed analysis
-
-3. Only read files if graphify doesn't provide enough information
-
-4. Report which graph nodes you consulted in your findings
-
-5. **Important:** Do NOT modify the graph (read-only access)
+```bash
+graphify install --project
+graphify .
 ```
 
-## Error Handling
+Recommended after: adding or removing 5+ source files, major refactor or modularization pass, before a full design-fidelity-audit.
 
-**If graphify-out doesn't exist:**
-- Claude Code agent should rebuild: `/graphify`
-- VSCode Copilot Chat agent should ask Claude Code to rebuild
-- Or ask user: "Should I rebuild the knowledge graph first?"
+**Why graphify-first:** code extraction (AST via tree-sitter) is fast and needs no API key. Semantic extraction (INFERRED edges) needs an LLM call but is prioritized over plain AST edges — it captures business relationships grep can't see.
 
-**If graphify-out exists but is stale:**
-- Claude Code agent should rebuild: `graphify . --update`
-- VSCode Copilot Chat agent should notify user: "The graph is stale (last run: [date]). Recommend rebuilding."
+## If graphify-out Is Missing or Stale
+
+- **Missing** — Claude Code should rebuild with `/graphify`; VSCode Copilot / Codex should ask Claude Code to rebuild, or ask the user.
+- **Stale** — Claude Code should rebuild with `graphify . --update`; VSCode Copilot / Codex should notify the user with the last-run date and recommend a rebuild.
 
 ## Performance Notes
 
-- Graphify extraction is **fast** (AST via tree-sitter)
-- Semantic analysis (INFERRED edges) can be slower (depends on LLM backend)
-- `graphify-out/cache/` contains parsed ASTs for incremental builds
-- Committing `cache/ast/` improves speed for subsequent builds
-
-## Special Considerations
-
-### `cn()` Utility
-- **Central utility:** This is the Tailwind class merger function
-- **High edge count (41) is expected**, not a smell
-- Changes ripple everywhere through the UI
-- Don't refactor unless absolutely necessary
-
-### `_components/` Directories
-- Co-located with routes (not shared)
-- Edges between different route's `_components/` indicate unintended coupling
-- Graphify can identify this pattern for refactoring guidance
-
-### `src/components/ui/` Shared Layer
-- Shared components should have many inbound edges from pages/sections
-- Edges going FROM here TO other layers suggest coupling issues
+- AST extraction is fast. Semantic (INFERRED edge) extraction depends on the configured LLM backend and is slower.
+- `graphify-out/cache/ast/` holds parsed ASTs for incremental builds — commit it to speed up subsequent runs.
 
 ## Resources
 
-- **Full documentation:** See `.claude/skills/graphify/SKILL.md`
-- **Multi-agent config:** See `.agents/rules/multi-agent.md`
-- **Official docs:** https://github.com/safishamsi/graphify
+- Full usage docs: `.claude/skills/graphify/SKILL.md`
+- Official docs: https://github.com/safishamsi/graphify

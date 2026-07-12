@@ -1,11 +1,7 @@
 "use client";
 
-import { useGetApiLibrary } from "@/api/stetsom";
-import type {
-  GetApiLibraryType,
-  I18nString,
-  LibraryAsset,
-} from "@/api/stetsom/model";
+import { useGetApiLibrary, useGetApiLibraryId } from "@/api/stetsom";
+import type { GetApiLibraryType, LibraryAsset } from "@/api/stetsom/model";
 import { useLibraryUpload } from "@/hooks/use-upload";
 import { cn } from "@/lib/utils";
 import { FileText, ImageIcon, Trash2, Upload, X } from "lucide-react";
@@ -13,31 +9,23 @@ import { useState } from "react";
 import { AdminFileUpload } from "./admin-file-upload";
 import { AdminLabel } from "./admin-input";
 import { AdminSearchInput } from "./admin-search-input";
-
-export interface PickedAsset {
-  library_id: string;
-  file_url: string;
-  alt?: I18nString;
-}
+import {
+  currentAssetUrl,
+  type LibraryAssetRef,
+  type LibraryPickedAsset,
+} from "./library-asset-ref";
 
 interface LibraryAssetPickerProps {
   label?: string;
   /** Currently selected asset (preview only needs the URL). */
-  value?: { library_id?: string; file_url?: string } | null;
-  onChange: (asset: PickedAsset | null) => void;
+  value?: LibraryAssetRef | null;
+  onChange: (asset: LibraryPickedAsset | null) => void;
   /** Library type filter + presign scope hint. */
   type?: GetApiLibraryType;
   /** "image" shows a thumbnail; "file" shows a filename row. */
   variant?: "image" | "file";
   accept?: string;
   className?: string;
-}
-
-function currentUrl(asset: LibraryAsset): string {
-  const v =
-    asset.versions.find((x) => x.version_id === asset.current_version_id) ??
-    asset.versions[0];
-  return v?.file_url ?? "";
 }
 
 export function LibraryAssetPicker({
@@ -51,17 +39,28 @@ export function LibraryAssetPicker({
 }: LibraryAssetPickerProps) {
   const [open, setOpen] = useState(false);
 
+  // The consumer may seed `value` with only a `library_id` (e.g. an entity
+  // whose CMS payload carries the id but not the resolved URL). Resolve the
+  // asset on demand so the saved preview renders instead of an empty picker.
+  const needsResolve = Boolean(value?.library_id && !value?.file_url);
+  const { data: resolvedAsset, isLoading: isResolving } = useGetApiLibraryId(
+    value?.library_id ?? "",
+    { query: { enabled: needsResolve } },
+  );
+  const previewUrl =
+    value?.file_url ?? (resolvedAsset ? currentAssetUrl(resolvedAsset) : "");
+
   return (
     <div className={className}>
       {label && <AdminLabel>{label}</AdminLabel>}
 
-      {value?.file_url ? (
+      {previewUrl ? (
         <div className="flex items-center gap-3 rounded-md border border-border bg-card p-2">
           {variant === "image" ? (
             <div className="relative size-16 shrink-0 overflow-hidden rounded bg-muted">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={value.file_url}
+                src={previewUrl}
                 alt=""
                 className="h-full w-full object-cover"
               />
@@ -70,12 +69,12 @@ export function LibraryAssetPicker({
             <FileText className="size-6 shrink-0 text-muted-foreground" />
           )}
           <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
-            {value.file_url.split("/").pop()}
+            {previewUrl.split("/").pop()}
           </span>
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="rounded border border-border px-2 py-1 text-xs font-medium hover:bg-muted"
+            className="shrink-0 rounded border border-border px-2 py-1 text-xs font-medium hover:bg-muted"
           >
             Trocar
           </button>
@@ -83,10 +82,15 @@ export function LibraryAssetPicker({
             type="button"
             aria-label="Remover"
             onClick={() => onChange(null)}
-            className="text-muted-foreground hover:text-destructive"
+            className="shrink-0 text-muted-foreground hover:text-destructive"
           >
             <Trash2 className="size-4" />
           </button>
+        </div>
+      ) : needsResolve && isResolving ? (
+        <div className="flex items-center gap-3 rounded-md border border-border bg-card p-2">
+          <div className="size-16 shrink-0 animate-pulse rounded bg-muted" />
+          <div className="h-3 w-24 animate-pulse rounded bg-muted" />
         </div>
       ) : (
         <button
@@ -104,7 +108,7 @@ export function LibraryAssetPicker({
       )}
 
       {open && (
-        <PickerModal
+        <LibraryPickerModal
           type={type}
           accept={accept}
           onClose={() => setOpen(false)}
@@ -118,16 +122,20 @@ export function LibraryAssetPicker({
   );
 }
 
-function PickerModal({
+/**
+ * The "gallery wizard" modal: browse/search existing library assets or upload a
+ * new one, then pick it. Reused by the product gallery and file steps.
+ */
+export function LibraryPickerModal({
   type,
-  accept,
+  accept = "image/*",
   onClose,
   onPick,
 }: {
   type: GetApiLibraryType;
-  accept: string;
+  accept?: string;
   onClose: () => void;
-  onPick: (asset: PickedAsset) => void;
+  onPick: (asset: LibraryPickedAsset) => void;
 }) {
   const [tab, setTab] = useState<"library" | "upload">("library");
   const [q, setQ] = useState("");
@@ -139,7 +147,7 @@ function PickerModal({
   function pickAsset(asset: LibraryAsset) {
     onPick({
       library_id: asset.id,
-      file_url: currentUrl(asset),
+      file_url: currentAssetUrl(asset),
       alt: asset.alt,
     });
   }
@@ -151,7 +159,7 @@ function PickerModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4">
-      <div className="flex max-h-[80vh] w-full max-w-3xl flex-col overflow-hidden rounded-[16px] border border-border bg-card shadow-xl">
+      <div className="flex max-h-[80vh] w-full max-w-3xl flex-col overflow-hidden rounded-card border border-border bg-card shadow-cms-card-lg">
         <div className="flex items-center justify-between border-b border-border px-5 py-3">
           <div className="flex gap-1">
             <button
@@ -224,7 +232,7 @@ function PickerModal({
                 accept={accept}
                 multiple={false}
                 clearOnUpload
-                onUpload={(files) => void upload.upload(files)}
+                onUpload={(files) => void upload.upload(files, type)}
               />
               {upload.entries.map((e) => (
                 <div
@@ -263,7 +271,7 @@ function AssetThumb({
   asset: LibraryAsset;
   onClick: () => void;
 }) {
-  const url = currentUrl(asset);
+  const url = currentAssetUrl(asset);
   const isImage = asset.type === "IMAGE" || asset.type === "CATEGORY_ICON";
   return (
     <button

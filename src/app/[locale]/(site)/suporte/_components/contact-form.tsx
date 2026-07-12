@@ -55,7 +55,7 @@ export function ContactForm({ departments }: ContactFormProps) {
   if (sent) {
     return (
       <div className="max-w-120 rounded border border-border bg-off-white p-8 text-center">
-        <p className="font-sans-condensed text-section-title font-black uppercase text-brand-dark">
+        <p className="font-sans-condensed text-section-title font-black text-brand-dark uppercase">
           {t("successTitle")}
         </p>
         <p className="mt-2 text-sm text-text-subtle">
@@ -78,7 +78,7 @@ export function ContactForm({ departments }: ContactFormProps) {
         <div>
           <label
             htmlFor="department"
-            className="mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground"
+            className="mb-1.5 block font-sans text-2xs font-bold tracking-widest text-muted-foreground uppercase"
           >
             {t("sectorLabel")}
           </label>
@@ -86,7 +86,7 @@ export function ContactForm({ departments }: ContactFormProps) {
             id="department"
             name="department"
             required
-            className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark focus:outline-none focus:ring-1 focus:ring-brand"
+            className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark focus:ring-1 focus:ring-brand focus:outline-none"
           >
             <option value="">{t("sectorPlaceholder")}</option>
             {departments.map((dept) => (
@@ -102,7 +102,7 @@ export function ContactForm({ departments }: ContactFormProps) {
         <div>
           <label
             htmlFor="name"
-            className="mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground"
+            className="mb-1.5 block font-sans text-2xs font-bold tracking-widest text-muted-foreground uppercase"
           >
             {t("nameLabel")}
           </label>
@@ -114,13 +114,13 @@ export function ContactForm({ departments }: ContactFormProps) {
             minLength={2}
             maxLength={100}
             placeholder={t("namePlaceholder")}
-            className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand"
+            className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:ring-1 focus:ring-brand focus:outline-none"
           />
         </div>
         <div>
           <label
             htmlFor="phone"
-            className="mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground"
+            className="mb-1.5 block font-sans text-2xs font-bold tracking-widest text-muted-foreground uppercase"
           >
             {t("phoneLabel")}
           </label>
@@ -129,7 +129,7 @@ export function ContactForm({ departments }: ContactFormProps) {
             id="phone"
             name="phone"
             placeholder={t("phonePlaceholder")}
-            className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand"
+            className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:ring-1 focus:ring-brand focus:outline-none"
           />
         </div>
       </div>
@@ -137,7 +137,7 @@ export function ContactForm({ departments }: ContactFormProps) {
       <div>
         <label
           htmlFor="email"
-          className="mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground"
+          className="mb-1.5 block font-sans text-2xs font-bold tracking-widest text-muted-foreground uppercase"
         >
           {t("emailLabel")}
         </label>
@@ -147,14 +147,14 @@ export function ContactForm({ departments }: ContactFormProps) {
           name="email"
           required
           placeholder={t("emailPlaceholder")}
-          className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand"
+          className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:ring-1 focus:ring-brand focus:outline-none"
         />
       </div>
 
       <div>
         <label
           htmlFor="message"
-          className="mb-1.5 block font-sans text-2xs font-bold uppercase tracking-widest text-muted-foreground"
+          className="mb-1.5 block font-sans text-2xs font-bold tracking-widest text-muted-foreground uppercase"
         >
           {t("messageLabel")}
         </label>
@@ -166,7 +166,7 @@ export function ContactForm({ departments }: ContactFormProps) {
           minLength={10}
           maxLength={5000}
           placeholder={t("messagePlaceholder")}
-          className="w-full resize-none border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:outline-none focus:ring-1 focus:ring-brand"
+          className="w-full resize-none border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:ring-1 focus:ring-brand focus:outline-none"
         />
       </div>
 
@@ -196,7 +196,7 @@ export function ContactForm({ departments }: ContactFormProps) {
       <button
         type="submit"
         disabled={sending}
-        className="flex w-full items-center justify-center gap-2 bg-brand px-6 py-3.5 font-sans text-button-md font-bold uppercase tracking-[0.8px] text-white transition-colors hover:bg-brand/90 disabled:opacity-50"
+        className="flex w-full items-center justify-center gap-2 bg-brand px-6 py-3.5 font-sans text-button-md font-bold tracking-[0.8px] text-white uppercase transition-colors hover:bg-brand/90 disabled:opacity-50"
       >
         {sending ? t("sending") : t("submit")}
         <svg

@@ -1,20 +1,15 @@
 import Image from "next/image";
 
 interface LogoProps {
-  variant?: "white" | "dark";
+  src: string;
   width?: number;
   height?: number;
   priority?: boolean;
   className?: string;
 }
 
-const LOGO_SRC = {
-  white: "/logo-white.png",
-  dark: "/logo.png",
-} as const;
-
 export function Logo({
-  variant = "white",
+  src,
   width = 158,
   height = 35,
   priority,
@@ -22,7 +17,7 @@ export function Logo({
 }: LogoProps) {
   return (
     <Image
-      src={LOGO_SRC[variant]}
+      src={src}
       alt="Stetsom"
       width={width}
       height={height}

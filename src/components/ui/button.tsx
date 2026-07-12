@@ -14,6 +14,8 @@ const buttonVariants = cva(
           "rounded-sm  py-4.5 bg-brand text-white hover:bg-brand/90 font-sans font-semibold uppercase",
         "brand-dark":
           "rounded-sm py-4.5 bg-surface-elevated text-white hover:bg-brand-dark font-sans font-semibold uppercase",
+        "brand-outline":
+          "rounded-sm border-2 border-brand bg-transparent text-brand hover:bg-brand hover:text-brand-dark font-sans font-semibold uppercase [&_svg]:text-brand hover:[&_svg]:text-brand-dark",
         outline:
           "rounded-lg border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         pill: "rounded-full bg-brand text-white hover:bg-brand/90 font-sans font-semibold uppercase",
@@ -35,6 +37,7 @@ const buttonVariants = cva(
         icon: "size-8",
         "icon-xs": "size-6 [&_svg:not([class*='size-'])]:size-3",
         "icon-sm": "size-7",
+        "icon-md": "size-10",
         "icon-lg": "size-9",
       },
     },

@@ -1,9 +1,9 @@
 "use client";
 
 import type { ProductDetailViewData } from "@/app/[locale]/(site)/produtos/[slug]/_components/product-detail-view";
+import { usePreviewBridge } from "@/hooks/use-preview-bridge";
 import { cn } from "@/lib/utils";
-import { ExternalLink, Monitor, Smartphone } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { Monitor, Smartphone } from "lucide-react";
 import {
   PREVIEW_INTENT,
   PREVIEW_MODEL,
@@ -14,8 +14,13 @@ import {
 
 /** Same-origin route that renders the product view from the pushed model. */
 const FRAME_URL = "/preview-produto";
-/** Debounce model pushes so fast typing does not flood the iframe. */
-const PUSH_DELAY_MS = 150;
+
+const MESSAGE_TYPES = {
+  ready: PREVIEW_READY,
+  model: PREVIEW_MODEL,
+  selection: PREVIEW_SELECTION,
+  intent: PREVIEW_INTENT,
+};
 
 type Device = "mobile" | "desktop";
 
@@ -27,13 +32,7 @@ interface PreviewCanvasProps {
   onIntent: (target: EditorTarget) => void;
   device: Device;
   onDeviceChange: (device: Device) => void;
-  hasSavedProduct: boolean;
-  /** `/api/draft` URL that opens the real page in Draft Mode. Null when unsaved. */
-  realPageHref: string | null;
 }
-
-const iconButton =
-  "rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground";
 
 function DeviceToggle({
   device,
@@ -43,26 +42,27 @@ function DeviceToggle({
   onChange: (device: Device) => void;
 }) {
   return (
-    <div className="inline-flex rounded-md border border-border p-0.5">
+    <div className="inline-flex items-center rounded-md bg-muted">
       {(
         [
-          { id: "mobile", icon: Smartphone },
-          { id: "desktop", icon: Monitor },
+          { id: "mobile", icon: Smartphone, label: "Mobile" },
+          { id: "desktop", icon: Monitor, label: "Desktop" },
         ] as const
-      ).map(({ id, icon: Icon }) => (
+      ).map(({ id, icon: Icon, label }) => (
         <button
           key={id}
           type="button"
           aria-label={id}
           onClick={() => onChange(id)}
           className={cn(
-            "rounded p-1.5 transition-colors",
+            "flex flex-col items-center gap-1 rounded px-1 py-1.5 text-2xs font-medium transition-colors",
             device === id
-              ? "bg-muted text-foreground"
-              : "text-muted-foreground hover:text-foreground",
+              ? "bg-primary/10 text-primary"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground",
           )}
         >
           <Icon className="size-4" />
+          {label}
         </button>
       ))}
     </div>
@@ -75,84 +75,22 @@ export function PreviewCanvas({
   onIntent,
   device,
   onDeviceChange,
-  hasSavedProduct,
-  realPageHref,
 }: PreviewCanvasProps) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const modelRef = useRef(model);
-  const selectionRef = useRef(selection);
-  const onIntentRef = useRef(onIntent);
-
-  useEffect(() => {
-    modelRef.current = model;
-  }, [model]);
-  useEffect(() => {
-    selectionRef.current = selection;
-  }, [selection]);
-  useEffect(() => {
-    onIntentRef.current = onIntent;
-  }, [onIntent]);
-
-  // Reply to the iframe handshake with the latest model + selection, and surface
-  // edit intents reported from clicks inside the frame.
-  useEffect(() => {
-    function post(type: string, payload: Record<string, unknown>) {
-      iframeRef.current?.contentWindow?.postMessage(
-        { type, ...payload },
-        window.location.origin,
-      );
-    }
-    function onMessage(event: MessageEvent) {
-      if (event.origin !== window.location.origin) return;
-      const data = event.data as { type?: string; target?: EditorTarget };
-      if (data?.type === PREVIEW_READY) {
-        post(PREVIEW_MODEL, { model: modelRef.current });
-        post(PREVIEW_SELECTION, { selection: selectionRef.current });
-      } else if (data?.type === PREVIEW_INTENT && data.target) {
-        onIntentRef.current(data.target);
-      }
-    }
-    window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
-  }, []);
-
-  // Push edits live (debounced). Harmless if the frame is not mounted yet.
-  useEffect(() => {
-    const id = setTimeout(() => {
-      iframeRef.current?.contentWindow?.postMessage(
-        { type: PREVIEW_MODEL, model },
-        window.location.origin,
-      );
-    }, PUSH_DELAY_MS);
-    return () => clearTimeout(id);
-  }, [model]);
-
-  // Mirror selection so the frame can highlight the active region.
-  useEffect(() => {
-    iframeRef.current?.contentWindow?.postMessage(
-      { type: PREVIEW_SELECTION, selection },
-      window.location.origin,
-    );
-  }, [selection]);
+  const iframeRef = usePreviewBridge<ProductDetailViewData, EditorTarget>(
+    MESSAGE_TYPES,
+    model,
+    selection,
+    onIntent,
+  );
 
   return (
     <div className="flex h-full flex-col overflow-hidden bg-muted">
-      <div className="flex shrink-0 items-center justify-between border-b border-border bg-card px-4 py-2.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-border bg-card px-2 py-2">
         <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
           Pré-visualização
         </span>
         <div className="flex items-center gap-2">
           <DeviceToggle device={device} onChange={onDeviceChange} />
-          {hasSavedProduct && realPageHref && (
-            <button
-              type="button"
-              onClick={() => window.open(realPageHref, "_blank", "noopener")}
-              className={iconButton}
-              title="Abrir página real em nova aba"
-            >
-              <ExternalLink className="size-4" />
-            </button>
-          )}
         </div>
       </div>
 
@@ -161,7 +99,7 @@ export function PreviewCanvas({
       <div
         className={cn(
           "flex flex-1 overflow-hidden",
-          device === "mobile" ? "justify-center py-4" : "",
+          device === "mobile" ? "justify-center overflow-x-hidden py-4" : "",
         )}
       >
         <div

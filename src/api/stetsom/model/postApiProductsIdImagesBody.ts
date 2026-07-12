@@ -5,10 +5,9 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
-import type { PostApiProductsIdImagesBodyFile } from "./postApiProductsIdImagesBodyFile";
 
 export type PostApiProductsIdImagesBody = {
-  file: PostApiProductsIdImagesBodyFile;
+  library_id: string;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991

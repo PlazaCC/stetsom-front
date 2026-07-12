@@ -5,6 +5,7 @@
     "support": "Suporte",
     "openMenu": "Abrir menu",
     "closeMenu": "Fechar menu",
+    "openSearch": "Abrir busca",
     "search": "Buscar",
     "navAriaLabel": "Menu de navegação",
     "categoryMenu": {
@@ -40,7 +41,10 @@
   },
   "Header": {
     "searchPlaceholder": "Buscar produtos...",
-    "closeSearch": "Fechar busca"
+    "closeSearch": "Fechar busca",
+    "searching": "Buscando...",
+    "noResults": "Nenhum produto encontrado",
+    "viewMore": "Ver +{count} resultados"
   },
   "Footer": {
     "description": "Potência sem limite desde 1989. Fabricamos os melhores amplificadores automotivos do Brasil.",
@@ -70,8 +74,8 @@
     "filters": "Filtros",
     "clearAll": "Limpar tudo",
     "searchPlaceholder": "Buscar produto...",
-    "allCategories": "Todos",
-    "products": "{count} produtos",
+    "allCategories": "Novidades",
+    "products": "<number>{count}</number> <label>produtos</label>",
     "sortBy": "Ordenar por",
     "sortRelevance": "Mais relevantes",
     "sortNewest": "Mais recentes",
@@ -87,7 +91,21 @@
     "emptyCategory": "Nenhum produto encontrado nesta categoria.",
     "options": "Opções",
     "showDiscontinued": "Exibir fora de linha",
-    "showExport": "Produtos de exportação"
+    "showExport": "Produtos de exportação",
+    "compare": "Comparar produtos",
+    "compareSelect": "Selecione 2 produtos para comparar",
+    "compareSelected": "{count} de 2 selecionados",
+    "compareCancel": "Cancelar comparação",
+    "compareReplace": "Substituir",
+    "compareVariant": "Variação",
+    "compareNoDescription": "Sem descrição disponível",
+    "compareClose": "Fechar comparação",
+    "compareInstruction": "Clique em um produto do catálogo para adicioná-lo à comparação",
+    "compareInstructionSecond": "Selecione mais um produto para comparar",
+    "compareBadge": "Comparar",
+    "compareBadgeSelected": "Selecionado",
+    "compareRemove": "Remover",
+    "compareLoadError": "Erro ao carregar dados do produto. Tente novamente."
   },
   "ProductDetail": {
     "overview": "Visão geral",
@@ -97,6 +115,9 @@
     "filesAvailable": "{count, plural, one {# arquivo disponível} other {# arquivos disponíveis}}",
     "manual": "Acessar manual do produto",
     "downloadPhotos": "Download de fotos",
+    "downloadApp": "Baixar aplicativo",
+    "downloadIos": "Baixar iOS",
+    "downloadAndroid": "Baixar Android",
     "variations": "Variações do produto",
     "breadcrumbHome": "Início",
     "breadcrumbProducts": "Produtos",
@@ -126,7 +147,8 @@
     "blockModel3dDescription": "Explore o produto em perspectiva completa para conferir conectores, acabamento e dimensões reais.",
     "blockModel3dOpen": "Abrir modelo",
     "blockModel3dLoading": "Carregando modelo…",
-    "thumbnail": "{name} — miniatura {index}"
+    "thumbnail": "{name} — miniatura {index}",
+    "compare": "Comparar"
   },
   "Support": {
     "contact": {
@@ -186,7 +208,17 @@
       "locating": "Localizando...",
       "locationDenied": "Não foi possível obter sua localização.",
       "distanceAway": "{km} km de distância",
-      "resultsCount": "{count} resultados"
+      "resultsCount": "{count} resultados",
+      "searchLocationPlaceholder": "Buscar cidade, estado ou CEP",
+      "locatingByCep": "Buscando por CEP...",
+      "missingCepDigits": "Faltam {count, plural, one {# dígito} other {# dígitos}} do CEP",
+      "cepNotFound": "CEP não encontrado",
+      "searchingCities": "Buscando por cidades...",
+      "noCitiesFound": "Nenhuma cidade encontrada",
+      "currentLocation": "Minha localização atual",
+      "emptyStateHint": "Informe sua localização ou navegue pelo mapa para encontrar assistências técnicas",
+      "showAll": "Mostrar todos",
+      "filterByMap": "Filtrar pelo mapa"
     },
     "faq": {
       "noAnswer": "Não encontrou o que procura? Entre em contato com nosso suporte."

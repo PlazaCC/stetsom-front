@@ -24,9 +24,7 @@ export function VideoBlock({
   const videoUrl =
     (block.data.url as string | undefined) ??
     (block.data.video_url as string | undefined);
-  const embedUrl = getYouTubeEmbedUrl(videoUrl);
-
-  if (!embedUrl) return null;
+  const embedUrl = videoUrl ? getYouTubeEmbedUrl(videoUrl) : null;
 
   return (
     <BlockArticle

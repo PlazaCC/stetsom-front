@@ -14,8 +14,16 @@ import {
   PREVIEW_SELECTION,
   type EditorTarget,
 } from "@/app/admin/_components/product-wizard/editor-target";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { usePreviewFrame } from "@/hooks/use-preview-frame";
+import { useEffect, useRef } from "react";
 import { PreviewEditorOverlay } from "./_components/preview-editor-overlay";
+
+const MESSAGE_TYPES = {
+  ready: PREVIEW_READY,
+  model: PREVIEW_MODEL,
+  selection: PREVIEW_SELECTION,
+  intent: PREVIEW_INTENT,
+};
 
 /**
  * Iframe target for the CMS product editor's live canvas. It renders the real
@@ -34,59 +42,20 @@ const EDITOR_STYLE = `
 [data-editor-target]{cursor:pointer;}
 [data-editor-target]:hover{outline:2px dashed var(--color-primary);outline-offset:-2px;}
 [data-editor-active="true"]{outline:2px solid var(--color-primary);outline-offset:-2px;}
+a { pointer-events: none !important; }
 `;
 
 export default function PreviewProdutoPage() {
-  const [model, setModel] = useState<ProductDetailViewData | null>(null);
-  const [selection, setSelection] = useState<EditorTarget | null>(null);
+  const { model, selection, emitIntent } = usePreviewFrame<
+    ProductDetailViewData,
+    EditorTarget
+  >(MESSAGE_TYPES);
   const rootRef = useRef<HTMLDivElement>(null);
   const selectionRef = useRef<EditorTarget | null>(null);
 
   useEffect(() => {
     selectionRef.current = selection;
   }, [selection]);
-
-  useEffect(() => {
-    let received = false;
-
-    function onMessage(event: MessageEvent) {
-      if (event.origin !== window.location.origin) return;
-      const data = event.data as {
-        type?: string;
-        model?: ProductDetailViewData;
-        selection?: EditorTarget;
-      };
-      if (data?.type === PREVIEW_MODEL && data.model) {
-        received = true;
-        setModel(data.model);
-      } else if (data?.type === PREVIEW_SELECTION) {
-        setSelection(data.selection ?? null);
-      }
-    }
-    window.addEventListener("message", onMessage);
-
-    const announce = () =>
-      window.parent?.postMessage(
-        { type: PREVIEW_READY },
-        window.location.origin,
-      );
-
-    // Re-announce until the first model arrives. The parent's listener may not
-    // be attached yet on the initial announce (dev remounts, slow frame load).
-    announce();
-    const handshake = setInterval(() => {
-      if (received) {
-        clearInterval(handshake);
-        return;
-      }
-      announce();
-    }, 250);
-
-    return () => {
-      window.removeEventListener("message", onMessage);
-      clearInterval(handshake);
-    };
-  }, []);
 
   // Outline the regions that match the active selection (field-precise).
   useEffect(() => {
@@ -115,13 +84,6 @@ export default function PreviewProdutoPage() {
       }
     }
   }, [selection]);
-
-  const emitIntent = useCallback((target: EditorTarget) => {
-    window.parent?.postMessage(
-      { type: PREVIEW_INTENT, target },
-      window.location.origin,
-    );
-  }, []);
 
   // Escape collapses a drill-in selection back to its section root.
   useEffect(() => {

@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { DepartmentConfigItem } from "./departmentConfigItem";
+import type { I18nString } from "./i18nString";
 
 export interface CmsConfig {
   company_name: string;
@@ -16,8 +17,13 @@ export interface CmsConfig {
   social_instagram?: string;
   social_facebook?: string;
   social_youtube?: string;
+  social_linkedin?: string;
   /** Contact form department routing — each entry maps a slug to an internal email */
   contact_departments?: DepartmentConfigItem[];
+  /** Logo variant for light backgrounds, by locale */
+  logo_dark?: I18nString;
+  /** Logo variant for dark backgrounds, by locale */
+  logo_white?: I18nString;
   updated_at: string;
   updated_by: string;
 }

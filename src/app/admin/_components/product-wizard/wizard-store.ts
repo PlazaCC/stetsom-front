@@ -7,6 +7,7 @@ import type {
   PostApiProductsBody,
   ProductStatus,
 } from "@/api/stetsom/model";
+import { reindexByOrder } from "@/lib/utils/reindex";
 import { slugify } from "@/lib/utils/slugify";
 
 export type WizardLocale = "pt" | "en" | "es";
@@ -15,11 +16,15 @@ export type WizardStep = 1 | 2 | 3 | 4 | 5;
 
 export type WizardMode = "create" | "edit";
 
-/** A product gallery image — either persisted (`image_id`) or pending upload (`file`). */
+/**
+ * A product gallery image, always backed by a library asset (`library_id`).
+ * `image_id` is set once the link is persisted on the product; new picks carry
+ * only the `library_id` until saved.
+ */
 export interface WizardImage {
   id: string;
   image_id?: string;
-  file?: File;
+  library_id: string;
   preview_url: string;
   order: number;
 }
@@ -56,6 +61,8 @@ export interface WizardState {
   mode: WizardMode;
   productId: string | null;
 
+  /** Manufacturer stock-keeping unit. Empty string when unset. */
+  sku: string;
   name: I18nString;
   slug: I18nString;
   slugTouched: boolean;
@@ -63,6 +70,10 @@ export interface WizardState {
   category_id: string;
   line_id: string;
   template_id: string;
+  /** iOS App Store link for this product. Empty string when unset. */
+  app_store_url: string;
+  /** Android Play Store link for this product. Empty string when unset. */
+  play_store_url: string;
   is_discontinued: boolean;
   /** No UI in the wizard. Preserved across edits, default false on create. */
   is_featured: boolean;
@@ -89,12 +100,15 @@ export interface WizardState {
 export type WizardInfoPatch = Partial<
   Pick<
     WizardState,
+    | "sku"
     | "name"
     | "slug"
     | "description"
     | "category_id"
     | "line_id"
     | "template_id"
+    | "app_store_url"
+    | "play_store_url"
     | "is_discontinued"
     | "is_featured"
     | "is_spotlight"
@@ -121,13 +135,9 @@ export type WizardAction =
 
 const DEFAULT_VARIATION_ID = "variation-default";
 
-function reindexSpecs(specs: WizardSpec[]): WizardSpec[] {
-  return specs.map((s, i) => ({ ...s, order: i }));
-}
-
 export function newSpec(order: number): WizardSpec {
   return {
-    id: `spec-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    id: `spec-${crypto.randomUUID()}`,
     attribute_id: "",
     value: { pt: "" },
     order,
@@ -140,11 +150,11 @@ export function newVariation(
   baseSpecs: WizardSpec[] = [],
 ): WizardVariation {
   return {
-    id: `variation-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    id: `variation-${crypto.randomUUID()}`,
     label: `${order} Ohm`,
     order,
     specs: baseSpecs.map((spec, index) => ({
-      id: `spec-${Date.now()}-${Math.random().toString(36).slice(2, 7)}-${index}`,
+      id: `spec-${crypto.randomUUID()}`,
       attribute_id: spec.attribute_id,
       attribute_name: spec.attribute_name,
       value: { pt: "" },
@@ -187,6 +197,7 @@ function hydrateImages(detail?: CmsProductDetailPayload): WizardImage[] {
     .map((img) => ({
       id: img.image_id,
       image_id: img.image_id,
+      library_id: img.library_id,
       preview_url: img.image_url ?? "",
       order: img.order,
     }));
@@ -230,6 +241,7 @@ export function initWizardState(
     mode,
     productId: p?.id ?? null,
 
+    sku: p?.sku ?? "",
     name: p?.name ?? { pt: "" },
     slug: p?.slug ?? { pt: "" },
     slugTouched: !!p?.slug?.pt,
@@ -237,6 +249,8 @@ export function initWizardState(
     category_id: p?.category_id ?? "",
     line_id: p?.line_id ?? "",
     template_id: p?.template_id ?? "",
+    app_store_url: p?.app_store_url ?? "",
+    play_store_url: p?.play_store_url ?? "",
     is_discontinued: p?.is_discontinued ?? false,
     is_featured: p?.is_featured ?? false,
     is_spotlight: p?.is_spotlight ?? false,
@@ -313,11 +327,11 @@ export function wizardReducer(
             (s) => !existingIds.has(s.attribute_id),
           );
           if (missing.length === 0) return v;
-          const merged = reindexSpecs([
+          const merged = reindexByOrder([
             ...v.specs,
             ...missing.map((s, i) => ({
               ...s,
-              id: `spec-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+              id: `spec-${crypto.randomUUID()}`,
               order: v.specs.length + i,
               value: { pt: "" },
               highlighted: false,
@@ -416,12 +430,15 @@ export function buildPayload(
   }
 
   return {
+    sku: state.sku.trim() || null,
     name: state.name,
     slug: state.slug.pt ? state.slug : { pt: slugify(state.name.pt) },
     description: state.description.pt ? state.description : undefined,
     category_id: state.category_id,
     line_id: state.line_id || null,
     template_id: state.template_id || null,
+    app_store_url: state.app_store_url.trim() || null,
+    play_store_url: state.play_store_url.trim() || null,
     status,
     is_discontinued: state.is_discontinued,
     is_featured: state.is_featured,

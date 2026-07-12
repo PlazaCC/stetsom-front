@@ -12,9 +12,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-picker";
+import type { LibraryUrlOnlyRef } from "@/app/admin/_components/crud/library-asset-ref";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
 import { Plus, Trash2 } from "lucide-react";
 import type { FieldSpec } from "./section-field-spec";
+import { FaqItemsField } from "./faq-items-field";
 
 type Data = Record<string, unknown>;
 type Item = Record<string, unknown>;
@@ -101,19 +103,23 @@ function Field({ field, data, onChange }: FieldProps) {
         </div>
       );
 
-    case "asset":
+    case "asset": {
+      // Page-section `data` only persists a flat URL for this field kind —
+      // the public renderer never reads a sibling `library_id`.
+      const value: LibraryUrlOnlyRef = { file_url: asStr(data[field.key]) };
       return (
         <LibraryAssetPicker
           label={field.label}
           type={field.assetType ?? "IMAGE"}
           variant={field.variant ?? "image"}
           accept={field.accept}
-          value={{ file_url: asStr(data[field.key]) }}
+          value={value}
           onChange={(asset) =>
             onChange({ ...data, [field.key]: asset?.file_url ?? "" })
           }
         />
       );
+    }
 
     case "group": {
       const group =
@@ -142,6 +148,9 @@ function Field({ field, data, onChange }: FieldProps) {
 
     case "list":
       return <ListField field={field} data={data} onChange={onChange} />;
+
+    case "faq-items":
+      return <FaqItemsField field={field} />;
 
     default:
       return null;

@@ -5,6 +5,8 @@ interface AdminFormSectionProps {
   className?: string;
   title?: string;
   description?: string;
+  /** Skip the default content padding — use when composing your own `AdminFormSectionContent` blocks. */
+  raw?: boolean;
 }
 
 export function AdminFormSection({
@@ -12,6 +14,7 @@ export function AdminFormSection({
   className,
   title,
   description,
+  raw = false,
 }: AdminFormSectionProps) {
   return (
     <div
@@ -23,7 +26,9 @@ export function AdminFormSection({
       {(title || description) && (
         <AdminFormSectionTitle title={title} description={description} />
       )}
-      <div className="flex-1 overflow-auto">{children}</div>
+      <div className={cn("flex-1 overflow-auto", !raw && "px-6 py-4")}>
+        {children}
+      </div>
     </div>
   );
 }

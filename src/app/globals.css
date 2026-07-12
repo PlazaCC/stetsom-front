@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@plugin "@egoist/tailwindcss-icons";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -91,7 +93,7 @@
   --footer: rgb(17, 17, 17);
   /* Scrollbar — light theme */
   --sb-track-color: #f5f5f5;
-  --sb-thumb-color: #e8132a;
+  --sb-thumb-color: rgb(18, 18, 18);
   --sb-size: 10px;
   /* CMS design tokens (raw values, faithful to Figma huD41oTL0FAa7xsNEK8tAM —
      remapped onto shadcn tokens via .cms {} in admin.css). Mantine-inspired. */
@@ -156,7 +158,7 @@
 .dark {
   /* Scrollbar — dark theme */
   --sb-track-color: #212121;
-  --sb-thumb-color: #e8132a;
+  --sb-thumb-color: rgb(18, 18, 18);
   --sb-size: 12px;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -228,6 +230,16 @@
       scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
     }
   }
+
+  /* Hide scrollbar while keeping scroll functionality */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .hero-carousel-pagination {
@@ -256,7 +268,8 @@
 }
 
 .hero-carousel .swiper-pagination-bullet.swiper-pagination-bullet-active {
-  width: 26px !important;
+  --hero-bullet-end: 36px;
+  width: 36px !important;
   background: rgba(255, 255, 255, 0.6) !important;
 }
 
@@ -269,9 +282,7 @@
   background: rgba(255, 255, 255, 1);
   opacity: 0;
   width: 0%;
-  min-width: 12px;
-  /* transform: scaleX(0); */
-  /* transform-origin: left center; */
+  min-width: 10px;
 }
 
 .hero-carousel
@@ -286,7 +297,7 @@
     width: 10px;
   }
   to {
-    width: 64px;
+    width: var(--hero-bullet-end, 36px);
   }
 }
 
@@ -301,8 +312,14 @@
   }
 
   .hero-carousel .swiper-pagination-bullet.swiper-pagination-bullet-active {
+    --hero-bullet-end: 64px;
     width: 64px !important;
   }
+}
+
+.social-feed-swiper.swiper,
+.social-feed-swiper .swiper-wrapper {
+  overflow: visible !important;
 }
 
 @layer utilities {
@@ -359,4 +376,23 @@
     animation: marquee-scroll 20s linear infinite;
     width: max-content;
   }
+}
+
+/* Recolors an arbitrary black/grayscale icon asset (CMS uploads can be SVG
+   or raster, so `currentColor` isn't reliable) to match brand tokens.
+   Defined with `@utility` (not `@layer utilities`) so variants like
+   `group-hover:` are generated for them.
+   `icon-tint-brand` first flattens the source to solid black (so a
+   multi-tone icon converges to one flat color, not a shaded gradient),
+   then applies a filter chain solved empirically against real filter
+   rendering for an exact black -> rgb(232,19,42) (--color-brand) match. */
+@utility icon-tint-black {
+  filter: grayscale(1) brightness(0);
+  transition: filter 150ms ease;
+}
+
+@utility icon-tint-brand {
+  filter: grayscale(1) brightness(0) invert(39%) sepia(81%) saturate(543%)
+    hue-rotate(305deg) brightness(77%) contrast(164%);
+  transition: filter 150ms ease;
 }

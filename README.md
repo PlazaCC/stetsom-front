@@ -25,7 +25,7 @@ pnpm dev
 | `pnpm lint`         | Run ESLint                                |
 | `pnpm tsc --noEmit` | Type-check without emitting               |
 | `pnpm api:generate` | Regenerate Orval types and hooks          |
-| `pnpm mock:dump`    | Refresh `src/lib/mock/data.json` from API |
+| `pnpm mock:dump`    | Refresh mock fixtures from the real API |
 
 ## Stack
 
@@ -67,7 +67,7 @@ Copy `.env.local.example` to `.env.local`.
 | Variable                                  | Description                                                                                     |
 | ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | `CMS_API_BASE_URL`                        | Fastify API base URL. Omit to use mock data.                                                    |
-| `USE_MOCK_DATA`                           | Set `1` to serve GET requests from `src/lib/mock/data.json` instead of the real API.           |
+| `USE_MOCK_DATA`                           | Set `1` to serve GET requests from `src/lib/mock/*.ts` instead of the real API.         |
 | `MOCK_DUMP_EMAIL` / `MOCK_DUMP_PASSWORD`  | Credentials for `pnpm mock:dump`. Required only when refreshing mock fixtures after an API change. |
 | `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET`| Must match `stetsom-api/.env`.                                                                     |
 | `STORAGE_PUBLIC_HOSTNAME`                 | S3 bucket hostname for `next/image`. Format: `{bucket}.s3.{region}.amazonaws.com`.                |

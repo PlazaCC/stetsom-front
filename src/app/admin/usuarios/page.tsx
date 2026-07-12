@@ -5,8 +5,15 @@ import {
   AdminDataTable,
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
-import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -15,7 +22,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AdminListPage } from "@/app/admin/_components/crud/admin-list-page";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
+import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import {
   getGetApiUsersQueryKey,
   useGetApiUsers,
@@ -28,9 +40,8 @@ import type {
   PatchApiUsersIdBody,
   UserRole,
 } from "@/api/stetsom/model";
-import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Users } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 
 const ROLE_LABELS: Record<UserRole, string> = {
@@ -43,21 +54,6 @@ function RoleBadge({ role }: { role: UserRole }) {
   return (
     <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-foreground">
       {ROLE_LABELS[role]}
-    </span>
-  );
-}
-
-function StatusBadge({ active }: { active: boolean }) {
-  return (
-    <span
-      className={cn(
-        "rounded-full border px-2 py-0.5 text-xs font-medium",
-        active
-          ? "border-cms-step-done bg-cms-step-done text-white"
-          : "border-cms-step-pending bg-cms-step-pending text-muted-foreground",
-      )}
-    >
-      {active ? "Ativo" : "Inativo"}
     </span>
   );
 }
@@ -85,79 +81,69 @@ function UserForm({ user, onClose, onSave, isPending }: UserFormProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4">
-      <div className="w-full max-w-md">
-        <AdminFormSection
-          title={user ? "Editar Usuário" : "Novo Usuário"}
-          className="shadow-xl"
-        >
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <AdminLabel>Nome</AdminLabel>
-              <Input
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            {!user && (
-              <>
-                <div>
-                  <AdminLabel>E-mail</AdminLabel>
-                  <Input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <AdminLabel>Senha</AdminLabel>
-                  <Input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-              </>
-            )}
-            <div>
-              <AdminLabel>Perfil</AdminLabel>
-              <Select
-                value={role}
-                onValueChange={(value) => value && setRole(value as UserRole)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Selecione..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
-                  <SelectItem value="ADMIN">Admin</SelectItem>
-                  <SelectItem value="EDITOR">Editor</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex gap-3 pt-2">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 rounded-md border border-border py-2 text-sm font-medium text-foreground hover:bg-muted"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                disabled={isPending}
-                className="flex-1 rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-60"
-              >
-                {isPending ? "Salvando..." : "Salvar"}
-              </button>
-            </div>
-          </form>
-        </AdminFormSection>
-      </div>
-    </div>
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{user ? "Editar Usuário" : "Novo Usuário"}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <AdminLabel>Nome</AdminLabel>
+            <Input
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          {!user && (
+            <>
+              <div>
+                <AdminLabel>E-mail</AdminLabel>
+                <Input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div>
+                <AdminLabel>Senha</AdminLabel>
+                <Input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+            </>
+          )}
+          <div>
+            <AdminLabel>Perfil</AdminLabel>
+            <Select
+              value={role}
+              onValueChange={(value) => value && setRole(value as UserRole)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Selecione..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
+                <SelectItem value="ADMIN">Admin</SelectItem>
+                <SelectItem value="EDITOR">Editor</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Salvando..." : "Salvar"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -229,7 +215,9 @@ export default function AdminUsuariosPage() {
     {
       key: "is_active",
       header: "Status",
-      render: (u) => <StatusBadge active={u.is_active} />,
+      render: (u) => (
+        <StatusBadge status={u.is_active ? "ACTIVE" : "INACTIVE"} />
+      ),
     },
     {
       key: "last_login",
@@ -248,42 +236,19 @@ export default function AdminUsuariosPage() {
       headerClassName: "text-right",
       className: "text-right",
       render: (u) => (
-        <div className="flex items-center justify-end gap-3">
-          <button
-            type="button"
-            onClick={() => openEdit(u)}
-            className="text-xs font-medium text-primary hover:underline"
-          >
-            Editar
-          </button>
-          <button
-            type="button"
-            onClick={() => setToggleTarget(u)}
-            className="text-xs font-medium text-muted-foreground hover:underline"
-          >
+        <AdminRowActions>
+          <AdminRowAction onClick={() => openEdit(u)}>Editar</AdminRowAction>
+          <AdminRowAction onClick={() => setToggleTarget(u)}>
             {u.is_active ? "Desativar" : "Ativar"}
-          </button>
-        </div>
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];
 
   return (
-    <div className="px-4 py-4 lg:px-11.75 lg:py-7.25">
-      <AdminListPage
-        title="Usuários"
-        icon={Users}
-        action={
-          <button
-            type="button"
-            onClick={openCreate}
-            className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
-          >
-            <Plus className="size-4" />
-            Novo usuário
-          </button>
-        }
-      >
+    <>
+      <AdminPageLayout>
         <AdminDataTable
           columns={columns}
           data={users.data?.items ?? []}
@@ -291,8 +256,18 @@ export default function AdminUsuariosPage() {
           keyExtractor={(u) => u.id}
           emptyTitle="Nenhum usuário cadastrado"
           emptyDescription="Crie um usuário para dar acesso ao painel."
+          action={
+            <button
+              type="button"
+              onClick={openCreate}
+              className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+            >
+              <Plus className="size-4" />
+              Novo usuário
+            </button>
+          }
         />
-      </AdminListPage>
+      </AdminPageLayout>
 
       {formOpen && (
         <UserForm
@@ -324,6 +299,6 @@ export default function AdminUsuariosPage() {
         }}
         onCancel={() => setToggleTarget(undefined)}
       />
-    </div>
+    </>
   );
 }

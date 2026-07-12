@@ -61,6 +61,7 @@ src/lib/mock/
 - Product badges: translate (`LANÇAMENTO` → `NEW`/`LANZAMIENTO`)
 - Product names (brand names like "ST-4000EQ") are not translated
 - Slugs and IDs are never translated
+- Public endpoint values use flat strings (backend resolves locale); CMS endpoints use `I18nString`
 
 ## Message Namespaces
 

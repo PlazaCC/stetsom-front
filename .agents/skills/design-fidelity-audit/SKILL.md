@@ -10,22 +10,21 @@ argument-hint: '[optional: specific page slug or "all"]'
 
 This skill runs a **complete design fidelity cycle** across all Stetsom Front pages against the Figma design. It is distinct from the lighter `/refine-design` skill (single component) — this one audits every page, produces a cross-site divergence matrix, and drives phased implementation of all corrections.
 
-### How Local Docs and Figma MCP Work Together
+### How Figma MCP Provides Navigation
 
-Local `docs/ia/figma/` files are **navigation maps**, not design definitions. They exist so the AI can find the right Figma node IDs instantly, without traversing the full file tree via MCP. The workflow is always:
+The workflow uses the Figma MCP to discover the page's structure:
 
-1. **Read local map** → get node IDs and section order
+1. **Discover via Figma MCP** → use `get_figma_data` to find page frames, section nodes, and node IDs
 2. **Fetch from Figma MCP** → get the actual design values (colors, spacing, typography)
 3. **Compare against code** → identify divergences
 
-Never treat a value in `meta.json` or `FIGMA_GRAPH.md` as a design specification. They are purely navigational. All authoritative design data comes from live MCP calls and from the `.raw/figma-design/` baseline images.
+All authoritative design data comes from live MCP calls and from the `.raw/figma-design/` baseline images.
 
 ### Reference Priority During Visual Review
 
-0. **`docs/ia/figma/FIGMA_GRAPH.md`** — read first. Human-readable section trees, keywords, React component mappings, and every node ID organized by page. This is the index that directs all MCP calls.
-1. **`docs/ia/figma/meta.json`** — machine-readable companion. `pageSections` for section order; `figmaComponents` for component set node IDs.
-2. **`.raw/figma-design/` baseline PNGs** — highest-fidelity visual reference. Ground truth for color, spacing, layout, and responsive differences.
-3. **Figma MCP live data** — structural data (node tree, properties, styles) not visible in images. Always use node IDs from step 0/1 when calling MCP.
+0. **Use Figma MCP (`get_figma_data`)** to discover the page's section nodes. The fileKey from the Figma URL is needed — ask the user if not known.
+1. **`.raw/figma-design/` baseline PNGs** — highest-fidelity visual reference. Ground truth for color, spacing, layout, and responsive differences.
+2. **Figma MCP live data** — structural data (node tree, properties, styles) not visible in images.
 
 ---
 
@@ -34,8 +33,7 @@ Never treat a value in `meta.json` or `FIGMA_GRAPH.md` as a design specification
 **File key:** `huD41oTL0FAa7xsNEK8tAM`
 **Website root:** `1090:25874`
 
-See `docs/ia/figma/FIGMA_GRAPH.md` for the full node graph (page frames, section trees, component sets with keywords).
-See `docs/ia/figma/meta.json` for the machine-readable version (`pageSections`, `figmaComponents`).
+Use `get_figma_data(fileKey="huD41oTL0FAa7xsNEK8tAM", nodeId="1090:25874")` to discover all page frames and section nodes — no separate navigation file needed.
 
 | Page slug             | Section node | Desktop nodeId | Mobile nodeId |
 | --------------------- | ------------ | -------------- | ------------- |
@@ -46,9 +44,9 @@ See `docs/ia/figma/meta.json` for the machine-readable version (`pageSections`, 
 | `suporte`             | `1090:25873` | `1071:10546`   | `1071:11920`  |
 | `404`                 | `1195:4199`  | `1195:4200`    | `1195:4531`   |
 
-**Page sections** (per-page section node lists): see `meta.json[pageSections]` — ordered arrays with nodeId + keywords for each section. This is the canonical source for verifying section order in both Figma and mock data.
+**Page sections:** Discover per-page section nodes via `get_figma_data` on the page's frame node — ordered children with nodeId + keywords for each section.
 
-**Figma components:** see `meta.json[figmaComponents]` for Button (`21:210`), Card Novidades (`1034:9979`), Breadcrumb (`74:11593`), Accordion (`890:10459`), Badge (`1036:9869`).
+**Figma components:** Discover shared component set node IDs via `get_figma_data` on the Website root node (`1090:25874`). Key known IDs: Button (`21:210`), Card Novidades (`1034:9979`), Breadcrumb (`74:11593`), Accordion (`890:10459`), Badge (`1036:9869`).
 
 ---
 
@@ -66,16 +64,15 @@ See `docs/ia/figma/meta.json` for the machine-readable version (`pageSections`, 
 
 ### Phase 0 — Preparation
 
-#### Step 0a — Read Local Navigation Map
+#### Step 0a — Discover Node IDs via Figma MCP
 
-Before making any MCP calls, read both local map files to get all node IDs and section structure:
+Before downloading baselines, use the Figma MCP to discover all page frames and section nodes:
 
 ```
-Read: docs/ia/figma/FIGMA_GRAPH.md   → human-readable section trees, keywords, React component mappings
-Read: docs/ia/figma/meta.json        → machine-readable node IDs, pageSections order, figmaComponents
+get_figma_data(fileKey="huD41oTL0FAa7xsNEK8tAM", nodeId="1090:25874")
 ```
 
-These two files give you every node ID needed for all subsequent MCP calls. No MCP traversal is required to discover node IDs — they are already here.
+This returns the Website root node with all page frame children and their section node IDs. No separate navigation file is needed — the MCP response contains every node ID required for subsequent steps.
 
 #### Step 0b — Baseline Export
 
@@ -162,7 +159,7 @@ Token mapping reference:
 
 ### Phase 2 — Shared Component Audit
 
-For each shared component in `src/components/ui/`, read the code and fetch its Figma node via MCP. Node IDs come from `meta.json[figmaComponents]` and `FIGMA_GRAPH.md`.
+For each shared component in `src/components/ui/`, read the code and fetch its Figma node via MCP. Component node IDs come from the Website root node (`1090:25874`) via `get_figma_data` — check the component set children for known IDs.
 
 Key components to audit:
 
@@ -181,13 +178,13 @@ Document each divergence in the matrix (Phase 5).
 
 ### Phase 3 — Mock Data Audit
 
-Read every mock data file and compare its structure against `meta.json[pageSections]` and live Figma data. This ensures dev mode accurately reflects design intent in section order, content types, and data shapes.
+Read every mock data file and compare its structure against live Figma data discovered via MCP. This ensures dev mode accurately reflects design intent in section order, content types, and data shapes.
 
-Use node IDs from `meta.json[pageSections]` to make targeted MCP calls — never traverse the whole file.
+Use the page's frame node children (discovered in Step 0a) to make targeted MCP calls — never traverse the whole file.
 
 #### 3a — Catalog mocks (`src/lib/mock/catalog.ts`)
 
-| Mock structure                  | Figma node to fetch (from meta.json) | What to verify |
+| Mock structure                  | Figma node to fetch (from MCP discovery) | What to verify |
 | ------------------------------- | ------------------------------------ | -------------- |
 | `CATALOG_PAGE_PAYLOAD`          | Hero `1071:12229`                    | label, watermark text ("PRODU") |
 | `CATALOG_CATEGORIES` (5 items)  | Categories `1239:4723`               | category names/slugs match Figma; order field |
@@ -197,7 +194,7 @@ Use node IDs from `meta.json[pageSections]` to make targeted MCP calls — never
 
 #### 3b — Site mocks (`src/lib/mock/site.ts`)
 
-| Mock structure                  | Figma node to fetch (from meta.json) | What to verify |
+| Mock structure                  | Figma node to fetch (from MCP discovery) | What to verify |
 | ------------------------------- | ------------------------------------ | -------------- |
 | `HOME_HERO_SLIDES` (3 items)    | Hero `1071:10282`                    | slide count, label/title pattern |
 | `HOME_FEATURED_TABS`            | Novidades `1071:10290`               | tab labels match Figma |
@@ -208,7 +205,7 @@ Use node IDs from `meta.json[pageSections]` to make targeted MCP calls — never
 
 #### 3c — Support mocks (`src/lib/mock/support.ts`)
 
-| Mock structure                  | Figma node to fetch (from meta.json) | What to verify |
+| Mock structure                  | Figma node to fetch (from MCP discovery) | What to verify |
 | ------------------------------- | ------------------------------------ | -------------- |
 | `SUPPORT_PAYLOAD.hero`          | Hero `1071:10555`                    | label, title, watermarkText ("SOS") |
 | `SUPPORT_PAYLOAD.cards` (3)     | Support cards `1071:10564`           | 3-card structure, titles |
@@ -249,7 +246,7 @@ For each page, compare implementation against `.raw/figma-design/` baseline imag
 3. Compare side by side — identify divergences in colors, spacing, typography, layout, section order, watermarks.
 4. Repeat for `mobile.png`.
 5. For each divergence, inspect source code to find the root cause.
-6. Fetch live Figma data via MCP (using node IDs from `FIGMA_GRAPH.md`) for properties not visible in images.
+6. Fetch live Figma data via MCP (using node IDs discovered in Step 0a) for properties not visible in images.
 
 **If `.raw/figma-design/<page-slug>/` is missing or stale**, warn the user before continuing.
 
@@ -361,8 +358,6 @@ src/app/(site)/
 src/app/not-found.tsx               ← 404
 src/components/ui/                  ← Shared components
 src/app/globals.css                 ← Design tokens (@theme inline)
-docs/ia/figma/FIGMA_GRAPH.md        ← MAP: section graphs, keywords, React component mappings
-docs/ia/figma/meta.json             ← MAP: fileKey + node IDs + pageSections + figmaComponents
 src/lib/mock/catalog.ts             ← Mock catalog data
 src/lib/mock/site.ts                ← Mock site data
 src/lib/mock/support.ts             ← Mock support data

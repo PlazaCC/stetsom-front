@@ -3,6 +3,7 @@
 import type {
   CompleteUploadInput,
   LibraryAsset,
+  LibraryAssetType,
   UploadPresignResponse,
 } from "@/api/stetsom/model";
 import {
@@ -10,7 +11,7 @@ import {
   postApiLibraryIdVersions,
 } from "@/api/stetsom";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export type UploadStage =
   | "idle"
@@ -27,32 +28,46 @@ export type UploadEntry = {
   progress: number;
   error?: string;
   asset?: LibraryAsset;
+  /** Local object URL for an image preview while the upload is in flight. */
+  previewUrl?: string;
 };
+
+/** Object URL for image files (for an optimistic preview); `undefined` otherwise. */
+function makePreviewUrl(file: File): string | undefined {
+  return file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined;
+}
 
 const ALLOWED_MIMES = new Set([
   "image/jpeg",
   "image/png",
   "image/webp",
   "image/gif",
+  "image/svg+xml",
   "video/mp4",
   "video/webm",
   "application/pdf",
   "model/gltf-binary",
   "model/gltf+json",
+  "application/zip",
+  "application/x-zip-compressed",
 ]);
 
-/** Fallback MIME by file extension — browsers don't recognize some types
- *  (notably `.glb`/`.gltf`) and leave `file.type` empty. */
+/** Canonical MIME by file extension. Browsers are inconsistent for these
+ *  binary types — `.glb`/`.gltf`/`.zip` are often left empty or reported with
+ *  OS-specific variants (e.g. `application/x-zip-compressed`,
+ *  `application/octet-stream`) — so we always pin them by extension. */
 const EXTENSION_MIME: Record<string, string> = {
   glb: "model/gltf-binary",
   gltf: "model/gltf+json",
+  zip: "application/zip",
 };
 
-/** The browser's MIME, or one inferred from the extension when it's missing. */
+/** The MIME to send: pinned by extension for our special binary types, else the
+ *  browser's, else inferred from the extension when the browser leaves it empty. */
 function resolveMimeType(file: File): string {
-  if (file.type) return file.type;
   const ext = file.name.split(".").pop()?.toLowerCase();
-  return (ext && EXTENSION_MIME[ext]) || "";
+  if (ext && EXTENSION_MIME[ext]) return EXTENSION_MIME[ext];
+  return file.type || "";
 }
 
 function generateId(): string {
@@ -126,10 +141,17 @@ export function useLibraryUpload() {
     });
 
     if (!presignRes.ok) {
-      const err = (await presignRes.json()) as { error?: { message?: string } };
-      throw new Error(
-        err.error?.message ?? `Presign falhou (${presignRes.status})`,
-      );
+      let errorMessage: string;
+      try {
+        const err = (await presignRes.json()) as {
+          error?: { message?: string };
+        };
+        errorMessage =
+          err.error?.message ?? `Presign falhou (${presignRes.status})`;
+      } catch {
+        errorMessage = `Presign falhou (${presignRes.status})`;
+      }
+      throw new Error(errorMessage);
     }
 
     const presign = (await presignRes.json()) as UploadPresignResponse;
@@ -152,8 +174,14 @@ export function useLibraryUpload() {
     return { presign, dims };
   }
 
-  /** Full flow ending in a brand-new library asset (step 3 = /upload/complete). */
-  async function processFile(entry: UploadEntry, file: File): Promise<boolean> {
+  /** Full flow ending in a brand-new library asset (step 3 = /upload/complete).
+   *  Pass `type` to pin the asset type (e.g. MANUAL vs CATALOG vs CERTIFICATE,
+   *  all `application/pdf`); otherwise the backend infers it from the MIME. */
+  async function processFile(
+    entry: UploadEntry,
+    file: File,
+    type?: LibraryAssetType,
+  ): Promise<boolean> {
     const { id } = entry;
 
     const mimeType = resolveMimeType(file);
@@ -173,7 +201,7 @@ export function useLibraryUpload() {
       const completeBody: CompleteUploadInput = {
         filename: file.name,
         file_url: presign.file_url,
-        type: presign.assetType,
+        type: type ?? presign.assetType,
         size_bytes: file.size,
         ...(dims ?? {}),
       };
@@ -185,13 +213,18 @@ export function useLibraryUpload() {
       });
 
       if (!completeRes.ok) {
-        const err = (await completeRes.json()) as {
-          error?: { message?: string };
-        };
-        throw new Error(
-          err.error?.message ??
-            `Registro na biblioteca falhou (${completeRes.status})`,
-        );
+        let errorMessage: string;
+        try {
+          const err = (await completeRes.json()) as {
+            error?: { message?: string };
+          };
+          errorMessage =
+            err.error?.message ??
+            `Registro na biblioteca falhou (${completeRes.status})`;
+        } catch {
+          errorMessage = `Registro na biblioteca falhou (${completeRes.status})`;
+        }
+        throw new Error(errorMessage);
       }
 
       const { asset } = (await completeRes.json()) as { asset: LibraryAsset };
@@ -247,7 +280,7 @@ export function useLibraryUpload() {
     }
   }
 
-  async function upload(files: File[]): Promise<void> {
+  async function upload(files: File[], type?: LibraryAssetType): Promise<void> {
     if (files.length === 0) return;
 
     const newEntries: UploadEntry[] = files.map((file) => ({
@@ -255,6 +288,7 @@ export function useLibraryUpload() {
       fileName: file.name,
       status: "idle" as UploadStage,
       progress: 0,
+      previewUrl: makePreviewUrl(file),
     }));
 
     setEntries((prev) => [...prev, ...newEntries]);
@@ -274,7 +308,7 @@ export function useLibraryUpload() {
           const entry = newEntries[i];
           if (!file || !entry) continue;
           // Await each file processing to keep per-file error handling linear
-          const success = await processFile(entry, file);
+          const success = await processFile(entry, file, type);
           if (success) anySuccess = true;
         }
       });
@@ -294,6 +328,7 @@ export function useLibraryUpload() {
       fileName: file.name,
       status: "idle",
       progress: 0,
+      previewUrl: makePreviewUrl(file),
     };
     setEntries((prev) => [...prev, entry]);
 
@@ -306,11 +341,28 @@ export function useLibraryUpload() {
     return success;
   }
 
-  function clearFinished() {
-    setEntries((prev) =>
-      prev.filter((e) => e.status !== "done" && e.status !== "error"),
-    );
-  }
+  const clearFinished = useCallback(() => {
+    setEntries((prev) => {
+      prev.forEach((e) => {
+        if ((e.status === "done" || e.status === "error") && e.previewUrl) {
+          URL.revokeObjectURL(e.previewUrl);
+        }
+      });
+      return prev.filter((e) => e.status !== "done" && e.status !== "error");
+    });
+  }, []);
+
+  /** Remove only successfully-completed entries; keeps errored ones visible. */
+  const clearDone = useCallback(() => {
+    setEntries((prev) => {
+      prev.forEach((e) => {
+        if (e.status === "done" && e.previewUrl) {
+          URL.revokeObjectURL(e.previewUrl);
+        }
+      });
+      return prev.filter((e) => e.status !== "done");
+    });
+  }, []);
 
   const isUploading = entries.some((e) => ACTIVE_STATUSES.includes(e.status));
 
@@ -325,5 +377,6 @@ export function useLibraryUpload() {
     doneCount,
     errorCount,
     clearFinished,
+    clearDone,
   };
 }

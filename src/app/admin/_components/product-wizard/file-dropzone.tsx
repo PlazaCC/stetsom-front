@@ -1,9 +1,9 @@
 "use client";
 
-import { AdminFileUpload } from "@/app/admin/_components/crud/admin-file-upload";
+import { LibraryPickerModal } from "@/app/admin/_components/crud/library-asset-picker";
 import type { LibraryAssetType } from "@/api/stetsom/model";
-import { FileText, Loader2, X, type LucideIcon } from "lucide-react";
-import { useTypedUpload } from "./use-typed-upload";
+import { FileText, X, type LucideIcon } from "lucide-react";
+import { useState } from "react";
 import type { WizardFile } from "./wizard-store";
 
 interface FileDropzoneProps {
@@ -11,70 +11,46 @@ interface FileDropzoneProps {
   icon: LucideIcon;
   files: WizardFile[];
   accept?: string;
+  multiple?: boolean;
   onAdd: (file: WizardFile) => void;
   onRemove: (id: string) => void;
 }
 
-/** A drag-and-drop zone that uploads each file under an explicit library type. */
+/**
+ * A library-backed file selector: opens the gallery wizard to browse existing
+ * assets (filtered by `type`) or upload new ones, then links them to the product.
+ */
 export function FileDropzone({
   type,
-  icon,
+  icon: Icon,
   files,
   accept = ".pdf",
+  multiple = true,
   onAdd,
   onRemove,
 }: FileDropzoneProps) {
-  const { upload, entries, isUploading } = useTypedUpload();
+  const [pickerOpen, setPickerOpen] = useState(false);
 
-  async function handleUpload(incoming: File[]) {
-    for (const file of incoming) {
-      const asset = await upload(file, type);
-      if (asset) {
-        onAdd({
-          id: `file-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-          library_id: asset.library_id,
-          file_url: asset.file_url,
-          filename: asset.filename,
-          type,
-          is_active: true,
-        });
-      }
-    }
-  }
-
-  const pending = entries.filter((e) => e.status !== "done");
+  // Single-file sections (e.g. IMAGE_PACK) hide the picker once one is linked.
+  const canAdd = multiple || files.length === 0;
 
   return (
     <div className="space-y-3">
-      <AdminFileUpload
-        icon={icon}
-        accept={accept}
-        multiple
-        clearOnUpload
-        disabled={isUploading}
-        label="Drag & drop files or Browse"
-        description="Arraste aqui para adicionar um ou mais arquivos"
-        onUpload={(incoming) => void handleUpload(incoming)}
-      />
-
-      {pending.map((e) => (
-        <div
-          key={e.id}
-          className="flex items-center justify-between rounded-md border border-border bg-card px-3 py-2 text-sm"
+      {canAdd && (
+        <button
+          type="button"
+          onClick={() => setPickerOpen(true)}
+          className="flex w-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card py-6 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
         >
-          <span className="truncate text-foreground">{e.fileName}</span>
-          <span className="flex items-center gap-2 text-xs text-muted-foreground">
-            {e.status === "error" ? (
-              e.error
-            ) : (
-              <>
-                <Loader2 className="size-3.5 animate-spin" />
-                Enviando…
-              </>
-            )}
+          <Icon className="size-6" />
+          <span className="font-medium">
+            Selecionar da biblioteca ou enviar
           </span>
-        </div>
-      ))}
+          <span className="text-xs text-muted-foreground">
+            Escolha um arquivo já cadastrado ou envie um novo
+          </span>
+        </button>
+      )}
 
       {files.length > 0 && (
         <ul className="space-y-2">
@@ -100,6 +76,25 @@ export function FileDropzone({
             </li>
           ))}
         </ul>
+      )}
+
+      {pickerOpen && (
+        <LibraryPickerModal
+          type={type}
+          accept={accept}
+          onClose={() => setPickerOpen(false)}
+          onPick={(asset) => {
+            onAdd({
+              id: crypto.randomUUID(),
+              library_id: asset.library_id,
+              file_url: asset.file_url,
+              filename: asset.file_url.split("/").pop(),
+              type,
+              is_active: true,
+            });
+            setPickerOpen(false);
+          }}
+        />
       )}
     </div>
   );

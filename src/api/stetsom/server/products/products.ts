@@ -29,8 +29,6 @@ import type { PostApiProductsIdBlocksBody } from "../../model/postApiProductsIdB
 
 import type { PostApiProductsIdFilesBody } from "../../model/postApiProductsIdFilesBody";
 
-import type { PostApiProductsIdImages201 } from "../../model/postApiProductsIdImages201";
-
 import type { PostApiProductsIdImagesBody } from "../../model/postApiProductsIdImagesBody";
 
 import type { ProductBlock } from "../../model/productBlock";
@@ -101,7 +99,7 @@ export const postApiProductsIdImages = (
   id: string,
   postApiProductsIdImagesBody: PostApiProductsIdImagesBody,
 ) => {
-  return serverOrvalClient<PostApiProductsIdImages201>({
+  return serverOrvalClient<ProductImage>({
     url: `/api/products/${id}/images`,
     method: "POST",
     headers: { "Content-Type": "application/json" },

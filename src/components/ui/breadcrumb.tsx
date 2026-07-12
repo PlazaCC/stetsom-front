@@ -36,7 +36,7 @@ export function Breadcrumb({ items, className, ...props }: BreadcrumbProps) {
               )}
               {isCurrent || !item.href ? (
                 <span
-                  className="text-xs font-medium uppercase text-brand-dark"
+                  className="text-xs font-medium text-brand-dark uppercase"
                   aria-current="page"
                 >
                   {item.label}
@@ -45,7 +45,7 @@ export function Breadcrumb({ items, className, ...props }: BreadcrumbProps) {
                 <Link
                   href={item.href}
                   className={cn(
-                    "text-xs font-medium uppercase text-muted-foreground transition-colors hover:text-brand-dark",
+                    "text-xs font-medium text-muted-foreground uppercase transition-colors hover:text-brand-dark",
                   )}
                 >
                   {item.label}

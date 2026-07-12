@@ -29,6 +29,7 @@ Components in `components/ui/` receive data via props and render UI only:
 - No `useQuery`, `useCatalogProducts`, or other data hooks
 - No business side-effects
 - `useRouter` / `usePathname` only in explicit navigation components (Header, LanguageSwitcher)
+- Accepted exception: `header/header-search.tsx` + `header/use-search-suggestions.ts` call `useGetApiProducts` directly — they are tightly coupled to the global `Header` (itself already an exception for navigation hooks) and are never reused outside it, so relocating them to a route-scoped `_components/` folder would add indirection without reducing coupling
 
 ```tsx
 // ❌ Data logic in a primitive

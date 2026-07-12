@@ -24,6 +24,8 @@ type SocialPost = {
   href?: string;
 };
 
+export type { SocialPost };
+
 type SocialFeedSection = {
   handle: string;
   title: string;
@@ -42,7 +44,8 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
   const dateFormatter = new Intl.DateTimeFormat(locale, {
     dateStyle: "medium",
   });
-  const posts = section.posts ?? [];
+
+  const posts = section.posts;
 
   return (
     <section className="flex justify-center overflow-x-hidden bg-white py-10 sm:py-12">
@@ -71,7 +74,7 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
             slidesPerView="auto"
             spaceBetween={24}
             grabCursor
-            className="w-full overflow-hidden"
+            className="social-feed-swiper w-full"
           >
             {posts.map((post) => (
               <SwiperSlide
@@ -80,44 +83,62 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
               >
                 <Link
                   href={post.permalink ?? "#"}
-                  className="flex w-full flex-col gap-3"
+                  className="relative flex aspect-292/356 w-full flex-col overflow-hidden"
                 >
-                  <div className="relative aspect-square w-full shrink-0 overflow-hidden rounded-sm">
-                    {post.media_type === "VIDEO" && post.media_url ? (
-                      <video
-                        src={post.media_url}
-                        muted
-                        playsInline
-                        preload="metadata"
-                        className="h-full w-full object-cover"
-                        style={{ opacity: post.opacity ?? 1 }}
-                      />
-                    ) : (
-                      <Image
-                        src={post.media_url ?? post.image}
-                        alt={post.caption ?? ""}
-                        fill
-                        className="object-cover"
-                        style={{ opacity: post.opacity ?? 1 }}
-                      />
-                    )}
+                  {/* Background media */}
+                  {post.media_type === "VIDEO" && post.media_url ? (
+                    <video
+                      src={post.media_url}
+                      muted
+                      playsInline
+                      preload="metadata"
+                      className="absolute inset-0 h-full w-full object-cover"
+                      style={{ opacity: post.opacity ?? 1 }}
+                    />
+                  ) : (
+                    <Image
+                      src={post.media_url ?? post.image}
+                      alt={post.caption ?? ""}
+                      fill
+                      className="absolute inset-0 object-cover"
+                      style={{ opacity: post.opacity ?? 1 }}
+                    />
+                  )}
+
+                  {/* Dark overlay for readability */}
+                  <div className="absolute inset-0 bg-linear-to-b from-black/60 via-transparent to-black/60" />
+
+                  {/* Top section: avatar + (name + date) */}
+                  <div className="relative z-10 flex items-center gap-2 p-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-xs font-bold text-white">
+                      @
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <span className="font-sans-condensed text-xs font-semibold text-white">
+                        @{post.username ?? ""}
+                      </span>
+                      <time
+                        dateTime={post.timestamp ?? ""}
+                        className="text-2xs text-white/70"
+                      >
+                        {post.timestamp
+                          ? dateFormatter.format(new Date(post.timestamp))
+                          : ""}
+                      </time>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="font-sans-condensed text-2xs font-semibold text-muted-foreground uppercase">
-                      @{post.username ?? ""}
-                    </span>
-                    <span className="text-sm text-foreground">
-                      {post.caption ?? ""}
-                    </span>
-                    <time
-                      dateTime={post.timestamp ?? ""}
-                      className="text-2xs text-muted-foreground"
-                    >
-                      {post.timestamp
-                        ? dateFormatter.format(new Date(post.timestamp))
-                        : ""}
-                    </time>
-                  </div>
+
+                  {/* Spacer to push caption to bottom */}
+                  <div className="flex-1" />
+
+                  {/* Bottom section: description with truncate */}
+                  {post.caption && (
+                    <div className="relative z-10 p-3">
+                      <span className="line-clamp-2 text-xs text-white">
+                        {post.caption}
+                      </span>
+                    </div>
+                  )}
                 </Link>
               </SwiperSlide>
             ))}

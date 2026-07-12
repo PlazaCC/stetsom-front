@@ -98,7 +98,7 @@ export function DepartmentRoutingModal({
       onClick={onClose}
     >
       <div
-        className="flex w-full max-w-2xl flex-col rounded-card border border-border bg-card shadow-xl"
+        className="flex w-full max-w-2xl flex-col rounded-card border border-border bg-card shadow-cms-card-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
@@ -144,21 +144,21 @@ export function DepartmentRoutingModal({
                   value={row.slug}
                   onChange={(e) => updateRow(row._key, "slug", e.target.value)}
                   placeholder="comercial"
-                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/30 focus:outline-none"
                 />
                 <input
                   type="text"
                   value={row.label}
                   onChange={(e) => updateRow(row._key, "label", e.target.value)}
                   placeholder="Comercial"
-                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/30 focus:outline-none"
                 />
                 <input
                   type="email"
                   value={row.email}
                   onChange={(e) => updateRow(row._key, "email", e.target.value)}
                   placeholder="comercial@stetsom.com.br"
-                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/30 focus:outline-none"
                 />
                 <button
                   type="button"

@@ -10,7 +10,11 @@ const SECTION_IDS = ["specifications", "related"] as const;
 // Offset to account for the sticky nav height when computing active section
 const SCROLL_OFFSET = 160;
 
-export function StickySectionNav() {
+export function StickySectionNav({
+  previewMode = false,
+}: {
+  previewMode?: boolean;
+}) {
   const t = useTranslations("ProductDetail");
   const [activeSection, setActiveSection] = useState<string>("overview");
 
@@ -50,17 +54,22 @@ export function StickySectionNav() {
 
   const scrollTo = (id: string) => {
     if (id === "overview") {
-      window.scrollTo({ top: 0 });
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
     const el = document.getElementById(id);
     if (!el) return;
     const top = el.getBoundingClientRect().top + window.scrollY - 152;
-    window.scrollTo({ top });
+    window.scrollTo({ top, behavior: "smooth" });
   };
 
   return (
-    <div className="sticky top-16 z-40 w-full border-t border-zinc-200 bg-white">
+    <div
+      className={cn(
+        "sticky z-100 w-full border-t border-zinc-200 bg-white",
+        previewMode ? "top-0" : "top-16",
+      )}
+    >
       <div className="flex justify-center gap-5 px-5 py-4 lg:px-42.5">
         {sections.map(({ id, label }) => (
           <button

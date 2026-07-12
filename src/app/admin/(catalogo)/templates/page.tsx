@@ -4,11 +4,15 @@ import {
   AdminDataTable,
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
 import { useGetApiCategories, useGetApiTemplates } from "@/api/stetsom";
 import type { Template } from "@/api/stetsom";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -62,18 +66,19 @@ export default function AdminTemplatesPage() {
       headerClassName: "text-right",
       className: "text-right",
       render: (t) => (
-        <Link
-          href={`/admin/categorias/${t.category_id}/templates/${t.id}`}
-          className="rounded border border-border px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"
-        >
-          Editar
-        </Link>
+        <AdminRowActions>
+          <AdminRowAction
+            href={`/admin/categorias/${t.category_id}/templates/${t.id}`}
+          >
+            Editar
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];
 
   return (
-    <div className="px-4 py-4 lg:px-5 lg:py-5">
+    <AdminPageLayout>
       <AdminDataTable
         columns={columns}
         data={templates}
@@ -95,7 +100,7 @@ export default function AdminTemplatesPage() {
             {pickerOpen && (
               <div
                 ref={pickerRef}
-                className="absolute top-11 right-0 z-10 w-56 rounded-md border border-border bg-card p-1 shadow-lg"
+                className="absolute top-11 right-0 z-10 w-56 rounded-md border border-border bg-card p-1 shadow-cms-card-lg"
               >
                 <p className="px-2 py-1.5 text-xs text-muted-foreground">
                   Escolha a categoria
@@ -120,6 +125,6 @@ export default function AdminTemplatesPage() {
           </div>
         }
       />
-    </div>
+    </AdminPageLayout>
   );
 }

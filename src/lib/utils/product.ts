@@ -1,5 +1,9 @@
 type TextBlockData = { title?: string; content?: string; align?: string };
-type ImageBlockData = { images?: string[]; caption?: string };
+type ImageBlockData = {
+  images?: string[];
+  caption?: string;
+  layout?: "full" | "side";
+};
 type GalleryBlockData = { images: string[] };
 type Model3dBlockData = {
   url?: string;
@@ -48,6 +52,7 @@ export const BLOCK_BEM_CLASSES: Record<
     elements: [
       "blockImage__title",
       "blockImage__description",
+      "blockImage__content",
       "blockImage__item",
       "blockImage__image",
       "blockImage__caption",
@@ -109,6 +114,7 @@ export function toImageBlockData(
   return {
     images: isStringArray(data.images) ? data.images : undefined,
     caption: typeof data.caption === "string" ? data.caption : undefined,
+    layout: data.layout === "side" ? "side" : "full",
   };
 }
 
@@ -254,10 +260,22 @@ function prefixSelectors(css: string, scopePrefix: string): string {
  * `.blockText__paragraph { ... }` only affects this block. Returns an empty
  * string when there is nothing to scope.
  */
+/**
+ * Strips constructs that let author-written CSS reach outside its own
+ * declarations: `@import` (loads an external stylesheet) and `javascript:`/
+ * `expression(...)` values (legacy CSS→script injection vectors).
+ */
+function sanitizeBlockCss(css: string): string {
+  return css
+    .replace(/@import\s+[^;]+;/gi, "")
+    .replace(/expression\s*\([^)]*\)/gi, "")
+    .replace(/url\s*\(\s*['"]?\s*javascript:[^)]*\)/gi, "");
+}
+
 export function scopeBlockCss(css: string | undefined, scope: string): string {
   if (!css || !css.trim()) return "";
   const prefix = `[data-block-scope="${escapeCssAttrValue(scope)}"]`;
-  return prefixSelectors(css, prefix);
+  return prefixSelectors(sanitizeBlockCss(css), prefix);
 }
 
 export function resolveTextAlignClass(align: string | undefined): string {

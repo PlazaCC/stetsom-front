@@ -10,6 +10,8 @@ import type { ProductCardItemInputStatus } from "./productCardItemInputStatus";
 
 export interface ProductCardItemInput {
   id: string;
+  /** @nullable */
+  sku: string | null;
   slug: string;
   name: string;
   category: string;

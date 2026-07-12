@@ -13,6 +13,11 @@ import type { PatchApiProductsIdBodyStatus } from "./patchApiProductsIdBodyStatu
 import type { PatchApiProductsIdBodyVariantsItem } from "./patchApiProductsIdBodyVariantsItem";
 
 export type PatchApiProductsIdBody = {
+  /**
+   * @maxLength 100
+   * @nullable
+   */
+  sku?: string | null;
   name?: PatchApiProductsIdBodyName;
   slug?: PatchApiProductsIdBodySlug;
   description?: PatchApiProductsIdBodyDescription;
@@ -21,6 +26,16 @@ export type PatchApiProductsIdBody = {
   line_id?: string | null;
   /** @nullable */
   template_id?: string | null;
+  /**
+   * @maxLength 2048
+   * @nullable
+   */
+  app_store_url?: string | null;
+  /**
+   * @maxLength 2048
+   * @nullable
+   */
+  play_store_url?: string | null;
   status?: PatchApiProductsIdBodyStatus;
   is_discontinued?: boolean;
   /**

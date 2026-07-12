@@ -16,13 +16,25 @@ import {
   AdminDataTable,
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
-import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
-import { cn } from "@/lib/utils";
+import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Building2, Plus, Wrench } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 
 const PAGE_SIZE = 10;
@@ -49,21 +61,6 @@ const TAB_CONFIG: Record<
     emptyDescription: "Crie uma assistência técnica para exibir no site.",
   },
 };
-
-function StatusBadge({ active }: { active: boolean }) {
-  return (
-    <span
-      className={cn(
-        "rounded-full border px-2 py-0.5 text-xs font-medium",
-        active
-          ? "border-cms-step-done bg-cms-step-done text-white"
-          : "border-cms-step-pending bg-cms-step-pending text-muted-foreground",
-      )}
-    >
-      {active ? "Ativo" : "Inativo"}
-    </span>
-  );
-}
 
 interface PartnerLocationFormProps {
   type: PartnerLocationType;
@@ -119,116 +116,106 @@ function PartnerLocationForm({
       : "Nova Assistência Técnica";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4">
-      <div className="w-full max-w-lg">
-        <AdminFormSection title={title} className="shadow-xl">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <AdminLabel>Nome</AdminLabel>
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <AdminLabel>Nome</AdminLabel>
+            <Input
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div>
+            <AdminLabel>Endereço</AdminLabel>
+            <Input
+              required
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="col-span-2">
+              <AdminLabel>Cidade</AdminLabel>
               <Input
                 required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
               />
             </div>
             <div>
-              <AdminLabel>Endereço</AdminLabel>
+              <AdminLabel>UF</AdminLabel>
               <Input
                 required
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                maxLength={2}
+                className="uppercase"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
               />
             </div>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="col-span-2">
-                <AdminLabel>Cidade</AdminLabel>
-                <Input
-                  required
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                />
-              </div>
-              <div>
-                <AdminLabel>UF</AdminLabel>
-                <Input
-                  required
-                  maxLength={2}
-                  className="uppercase"
-                  value={state}
-                  onChange={(e) => setState(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <AdminLabel>CEP</AdminLabel>
-                <Input
-                  required
-                  value={zip}
-                  onChange={(e) => setZip(e.target.value)}
-                />
-              </div>
-              <div>
-                <AdminLabel>
-                  {isRepresentative ? "Região" : "Especialidade"}
-                </AdminLabel>
-                {isRepresentative ? (
-                  <Input
-                    value={region}
-                    onChange={(e) => setRegion(e.target.value)}
-                  />
-                ) : (
-                  <Input
-                    value={specialty}
-                    onChange={(e) => setSpecialty(e.target.value)}
-                  />
-                )}
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <AdminLabel>Telefone</AdminLabel>
-                <Input
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
-              <div>
-                <AdminLabel>E-mail</AdminLabel>
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <AdminLabel>CEP</AdminLabel>
+              <Input
+                required
+                value={zip}
+                onChange={(e) => setZip(e.target.value)}
+              />
             </div>
             <div>
-              <AdminLabel>Website</AdminLabel>
+              <AdminLabel>
+                {isRepresentative ? "Região" : "Especialidade"}
+              </AdminLabel>
+              {isRepresentative ? (
+                <Input
+                  value={region}
+                  onChange={(e) => setRegion(e.target.value)}
+                />
+              ) : (
+                <Input
+                  value={specialty}
+                  onChange={(e) => setSpecialty(e.target.value)}
+                />
+              )}
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <AdminLabel>Telefone</AdminLabel>
+              <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
+            </div>
+            <div>
+              <AdminLabel>E-mail</AdminLabel>
               <Input
-                value={website}
-                onChange={(e) => setWebsite(e.target.value)}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div className="flex gap-3 pt-2">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 rounded-md border border-border py-2 text-sm font-medium text-foreground hover:bg-muted"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                disabled={isPending}
-                className="flex-1 rounded-md bg-foreground py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-60"
-              >
-                {isPending ? "Salvando..." : "Salvar"}
-              </button>
-            </div>
-          </form>
-        </AdminFormSection>
-      </div>
-    </div>
+          </div>
+          <div>
+            <AdminLabel>Website</AdminLabel>
+            <Input
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+            />
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Salvando..." : "Salvar"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -389,7 +376,9 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
     {
       key: "is_active",
       header: "Status",
-      render: (l) => <StatusBadge active={l.is_active} />,
+      render: (l) => (
+        <StatusBadge status={l.is_active ? "ACTIVE" : "INACTIVE"} />
+      ),
     },
     {
       key: "actions",
@@ -397,87 +386,78 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
       headerClassName: "text-right",
       className: "text-right",
       render: (l) => (
-        <div className="flex items-center justify-end gap-3">
-          <button
-            type="button"
-            onClick={() => openEdit(l)}
-            className="text-xs font-medium text-primary hover:underline"
-          >
-            Editar
-          </button>
-          <button
-            type="button"
-            onClick={() => setToggleTarget(l)}
-            className="text-xs font-medium text-muted-foreground hover:underline"
-          >
+        <AdminRowActions>
+          <AdminRowAction onClick={() => openEdit(l)}>Editar</AdminRowAction>
+          <AdminRowAction onClick={() => setToggleTarget(l)}>
             {l.is_active ? "Desativar" : "Ativar"}
-          </button>
-          <button
-            type="button"
+          </AdminRowAction>
+          <AdminRowAction
+            variant="destructive"
             onClick={() => setDeleteTarget(l)}
-            className="text-xs font-medium text-destructive hover:underline"
           >
             Excluir
-          </button>
-        </div>
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];
 
   return (
-    <div className="px-4 py-4 lg:px-5 lg:py-5">
-      <AdminDataTable
-        columns={columns}
-        data={paginated}
-        isLoading={isLoading}
-        keyExtractor={(l) => l.id}
-        emptyTitle={tab.emptyTitle}
-        emptyDescription={tab.emptyDescription}
-        action={
-          <button
-            type="button"
-            onClick={openCreate}
-            className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
-          >
-            <Plus className="size-4" />
-            {tab.createLabel}
-          </button>
-        }
-        toolbar={
-          <div className="flex flex-wrap items-center gap-3">
-            <AdminSearchInput
-              value={query}
-              onChange={(v) => {
-                setQuery(v);
-                setPage(1);
-              }}
-              placeholder="Buscar por nome ou cidade"
-              className="max-w-64"
-            />
-            <select
-              value={stateFilter}
-              onChange={(e) => {
-                setStateFilter(e.target.value);
-                setPage(1);
-              }}
-              className="h-9 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-primary"
+    <>
+      <AdminPageLayout>
+        <AdminDataTable
+          columns={columns}
+          data={paginated}
+          isLoading={isLoading}
+          keyExtractor={(l) => l.id}
+          emptyTitle={tab.emptyTitle}
+          emptyDescription={tab.emptyDescription}
+          action={
+            <button
+              type="button"
+              onClick={openCreate}
+              className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
             >
-              <option value="">Todas as UFs</option>
-              {states.map((uf) => (
-                <option key={uf} value={uf}>
-                  {uf}
-                </option>
-              ))}
-            </select>
-          </div>
-        }
-        pagination={{
-          page,
-          pageSize: PAGE_SIZE,
-          total: filtered.length,
-          onPageChange: setPage,
-        }}
-      />
+              <Plus className="size-4" />
+              {tab.createLabel}
+            </button>
+          }
+          toolbar={
+            <div className="flex flex-wrap items-center gap-3">
+              <AdminSearchInput
+                value={query}
+                onChange={(v) => {
+                  setQuery(v);
+                  setPage(1);
+                }}
+                placeholder="Buscar por nome ou cidade"
+                className="max-w-64"
+              />
+              <select
+                value={stateFilter}
+                onChange={(e) => {
+                  setStateFilter(e.target.value);
+                  setPage(1);
+                }}
+                className="h-9 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-primary"
+              >
+                <option value="">Todas as UFs</option>
+                {states.map((uf) => (
+                  <option key={uf} value={uf}>
+                    {uf}
+                  </option>
+                ))}
+              </select>
+            </div>
+          }
+          pagination={{
+            page,
+            pageSize: PAGE_SIZE,
+            total: filtered.length,
+            onPageChange: setPage,
+          }}
+        />
+      </AdminPageLayout>
 
       {formOpen && (
         <PartnerLocationForm
@@ -496,7 +476,7 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
             ? `Desativar ${tab.noun}?`
             : `Ativar ${tab.noun}?`
         }
-        description={`${toggleTarget?.name} será ${toggleTarget?.is_active ? "desativado" : "ativado"}.`}
+        description={`${toggleTarget?.name} será ${toggleTarget?.is_active ? (tab.noun.endsWith("a") ? "desativada" : "desativado") : tab.noun.endsWith("a") ? "ativada" : "ativado"}.`}
         confirmLabel={toggleTarget?.is_active ? "Desativar" : "Ativar"}
         destructive={toggleTarget?.is_active}
         isPending={toggleMutation.isPending}
@@ -523,6 +503,6 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
         }}
         onCancel={() => setDeleteTarget(undefined)}
       />
-    </div>
+    </>
   );
 }

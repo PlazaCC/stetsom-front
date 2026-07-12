@@ -13,6 +13,11 @@ import type { PostApiProductsBodyStatus } from "./postApiProductsBodyStatus";
 import type { PostApiProductsBodyVariantsItem } from "./postApiProductsBodyVariantsItem";
 
 export type PostApiProductsBody = {
+  /**
+   * @maxLength 100
+   * @nullable
+   */
+  sku?: string | null;
   name: PostApiProductsBodyName;
   slug: PostApiProductsBodySlug;
   description?: PostApiProductsBodyDescription;
@@ -21,6 +26,16 @@ export type PostApiProductsBody = {
   line_id?: string | null;
   /** @nullable */
   template_id?: string | null;
+  /**
+   * @maxLength 2048
+   * @nullable
+   */
+  app_store_url?: string | null;
+  /**
+   * @maxLength 2048
+   * @nullable
+   */
+  play_store_url?: string | null;
   status?: PostApiProductsBodyStatus;
   is_discontinued?: boolean;
   /**

@@ -9,14 +9,25 @@ const TONE_CLASS: Record<Tone, string> = {
   info: "border-cms-active-item bg-cms-active-item text-foreground",
 };
 
-/** Status → label + tone, covering product and banner status enums. */
+/**
+ * Status → label + tone. Covers product/banner status enums plus audit-log
+ * actions, so every admin surface resolves to one shared badge system.
+ */
 const STATUS_MAP: Record<string, { label: string; tone: Tone }> = {
+  // Content status
   PUBLISHED: { label: "Publicado", tone: "success" },
   ACTIVE: { label: "Ativo", tone: "success" },
   DRAFT: { label: "Rascunho", tone: "warning" },
   SCHEDULED: { label: "Agendado", tone: "info" },
   INACTIVE: { label: "Inativo", tone: "muted" },
   DISCONTINUED: { label: "Descontinuado", tone: "muted" },
+  // Audit-log actions
+  CREATE: { label: "Criou", tone: "success" },
+  PUBLISH: { label: "Publicou", tone: "success" },
+  UPDATE: { label: "Editou", tone: "info" },
+  DELETE: { label: "Excluiu", tone: "muted" },
+  LOGIN: { label: "Entrou", tone: "muted" },
+  LOGOUT: { label: "Saiu", tone: "muted" },
 };
 
 interface StatusBadgeProps {

@@ -46,7 +46,7 @@ export default async function RootLayout({
       className={`${barlow.variable} ${barlowCondensed.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
 }

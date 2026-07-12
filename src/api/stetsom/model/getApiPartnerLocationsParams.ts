@@ -10,7 +10,20 @@ import type { GetApiPartnerLocationsType } from "./getApiPartnerLocationsType";
 export type GetApiPartnerLocationsParams = {
   type?: GetApiPartnerLocationsType;
   state?: string;
+  city?: string;
   region?: string;
   specialty?: string;
+  /**
+   * Center latitude for proximity search
+   */
+  lat?: number;
+  /**
+   * Center longitude for proximity search
+   */
+  lng?: number;
+  /**
+   * Max distance radius in km. Defaults to 50 when lat/lng are provided
+   */
+  max_distance_km?: number;
   is_active?: boolean;
 };

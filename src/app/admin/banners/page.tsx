@@ -14,9 +14,5 @@ export default function AdminBannersPage() {
     );
   }
 
-  return (
-    <div className="px-4 py-4 lg:px-5 lg:py-5">
-      <BannersContent key={dataUpdatedAt} initialBanners={data} />
-    </div>
-  );
+  return <BannersContent key={dataUpdatedAt} initialBanners={data} />;
 }

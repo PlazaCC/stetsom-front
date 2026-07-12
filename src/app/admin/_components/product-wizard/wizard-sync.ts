@@ -43,9 +43,9 @@ export async function syncBlocks(
 }
 
 /**
- * Reconcile the product gallery: delete removed images, upload new ones via the
- * presign-on-POST flow, and patch the order of existing ones. Image at order 0
- * is the catalog cover.
+ * Reconcile the product gallery: delete removed images, link new ones from the
+ * library by `library_id`, and patch the order of existing ones. Image at order
+ * 0 is the catalog cover.
  */
 export async function syncImages(
   id: string,
@@ -61,21 +61,12 @@ export async function syncImages(
   );
 
   for (const [index, img] of images.entries()) {
-    if (img.file) {
-      const { upload } = await postApiProductsIdImages(id, {
-        file: {
-          fileName: img.file.name,
-          mimeType: img.file.type,
-          sizeBytes: img.file.size,
-        },
+    if (!img.image_id) {
+      await postApiProductsIdImages(id, {
+        library_id: img.library_id,
         order: index,
       });
-      await fetch(upload.uploadUrl, {
-        method: upload.method,
-        headers: upload.headers as Record<string, string>,
-        body: img.file,
-      });
-    } else if (img.image_id && img.order !== index) {
+    } else if (initialImageIds.indexOf(img.image_id) !== index) {
       await patchApiProductsIdImagesImageId(id, img.image_id, { order: index });
     }
   }

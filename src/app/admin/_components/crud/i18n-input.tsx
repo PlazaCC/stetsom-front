@@ -16,9 +16,9 @@ const LOCALES: {
   required?: boolean;
   label: string;
 }[] = [
-  { id: "pt", Flag: BrFlag, label: "🇧🇷", required: true },
-  { id: "en", Flag: UsFlag, label: "🇺🇸" },
-  { id: "es", Flag: EsFlag, label: "🇪🇸" },
+  { id: "pt", Flag: BrFlag, label: "PT", required: true },
+  { id: "en", Flag: UsFlag, label: "EN" },
+  { id: "es", Flag: EsFlag, label: "ES" },
 ];
 
 interface I18nInputProps {
