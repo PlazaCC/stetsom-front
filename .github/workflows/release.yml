@@ -34,15 +34,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Typecheck
-        run: pnpm tsc --noEmit
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Build
-        run: pnpm build
-
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         id: semantic

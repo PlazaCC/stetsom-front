@@ -13,18 +13,6 @@ module.exports = {
       ],
     }],
     '@semantic-release/release-notes-generator',
-    [
-      '@semantic-release/changelog',
-      { changelogFile: 'CHANGELOG.md' },
-    ],
-    [
-      '@semantic-release/git',
-      {
-        assets: ['CHANGELOG.md', 'package.json'],
-        message: 'chore(release): ${nextRelease.version}\n\n${nextRelease.notes}',
-      },
-    ],
     '@semantic-release/github',
   ],
-  preset: 'angular',
 }
