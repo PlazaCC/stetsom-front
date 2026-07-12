@@ -31,7 +31,7 @@ All commits must follow [Conventional Commits](https://www.conventionalcommits.o
 
 When you are ready to ship to production:
 
-1. Run `/create-pr` — this opens a PR from `develop` into `main`
+1. Run `/release` — this opens a PR from `develop` into `main`
 2. Vercel creates a **preview deployment** automatically for the PR
 3. Review the preview URL — validate the site visually
 4. Merge the PR using **merge commit**

@@ -9,7 +9,7 @@ description: Full-cycle delivery orchestrator — implements on develop, runs co
 
 Orchestrates the complete delivery cycle from implementation to a passing release. Chains the core delivery skills automatically.
 
-**Cycle:** implement on `develop` → `/code-review` → fix (if needed) → repeat until passes → `/create-pr`
+**Cycle:** implement on `develop` → `/code-review` → fix (if needed) → repeat until passes → `/release`
 
 ---
 
@@ -60,7 +60,7 @@ Address each blocking issue identified by `/code-review`:
 
 ### Step 4 — Release
 
-Run `/create-pr` to open a release PR from `develop` into `main`.
+Run `/release` to open a release PR from `develop` into `main`.
 
 Vercel creates a preview deployment automatically.
 
@@ -92,6 +92,6 @@ Announce delivery complete:
 
 ## Integration
 
-**Chains:** implement on `develop` → `/code-review` → `/create-pr`
+**Chains:** implement on `develop` → `/code-review` → `/release`
 **Optional pre-step:** `/refine-design` (if task has design pass flag)
 **After merge:** semantic-release tags + syncs develop + Vercel deploys production

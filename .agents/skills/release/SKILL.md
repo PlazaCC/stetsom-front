@@ -1,9 +1,9 @@
 ---
-name: create-pr
-description: Use when develop is ready to ship — opens a release PR from develop into main with a conventional description. Vercel creates a preview automatically. Merge the PR to deploy to production.
+name: release
+description: Use when develop is ready to ship — opens a release PR from develop into main with a conventional description. Vercel creates a preview automatically. Merge the PR to trigger semantic-release (tag, changelog, GitHub Release), auto-sync develop, and deploy to production.
 ---
 
-# Create PR — Develop → Main
+# Release — Develop → Main
 
 ## Overview
 
@@ -117,17 +117,13 @@ EOF
 
 ## What happens after merge
 
-- Vercel auto-deploys `main` to production
-- Development continues on `develop`
+On merge into `main`, the release workflow runs automatically:
 
-To keep branches in sync after the merge:
+1. `semantic-release` creates a Git tag, GitHub Release, and `CHANGELOG.md`
+2. `develop` is auto-synced by merging `main` back into it (no manual step needed)
+3. Vercel deploys `main` to production
 
-```bash
-git checkout develop
-git pull origin develop
-git merge main
-git push origin develop
-```
+Branches always stay synchronized — no "behind" message, no manual back-merge.
 
 ---
 
@@ -145,4 +141,4 @@ git push origin develop
 ## Integration
 
 **Called after:** development on `develop` is complete
-**After merge:** merge main back into develop to keep branches synchronized
+**After merge:** semantic-release tags + syncs develop + Vercel deploys production
