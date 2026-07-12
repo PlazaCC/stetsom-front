@@ -79,7 +79,6 @@ Announce delivery complete:
 - Feature name
 - PR URL
 - Review result summary
-- Tag and version (from semantic-release)
 
 ---
 
