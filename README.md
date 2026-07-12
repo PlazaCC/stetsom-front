@@ -76,8 +76,16 @@ Copy `.env.local.example` to `.env.local`.
 
 Pre-commit hooks run on every commit: ESLint auto-fix on staged `.ts`/`.tsx` files and a full `tsc --noEmit` type-check.
 
-CI runs on every push and pull request. Pipeline: type-check → lint → build.
+CI runs on every push to `develop` and `main`, and on all pull requests. Pipeline: type-check → lint → build.
 
 ## Deploy
 
-Production and preview deployments are handled by [Vercel](https://vercel.com). Preview environments are created automatically for every pull request.
+| Environment | Branch | Data | Trigger |
+|-------------|--------|------|---------|
+| **Production** | `main` | Real API | Auto-deploy on push |
+| **Development** | `develop` | Mock (`USE_MOCK_DATA=1`) | Auto-deploy on push |
+| **PR Preview** | Release PR (`develop`→`main`) | Mock | Auto-deploy on PR open |
+
+All deployments are handled by [Vercel](https://vercel.com). No manual deploy steps.
+
+Releases are automated: merge the release PR into `main` and `semantic-release` creates a Git tag, GitHub Release, and `CHANGELOG.md` entry automatically. See `docs/COLLABORATION.md` for the full workflow.

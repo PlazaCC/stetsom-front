@@ -1,16 +1,15 @@
 ---
 name: deliver
-description: Full-cycle delivery orchestrator — runs next-task, create-pr, code-review, fixes issues and repeats until review passes. Trigger keywords: deliver, full cycle, implement and ship, next delivery.
-argument-hint: '<optional: task ID or feature name>'
+description: Full-cycle delivery orchestrator — implements on develop, runs code-review, opens a release PR, fixes issues and repeats until review passes. Trigger keywords: deliver, full cycle, implement and ship, next delivery.
 ---
 
 # Deliver — Full-Cycle Orchestrator
 
 ## Overview
 
-Orchestrates the complete delivery cycle from task implementation to a passing PR. Chains the core delivery skills automatically.
+Orchestrates the complete delivery cycle from implementation to a passing release. Chains the core delivery skills automatically.
 
-**Cycle:** `/next-task` → `/create-pr` → `/code-review` → fix (if needed) → repeat until passes
+**Cycle:** implement on `develop` → `/code-review` → fix (if needed) → repeat until passes → `/release`
 
 ---
 
@@ -32,23 +31,17 @@ Otherwise skip to Step 2.
 
 ### Step 2 — Implement
 
-Run `/next-task` to pick up and implement the next TODO task.
+Implement directly on `develop`. This is trunk-based development — commit and push to `develop` directly.
 
-Confirm: task moved to `IN_PROGRESS`, implementation complete.
+Confirm: implementation complete, pushed to `develop`.
 
-### Step 3 — Open PR
+### Step 3 — Review
 
-Run `/create-pr` to generate a conventional PR description and open the pull request.
-
-Confirm: PR created with branch, title, and description.
-
-### Step 4 — Review
-
-Run `/code-review` against the open PR diff.
+Run `/code-review` to validate the diff from `develop` against `main`.
 
 #### If review PASSES (no blocking issues):
 
-→ Go to Step 5
+→ Go to Step 4
 
 #### If review FAILS (blocking issues found):
 
@@ -60,21 +53,33 @@ Address each blocking issue identified by `/code-review`:
 
 1. Apply fixes to affected files
 2. Commit with message: `fix: address review feedback`
-3. Push to PR branch
-4. Return to Step 4 (review again)
+3. Push to `develop`
+4. Return to Step 3 (review again)
 
 **Maximum 3 review loops.** If still failing after 3 iterations, surface all remaining issues to the user and stop.
 
-### Step 5 — Report Done
+### Step 4 — Release
+
+Run `/release` to open a release PR from `develop` into `main`.
+
+Vercel creates a preview deployment automatically.
+
+### Step 5 — Merge and Ship
+
+Once the preview is approved:
+
+1. Merge the release PR
+2. `semantic-release` auto-tags the version and creates a GitHub Release
+3. Vercel deploys `main` to production
+
+### Step 6 — Report Done
 
 Announce delivery complete:
 
-- Task ID and feature name
-- PR URL and branch
+- Feature name
+- PR URL
 - Review result summary
-- Any remaining non-blocking notes
-
-Update task status to `REVIEW` in task file.
+- Tag and version (from semantic-release)
 
 ---
 
@@ -82,13 +87,11 @@ Update task status to `REVIEW` in task file.
 
 - Max 3 review loops before escalating to user
 - Never force-push or amend published commits
-- If `/next-task` finds no TODO tasks, report "Nothing to deliver" and exit
 
 ---
 
 ## Integration
 
-**Chains:** `/next-task` → `/create-pr` → `/code-review`
+**Chains:** implement on `develop` → `/code-review` → `/release`
 **Optional pre-step:** `/refine-design` (if task has design pass flag)
-**Called after:** `/create-task`
-**Updates:** task file status → `REVIEW`
+**After merge:** semantic-release tags + Vercel deploys production
