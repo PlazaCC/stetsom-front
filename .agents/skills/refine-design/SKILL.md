@@ -1,6 +1,6 @@
 ---
 name: refine-design
-description: Design refinement pass using Figma MCP. Fetches live design from Figma (never local files), maps tokens, validates code against design standards, updates local context if stale, and produces an action plan via /next-task. Trigger keywords: refine design, figma alignment, design pass, design review, check design.
+description: Design refinement pass using Figma MCP. Fetches live design from Figma (never local files), maps tokens, validates code against design standards, updates local context if stale, and produces an action plan. Trigger keywords: refine design, figma alignment, design pass, design review, check design.
 argument-hint: '<Figma URL or component/page name>'
 ---
 
@@ -147,13 +147,13 @@ List every issue found as a numbered action plan, then **ask the user how to pro
 ...
 
 Como você prefere prosseguir?
-A) Criar tasks via /create-task para acompanhar o progresso
-B) Executar agora mesmo sem criar tasks
+A) Implementar item por item agora
+B) Fazer commit das especificações e implementar depois
 ```
 
-- **Option A chosen** → invoke `/create-task` for each item, then `/next-task` to start item 1
-- **Option B chosen** → invoke `/next-task` directly and begin executing from item 1
-- **No issues found** → state that explicitly; do not ask and do not call `/next-task`
+- **Option A chosen** → begin executing item 1 in the action plan
+- **Option B chosen** → document the plan and stop
+- **No issues found** → state that explicitly; take no action
 
 ---
 
@@ -164,7 +164,6 @@ B) Executar agora mesmo sem criar tasks
 - NEVER create new CSS variables without adding them to `src/app/globals.css`
 - Figma px values for dimensions → Tailwind canonical (N/4 formula)
 - `text-[Npx]` is allowed only for font sizes outside the named Tailwind scale
-- Always call `/next-task` at the end if issues were found
 
 ---
 
@@ -175,13 +174,11 @@ B) Executar agora mesmo sem criar tasks
 | `/figma`         | To understand Figma MCP API before calling tools       |
 | `/frontend-design` | To validate component quality and production-readiness |
 | `/ui-ux-pro-max` | To check design standards: spacing, accessibility, rhythm |
-| `/next-task`     | To execute the action plan after analysis              |
 
 ---
 
 ## Integration
 
-**Optional step in:** `/next-task` cycle  
+**Optional step in:** `/deliver` cycle  
 **Always uses:** Figma MCP (`get_design_context`, `get_screenshot`)  
-**Never uses:** Local snapshot files as source of truth  
-**Ends with:** `/next-task` action plan if issues found
+**Never uses:** Local snapshot files as source of truth

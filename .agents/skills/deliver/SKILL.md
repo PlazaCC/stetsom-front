@@ -69,7 +69,7 @@ Vercel creates a preview deployment automatically.
 Once the preview is approved:
 
 1. Merge the release PR
-2. `semantic-release` auto-tags the version and creates a GitHub Release
+2. `semantic-release` auto-tags the version, creates a GitHub Release, and syncs `develop`
 3. Vercel deploys `main` to production
 
 ### Step 6 — Report Done
@@ -94,4 +94,4 @@ Announce delivery complete:
 
 **Chains:** implement on `develop` → `/code-review` → `/release`
 **Optional pre-step:** `/refine-design` (if task has design pass flag)
-**After merge:** semantic-release tags + Vercel deploys production
+**After merge:** semantic-release tags + syncs develop + Vercel deploys production

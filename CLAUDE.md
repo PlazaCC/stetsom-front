@@ -80,13 +80,13 @@ Last run: 2026-05-12 · 58 files · 172 nodes · 32 communities
 Key insight: `cn()` is the central utility (41 edges, present in virtually every component).
 Regenerate with `/graphify` after major structural changes.
 
-## Collaboration & Release
+## Collaboration
 
-Git Flow conventions and the automated release pipeline are documented in `docs/COLLABORATION.md`. Quick summary:
+Git Flow conventions are documented in `docs/COLLABORATION.md`. Quick summary:
 
 - **`develop`** — active development, commit directly here (trunk-based)
 - **`main`** — production, only receives merges from `develop` or hotfix PRs
-- **Release:** `/release` opens a PR `develop`→`main`; on merge, `semantic-release` auto-tags, generates release notes, and Vercel deploys to production
+- **Release:** `/release` opens a PR `develop`→`main`; merge triggers semantic-release + Vercel deploy + auto-sync
 
 ## Skills
 

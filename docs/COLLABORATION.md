@@ -34,7 +34,7 @@ When you are ready to ship to production:
 1. Run `/release` — this opens a PR from `develop` into `main`
 2. Vercel creates a **preview deployment** automatically for the PR
 3. Review the preview URL — validate the site visually
-4. Merge the PR
+4. Merge the PR using **merge commit**
 
 On merge, the **release workflow** runs automatically:
 
@@ -45,17 +45,19 @@ On merge, the **release workflow** runs automatically:
 5. Creates a GitHub Release
 6. Updates `CHANGELOG.md` and `package.json` version
 7. Vercel deploys `main` to production
+8. **Auto-syncs `develop`** by merging `main` back into `develop` — branches never diverge
 
-No manual version bumping. No manual changelog. No manual tags.
+No manual version bumping. No manual changelog. No manual tags. No manual sync.
 
-## Versioning (pre-1.0)
+## Versioning
 
-While we are below `1.0.0`, version bumps follow this convention:
+Versioning is fully automated via `semantic-release`:
 
 - `feat:` commits → **minor** bump (`0.1.0` → `0.2.0`)
 - `fix:` commits → **patch** bump (`0.1.0` → `0.1.1`)
+- Breaking changes (footer `BREAKING CHANGE:`) → major bump
 
-Breaking changes (footer `BREAKING CHANGE:`) will still trigger a major bump even pre-1.0, but we avoid them.
+Tags are created automatically on each release. `CHANGELOG.md` is generated from commit history and committed back to the repo.
 
 ## Hotfixes
 

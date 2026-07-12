@@ -16,5 +16,4 @@ module.exports = {
     ],
     '@semantic-release/github',
   ],
-  preset: 'angular',
 }
