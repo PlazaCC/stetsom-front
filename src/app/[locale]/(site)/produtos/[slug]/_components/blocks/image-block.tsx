@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element -- CMS blocks can reference dynamic hosts that next/image does not allow. */
+
 import { toBlockHeading, toImageBlockData } from "@/lib/utils/product";
 
 import { BlockArticle } from "./block-article";

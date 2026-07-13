@@ -76,6 +76,7 @@ function DetailImage({
   if (previewMode) {
     return (
       // arbitrary remote hosts aren't valid for next/image in the live preview.
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         src={src}
         alt={alt}

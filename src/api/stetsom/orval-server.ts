@@ -13,6 +13,7 @@
  */
 import type { AxiosRequestConfig } from "axios";
 import Axios from "axios";
+import * as Sentry from "@sentry/nextjs";
 import { cookies } from "next/headers";
 import { handleMockRequest } from "@/lib/mock/handlers";
 import { OrvalApiError, toApiError } from "./orval-client";
@@ -61,6 +62,15 @@ export async function serverOrvalClient<T>(
     });
     return data as T;
   } catch (err: unknown) {
-    throw toApiError(err);
+    const apiError = toApiError(err);
+    if (apiError.status === 0 || apiError.status >= 500) {
+      Sentry.logger.error("Upstream API request failed", {
+        error_code: apiError.code,
+        http_method: config.method ?? "GET",
+        http_status_code: apiError.status,
+        request_path: config.url ?? "unknown",
+      });
+    }
+    throw apiError;
   }
 }

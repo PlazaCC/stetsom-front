@@ -11,6 +11,7 @@
  */
 import { handleMockRequest } from "@/lib/mock/handlers";
 import { getCmsApiBaseUrl, toErrorResponse } from "@/lib/api/route-utils";
+import * as Sentry from "@sentry/nextjs";
 import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -77,6 +78,14 @@ async function handle(
       body,
       cache: "no-store",
     });
+
+    if (upstream.status >= 500) {
+      Sentry.logger.error("BFF upstream request failed", {
+        http_method: request.method,
+        http_status_code: upstream.status,
+        request_path: `/api/${path.join("/")}`,
+      });
+    }
 
     // 204/205/304 carry no body. Building a Response with a body (even "") for
     // these statuses throws "null body status cannot have body", which would

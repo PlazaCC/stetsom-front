@@ -18,11 +18,7 @@ export async function verifyAdminToken(token: string): Promise<boolean> {
   try {
     await jwtVerify(token, secret);
     return true;
-  } catch (err) {
-    // Common codes: ERR_JWS_SIGNATURE_VERIFICATION_FAILED (wrong secret),
-    // ERR_JWT_EXPIRED (token expired), ERR_JWT_CLAIM_VALIDATION_FAILED.
-    const code = (err as { code?: string }).code ?? "unknown";
-    console.warn(`[verifyAdminToken] rejected: ${code}`);
+  } catch {
     return false;
   }
 }

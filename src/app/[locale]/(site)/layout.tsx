@@ -19,14 +19,12 @@ export default async function SiteLayout({
   const apiLocale = toApiLocale(locale);
   const config = await getApiConfigPublic({
     locale: apiLocale,
-  }).catch((err) => {
-    console.error("Failed to fetch public config:", err);
+  }).catch(() => {
     return {} as PublicConfig;
   });
   const legalPages = await getApiLegalPagesPublic({
     locale: apiLocale,
-  }).catch((err) => {
-    console.error("Failed to fetch legal pages:", err);
+  }).catch(() => {
     return [] as PublicLegalPageListItem[];
   });
 

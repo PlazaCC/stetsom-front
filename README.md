@@ -44,6 +44,7 @@ pnpm dev
 | Animation     | motion                | 12                      |
 | Carousel      | swiper                | 12.1.4                  |
 | Data Fetching | @tanstack/react-query | 5                       |
+| Observability | Sentry                 | Production only         |
 
 ## Project Structure
 
@@ -76,6 +77,8 @@ Copy `.env.local.example` to `.env.local`.
 | `MOCK_DUMP_EMAIL` / `MOCK_DUMP_PASSWORD` | Credentials for `pnpm mock:dump`. Required when refreshing mock fixtures after an API change. |
 | `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | Must match `stetsom-api/.env`. |
 | `STORAGE_PUBLIC_HOSTNAME` | S3 bucket hostname for `next/image`. Use `{bucket}.s3.{region}.amazonaws.com`. |
+
+Sentry is enabled only in Vercel Production. Local and Preview environments must not define `NEXT_PUBLIC_SENTRY_DSN`; the Vercel integration manages the production DSN, auth token, releases, and source maps.
 
 ## Code Quality
 
