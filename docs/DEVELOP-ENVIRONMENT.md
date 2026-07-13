@@ -16,7 +16,7 @@ Configure the project variables in `Settings > Environment Variables`.
 | `CMS_API_BASE_URL` | Optional | Not used while mock mode is enabled |
 | `STORAGE_PUBLIC_HOSTNAME` | Optional | Not used while mock mode is enabled |
 
-Push to `develop` to deploy the environment. Its current address is [stetsom-front-git-develop-plazas-cc.vercel.app](https://stetsom-front-git-develop-plazas-cc.vercel.app).
+Push to `develop` to deploy the environment. Its current address is [stetsom-develop.vercel.app](https://stetsom-develop.vercel.app).
 
 ## Pull Request Preview
 
@@ -61,7 +61,7 @@ Steps, in the Vercel dashboard (**Settings → Environment Variables**):
    | `JWT_REFRESH_SECRET` | same value as `stetsom-api`'s `/srv/stetsom-api/.env.develop` |
 
 2. Trigger a redeploy of `develop` — push any commit, or use Vercel's "Redeploy" action — so the new env vars take effect.
-3. Verify `https://stetsom-front-git-develop-plazas-cc.vercel.app` now shows real develop data, and that CMS login works against the develop JWT secrets.
+3. Verify `https://stetsom-develop.vercel.app` now shows real develop data, and that CMS login works against the develop JWT secrets.
 4. Once confirmed, update this document to remove the "Planned" heading and the transition-status note above, and update `README.md`'s Deploy table (Development row → "Real API (develop)").
 
 ## Troubleshooting

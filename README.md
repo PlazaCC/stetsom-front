@@ -1,8 +1,8 @@
 # Stetsom Front
 
 [![CI](https://github.com/PlazaCC/stetsom-front/actions/workflows/ci.yml/badge.svg)](https://github.com/PlazaCC/stetsom-front/actions/workflows/ci.yml)
-[![Production](https://img.shields.io/badge/production-online-16a34a)](https://stetsom.com.br)
-[![Development](https://img.shields.io/badge/development-preview-2563eb)](https://stetsom-front-git-develop-plazas-cc.vercel.app)
+[![Production](https://img.shields.io/badge/production-online-16a34a)](https://stetsom-prod.vercel.app)
+[![Development](https://img.shields.io/badge/development-preview-2563eb)](https://stetsom-develop.vercel.app)
 
 Institutional website and admin CMS for [Stetsom](https://stetsom.com.br).
 
@@ -84,10 +84,12 @@ CI runs on pull requests targeting `develop` or `main`. It type-checks, lints, a
 
 | Environment | Branch | Data | Trigger |
 | --- | --- | --- | --- |
-| [Production](https://stetsom.com.br) | `main` | Real API | Merge into `main` |
-| [Development](https://stetsom-front-git-develop-plazas-cc.vercel.app) | `develop` | Mock data during the migration | Push to `develop` |
+| [Production](https://stetsom-prod.vercel.app) | `main` | Real API | Merge into `main` |
+| [Development](https://stetsom-develop.vercel.app) | `develop` | Mock data during the migration | Push to `develop` |
 | PR preview | `develop` to `main` | Mock data during the migration | Release PR |
 
 All deployments are handled by [Vercel](https://vercel.com). No manual deploy steps.
+
+The final domain `https://stetsom.com.br` is not wired up yet. Production currently serves from the Vercel domain above.
 
 See `CONTRIBUTING.md` for the full Git Flow and release workflow.
