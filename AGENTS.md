@@ -47,6 +47,7 @@ See `CONTRIBUTING.md` for the full Git Flow and branching conventions.
 
 - Admin UI: shadcn/ui (base-nova) with custom CMS primitives in `src/app/admin/_components/`.
 - BFF: `src/app/api/bff/[...path]` proxies Orval client calls to stetsom-api, injecting `admin_token` cookie as `Authorization: Bearer`.
-- Mock mode: `USE_MOCK_DATA=1` in `.env.local`; GETs from `src/lib/mock/*.ts`.
-  **Mock data (`data.json`) is generated — DO NOT EDIT.** Run `pnpm mock:dump` to sync.
+- Mock mode is temporary until `develop` uses a dedicated API environment. Maintain existing fixtures only and do not add mock-only behavior.
+  `USE_MOCK_DATA=1` in `.env.local` serves GETs from `src/lib/mock/*.ts`.
+  **Mock data (`data.json`) is generated. Do not edit it.** Run `pnpm mock:dump` to sync.
 - Root conventions: `docs/ARCHITECTURE.md` + `.agents/rules/*.md`.

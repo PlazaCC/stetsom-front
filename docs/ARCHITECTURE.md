@@ -1,4 +1,4 @@
-# Architecture — stetsom-front
+# Stetsom Front Architecture
 
 Next.js 16 application serving the Stetsom institutional website and admin CMS. Consumes stetsom-api for all data.
 
@@ -11,7 +11,7 @@ Two surfaces share a single Next.js codebase:
 | Surface | Path | Auth |
 |---|---|---|
 | Public site | `src/app/[locale]/(site)/` | None |
-| Admin CMS | `src/app/admin/` and `src/app/cms/` | Bearer JWT via HttpOnly cookie |
+| Admin CMS | `src/app/admin/` | Bearer JWT via HttpOnly cookie |
 
 The Next.js server also acts as a BFF, proxying authenticated browser requests to stetsom-api via `src/app/api/`.
 
@@ -21,18 +21,17 @@ The Next.js server also acts as a BFF, proxying authenticated browser requests t
 
 ```
 src/app/
-├── [locale]/                 locale wrapper — pt-BR has no URL prefix
-│   └── (site)/               public site, wrapped by Header + Footer
-│       ├── page.tsx          home page
-│       ├── produtos/         catalog listing and product detail
-│       ├── sobre/            about page
-│       └── suporte/          support page
-├── admin/                    admin panel
-├── cms/                      CMS editor
+├── [locale]/                 Locale wrapper. pt-BR has no URL prefix.
+│   └── (site)/               Public site with Header and Footer.
+│       ├── page.tsx          Home page
+│       ├── produtos/         Product listing and detail
+│       ├── sobre/            About page
+│       └── suporte/          Support page
+├── admin/                    Admin CMS
 ├── api/
-│   ├── bff/[...path]/        transparent proxy to stetsom-api
-│   └── auth/                 login, logout, refresh
-├── layout.tsx                root layout — loads globals.css only
+│   ├── bff/[...path]/        Proxy to stetsom-api
+│   └── auth/                 Login, logout, and refresh
+├── layout.tsx                Root layout. Loads globals.css.
 └── globals.css
 ```
 
@@ -52,7 +51,7 @@ Two client entry points, selected by rendering context:
 
 | Context | Client | Route |
 |---|---|---|
-| Client component / React Query | `orvalClient` from `@/api/stetsom/orval-client` | `/api/bff/*` — BFF injects HttpOnly cookie as Bearer |
+| Client component / React Query | `orvalClient` from `@/api/stetsom/orval-client` | `/api/bff/*`. The BFF adds the Bearer token. |
 | Server component / Route handler | `serverOrvalClient` from `@/api/stetsom/orval-server` | Direct to stetsom-api |
 
 Never call `fetch()` directly for stetsom-api data.
@@ -61,7 +60,7 @@ Never call `fetch()` directly for stetsom-api data.
 
 ## BFF Layer
 
-`src/app/api/bff/[...path]` is a transparent passthrough proxy. Its sole responsibility is reading the `admin_token` HttpOnly cookie and forwarding it as an `Authorization: Bearer` header. It does not validate the JWT — stetsom-api enforces authentication and roles.
+`src/app/api/bff/[...path]` proxies requests to stetsom-api. It reads the `admin_token` HttpOnly cookie and forwards it as an `Authorization: Bearer` header. stetsom-api validates the JWT and roles.
 
 Dedicated route handlers exist for operations the BFF cannot proxy generically:
 
@@ -99,7 +98,7 @@ Dedicated route handlers exist for operations the BFF cannot proxy generically:
 
 Locales: `pt-BR` (default, no URL prefix), `/en`, `/es`. Configuration lives in `src/i18n/`.
 
-API multilingual fields use `I18nString { pt: string, en?: string, es?: string }`. The backend locale key is `pt`, not `pt-BR`. Public endpoint responses are already locale-resolved by stetsom-api — the frontend does not resolve them.
+API multilingual fields use `I18nString { pt: string, en?: string, es?: string }`. The backend locale key is `pt`, not `pt-BR`. Public responses are already resolved by stetsom-api.
 
 Navigation links, `useRouter`, and `usePathname` must be imported from `@/i18n/navigation`, not from `next/link` or `next/navigation`.
 
@@ -107,9 +106,11 @@ Navigation links, `useRouter`, and `usePathname` must be imported from `@/i18n/n
 
 ## Mock Mode
 
+> **Transition note:** Mock mode is a temporary fallback until `develop` uses a dedicated API environment. Maintain existing fixtures only. Do not add mock-only behavior.
+
 Set `USE_MOCK_DATA=1` in `.env.local` to serve GET requests from local fixtures without a running API. Mutations return `{ _mock: true }`.
 
-- Fixtures: `src/lib/mock/*.ts` — consumed by `src/lib/api/providers/mock-provider.ts`
+- Fixtures: `src/lib/mock/*.ts`, consumed by `src/lib/api/providers/mock-provider.ts`
 - Mock payloads conform to Orval-generated types from `@/api/stetsom/model`
 - Refresh: `pnpm mock:dump` (requires real API credentials in `.env.local`)
 
@@ -140,10 +141,10 @@ CMS admin styles are scoped under a `.cms` CSS class applied in `src/app/admin/l
 
 ## Design Decisions
 
-**Orval for generated types and hooks.** stetsom-api serves an OpenAPI spec at `/docs`. Orval generates TypeScript types and React Query hooks from it, eliminating manual type maintenance and keeping the frontend contract in sync with the backend.
+**Orval for generated types and hooks.** stetsom-api serves an OpenAPI spec at `/docs`. Orval generates TypeScript types and React Query hooks, keeping the frontend contract in sync with the backend.
 
-**BFF passthrough proxy.** The browser cannot read HttpOnly cookies. The BFF proxy reads the cookie server-side and injects the Bearer header, without containing business logic.
+**BFF passthrough proxy.** The browser cannot read HttpOnly cookies. The BFF reads the cookie server-side and injects the Bearer header without business logic.
 
-**Server Components by default.** App Router Server Components enable data fetching at render time without client-side waterfalls. `"use client"` is added only where interactivity requires it.
+**Server Components by default.** App Router Server Components fetch data at render time. `"use client"` is added only where interactivity requires it.
 
-**Mock fixtures via provider pattern.** Fixtures in `src/lib/mock/*.ts` conform to Orval-generated types, keeping the mock surface type-safe and in sync with the API contract. The mock provider is the default when no API URL is configured.
+**Mock fixtures via provider pattern.** Fixtures in `src/lib/mock/*.ts` conform to Orval-generated types. This temporary fallback remains available until the dedicated development API is ready.

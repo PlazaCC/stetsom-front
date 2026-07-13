@@ -1,9 +1,13 @@
 ---
-description: 'Use when working with local mock data. Mocks are auto-fallback when CMS_API_BASE_URL is unset and must stay contract-compatible.'
+description: 'Use when maintaining the temporary local mock fallback. Mocks are auto-fallback when CMS_API_BASE_URL is unset and must stay contract-compatible.'
 applyTo: 'src/lib/mock/**/*'
 ---
 
-# Mock API Guidelines (fallback mode)
+# Mock API Guidelines
+
+## Deprecation Plan
+
+Mocks are temporary while `develop` is provisioned with a dedicated API environment. Maintain the existing fallback and contract compatibility, but do not add mock-only features or expand the mock surface. Remove this layer only after the development API is available and all consumers use it.
 
 ## Two Patterns Coexist
 
