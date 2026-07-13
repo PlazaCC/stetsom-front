@@ -88,4 +88,4 @@ CI runs on every push to `develop` and `main`, and on all pull requests. Pipelin
 
 All deployments are handled by [Vercel](https://vercel.com). No manual deploy steps.
 
-See `docs/COLLABORATION.md` for the full Git Flow and release workflow.
+See `CONTRIBUTING.md` for the full Git Flow and release workflow.
