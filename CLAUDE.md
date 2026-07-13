@@ -82,11 +82,12 @@ Regenerate with `/graphify` after major structural changes.
 
 ## Collaboration
 
-Git Flow conventions are documented in `docs/COLLABORATION.md`. Quick summary:
+Git Flow conventions are documented in `CONTRIBUTING.md`. Quick summary:
 
 - **`develop`** — active development, commit directly here (trunk-based)
-- **`main`** — production, only receives merges from `develop` or hotfix PRs
+- **`main`** — production, only receives merges from `develop` or hotfix PRs; protected — requires the `build-and-lint` CI check to pass before merge
 - **Release:** `/release` opens a PR `develop`→`main`; merge triggers Vercel deploy + auto-sync
+- **Before releasing:** `/code-review` diffs `develop` against `main` to validate the release candidate — run it from `develop`, never from `main`
 
 ## Skills
 
@@ -95,7 +96,7 @@ Skills in `.claude/skills/` are auto-discovered by the harness. Quick reference:
 | Skill | Trigger | When to use |
 |---|---|---|
 | `release` | `/release` | Open a release PR from `develop` into `main` |
-| `code-review` | `/code-review` | Review diff from current branch vs `develop` |
+| `code-review` | `/code-review` | Review the release-candidate diff (`develop` vs `main`) before shipping |
 | `brainstorm` | `/brainstorm` | Refine a new feature idea before starting |
 | `modularize` | `/modularize` | Refactor large components into focused modules |
 | `design-fidelity-audit` | `/design-fidelity-audit` | Full-site Figma fidelity pass |

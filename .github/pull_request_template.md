@@ -12,7 +12,10 @@
 
 ## Validation
 
-- [ ] `pnpm check`
+- [ ] `pnpm tsc --noEmit`
+- [ ] `pnpm lint`
+- [ ] `pnpm build`
+- [ ] Preview URL reviewed and approved (release PRs: `develop` → `main`)
 - [ ] Manually tested
 
 ## Checklist
