@@ -1,48 +1,42 @@
 ---
 name: release
-description: Use when develop is ready to ship — opens a release PR from develop into main. Vercel creates a preview automatically. Merge the PR to deploy to production. Branches stay synchronized automatically.
+description: Opens a release pull request from develop into main after local validation. CI and Vercel validate the pull request before production.
 ---
 
-# Release — Develop → Main
+# Release: Develop to Main
 
-## Overview
+## Purpose
 
-Opens a pull request from `develop` into `main`. This is the **only** type of PR in the trunk-based Git Flow — there are no feature-branch PRs.
+Open a pull request from `develop` into `main`. Merging it deploys production and fast-forwards `develop` to `main`.
 
-On merge, Vercel deploys `main` to production automatically.
+Use this skill when `develop` is ready for production or when a release preview is needed.
 
----
+## Procedure
 
-## When to Use
-
-- When `develop` has accumulated changes ready to ship
-- When you want a preview deployment before going to production
-
----
-
-## Implementation
-
-### Step 1 — Guard: Confirm on Develop
+### 1. Confirm Develop
 
 ```bash
 git branch --show-current
 ```
 
-If not on `develop`, switch:
+If needed:
 
 ```bash
-git checkout develop
+git switch develop
 git pull origin develop
 ```
 
-### Step 2 — Analyze Changes
+### 2. Review the Release Candidate
+
+Compare against the remote production branch:
 
 ```bash
-git diff --name-status main...HEAD
-git log main...HEAD --oneline
+git fetch origin main
+git diff --name-status origin/main...HEAD
+git log origin/main...HEAD --oneline
 ```
 
-### Step 3 — Run Validators
+### 3. Run Local Validation
 
 ```bash
 pnpm tsc --noEmit
@@ -50,94 +44,51 @@ pnpm lint
 pnpm build
 ```
 
-Report any failures. Do not proceed if TypeScript, lint, or build errors exist.
+Stop if any command fails.
 
-### Step 4 — Present PR Content for Review
+### 4. Prepare the Pull Request
 
-Output the generated title and body as copy-paste ready blocks — **do not run `gh pr create` yet**:
-
----
-
-**PR Title** _(copy and paste)_
-
-```
-<conventional-title>
-```
-
----
-
-**PR Body** _(copy and paste)_
+Present a conventional title and this body. Do not create the PR yet.
 
 ```markdown
 ## Summary
 
-<bullet points of changes>
+- <change>
 
-## What changed
+## Validation
 
-<key features, fixes, refactors>
-
-## Checklist
-
-- [ ] TypeScript passes
-- [ ] ESLint passes
-- [ ] Build passes
-- [ ] Preview URL approved
-- [ ] Ready to merge
+- [ ] `pnpm tsc --noEmit`
+- [ ] `pnpm lint`
+- [ ] `pnpm build`
+- [ ] Vercel preview reviewed
+- [ ] Manually tested
 ```
 
----
+Ask whether to open the PR, review the preview first, or run code review first. Wait for the answer.
 
-### Step 5 — Ask the User What to Do Next
-
-After presenting the copy-paste blocks, **always ask**:
-
-> **What would you like to do next?**
->
-> **A)** Open the PR now (`gh pr create` will run)
-> **B)** Review preview URL first
-> **C)** Run code-review first
-
-Wait for the user's answer before taking any action.
-
-### Step 6 — Create the PR
+### 5. Create the Pull Request
 
 ```bash
 gh pr create \
   --base main \
   --head develop \
   --title "<confirmed-title>" \
-  --body "$(cat <<'EOF'
-<confirmed-body>
-EOF
-)"
+  --body "<confirmed-body>"
 ```
 
----
+## After Merge
 
-## What happens after merge
+1. Vercel deploys `main` to production.
+2. `sync-develop.yml` fast-forwards `develop` to `main`.
 
-On merge into `main`:
+The `main` ruleset must require the pull request, `build-and-lint`, and the Vercel deployment before merge.
 
-1. Vercel deploys to production
-2. `develop` is auto-synced (fast-forward to `main`) — no manual back-merge needed
+## Title Format
 
-Branches always stay synchronized — no "behind" message.
+Use a conventional commit prefix and keep the title under 70 characters.
 
----
-
-## Title Convention
-
-- Use imperative mood: `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`
-- Keep under 70 characters
-- Examples:
-  - `feat: add product detail page`
-  - `fix: await params in sobre/page.tsx`
-  - `release: develop → main`
-
----
-
-## Integration
-
-**Called after:** development on `develop` is complete
-**After merge:** `sync-develop.yml` fast-forwards develop + Vercel deploys production
+```text
+feat: add product detail page
+fix: await params in sobre page
+release: develop to main
+```

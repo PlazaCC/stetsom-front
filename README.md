@@ -1,12 +1,12 @@
 # Stetsom Front
 
 [![CI](https://github.com/PlazaCC/stetsom-front/actions/workflows/ci.yml/badge.svg)](https://github.com/PlazaCC/stetsom-front/actions/workflows/ci.yml)
+[![Production](https://img.shields.io/badge/production-online-16a34a)](https://stetsom.com.br)
+[![Development](https://img.shields.io/badge/development-preview-2563eb)](https://stetsom-front-git-develop-plazas-cc.vercel.app)
 
 Institutional website and admin CMS for [Stetsom](https://stetsom.com.br).
 
 Built with **Next.js 16**, **React 19**, **TypeScript 5**, and **Tailwind CSS v4**.
-
----
 
 ## Getting Started
 
@@ -25,7 +25,7 @@ pnpm dev
 | `pnpm lint`         | Run ESLint                                |
 | `pnpm tsc --noEmit` | Type-check without emitting               |
 | `pnpm api:generate` | Regenerate Orval types and hooks          |
-| `pnpm mock:dump`    | Refresh mock fixtures from the real API |
+| `pnpm mock:dump`    | Refresh mock fixtures from the real API  |
 
 ## Stack
 
@@ -36,11 +36,11 @@ pnpm dev
 | Language      | TypeScript            | 5       |
 | Styling       | Tailwind CSS          | v4      |
 | UI Primitives | @base-ui/react        | 1.4.1   |
-| Components    | shadcn/ui             | base-nova |
-| Icons         | lucide-react          | 1.8.0   |
-| Animation     | motion                | 12      |
-| Carousel      | swiper                | 12.1.4  |
-| Data Fetching | @tanstack/react-query | 5       |
+| Components    | shadcn/ui             | base-nova               |
+| Icons         | lucide-react          | 1.8.0                   |
+| Animation     | motion                | 12                      |
+| Carousel      | swiper                | 12.1.4                  |
+| Data Fetching | @tanstack/react-query | 5                       |
 
 ## Project Structure
 
@@ -64,27 +64,29 @@ src/
 
 Copy `.env.local.example` to `.env.local`.
 
-| Variable                                  | Description                                                                                     |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `CMS_API_BASE_URL`                        | Fastify API base URL. Omit to use mock data.                                                    |
-| `USE_MOCK_DATA`                           | Set `1` to serve GET requests from `src/lib/mock/*.ts` instead of the real API.         |
-| `MOCK_DUMP_EMAIL` / `MOCK_DUMP_PASSWORD`  | Credentials for `pnpm mock:dump`. Required only when refreshing mock fixtures after an API change. |
-| `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET`| Must match `stetsom-api/.env`.                                                                     |
-| `STORAGE_PUBLIC_HOSTNAME`                 | S3 bucket hostname for `next/image`. Format: `{bucket}.s3.{region}.amazonaws.com`.                |
+> **Transition note:** Mock data is temporary. The `develop` environment will move to a dedicated API environment, then `USE_MOCK_DATA` and the mock fixtures will be deprecated. Do not add mock-only behavior.
+
+| Variable | Description |
+| --- | --- |
+| `CMS_API_BASE_URL` | Fastify API base URL. Omit to use mock data. |
+| `USE_MOCK_DATA` | Set `1` to serve GET requests from `src/lib/mock/*.ts` instead of the real API. |
+| `MOCK_DUMP_EMAIL` / `MOCK_DUMP_PASSWORD` | Credentials for `pnpm mock:dump`. Required when refreshing mock fixtures after an API change. |
+| `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | Must match `stetsom-api/.env`. |
+| `STORAGE_PUBLIC_HOSTNAME` | S3 bucket hostname for `next/image`. Use `{bucket}.s3.{region}.amazonaws.com`. |
 
 ## Code Quality
 
-Pre-commit hooks run on every commit: ESLint auto-fix on staged `.ts`/`.tsx` files and a full `tsc --noEmit` type-check.
+Before each commit, Husky formats staged supported files, fixes ESLint issues in staged TypeScript files, and runs `pnpm tsc --noEmit`.
 
-CI runs on every push to `develop` and `main`, and on all pull requests. Pipeline: type-check → lint → build.
+CI runs on pull requests targeting `develop` or `main`. It type-checks, lints, and builds the application.
 
 ## Deploy
 
 | Environment | Branch | Data | Trigger |
-|-------------|--------|------|---------|
-| **Production** | `main` | Real API | Auto-deploy on push |
-| **Development** | `develop` | Mock (`USE_MOCK_DATA=1`) | Auto-deploy on push |
-| **PR Preview** | Release PR (`develop`→`main`) | Mock | Auto-deploy on PR open |
+| --- | --- | --- | --- |
+| [Production](https://stetsom.com.br) | `main` | Real API | Merge into `main` |
+| [Development](https://stetsom-front-git-develop-plazas-cc.vercel.app) | `develop` | Mock data during the migration | Push to `develop` |
+| PR preview | `develop` to `main` | Mock data during the migration | Release PR |
 
 All deployments are handled by [Vercel](https://vercel.com). No manual deploy steps.
 

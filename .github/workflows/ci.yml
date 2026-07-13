@@ -1,21 +1,14 @@
 name: CI
 
 on:
-  push:
+  pull_request:
     branches:
       - main
       - develop
-  pull_request:
-    branches:
-      - '**'
 
 jobs:
   build-and-lint:
     runs-on: ubuntu-latest
-    if: >
-      github.event_name != 'pull_request' ||
-      github.event.pull_request.head.ref != 'develop' ||
-      github.event.pull_request.base.ref != 'main'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
