@@ -30,6 +30,20 @@ Use `develop` for normal work. Create a short-lived branch only when direct work
 
 See the [README](./README.md#deploy) for current deployment status and [Develop Environment Setup](./docs/DEVELOP-ENVIRONMENT.md) for the mock-data transition plan.
 
+### Pipeline Overview
+
+```mermaid
+flowchart LR
+    Dev(["Developer"])
+    Repo["Stetsom Front\nGitHub: develop + main"]
+    VercelDev["Vercel — Development\nmock data"]
+    VercelProd["Vercel — Production"]
+
+    Dev -->|"commit, release PR"| Repo
+    Repo -->|"push to develop"| VercelDev
+    Repo -->|"merge to main"| VercelProd
+```
+
 ## Daily Work
 
 ```bash
