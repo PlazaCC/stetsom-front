@@ -23,12 +23,14 @@ Husky runs local checks before each commit. It formats staged supported files, f
 
 | Branch | Purpose | Deployment |
 | --- | --- | --- |
-| `develop` | Active development. Direct commits are allowed. | [Development](https://stetsom-front-git-develop-plazas-cc.vercel.app) with mock data |
-| `main` | Production. Receives release and hotfix pull requests only. | [Production](https://stetsom.com.br) |
+| `develop` | Active development. Direct commits are allowed. | [Development](https://stetsom-develop.vercel.app) with mock data |
+| `main` | Production. Receives release and hotfix pull requests only. | [Production](https://stetsom-prod.vercel.app) |
 
 Use `develop` for normal work. Create a short-lived branch only when direct work is impractical, then open a pull request into `develop`.
 
 The development environment currently uses mock data. This is temporary while the dedicated API environment is provisioned. Do not add mock-only behavior to new features.
+
+The final domain `https://stetsom.com.br` is not wired up yet. Production currently serves from the Vercel domain above.
 
 ## Daily Work
 
