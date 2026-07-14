@@ -81,7 +81,7 @@ The official Next.js integration captures browser errors, React root errors, Ser
 
 Unhandled failures become Sentry Issues. Recovered upstream failures use `warn`/`error` logs, and expected responses such as `404` are not reported. Automatic collection of user identity, cookies, headers, bodies, query parameters, and stack-frame variables is disabled.
 
-Session Replay (`instrumentation-client.ts`) records 5% of sessions and 100% of sessions that hit an error, so a production Issue can be inspected alongside a video-like reproduction. Profiling is intentionally not enabled here — Vercel's serverless/edge functions have no persistent process for continuous CPU sampling to attach to; see `stetsom-api`'s Observability section for the long-running Fastify process where profiling actually fits.
+Session Replay and Profiling are intentionally not enabled anywhere in this project. Replay's free quota is small (50 sessions/month) and it captures session/DOM content, a bigger sensitive-data surface than error, trace, and log telemetry. Profiling requires pay-as-you-go on every Sentry plan tier, including Free.
 
 ---
 
