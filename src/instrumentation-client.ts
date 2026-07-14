@@ -9,8 +9,11 @@ if (dsn) {
     tracesSampleRate: 0.1,
     enableLogs: true,
     enableMetrics: false,
+    replaysSessionSampleRate: 0.05,
+    replaysOnErrorSampleRate: 1,
     integrations: [
       Sentry.consoleLoggingIntegration({ levels: ["warn", "error"] }),
+      Sentry.replayIntegration(),
     ],
     dataCollection: {
       userInfo: false,
