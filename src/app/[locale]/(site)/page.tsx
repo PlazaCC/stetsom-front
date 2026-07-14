@@ -15,8 +15,7 @@ export default async function Home() {
   const apiLocale = toApiLocale(locale);
 
   const [bannersRes, pageRes, faqItems] = await Promise.all([
-    getApiBannersActive({ locale: apiLocale }).catch((err) => {
-      console.error("Failed to fetch home banners:", err);
+    getApiBannersActive({ locale: apiLocale }).catch(() => {
       return { items: [], total: 0 } as HeroBannerSlidesPayload;
     }),
     getApiPagesSlug("home", { locale: apiLocale }).catch(

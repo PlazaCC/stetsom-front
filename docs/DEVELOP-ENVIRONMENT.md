@@ -2,6 +2,8 @@
 
 The `develop` branch currently deploys a mock-backed development environment on Vercel.
 
+Sentry is intentionally disabled in this environment and in all Vercel Previews. Keep `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and `SENTRY_PROJECT` scoped to Vercel Production only.
+
 > **Transition status:** the dedicated backend environment is being provisioned — see `stetsom-api/docs/DEPLOY-DEVELOP.md` for the AWS runbook. The cutover to real data (see [Planned: AWS Develop Backend Cutover](#planned-aws-develop-backend-cutover) below) has **not** happened yet. `USE_MOCK_DATA`, mock credentials, and fixture refreshes remain in effect until that section is executed.
 
 ## Vercel (current, active)

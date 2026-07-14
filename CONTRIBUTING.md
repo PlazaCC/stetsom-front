@@ -28,9 +28,21 @@ Husky runs local checks before each commit. It formats staged supported files, f
 
 Use `develop` for normal work. Create a short-lived branch only when direct work is impractical, then open a pull request into `develop`.
 
-The development environment currently uses mock data. This is temporary while the dedicated API environment is provisioned. Do not add mock-only behavior to new features.
+See the [README](./README.md#deploy) for current deployment status and [Develop Environment Setup](./docs/DEVELOP-ENVIRONMENT.md) for the mock-data transition plan.
 
-The final domain `https://stetsom.com.br` is not wired up yet. Production currently serves from the Vercel domain above.
+### Pipeline Overview
+
+```mermaid
+flowchart LR
+    Dev(["Developer"])
+    Repo["Stetsom Front\nGitHub: develop + main"]
+    VercelDev["Vercel — Development\nmock data"]
+    VercelProd["Vercel — Production"]
+
+    Dev -->|"commit, release PR"| Repo
+    Repo -->|"push to develop"| VercelDev
+    Repo -->|"merge to main"| VercelProd
+```
 
 ## Daily Work
 
@@ -108,7 +120,7 @@ git push origin v0.2.0
 
 Use the [pull request template](./.github/pull_request_template.md). Before merging, confirm:
 
-- [ ] `build-and-lint` passes
+- [ ] `pnpm tsc --noEmit`, `pnpm lint`, and `pnpm build` all pass (same checks as `build-and-lint`)
 - [ ] The Vercel preview was reviewed
 - [ ] The change was manually tested
 - [ ] Documentation was updated when needed

@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { NextResponse } from "next/server";
 
 type ErrorPayload = {
@@ -93,6 +94,8 @@ export function toErrorResponse(error: unknown) {
       { status: error.status },
     );
   }
+
+  Sentry.captureException(error);
 
   return NextResponse.json(
     {

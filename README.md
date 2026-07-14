@@ -4,9 +4,12 @@
 [![Production](https://img.shields.io/badge/production-online-16a34a)](https://stetsom-prod.vercel.app)
 [![Development](https://img.shields.io/badge/development-preview-2563eb)](https://stetsom-develop.vercel.app)
 
-Institutional website and admin CMS for [Stetsom](https://stetsom.com.br).
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js&logoColor=white)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19-20232a?logo=react&logoColor=61DAFB)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 
-Built with **Next.js 16**, **React 19**, **TypeScript 5**, and **Tailwind CSS v4**.
+Institutional website and admin CMS for [Stetsom](https://stetsom.com.br).
 
 ## Getting Started
 
@@ -41,6 +44,7 @@ pnpm dev
 | Animation     | motion                | 12                      |
 | Carousel      | swiper                | 12.1.4                  |
 | Data Fetching | @tanstack/react-query | 5                       |
+| Observability | Sentry                 | Production only         |
 
 ## Project Structure
 
@@ -73,6 +77,8 @@ Copy `.env.local.example` to `.env.local`.
 | `MOCK_DUMP_EMAIL` / `MOCK_DUMP_PASSWORD` | Credentials for `pnpm mock:dump`. Required when refreshing mock fixtures after an API change. |
 | `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | Must match `stetsom-api/.env`. |
 | `STORAGE_PUBLIC_HOSTNAME` | S3 bucket hostname for `next/image`. Use `{bucket}.s3.{region}.amazonaws.com`. |
+
+Sentry is enabled only in Vercel Production. Local and Preview environments must not define `NEXT_PUBLIC_SENTRY_DSN`; the Vercel integration manages the production DSN, auth token, releases, and source maps.
 
 ## Code Quality
 

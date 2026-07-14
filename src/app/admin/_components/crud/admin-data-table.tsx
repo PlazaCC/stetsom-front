@@ -80,6 +80,8 @@ export function AdminDataTable<T>({
     [columnMap],
   );
 
+  // TanStack Table returns stateful functions that must not be compiler-memoized.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns: tanstackColumns,
