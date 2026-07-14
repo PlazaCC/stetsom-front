@@ -116,7 +116,8 @@ Navigation links, `useRouter`, and `usePathname` must be imported from `@/i18n/n
 
 ## Mock Mode
 
-> **Transition note:** Mock mode is a temporary fallback until `develop` uses a dedicated API environment. Maintain existing fixtures only. Do not add mock-only behavior.
+> **Offline fallback:** Develop and PR previews use the dedicated API. Mock mode
+> exists only for local work without API access and must remain contract-compatible.
 
 Set `USE_MOCK_DATA=1` in `.env.local` to serve GET requests from local fixtures without a running API. Mutations return `{ _mock: true }`.
 
@@ -157,4 +158,6 @@ CMS admin styles are scoped under a `.cms` CSS class applied in `src/app/admin/l
 
 **Server Components by default.** App Router Server Components fetch data at render time. `"use client"` is added only where interactivity requires it.
 
-**Mock fixtures via provider pattern.** Fixtures in `src/lib/mock/*.ts` conform to Orval-generated types. This temporary fallback remains available until the dedicated development API is ready.
+**Mock fixtures via provider pattern.** Fixtures in `src/lib/mock/*.ts` conform
+to Orval-generated types and provide an offline local fallback. Hosted develop
+and PR previews use the dedicated API.
