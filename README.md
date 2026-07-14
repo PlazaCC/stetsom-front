@@ -1,8 +1,9 @@
 # Stetsom Front
 
-[![CI](https://github.com/PlazaCC/stetsom-front/actions/workflows/ci.yml/badge.svg)](https://github.com/PlazaCC/stetsom-front/actions/workflows/ci.yml)
+[![CI](https://github.com/PlazaCC/stetsom-front/actions/workflows/ci.yml/badge.svg?event=pull_request)](https://github.com/PlazaCC/stetsom-front/actions/workflows/ci.yml)
 [![Production](https://img.shields.io/badge/production-online-16a34a)](https://stetsom-prod.vercel.app)
 [![Development](https://img.shields.io/badge/development-preview-2563eb)](https://stetsom-develop.vercel.app)
+[![Sentry](https://img.shields.io/badge/Sentry-stetsom--front-362D59?logo=sentry&logoColor=white)](https://stetsom.sentry.io/projects/stetsom-front/)
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js&logoColor=white)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-20232a?logo=react&logoColor=61DAFB)](https://react.dev)
@@ -78,7 +79,7 @@ Copy `.env.local.example` to `.env.local`.
 | `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | Must match `stetsom-api/.env`. |
 | `STORAGE_PUBLIC_HOSTNAME` | S3 bucket hostname for `next/image`. Use `{bucket}.s3.{region}.amazonaws.com`. |
 
-Sentry is enabled only in Vercel Production. Local and Preview environments must not define `NEXT_PUBLIC_SENTRY_DSN`; the Vercel integration manages the production DSN, auth token, releases, and source maps.
+[Sentry](https://stetsom.sentry.io/projects/stetsom-front/) is enabled only in Vercel Production. Local and Preview environments must not define `NEXT_PUBLIC_SENTRY_DSN`; the Vercel integration manages the production DSN, auth token, releases, and source maps.
 
 ## Code Quality
 
