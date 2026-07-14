@@ -23,12 +23,12 @@ Husky runs local checks before each commit. It formats staged supported files, f
 
 | Branch | Purpose | Deployment |
 | --- | --- | --- |
-| `develop` | Active development. Direct commits are allowed. | [Development](https://stetsom-develop.vercel.app) with mock data |
+| `develop` | Active development. Direct commits are allowed. | [Development](https://stetsom-develop.vercel.app) with the dedicated develop API |
 | `main` | Production. Receives release and hotfix pull requests only. | [Production](https://stetsom-prod.vercel.app) |
 
 Use `develop` for normal work. Create a short-lived branch only when direct work is impractical, then open a pull request into `develop`.
 
-See the [README](./README.md#deploy) for current deployment status and [Develop Environment Setup](./docs/DEVELOP-ENVIRONMENT.md) for the mock-data transition plan.
+See the [README](./README.md#deploy) for current deployment status and [Develop Environment Setup](./docs/DEVELOP-ENVIRONMENT.md) for environment details.
 
 ### Pipeline Overview
 

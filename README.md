@@ -69,7 +69,8 @@ src/
 
 Copy `.env.local.example` to `.env.local`.
 
-> **Transition note:** Mock data is temporary. The `develop` environment will move to a dedicated API environment, then `USE_MOCK_DATA` and the mock fixtures will be deprecated. Do not add mock-only behavior.
+The deployed `develop` branch uses its dedicated API. Mock data remains only as
+an explicit local fallback and must not receive new behavior.
 
 | Variable | Description |
 | --- | --- |
@@ -92,8 +93,8 @@ CI runs on pull requests targeting `develop` or `main`. It type-checks, lints, a
 | Environment | Branch | Data | Trigger |
 | --- | --- | --- | --- |
 | [Production](https://stetsom-prod.vercel.app) | `main` | Real API | Merge into `main` |
-| [Development](https://stetsom-develop.vercel.app) | `develop` | Mock data during the migration | Push to `develop` |
-| PR preview | `develop` to `main` | Mock data during the migration | Release PR |
+| [Development](https://stetsom-develop.vercel.app) | `develop` | Real develop API | Push to `develop` |
+| PR preview | `develop` to `main` | Real develop API | Release PR |
 
 All deployments are handled by [Vercel](https://vercel.com). No manual deploy steps.
 
