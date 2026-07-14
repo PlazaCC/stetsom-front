@@ -1,6 +1,6 @@
 /**
  * Exports seeded API data into src/lib/mock/data.json.
- * Merges with existing keys so previously dumped data is never lost.
+ * Replaces the fixture so removed API data cannot survive in mock mode.
  *
  * Usage:
  *   pnpm mock:dump                   # public endpoints only
@@ -27,10 +27,7 @@ const DATA_FILE = path.join(ROOT, "src/lib/mock/data.json");
 // Cap the number of individual product detail pages stored in the mock.
 const MAX_PRODUCT_DETAILS = 15;
 
-// Load existing store to preserve previously dumped keys
-const store = fs.existsSync(DATA_FILE)
-  ? JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"))
-  : {};
+const store = {};
 
 /** "/api/products/admin" → "products--admin" */
 function key(apiPath) {
@@ -50,13 +47,11 @@ async function dump(apiPath, { token = null, params = {} } = {}) {
   try {
     res = await fetch(url, { headers });
   } catch (e) {
-    console.log(`✗ ${e.message}`);
-    return null;
+    throw new Error(`${url.pathname}: ${e.message}`);
   }
 
   if (!res.ok) {
-    console.log(`✗ ${res.status}`);
-    return null;
+    throw new Error(`${url.pathname}: HTTP ${res.status}`);
   }
 
   const data = await res.json();
@@ -66,7 +61,9 @@ async function dump(apiPath, { token = null, params = {} } = {}) {
 }
 
 function save() {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(store, null, 2) + "\n");
+  const temporaryFile = `${DATA_FILE}.tmp`;
+  fs.writeFileSync(temporaryFile, JSON.stringify(store, null, 2) + "\n");
+  fs.renameSync(temporaryFile, DATA_FILE);
   console.log(
     `\n  📦 data.json — ${Object.keys(store).length} keys, ${(fs.statSync(DATA_FILE).size / 1024).toFixed(1)} KB`,
   );
