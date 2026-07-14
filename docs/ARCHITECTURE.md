@@ -77,9 +77,11 @@ Dedicated route handlers exist for operations the BFF cannot proxy generically:
 
 Sentry runs only in Vercel Production. Without `NEXT_PUBLIC_SENTRY_DSN`, the client, Node.js, and Edge SDKs are not initialized, so local and Preview deployments send no telemetry.
 
-The official Next.js integration captures browser errors, React root errors, Server Components, Route Handlers, and Edge failures. Sampled traces follow the request path `browser → Next.js/BFF → stetsom-api`. Source maps and releases are managed by the Vercel integration.
+The official Next.js integration captures browser errors, React root errors, Server Components, Route Handlers, and Edge failures. `sentry.server.config.ts` sets `tracePropagationTargets` to `CMS_API_BASE_URL`, so sampled traces link the full request path `browser → Next.js/BFF → stetsom-api` into one trace instead of disconnected transactions. Source maps and releases are managed by the Vercel integration.
 
 Unhandled failures become Sentry Issues. Recovered upstream failures use `warn`/`error` logs, and expected responses such as `404` are not reported. Automatic collection of user identity, cookies, headers, bodies, query parameters, and stack-frame variables is disabled.
+
+Session Replay (`instrumentation-client.ts`) records 5% of sessions and 100% of sessions that hit an error, so a production Issue can be inspected alongside a video-like reproduction. Profiling is intentionally not enabled here — Vercel's serverless/edge functions have no persistent process for continuous CPU sampling to attach to; see `stetsom-api`'s Observability section for the long-running Fastify process where profiling actually fits.
 
 ---
 

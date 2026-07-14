@@ -9,6 +9,10 @@ if (dsn) {
     tracesSampleRate: 0.1,
     enableLogs: true,
     enableMetrics: false,
+    // Links traces from every server-side call to stetsom-api (BFF proxy,
+    // auth/upload routes, RSC server functions) into the request that
+    // triggered them, instead of showing up as disconnected spans.
+    tracePropagationTargets: [process.env.CMS_API_BASE_URL!],
     integrations: [
       Sentry.consoleLoggingIntegration({ levels: ["warn", "error"] }),
     ],
