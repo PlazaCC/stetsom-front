@@ -1,5 +1,16 @@
 import type { LibraryAsset } from "@/api/stetsom/model";
 import { LibraryAssetType } from "@/api/stetsom/model";
+import {
+  BadgeCheck,
+  Box,
+  FileArchive,
+  FileText,
+  Images,
+  LibraryBig,
+  Shapes,
+  Video,
+  type LucideIcon,
+} from "lucide-react";
 
 export type Tab =
   | "photos"
@@ -19,6 +30,8 @@ export interface TabConfig {
   accept: string;
   uploadLabel: string;
   emptyLabel: string;
+  emptyDescription: string;
+  emptyIcon: LucideIcon;
   searchPlaceholder: string;
   libraryType: LibraryAssetType;
 }
@@ -31,6 +44,8 @@ export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
     accept: IMAGE_ACCEPT,
     uploadLabel: "Enviar imagens",
     emptyLabel: "Nenhuma foto encontrada.",
+    emptyDescription: "Envie fotos para reutilizá-las em produtos e páginas.",
+    emptyIcon: Images,
     searchPlaceholder: "Buscar por nome",
     libraryType: LibraryAssetType.IMAGE,
   },
@@ -38,6 +53,8 @@ export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
     accept: "video/mp4,video/webm",
     uploadLabel: "Enviar vídeos",
     emptyLabel: "Nenhum vídeo encontrado.",
+    emptyDescription: "Envie vídeos para enriquecer produtos e páginas.",
+    emptyIcon: Video,
     searchPlaceholder: "Buscar por nome",
     libraryType: LibraryAssetType.VIDEO,
   },
@@ -45,6 +62,9 @@ export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
     accept: "model/gltf-binary,model/gltf+json,.glb,.gltf",
     uploadLabel: "Enviar modelos 3D",
     emptyLabel: "Nenhum modelo 3D encontrado.",
+    emptyDescription:
+      "Envie modelos 3D para apresentar os produtos em detalhes.",
+    emptyIcon: Box,
     searchPlaceholder: "Buscar por nome",
     libraryType: LibraryAssetType.MODEL3D,
   },
@@ -52,6 +72,8 @@ export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
     accept: PDF_ACCEPT,
     uploadLabel: "Enviar manuais",
     emptyLabel: "Nenhum manual encontrado.",
+    emptyDescription: "Envie manuais para disponibilizá-los aos clientes.",
+    emptyIcon: FileText,
     searchPlaceholder: "Buscar por nome",
     libraryType: LibraryAssetType.MANUAL,
   },
@@ -59,6 +81,8 @@ export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
     accept: PDF_ACCEPT,
     uploadLabel: "Enviar catálogos",
     emptyLabel: "Nenhum catálogo encontrado.",
+    emptyDescription: "Envie catálogos para centralizar os materiais da marca.",
+    emptyIcon: LibraryBig,
     searchPlaceholder: "Buscar por nome",
     libraryType: LibraryAssetType.CATALOG,
   },
@@ -66,6 +90,9 @@ export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
     accept: PDF_ACCEPT,
     uploadLabel: "Enviar certificados",
     emptyLabel: "Nenhum certificado encontrado.",
+    emptyDescription:
+      "Envie certificados para manter a documentação acessível.",
+    emptyIcon: BadgeCheck,
     searchPlaceholder: "Buscar por nome",
     libraryType: LibraryAssetType.CERTIFICATE,
   },
@@ -73,6 +100,9 @@ export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
     accept: "application/zip,application/x-zip-compressed,.zip",
     uploadLabel: "Enviar packs",
     emptyLabel: "Nenhum pack de imagens encontrado.",
+    emptyDescription:
+      "Envie packs para reunir imagens relacionadas em um arquivo.",
+    emptyIcon: FileArchive,
     searchPlaceholder: "Buscar por nome",
     libraryType: LibraryAssetType.IMAGE_PACK,
   },
@@ -80,6 +110,9 @@ export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
     accept: "image/svg+xml,image/png,image/webp",
     uploadLabel: "Enviar ícones",
     emptyLabel: "Nenhum ícone de categoria encontrado.",
+    emptyDescription:
+      "Envie ícones para identificar as categorias do catálogo.",
+    emptyIcon: Shapes,
     searchPlaceholder: "Buscar por nome",
     libraryType: LibraryAssetType.CATEGORY_ICON,
   },

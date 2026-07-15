@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import type { LucideIcon } from "lucide-react";
 import {
   type ColumnDef,
   flexRender,
@@ -39,6 +40,8 @@ interface AdminDataTableProps<T> {
   isLoading?: boolean;
   emptyTitle?: string;
   emptyDescription?: string;
+  emptyIcon?: LucideIcon;
+  emptyAction?: React.ReactNode;
   keyExtractor: (row: T) => string;
   /** Toolbar slot — rendered top-left (search, filters, chips). */
   toolbar?: React.ReactNode;
@@ -54,6 +57,8 @@ export function AdminDataTable<T>({
   isLoading,
   emptyTitle,
   emptyDescription,
+  emptyIcon,
+  emptyAction,
   keyExtractor,
   toolbar,
   action,
@@ -113,7 +118,12 @@ export function AdminDataTable<T>({
             <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
           </div>
         ) : data.length === 0 ? (
-          <AdminEmptyState title={emptyTitle} description={emptyDescription} />
+          <AdminEmptyState
+            title={emptyTitle}
+            description={emptyDescription}
+            icon={emptyIcon}
+            action={emptyAction}
+          />
         ) : (
           <table className="w-full text-sm">
             {/*
@@ -173,7 +183,7 @@ export function AdminDataTable<T>({
       </div>
 
       {/* ── Footer ───────────────────────────────────────────────────────────── */}
-      {pagination && (
+      {pagination && pagination.total > 0 && (
         <div className="flex shrink-0 items-center justify-between pt-3 text-sm text-muted-foreground">
           <span>
             {pagination.total}{" "}

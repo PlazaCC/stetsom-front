@@ -1,7 +1,9 @@
 "use client";
 
+import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { Link } from "@/i18n/navigation";
-import { useLocale } from "next-intl";
+import { Camera } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import "swiper/css";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -41,6 +43,7 @@ interface SocialFeedProps {
 
 export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
   const locale = useLocale();
+  const t = useTranslations("SocialFeed");
   const dateFormatter = new Intl.DateTimeFormat(locale, {
     dateStyle: "medium",
   });
@@ -65,9 +68,12 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
           </Link>
         </div>
         {posts.length === 0 && (
-          <p className="text-center text-sm text-muted-foreground">
-            Nenhuma postagem disponível no momento.
-          </p>
+          <PublicEmptyState
+            icon={Camera}
+            title={t("emptyTitle")}
+            description={t("emptyDescription")}
+            className="min-h-89"
+          />
         )}
         {posts.length > 0 && (
           <Swiper

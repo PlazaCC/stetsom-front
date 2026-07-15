@@ -1,7 +1,8 @@
 import type { PublicDepartmentItem } from "@/api/stetsom/model";
 import { Container } from "@/components/ui/container";
+import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { SectionLabel } from "@/components/ui/section-label";
-import { Mail, Phone } from "lucide-react";
+import { Mail, MessagesSquare, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ContactForm } from "./contact-form";
 
@@ -37,23 +38,25 @@ export function SupportContact({
   const t = useTranslations("Support.contact");
 
   const infoItems = contactInfo
-    ? ([
-        {
-          key: "phone",
-          label: t("contactInfoPhone"),
-          value: contactInfo.phone,
-        },
-        {
-          key: "email",
-          label: t("contactInfoEmail"),
-          value: contactInfo.email,
-        },
-        {
-          key: "whatsapp",
-          label: t("contactInfoWhatsapp"),
-          value: contactInfo.whatsapp,
-        },
-      ] as const)
+    ? (
+        [
+          {
+            key: "phone",
+            label: t("contactInfoPhone"),
+            value: contactInfo.phone,
+          },
+          {
+            key: "email",
+            label: t("contactInfoEmail"),
+            value: contactInfo.email,
+          },
+          {
+            key: "whatsapp",
+            label: t("contactInfoWhatsapp"),
+            value: contactInfo.whatsapp,
+          },
+        ] as const
+      ).filter(({ value }) => value?.trim())
     : [];
 
   return (
@@ -91,6 +94,14 @@ export function SupportContact({
                   );
                 })}
               </div>
+            )}
+            {infoItems.length === 0 && (
+              <PublicEmptyState
+                icon={MessagesSquare}
+                title={t("emptyInfoTitle")}
+                description={t("emptyInfoDescription")}
+                className="min-h-52 py-6"
+              />
             )}
           </div>
           <div className="mt-8 flex-1 lg:mt-0">

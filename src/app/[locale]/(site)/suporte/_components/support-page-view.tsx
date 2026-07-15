@@ -98,8 +98,7 @@ export function SupportPageView({
           <SupportServiceCenters serviceCenters={serviceCenters} />
         </EditableSection>
       )}
-      {!docData.hidden &&
-      (docData.categories?.length || docData.files?.length) ? (
+      {!docData.hidden ? (
         <EditableSection target="section:documentation" editable={editable}>
           <SupportDocumentation
             categories={docData.categories ?? []}
@@ -107,7 +106,7 @@ export function SupportPageView({
           />
         </EditableSection>
       ) : null}
-      {!faqData.hidden && faqItems.length ? (
+      {!faqData.hidden ? (
         <EditableSection target="section:faq" editable={editable}>
           <FaqSection
             items={faqItems}

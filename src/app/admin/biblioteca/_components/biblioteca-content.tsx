@@ -9,11 +9,13 @@ import type { LibraryAsset } from "@/api/stetsom/model";
 import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { AdminPagination } from "@/app/admin/_components/crud/admin-pagination";
+import { Button } from "@/components/ui/button";
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { useLibraryUpload } from "@/hooks/use-upload";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Upload } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { AssetGrid } from "./asset-grid";
 import { AssetTable } from "./asset-table";
 import { EditAssetDialog } from "./edit-asset-dialog";
@@ -42,6 +44,7 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [editTarget, setEditTarget] = useState<LibraryAsset>();
   const [deleteTarget, setDeleteTarget] = useState<LibraryAsset>();
+  const uploadInputRef = useRef<HTMLInputElement>(null);
 
   const { data, isError, isLoading } = useGetApiLibrary({
     type: config.libraryType,
@@ -88,6 +91,31 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
     setPage(1);
   }
 
+  function handleFiles(event: React.ChangeEvent<HTMLInputElement>) {
+    const files = event.target.files ? Array.from(event.target.files) : [];
+    event.target.value = "";
+    if (files.length > 0) uploadTyped(files);
+  }
+
+  const hasSearch = Boolean(query.trim());
+  const emptyLabel = hasSearch
+    ? "Nenhum arquivo encontrado"
+    : config.emptyLabel;
+  const emptyDescription = hasSearch
+    ? "Tente buscar por outro termo."
+    : config.emptyDescription;
+  const emptyAction = hasSearch ? undefined : (
+    <Button
+      type="button"
+      size="sm"
+      onClick={() => uploadInputRef.current?.click()}
+      disabled={isUploading}
+    >
+      <Upload />
+      {config.uploadLabel}
+    </Button>
+  );
+
   return (
     <LibraryDropzone
       accept={config.accept}
@@ -102,10 +130,9 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
             viewMode={viewMode}
             onViewModeChange={setViewMode}
             total={total}
-            accept={config.accept}
             uploadLabel={config.uploadLabel}
             searchPlaceholder={config.searchPlaceholder}
-            onUpload={uploadTyped}
+            onUploadRequest={() => uploadInputRef.current?.click()}
             disabled={isUploading}
           />
         }
@@ -131,20 +158,26 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
           <AssetGrid
             assets={assets}
             uploads={entries}
-            emptyLabel={config.emptyLabel}
+            emptyLabel={emptyLabel}
+            emptyDescription={emptyDescription}
+            emptyIcon={config.emptyIcon}
+            emptyAction={emptyAction}
             onEdit={setEditTarget}
             onDelete={setDeleteTarget}
           />
         ) : (
           <AssetTable
             assets={assets}
-            emptyLabel={config.emptyLabel}
+            emptyLabel={emptyLabel}
+            emptyDescription={emptyDescription}
+            emptyIcon={config.emptyIcon}
+            emptyAction={emptyAction}
             onEdit={setEditTarget}
             onDelete={setDeleteTarget}
           />
         )}
 
-        {!isError && !isLoading && (
+        {!isError && !isLoading && total > 0 && (
           <AdminPagination
             page={page}
             pageSize={PAGE_SIZE}
@@ -155,6 +188,15 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
           />
         )}
       </AdminPageLayout>
+
+      <input
+        ref={uploadInputRef}
+        type="file"
+        accept={config.accept}
+        multiple
+        hidden
+        onChange={handleFiles}
+      />
 
       {editTarget && (
         <EditAssetDialog

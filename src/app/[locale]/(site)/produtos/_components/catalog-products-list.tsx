@@ -2,6 +2,8 @@
 
 import type { ProductCatalogResponse } from "@/api/stetsom/model";
 import { ProductCard } from "@/components/ui/product-card";
+import { PublicEmptyState } from "@/components/ui/public-empty-state";
+import { PackageSearch, SearchX } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCompareContext } from "./product-compare/compare-provider";
 
@@ -10,6 +12,7 @@ interface CatalogProductsListProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  isCatalogEmpty?: boolean;
 }
 
 export function CatalogProductsList({
@@ -17,6 +20,7 @@ export function CatalogProductsList({
   currentPage,
   totalPages,
   onPageChange,
+  isCatalogEmpty = false,
 }: CatalogProductsListProps) {
   const t = useTranslations("Catalog");
   const compare = useCompareContext();
@@ -26,9 +30,16 @@ export function CatalogProductsList({
 
   if (products.length === 0) {
     return (
-      <div className="py-16 text-center text-base text-muted-foreground">
-        {t("noProducts")}
-      </div>
+      <PublicEmptyState
+        icon={isCatalogEmpty ? PackageSearch : SearchX}
+        title={isCatalogEmpty ? t("emptyCatalogTitle") : t("emptyResultsTitle")}
+        description={
+          isCatalogEmpty
+            ? t("emptyCatalogDescription")
+            : t("emptyResultsDescription")
+        }
+        className="min-h-96 lg:min-h-150"
+      />
     );
   }
 

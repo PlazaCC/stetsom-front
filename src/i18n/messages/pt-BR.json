@@ -70,6 +70,10 @@
   "Catalog": {
     "loading": "Carregando produtos...",
     "noProducts": "Nenhum produto encontrado.",
+    "emptyCatalogTitle": "Nenhum produto disponível no momento",
+    "emptyCatalogDescription": "Novidades serão publicadas aqui.",
+    "emptyResultsTitle": "Nenhum produto encontrado",
+    "emptyResultsDescription": "Tente remover os filtros ou buscar por outro termo.",
     "categories": "Categorias",
     "filters": "Filtros",
     "clearAll": "Limpar tudo",
@@ -177,7 +181,9 @@
       "submit": "Enviar mensagem",
       "successTitle": "Mensagem enviada!",
       "successDescription": "Em breve entraremos em contato.",
-      "sendAnother": "Enviar outra mensagem"
+      "sendAnother": "Enviar outra mensagem",
+      "emptyInfoTitle": "Fale com nossa equipe",
+      "emptyInfoDescription": "Envie sua mensagem pelo formulário e responderemos o mais breve possível."
     },
     "documentation": {
       "label": "Materiais",
@@ -192,7 +198,9 @@
       "fileCatalogPrefix": "Catálogo",
       "fileImagePrefix": "Imagem",
       "fileDocVersion": "Documento v{version}",
-      "downloadLabel": "Download"
+      "downloadLabel": "Download",
+      "emptyTitle": "Materiais disponíveis em breve",
+      "emptyDescription": "Consulte novamente para acessar manuais, catálogos e outros materiais."
     },
     "serviceCenters": {
       "label": "Rede Autorizada",
@@ -218,11 +226,17 @@
       "currentLocation": "Minha localização atual",
       "emptyStateHint": "Informe sua localização ou navegue pelo mapa para encontrar assistências técnicas",
       "showAll": "Mostrar todos",
-      "filterByMap": "Filtrar pelo mapa"
+      "filterByMap": "Filtrar pelo mapa",
+      "emptyNetworkTitle": "Atendimento onde você precisar",
+      "emptyNetworkDescription": "Entre em contato com nossa equipe para receber orientação sobre assistência técnica."
     },
     "faq": {
       "noAnswer": "Não encontrou o que procura? Entre em contato com nosso suporte."
     }
+  },
+  "FaqSection": {
+    "emptyTitle": "Precisa de ajuda?",
+    "emptyDescription": "Nossa equipe pode responder sua dúvida enquanto preparamos novas orientações."
   },
   "About": {
     "heroDescription": "Desde 1989, a Stetsom define o padrão de qualidade em amplificação automotiva brasileira com tecnologia, inovação e paixão pelo som.",
@@ -249,11 +263,15 @@
   "HeroCarousel": {
     "bannerLabel": "Banners principais",
     "openBanner": "Abrir banner {index}",
-    "goToBanner": "Ir para banner {index}"
+    "goToBanner": "Ir para banner {index}",
+    "fallbackTitle": "Potência sem limite",
+    "fallbackDescription": "Tecnologia de amplificação feita para transformar cada experiência sonora."
   },
   "SocialFeed": {
     "scrollLeft": "Rolar para a esquerda",
-    "scrollRight": "Rolar para a direita"
+    "scrollRight": "Rolar para a direita",
+    "emptyTitle": "Acompanhe a Stetsom",
+    "emptyDescription": "Veja projetos, bastidores e novidades no nosso perfil oficial."
   },
   "Meta": {
     "homeTitle": "Stetsom | Amplificadores Automotivos",

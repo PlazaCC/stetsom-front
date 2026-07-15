@@ -20,7 +20,7 @@ import {
 } from "@/api/stetsom";
 import type { ContactMessage } from "@/api/stetsom/model";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Settings } from "lucide-react";
+import { Building2, Mail, Settings } from "lucide-react";
 import { useState } from "react";
 import { DepartmentRoutingModal } from "./department-routing-modal";
 
@@ -207,7 +207,8 @@ export function MensagensContent({ activeTab }: MensagensContentProps) {
             isLoading={messagesQuery.isLoading}
             keyExtractor={(m) => m.id}
             emptyTitle="Nenhuma mensagem"
-            emptyDescription="As mensagens enviadas pelo site aparecerão aqui."
+            emptyDescription="Tudo certo por aqui. Novos contatos enviados pelo site aparecerão nesta lista."
+            emptyIcon={Mail}
             action={settingsAction}
             toolbar={
               unread > 0 ? (
@@ -225,7 +226,9 @@ export function MensagensContent({ activeTab }: MensagensContentProps) {
             isLoading={messagesQuery.isLoading}
             keyExtractor={(d) => d.slug}
             emptyTitle="Nenhum departamento configurado"
-            emptyDescription="Configure os departamentos de encaminhamento abaixo."
+            emptyDescription="Organize o encaminhamento das mensagens por departamento."
+            emptyIcon={Building2}
+            emptyAction={settingsAction}
             action={settingsAction}
           />
         )}

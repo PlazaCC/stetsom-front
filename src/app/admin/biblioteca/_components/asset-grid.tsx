@@ -1,7 +1,9 @@
 "use client";
 
 import type { LibraryAsset } from "@/api/stetsom/model";
+import { AdminEmptyState } from "@/app/admin/_components/crud/admin-empty-state";
 import type { UploadEntry } from "@/hooks/use-upload";
+import type { LucideIcon } from "lucide-react";
 import { AssetGridCard } from "./asset-grid-card";
 import { UploadSkeletonCard } from "./upload-skeleton-card";
 
@@ -10,6 +12,9 @@ interface AssetGridProps {
   /** In-flight or failed uploads rendered as skeletons ahead of the assets. */
   uploads: UploadEntry[];
   emptyLabel: string;
+  emptyDescription: string;
+  emptyIcon: LucideIcon;
+  emptyAction: React.ReactNode;
   onEdit: (asset: LibraryAsset) => void;
   onDelete: (asset: LibraryAsset) => void;
 }
@@ -18,6 +23,9 @@ export function AssetGrid({
   assets,
   uploads,
   emptyLabel,
+  emptyDescription,
+  emptyIcon,
+  emptyAction,
   onEdit,
   onDelete,
 }: AssetGridProps) {
@@ -25,8 +33,13 @@ export function AssetGrid({
 
   if (pending.length === 0 && assets.length === 0) {
     return (
-      <div className="flex items-center justify-center rounded-lg border border-dashed py-16">
-        <p className="text-sm text-muted-foreground">{emptyLabel}</p>
+      <div className="rounded-lg border border-dashed">
+        <AdminEmptyState
+          title={emptyLabel}
+          description={emptyDescription}
+          icon={emptyIcon}
+          action={emptyAction}
+        />
       </div>
     );
   }

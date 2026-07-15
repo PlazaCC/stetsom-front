@@ -4,7 +4,6 @@ import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-inpu
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { LayoutGrid, Table2, Upload } from "lucide-react";
-import { useRef } from "react";
 import type { ViewMode } from "./lib";
 
 interface LibraryContentHeaderProps {
@@ -13,10 +12,9 @@ interface LibraryContentHeaderProps {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
   total: number;
-  accept: string;
   uploadLabel: string;
   searchPlaceholder: string;
-  onUpload: (files: File[]) => void;
+  onUploadRequest: () => void;
   disabled?: boolean;
 }
 
@@ -30,20 +28,11 @@ export function LibraryContentHeader({
   viewMode,
   onViewModeChange,
   total,
-  accept,
   uploadLabel,
   searchPlaceholder,
-  onUpload,
+  onUploadRequest,
   disabled,
 }: LibraryContentHeaderProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files ? Array.from(e.target.files) : [];
-    e.target.value = "";
-    if (files.length > 0) onUpload(files);
-  }
-
   return (
     <div className="flex shrink-0 flex-wrap items-center gap-3 border-b bg-card px-5 py-3">
       <AdminSearchInput
@@ -77,20 +66,12 @@ export function LibraryContentHeader({
         <Button
           type="button"
           size="sm"
-          onClick={() => inputRef.current?.click()}
+          onClick={onUploadRequest}
           disabled={disabled}
         >
           <Upload />
           {uploadLabel}
         </Button>
-        <input
-          ref={inputRef}
-          type="file"
-          accept={accept}
-          multiple
-          hidden
-          onChange={handleFiles}
-        />
       </div>
     </div>
   );

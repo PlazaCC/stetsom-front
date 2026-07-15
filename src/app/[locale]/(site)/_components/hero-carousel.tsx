@@ -3,6 +3,7 @@
 import type { HeroBannerSlide } from "@/api/stetsom/model";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { AudioLines } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRef } from "react";
@@ -29,12 +30,25 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
 
   if (slides.length === 0) {
     return (
-      <div
+      <section
         className={cn(
-          "relative w-full overflow-hidden bg-brand-dark",
+          "relative flex w-full items-center justify-center overflow-hidden bg-brand-dark px-6 text-center",
           HERO_HEIGHT_CLASS,
         )}
-      />
+        aria-label={t("bannerLabel")}
+      >
+        <div className="absolute inset-0 bg-linear-to-br from-brand-dark via-brand-dark to-brand/35" />
+        <div className="absolute top-1/2 left-1/2 size-96 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/5 sm:size-140" />
+        <div className="relative z-10 flex max-w-xl flex-col items-center">
+          <AudioLines className="size-16 text-brand" aria-hidden="true" />
+          <h1 className="mt-6 font-sans-condensed text-4xl leading-none font-black text-white uppercase sm:text-display-sm">
+            {t("fallbackTitle")}
+          </h1>
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70 sm:text-base">
+            {t("fallbackDescription")}
+          </p>
+        </div>
+      </section>
     );
   }
 

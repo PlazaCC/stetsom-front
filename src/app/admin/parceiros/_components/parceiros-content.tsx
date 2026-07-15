@@ -34,7 +34,7 @@ import {
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { MapPin, Plus, Wrench } from "lucide-react";
 import { useMemo, useState } from "react";
 
 const PAGE_SIZE = 10;
@@ -402,6 +402,18 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
     },
   ];
 
+  const createAction = (
+    <button
+      type="button"
+      onClick={openCreate}
+      className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+    >
+      <Plus className="size-4" />
+      {tab.createLabel}
+    </button>
+  );
+  const hasActiveFilters = Boolean(query.trim() || stateFilter);
+
   return (
     <>
       <AdminPageLayout>
@@ -410,18 +422,17 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
           data={paginated}
           isLoading={isLoading}
           keyExtractor={(l) => l.id}
-          emptyTitle={tab.emptyTitle}
-          emptyDescription={tab.emptyDescription}
-          action={
-            <button
-              type="button"
-              onClick={openCreate}
-              className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
-            >
-              <Plus className="size-4" />
-              {tab.createLabel}
-            </button>
+          emptyTitle={
+            hasActiveFilters ? "Nenhum parceiro encontrado" : tab.emptyTitle
           }
+          emptyDescription={
+            hasActiveFilters
+              ? "Ajuste a busca ou o estado selecionado."
+              : tab.emptyDescription
+          }
+          emptyIcon={activeType === "REPRESENTATIVE" ? MapPin : Wrench}
+          emptyAction={hasActiveFilters ? undefined : createAction}
+          action={createAction}
           toolbar={
             <div className="flex flex-wrap items-center gap-3">
               <AdminSearchInput

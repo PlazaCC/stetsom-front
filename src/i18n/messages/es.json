@@ -70,6 +70,10 @@
   "Catalog": {
     "loading": "Cargando productos...",
     "noProducts": "No se encontraron productos.",
+    "emptyCatalogTitle": "No hay productos disponibles en este momento",
+    "emptyCatalogDescription": "Los nuevos productos se publicarán aquí.",
+    "emptyResultsTitle": "No se encontraron productos",
+    "emptyResultsDescription": "Intente quitar los filtros o buscar otro término.",
     "categories": "Categorías",
     "filters": "Filtros",
     "clearAll": "Limpiar todo",
@@ -177,7 +181,9 @@
       "submit": "Enviar mensaje",
       "successTitle": "¡Mensaje enviado!",
       "successDescription": "Nos pondremos en contacto con usted en breve.",
-      "sendAnother": "Enviar otro mensaje"
+      "sendAnother": "Enviar otro mensaje",
+      "emptyInfoTitle": "Hable con nuestro equipo",
+      "emptyInfoDescription": "Envíe su mensaje mediante el formulario y responderemos lo antes posible."
     },
     "documentation": {
       "label": "Materiales",
@@ -192,7 +198,9 @@
       "fileCatalogPrefix": "Catálogo",
       "fileImagePrefix": "Imagen",
       "fileDocVersion": "Documento v{version}",
-      "downloadLabel": "Descargar"
+      "downloadLabel": "Descargar",
+      "emptyTitle": "Materiales disponibles próximamente",
+      "emptyDescription": "Vuelva pronto para acceder a manuales, catálogos y otros materiales."
     },
     "serviceCenters": {
       "label": "Red Autorizada",
@@ -218,11 +226,17 @@
       "currentLocation": "Mi ubicación actual",
       "emptyStateHint": "Ingrese su ubicación o navegue el mapa para encontrar centros de servicio técnico",
       "showAll": "Mostrar todos",
-      "filterByMap": "Filtrar por mapa"
+      "filterByMap": "Filtrar por mapa",
+      "emptyNetworkTitle": "Atención donde la necesite",
+      "emptyNetworkDescription": "Póngase en contacto con nuestro equipo para recibir orientación sobre asistencia técnica."
     },
     "faq": {
       "noAnswer": "¿No encontró lo que busca? Póngase en contacto con nuestro equipo de soporte."
     }
+  },
+  "FaqSection": {
+    "emptyTitle": "¿Necesita ayuda?",
+    "emptyDescription": "Nuestro equipo puede responder su consulta mientras preparamos nuevas orientaciones."
   },
   "About": {
     "heroDescription": "Desde 1989, Stetsom define el estándar de calidad en amplificación automotiva brasileña con tecnología, innovación y pasión por el sonido.",
@@ -249,11 +263,15 @@
   "HeroCarousel": {
     "bannerLabel": "Banners principales",
     "openBanner": "Abrir banner {index}",
-    "goToBanner": "Ir al banner {index}"
+    "goToBanner": "Ir al banner {index}",
+    "fallbackTitle": "Potencia sin límite",
+    "fallbackDescription": "Tecnología de amplificación creada para transformar cada experiencia sonora."
   },
   "SocialFeed": {
     "scrollLeft": "Desplazar a la izquierda",
-    "scrollRight": "Desplazar a la derecha"
+    "scrollRight": "Desplazar a la derecha",
+    "emptyTitle": "Siga a Stetsom",
+    "emptyDescription": "Vea proyectos, detrás de escena y novedades en nuestro perfil oficial."
   },
   "Meta": {
     "homeTitle": "Stetsom | Amplificadores Automotivos",

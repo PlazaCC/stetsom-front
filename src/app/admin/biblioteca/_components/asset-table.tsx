@@ -2,6 +2,7 @@
 
 import type { LibraryAsset } from "@/api/stetsom/model";
 import { AdminEmptyState } from "@/app/admin/_components/crud/admin-empty-state";
+import type { LucideIcon } from "lucide-react";
 import { AssetTypeIcon } from "./asset-type-icon";
 import {
   assetAltText,
@@ -15,6 +16,9 @@ import {
 interface AssetTableProps {
   assets: LibraryAsset[];
   emptyLabel: string;
+  emptyDescription: string;
+  emptyIcon: LucideIcon;
+  emptyAction: React.ReactNode;
   onEdit: (asset: LibraryAsset) => void;
   onDelete: (asset: LibraryAsset) => void;
 }
@@ -41,6 +45,9 @@ function AssetThumb({ asset }: { asset: LibraryAsset }) {
 export function AssetTable({
   assets,
   emptyLabel,
+  emptyDescription,
+  emptyIcon,
+  emptyAction,
   onEdit,
   onDelete,
 }: AssetTableProps) {
@@ -49,7 +56,9 @@ export function AssetTable({
       <div className="overflow-hidden rounded-card border border-border bg-card shadow-cms-card">
         <AdminEmptyState
           title={emptyLabel}
-          description="Faça upload de arquivos usando o botão na parte superior."
+          description={emptyDescription}
+          icon={emptyIcon}
+          action={emptyAction}
         />
       </div>
     );
