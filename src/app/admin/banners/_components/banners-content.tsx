@@ -128,6 +128,16 @@ export function BannersContent({
     },
   ];
 
+  const createBannerAction = (
+    <Link
+      href="/admin/banners/novo"
+      className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+    >
+      <Plus className="size-4" />
+      Novo banner
+    </Link>
+  );
+
   return (
     <AdminPageLayout>
       <AdminDataTable
@@ -135,18 +145,10 @@ export function BannersContent({
         data={banners}
         keyExtractor={(banner) => banner.id}
         emptyTitle="Nenhum banner cadastrado"
-        emptyDescription="Banners são exibidos no hero da página inicial."
-        action={
-          <AdminActionBar>
-            <Link
-              href="/admin/banners/novo"
-              className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
-            >
-              <Plus className="size-4" />
-              Novo banner
-            </Link>
-          </AdminActionBar>
-        }
+        emptyDescription="Crie um banner para destacar campanhas na página inicial."
+        emptyIcon={ImageIcon}
+        emptyAction={createBannerAction}
+        action={<AdminActionBar>{createBannerAction}</AdminActionBar>}
       />
     </AdminPageLayout>
   );

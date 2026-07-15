@@ -1,8 +1,9 @@
 import { Container } from "@/components/ui/container";
+import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { SectionLabel } from "@/components/ui/section-label";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { Download, FileText, Search } from "lucide-react";
+import { Download, FileDown, FileText, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 type DocCategory = { id: string; title: string; label: string; slug: string };
@@ -77,6 +78,14 @@ export function SupportDocumentation({
 
           {/* Lista de arquivos */}
           <div className="flex flex-1 flex-col gap-3">
+            {files.length === 0 && (
+              <PublicEmptyState
+                icon={FileDown}
+                title={t("emptyTitle")}
+                description={t("emptyDescription")}
+                className="min-h-72 bg-transparent"
+              />
+            )}
             {files.map((file) => (
               <div
                 key={file.id}

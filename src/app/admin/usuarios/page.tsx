@@ -41,7 +41,7 @@ import type {
   UserRole,
 } from "@/api/stetsom/model";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { Plus, UserRoundPlus } from "lucide-react";
 import { useState } from "react";
 
 const ROLE_LABELS: Record<UserRole, string> = {
@@ -246,6 +246,17 @@ export default function AdminUsuariosPage() {
     },
   ];
 
+  const createUserAction = (
+    <button
+      type="button"
+      onClick={openCreate}
+      className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+    >
+      <Plus className="size-4" />
+      Novo usuário
+    </button>
+  );
+
   return (
     <>
       <AdminPageLayout>
@@ -255,17 +266,10 @@ export default function AdminUsuariosPage() {
           isLoading={users.isLoading}
           keyExtractor={(u) => u.id}
           emptyTitle="Nenhum usuário cadastrado"
-          emptyDescription="Crie um usuário para dar acesso ao painel."
-          action={
-            <button
-              type="button"
-              onClick={openCreate}
-              className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
-            >
-              <Plus className="size-4" />
-              Novo usuário
-            </button>
-          }
+          emptyDescription="Convide a equipe para colaborar na gestão do site."
+          emptyIcon={UserRoundPlus}
+          emptyAction={createUserAction}
+          action={createUserAction}
         />
       </AdminPageLayout>
 

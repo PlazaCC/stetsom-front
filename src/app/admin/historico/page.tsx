@@ -13,7 +13,7 @@ import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import { useGetApiAudit } from "@/api/stetsom";
 import type { AuditEntry } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
-import { Filter } from "lucide-react";
+import { Filter, History } from "lucide-react";
 import { useState } from "react";
 
 // SSOT: must match the 13 entity keys from docs/frontend-contracts.md (AuditEntity type)
@@ -113,8 +113,17 @@ export default function AdminHistoricoPage() {
         data={entries}
         isLoading={audit.isLoading}
         keyExtractor={(e) => e.id}
-        emptyTitle="Nenhuma entrada registrada"
-        emptyDescription="As ações dos usuários no CMS aparecerão aqui."
+        emptyTitle={
+          entity
+            ? "Nenhuma alteração encontrada para esta entidade"
+            : "Nenhuma entrada registrada"
+        }
+        emptyDescription={
+          entity
+            ? "Remova o filtro para visualizar alterações de outras entidades."
+            : "As próximas alterações realizadas no CMS aparecerão aqui."
+        }
+        emptyIcon={History}
         toolbar={
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">

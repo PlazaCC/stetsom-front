@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Filter, Plus } from "lucide-react";
+import { Filter, PackageOpen, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { AdminActionBar } from "@/app/admin/_components/crud/admin-action-bar";
@@ -170,6 +170,17 @@ export default function AdminProdutos() {
     },
   ];
 
+  const createProductAction = (
+    <Link
+      href="/admin/produtos/novo"
+      className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+    >
+      <Plus className="size-4" />
+      Cadastrar produto
+    </Link>
+  );
+  const hasActiveFilters = Boolean(query || statusFilter);
+
   if (cmsProducts.isError) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 px-4 py-4 text-center lg:px-11.75 lg:py-7.25">
@@ -193,8 +204,18 @@ export default function AdminProdutos() {
         data={rows}
         isLoading={cmsProducts.isLoading}
         keyExtractor={(row) => row.id}
-        emptyTitle="Nenhum produto encontrado"
-        emptyDescription="Cadastre um novo produto ou ajuste os filtros."
+        emptyTitle={
+          hasActiveFilters
+            ? "Nenhum produto corresponde aos filtros"
+            : "Nenhum produto cadastrado"
+        }
+        emptyDescription={
+          hasActiveFilters
+            ? "Ajuste a busca ou os filtros para encontrar produtos."
+            : "Cadastre o primeiro produto para começar a montar o catálogo."
+        }
+        emptyIcon={PackageOpen}
+        emptyAction={hasActiveFilters ? undefined : createProductAction}
         action={
           <AdminActionBar>
             <button
@@ -205,13 +226,7 @@ export default function AdminProdutos() {
             >
               Importar planilha
             </button>
-            <Link
-              href="/admin/produtos/novo"
-              className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
-            >
-              <Plus className="size-4" />
-              Cadastrar produto
-            </Link>
+            {createProductAction}
           </AdminActionBar>
         }
         toolbar={

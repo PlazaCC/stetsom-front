@@ -31,7 +31,7 @@ import {
   type PostApiAttributesBody,
 } from "@/api/stetsom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { ListFilter, Plus } from "lucide-react";
 import { useState } from "react";
 
 function AttributeForm({
@@ -178,6 +178,20 @@ export default function AdminAtributosPage() {
     },
   ];
 
+  const createAttributeAction = (
+    <button
+      type="button"
+      onClick={() => {
+        setEditing(undefined);
+        setFormOpen(true);
+      }}
+      className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+    >
+      <Plus className="size-4" />
+      Novo atributo
+    </button>
+  );
+
   return (
     <AdminPageLayout>
       {formOpen && (
@@ -206,20 +220,10 @@ export default function AdminAtributosPage() {
         isLoading={isLoading}
         keyExtractor={(a) => a.id}
         emptyTitle="Nenhum atributo cadastrado"
-        emptyDescription="Atributos são usados nos templates de produtos."
-        action={
-          <button
-            type="button"
-            onClick={() => {
-              setEditing(undefined);
-              setFormOpen(true);
-            }}
-            className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
-          >
-            <Plus className="size-4" />
-            Novo atributo
-          </button>
-        }
+        emptyDescription="Crie atributos para organizar as especificações dos produtos."
+        emptyIcon={ListFilter}
+        emptyAction={createAttributeAction}
+        action={createAttributeAction}
       />
     </AdminPageLayout>
   );

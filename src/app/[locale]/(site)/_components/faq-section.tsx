@@ -1,7 +1,10 @@
 import { Container } from "@/components/ui/container";
 import { CTAButton } from "@/components/ui/cta-button";
+import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { SectionLabel } from "@/components/ui/section-label";
 import type { FaqItem } from "@/lib/page-blocks";
+import { MessageCircleQuestion } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { FaqAccordion } from "./faq-accordion";
 
 interface FaqSectionProps {
@@ -16,6 +19,8 @@ interface FaqSectionProps {
 }
 
 export function FaqSection({ items, section }: Readonly<FaqSectionProps>) {
+  const t = useTranslations("FaqSection");
+
   return (
     <section className="flex justify-center bg-off-white py-12">
       <Container>
@@ -37,7 +42,16 @@ export function FaqSection({ items, section }: Readonly<FaqSectionProps>) {
             )}
           </div>
           <div className="pt-2">
-            <FaqAccordion items={items} />
+            {items.length > 0 ? (
+              <FaqAccordion items={items} />
+            ) : (
+              <PublicEmptyState
+                icon={MessageCircleQuestion}
+                title={t("emptyTitle")}
+                description={t("emptyDescription")}
+                className="min-h-80 bg-transparent"
+              />
+            )}
           </div>
         </div>
       </Container>

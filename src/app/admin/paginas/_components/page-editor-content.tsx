@@ -77,9 +77,11 @@ export function PageEditorContent({
     { locale: "pt" },
     { query: { enabled: isHome } },
   );
-  const { data: allBannersRes } = useGetApiBanners(undefined, {
-    query: { enabled: isHome },
-  });
+  const {
+    data: allBannersRes,
+    isLoading: areBannersLoading,
+    isError: areBannersError,
+  } = useGetApiBanners(undefined, { query: { enabled: isHome } });
   const { data: serviceCenters = [] } = useGetApiPartnerLocations(undefined, {
     query: { enabled: isSupport },
   });
@@ -298,7 +300,11 @@ export function PageEditorContent({
                   <div className="size-5 animate-spin rounded-full border-2 border-border border-t-primary" />
                 </div>
               ) : selection === BANNERS_TARGET ? (
-                <BannersSummaryPanel banners={allBannersRes?.items ?? []} />
+                <BannersSummaryPanel
+                  banners={allBannersRes?.items ?? []}
+                  isLoading={areBannersLoading}
+                  isError={areBannersError}
+                />
               ) : selectedBlock ? (
                 <>
                   {selectedDef?.autoNote && (

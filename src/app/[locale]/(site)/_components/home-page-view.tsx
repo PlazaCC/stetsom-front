@@ -46,24 +46,22 @@ export function HomePageView({
       <EditableSection target="section:__banners__" editable={editable}>
         <HeroCarousel slides={banners} />
       </EditableSection>
-      {!featuredData.hidden &&
-        featuredProducts.length > 0 &&
-        spotlightProduct && (
-          <EditableSection target="section:featured" editable={editable}>
-            <FeaturedProducts
-              featuredProducts={featuredProducts}
-              spotlightProduct={spotlightProduct}
-              tabs={featuredData.tabs ?? []}
-              section={{
-                label: featuredData.label ?? "",
-                title: featuredData.title ?? "",
-                spotlightTitle: featuredData.spotlightTitle,
-                ctaHref: featuredData.ctaHref ?? "/produtos",
-                ctaLabel: featuredData.ctaLabel ?? "Ver todos",
-              }}
-            />
-          </EditableSection>
-        )}
+      {!featuredData.hidden && (
+        <EditableSection target="section:featured" editable={editable}>
+          <FeaturedProducts
+            featuredProducts={featuredProducts}
+            spotlightProduct={spotlightProduct}
+            tabs={featuredData.tabs ?? []}
+            section={{
+              label: featuredData.label ?? "",
+              title: featuredData.title ?? "",
+              spotlightTitle: featuredData.spotlightTitle,
+              ctaHref: featuredData.ctaHref ?? "/produtos",
+              ctaLabel: featuredData.ctaLabel ?? "Ver todos",
+            }}
+          />
+        </EditableSection>
+      )}
       {!historyData.hidden && historyData.image_url && (
         <EditableSection target="section:history" editable={editable}>
           <OurHistory
@@ -93,7 +91,7 @@ export function HomePageView({
           />
         </EditableSection>
       )}
-      {!faqData.hidden && faqItems.length ? (
+      {!faqData.hidden ? (
         <EditableSection target="section:faq" editable={editable}>
           <FaqSection
             items={faqItems.slice(

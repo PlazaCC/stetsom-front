@@ -118,6 +118,13 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
   }, [categories, activeCategorySlug]);
 
   const productCards = catalog.items;
+  const hasActiveFilters =
+    activeCategory !== "todos" ||
+    activeLine !== "todas" ||
+    Boolean(search) ||
+    !showDiscontinued ||
+    showExport;
+  const isCatalogEmpty = catalog.total === 0 && !hasActiveFilters;
 
   // Build a slug → ProductCardItem lookup map for the compare modal
   const catalogMap = useMemo(() => {
@@ -177,35 +184,40 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
         categories={categoryOptions}
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
+        disabled={isCatalogEmpty}
       />
 
       <section className="bg-white pt-6 pb-12">
         <Container>
           <div className="flex gap-9">
-            <CatalogSidebar
-              search={searchInput}
-              onSearchChange={setSearchInput}
-              activeCategory={activeCategory}
-              onCategoryChange={setActiveCategory}
-              activeLine={activeLine}
-              onLineChange={setActiveLine}
-              sort={sort}
-              onSortChange={setSort}
-              onClear={clearFilters}
-              typeFilterOptions={typeFilterOptions}
-              productLines={productLines}
-              showDiscontinued={showDiscontinued}
-              onShowDiscontinuedChange={setShowDiscontinued}
-              showExport={showExport}
-              onShowExportChange={setShowExport}
-            />
+            {!isCatalogEmpty && (
+              <CatalogSidebar
+                search={searchInput}
+                onSearchChange={setSearchInput}
+                activeCategory={activeCategory}
+                onCategoryChange={setActiveCategory}
+                activeLine={activeLine}
+                onLineChange={setActiveLine}
+                sort={sort}
+                onSortChange={setSort}
+                onClear={clearFilters}
+                typeFilterOptions={typeFilterOptions}
+                productLines={productLines}
+                showDiscontinued={showDiscontinued}
+                onShowDiscontinuedChange={setShowDiscontinued}
+                showExport={showExport}
+                onShowExportChange={setShowExport}
+              />
+            )}
 
             <div className="min-w-0 flex-1">
-              <CatalogMobileActions
-                onToggleFilters={() => setSidebarOpen((value) => !value)}
-              />
+              {!isCatalogEmpty && (
+                <CatalogMobileActions
+                  onToggleFilters={() => setSidebarOpen((value) => !value)}
+                />
+              )}
 
-              {sidebarOpen && (
+              {sidebarOpen && !isCatalogEmpty && (
                 <CatalogMobileFilter
                   categoryOptions={categoryOptions}
                   activeCategory={activeCategory}
@@ -221,6 +233,7 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
                 currentPage={page}
                 totalPages={catalog.totalPages}
                 onPageChange={setPage}
+                isCatalogEmpty={isCatalogEmpty}
               />
             </div>
           </div>

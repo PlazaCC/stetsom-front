@@ -1,9 +1,10 @@
 import { cn } from "@/lib/utils";
-import { Inbox } from "lucide-react";
+import { Inbox, type LucideIcon } from "lucide-react";
 
 interface AdminEmptyStateProps {
   title?: string;
   description?: string;
+  icon?: LucideIcon;
   action?: React.ReactNode;
   className?: string;
 }
@@ -11,6 +12,7 @@ interface AdminEmptyStateProps {
 export function AdminEmptyState({
   title = "Nenhum item encontrado",
   description,
+  icon: Icon = Inbox,
   action,
   className,
 }: AdminEmptyStateProps) {
@@ -21,7 +23,7 @@ export function AdminEmptyState({
         className,
       )}
     >
-      <Inbox className="size-10 text-muted-foreground/40" />
+      <Icon className="size-10 text-muted-foreground/40" aria-hidden="true" />
       <div className="space-y-1">
         <p className="text-sm font-medium text-foreground">{title}</p>
         {description && (

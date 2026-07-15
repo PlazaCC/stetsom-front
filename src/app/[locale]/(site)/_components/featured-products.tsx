@@ -3,8 +3,10 @@
 import type { ProductCardItem } from "@/api/stetsom/model";
 import { Container } from "@/components/ui/container";
 import { ProductCard } from "@/components/ui/product-card";
+import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { SectionLabel } from "@/components/ui/section-label";
 import { Link } from "@/i18n/navigation";
+import { PackageSearch } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -26,7 +28,7 @@ type FeaturedSection = {
 
 interface FeaturedProductsProps {
   featuredProducts: ProductCardItem[];
-  spotlightProduct: ProductCardItem;
+  spotlightProduct?: ProductCardItem;
   tabs: FeaturedTab[];
   section: FeaturedSection;
 }
@@ -51,6 +53,8 @@ export function FeaturedProducts({
       (product) => product.category === activeTab.label,
     );
   }, [activeTab, featuredProducts]);
+  const displaySpotlight = spotlightProduct ?? featuredProducts[0];
+  const isEmpty = !displaySpotlight;
 
   return (
     <section className="flex w-full justify-center bg-background pt-12 pb-24">
@@ -65,15 +69,17 @@ export function FeaturedProducts({
               />
             </div>
 
-            <div className="flex flex-1 items-end justify-end">
-              <FeaturedTabStrip
-                tabs={tabs}
-                activeTab={activeTab}
-                onSelect={setActiveTab}
-                ctaHref={section.ctaHref}
-                ctaLabel={section.ctaLabel}
-              />
-            </div>
+            {!isEmpty && (
+              <div className="flex flex-1 items-end justify-end">
+                <FeaturedTabStrip
+                  tabs={tabs}
+                  activeTab={activeTab}
+                  onSelect={setActiveTab}
+                  ctaHref={section.ctaHref}
+                  ctaLabel={section.ctaLabel}
+                />
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-4 lg:hidden">
@@ -83,57 +89,68 @@ export function FeaturedProducts({
               className="max-w-80"
             />
 
-            <div className="flex items-center justify-between">
-              <FeaturedTabStrip
-                tabs={tabs}
-                activeTab={activeTab}
-                onSelect={setActiveTab}
-                ctaHref={section.ctaHref}
-                ctaLabel={section.ctaLabel}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="grid gap-5 lg:flex lg:h-111.75">
-          <Link
-            href={spotlightProduct.href}
-            className="relative flex aspect-square h-full items-center justify-center overflow-hidden rounded-2xl border border-border transition-colors hover:border-brand"
-          >
-            {spotlightProduct.thumbnail_url ? (
-              <Image
-                src={spotlightProduct.thumbnail_url}
-                alt={spotlightProduct.name}
-                width={620}
-                height={620}
-                className="h-full w-full object-contain"
-              />
-            ) : null}
-            <div className="absolute right-0 bottom-0 left-0 px-4 pt-12 pb-4 sm:px-5">
-              <div className="font-sans-condensed text-lg leading-tight font-black tracking-wider uppercase sm:text-xl lg:text-2xl">
-                {spotlightProduct.name}
-              </div>
-            </div>
-          </Link>
-          <div className="grid h-full flex-1 grid-cols-2 grid-rows-2 gap-3 sm:gap-4 lg:gap-5">
-            {filteredProducts.length === 0 ? (
-              <p className="col-span-2 flex items-center justify-center py-12 text-sm text-muted-foreground">
-                {t("emptyCategory")}
-              </p>
-            ) : (
-              filteredProducts.map((p) => (
-                <ProductCard
-                  key={p.id}
-                  name={p.name}
-                  category={p.category}
-                  variants={p.variants}
-                  img={p.thumbnail_url ?? undefined}
-                  href={p.href}
+            {!isEmpty && (
+              <div className="flex items-center justify-between">
+                <FeaturedTabStrip
+                  tabs={tabs}
+                  activeTab={activeTab}
+                  onSelect={setActiveTab}
+                  ctaHref={section.ctaHref}
+                  ctaLabel={section.ctaLabel}
                 />
-              ))
+              </div>
             )}
           </div>
         </div>
+
+        {isEmpty ? (
+          <PublicEmptyState
+            icon={PackageSearch}
+            title={t("emptyCatalogTitle")}
+            description={t("emptyCatalogDescription")}
+            className="min-h-180 rounded-2xl sm:min-h-300 lg:min-h-111.75"
+          />
+        ) : (
+          <div className="grid gap-5 lg:flex lg:h-111.75">
+            <Link
+              href={displaySpotlight.href}
+              className="relative flex aspect-square h-full items-center justify-center overflow-hidden rounded-2xl border border-border transition-colors hover:border-brand"
+            >
+              {displaySpotlight.thumbnail_url ? (
+                <Image
+                  src={displaySpotlight.thumbnail_url}
+                  alt={displaySpotlight.name}
+                  width={620}
+                  height={620}
+                  className="h-full w-full object-contain"
+                />
+              ) : null}
+              <div className="absolute right-0 bottom-0 left-0 px-4 pt-12 pb-4 sm:px-5">
+                <div className="font-sans-condensed text-lg leading-tight font-black tracking-wider uppercase sm:text-xl lg:text-2xl">
+                  {displaySpotlight.name}
+                </div>
+              </div>
+            </Link>
+            <div className="grid h-full flex-1 grid-cols-2 grid-rows-2 gap-3 sm:gap-4 lg:gap-5">
+              {filteredProducts.length === 0 ? (
+                <p className="col-span-2 flex items-center justify-center py-12 text-sm text-muted-foreground">
+                  {t("emptyCategory")}
+                </p>
+              ) : (
+                filteredProducts.map((p) => (
+                  <ProductCard
+                    key={p.id}
+                    name={p.name}
+                    category={p.category}
+                    variants={p.variants}
+                    img={p.thumbnail_url ?? undefined}
+                    href={p.href}
+                  />
+                ))
+              )}
+            </div>
+          </div>
+        )}
       </Container>
     </section>
   );

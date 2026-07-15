@@ -1,6 +1,7 @@
 "use client";
 
 import type { PartnerLocation } from "@/api/stetsom/model";
+import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { cn } from "@/lib/utils";
 import {
   type Bounds,
@@ -12,7 +13,7 @@ import {
   isLikelyCep,
 } from "@/lib/geocode";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { LocateFixed, Search, X } from "lucide-react";
+import { LocateFixed, MapPin, Search, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -249,6 +250,17 @@ export function ServiceCentersExplorer({
   }, []);
 
   const virtualRows = rowVirtualizer.getVirtualItems();
+
+  if (serviceCenters.length === 0) {
+    return (
+      <PublicEmptyState
+        icon={MapPin}
+        title={t("emptyNetworkTitle")}
+        description={t("emptyNetworkDescription")}
+        className="mt-8 min-h-225 lg:min-h-150"
+      />
+    );
+  }
 
   return (
     <div className="mt-8 flex flex-col gap-6 lg:flex-row lg:gap-8">
