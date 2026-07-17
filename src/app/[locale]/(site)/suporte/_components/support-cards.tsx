@@ -72,7 +72,7 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
                   "hover:border-b-brand",
                 )}
               >
-                <div className="flex size-10 items-center justify-center rounded-xs bg-muted">
+                <div className="flex items-center justify-center rounded-xs">
                   <Icon strokeWidth={1.5} size={36} className="text-brand" />
                 </div>
                 <div>
