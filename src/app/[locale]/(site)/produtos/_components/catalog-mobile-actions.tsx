@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { SlidersHorizontal, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { CompareTriggerButton } from "./product-compare/compare-trigger-button";
@@ -41,14 +42,14 @@ export function CatalogMobileActions({
   return (
     <div className="mb-4 flex gap-2 lg:hidden">
       <CompareTriggerButton variant="mobile" className="flex-1" />
-      <button
-        type="button"
+      <Button
+        variant="outline"
         onClick={onToggleFilters}
-        className="flex h-10 shrink-0 items-center gap-2 border border-border px-3 text-sm text-muted-foreground"
+        className="h-9 shrink-0 gap-2 rounded-sm px-3 text-sm"
       >
         <SlidersHorizontal size={14} />
         {t("filters")}
-      </button>
+      </Button>
     </div>
   );
 }

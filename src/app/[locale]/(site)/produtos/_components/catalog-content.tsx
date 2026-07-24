@@ -11,7 +11,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CatalogHero } from "./catalog-hero";
 import { CatalogCategoryBar } from "./catalog-category-bar";
 import { CatalogMobileActions } from "./catalog-mobile-actions";
-import { CatalogMobileFilter } from "./catalog-mobile-filter";
+import { CatalogMobileFilterSheet } from "./catalog-mobile-filter-sheet";
 import { CatalogProductsList } from "./catalog-products-list";
 import { CatalogSidebar } from "./catalog-sidebar";
 import {
@@ -213,18 +213,29 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
             <div className="min-w-0 flex-1">
               {!isCatalogEmpty && (
                 <CatalogMobileActions
-                  onToggleFilters={() => setSidebarOpen((value) => !value)}
+                  onToggleFilters={() => setSidebarOpen(true)}
                 />
               )}
 
-              {sidebarOpen && !isCatalogEmpty && (
-                <CatalogMobileFilter
-                  categoryOptions={categoryOptions}
+              {!isCatalogEmpty && (
+                <CatalogMobileFilterSheet
+                  open={sidebarOpen}
+                  onOpenChange={setSidebarOpen}
+                  search={searchInput}
+                  onSearchChange={setSearchInput}
                   activeCategory={activeCategory}
-                  onCategoryChange={(slug) => {
-                    setActiveCategory(slug);
-                    setSidebarOpen(false);
-                  }}
+                  onCategoryChange={setActiveCategory}
+                  activeLine={activeLine}
+                  onLineChange={setActiveLine}
+                  sort={sort}
+                  onSortChange={setSort}
+                  onClear={clearFilters}
+                  typeFilterOptions={typeFilterOptions}
+                  productLines={productLines}
+                  showDiscontinued={showDiscontinued}
+                  onShowDiscontinuedChange={setShowDiscontinued}
+                  showExport={showExport}
+                  onShowExportChange={setShowExport}
                 />
               )}
 

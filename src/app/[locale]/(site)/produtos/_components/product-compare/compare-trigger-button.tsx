@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { GitCompareArrows } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCompareContext } from "./compare-provider";
@@ -24,7 +25,10 @@ export function CompareTriggerButton({
       variant="brand-outline"
       size={variant === "sidebar" ? "md" : "default"}
       onClick={() => enterCompareMode()}
-      className={className}
+      className={cn(
+        className,
+        variant === "mobile" && "h-9 rounded-sm text-sm",
+      )}
     >
       <GitCompareArrows size={variant === "sidebar" ? 18 : 14} />
       {t("compare")}

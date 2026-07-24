@@ -9,6 +9,8 @@ Fonte no código:
 - Helpers e tipos: `src/lib/utils/product.ts`
 - Modelos da API: `@/api/stetsom/model` (`ProductBlock`, `ProductBlockType`, `ProductBlockData`)
 
+A decisão de escopar o CSS customizado por instância de bloco está registrada em [ADR 0006](adrs/0006-scoped-css-per-block-instance.md).
+
 ## Envelope do bloco
 
 Todo bloco compartilha a mesma estrutura. Apenas `data` varia por tipo.

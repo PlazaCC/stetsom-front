@@ -12,6 +12,21 @@ const CONTACT_INFO_ICONS = {
   whatsapp: Phone,
 } as const;
 
+function getContactHref(key: string, value: string): string {
+  switch (key) {
+    case "email":
+      return `mailto:${value}`;
+    case "phone":
+      return `tel:${value}`;
+    case "whatsapp": {
+      const digits = value.replace(/\D/g, "");
+      return `https://wa.me/${digits}`;
+    }
+    default:
+      return "#";
+  }
+}
+
 type SupportContactData = {
   label?: string;
   title?: string;
@@ -86,9 +101,18 @@ export function SupportContact({
                         <p className="font-sans text-xs font-medium tracking-wide text-text-subtle uppercase">
                           {label}
                         </p>
-                        <p className="font-sans text-sm font-semibold text-brand-dark">
+                        <a
+                          href={getContactHref(key, value ?? "")}
+                          target={key === "whatsapp" ? "_blank" : undefined}
+                          rel={
+                            key === "whatsapp"
+                              ? "noopener noreferrer"
+                              : undefined
+                          }
+                          className="font-sans text-sm font-semibold text-brand-dark transition-colors duration-200 hover:text-brand"
+                        >
                           {value}
-                        </p>
+                        </a>
                       </div>
                     </div>
                   );

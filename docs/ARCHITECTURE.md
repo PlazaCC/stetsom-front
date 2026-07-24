@@ -154,12 +154,13 @@ CMS admin styles are scoped under a `.cms` CSS class applied in `src/app/admin/l
 
 ## Design Decisions
 
-**Orval for generated types and hooks.** stetsom-api serves an OpenAPI spec at `/docs`. Orval generates TypeScript types and React Query hooks, keeping the frontend contract in sync with the backend.
+Architectural rationale is recorded as ADRs in `docs/adrs/`:
 
-**BFF passthrough proxy.** The browser cannot read HttpOnly cookies. The BFF reads the cookie server-side and injects the Bearer header without business logic.
-
-**Server Components by default.** App Router Server Components fetch data at render time. `"use client"` is added only where interactivity requires it.
-
-**Mock fixtures via provider pattern.** Fixtures in `src/lib/mock/*.ts` conform
-to Orval-generated types and provide an offline local fallback. Hosted develop
-and PR previews use the dedicated API.
+| ADR | Decision |
+| --- | --- |
+| [0001](adrs/0001-orval-generated-api-client.md) | Orval-generated API client |
+| [0002](adrs/0002-bff-passthrough-proxy.md) | BFF passthrough proxy |
+| [0003](adrs/0003-server-components-by-default.md) | Server Components by default |
+| [0004](adrs/0004-mock-fixtures-provider-pattern.md) | Mock fixtures via provider pattern |
+| [0005](adrs/0005-sentry-without-replay-or-profiling.md) | Sentry without Session Replay or Profiling |
+| [0006](adrs/0006-scoped-css-per-block-instance.md) | Scoped CSS per block instance |
