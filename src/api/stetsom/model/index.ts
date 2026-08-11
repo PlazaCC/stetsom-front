@@ -78,6 +78,7 @@ export * from "./createLegalPageInput";
 export * from "./createLegalPageInputInput";
 export * from "./createLegalPageInputInputTitle";
 export * from "./createLegalPageInputTitle";
+export * from "./deleteApiLibraryIdVersionsVersionId200";
 export * from "./departmentConfigItem";
 export * from "./departmentConfigItemInput";
 export * from "./faqItem";

@@ -7,6 +7,7 @@ import {
   FileText,
   Images,
   LibraryBig,
+  Paperclip,
   Shapes,
   Video,
   type LucideIcon,
@@ -20,7 +21,8 @@ export type Tab =
   | "catalogs"
   | "certificates"
   | "image-packs"
-  | "category-icons";
+  | "category-icons"
+  | "others";
 export type ViewMode = "grid" | "table";
 
 /** Items per page. Numbered pagination lives at the bottom of the scroll area. */
@@ -38,6 +40,16 @@ export interface TabConfig {
 
 const IMAGE_ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/svg+xml";
 const PDF_ACCEPT = "application/pdf";
+/** Office and plain-text documents — mirrors the OTHER mimes allowed by the API. */
+const DOCUMENT_ACCEPT = [
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "text/plain",
+  "text/csv",
+  ".doc,.docx,.xls,.xlsx,.txt,.csv",
+].join(",");
 
 export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
   photos: {
@@ -115,6 +127,16 @@ export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
     emptyIcon: Shapes,
     searchPlaceholder: "Buscar por nome",
     libraryType: LibraryAssetType.CATEGORY_ICON,
+  },
+  others: {
+    accept: DOCUMENT_ACCEPT,
+    uploadLabel: "Enviar documentos",
+    emptyLabel: "Nenhum documento encontrado.",
+    emptyDescription:
+      "Envie documentos para vinculá-los nas páginas legais e institucionais.",
+    emptyIcon: Paperclip,
+    searchPlaceholder: "Buscar por nome",
+    libraryType: LibraryAssetType.OTHER,
   },
 };
 
