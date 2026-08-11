@@ -4,26 +4,16 @@ import {
   AdminInput,
   AdminLabel,
 } from "@/app/admin/_components/crud/admin-input";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { CalendarDays, Tag } from "lucide-react";
-import {
-  deriveLocales,
-  type WizardAction,
-  type WizardState,
-} from "./wizard-store";
+import { CalendarDays, Languages, Tag } from "lucide-react";
+import type { WizardAction, WizardLocale, WizardState } from "./wizard-store";
 
-const LOCALE_LABELS: Record<string, string> = {
-  pt: "Português",
-  en: "Inglês",
-  es: "Espanhol",
-};
-
-function formatLocales(locales: string[]): string {
-  const labels = locales.map((l) => LOCALE_LABELS[l] ?? l);
-  if (labels.length === 1) return `${labels[0]}.`;
-  if (labels.length === 2) return `${labels[0]} e ${labels[1]}.`;
-  return `${labels.slice(0, -1).join(", ")} e ${labels.at(-1)}.`;
-}
+const LOCALES: { id: WizardLocale; label: string }[] = [
+  { id: "pt", label: "Português" },
+  { id: "en", label: "Inglês" },
+  { id: "es", label: "Espanhol" },
+];
 
 interface StepPublishProps {
   state: WizardState;
@@ -36,8 +26,28 @@ export function StepPublish({
   dispatch,
   compact = false,
 }: StepPublishProps) {
-  const locales = formatLocales(deriveLocales(state));
   const variations = state.variations.map((v) => v.label).join(", ");
+
+  /** pt is the fallback locale and is always published. */
+  function isPublished(locale: WizardLocale): boolean {
+    return locale === "pt" || state.available_locales.includes(locale);
+  }
+
+  /** A locale can only be published once its own product name is filled in. */
+  function canPublish(locale: WizardLocale): boolean {
+    return locale === "pt" || Boolean(state.name[locale]?.trim());
+  }
+
+  function toggleLocale(locale: WizardLocale, enabled: boolean) {
+    const next = enabled
+      ? [...state.available_locales, locale]
+      : state.available_locales.filter((l) => l !== locale);
+
+    dispatch({
+      type: "patch_info",
+      patch: { available_locales: [...new Set(next)] },
+    });
+  }
 
   return (
     <div>
@@ -84,12 +94,12 @@ export function StepPublish({
         <div>
           <AdminLabel className="flex items-center gap-1.5">
             <Tag className="size-4 text-muted-foreground" />
-            Status
+            Linha
           </AdminLabel>
           <div className="flex items-center gap-6 pt-2">
             {[
               { label: "Em linha", discontinued: false },
-              { label: "Fora de linha", discontinued: true },
+              { label: "Descontinuado", discontinued: true },
             ].map((opt) => (
               <label
                 key={opt.label}
@@ -126,8 +136,41 @@ export function StepPublish({
         </div>
 
         <div>
-          <p className="text-sm text-muted-foreground">Idiomas cadastrados</p>
-          <p className="mt-1 text-sm font-medium text-foreground">{locales}</p>
+          <AdminLabel className="flex items-center gap-1.5">
+            <Languages className="size-4 text-muted-foreground" />
+            Publicar nos idiomas
+          </AdminLabel>
+          <div className="flex flex-col gap-2 pt-2">
+            {LOCALES.map((loc) => {
+              const locked = loc.id === "pt";
+              const blocked = !canPublish(loc.id);
+
+              return (
+                <label
+                  key={loc.id}
+                  className={cn(
+                    "flex items-center gap-2 text-sm text-foreground",
+                    locked || blocked ? "cursor-not-allowed" : "cursor-pointer",
+                  )}
+                >
+                  <Switch
+                    size="sm"
+                    checked={isPublished(loc.id)}
+                    disabled={locked || blocked}
+                    onCheckedChange={(checked) => toggleLocale(loc.id, checked)}
+                  />
+                  <span className={cn(blocked && "text-muted-foreground")}>
+                    {loc.label}
+                  </span>
+                  {blocked && (
+                    <span className="text-xs text-muted-foreground">
+                      — preencha o nome em {loc.label.toLowerCase()}
+                    </span>
+                  )}
+                </label>
+              );
+            })}
+          </div>
         </div>
 
         <div>

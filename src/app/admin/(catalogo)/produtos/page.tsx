@@ -142,10 +142,10 @@ export default function AdminProdutos() {
     },
     {
       key: "is_discontinued",
-      header: "Em linha",
+      header: "Linha",
       render: (row) => (
         <span className="text-sm font-medium text-foreground">
-          {row.is_discontinued ? "Não" : "Sim"}
+          {row.is_discontinued ? "Descontinuado" : "Em linha"}
         </span>
       ),
     },

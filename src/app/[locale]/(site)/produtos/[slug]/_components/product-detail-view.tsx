@@ -17,6 +17,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ProductCard } from "@/components/ui/product-card";
+import { SpecValue } from "@/components/ui/spec-value";
+import { entriesForAttribute } from "@/lib/specs/matrix";
 import { cn } from "@/lib/utils";
 import { ChevronDown, GitCompareArrows, Smartphone } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -209,8 +211,15 @@ export function ProductDetailView({
   const firstVariantAttrs = sortedVariants[0]
     ? [...sortedVariants[0].attributes].sort((a, b) => a.order - b.order)
     : [];
+  // An attribute may be listed more than once to build a matrix cell. The
+  // highlight strip is a single headline figure per attribute, so it keeps only
+  // the first occurrence — repeating one would also duplicate its React key.
   const highlights = firstVariantAttrs
-    .filter((attr) => product.highlight_attributes.includes(attr.attribute_id))
+    .filter(
+      (attr, i, list) =>
+        product.highlight_attributes.includes(attr.attribute_id) &&
+        list.findIndex((a) => a.attribute_id === attr.attribute_id) === i,
+    )
     .slice(0, 3);
   const allAttrKeys = sortedVariants.reduce<
     { attribute_id: string; attribute_name?: string | null }[]
@@ -487,19 +496,13 @@ export function ProductDetailView({
                   <span className="font-sans text-sm font-medium text-brand-dark capitalize">
                     {attribute_name ?? attribute_id}
                   </span>
-                  {sortedVariants.map((v) => {
-                    const attr = v.attributes.find(
-                      (a) => a.attribute_id === attribute_id,
-                    );
-                    return (
-                      <span
-                        key={v.variant_id}
-                        className="font-sans text-sm text-text-subtle"
-                      >
-                        {attr?.value || "—"}
-                      </span>
-                    );
-                  })}
+                  {sortedVariants.map((v) => (
+                    <SpecValue
+                      key={v.variant_id}
+                      entries={entriesForAttribute(v.attributes, attribute_id)}
+                      className="font-sans text-sm text-text-subtle"
+                    />
+                  ))}
                 </div>
               ))}
             </div>
@@ -537,7 +540,7 @@ export function ProductDetailView({
                   name={p.name}
                   category={p.category}
                   variants={p.variants}
-                  badge={p.is_discontinued ? "Discontinued" : undefined}
+                  badge={p.is_discontinued ? t("discontinued") : undefined}
                   img={p.thumbnail_url ?? undefined}
                   href={p.href}
                   variantDirection="column"

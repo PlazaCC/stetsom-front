@@ -95,6 +95,7 @@
     "emptyCategory": "No se encontraron productos en esta categoría.",
     "options": "Opciones",
     "showDiscontinued": "Mostrar descontinuados",
+    "discontinuedBadge": "Descontinuado",
     "showExport": "Productos de exportación",
     "compare": "Comparar productos",
     "compareSelect": "Seleccione 2 productos para comparar",

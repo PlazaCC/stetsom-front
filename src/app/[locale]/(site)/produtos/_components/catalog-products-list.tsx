@@ -52,6 +52,7 @@ export function CatalogProductsList({
             name={product.name}
             category={product.category}
             variants={product.variants}
+            badge={product.is_discontinued ? t("discontinuedBadge") : undefined}
             img={product.thumbnail_url ?? undefined}
             href={product.href}
             variantDirection="column"
