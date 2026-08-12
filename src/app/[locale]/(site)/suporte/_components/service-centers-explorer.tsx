@@ -24,12 +24,24 @@ const ServiceCenterMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="h-100 w-full animate-pulse rounded-2xl bg-muted lg:h-150" />
+      <div className="h-75 w-full animate-pulse rounded-2xl bg-muted sm:h-100 lg:h-150" />
     ),
   },
 );
 
-type GeoStatus = "idle" | "loading" | "denied";
+/**
+ * `denied` is the user refusing; `unavailable` covers a device with no fix and a
+ * page served over plain HTTP, where the API rejects outright; `timeout` is a fix
+ * that never arrived. They were previously collapsed into one "permission denied"
+ * message, which misreported the last two.
+ */
+type GeoStatus =
+  | "idle"
+  | "loading"
+  | "denied"
+  | "unavailable"
+  | "timeout"
+  | "unsupported";
 type NearbyPartner = PartnerLocation & { distance?: number };
 
 const GEO_OPTS: PositionOptions = {
@@ -76,11 +88,21 @@ export function ServiceCentersExplorer({
     setQuery(t("currentLocation"));
     setGeoStatus("idle");
   };
-  const handleGeoError = () => setGeoStatus("denied");
+  const handleGeoError = (err: GeolocationPositionError) => {
+    if (err.code === err.PERMISSION_DENIED) {
+      setGeoStatus("denied");
+      return;
+    }
+    if (err.code === err.TIMEOUT) {
+      setGeoStatus("timeout");
+      return;
+    }
+    setGeoStatus("unavailable");
+  };
 
   const requestLocation = () => {
     if (!("geolocation" in navigator)) {
-      setGeoStatus("denied");
+      setGeoStatus("unsupported");
       return;
     }
     setGeoStatus("loading");
@@ -90,6 +112,17 @@ export function ServiceCentersExplorer({
       GEO_OPTS,
     );
   };
+
+  const geoMessage =
+    geoStatus === "denied"
+      ? t("locationDenied")
+      : geoStatus === "timeout"
+        ? t("locationTimeout")
+        : geoStatus === "unavailable"
+          ? t("locationUnavailable")
+          : geoStatus === "unsupported"
+            ? t("locationUnsupported")
+            : null;
 
   const cepDigits = extractCepDigits(query);
   const cepComplete = cepDigits.length === 8;
@@ -205,32 +238,41 @@ export function ServiceCentersExplorer({
       );
   }, [serviceCenters, selectedLocation, userLocation]);
 
+  // The map can only plot partners that have coordinates, so the list is built
+  // from the same set — otherwise it would offer entries with no pin beside them.
+  const mappable = useMemo(
+    () => filtered.filter((p) => p.lat != null && p.lng != null),
+    [filtered],
+  );
+
+  /**
+   * Partners the CMS has no coordinates for. Surfaced as a count instead of being
+   * mixed into the list: they cannot be placed on the map, and hiding them
+   * silently would make a data gap look like an empty region.
+   */
+  const withoutCoordsCount = filtered.length - mappable.length;
+
   const visibleFiltered: NearbyPartner[] = useMemo(() => {
-    if (!viewportBounds) return filtered;
-    return filtered.filter(
+    if (!viewportBounds) return mappable;
+    return mappable.filter(
       (p) =>
-        p.lat == null ||
-        p.lng == null ||
-        (p.lat >= viewportBounds.south &&
-          p.lat <= viewportBounds.north &&
-          p.lng >= viewportBounds.west &&
-          p.lng <= viewportBounds.east),
+        p.lat != null &&
+        p.lng != null &&
+        p.lat >= viewportBounds.south &&
+        p.lat <= viewportBounds.north &&
+        p.lng >= viewportBounds.west &&
+        p.lng <= viewportBounds.east,
     );
-  }, [filtered, viewportBounds]);
+  }, [mappable, viewportBounds]);
 
   const reordered: NearbyPartner[] = useMemo(() => {
     if (selectedId) {
       const item = visibleFiltered.find((p) => p.id === selectedId);
       return item ? [item] : visibleFiltered;
     }
-    if (showAll) return filtered;
+    if (showAll) return mappable;
     return visibleFiltered;
-  }, [visibleFiltered, selectedId, showAll, filtered]);
-
-  const mappable = useMemo(
-    () => filtered.filter((p) => p.lat != null && p.lng != null),
-    [filtered],
-  );
+  }, [visibleFiltered, selectedId, showAll, mappable]);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const rowVirtualizer = useVirtualizer({
@@ -264,7 +306,10 @@ export function ServiceCentersExplorer({
 
   return (
     <div className="mt-8 flex flex-col gap-6 lg:flex-row lg:gap-8">
-      <div className="flex h-125 flex-col gap-3 lg:h-150 lg:w-96">
+      {/* On phones the map leads: the list is filtered by the visible area, so
+          burying the map under a tall list hides the control that drives it.
+          Desktop keeps the list on the left via `lg:order-*`. */}
+      <div className="order-2 flex h-100 flex-col gap-3 lg:order-1 lg:h-150 lg:w-96">
         <div className="relative">
           <div className="flex h-10 items-center gap-2 border border-border bg-white px-3">
             <Search size={14} className="shrink-0 text-icon-muted" />
@@ -330,16 +375,22 @@ export function ServiceCentersExplorer({
           </button>
           <span className="text-2xs text-text-subtle">
             {t("resultsCount", {
-              count: showAll ? filtered.length : visibleFiltered.length,
+              count: showAll ? mappable.length : visibleFiltered.length,
             })}
           </span>
         </div>
 
-        {geoStatus === "denied" && (
-          <p className="text-2xs text-text-subtle">{t("locationDenied")}</p>
+        {geoMessage && (
+          <p className="text-2xs text-text-subtle">{geoMessage}</p>
         )}
 
-        {filtered.length === 0 ? (
+        {withoutCoordsCount > 0 && (
+          <p className="text-2xs text-text-subtle">
+            {t("withoutCoordinates", { count: withoutCoordsCount })}
+          </p>
+        )}
+
+        {mappable.length === 0 ? (
           <p className="border border-border bg-white px-4 py-3 text-sm text-text-subtle">
             {t("noResults")}
           </p>
@@ -429,7 +480,7 @@ export function ServiceCentersExplorer({
         )}
       </div>
 
-      <div className="flex-1">
+      <div className="order-1 flex-1 lg:order-2">
         <ServiceCenterMap
           locations={mappable}
           searchLocation={searchLocation}
