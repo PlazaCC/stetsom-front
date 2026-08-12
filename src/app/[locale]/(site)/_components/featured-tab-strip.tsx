@@ -2,6 +2,7 @@
 
 import { Container } from "@/components/ui/container";
 import { cn } from "@/lib/utils";
+import { motion } from "motion/react";
 import type { NoveltyCategory } from "./build-novelties-by-category";
 
 interface FeaturedTabStripProps {
@@ -16,8 +17,11 @@ export function FeaturedTabStrip({
   onSelect,
 }: Readonly<FeaturedTabStripProps>) {
   return (
-    <Container className="flex scrollbar-none justify-center overflow-x-auto">
-      <div role="tablist" className="flex w-max items-center gap-6 lg:gap-8">
+    <Container className="flex scrollbar-none overflow-x-auto">
+      <div
+        role="tablist"
+        className="flex w-max items-center gap-6 lg:mx-auto lg:gap-8"
+      >
         {categories.map((category, index) => {
           const isActive = index === activeIndex;
           return (
@@ -28,13 +32,19 @@ export function FeaturedTabStrip({
               onClick={() => onSelect(index)}
               aria-selected={isActive}
               className={cn(
-                "shrink-0 border-b-2 pb-3 font-sans-condensed text-sm font-bold tracking-wide uppercase transition-colors",
+                "relative shrink-0 px-2 pb-1.5 font-sans-condensed text-base font-semibold uppercase transition-colors",
                 isActive
-                  ? "border-brand text-brand-dark"
-                  : "border-transparent text-muted-foreground hover:text-foreground",
+                  ? "text-brand-dark"
+                  : "text-muted-foreground hover:text-foreground",
               )}
             >
               {category.name}
+              <motion.span
+                className="absolute inset-x-0 bottom-0 h-0.5 origin-center rounded-full bg-brand"
+                initial={false}
+                animate={{ scaleX: isActive ? 1 : 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              />
             </button>
           );
         })}
