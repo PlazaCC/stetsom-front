@@ -60,3 +60,6 @@ package-lock.json
 # Never ignore all of src/api — hand-written files (mutator, etc.) are required.
 # src/api/stetsom/model/
 # src/api/stetsom/endpoints/
+
+# local analysis docs — working notes, not meant to ship with the repo
+docs/analises/
