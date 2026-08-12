@@ -2,6 +2,7 @@
 
 import {
   deleteApiPartnerLocationsId,
+  getApiGeocodeSearch,
   getGetApiPartnerLocationsQueryKey,
   patchApiPartnerLocationsId,
   postApiPartnerLocations,
@@ -33,9 +34,11 @@ import {
 } from "@/app/admin/_components/crud/admin-row-actions";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
+import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { MapPin, Plus, Wrench } from "lucide-react";
+import { FileUp, MapPin, Plus, Wrench } from "lucide-react";
 import { useMemo, useState } from "react";
+import { ImportPartnersDialog } from "./import-partners-dialog";
 
 const PAGE_SIZE = 10;
 
@@ -88,6 +91,53 @@ function PartnerLocationForm({
   const [website, setWebsite] = useState(location?.website ?? "");
   const [region, setRegion] = useState(location?.region ?? "");
   const [specialty, setSpecialty] = useState(location?.specialty ?? "");
+  // Coordinates place the partner on the public map. They are filled by the CEP
+  // lookup rather than typed, but stay editable for a manual correction.
+  const [lat, setLat] = useState<number | null>(location?.lat ?? null);
+  const [lng, setLng] = useState<number | null>(location?.lng ?? null);
+  const [lookup, setLookup] = useState<{
+    status: "idle" | "loading" | "notFound" | "noCoords" | "error" | "done";
+    message?: string;
+  }>({ status: "idle" });
+
+  async function handleZipLookup() {
+    const digits = zip.replace(/\D/g, "");
+    if (digits.length !== 8) {
+      setLookup({ status: "error", message: "Informe um CEP de 8 dígitos." });
+      return;
+    }
+
+    setLookup({ status: "loading" });
+    try {
+      const { results } = await getApiGeocodeSearch({ q: digits });
+      const hit = results[0];
+      if (!hit) {
+        setLookup({ status: "notFound", message: "CEP não encontrado." });
+        return;
+      }
+
+      setCity(hit.city);
+      setState(hit.state);
+      // The endpoint resolves the address via ViaCEP but only has coordinates
+      // for cities present in its static dataset, so they can come back absent.
+      if (hit.lat !== undefined && hit.lng !== undefined) {
+        setLat(hit.lat);
+        setLng(hit.lng);
+        setLookup({ status: "done", message: hit.displayName });
+        return;
+      }
+      setLookup({
+        status: "noCoords",
+        message:
+          "Endereço encontrado, mas sem coordenadas para esta cidade. Preencha manualmente para aparecer no mapa.",
+      });
+    } catch {
+      setLookup({
+        status: "error",
+        message: "Não foi possível consultar o CEP agora.",
+      });
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -98,6 +148,8 @@ function PartnerLocationForm({
       city,
       state,
       zip,
+      lat,
+      lng,
       phone: phone || null,
       email: email || null,
       website: website || null,
@@ -161,11 +213,23 @@ function PartnerLocationForm({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <AdminLabel>CEP</AdminLabel>
-              <Input
-                required
-                value={zip}
-                onChange={(e) => setZip(e.target.value)}
-              />
+              <div className="flex gap-2">
+                <Input
+                  required
+                  value={zip}
+                  onChange={(e) => setZip(e.target.value)}
+                  placeholder="00000-000"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleZipLookup}
+                  disabled={lookup.status === "loading"}
+                  className="shrink-0"
+                >
+                  {lookup.status === "loading" ? "Buscando…" : "Buscar"}
+                </Button>
+              </div>
             </div>
             <div>
               <AdminLabel>
@@ -197,6 +261,55 @@ function PartnerLocationForm({
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+          </div>
+          <div className="rounded-md border border-border p-3">
+            <div className="mb-2 flex items-center gap-1.5">
+              <MapPin className="size-3.5 text-muted-foreground" />
+              <AdminLabel className="mb-0">Coordenadas do mapa</AdminLabel>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <AdminLabel>Latitude</AdminLabel>
+                <Input
+                  type="number"
+                  step="any"
+                  value={lat ?? ""}
+                  onChange={(e) =>
+                    setLat(
+                      e.target.value === "" ? null : Number(e.target.value),
+                    )
+                  }
+                  placeholder="-23.5505"
+                />
+              </div>
+              <div>
+                <AdminLabel>Longitude</AdminLabel>
+                <Input
+                  type="number"
+                  step="any"
+                  value={lng ?? ""}
+                  onChange={(e) =>
+                    setLng(
+                      e.target.value === "" ? null : Number(e.target.value),
+                    )
+                  }
+                  placeholder="-46.6333"
+                />
+              </div>
+            </div>
+            <p
+              className={cn(
+                "mt-2 text-xs",
+                lookup.status === "error" || lookup.status === "notFound"
+                  ? "text-destructive"
+                  : "text-muted-foreground",
+              )}
+            >
+              {lookup.message ??
+                (lat !== null && lng !== null
+                  ? "Preenchidas. Use “Buscar” no CEP para atualizar."
+                  : "Sem coordenadas, o parceiro não aparece no mapa. Use “Buscar” no CEP.")}
+            </p>
           </div>
           <div>
             <AdminLabel>Website</AdminLabel>
@@ -258,6 +371,7 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const [formOpen, setFormOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [editing, setEditing] = useState<PartnerLocation | undefined>();
   const [deleteTarget, setDeleteTarget] = useState<
     PartnerLocation | undefined
@@ -412,6 +526,21 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
       {tab.createLabel}
     </button>
   );
+
+  const headerActions = (
+    <div className="flex items-center gap-2">
+      <button
+        type="button"
+        onClick={() => setImportOpen(true)}
+        className="flex items-center gap-1.5 rounded-md border border-border px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+      >
+        <FileUp className="size-4" />
+        Importar planilha
+      </button>
+      {createAction}
+    </div>
+  );
+
   const hasActiveFilters = Boolean(query.trim() || stateFilter);
 
   return (
@@ -432,7 +561,7 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
           }
           emptyIcon={activeType === "REPRESENTATIVE" ? MapPin : Wrench}
           emptyAction={hasActiveFilters ? undefined : createAction}
-          action={createAction}
+          action={headerActions}
           toolbar={
             <div className="flex flex-wrap items-center gap-3">
               <AdminSearchInput
@@ -477,6 +606,15 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
           onClose={closeForm}
           onSave={handleSave}
           isPending={createMutation.isPending || updateMutation.isPending}
+        />
+      )}
+
+      {importOpen && (
+        <ImportPartnersDialog
+          type={activeType}
+          noun={tab.noun}
+          onClose={() => setImportOpen(false)}
+          onImported={invalidate}
         />
       )}
 

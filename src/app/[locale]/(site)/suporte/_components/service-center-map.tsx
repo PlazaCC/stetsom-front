@@ -102,7 +102,10 @@ export function ServiceCenterMap({
     };
 
     emitBounds();
-    map.on("move", emitBounds);
+    // `moveend`, not `move`: the latter fires every animation frame, so each
+    // 800ms flyTo pushed dozens of bounds updates and re-filtered the list
+    // mid-flight. The list only needs the viewport once it settles.
+    map.on("moveend", emitBounds);
     mapRef.current = map;
     const markers = markersRef.current;
 
@@ -238,7 +241,7 @@ export function ServiceCenterMap({
   return (
     <div
       ref={containerRef}
-      className="h-100 w-full overflow-hidden rounded-2xl bg-muted lg:h-150"
+      className="h-75 w-full overflow-hidden rounded-2xl bg-muted sm:h-100 lg:h-150"
     />
   );
 }

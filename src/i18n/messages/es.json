@@ -229,7 +229,11 @@
       "showAll": "Mostrar todos",
       "filterByMap": "Filtrar por mapa",
       "emptyNetworkTitle": "Atención donde la necesite",
-      "emptyNetworkDescription": "Póngase en contacto con nuestro equipo para recibir orientación sobre asistencia técnica."
+      "emptyNetworkDescription": "Póngase en contacto con nuestro equipo para recibir orientación sobre asistencia técnica.",
+      "locationTimeout": "La búsqueda de tu ubicación tardó demasiado. Inténtalo de nuevo.",
+      "locationUnavailable": "Tu ubicación no está disponible en este dispositivo.",
+      "locationUnsupported": "Este navegador no ofrece ubicación.",
+      "withoutCoordinates": "{count, plural, one {# asistencia sin ubicación registrada} other {# asistencias sin ubicación registrada}}"
     },
     "faq": {
       "noAnswer": "¿No encontró lo que busca? Póngase en contacto con nuestro equipo de soporte."

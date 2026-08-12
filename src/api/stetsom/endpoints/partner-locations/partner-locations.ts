@@ -23,6 +23,8 @@ import type {
   PartnerLocation,
   PatchApiPartnerLocationsIdBody,
   PostApiPartnerLocationsBody,
+  PostApiPartnerLocationsImport200,
+  PostApiPartnerLocationsImportBody,
 } from "../../model";
 
 import { orvalClient } from "../../orval-client";
@@ -185,6 +187,176 @@ export function usePostApiPartnerLocations<
 } {
   const queryOptions = getPostApiPartnerLocationsQueryOptions(
     postApiPartnerLocationsBody,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Two-pass import. With dry_run=true (the default) nothing is written and the report shows what would happen. Rows whose name already exists are skipped, never overwritten. Coordinates come from the sheet when present, otherwise from the city dataset.
+ * @summary Import partner locations from CSV
+ */
+export const postApiPartnerLocationsImport = (
+  postApiPartnerLocationsImportBody: PostApiPartnerLocationsImportBody,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<PostApiPartnerLocationsImport200>({
+    url: `/api/partner-locations/import`,
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    data: postApiPartnerLocationsImportBody,
+    signal,
+  });
+};
+
+export const getPostApiPartnerLocationsImportQueryKey = (
+  postApiPartnerLocationsImportBody?: PostApiPartnerLocationsImportBody,
+) => {
+  return [
+    "POST",
+    `/api/partner-locations/import`,
+    postApiPartnerLocationsImportBody,
+  ] as const;
+};
+
+export const getPostApiPartnerLocationsImportQueryOptions = <
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsImport>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportBody: PostApiPartnerLocationsImportBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsImport>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getPostApiPartnerLocationsImportQueryKey(postApiPartnerLocationsImportBody);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof postApiPartnerLocationsImport>>
+  > = ({ signal }) =>
+    postApiPartnerLocationsImport(postApiPartnerLocationsImportBody, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof postApiPartnerLocationsImport>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostApiPartnerLocationsImportQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postApiPartnerLocationsImport>>
+>;
+export type PostApiPartnerLocationsImportQueryError = ApiErrorPayload;
+
+export function usePostApiPartnerLocationsImport<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsImport>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportBody: PostApiPartnerLocationsImportBody,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsImport>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postApiPartnerLocationsImport>>,
+          TError,
+          Awaited<ReturnType<typeof postApiPartnerLocationsImport>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsImport<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsImport>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportBody: PostApiPartnerLocationsImportBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsImport>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postApiPartnerLocationsImport>>,
+          TError,
+          Awaited<ReturnType<typeof postApiPartnerLocationsImport>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsImport<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsImport>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportBody: PostApiPartnerLocationsImportBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsImport>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Import partner locations from CSV
+ */
+
+export function usePostApiPartnerLocationsImport<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsImport>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportBody: PostApiPartnerLocationsImportBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsImport>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getPostApiPartnerLocationsImportQueryOptions(
+    postApiPartnerLocationsImportBody,
     options,
   );
 

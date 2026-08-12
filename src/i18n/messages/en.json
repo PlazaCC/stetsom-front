@@ -229,7 +229,11 @@
       "showAll": "Show all",
       "filterByMap": "Filter by map",
       "emptyNetworkTitle": "Support wherever you need it",
-      "emptyNetworkDescription": "Contact our team for help finding authorized service."
+      "emptyNetworkDescription": "Contact our team for help finding authorized service.",
+      "locationTimeout": "Locating you took too long. Please try again.",
+      "locationUnavailable": "Your location is not available on this device.",
+      "locationUnsupported": "This browser does not provide location.",
+      "withoutCoordinates": "{count, plural, one {# service center without a registered location} other {# service centers without a registered location}}"
     },
     "faq": {
       "noAnswer": "Didn't find what you're looking for? Contact our support team."
