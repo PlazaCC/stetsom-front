@@ -10,6 +10,7 @@ export interface PublicVariantAttrInput {
   attribute_id: string;
   attribute_name?: string;
   value: string;
+  description?: string;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991

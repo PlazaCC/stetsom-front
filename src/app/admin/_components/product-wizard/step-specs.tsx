@@ -62,6 +62,10 @@ export function StepSpecs({
 }: StepSpecsProps) {
   const [locale, setLocale] = useState<SpecLocale>("pt");
 
+  // Templates are scoped to the product's category — the list stays empty until
+  // one is picked, so the combobox has nothing to apply before that.
+  const hasCategory = Boolean(state.category_id);
+
   const active =
     state.variations.find((v) => v.id === state.activeVariationId) ??
     state.variations[0]!;
@@ -112,7 +116,14 @@ export function StepSpecs({
             });
           }}
         >
-          <ComboboxInput placeholder="Aplicar Template" />
+          <ComboboxInput
+            disabled={!hasCategory}
+            placeholder={
+              hasCategory
+                ? "Aplicar Template"
+                : "Selecione uma categoria primeiro"
+            }
+          />
           <ComboboxContent>
             <ComboboxEmpty>No items found.</ComboboxEmpty>
             <ComboboxList>

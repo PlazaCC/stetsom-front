@@ -25,6 +25,8 @@ import { AssetTypeIcon } from "./asset-type-icon";
 import { AssetVersionsTab } from "./asset-versions-tab";
 import { assetAltText, getCurrentVersionUrl, isImageAsset } from "./lib";
 
+// The file name is not editable: it comes from the uploaded file and shapes the
+// object key in the bucket, so a rename here would only desync the two.
 const formSchema = z.object({
   alt: z.object({
     pt: z.string(),

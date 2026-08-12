@@ -17,6 +17,7 @@ import type {
 } from "@/api/stetsom/model";
 import { toApiLocale } from "@/lib/api/i18n-utils";
 import Image from "next/image";
+import { entriesForAttribute, entriesToInlineText } from "@/lib/specs/matrix";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -333,12 +334,17 @@ function UnifiedCompareMobile({
 
           {/* Spec rows */}
           {allAttrKeys.map(({ attribute_id, attribute_name }, i) => {
-            const valA = activeA?.attributes?.find(
-              (a: PublicVariantAttr) => a.attribute_id === attribute_id,
-            );
-            const valB = activeB?.attributes?.find(
-              (a: PublicVariantAttr) => a.attribute_id === attribute_id,
-            );
+            // An attribute may be listed more than once (matrix cell). This
+            // view is too dense to stack them, so they join on one line rather
+            // than being silently dropped.
+            const valA =
+              entriesToInlineText(
+                entriesForAttribute(activeA?.attributes, attribute_id),
+              ) || "—";
+            const valB =
+              entriesToInlineText(
+                entriesForAttribute(activeB?.attributes, attribute_id),
+              ) || "—";
             return (
               <div
                 key={attribute_id}
@@ -351,10 +357,10 @@ function UnifiedCompareMobile({
                   {attribute_name ?? attribute_id}
                 </span>
                 <span className="px-1 py-1.5 text-center font-sans text-2xs text-text-subtle">
-                  {valA?.value || "—"}
+                  {valA}
                 </span>
                 <span className="border-l border-border px-1 py-1.5 text-center font-sans text-2xs text-text-subtle">
-                  {valB?.value || "—"}
+                  {valB}
                 </span>
               </div>
             );

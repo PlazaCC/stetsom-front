@@ -52,6 +52,7 @@ export function buildPreviewModel(
         attribute_id: s.attribute_id || s.id,
         attribute_name: resolveAttrName(s),
         value: pick(s.value),
+        description: pick(s.description) || undefined,
         order: s.order,
         highlighted: s.highlighted,
       })),

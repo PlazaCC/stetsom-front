@@ -12,6 +12,7 @@ import {
   ListChecks,
   Mail,
   Package,
+  Paperclip,
   Scale,
   Settings,
   Shapes,
@@ -161,6 +162,12 @@ export const config: Record<string, AppRouteStaticData> = {
         icon: Shapes,
         exact: true,
       },
+      {
+        href: "/admin/biblioteca/outros",
+        label: "Outros",
+        icon: Paperclip,
+        exact: true,
+      },
     ],
   },
   "/admin/biblioteca/fotos": {
@@ -194,6 +201,12 @@ export const config: Record<string, AppRouteStaticData> = {
     hideInBreadcrumb: true,
   },
   "/admin/biblioteca/packs": {
+    label: "Biblioteca",
+    icon: Archive,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/biblioteca/outros": {
     label: "Biblioteca",
     icon: Archive,
     section: "admin",

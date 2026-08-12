@@ -8,11 +8,6 @@
 import type { PatchApiLibraryIdBodyAlt } from "./patchApiLibraryIdBodyAlt";
 
 export type PatchApiLibraryIdBody = {
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  filename?: string;
   /** @nullable */
   alt?: PatchApiLibraryIdBodyAlt;
   tags?: string[];

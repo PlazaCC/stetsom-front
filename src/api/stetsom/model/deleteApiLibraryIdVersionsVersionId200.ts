@@ -7,6 +7,6 @@
  */
 import type { LibraryAsset } from "./libraryAsset";
 
-export type PostApiLibraryIdVersions201 = {
+export type DeleteApiLibraryIdVersionsVersionId200 = {
   asset: LibraryAsset;
 };
