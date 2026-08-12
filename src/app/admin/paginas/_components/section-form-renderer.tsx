@@ -3,6 +3,8 @@
 import type { I18nString } from "@/api/stetsom/model";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { I18nRichText } from "@/app/admin/_components/crud/i18n-rich-text";
+import { blockRichTextProfile } from "@/components/editor/rich-text/profiles";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -55,7 +57,20 @@ interface FieldProps {
 
 function Field({ field, data, onChange }: FieldProps) {
   switch (field.kind) {
-    case "i18n":
+    case "i18n": {
+      // Rich-text fields are identified by key, matching what the API
+      // sanitizes — see `BLOCK_RICH_TEXT_KEYS`.
+      const profile = blockRichTextProfile(field.key);
+      if (profile) {
+        return (
+          <I18nRichText
+            label={field.label}
+            profile={profile}
+            value={asI18n(data[field.key])}
+            onChange={(v) => onChange({ ...data, [field.key]: v })}
+          />
+        );
+      }
       return (
         <I18nInput
           label={field.label}
@@ -64,6 +79,7 @@ function Field({ field, data, onChange }: FieldProps) {
           onChange={(v) => onChange({ ...data, [field.key]: v })}
         />
       );
+    }
 
     case "text":
       return (

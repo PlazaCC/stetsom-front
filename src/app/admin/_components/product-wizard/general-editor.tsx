@@ -1,6 +1,7 @@
 "use client";
 
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { I18nRichText } from "@/app/admin/_components/crud/i18n-rich-text";
 import {
   AdminInput,
   AdminLabel,
@@ -158,9 +159,8 @@ export function GeneralEditor({
         </Field>
       </div>
 
-      <I18nInput
+      <I18nRichText
         label="Descrição"
-        multiline
         value={state.description}
         onChange={(description) =>
           dispatch({ type: "patch_info", patch: { description } })

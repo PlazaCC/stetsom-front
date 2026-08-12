@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ProductCard } from "@/components/ui/product-card";
 import { SpecValue } from "@/components/ui/spec-value";
+import { RichText } from "@/components/ui/rich-text";
 import { entriesForAttribute } from "@/lib/specs/matrix";
 import { cn } from "@/lib/utils";
 import { ChevronDown, GitCompareArrows, Smartphone } from "lucide-react";
@@ -325,14 +326,11 @@ export function ProductDetailView({
               >
                 {product.name}
               </h1>
-              {product.description && (
-                <p
-                  {...ed("description")}
-                  className="mt-4 text-sm text-text-subtle lg:text-base"
-                >
-                  {product.description}
-                </p>
-              )}
+              <RichText
+                {...ed("description")}
+                html={product.description}
+                className="mt-4 text-sm text-text-subtle lg:text-base [&_p:not(:first-child)]:mt-3"
+              />
 
               {sortedVariants.length > 1 && (
                 <div className="mt-4 flex flex-wrap items-center gap-2">

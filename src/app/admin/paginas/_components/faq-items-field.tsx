@@ -15,6 +15,7 @@ import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-d
 import { AdminEmptyState } from "@/app/admin/_components/crud/admin-empty-state";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { I18nRichText } from "@/app/admin/_components/crud/i18n-rich-text";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
 import { Button } from "@/components/ui/button";
 import { Check, CircleHelp, Plus, Trash2, X } from "lucide-react";
@@ -149,9 +150,8 @@ export function FaqItemsField({ field }: Readonly<FaqItemsFieldProps>) {
                     value={editQ}
                     onChange={setEditQ}
                   />
-                  <I18nInput
+                  <I18nRichText
                     label="Resposta"
-                    multiline
                     value={editA}
                     onChange={setEditA}
                   />
@@ -217,12 +217,7 @@ export function FaqItemsField({ field }: Readonly<FaqItemsFieldProps>) {
       {isAdding ? (
         <div className="space-y-2 rounded border border-dashed border-border p-3">
           <I18nInput label="Pergunta" value={newQ} onChange={setNewQ} />
-          <I18nInput
-            multiline
-            label="Resposta"
-            value={newA}
-            onChange={setNewA}
-          />
+          <I18nRichText label="Resposta" value={newA} onChange={setNewA} />
           <div className="flex gap-2">
             <Button size="sm" onClick={handleAdd}>
               <Check className="size-4" />

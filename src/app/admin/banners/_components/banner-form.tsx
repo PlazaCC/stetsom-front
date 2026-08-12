@@ -9,6 +9,9 @@ import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-picker";
+import type { LibraryPickedAsset } from "@/app/admin/_components/crud/library-asset-ref";
+import { ProductCombobox } from "@/app/admin/_components/crud/product-combobox";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -19,16 +22,15 @@ import {
 } from "@/components/ui/select";
 import type { Banner, BannerStatus, I18nString } from "@/api/stetsom/model";
 import { toDisplayLocale } from "@/lib/api/i18n-utils";
-import { Image, X } from "lucide-react";
-import { useRef } from "react";
+import { Image } from "lucide-react";
 
 /**
- * Banner form state - UI layer representation
+ * Banner form state — UI layer representation.
  *
  * API mapping:
  * - locale -> available_locales[0] (singular to array)
- * - desktop_image_url/mobile_image_url -> preview URLs (not sent to API)
- * - File objects handled separately in parent component
+ * - *_image_library_id -> sent to the API
+ * - *_image_url -> preview only; the picker resolves it from the id when absent
  */
 export interface BannerFormState {
   name: string;
@@ -42,7 +44,9 @@ export interface BannerFormState {
   display_until: string;
   order: number;
   locale: string;
+  desktop_image_library_id: string;
   desktop_image_url: string;
+  mobile_image_library_id: string;
   mobile_image_url: string;
 }
 
@@ -58,7 +62,9 @@ export const EMPTY_FORM_STATE: BannerFormState = {
   display_until: "",
   order: 0,
   locale: "pt-BR",
+  desktop_image_library_id: "",
   desktop_image_url: "",
+  mobile_image_library_id: "",
   mobile_image_url: "",
 };
 
@@ -75,7 +81,10 @@ export function bannerToFormState(b: Banner): BannerFormState {
     display_until: b.display_until ? b.display_until.split("T")[0] : "",
     order: b.order ?? 0,
     locale: toDisplayLocale(b.available_locales?.[0] ?? "pt"),
+    // Only the ids are persisted — LibraryAssetPicker resolves the preview URLs.
+    desktop_image_library_id: b.desktop_image_library_id ?? "",
     desktop_image_url: "",
+    mobile_image_library_id: b.mobile_image_library_id ?? "",
     mobile_image_url: "",
   };
 }
@@ -93,76 +102,6 @@ export function formatDateRange(from?: string, until?: string): string {
   return `Até ${fmt(until!)}`;
 }
 
-function ImageUploadSlot({
-  url,
-  label,
-  accept = "image/*",
-  onFile,
-  onClear,
-}: {
-  url: string;
-  label: string;
-  accept?: string;
-  onFile: (file: File) => void;
-  onClear?: () => void;
-}) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    onFile(file);
-  }
-
-  return (
-    <div className="relative flex flex-col items-center justify-center gap-2 overflow-hidden rounded-md border border-dashed border-border bg-muted p-4">
-      {url ? (
-        <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={url}
-            alt={label}
-            className="h-28 w-full rounded object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
-          />
-          {onClear && (
-            <button
-              type="button"
-              onClick={onClear}
-              className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
-            >
-              <X className="size-3" />
-            </button>
-          )}
-        </>
-      ) : (
-        <div
-          className="flex cursor-pointer flex-col items-center gap-1"
-          onClick={() => inputRef.current?.click()}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
-          }}
-          role="button"
-          tabIndex={0}
-        >
-          {/* eslint-disable-next-line jsx-a11y/alt-text */}
-          <Image className="size-6 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">{label}</span>
-        </div>
-      )}
-      <input
-        ref={inputRef}
-        type="file"
-        accept={accept}
-        className="hidden"
-        onChange={handleFile}
-      />
-    </div>
-  );
-}
-
 interface BannerFormProps {
   draft: BannerFormState;
   isCreating: boolean;
@@ -171,12 +110,13 @@ interface BannerFormProps {
     key: keyof BannerFormState,
     value: string | I18nString,
   ) => void;
+  /** Sets the id and preview URL of one image slot in a single update. */
+  onImagePick: (
+    slot: "desktop" | "mobile",
+    asset: LibraryPickedAsset | null,
+  ) => void;
   onSave: () => void;
   onCancel: () => void;
-  onDesktopFile?: (file: File) => void;
-  onMobileFile?: (file: File) => void;
-  onClearDesktopFile?: () => void;
-  onClearMobileFile?: () => void;
   onDelete?: () => void;
   isDeleting?: boolean;
 }
@@ -186,12 +126,9 @@ export function BannerForm({
   isCreating,
   isSaving,
   onDraftChange,
+  onImagePick,
   onSave,
   onCancel,
-  onDesktopFile,
-  onMobileFile,
-  onClearDesktopFile,
-  onClearMobileFile,
   onDelete,
   isDeleting,
 }: BannerFormProps) {
@@ -236,12 +173,11 @@ export function BannerForm({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <AdminLabel>Produto associado (opcional)</AdminLabel>
-                  <Input
+                  <ProductCombobox
                     value={draft.product_id}
-                    onChange={(e) =>
-                      onDraftChange("product_id", e.target.value)
+                    onChange={(productId) =>
+                      onDraftChange("product_id", productId)
                     }
-                    placeholder="ID do produto"
                   />
                 </div>
                 <div>
@@ -374,46 +310,24 @@ export function BannerForm({
             <AdminFormSectionTitle title="Imagens" className="border-t" />
             <AdminFormSectionContent>
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <AdminLabel>Imagem desktop *</AdminLabel>
-                  <ImageUploadSlot
-                    url={draft.desktop_image_url}
-                    label="Clique para selecionar"
-                    onFile={(file) => {
-                      const previewUrl = URL.createObjectURL(file);
-                      onDraftChange("desktop_image_url", previewUrl);
-                      onDesktopFile?.(file);
-                    }}
-                    onClear={
-                      draft.desktop_image_url
-                        ? () => {
-                            onDraftChange("desktop_image_url", "");
-                            onClearDesktopFile?.();
-                          }
-                        : undefined
-                    }
-                  />
-                </div>
-                <div>
-                  <AdminLabel>Imagem mobile (opcional)</AdminLabel>
-                  <ImageUploadSlot
-                    url={draft.mobile_image_url}
-                    label="Clique para selecionar"
-                    onFile={(file) => {
-                      const previewUrl = URL.createObjectURL(file);
-                      onDraftChange("mobile_image_url", previewUrl);
-                      onMobileFile?.(file);
-                    }}
-                    onClear={
-                      draft.mobile_image_url
-                        ? () => {
-                            onDraftChange("mobile_image_url", "");
-                            onClearMobileFile?.();
-                          }
-                        : undefined
-                    }
-                  />
-                </div>
+                <LibraryAssetPicker
+                  label="Imagem desktop *"
+                  type="IMAGE"
+                  value={{
+                    library_id: draft.desktop_image_library_id,
+                    file_url: draft.desktop_image_url,
+                  }}
+                  onChange={(asset) => onImagePick("desktop", asset)}
+                />
+                <LibraryAssetPicker
+                  label="Imagem mobile (opcional)"
+                  type="IMAGE"
+                  value={{
+                    library_id: draft.mobile_image_library_id,
+                    file_url: draft.mobile_image_url,
+                  }}
+                  onChange={(asset) => onImagePick("mobile", asset)}
+                />
               </div>
             </AdminFormSectionContent>
           </AdminFormSection>

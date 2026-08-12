@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { RichText } from "@/components/ui/rich-text";
 import type { FaqItem } from "@/lib/page-blocks";
 
 export function FaqAccordion({ items }: { items: FaqItem[] }) {
@@ -21,7 +22,11 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
             <span className="font-medium">{q}</span>
           </AccordionTrigger>
           <AccordionContent>
-            <p className="text-sm text-text-subtle">{a}</p>
+            {/* Rich text — sanitized by the API at save time. */}
+            <RichText
+              html={a}
+              className="text-sm text-text-subtle [&_p:not(:first-child)]:mt-2"
+            />
           </AccordionContent>
         </AccordionItem>
       ))}

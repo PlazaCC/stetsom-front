@@ -1,8 +1,10 @@
+import { RichText } from "@/components/ui/rich-text";
 import { cn } from "@/lib/utils";
 
 interface SectionLabelProps {
   label: string;
   title?: string;
+  /** Rich text (inline profile) — sanitized by the API at save time. */
   subtitle?: string;
   dark?: boolean;
   className?: string;
@@ -40,16 +42,14 @@ export function SectionLabel({
           {title}
         </div>
       )}
-      {subtitle && (
-        <p
-          className={cn(
-            "mt-1 text-base font-medium",
-            dark ? "text-text-subtle-dark" : "text-text-subtle",
-          )}
-        >
-          {subtitle}
-        </p>
-      )}
+      <RichText
+        as="p"
+        html={subtitle}
+        className={cn(
+          "mt-1 text-base font-medium",
+          dark ? "text-text-subtle-dark" : "text-text-subtle",
+        )}
+      />
     </div>
   );
 }

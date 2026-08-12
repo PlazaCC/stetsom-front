@@ -1,7 +1,9 @@
+import { RichText } from "@/components/ui/rich-text";
 import { cn } from "@/lib/utils";
 
 interface BlockHeaderProps {
   title?: string;
+  /** Rich text — sanitized by the API at save time. */
   description?: string;
   /** BEM base class of the host block (e.g. `blockImage`). */
   classPrefix: string;
@@ -29,13 +31,10 @@ export function BlockHeader({
           {title}
         </h3>
       )}
-      {description && (
-        <p
-          className={`${classPrefix}__description mt-2 text-sm text-text-subtle`}
-        >
-          {description}
-        </p>
-      )}
+      <RichText
+        html={description}
+        className={`${classPrefix}__description mt-2 text-sm text-text-subtle [&_p:not(:first-child)]:mt-2`}
+      />
     </header>
   );
 }

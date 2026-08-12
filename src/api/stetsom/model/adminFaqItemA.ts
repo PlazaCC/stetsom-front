@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PatchApiProductsIdBodyDescription = {
+export type AdminFaqItemA = {
   /** @maxLength 20000 */
   pt: string;
   /** @maxLength 20000 */

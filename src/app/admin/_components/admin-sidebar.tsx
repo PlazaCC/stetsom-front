@@ -67,6 +67,28 @@ function isItemActive(pathname: string, href: string, exact?: boolean) {
   return exact ? pathname === href : pathname.startsWith(href);
 }
 
+/**
+ * Which build the operator is looking at. Both values are injected at build
+ * time by `next.config.ts`; the commit is empty on a local dev server, where
+ * the version alone is enough.
+ */
+function ReleaseTag() {
+  const version = process.env.NEXT_PUBLIC_APP_VERSION;
+  const commit = process.env.NEXT_PUBLIC_APP_COMMIT;
+
+  if (!version) return null;
+
+  return (
+    <p
+      className="px-2 py-1.5 text-2xs text-foreground/40"
+      title="Versão do CMS"
+    >
+      v{version}
+      {commit && ` · ${commit}`}
+    </p>
+  );
+}
+
 /** Single leaf link — Mantine NavLink look (active = blue subtle + blue text). */
 function NavLink({
   item,
@@ -222,6 +244,7 @@ export function AdminSidebar({
             <LogOut className="size-4 shrink-0" />
             Sair
           </button>
+          <ReleaseTag />
         </div>
 
         {/* Botão de fechar no topo para mobile */}

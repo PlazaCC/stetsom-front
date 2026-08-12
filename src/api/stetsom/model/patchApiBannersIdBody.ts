@@ -8,7 +8,6 @@
 import type { LocaleInput } from "./localeInput";
 import type { PatchApiBannersIdBodyStatus } from "./patchApiBannersIdBodyStatus";
 import type { PatchApiBannersIdBodyTitle } from "./patchApiBannersIdBodyTitle";
-import type { UploadFileInputInput } from "./uploadFileInputInput";
 
 export type PatchApiBannersIdBody = {
   /**
@@ -18,8 +17,13 @@ export type PatchApiBannersIdBody = {
   name?: string;
   /** @nullable */
   product_id?: string | null;
-  desktop_image?: UploadFileInputInput;
-  mobile_image?: UploadFileInputInput;
+  /** @minLength 1 */
+  desktop_image_library_id?: string;
+  /**
+   * @minLength 1
+   * @nullable
+   */
+  mobile_image_library_id?: string | null;
   /** @nullable */
   title?: PatchApiBannersIdBodyTitle;
   /**
