@@ -89,7 +89,7 @@ export function StepPublish({
           <div className="flex items-center gap-6 pt-2">
             {[
               { label: "Em linha", discontinued: false },
-              { label: "Fora de linha", discontinued: true },
+              { label: "Descontinuado", discontinued: true },
             ].map((opt) => (
               <label
                 key={opt.label}

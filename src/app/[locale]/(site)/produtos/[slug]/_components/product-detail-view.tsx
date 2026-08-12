@@ -537,7 +537,8 @@ export function ProductDetailView({
                   name={p.name}
                   category={p.category}
                   variants={p.variants}
-                  badge={p.is_discontinued ? "Discontinued" : undefined}
+                  badge={p.is_discontinued ? t("discontinued") : undefined}
+                  badgeTone="discontinued"
                   img={p.thumbnail_url ?? undefined}
                   href={p.href}
                   variantDirection="column"

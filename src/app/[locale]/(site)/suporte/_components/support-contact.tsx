@@ -4,6 +4,7 @@ import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { SectionLabel } from "@/components/ui/section-label";
 import { Mail, MessagesSquare, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
+import QRCode from "react-qr-code";
 import { ContactForm } from "./contact-form";
 
 function WhatsappIcon({
@@ -115,7 +116,7 @@ export function SupportContact({
                       key={key}
                       className="flex items-center gap-4 border border-border px-4 py-3"
                     >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-brand/10">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center">
                         <Icon size={26} className="text-brand" />
                       </div>
                       <div>
@@ -140,6 +141,25 @@ export function SupportContact({
                 })}
               </div>
             )}
+
+            {/* Desktop-only: scanning the code hands the chat off to the phone,
+                where wa.me actually opens the app. */}
+            {contactInfo?.whatsapp?.trim() && (
+              <div className="hidden items-center gap-4 border border-border p-4 lg:flex">
+                <div className="shrink-0 bg-white">
+                  <QRCode
+                    value={getContactHref("whatsapp", contactInfo.whatsapp)}
+                    size={96}
+                    bgColor="#ffffff"
+                    fgColor="#121212"
+                  />
+                </div>
+                <p className="text-sm text-text-subtle">
+                  {t("whatsappQrHint")}
+                </p>
+              </div>
+            )}
+
             {infoItems.length === 0 && (
               <PublicEmptyState
                 icon={MessagesSquare}

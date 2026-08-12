@@ -8,6 +8,8 @@ interface ProductCardProps {
   category: string;
   variants?: string[];
   badge?: string | null;
+  /** Visual tone of the status badge. "new" is the brand red, "discontinued" a neutral dark. */
+  badgeTone?: "new" | "discontinued";
   img?: string;
   href?: string;
   variantDirection?: "row" | "column";
@@ -25,6 +27,7 @@ export function ProductCard({
   category,
   variants,
   badge,
+  badgeTone = "new",
   img,
   href = "/produtos",
   variantDirection = "row",
@@ -55,7 +58,12 @@ export function ProductCard({
 
         {/* Status badge (e.g. NOVO, DESCONTINUADO) */}
         {badge && !compareMode && (
-          <span className="absolute top-2 left-2 rounded-sm bg-brand px-2 py-0.5 font-sans-condensed text-2xs leading-tight font-black text-white uppercase">
+          <span
+            className={cn(
+              "absolute top-2 left-2 rounded-sm px-2 py-0.5 font-sans-condensed text-2xs leading-tight font-black text-white uppercase",
+              badgeTone === "discontinued" ? "bg-brand-dark" : "bg-brand",
+            )}
+          >
             {badge}
           </span>
         )}
