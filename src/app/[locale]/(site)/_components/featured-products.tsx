@@ -23,6 +23,7 @@ export function FeaturedProducts({
   const t = useTranslations("Catalog");
   const swiperRef = useRef<SwiperClass | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const categoriesKey = categories.map((category) => category.slug).join(",");
   const isEmpty = categories.length === 0;
 
   return (
@@ -45,11 +46,13 @@ export function FeaturedProducts({
           />
         ) : (
           <Swiper
+            key={categoriesKey}
             modules={[A11y]}
             slidesPerView={1}
             spaceBetween={0}
             onSwiper={(swiper) => {
               swiperRef.current = swiper;
+              setActiveIndex(swiper.activeIndex);
             }}
             onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
           >

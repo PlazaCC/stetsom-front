@@ -1,9 +1,26 @@
 "use client";
 
-import type { I18nString } from "@/api/stetsom/model";
+import type { I18nString, ProductCardItem } from "@/api/stetsom/model";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxTrigger,
+  ComboboxValue,
+} from "@/components/ui/combobox";
 import {
   Select,
   SelectContent,
@@ -19,6 +36,7 @@ import { useGetApiCategories } from "@/api/stetsom";
 import { useGetApiProducts } from "@/api/stetsom";
 import type { FieldSpec } from "./section-field-spec";
 import { FaqItemsField } from "./faq-items-field";
+import { useEffect, useState } from "react";
 
 type Data = Record<string, unknown>;
 type Item = Record<string, unknown>;
@@ -178,6 +196,7 @@ function FeaturedTabsField({
     ? (data[field.key] as Array<{ category_id: string; product_ids: string[] }>)
     : [];
   const categories = categoriesQuery.data ?? [];
+  const showNoveltiesTab = data.show_novelties_tab === true;
 
   function setTabs(next: typeof tabs) {
     onChange({ ...data, [field.key]: next });
@@ -186,31 +205,57 @@ function FeaturedTabsField({
   return (
     <div className="space-y-4">
       <AdminLabel>{field.label}</AdminLabel>
-      {tabs.map((tab, index) => {
-        const category =
-          tab.category_id === "novidades"
-            ? { id: "novidades", name: "Novidades", slug: "novidades" }
-            : categories.find((item) => item.id === tab.category_id);
-        return (
-          <FeaturedTabEditor
-            key={`${tab.category_id}-${index}`}
-            tab={tab}
-            category={category}
-            categories={categories}
-            selectedCategoryIds={new Set(tabs.map((item) => item.category_id))}
-            onChange={(next) =>
-              setTabs(
-                tabs.map((item, itemIndex) =>
-                  itemIndex === index ? next : item,
-                ),
-              )
-            }
-            onRemove={() =>
-              setTabs(tabs.filter((_, itemIndex) => itemIndex !== index))
-            }
-          />
-        );
-      })}
+      <label className="flex items-start gap-3 rounded-md border border-border bg-muted/30 p-3">
+        <Checkbox
+          checked={showNoveltiesTab}
+          onCheckedChange={(checked) =>
+            onChange({ ...data, show_novelties_tab: checked === true })
+          }
+        />
+        <span className="space-y-0.5">
+          <span className="block text-sm font-medium">
+            Habilitar aba de Novidades
+          </span>
+          <span className="block text-xs text-muted-foreground">
+            Exibe automaticamente os 5 produtos publicados mais recentes.
+          </span>
+        </span>
+      </label>
+      <SortableList
+        items={tabs.map((tab, index) => ({
+          tab,
+          index,
+          key: `${tab.category_id}-${index}`,
+        }))}
+        getId={(item) => item.key}
+        onReorder={(items) => setTabs(items.map((item) => item.tab))}
+        renderItem={({ tab, index }, handle) => {
+          const category = categories.find(
+            (item) => item.id === tab.category_id,
+          );
+          return (
+            <FeaturedTabEditor
+              tab={tab}
+              category={category}
+              categories={categories}
+              selectedCategoryIds={
+                new Set(tabs.map((item) => item.category_id))
+              }
+              handle={handle}
+              onChange={(next) =>
+                setTabs(
+                  tabs.map((item, itemIndex) =>
+                    itemIndex === index ? next : item,
+                  ),
+                )
+              }
+              onRemove={() =>
+                setTabs(tabs.filter((_, itemIndex) => itemIndex !== index))
+              }
+            />
+          );
+        }}
+      />
       <button
         type="button"
         onClick={() => setTabs([...tabs, { category_id: "", product_ids: [] }])}
@@ -227,6 +272,7 @@ function FeaturedTabEditor({
   category,
   categories,
   selectedCategoryIds,
+  handle,
   onChange,
   onRemove,
 }: {
@@ -234,24 +280,46 @@ function FeaturedTabEditor({
   category?: { id: string; name: string; slug: string };
   categories: Array<{ id: string; name: string; slug: string }>;
   selectedCategoryIds: Set<string>;
+  handle: React.ReactNode;
   onChange: (tab: { category_id: string; product_ids: string[] }) => void;
   onRemove: () => void;
 }) {
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search.trim()), 350);
+    return () => clearTimeout(timer);
+  }, [search]);
   const productsQuery = useGetApiProducts({
-    category: category?.slug === "novidades" ? undefined : category?.slug,
+    category: category?.slug,
+    q: debouncedSearch || undefined,
     status: "PUBLISHED",
     page: 1,
     pageSize: 100,
     locale: "pt",
   });
-  const products = productsQuery.data?.items ?? [];
+  const selectedProductsQuery = useGetApiProducts({
+    category: category?.slug,
+    status: "PUBLISHED",
+    page: 1,
+    pageSize: 100,
+    locale: "pt",
+  });
+  const products = (productsQuery.data?.items ?? []).filter(
+    (product) => !tab.product_ids.includes(product.id),
+  );
+  const selectedProducts = selectedProductsQuery.data?.items ?? [];
   const selected = tab.product_ids
-    .map((id) => products.find((product) => product.id === id))
+    .map((id) => selectedProducts.find((product) => product.id === id))
     .filter(Boolean);
+  const hasReachedProductLimit = tab.product_ids.length >= 5;
 
   return (
     <div className="space-y-3 rounded-md border border-border bg-muted/30 p-4">
       <div className="flex items-center gap-2">
+        <div className="[&_button]:cursor-grab [&_button]:active:cursor-grabbing">
+          {handle}
+        </div>
         <Select
           value={tab.category_id}
           onValueChange={(categoryId) =>
@@ -264,10 +332,7 @@ function FeaturedTabEditor({
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            {[
-              { id: "novidades", name: "Novidades", slug: "novidades" },
-              ...categories,
-            ].map((item) => (
+            {categories.map((item) => (
               <SelectItem
                 key={item.id}
                 value={item.id}
@@ -291,34 +356,77 @@ function FeaturedTabEditor({
         </button>
       </div>
       {category && (
-        <Select
-          value=""
-          onValueChange={(productId) => {
-            if (
-              !productId ||
-              tab.product_ids.includes(productId) ||
-              (category?.slug !== "novidades" && tab.product_ids.length >= 5)
-            )
-              return;
-            onChange({ ...tab, product_ids: [...tab.product_ids, productId] });
+        <Combobox
+          items={products}
+          value={null}
+          itemToStringLabel={(product: ProductCardItem) => product.name}
+          inputValue={search}
+          onInputValueChange={setSearch}
+          onValueChange={(product: ProductCardItem | null) => {
+            if (!product || hasReachedProductLimit) return;
+            onChange({ ...tab, product_ids: [...tab.product_ids, product.id] });
+            setSearch("");
           }}
         >
-          <SelectTrigger>
-            <SelectValue placeholder="Adicionar produto publicado" />
-          </SelectTrigger>
-          <SelectContent>
-            {products.map((product) => (
-              <SelectItem
-                key={product.id}
-                value={product.id}
-                disabled={tab.product_ids.includes(product.id)}
-              >
-                {product.name}
-                {product.sku ? ` (${product.sku})` : ""}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          {hasReachedProductLimit ? (
+            <Tooltip>
+              <TooltipTrigger render={<span className="block" tabIndex={0} />}>
+                <Button
+                  variant="outline"
+                  disabled
+                  className="w-full justify-between font-normal"
+                >
+                  Adicionar produto publicado
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                Você atingiu o limite de 5 produtos nesta categoria.
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <ComboboxTrigger
+              render={
+                <Button
+                  variant="outline"
+                  className="w-full justify-between font-normal"
+                >
+                  <ComboboxValue>
+                    {() => "Adicionar produto publicado"}
+                  </ComboboxValue>
+                </Button>
+              }
+            />
+          )}
+          <ComboboxContent>
+            <ComboboxInput
+              showTrigger={false}
+              placeholder="Buscar por nome ou SKU"
+            />
+            <ComboboxEmpty>Nenhum produto encontrado.</ComboboxEmpty>
+            <ComboboxList>
+              {(product: ProductCardItem) => (
+                <ComboboxItem key={product.id} value={product}>
+                  <span className="flex items-center gap-2">
+                    <span className="size-8 shrink-0 overflow-hidden rounded bg-muted">
+                      {product.thumbnail_url && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={product.thumbnail_url}
+                          alt=""
+                          className="size-full object-cover"
+                        />
+                      )}
+                    </span>
+                    <span className="truncate">
+                      {product.name}
+                      {product.sku ? ` (${product.sku})` : ""}
+                    </span>
+                  </span>
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
       )}
       <SortableList
         items={selected.map((product) => product!).filter(Boolean)}
@@ -329,6 +437,16 @@ function FeaturedTabEditor({
         renderItem={(product, handle) => (
           <div className="flex items-center gap-2 rounded border border-border bg-card px-2 py-1.5 text-sm">
             {handle}
+            <span className="size-11 shrink-0 overflow-hidden rounded bg-muted">
+              {product.thumbnail_url && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={product.thumbnail_url}
+                  alt=""
+                  className="size-full object-cover"
+                />
+              )}
+            </span>
             <span className="truncate">{product.name}</span>
             <button
               type="button"
@@ -348,9 +466,7 @@ function FeaturedTabEditor({
         )}
       />
       <p className="text-xs text-muted-foreground">
-        {category?.slug === "novidades"
-          ? "Selecione os produtos. Eles serão exibidos por ordem de publicação, dos mais recentes aos mais antigos."
-          : "Selecione de 1 a 5 produtos. A ordem define destaque e grade."}
+        Selecione de 1 a 5 produtos. A ordem define destaque e grade.
       </p>
     </div>
   );

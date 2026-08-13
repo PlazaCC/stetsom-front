@@ -88,7 +88,7 @@ export function bannerToFormState(b: Banner): BannerFormState {
   };
 }
 
-function ProductReferenceField({
+export function ProductReferenceField({
   value,
   onChange,
 }: {
@@ -195,6 +195,16 @@ function ProductReferenceField({
                 ) : (
                   <span className="size-4" />
                 )}
+                <div className="size-8 shrink-0 overflow-hidden rounded bg-muted">
+                  {product.thumbnail_url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={product.thumbnail_url}
+                      alt=""
+                      className="size-full object-cover"
+                    />
+                  )}
+                </div>
                 <span className="min-w-0 text-sm">
                   <span className="block truncate">{product.name}</span>
                   <span className="block text-xs text-muted-foreground">
@@ -296,6 +306,10 @@ export function BannerForm({
   onDelete,
   isDeleting,
 }: BannerFormProps) {
+  const [destinationType, setDestinationType] = useState<"product" | "link">(
+    draft.product_id ? "product" : "link",
+  );
+
   return (
     <AdminPageLayout
       footer={
@@ -334,40 +348,65 @@ export function BannerForm({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <AdminLabel>Produto associado (opcional)</AdminLabel>
-                  <ProductReferenceField
-                    value={draft.product_id}
-                    onChange={(value) => onDraftChange("product_id", value)}
-                  />
-                </div>
-                <div>
-                  <AdminLabel>URL de destino para produto</AdminLabel>
-                  <Input
-                    value={draft.link_url}
-                    onChange={(e) => onDraftChange("link_url", e.target.value)}
-                    placeholder="/produtos/st-4000eq"
-                  />
-                </div>
+              <div>
+                <AdminLabel>Destino do banner</AdminLabel>
+                <Select
+                  value={destinationType}
+                  onValueChange={(value) => {
+                    if (value === "product") {
+                      setDestinationType("product");
+                      onDraftChange("href", "");
+                    } else {
+                      setDestinationType("link");
+                      onDraftChange("product_id", "");
+                      onDraftChange("link_url", "");
+                    }
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="product">Associar produto</SelectItem>
+                    <SelectItem value="link">Link personalizado</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div>
-                <AdminLabel>Link personalizado (opcional)</AdminLabel>
-                <Input
-                  type="url"
-                  value={draft.href}
-                  onChange={(e) => onDraftChange("href", e.target.value)}
-                  placeholder="https://exemplo.com/promocao"
-                />
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Use este campo para links externos. Mutuamente exclusivo com
-                  produto.
-                </p>
-              </div>
+              {destinationType === "product" ? (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <AdminLabel>Produto associado</AdminLabel>
+                    <ProductReferenceField
+                      value={draft.product_id}
+                      onChange={(value) => onDraftChange("product_id", value)}
+                    />
+                  </div>
+                  <div>
+                    <AdminLabel>Parâmetros da URL do produto</AdminLabel>
+                    <Input
+                      value={draft.link_url}
+                      onChange={(e) =>
+                        onDraftChange("link_url", e.target.value)
+                      }
+                      placeholder="?utm_source=home"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <AdminLabel>Link personalizado</AdminLabel>
+                  <Input
+                    type="url"
+                    value={draft.href}
+                    onChange={(e) => onDraftChange("href", e.target.value)}
+                    placeholder="https://exemplo.com/promocao"
+                  />
+                </div>
+              )}
 
               <I18nInput
-                label="Título do banner (opcional)"
+                label="Título do banner"
                 value={draft.title}
                 onChange={(title) => onDraftChange("title", title)}
                 placeholder="Texto que aparece sobre o banner"
@@ -375,7 +414,7 @@ export function BannerForm({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <AdminLabel>Etiqueta (opcional)</AdminLabel>
+                  <AdminLabel>Etiqueta</AdminLabel>
                   <Input
                     value={draft.label}
                     onChange={(e) => onDraftChange("label", e.target.value)}
@@ -488,7 +527,7 @@ export function BannerForm({
                   />
                 </div>
                 <div>
-                  <AdminLabel>Imagem mobile (opcional)</AdminLabel>
+                  <AdminLabel>Imagem mobile</AdminLabel>
                   <LibraryAssetPicker
                     value={
                       draft.mobile_image_library_id

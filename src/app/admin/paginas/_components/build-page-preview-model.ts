@@ -83,23 +83,13 @@ function buildPreviewNovelties(
           product_ids?: string[];
         }>)
       : [];
-  return tabs.flatMap((tab) => {
-    const category =
-      tab.category_id === "novidades"
-        ? { id: "novidades", name: "Novidades", slug: "novidades" }
-        : categories.find((item) => item.id === tab.category_id);
+  const configuredTabs = tabs.flatMap((tab) => {
+    const category = categories.find((item) => item.id === tab.category_id);
     const products = Array.isArray(tab.product_ids)
       ? tab.product_ids.flatMap((id) =>
           availableProducts.filter((product) => product.id === id),
         )
       : [];
-    if (tab.category_id === "novidades") {
-      products.sort(
-        (a, b) =>
-          availableProducts.findIndex((product) => product.id === a.id) -
-          availableProducts.findIndex((product) => product.id === b.id),
-      );
-    }
     if (!category || products.length === 0) return [];
     return [
       {
@@ -110,6 +100,19 @@ function buildPreviewNovelties(
       },
     ];
   });
+  const data = (block?.data as Record<string, unknown>) ?? {};
+  if (data.show_novelties_tab !== true) return configuredTabs;
+  const newest = availableProducts.slice(0, 5);
+  if (newest.length === 0) return configuredTabs;
+  return [
+    {
+      slug: "novidades",
+      name: "Novidades",
+      spotlight: newest[0]!,
+      grid: newest.slice(1),
+    },
+    ...configuredTabs,
+  ];
 }
 
 export function buildPagePreviewModel(

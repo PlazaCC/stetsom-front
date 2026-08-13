@@ -116,9 +116,9 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
     {
       section_id: "featured",
       type: "TEXT",
-      label: "Novidades",
+      label: "Destaques",
       description:
-        "Configure as categorias e produtos publicados exibidos na Home.",
+        "Configure as categorias e os produtos publicados exibidos na Home.",
       icon: List,
       kind: "editable",
       fields: [

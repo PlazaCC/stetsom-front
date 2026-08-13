@@ -4,6 +4,11 @@ import { SortableList } from "@/app/admin/_components/crud/sortable-list";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Combobox,
   ComboboxContent,
   ComboboxEmpty,
@@ -116,6 +121,7 @@ export function SpecTable({
         ...s,
         attribute_id: attribute?.id ?? "",
         attribute_name: attribute?.name,
+        highlighted: attribute?.type === "MATRIX" ? false : s.highlighted,
       })),
     });
   }
@@ -187,6 +193,16 @@ export function SpecTable({
         onReorder={(reordered) => onChange(flatten(reordered))}
         renderItem={(group, handle) => {
           const isHighlighted = group.specs.some((s) => s.highlighted);
+          const attribute = attributes.find((a) => a.id === group.attribute_id);
+          const isMatrix =
+            attribute?.type === "MATRIX" || group.specs.length > 1;
+          const highlightDisabledReason = !group.attribute_id
+            ? "Selecione um atributo para marcar como destaque."
+            : isMatrix
+              ? "Atributos com múltiplas linhas não podem ser destacados."
+              : !isHighlighted && highlightCount >= maxHighlights
+                ? `Você pode destacar no máximo ${maxHighlights} atributos.`
+                : null;
           // An attribute belongs to exactly one group, so the ones already in
           // use elsewhere are not offered again.
           const takenElsewhere = new Set(
@@ -266,12 +282,25 @@ export function SpecTable({
                   <span className="text-2xs text-muted-foreground uppercase">
                     Destaque
                   </span>
-                  <ToggleSwitch
-                    checked={isHighlighted}
-                    onChange={(checked) => setHighlighted(group, checked)}
-                    disabled={!isHighlighted && highlightCount >= maxHighlights}
-                    aria-label="Marcar como destaque"
-                  />
+                  {highlightDisabledReason ? (
+                    <Tooltip>
+                      <TooltipTrigger render={<span tabIndex={0} />}>
+                        <ToggleSwitch
+                          checked={isHighlighted}
+                          onChange={(checked) => setHighlighted(group, checked)}
+                          disabled
+                          aria-label="Marcar como destaque"
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>{highlightDisabledReason}</TooltipContent>
+                    </Tooltip>
+                  ) : (
+                    <ToggleSwitch
+                      checked={isHighlighted}
+                      onChange={(checked) => setHighlighted(group, checked)}
+                      aria-label="Marcar como destaque"
+                    />
+                  )}
                   <button
                     type="button"
                     aria-label="Remover especificação"
@@ -289,7 +318,7 @@ export function SpecTable({
                     <div
                       className={cn(
                         "grid min-w-0 flex-1 gap-2",
-                        compact ? "grid-cols-1" : "grid-cols-2",
+                        compact || !isMatrix ? "grid-cols-1" : "grid-cols-2",
                       )}
                     >
                       <Input
@@ -299,18 +328,20 @@ export function SpecTable({
                         }
                         placeholder="Título — ex: 1 x 3500W"
                       />
-                      <Input
-                        value={spec.description?.[locale] ?? ""}
-                        onChange={(e) =>
-                          setLineField(
-                            group,
-                            spec.id,
-                            "description",
-                            e.target.value,
-                          )
-                        }
-                        placeholder="Descrição (opcional) — ex: 1 OHM"
-                      />
+                      {isMatrix && (
+                        <Input
+                          value={spec.description?.[locale] ?? ""}
+                          onChange={(e) =>
+                            setLineField(
+                              group,
+                              spec.id,
+                              "description",
+                              e.target.value,
+                            )
+                          }
+                          placeholder="Descrição — ex: 1 OHM"
+                        />
+                      )}
                     </div>
                     <button
                       type="button"
@@ -326,14 +357,34 @@ export function SpecTable({
                   </div>
                 ))}
 
-                <button
-                  type="button"
-                  onClick={() => addLine(group)}
-                  className="flex w-fit items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
-                >
-                  <Plus className="size-3.5" />
-                  Adicionar linha
-                </button>
+                {isHighlighted ? (
+                  <Tooltip>
+                    <TooltipTrigger
+                      render={<span className="w-fit" tabIndex={0} />}
+                    >
+                      <button
+                        type="button"
+                        disabled
+                        className="flex w-fit items-center gap-1 text-xs font-medium text-muted-foreground opacity-50"
+                      >
+                        <Plus className="size-3.5" />
+                        Adicionar linha
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Remova o destaque para adicionar mais linhas.
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => addLine(group)}
+                    className="flex w-fit items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    <Plus className="size-3.5" />
+                    Adicionar linha
+                  </button>
+                )}
               </div>
             </div>
           );

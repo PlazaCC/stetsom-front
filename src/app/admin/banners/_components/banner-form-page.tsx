@@ -70,13 +70,14 @@ export function BannerFormPage(props: Props) {
   }
 
   function buildPayload(): PostApiBannersBody {
+    const isProductDestination = Boolean(draft.product_id);
     return {
       name: draft.name,
       product_id: draft.product_id || null,
       desktop_image_library_id: draft.desktop_image_library_id,
       mobile_image_library_id: draft.mobile_image_library_id || null,
-      link_url: draft.link_url || null,
-      href: draft.href || null,
+      link_url: isProductDestination ? draft.link_url || null : null,
+      href: isProductDestination ? null : draft.href || null,
       title: draft.title.pt ? draft.title : undefined,
       label: draft.label || null,
       order: draft.order ?? 0,
@@ -88,13 +89,14 @@ export function BannerFormPage(props: Props) {
   }
 
   function buildUpdatePayload(): PatchApiBannersIdBody {
+    const isProductDestination = Boolean(draft.product_id);
     return {
       name: draft.name || undefined,
       product_id: draft.product_id || null,
       desktop_image_library_id: draft.desktop_image_library_id || undefined,
       mobile_image_library_id: draft.mobile_image_library_id || null,
-      link_url: draft.link_url || null,
-      href: draft.href || null,
+      link_url: isProductDestination ? draft.link_url || null : null,
+      href: isProductDestination ? null : draft.href || null,
       title: draft.title.pt ? draft.title : undefined,
       label: draft.label || null,
       order: draft.order ?? undefined,
