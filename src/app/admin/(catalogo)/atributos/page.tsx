@@ -26,6 +26,7 @@ import {
   postApiAttributes,
   useGetApiAttributes,
   type Attribute,
+  type AttributeType,
   type I18nString,
   type PatchApiAttributesIdBody,
   type PostApiAttributesBody,
@@ -46,10 +47,11 @@ function AttributeForm({
   isPending: boolean;
 }) {
   const [name, setName] = useState<I18nString>(attribute?.name ?? { pt: "" });
+  const [type, setType] = useState<AttributeType>(attribute?.type ?? "TEXT");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSave({ name });
+    onSave({ name, type });
   }
 
   return (
@@ -62,6 +64,17 @@ function AttributeForm({
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <I18nInput label="Nome" required value={name} onChange={setName} />
+          <label className="space-y-1.5 text-sm font-medium">
+            Tipo
+            <select
+              className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+              value={type}
+              onChange={(event) => setType(event.target.value as AttributeType)}
+            >
+              <option value="TEXT">Texto</option>
+              <option value="MATRIX">Matriz</option>
+            </select>
+          </label>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
@@ -131,6 +144,15 @@ export default function AdminAtributosPage() {
   }
 
   const columns: AdminTableColumn<Attribute>[] = [
+    {
+      key: "type",
+      header: "Tipo",
+      render: (a) => (
+        <span className="text-muted-foreground">
+          {a.type === "MATRIX" ? "Matriz" : "Texto"}
+        </span>
+      ),
+    },
     {
       key: "name.pt",
       header: "Nome (PT)",

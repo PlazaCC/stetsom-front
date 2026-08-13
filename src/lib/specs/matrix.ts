@@ -1,8 +1,7 @@
 /**
  * Reading the technical specifications table.
  *
- * An attribute becomes a stacked matrix cell by being **listed more than once**
- * on the same variant — there is no type flag to set. Each line carries its own
+ * MATRIX attributes are rendered as stacked cells. Each line carries its own
  * title and an optional description shown smaller beneath it:
  *
  *   Potência Máxima @ 14,4V   →   "1 x 3500W"  /  "1 OHM"
@@ -25,6 +24,7 @@ type AttributeLike = {
   order: number;
   value: string;
   description?: string | null;
+  attribute_type?: "TEXT" | "MATRIX";
 };
 
 /**

@@ -187,7 +187,6 @@ export function SpecTable({
         onReorder={(reordered) => onChange(flatten(reordered))}
         renderItem={(group, handle) => {
           const isHighlighted = group.specs.some((s) => s.highlighted);
-          const isMatrix = group.specs.length > 1;
           // An attribute belongs to exactly one group, so the ones already in
           // use elsewhere are not offered again.
           const takenElsewhere = new Set(
@@ -319,7 +318,7 @@ export function SpecTable({
                       onClick={() => removeLine(group, spec.id)}
                       className={cn(
                         "shrink-0 rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
-                        !isMatrix && "invisible",
+                        group.specs.length === 1 && "invisible",
                       )}
                     >
                       <X className="size-3.5" />

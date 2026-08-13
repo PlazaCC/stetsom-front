@@ -5,6 +5,7 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { AdminFaqItemInputA } from "./adminFaqItemInputA";
 import type { I18nStringInput } from "./i18nStringInput";
 
 export interface AdminFaqItemInput {
@@ -15,7 +16,7 @@ export interface AdminFaqItemInput {
    */
   order: number;
   q: I18nStringInput;
-  a: I18nStringInput;
+  a: AdminFaqItemInputA;
   created_at: string;
   updated_at: string;
 }

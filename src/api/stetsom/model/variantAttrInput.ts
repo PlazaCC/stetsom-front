@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { I18nStringInput } from "./i18nStringInput";
+import type { VariantAttrInputAttributeType } from "./variantAttrInputAttributeType";
 import type { VariantAttrInputDescription } from "./variantAttrInputDescription";
 import type { VariantAttrInputValue } from "./variantAttrInputValue";
 
@@ -21,4 +22,5 @@ export interface VariantAttrInput {
    */
   order: number;
   highlighted?: boolean;
+  attribute_type?: VariantAttrInputAttributeType;
 }

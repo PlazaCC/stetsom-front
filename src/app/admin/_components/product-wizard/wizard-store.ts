@@ -327,13 +327,6 @@ export function wizardReducer(
         next.line_id = "";
         next.template_id = "";
       }
-      // A locale can only stay published while its name is filled in — clearing
-      // the name unpublishes it here rather than letting the API reject the save.
-      if ("name" in action.patch) {
-        next.available_locales = next.available_locales.filter(
-          (locale) => locale === "pt" || Boolean(next.name[locale]?.trim()),
-        );
-      }
       return next;
     }
 

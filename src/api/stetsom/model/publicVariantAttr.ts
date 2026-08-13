@@ -5,6 +5,7 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { PublicVariantAttrAttributeType } from "./publicVariantAttrAttributeType";
 
 export interface PublicVariantAttr {
   attribute_id: string;
@@ -17,4 +18,5 @@ export interface PublicVariantAttr {
    */
   order: number;
   highlighted: boolean;
+  attribute_type?: PublicVariantAttrAttributeType;
 }

@@ -7,6 +7,7 @@
  */
 import type { I18nString } from "./i18nString";
 import type { ProductBlock } from "./productBlock";
+import type { ProductDescription } from "./productDescription";
 import type { ProductFile } from "./productFile";
 import type { ProductImage } from "./productImage";
 import type { ProductStatus } from "./productStatus";
@@ -18,7 +19,8 @@ export interface Product {
   sku?: string | null;
   name: I18nString;
   slug: I18nString;
-  description?: I18nString | null;
+  /** @nullable */
+  description?: ProductDescription;
   status: ProductStatus;
   is_discontinued: boolean;
   /** @nullable */
