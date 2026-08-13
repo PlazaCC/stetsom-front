@@ -10,6 +10,8 @@ import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout"
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { Input } from "@/components/ui/input";
+import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-picker";
+import type { LibraryPickedAsset } from "@/app/admin/_components/crud/library-asset-ref";
 import {
   Select,
   SelectContent,
@@ -18,18 +20,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Banner, BannerStatus, I18nString } from "@/api/stetsom/model";
-import { useGetApiProductsAdmin } from "@/api/stetsom";
+import {
+  useGetApiProductsAdmin,
+  useGetApiProductsAdminId,
+  useGetApiLibraryId,
+} from "@/api/stetsom";
+import type { CmsProductRow } from "@/api/stetsom/model";
+import { currentAssetUrl } from "@/app/admin/_components/crud/library-asset-ref";
 import { toDisplayLocale } from "@/lib/api/i18n-utils";
-import { Image, X } from "lucide-react";
-import { useRef } from "react";
+import { Image, Check, ChevronDown, X } from "lucide-react";
+import { useEffect, useState } from "react";
 
 /**
  * Banner form state - UI layer representation
  *
  * API mapping:
  * - locale -> available_locales[0] (singular to array)
- * - desktop_image_url/mobile_image_url -> preview URLs (not sent to API)
- * - File objects handled separately in parent component
+ * - library ids are the canonical image references sent to the API
  */
 export interface BannerFormState {
   name: string;
@@ -43,8 +50,8 @@ export interface BannerFormState {
   display_until: string;
   order: number;
   locale: string;
-  desktop_image_url: string;
-  mobile_image_url: string;
+  desktop_image_library_id: string;
+  mobile_image_library_id: string;
 }
 
 export const EMPTY_FORM_STATE: BannerFormState = {
@@ -59,8 +66,8 @@ export const EMPTY_FORM_STATE: BannerFormState = {
   display_until: "",
   order: 0,
   locale: "pt-BR",
-  desktop_image_url: "",
-  mobile_image_url: "",
+  desktop_image_library_id: "",
+  mobile_image_library_id: "",
 };
 
 export function bannerToFormState(b: Banner): BannerFormState {
@@ -76,8 +83,8 @@ export function bannerToFormState(b: Banner): BannerFormState {
     display_until: b.display_until ? b.display_until.split("T")[0] : "",
     order: b.order ?? 0,
     locale: toDisplayLocale(b.available_locales?.[0] ?? "pt"),
-    desktop_image_url: "",
-    mobile_image_url: "",
+    desktop_image_library_id: b.desktop_image_library_id,
+    mobile_image_library_id: b.mobile_image_library_id ?? "",
   };
 }
 
@@ -88,26 +95,167 @@ function ProductReferenceField({
   value: string;
   onChange: (value: string) => void;
 }) {
-  const { data } = useGetApiProductsAdmin({ page: 1, pageSize: 100 });
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [loadedProducts, setLoadedProducts] = useState<CmsProductRow[]>([]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query.trim());
+      setPage(1);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [query]);
+  const { data, isLoading, isError } = useGetApiProductsAdmin(
+    { page, pageSize: 20, q: debouncedQuery || undefined },
+    { query: { enabled: open } },
+  );
+  const { data: selectedProduct } = useGetApiProductsAdminId(value, {
+    query: { enabled: Boolean(value) && !open },
+  });
   const products = data?.items ?? [];
-  const selected = products.find((product) => product.id === value);
+  useEffect(() => {
+    if (!data) return;
+    const timer = setTimeout(() => {
+      setLoadedProducts((current) =>
+        page === 1
+          ? data.items
+          : [
+              ...current,
+              ...data.items.filter(
+                (item) => !current.some((existing) => existing.id === item.id),
+              ),
+            ],
+      );
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [data, page]);
+  const hasMore = Boolean(data && page < data.totalPages);
+  const selected =
+    products.find((product) => product.id === value) ??
+    selectedProduct?.product;
+  const selectedName = selected
+    ? typeof selected.name === "string"
+      ? selected.name
+      : selected.name.pt
+    : "";
+  const selectedSku = selected && "sku" in selected ? selected.sku : null;
 
   return (
-    <Select value={value} onValueChange={(next) => onChange(next ?? "")}>
-      <SelectTrigger className="w-full">
-        <SelectValue placeholder="Selecione um produto">
-          {selected?.name ??
-            (value ? "Produto selecionado" : "Selecione um produto")}
-        </SelectValue>
-      </SelectTrigger>
-      <SelectContent>
-        {products.map((product) => (
-          <SelectItem key={product.id} value={product.id}>
-            {product.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div className="relative">
+      <button
+        type="button"
+        className="flex h-9 w-full items-center justify-between rounded-md border border-border bg-card px-3 text-left text-sm"
+        onClick={() => setOpen((current) => !current)}
+      >
+        <span
+          className={selected ? "text-foreground" : "text-muted-foreground"}
+        >
+          {selected
+            ? `${selectedName}${selectedSku ? ` · ${selectedSku}` : ""}`
+            : "Selecione um produto"}
+        </span>
+        <ChevronDown className="size-4 text-muted-foreground" />
+      </button>
+      {open && (
+        <div className="absolute z-20 mt-1 w-full rounded-md border border-border bg-card p-2 shadow-lg">
+          <Input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Buscar por nome ou SKU"
+            autoFocus
+          />
+          <div className="mt-2 max-h-64 overflow-y-auto">
+            {isLoading && (
+              <p className="p-3 text-sm text-muted-foreground">Carregando...</p>
+            )}
+            {isError && (
+              <p className="p-3 text-sm text-destructive">
+                Não foi possível carregar produtos.
+              </p>
+            )}
+            {!isLoading && !isError && products.length === 0 && (
+              <p className="p-3 text-sm text-muted-foreground">
+                Nenhum produto encontrado.
+              </p>
+            )}
+            {loadedProducts.map((product) => (
+              <button
+                key={product.id}
+                type="button"
+                className="flex w-full items-start gap-2 rounded p-2 text-left hover:bg-muted"
+                onClick={() => {
+                  onChange(product.id);
+                  setOpen(false);
+                }}
+              >
+                {product.id === value ? (
+                  <Check className="mt-0.5 size-4" />
+                ) : (
+                  <span className="size-4" />
+                )}
+                <span className="min-w-0 text-sm">
+                  <span className="block truncate">{product.name}</span>
+                  <span className="block text-xs text-muted-foreground">
+                    {[
+                      product.sku,
+                      product.category,
+                      product.status,
+                      product.is_discontinued ? "Descontinuado" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </span>
+                </span>
+              </button>
+            ))}
+            {hasMore && (
+              <button
+                type="button"
+                className="w-full p-2 text-sm text-primary hover:bg-muted"
+                onClick={() => setPage((current) => current + 1)}
+              >
+                Ver mais
+              </button>
+            )}
+          </div>
+          {value && (
+            <button
+              type="button"
+              className="mt-2 flex w-full items-center justify-center gap-1 border-t border-border pt-2 text-xs text-muted-foreground hover:text-destructive"
+              onClick={() => {
+                onChange("");
+                setOpen(false);
+              }}
+            >
+              <X className="size-3" /> Limpar seleção
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function BannerImagePreview({
+  libraryId,
+  alt,
+  className,
+}: {
+  libraryId: string;
+  alt: string;
+  className: string;
+}) {
+  const { data } = useGetApiLibraryId(libraryId, {
+    query: { enabled: Boolean(libraryId) },
+  });
+  const url = data ? currentAssetUrl(data) : "";
+  return url ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={url} alt={alt} className={className} />
+  ) : (
+    <div className={className} />
   );
 }
 
@@ -124,76 +272,6 @@ export function formatDateRange(from?: string, until?: string): string {
   return `Até ${fmt(until!)}`;
 }
 
-function ImageUploadSlot({
-  url,
-  label,
-  accept = "image/*",
-  onFile,
-  onClear,
-}: {
-  url: string;
-  label: string;
-  accept?: string;
-  onFile: (file: File) => void;
-  onClear?: () => void;
-}) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    onFile(file);
-  }
-
-  return (
-    <div className="relative flex flex-col items-center justify-center gap-2 overflow-hidden rounded-md border border-dashed border-border bg-muted p-4">
-      {url ? (
-        <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={url}
-            alt={label}
-            className="h-28 w-full rounded object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
-          />
-          {onClear && (
-            <button
-              type="button"
-              onClick={onClear}
-              className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
-            >
-              <X className="size-3" />
-            </button>
-          )}
-        </>
-      ) : (
-        <div
-          className="flex cursor-pointer flex-col items-center gap-1"
-          onClick={() => inputRef.current?.click()}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
-          }}
-          role="button"
-          tabIndex={0}
-        >
-          {/* eslint-disable-next-line jsx-a11y/alt-text */}
-          <Image className="size-6 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">{label}</span>
-        </div>
-      )}
-      <input
-        ref={inputRef}
-        type="file"
-        accept={accept}
-        className="hidden"
-        onChange={handleFile}
-      />
-    </div>
-  );
-}
-
 interface BannerFormProps {
   draft: BannerFormState;
   isCreating: boolean;
@@ -204,10 +282,6 @@ interface BannerFormProps {
   ) => void;
   onSave: () => void;
   onCancel: () => void;
-  onDesktopFile?: (file: File) => void;
-  onMobileFile?: (file: File) => void;
-  onClearDesktopFile?: () => void;
-  onClearMobileFile?: () => void;
   onDelete?: () => void;
   isDeleting?: boolean;
 }
@@ -219,10 +293,6 @@ export function BannerForm({
   onDraftChange,
   onSave,
   onCancel,
-  onDesktopFile,
-  onMobileFile,
-  onClearDesktopFile,
-  onClearMobileFile,
   onDelete,
   isDeleting,
 }: BannerFormProps) {
@@ -404,41 +474,35 @@ export function BannerForm({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <AdminLabel>Imagem desktop *</AdminLabel>
-                  <ImageUploadSlot
-                    url={draft.desktop_image_url}
-                    label="Clique para selecionar"
-                    onFile={(file) => {
-                      const previewUrl = URL.createObjectURL(file);
-                      onDraftChange("desktop_image_url", previewUrl);
-                      onDesktopFile?.(file);
-                    }}
-                    onClear={
-                      draft.desktop_image_url
-                        ? () => {
-                            onDraftChange("desktop_image_url", "");
-                            onClearDesktopFile?.();
-                          }
-                        : undefined
+                  <LibraryAssetPicker
+                    value={{ library_id: draft.desktop_image_library_id }}
+                    type="IMAGE"
+                    variant="image"
+                    accept="image/*"
+                    onChange={(asset: LibraryPickedAsset | null) =>
+                      onDraftChange(
+                        "desktop_image_library_id",
+                        asset?.library_id ?? "",
+                      )
                     }
                   />
                 </div>
                 <div>
                   <AdminLabel>Imagem mobile (opcional)</AdminLabel>
-                  <ImageUploadSlot
-                    url={draft.mobile_image_url}
-                    label="Clique para selecionar"
-                    onFile={(file) => {
-                      const previewUrl = URL.createObjectURL(file);
-                      onDraftChange("mobile_image_url", previewUrl);
-                      onMobileFile?.(file);
-                    }}
-                    onClear={
-                      draft.mobile_image_url
-                        ? () => {
-                            onDraftChange("mobile_image_url", "");
-                            onClearMobileFile?.();
-                          }
-                        : undefined
+                  <LibraryAssetPicker
+                    value={
+                      draft.mobile_image_library_id
+                        ? { library_id: draft.mobile_image_library_id }
+                        : null
+                    }
+                    type="IMAGE"
+                    variant="image"
+                    accept="image/*"
+                    onChange={(asset: LibraryPickedAsset | null) =>
+                      onDraftChange(
+                        "mobile_image_library_id",
+                        asset?.library_id ?? "",
+                      )
                     }
                   />
                 </div>
@@ -452,15 +516,11 @@ export function BannerForm({
           <AdminFormSection title="Prévia — Desktop" raw>
             <AdminFormSectionContent>
               <div className="overflow-hidden rounded-md border border-border bg-muted">
-                {draft.desktop_image_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={draft.desktop_image_url}
+                {draft.desktop_image_library_id ? (
+                  <BannerImagePreview
+                    libraryId={draft.desktop_image_library_id}
                     alt="Preview desktop"
                     className="h-36 w-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = "none";
-                    }}
                   />
                 ) : (
                   <div className="flex h-36 items-center justify-center">
@@ -471,7 +531,7 @@ export function BannerForm({
               </div>
             </AdminFormSectionContent>
 
-            {draft.mobile_image_url && (
+            {draft.mobile_image_library_id && (
               <>
                 <AdminFormSectionTitle
                   title="Prévia — Mobile"
@@ -479,14 +539,10 @@ export function BannerForm({
                 />
                 <AdminFormSectionContent>
                   <div className="overflow-hidden rounded-md border border-border bg-muted">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={draft.mobile_image_url}
+                    <BannerImagePreview
+                      libraryId={draft.mobile_image_library_id}
                       alt="Preview mobile"
                       className="h-24 w-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = "none";
-                      }}
                     />
                   </div>
                 </AdminFormSectionContent>

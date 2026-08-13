@@ -44,8 +44,6 @@ export function BannerFormPage(props: Props) {
   const [draft, setDraft] = useState<BannerFormState>(
     initialBanner ? bannerToFormState(initialBanner) : EMPTY_FORM_STATE,
   );
-  const [, setDesktopImageFile] = useState<File | null>(null);
-  const [, setMobileImageFile] = useState<File | null>(null);
 
   function invalidate() {
     queryClient.invalidateQueries({ queryKey: getGetApiBannersQueryKey() });
@@ -75,8 +73,8 @@ export function BannerFormPage(props: Props) {
     return {
       name: draft.name,
       product_id: draft.product_id || null,
-      desktop_image_library_id: initialBanner?.desktop_image_library_id ?? "",
-      mobile_image_library_id: initialBanner?.mobile_image_library_id,
+      desktop_image_library_id: draft.desktop_image_library_id,
+      mobile_image_library_id: draft.mobile_image_library_id || null,
       link_url: draft.link_url || null,
       href: draft.href || null,
       title: draft.title.pt ? draft.title : undefined,
@@ -93,8 +91,8 @@ export function BannerFormPage(props: Props) {
     return {
       name: draft.name || undefined,
       product_id: draft.product_id || null,
-      desktop_image_library_id: initialBanner?.desktop_image_library_id,
-      mobile_image_library_id: initialBanner?.mobile_image_library_id,
+      desktop_image_library_id: draft.desktop_image_library_id || undefined,
+      mobile_image_library_id: draft.mobile_image_library_id || null,
       link_url: draft.link_url || null,
       href: draft.href || null,
       title: draft.title.pt ? draft.title : undefined,
@@ -146,10 +144,6 @@ export function BannerFormPage(props: Props) {
       onDraftChange={handleDraftChange}
       onSave={handleSave}
       onCancel={handleCancel}
-      onDesktopFile={setDesktopImageFile}
-      onMobileFile={setMobileImageFile}
-      onClearDesktopFile={() => setDesktopImageFile(null)}
-      onClearMobileFile={() => setMobileImageFile(null)}
       onDelete={initialBanner ? handleDelete : undefined}
       isDeleting={deleteBanner.isPending}
     />
