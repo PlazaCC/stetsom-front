@@ -78,6 +78,7 @@ export interface WizardState {
   /** Android Play Store link for this product. Empty string when unset. */
   play_store_url: string;
   is_discontinued: boolean;
+  is_export: boolean;
   /** No UI in the wizard. Preserved across edits, default false on create. */
   is_featured: boolean;
   is_spotlight: boolean;
@@ -113,6 +114,7 @@ export type WizardInfoPatch = Partial<
     | "app_store_url"
     | "play_store_url"
     | "is_discontinued"
+    | "is_export"
     | "is_featured"
     | "is_spotlight"
     | "available_locales"
@@ -277,6 +279,7 @@ export function initWizardState(
     app_store_url: p?.app_store_url ?? "",
     play_store_url: p?.play_store_url ?? "",
     is_discontinued: p?.is_discontinued ?? false,
+    is_export: p?.is_export ?? false,
     is_featured: p?.is_featured ?? false,
     is_spotlight: p?.is_spotlight ?? false,
     available_locales: initialLocales(p),
@@ -470,6 +473,7 @@ export function buildPayload(
     play_store_url: state.play_store_url.trim() || null,
     status,
     is_discontinued: state.is_discontinued,
+    is_export: state.is_export,
     is_featured: state.is_featured,
     is_spotlight: state.is_spotlight,
     launch_date: launchISO,

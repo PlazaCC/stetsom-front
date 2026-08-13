@@ -18,5 +18,6 @@ export interface CmsProductRow {
   languages: string[];
   status: CmsProductRowStatus;
   is_discontinued: boolean;
+  is_export: boolean;
   updated_at: string;
 }

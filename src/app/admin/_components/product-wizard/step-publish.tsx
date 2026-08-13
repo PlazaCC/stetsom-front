@@ -6,7 +6,7 @@ import {
 } from "@/app/admin/_components/crud/admin-input";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { CalendarDays, Languages, Tag } from "lucide-react";
+import { CalendarDays, Languages, PackageCheck, Tag } from "lucide-react";
 import type { WizardAction, WizardLocale, WizardState } from "./wizard-store";
 
 const LOCALES: { id: WizardLocale; label: string }[] = [
@@ -59,6 +59,24 @@ export function StepPublish({
             : "grid-cols-[repeat(auto-fill,minmax(250px,1fr))]",
         )}
       >
+        <div>
+          <AdminLabel className="flex items-center gap-1.5">
+            <PackageCheck className="size-4 text-muted-foreground" />
+            Produto de exportação
+          </AdminLabel>
+          <div className="flex items-center gap-2 pt-2">
+            <Switch
+              size="sm"
+              checked={state.is_export}
+              onCheckedChange={(checked) =>
+                dispatch({ type: "patch_info", patch: { is_export: checked } })
+              }
+            />
+            <span className="text-sm text-foreground">
+              Disponível para exportação
+            </span>
+          </div>
+        </div>
         <div>
           <AdminLabel className="flex items-center gap-1.5">
             <CalendarDays className="size-4 text-muted-foreground" />

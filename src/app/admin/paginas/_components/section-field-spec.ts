@@ -54,6 +54,7 @@ export type FieldSpec =
       placeholder?: string;
     }
   | { kind: "group"; key: string; label: string; fields: FieldSpec[] }
+  | { kind: "featured-tabs"; key: string; label: string }
   | {
       kind: "faq-items";
       key: string;
@@ -112,6 +113,18 @@ const socialFields: FieldSpec[] = [
 // Fixed catalog per page — only known sections (renderable by the public site) are listed.
 export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
   home: [
+    {
+      section_id: "featured",
+      type: "TEXT",
+      label: "Novidades",
+      description:
+        "Configure as categorias e produtos publicados exibidos na Home.",
+      icon: List,
+      kind: "editable",
+      fields: [
+        { kind: "featured-tabs", key: "tabs", label: "Abas por categoria" },
+      ],
+    },
     {
       section_id: "history",
       type: "IMAGE",

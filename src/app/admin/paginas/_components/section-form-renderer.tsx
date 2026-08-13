@@ -15,6 +15,8 @@ import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-p
 import type { LibraryUrlOnlyRef } from "@/app/admin/_components/crud/library-asset-ref";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
 import { Plus, Trash2 } from "lucide-react";
+import { useGetApiCategories } from "@/api/stetsom";
+import { useGetApiProducts } from "@/api/stetsom";
 import type { FieldSpec } from "./section-field-spec";
 import { FaqItemsField } from "./faq-items-field";
 
@@ -143,6 +145,11 @@ function Field({ field, data, onChange }: FieldProps) {
       );
     }
 
+    case "featured-tabs":
+      return (
+        <FeaturedTabsField data={data} field={field} onChange={onChange} />
+      );
+
     case "stringList":
       return <StringListField field={field} data={data} onChange={onChange} />;
 
@@ -155,6 +162,198 @@ function Field({ field, data, onChange }: FieldProps) {
     default:
       return null;
   }
+}
+
+function FeaturedTabsField({
+  field,
+  data,
+  onChange,
+}: {
+  field: Extract<FieldSpec, { kind: "featured-tabs" }>;
+  data: Data;
+  onChange: (data: Data) => void;
+}) {
+  const categoriesQuery = useGetApiCategories({ locale: "pt" });
+  const tabs = Array.isArray(data[field.key])
+    ? (data[field.key] as Array<{ category_id: string; product_ids: string[] }>)
+    : [];
+  const categories = categoriesQuery.data ?? [];
+
+  function setTabs(next: typeof tabs) {
+    onChange({ ...data, [field.key]: next });
+  }
+
+  return (
+    <div className="space-y-4">
+      <AdminLabel>{field.label}</AdminLabel>
+      {tabs.map((tab, index) => {
+        const category =
+          tab.category_id === "novidades"
+            ? { id: "novidades", name: "Novidades", slug: "novidades" }
+            : categories.find((item) => item.id === tab.category_id);
+        return (
+          <FeaturedTabEditor
+            key={`${tab.category_id}-${index}`}
+            tab={tab}
+            category={category}
+            categories={categories}
+            selectedCategoryIds={new Set(tabs.map((item) => item.category_id))}
+            onChange={(next) =>
+              setTabs(
+                tabs.map((item, itemIndex) =>
+                  itemIndex === index ? next : item,
+                ),
+              )
+            }
+            onRemove={() =>
+              setTabs(tabs.filter((_, itemIndex) => itemIndex !== index))
+            }
+          />
+        );
+      })}
+      <button
+        type="button"
+        onClick={() => setTabs([...tabs, { category_id: "", product_ids: [] }])}
+        className="flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+      >
+        <Plus className="size-4" /> Adicionar aba
+      </button>
+    </div>
+  );
+}
+
+function FeaturedTabEditor({
+  tab,
+  category,
+  categories,
+  selectedCategoryIds,
+  onChange,
+  onRemove,
+}: {
+  tab: { category_id: string; product_ids: string[] };
+  category?: { id: string; name: string; slug: string };
+  categories: Array<{ id: string; name: string; slug: string }>;
+  selectedCategoryIds: Set<string>;
+  onChange: (tab: { category_id: string; product_ids: string[] }) => void;
+  onRemove: () => void;
+}) {
+  const productsQuery = useGetApiProducts({
+    category: category?.slug === "novidades" ? undefined : category?.slug,
+    status: "PUBLISHED",
+    page: 1,
+    pageSize: 100,
+    locale: "pt",
+  });
+  const products = productsQuery.data?.items ?? [];
+  const selected = tab.product_ids
+    .map((id) => products.find((product) => product.id === id))
+    .filter(Boolean);
+
+  return (
+    <div className="space-y-3 rounded-md border border-border bg-muted/30 p-4">
+      <div className="flex items-center gap-2">
+        <Select
+          value={tab.category_id}
+          onValueChange={(categoryId) =>
+            onChange({ category_id: categoryId ?? "", product_ids: [] })
+          }
+        >
+          <SelectTrigger className="flex-1">
+            <SelectValue placeholder="Selecione a categoria">
+              {category?.name ?? "Selecione a categoria"}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {[
+              { id: "novidades", name: "Novidades", slug: "novidades" },
+              ...categories,
+            ].map((item) => (
+              <SelectItem
+                key={item.id}
+                value={item.id}
+                disabled={
+                  selectedCategoryIds.has(item.id) &&
+                  item.id !== tab.category_id
+                }
+              >
+                {item.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label="Remover aba"
+          className="text-muted-foreground hover:text-destructive"
+        >
+          <Trash2 className="size-4" />
+        </button>
+      </div>
+      {category && (
+        <Select
+          value=""
+          onValueChange={(productId) => {
+            if (
+              !productId ||
+              tab.product_ids.includes(productId) ||
+              (category?.slug !== "novidades" && tab.product_ids.length >= 5)
+            )
+              return;
+            onChange({ ...tab, product_ids: [...tab.product_ids, productId] });
+          }}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Adicionar produto publicado" />
+          </SelectTrigger>
+          <SelectContent>
+            {products.map((product) => (
+              <SelectItem
+                key={product.id}
+                value={product.id}
+                disabled={tab.product_ids.includes(product.id)}
+              >
+                {product.name}
+                {product.sku ? ` (${product.sku})` : ""}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+      <SortableList
+        items={selected.map((product) => product!).filter(Boolean)}
+        getId={(product) => product.id}
+        onReorder={(items) =>
+          onChange({ ...tab, product_ids: items.map((product) => product.id) })
+        }
+        renderItem={(product, handle) => (
+          <div className="flex items-center gap-2 rounded border border-border bg-card px-2 py-1.5 text-sm">
+            {handle}
+            <span className="truncate">{product.name}</span>
+            <button
+              type="button"
+              className="ml-auto text-muted-foreground hover:text-destructive"
+              onClick={() =>
+                onChange({
+                  ...tab,
+                  product_ids: tab.product_ids.filter(
+                    (id) => id !== product.id,
+                  ),
+                })
+              }
+            >
+              <Trash2 className="size-4" />
+            </button>
+          </div>
+        )}
+      />
+      <p className="text-xs text-muted-foreground">
+        {category?.slug === "novidades"
+          ? "Selecione os produtos. Eles serão exibidos por ordem de publicação, dos mais recentes aos mais antigos."
+          : "Selecione de 1 a 5 produtos. A ordem define destaque e grade."}
+      </p>
+    </div>
+  );
 }
 
 function StringListField({

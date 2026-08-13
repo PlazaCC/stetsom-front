@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Banner, BannerStatus, I18nString } from "@/api/stetsom/model";
+import { useGetApiProductsAdmin } from "@/api/stetsom";
 import { toDisplayLocale } from "@/lib/api/i18n-utils";
 import { Image, X } from "lucide-react";
 import { useRef } from "react";
@@ -78,6 +79,36 @@ export function bannerToFormState(b: Banner): BannerFormState {
     desktop_image_url: "",
     mobile_image_url: "",
   };
+}
+
+function ProductReferenceField({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const { data } = useGetApiProductsAdmin({ page: 1, pageSize: 100 });
+  const products = data?.items ?? [];
+  const selected = products.find((product) => product.id === value);
+
+  return (
+    <Select value={value} onValueChange={(next) => onChange(next ?? "")}>
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder="Selecione um produto">
+          {selected?.name ??
+            (value ? "Produto selecionado" : "Selecione um produto")}
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent>
+        {products.map((product) => (
+          <SelectItem key={product.id} value={product.id}>
+            {product.name}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
 }
 
 export function formatDateRange(from?: string, until?: string): string {
@@ -236,12 +267,9 @@ export function BannerForm({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <AdminLabel>Produto associado (opcional)</AdminLabel>
-                  <Input
+                  <ProductReferenceField
                     value={draft.product_id}
-                    onChange={(e) =>
-                      onDraftChange("product_id", e.target.value)
-                    }
-                    placeholder="ID do produto"
+                    onChange={(value) => onDraftChange("product_id", value)}
                   />
                 </div>
                 <div>

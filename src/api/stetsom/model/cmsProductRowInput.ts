@@ -18,5 +18,6 @@ export interface CmsProductRowInput {
   languages: string[];
   status: CmsProductRowInputStatus;
   is_discontinued: boolean;
+  is_export: boolean;
   updated_at: string;
 }

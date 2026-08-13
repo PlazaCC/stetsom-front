@@ -5,12 +5,12 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
-import type { PageBlock } from "./pageBlock";
+import type { GetApiPagesSlug200BlocksItem } from "./getApiPagesSlug200BlocksItem";
 
 export type GetApiPagesSlug200 = {
   id: string;
   slug: string;
   title: string;
-  blocks: PageBlock[];
+  blocks: GetApiPagesSlug200BlocksItem[];
   updated_at: string;
 };

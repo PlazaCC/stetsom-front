@@ -21,6 +21,7 @@ export interface PublicProduct {
   description?: string | null;
   status: PublicProductStatus;
   is_discontinued: boolean;
+  is_export: boolean;
   /** @nullable */
   launch_date?: string | null;
   is_featured: boolean;
