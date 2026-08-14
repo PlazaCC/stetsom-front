@@ -46,6 +46,7 @@ export function QualitySection({
               src={section.image}
               alt={section.imageAlt}
               fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
               className="object-cover"
             />
             <div className="absolute right-0 bottom-0 flex flex-col gap-2">

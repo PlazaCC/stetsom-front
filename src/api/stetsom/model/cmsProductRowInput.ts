@@ -9,6 +9,8 @@ import type { CmsProductRowInputStatus } from "./cmsProductRowInputStatus";
 
 export interface CmsProductRowInput {
   id: string;
+  /** @nullable */
+  sku: string | null;
   slug: string;
   name: string;
   /** @nullable */
@@ -18,5 +20,6 @@ export interface CmsProductRowInput {
   languages: string[];
   status: CmsProductRowInputStatus;
   is_discontinued: boolean;
+  is_export: boolean;
   updated_at: string;
 }

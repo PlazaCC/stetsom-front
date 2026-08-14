@@ -45,7 +45,13 @@ export function useWizardMutations(
     useState<ProductMutationResult | null>(null);
 
   const categoriesQuery = useGetApiCategories();
-  const templatesQuery = useGetApiTemplates();
+  // A template belongs to a single category, so only the selected category's
+  // templates may be applied. Without a category there is nothing to offer —
+  // skip the request instead of listing templates from every category.
+  const templatesQuery = useGetApiTemplates(
+    state.category_id ? { category_id: state.category_id } : undefined,
+    { query: { enabled: Boolean(state.category_id) } },
+  );
   const attributesQuery = useGetApiAttributes();
 
   const categories = useMemo(

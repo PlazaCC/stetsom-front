@@ -1,63 +1,54 @@
 "use client";
 
-import { Link } from "@/i18n/navigation";
+import { Container } from "@/components/ui/container";
 import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
-
-type FeaturedTab = {
-  id: string;
-  label: string;
-  categorySlug?: string;
-};
+import { motion } from "motion/react";
+import type { NoveltyCategory } from "./build-novelties-by-category";
 
 interface FeaturedTabStripProps {
-  tabs: FeaturedTab[];
-  activeTab: FeaturedTab;
-  onSelect: (tab: FeaturedTab) => void;
-  ctaHref: string;
-  ctaLabel: string;
+  categories: NoveltyCategory[];
+  activeIndex: number;
+  onSelect: (index: number) => void;
 }
 
 export function FeaturedTabStrip({
-  tabs,
-  activeTab,
+  categories,
+  activeIndex,
   onSelect,
-  ctaHref,
-  ctaLabel,
-}: FeaturedTabStripProps) {
+}: Readonly<FeaturedTabStripProps>) {
   return (
-    <>
-      {tabs.length > 1 && (
-        <div
-          role="tablist"
-          className="inline-flex items-center gap-0 overflow-x-auto rounded-lg bg-muted p-1"
-        >
-          {tabs.map((tab) => (
+    <Container className="flex scrollbar-none overflow-x-auto">
+      <div
+        role="tablist"
+        className="flex w-max items-center gap-6 lg:mx-auto lg:gap-8"
+      >
+        {categories.map((category, index) => {
+          const isActive = index === activeIndex;
+          return (
             <button
               type="button"
-              key={tab.id}
+              key={category.slug}
               role="tab"
-              onClick={() => onSelect(tab)}
-              aria-selected={activeTab.id === tab.id}
+              onClick={() => onSelect(index)}
+              aria-selected={isActive}
               className={cn(
-                "shrink-0 rounded-md px-3 py-1.5 text-center font-sans text-sm leading-5 font-medium transition-all",
-                activeTab.id === tab.id
-                  ? "bg-white text-foreground shadow-sm"
+                "relative shrink-0 px-2 pb-1.5 font-sans-condensed text-base font-semibold uppercase transition-colors",
+                isActive
+                  ? "text-brand-dark"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
-              {tab.label}
+              {category.name}
+              <motion.span
+                className="absolute inset-x-0 bottom-0 h-0.5 origin-center rounded-full bg-brand"
+                initial={false}
+                animate={{ scaleX: isActive ? 1 : 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              />
             </button>
-          ))}
-        </div>
-      )}
-      <Link
-        href={ctaHref}
-        className="mb-2.5 ml-4 inline-flex items-center gap-2 px-2 font-sans-condensed text-base font-medium text-brand"
-      >
-        <span>{ctaLabel}</span>
-        <ArrowRight className="inline-block size-4" strokeWidth={2.5} />
-      </Link>
-    </>
+          );
+        })}
+      </div>
+    </Container>
   );
 }

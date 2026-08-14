@@ -18,6 +18,7 @@ import {
   Underline as UnderlineIcon,
   Undo2,
   Unlink,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { LegalExtension } from "./extension";
@@ -138,7 +139,11 @@ function ToolbarButton({
 
 const Divider = () => <span className="mx-0.5 h-5 w-px shrink-0 bg-border" />;
 
-export function LegalToolbar() {
+export function LegalToolbar({
+  onInsertDocument,
+}: {
+  onInsertDocument: () => void;
+}) {
   const items = useEditorDerivedValue(getItems);
 
   return (
@@ -190,6 +195,16 @@ export function LegalToolbar() {
           <LinkIcon className="size-4" />
         )}
       </ToolbarButton>
+      <button
+        type="button"
+        aria-label="Inserir documento"
+        title="Inserir documento"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={onInsertDocument}
+        className="flex size-8 shrink-0 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
+      >
+        <FileText className="size-4" />
+      </button>
       <ToolbarButton item={items.horizontalRule} label="Divisor">
         <Minus className="size-4" />
       </ToolbarButton>

@@ -9,6 +9,7 @@ import type { I18nStringInput } from "./i18nStringInput";
 import type { ProductBlockInput } from "./productBlockInput";
 import type { ProductFileInput } from "./productFileInput";
 import type { ProductImageInput } from "./productImageInput";
+import type { ProductInputDescription } from "./productInputDescription";
 import type { ProductInputStatus } from "./productInputStatus";
 import type { VariantInput } from "./variantInput";
 
@@ -18,9 +19,11 @@ export interface ProductInput {
   sku?: string | null;
   name: I18nStringInput;
   slug: I18nStringInput;
-  description?: I18nStringInput | null;
+  /** @nullable */
+  description?: ProductInputDescription;
   status: ProductInputStatus;
   is_discontinued: boolean;
+  is_export: boolean;
   /** @nullable */
   launch_date?: string | null;
   is_featured: boolean;

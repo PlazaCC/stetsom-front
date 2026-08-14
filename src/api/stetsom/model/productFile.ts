@@ -16,6 +16,12 @@ export interface ProductFile {
   filename?: string | null;
   /** @nullable */
   type?: string | null;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   * @nullable
+   */
+  version?: number | null;
   locale?: Locale;
   is_active: boolean;
   created_at: string;

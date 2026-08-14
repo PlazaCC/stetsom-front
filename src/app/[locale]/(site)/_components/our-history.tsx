@@ -27,7 +27,7 @@ export function OurHistory({ section }: Readonly<OurHistoryProps>) {
             alt={section.imageAlt}
             fill
             className="object-cover"
-            sizes="100vw"
+            sizes="(min-width: 1024px) 0px, 100vw"
           />
         </div>
         <div className="px-5 py-10 sm:px-8 sm:py-12">
@@ -56,7 +56,7 @@ export function OurHistory({ section }: Readonly<OurHistoryProps>) {
               alt={section.imageAlt}
               fill
               className="object-cover"
-              sizes="731px"
+              sizes="(max-width: 1023px) 0px, 731px"
             />
           </div>
           <div className="flex flex-1 items-center py-16 pr-42.5 pl-22.75">

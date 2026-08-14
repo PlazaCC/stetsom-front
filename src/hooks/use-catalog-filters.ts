@@ -89,18 +89,18 @@ export function useCatalogFilters() {
       pushParams((p) => {
         if (!value) p.set("discontinued", "0");
         else p.delete("discontinued");
+        p.delete("page"); // reset pagination when the filter changes
       });
     },
     [pushParams],
   );
 
-  // TODO(backend): no export-line concept exists in the product schema yet —
-  // this filter changes the URL but has no effect on the returned catalog.
   const setShowExport = useCallback(
     (value: boolean) => {
       pushParams((p) => {
         if (value) p.set("export", "1");
         else p.delete("export");
+        p.delete("page"); // reset pagination when the filter changes
       });
     },
     [pushParams],

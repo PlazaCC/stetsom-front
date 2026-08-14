@@ -1,10 +1,7 @@
 "use client";
 
-import type {
-  ProductImage,
-  PublicVariant,
-  PublicVariantAttr,
-} from "@/api/stetsom/model";
+import type { ProductImage, PublicVariant } from "@/api/stetsom/model";
+import { entriesForAttribute, entriesToInlineText } from "@/lib/specs/matrix";
 import { cn } from "@/lib/utils";
 import { ArrowLeftRight } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -144,9 +141,16 @@ export function CompareColumn({ product, onReplace }: CompareColumnProps) {
           <div className="border-t border-border pt-3">
             <div className="flex flex-col gap-1">
               {allAttrKeys.map(({ attribute_id, attribute_name }, i) => {
-                const attr = activeVariant?.attributes?.find(
-                  (a: PublicVariantAttr) => a.attribute_id === attribute_id,
-                );
+                // An attribute may be listed more than once (matrix cell). This
+                // view is too dense to stack them, so they join on one line
+                // rather than being silently dropped.
+                const value =
+                  entriesToInlineText(
+                    entriesForAttribute(
+                      activeVariant?.attributes,
+                      attribute_id,
+                    ),
+                  ) || "—";
                 return (
                   <div
                     key={attribute_id}
@@ -159,7 +163,7 @@ export function CompareColumn({ product, onReplace }: CompareColumnProps) {
                       {attribute_name ?? attribute_id}
                     </span>
                     <span className="text-right font-sans text-2xs text-text-subtle">
-                      {attr?.value || "—"}
+                      {value}
                     </span>
                   </div>
                 );

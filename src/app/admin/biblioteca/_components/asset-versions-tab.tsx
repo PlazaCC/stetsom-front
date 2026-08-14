@@ -1,27 +1,47 @@
 "use client";
 
+import { deleteApiLibraryIdVersionsVersionId } from "@/api/stetsom";
 import type { AssetVersion, LibraryAsset } from "@/api/stetsom/model";
 import { Button } from "@/components/ui/button";
+import { useAdminToast } from "@/hooks/use-admin-toast";
 import { useLibraryUpload } from "@/hooks/use-upload";
 import { cn } from "@/lib/utils";
-import { UploadCloud } from "lucide-react";
+import { Trash2, UploadCloud } from "lucide-react";
 import { useRef, useState } from "react";
 import { formatBytes, formatDate } from "./lib";
 
 interface AssetVersionsTabProps {
   asset: LibraryAsset;
-  /** Called after a new version is registered so the parent can refresh. */
+  /** Called after a new version is registered or removed so the parent refreshes. */
   onUploaded: () => void;
 }
 
 /**
- * Read-only version history plus a "new version" uploader. There is no API to
- * promote an older version, so the list only marks which one is current.
+ * Version history, a "new version" uploader, and per-version deletion.
+ *
+ * There is no API to promote an older version, so the list only marks which one
+ * is current. The current version cannot be deleted — sending a new one is how
+ * it gets superseded.
  */
 export function AssetVersionsTab({ asset, onUploaded }: AssetVersionsTabProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+  const [removing, setRemoving] = useState<string | null>(null);
   const { uploadVersion } = useLibraryUpload();
+  const toast = useAdminToast();
+
+  async function handleDelete(versionId: string) {
+    setRemoving(versionId);
+    try {
+      await deleteApiLibraryIdVersionsVersionId(asset.id, versionId);
+      toast.success("Versão removida");
+      onUploaded();
+    } catch (e) {
+      toast.apiError(e, "Não foi possível remover a versão");
+    } finally {
+      setRemoving(null);
+    }
+  }
 
   // Newest first, keeping the original 1-based version number for the label.
   const ordered = asset.versions
@@ -75,14 +95,27 @@ export function AssetVersionsTab({ asset, onUploaded }: AssetVersionsTabProps) {
                   : ""}
               </p>
             </div>
-            <a
-              href={version.file_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="shrink-0 text-xs font-medium text-primary hover:underline"
-            >
-              Abrir
-            </a>
+            <div className="flex shrink-0 items-center gap-3">
+              <a
+                href={version.file_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-medium text-primary hover:underline"
+              >
+                Abrir
+              </a>
+              {!isCurrent(version) && asset.versions.length > 1 && (
+                <button
+                  type="button"
+                  aria-label={`Remover versão ${number}`}
+                  disabled={removing === version.version_id}
+                  onClick={() => handleDelete(version.version_id)}
+                  className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
+                >
+                  <Trash2 className="size-3.5" />
+                </button>
+              )}
+            </div>
           </li>
         ))}
       </ul>

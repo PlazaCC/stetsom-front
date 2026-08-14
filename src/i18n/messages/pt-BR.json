@@ -74,6 +74,7 @@
     "emptyCatalogDescription": "Novidades serão publicadas aqui.",
     "emptyResultsTitle": "Nenhum produto encontrado",
     "emptyResultsDescription": "Tente remover os filtros ou buscar por outro termo.",
+    "learnMore": "Saiba mais",
     "categories": "Categorias",
     "filters": "Filtros",
     "clearAll": "Limpar tudo",
@@ -92,9 +93,9 @@
     "paginationPrevious": "Anterior",
     "paginationNext": "Próxima",
     "paginationInfo": "Página {page} de {total}",
-    "emptyCategory": "Nenhum produto encontrado nesta categoria.",
     "options": "Opções",
-    "showDiscontinued": "Exibir fora de linha",
+    "showDiscontinued": "Exibir descontinuados",
+    "discontinued": "Descontinuado",
     "showExport": "Produtos de exportação",
     "compare": "Comparar produtos",
     "compareSelect": "Selecione 2 produtos para comparar",
@@ -118,6 +119,7 @@
     "discontinued": "Descontinuado",
     "filesAvailable": "{count, plural, one {# arquivo disponível} other {# arquivos disponíveis}}",
     "manual": "Acessar manual do produto",
+    "certificates": "Certificados",
     "downloadPhotos": "Download de fotos",
     "downloadApp": "Baixar aplicativo",
     "downloadIos": "Baixar iOS",
@@ -177,6 +179,7 @@
       "contactInfoPhone": "Telefone",
       "contactInfoEmail": "E-mail",
       "contactInfoWhatsapp": "WhatsApp",
+      "whatsappQrHint": "Aponte a câmera do celular para abrir a conversa no WhatsApp.",
       "sending": "Enviando...",
       "submit": "Enviar mensagem",
       "successTitle": "Mensagem enviada!",
@@ -228,7 +231,11 @@
       "showAll": "Mostrar todos",
       "filterByMap": "Filtrar pelo mapa",
       "emptyNetworkTitle": "Atendimento onde você precisar",
-      "emptyNetworkDescription": "Entre em contato com nossa equipe para receber orientação sobre assistência técnica."
+      "emptyNetworkDescription": "Entre em contato com nossa equipe para receber orientação sobre assistência técnica.",
+      "locationTimeout": "A busca pela sua localização demorou demais. Tente novamente.",
+      "locationUnavailable": "Sua localização não está disponível neste dispositivo.",
+      "locationUnsupported": "Este navegador não oferece localização.",
+      "withoutCoordinates": "{count, plural, one {# assistência sem localização cadastrada} other {# assistências sem localização cadastrada}}"
     },
     "faq": {
       "noAnswer": "Não encontrou o que procura? Entre em contato com nosso suporte."

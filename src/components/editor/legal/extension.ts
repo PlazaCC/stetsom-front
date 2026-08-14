@@ -1,5 +1,5 @@
 import { defineBasicExtension } from "prosekit/basic";
-import { union } from "prosekit/core";
+import { defineMarkAttr, union } from "prosekit/core";
 import { defineHorizontalRule } from "prosekit/extensions/horizontal-rule";
 import { definePlaceholder } from "prosekit/extensions/placeholder";
 
@@ -11,6 +11,13 @@ import { definePlaceholder } from "prosekit/extensions/placeholder";
 export function defineLegalExtension(placeholder: string) {
   return union(
     defineBasicExtension(),
+    defineMarkAttr({
+      type: "link",
+      attr: "libraryId",
+      default: "",
+      toDOM: (value) => (value ? ["data-library-id", value] : undefined),
+      parseDOM: (node) => node.getAttribute("data-library-id") ?? "",
+    }),
     defineHorizontalRule(),
     definePlaceholder({ placeholder }),
   );

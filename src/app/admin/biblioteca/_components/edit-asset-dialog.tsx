@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
@@ -25,11 +25,9 @@ import { AssetTypeIcon } from "./asset-type-icon";
 import { AssetVersionsTab } from "./asset-versions-tab";
 import { assetAltText, getCurrentVersionUrl, isImageAsset } from "./lib";
 
+// The file name is not editable: it comes from the uploaded file and shapes the
+// object key in the bucket, so a rename here would only desync the two.
 const formSchema = z.object({
-  filename: z
-    .string()
-    .min(1, "Informe o nome do arquivo")
-    .max(255, "Máximo de 255 caracteres"),
   alt: z.object({
     pt: z.string(),
     en: z.string().optional(),
@@ -59,7 +57,6 @@ export function EditAssetDialog({
   const form = useForm<FormValues>({
     resolver: standardSchemaResolver(formSchema),
     defaultValues: {
-      filename: asset.filename,
       alt: asset.alt ?? { pt: "" },
       tags: asset.tags.join(", "),
       redirect_paths: asset.redirect_paths ?? [],
@@ -75,7 +72,6 @@ export function EditAssetDialog({
       if (values.alt.es) alt.es = values.alt.es;
       const hasAnyAlt = Object.values(alt).some((v) => v.length > 0);
       return patchApiLibraryId(asset.id, {
-        filename: values.filename.trim(),
         alt: hasAnyAlt ? alt : undefined,
         tags: values.tags
           .split(",")
@@ -154,20 +150,6 @@ export function EditAssetDialog({
 
                 <div className="min-h-0 flex-1 overflow-y-auto p-4">
                   <TabsContent value="data" className="flex flex-col gap-4">
-                    <Field data-invalid={!!form.formState.errors.filename}>
-                      <FieldLabel htmlFor="asset-filename">
-                        Nome do arquivo
-                      </FieldLabel>
-                      <Input
-                        id="asset-filename"
-                        maxLength={255}
-                        placeholder="exemplo.png"
-                        aria-invalid={!!form.formState.errors.filename}
-                        {...form.register("filename")}
-                      />
-                      <FieldError errors={[form.formState.errors.filename]} />
-                    </Field>
-
                     <Controller
                       control={form.control}
                       name="alt"

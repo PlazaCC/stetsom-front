@@ -222,6 +222,11 @@ export function AdminSidebar({
             <LogOut className="size-4 shrink-0" />
             Sair
           </button>
+          {process.env.NEXT_PUBLIC_APP_VERSION && (
+            <p className="mt-2 px-2 text-xs text-foreground/40">
+              Versão {process.env.NEXT_PUBLIC_APP_VERSION}
+            </p>
+          )}
         </div>
 
         {/* Botão de fechar no topo para mobile */}

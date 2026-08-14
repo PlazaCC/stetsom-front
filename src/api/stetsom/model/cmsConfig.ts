@@ -5,8 +5,9 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { CmsConfigLogoDark } from "./cmsConfigLogoDark";
+import type { CmsConfigLogoWhite } from "./cmsConfigLogoWhite";
 import type { DepartmentConfigItem } from "./departmentConfigItem";
-import type { I18nString } from "./i18nString";
 
 export interface CmsConfig {
   company_name: string;
@@ -21,9 +22,9 @@ export interface CmsConfig {
   /** Contact form department routing — each entry maps a slug to an internal email */
   contact_departments?: DepartmentConfigItem[];
   /** Logo variant for light backgrounds, by locale */
-  logo_dark?: I18nString;
+  logo_dark?: CmsConfigLogoDark;
   /** Logo variant for dark backgrounds, by locale */
-  logo_white?: I18nString;
+  logo_white?: CmsConfigLogoWhite;
   updated_at: string;
   updated_by: string;
 }

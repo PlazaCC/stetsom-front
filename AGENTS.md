@@ -45,10 +45,8 @@ See `CONTRIBUTING.md` for the full Git Flow and branching conventions.
 
 ## Architecture Decisions
 
-- Admin UI: shadcn/ui (base-nova) with custom CMS primitives in `src/app/admin/_components/`.
-- BFF: `src/app/api/bff/[...path]` proxies Orval client calls to stetsom-api, injecting `admin_token` cookie as `Authorization: Bearer`.
-- Develop and PR previews use the dedicated API. Mock mode is an offline local
-  fallback only; `USE_MOCK_DATA=1` serves GETs from `src/lib/mock/*.ts`.
-  Maintain contract compatibility and do not add mock-only behavior.
-  **Mock data (`data.json`) is generated. Do not edit it.** Run `pnpm mock:dump` to sync.
-- Root conventions: `docs/ARCHITECTURE.md` + `.agents/rules/*.md`.
+Admin UI is shadcn/ui (base-nova) with custom CMS primitives in `src/app/admin/_components/`.
+
+Architectural rationale is recorded as ADRs in `docs/adrs/`, covering the Orval-generated client, the BFF passthrough proxy, Server Components by default, the mock fixture provider, Sentry scope, and scoped block CSS.
+
+Root conventions: `docs/ARCHITECTURE.md` + `.agents/rules/*.md`.

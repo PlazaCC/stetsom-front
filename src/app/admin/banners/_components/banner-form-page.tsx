@@ -2,10 +2,9 @@
 
 import type {
   Banner,
-  BannerWithUploads,
+  BannerPayload,
   PatchApiBannersIdBody,
   PostApiBannersBody,
-  UploadPresignResponse,
   I18nString,
 } from "@/api/stetsom/model";
 import {
@@ -15,7 +14,6 @@ import {
   getGetApiBannersQueryKey,
 } from "@/api/stetsom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useInlineUpload } from "@/hooks/use-inline-upload";
 import { toApiLocale } from "@/lib/api/i18n-utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -46,8 +44,6 @@ export function BannerFormPage(props: Props) {
   const [draft, setDraft] = useState<BannerFormState>(
     initialBanner ? bannerToFormState(initialBanner) : EMPTY_FORM_STATE,
   );
-  const [desktopImageFile, setDesktopImageFile] = useState<File | null>(null);
-  const [mobileImageFile, setMobileImageFile] = useState<File | null>(null);
 
   function invalidate() {
     queryClient.invalidateQueries({ queryKey: getGetApiBannersQueryKey() });
@@ -64,12 +60,7 @@ export function BannerFormPage(props: Props) {
     mutationFn: (id: string) => deleteApiBannersId(id),
     onSuccess: invalidate,
   });
-  const inlineUpload = useInlineUpload();
-
-  const isSaving =
-    createBanner.isPending ||
-    updateBanner.isPending ||
-    inlineUpload.isUploading;
+  const isSaving = createBanner.isPending || updateBanner.isPending;
 
   function handleDraftChange(
     key: keyof BannerFormState,
@@ -79,25 +70,14 @@ export function BannerFormPage(props: Props) {
   }
 
   function buildPayload(): PostApiBannersBody {
+    const isProductDestination = Boolean(draft.product_id);
     return {
       name: draft.name,
       product_id: draft.product_id || null,
-      desktop_image: desktopImageFile
-        ? {
-            fileName: desktopImageFile.name,
-            mimeType: desktopImageFile.type,
-            sizeBytes: desktopImageFile.size,
-          }
-        : { fileName: "", mimeType: "", sizeBytes: 0 },
-      mobile_image: mobileImageFile
-        ? {
-            fileName: mobileImageFile.name,
-            mimeType: mobileImageFile.type,
-            sizeBytes: mobileImageFile.size,
-          }
-        : undefined,
-      link_url: draft.link_url || null,
-      href: draft.href || null,
+      desktop_image_library_id: draft.desktop_image_library_id,
+      mobile_image_library_id: draft.mobile_image_library_id || null,
+      link_url: isProductDestination ? draft.link_url || null : null,
+      href: isProductDestination ? null : draft.href || null,
       title: draft.title.pt ? draft.title : undefined,
       label: draft.label || null,
       order: draft.order ?? 0,
@@ -109,25 +89,14 @@ export function BannerFormPage(props: Props) {
   }
 
   function buildUpdatePayload(): PatchApiBannersIdBody {
+    const isProductDestination = Boolean(draft.product_id);
     return {
       name: draft.name || undefined,
       product_id: draft.product_id || null,
-      desktop_image: desktopImageFile
-        ? {
-            fileName: desktopImageFile.name,
-            mimeType: desktopImageFile.type,
-            sizeBytes: desktopImageFile.size,
-          }
-        : undefined,
-      mobile_image: mobileImageFile
-        ? {
-            fileName: mobileImageFile.name,
-            mimeType: mobileImageFile.type,
-            sizeBytes: mobileImageFile.size,
-          }
-        : undefined,
-      link_url: draft.link_url || null,
-      href: draft.href || null,
+      desktop_image_library_id: draft.desktop_image_library_id || undefined,
+      mobile_image_library_id: draft.mobile_image_library_id || null,
+      link_url: isProductDestination ? draft.link_url || null : null,
+      href: isProductDestination ? null : draft.href || null,
       title: draft.title.pt ? draft.title : undefined,
       label: draft.label || null,
       order: draft.order ?? undefined,
@@ -139,7 +108,7 @@ export function BannerFormPage(props: Props) {
   }
 
   async function handleSave() {
-    let result: BannerWithUploads;
+    let result: BannerPayload;
 
     if (isCreating) {
       const payload = buildPayload();
@@ -153,21 +122,7 @@ export function BannerFormPage(props: Props) {
     } else {
       return;
     }
-
-    const fileMap = new Map<string, File>();
-    if (desktopImageFile && result.uploads?.desktop) {
-      fileMap.set("desktop", desktopImageFile);
-    }
-    if (mobileImageFile && result.uploads?.mobile) {
-      fileMap.set("mobile", mobileImageFile);
-    }
-
-    if (fileMap.size > 0 && result.uploads) {
-      await inlineUpload.upload(
-        result.uploads as Record<string, UploadPresignResponse>,
-        fileMap,
-      );
-    }
+    void result.banner;
 
     invalidate();
     router.push("/admin/banners");
@@ -191,10 +146,6 @@ export function BannerFormPage(props: Props) {
       onDraftChange={handleDraftChange}
       onSave={handleSave}
       onCancel={handleCancel}
-      onDesktopFile={setDesktopImageFile}
-      onMobileFile={setMobileImageFile}
-      onClearDesktopFile={() => setDesktopImageFile(null)}
-      onClearMobileFile={() => setMobileImageFile(null)}
       onDelete={initialBanner ? handleDelete : undefined}
       isDeleting={deleteBanner.isPending}
     />

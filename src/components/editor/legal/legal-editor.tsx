@@ -9,7 +9,9 @@ import "prosekit/basic/typography.css";
 
 import { createEditor } from "prosekit/core";
 import { ProseKit, useDocChange, useEditor } from "prosekit/react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import type { LibraryPickedAsset } from "@/app/admin/_components/crud/library-asset-ref";
+import { LibraryPickerModal } from "@/app/admin/_components/crud/library-asset-picker";
 import { cn } from "@/lib/utils";
 import { defineLegalExtension, type LegalExtension } from "./extension";
 import { LegalToolbar } from "./toolbar";
@@ -44,6 +46,7 @@ export function LegalEditor({
   placeholder = "Escreva o conteúdo…",
   className,
 }: LegalEditorProps) {
+  const [pickerOpen, setPickerOpen] = useState(false);
   const editor = useMemo(
     () =>
       createEditor({
@@ -55,6 +58,23 @@ export function LegalEditor({
     [],
   );
 
+  function insertDocument(asset: LibraryPickedAsset) {
+    const { from, to } = editor.state.selection;
+    const mark = editor.schema.marks.link.create({
+      href: asset.file_url,
+      target: "_blank",
+      rel: "noopener noreferrer",
+      libraryId: asset.library_id,
+    });
+    const text = editor.schema.text(
+      asset.file_url.split("/").pop() || "Documento",
+      [mark],
+    );
+    editor.view.dispatch(editor.state.tr.replaceRangeWith(from, to, text));
+    editor.focus();
+    setPickerOpen(false);
+  }
+
   return (
     <ProseKit editor={editor}>
       <div
@@ -63,13 +83,21 @@ export function LegalEditor({
           className,
         )}
       >
-        <LegalToolbar />
+        <LegalToolbar onInsertDocument={() => setPickerOpen(true)} />
         <div
           ref={editor.mount}
           className="ProseMirror min-h-48 px-4 py-3 text-sm outline-none [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:text-xl [&_h2]:font-bold [&_h3]:text-lg [&_h3]:font-semibold [&_ol]:list-decimal [&_ol]:pl-6 [&_ul]:list-disc [&_ul]:pl-6"
         />
         <ChangeBridge onChange={onChange} />
       </div>
+      {pickerOpen && (
+        <LibraryPickerModal
+          type="OTHER"
+          accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.csv"
+          onClose={() => setPickerOpen(false)}
+          onPick={insertDocument}
+        />
+      )}
     </ProseKit>
   );
 }

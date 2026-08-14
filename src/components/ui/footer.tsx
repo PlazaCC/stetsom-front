@@ -83,7 +83,7 @@ interface FooterProps {
 }
 
 export default async function Footer({
-  logoDark = "/logo.png",
+  logoDark = "/logo-pt-br-white.svg",
   socials,
   legalPages = [],
 }: FooterProps = {}) {

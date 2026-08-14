@@ -74,6 +74,7 @@
     "emptyCatalogDescription": "New products will be published here.",
     "emptyResultsTitle": "No products found",
     "emptyResultsDescription": "Try removing filters or searching for another term.",
+    "learnMore": "Learn more",
     "categories": "Categories",
     "filters": "Filters",
     "clearAll": "Clear all",
@@ -92,9 +93,9 @@
     "paginationPrevious": "Previous",
     "paginationNext": "Next",
     "paginationInfo": "Page {page} of {total}",
-    "emptyCategory": "No products found in this category.",
     "options": "Options",
     "showDiscontinued": "Show discontinued",
+    "discontinued": "Discontinued",
     "showExport": "Export products",
     "compare": "Compare products",
     "compareSelect": "Select 2 products to compare",
@@ -118,6 +119,7 @@
     "discontinued": "Discontinued",
     "filesAvailable": "{count, plural, one {# file available} other {# files available}}",
     "manual": "Access product manual",
+    "certificates": "Certificates",
     "downloadPhotos": "Download photos",
     "downloadApp": "Download app",
     "downloadIos": "Download iOS",
@@ -177,6 +179,7 @@
       "contactInfoPhone": "Phone",
       "contactInfoEmail": "Email",
       "contactInfoWhatsapp": "WhatsApp",
+      "whatsappQrHint": "Point your phone camera here to open the chat on WhatsApp.",
       "sending": "Sending...",
       "submit": "Send message",
       "successTitle": "Message sent!",
@@ -228,7 +231,11 @@
       "showAll": "Show all",
       "filterByMap": "Filter by map",
       "emptyNetworkTitle": "Support wherever you need it",
-      "emptyNetworkDescription": "Contact our team for help finding authorized service."
+      "emptyNetworkDescription": "Contact our team for help finding authorized service.",
+      "locationTimeout": "Locating you took too long. Please try again.",
+      "locationUnavailable": "Your location is not available on this device.",
+      "locationUnsupported": "This browser does not provide location.",
+      "withoutCoordinates": "{count, plural, one {# service center without a registered location} other {# service centers without a registered location}}"
     },
     "faq": {
       "noAnswer": "Didn't find what you're looking for? Contact our support team."

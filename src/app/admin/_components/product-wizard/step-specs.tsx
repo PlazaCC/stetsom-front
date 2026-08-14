@@ -62,6 +62,13 @@ export function StepSpecs({
 }: StepSpecsProps) {
   const [locale, setLocale] = useState<SpecLocale>("pt");
 
+  // Templates are scoped to the product's category — the list stays empty until
+  // one is picked, so the combobox has nothing to apply before that.
+  const hasCategory = Boolean(state.category_id);
+  const categoryTemplates = templates.filter(
+    (template) => template.category_id === state.category_id,
+  );
+
   const active =
     state.variations.find((v) => v.id === state.activeVariationId) ??
     state.variations[0]!;
@@ -101,7 +108,7 @@ export function StepSpecs({
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b px-3 py-2.5">
         <h2 className="text-sm font-semibold">Especificações Técnicas</h2>
         <Combobox
-          items={templates}
+          items={categoryTemplates}
           itemToStringLabel={(item: Template) => item.name["pt"]}
           onValueChange={(template) => {
             if (!template) return;
@@ -112,7 +119,14 @@ export function StepSpecs({
             });
           }}
         >
-          <ComboboxInput placeholder="Aplicar Template" />
+          <ComboboxInput
+            disabled={!hasCategory}
+            placeholder={
+              hasCategory
+                ? "Aplicar Template"
+                : "Selecione uma categoria primeiro"
+            }
+          />
           <ComboboxContent>
             <ComboboxEmpty>No items found.</ComboboxEmpty>
             <ComboboxList>

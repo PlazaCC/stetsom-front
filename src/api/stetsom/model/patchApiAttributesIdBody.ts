@@ -6,7 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { PatchApiAttributesIdBodyName } from "./patchApiAttributesIdBodyName";
+import type { PatchApiAttributesIdBodyType } from "./patchApiAttributesIdBodyType";
 
 export type PatchApiAttributesIdBody = {
   name?: PatchApiAttributesIdBodyName;
+  type?: PatchApiAttributesIdBodyType;
 };

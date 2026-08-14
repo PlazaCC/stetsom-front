@@ -44,6 +44,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       className={`${barlow.variable} ${barlowCondensed.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col">{children}</body>

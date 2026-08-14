@@ -54,11 +54,11 @@ export function CatalogSidebar({
   const t = useTranslations("Catalog");
 
   return (
-    <aside className="hidden w-90 shrink-0 flex-col gap-5 lg:flex">
+    <aside className="hidden w-90 shrink-0 flex-col lg:flex">
       {/* Compare button at the top above all filters */}
       <CompareTriggerButton variant="sidebar" />
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between py-2.5">
         <h2 className="font-sans text-lg font-bold text-foreground">
           {t("filters")}
         </h2>
@@ -71,7 +71,7 @@ export function CatalogSidebar({
         </button>
       </div>
 
-      <div className="pb-1">
+      <div className="py-2.5">
         <p className="font-sans text-sm font-medium text-muted-foreground uppercase">
           {t("sortBy")}
         </p>
@@ -91,7 +91,9 @@ export function CatalogSidebar({
         </div>
       </div>
 
-      <div className="border-t border-border pt-5">
+      <hr className="border-border" />
+
+      <div className="py-2.5">
         <div className="flex items-center justify-between">
           <span className="font-sans text-sm font-medium text-muted-foreground uppercase">
             {t("search")}
@@ -108,11 +110,10 @@ export function CatalogSidebar({
         </div>
       </div>
 
+      <hr className="border-border" />
+
       {/* OPÇÕES — Switch toggles */}
-      <Collapsible
-        defaultOpen
-        className="group/collapsible border-t border-border pt-5"
-      >
+      <Collapsible defaultOpen className="group/collapsible py-2.5">
         <CollapsibleTrigger className="flex w-full cursor-pointer items-center justify-between">
           <span className="font-sans text-sm font-medium text-muted-foreground uppercase">
             {t("options")}
@@ -122,7 +123,7 @@ export function CatalogSidebar({
             className="text-muted-foreground transition-transform group-data-open/collapsible:rotate-180"
           />
         </CollapsibleTrigger>
-        <CollapsibleContent className="mt-3 flex flex-col gap-3">
+        <CollapsibleContent className="mt-4 flex flex-col gap-4">
           <label className="flex cursor-pointer items-center gap-3 text-base text-muted-foreground">
             <Switch
               checked={showDiscontinued}
@@ -137,11 +138,10 @@ export function CatalogSidebar({
         </CollapsibleContent>
       </Collapsible>
 
+      <hr className="border-border" />
+
       {/* TIPO DE PRODUTO */}
-      <Collapsible
-        defaultOpen
-        className="group/collapsible border-t border-border pt-5"
-      >
+      <Collapsible defaultOpen className="group/collapsible py-2.5">
         <CollapsibleTrigger className="flex w-full cursor-pointer items-center justify-between">
           <span className="font-sans text-sm font-medium text-muted-foreground uppercase">
             {t("productType")}
@@ -151,7 +151,7 @@ export function CatalogSidebar({
             className="text-muted-foreground transition-transform group-data-open/collapsible:rotate-180"
           />
         </CollapsibleTrigger>
-        <CollapsibleContent className="mt-3 flex flex-col gap-2">
+        <CollapsibleContent className="mt-4 flex flex-col gap-3">
           {typeFilterOptions.map((cat) => (
             <label
               key={cat.slug}
@@ -171,12 +171,11 @@ export function CatalogSidebar({
         </CollapsibleContent>
       </Collapsible>
 
+      <hr className="border-border" />
+
       {/* LINHAS */}
       {productLines.length > 0 && (
-        <Collapsible
-          defaultOpen
-          className="group/collapsible border-t border-border pt-5"
-        >
+        <Collapsible defaultOpen className="group/collapsible py-2.5">
           <CollapsibleTrigger className="flex w-full cursor-pointer items-center justify-between">
             <span className="font-sans text-sm font-medium text-muted-foreground uppercase">
               {t("productLines")}
@@ -186,7 +185,7 @@ export function CatalogSidebar({
               className="text-muted-foreground transition-transform group-data-open/collapsible:rotate-180"
             />
           </CollapsibleTrigger>
-          <CollapsibleContent className="mt-3 flex flex-col gap-2 text-base text-muted-foreground">
+          <CollapsibleContent className="mt-4 flex flex-col gap-3 text-base text-muted-foreground">
             {productLines.map((line) => (
               <label
                 key={line.slug}

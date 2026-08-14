@@ -10,6 +10,8 @@ import {
   useGetApiPagesSlugCms,
   useGetApiPartnerLocations,
   useGetApiPagesSlug,
+  useGetApiCategories,
+  useGetApiProducts,
 } from "@/api/stetsom";
 import { useGetApiFaqs } from "@/api/stetsom/endpoints/faq-public/faq-public";
 import type { PageBlock } from "@/api/stetsom/model";
@@ -89,6 +91,20 @@ export function PageEditorContent({
     query: { enabled: isSupport },
   });
   const { data: faqItems = [] } = useGetApiFaqs();
+  const { data: previewCategories = [] } = useGetApiCategories(
+    { locale: "pt" },
+    { query: { enabled: isHome } },
+  );
+  const { data: previewProducts } = useGetApiProducts(
+    {
+      locale: "pt",
+      status: "PUBLISHED",
+      sort: "newest",
+      page: 1,
+      pageSize: 100,
+    },
+    { query: { enabled: isHome } },
+  );
 
   const [localBlocks, setLocalBlocks] = useState<PageBlock[] | null>(null);
   const [selection, setSelection] = useState<PageEditorTarget>(null);
@@ -200,6 +216,8 @@ export function PageEditorContent({
     departments,
     publicPage?.blocks,
     faqItems,
+    previewCategories,
+    previewProducts?.items ?? [],
   );
 
   return (

@@ -28,5 +28,6 @@ export type GetApiProductsParams = {
   is_featured?: boolean;
   is_spotlight?: boolean;
   is_discontinued?: boolean;
+  is_export?: boolean;
   sort?: GetApiProductsSort;
 };

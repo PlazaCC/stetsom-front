@@ -7,13 +7,10 @@
  */
 
 export type PostApiProductsBodyDescription = {
-  /**
-   * @minLength 1
-   * @maxLength 2000
-   */
+  /** @maxLength 20000 */
   pt: string;
-  /** @maxLength 2000 */
+  /** @maxLength 20000 */
   en?: string;
-  /** @maxLength 2000 */
+  /** @maxLength 20000 */
   es?: string;
 };

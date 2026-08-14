@@ -16,6 +16,12 @@ export interface ProductFileInput {
   filename?: string | null;
   /** @nullable */
   type?: string | null;
+  /**
+   * @maximum 9007199254740991
+   * @exclusiveMinimum 0
+   * @nullable
+   */
+  version?: number | null;
   locale?: LocaleInput;
   is_active: boolean;
   created_at: string;

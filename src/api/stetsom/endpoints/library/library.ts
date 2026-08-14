@@ -20,6 +20,7 @@ import type {
 
 import type {
   ApiErrorPayload,
+  DeleteApiLibraryIdVersionsVersionId200,
   GetApiLibraryParams,
   LibraryAsset,
   LibraryPayload,
@@ -658,6 +659,7 @@ export function useDeleteApiLibraryId<
 }
 
 /**
+ * Registers an already-uploaded file as the asset's new current version. The superseded object is renamed in the bucket so the newest file keeps the clean name.
  * @summary Add version
  */
 export const postApiLibraryIdVersions = (
@@ -828,6 +830,187 @@ export function usePostApiLibraryIdVersions<
   const queryOptions = getPostApiLibraryIdVersionsQueryOptions(
     id,
     postApiLibraryIdVersionsBody,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Removes one version and its object. The current version and the last remaining version cannot be deleted.
+ * @summary Delete version
+ */
+export const deleteApiLibraryIdVersionsVersionId = (
+  id: string,
+  versionId: string,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<DeleteApiLibraryIdVersionsVersionId200>({
+    url: `/api/library/${id}/versions/${versionId}`,
+    method: "DELETE",
+    signal,
+  });
+};
+
+export const getDeleteApiLibraryIdVersionsVersionIdQueryKey = (
+  id: string,
+  versionId: string,
+) => {
+  return ["DELETE", `/api/library/${id}/versions/${versionId}`] as const;
+};
+
+export const getDeleteApiLibraryIdVersionsVersionIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  versionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getDeleteApiLibraryIdVersionsVersionIdQueryKey(id, versionId);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>
+  > = ({ signal }) =>
+    deleteApiLibraryIdVersionsVersionId(id, versionId, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled:
+      id !== null &&
+      id !== undefined &&
+      versionId !== null &&
+      versionId !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type DeleteApiLibraryIdVersionsVersionIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>
+>;
+export type DeleteApiLibraryIdVersionsVersionIdQueryError = ApiErrorPayload;
+
+export function useDeleteApiLibraryIdVersionsVersionId<
+  TData = Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  versionId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>,
+          TError,
+          Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useDeleteApiLibraryIdVersionsVersionId<
+  TData = Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  versionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>,
+          TError,
+          Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useDeleteApiLibraryIdVersionsVersionId<
+  TData = Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  versionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Delete version
+ */
+
+export function useDeleteApiLibraryIdVersionsVersionId<
+  TData = Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  versionId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof deleteApiLibraryIdVersionsVersionId>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getDeleteApiLibraryIdVersionsVersionIdQueryOptions(
+    id,
+    versionId,
     options,
   );
 

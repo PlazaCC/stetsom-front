@@ -50,6 +50,13 @@ const ALLOWED_MIMES = new Set([
   "model/gltf+json",
   "application/zip",
   "application/x-zip-compressed",
+  // Documents — the "Outros" shelf. Must mirror ALLOWED_MIME_TYPES in the API.
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "text/plain",
+  "text/csv",
 ]);
 
 /** Canonical MIME by file extension. Browsers are inconsistent for these

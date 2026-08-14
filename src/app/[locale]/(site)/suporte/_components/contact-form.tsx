@@ -1,6 +1,7 @@
 "use client";
 
 import type { PublicDepartmentItem } from "@/api/stetsom/model";
+import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { submitContact } from "./actions";
@@ -180,12 +181,12 @@ export function ContactForm({ departments }: ContactFormProps) {
         <span className="font-sans text-xs leading-relaxed text-text-subtle">
           {t.rich("privacyText", {
             privacyLink: (chunks) => (
-              <a
-                href="#"
+              <Link
+                href="/legal/politica-de-privacidade"
                 className="font-medium text-brand underline underline-offset-2 hover:text-brand/80"
               >
                 {chunks}
-              </a>
+              </Link>
             ),
           })}
         </span>

@@ -6,16 +6,21 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { I18nStringInput } from "./i18nStringInput";
+import type { VariantAttrInputAttributeType } from "./variantAttrInputAttributeType";
+import type { VariantAttrInputDescription } from "./variantAttrInputDescription";
 import type { VariantAttrInputValue } from "./variantAttrInputValue";
 
 export interface VariantAttrInput {
   attribute_id: string;
   attribute_name?: I18nStringInput;
   value: VariantAttrInputValue;
+  /** @nullable */
+  description?: VariantAttrInputDescription;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
    */
   order: number;
   highlighted?: boolean;
+  attribute_type?: VariantAttrInputAttributeType;
 }

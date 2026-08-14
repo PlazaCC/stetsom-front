@@ -27,8 +27,8 @@ interface HeaderProps {
 }
 
 export function Header({
-  logoDark = "/logo.png",
-  logoWhite = "/logo-white.png",
+  logoDark = "/logo-pt-br-white.svg",
+  logoWhite = "/logo-pt-br-black.svg",
 }: HeaderProps = {}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
@@ -69,16 +69,20 @@ export function Header({
   // On mobile, when the hamburger menu or search is open the header turns
   // white to blend with the dropdown (desktop is unaffected since both are
   // hidden). On /produtos the header is always white (sticky catalog bar
-  // context).
+  // context). Legal pages are plain content (no hero to sit over), so they
+  // get the same treatment — plus a sticky (not fixed) header so it reserves
+  // its own height instead of floating over the page's first heading.
   const isProdutos = pathname.startsWith("/produtos/");
-  const isWhite = isProdutos || scrolled || mobileMenuOpen || mobileSearchOpen;
+  const isLegal = pathname.startsWith("/legal/");
+  const isWhite =
+    isProdutos || isLegal || scrolled || mobileMenuOpen || mobileSearchOpen;
   const iconClass = isWhite ? "text-icon-muted" : "text-white";
   const langVariant = isWhite ? ("light" as const) : ("dark" as const);
 
   return (
     <div onKeyDown={handleKey}>
       <motion.header
-        className="fixed top-0 z-50 h-16 w-full"
+        className={cn("top-0 z-50 h-16 w-full", isLegal ? "sticky" : "fixed")}
         animate={{
           backgroundColor: isWhite
             ? "rgba(255, 255, 255, 1)"

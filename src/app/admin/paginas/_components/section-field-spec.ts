@@ -9,7 +9,6 @@ import {
   MapPin,
   Phone,
   Share2,
-  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 
@@ -55,6 +54,7 @@ export type FieldSpec =
       placeholder?: string;
     }
   | { kind: "group"; key: string; label: string; fields: FieldSpec[] }
+  | { kind: "featured-tabs"; key: string; label: string }
   | {
       kind: "faq-items";
       key: string;
@@ -115,40 +115,14 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
   home: [
     {
       section_id: "featured",
-      type: "CARDS",
-      label: "Produtos em destaque",
-      icon: Sparkles,
-      kind: "auto",
-      autoNote:
-        "Os produtos e o destaque são preenchidos automaticamente a partir dos produtos marcados como destaque no catálogo. Aqui você edita apenas os textos e o botão.",
+      type: "TEXT",
+      label: "Destaques",
+      description:
+        "Configure as categorias e os produtos publicados exibidos na Home.",
+      icon: List,
+      kind: "editable",
       fields: [
-        { kind: "i18n", key: "label", label: "Rótulo" },
-        { kind: "i18n", key: "title", label: "Título" },
-        { kind: "i18n", key: "spotlightTitle", label: "Título do destaque" },
-        { kind: "i18n", key: "ctaLabel", label: "Texto do botão" },
-        {
-          kind: "text",
-          key: "ctaHref",
-          label: "Link do botão",
-          inputType: "url",
-          placeholder: "/produtos",
-        },
-        {
-          kind: "list",
-          key: "tabs",
-          label: "Abas de categoria",
-          addLabel: "Adicionar aba",
-          itemTitleKey: "label",
-          itemFields: [
-            { kind: "i18n", key: "label", label: "Rótulo da aba" },
-            {
-              kind: "text",
-              key: "categorySlug",
-              label: "Slug da categoria",
-              placeholder: "amplificadores",
-            },
-          ],
-        },
+        { kind: "featured-tabs", key: "tabs", label: "Abas por categoria" },
       ],
     },
     {

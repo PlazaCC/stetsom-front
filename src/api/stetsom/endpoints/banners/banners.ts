@@ -20,7 +20,7 @@ import type {
 
 import type {
   ApiErrorPayload,
-  BannerWithUploads,
+  BannerPayload,
   BannersPayload,
   GetApiBannersParams,
   PatchApiBannersIdBody,
@@ -166,14 +166,14 @@ export function useGetApiBanners<
 }
 
 /**
- * Returns the banner and presigned upload URLs. PUT the file(s) to uploads.desktop.uploadUrl.
+ * Images are library assets — upload via the library first, then send their ids.
  * @summary Create banner
  */
 export const postApiBanners = (
   postApiBannersBody: PostApiBannersBody,
   signal?: AbortSignal,
 ) => {
-  return orvalClient<BannerWithUploads>({
+  return orvalClient<BannerPayload>({
     url: `/api/banners`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -317,7 +317,7 @@ export const patchApiBannersId = (
   patchApiBannersIdBody: PatchApiBannersIdBody,
   signal?: AbortSignal,
 ) => {
-  return orvalClient<BannerWithUploads>({
+  return orvalClient<BannerPayload>({
     url: `/api/banners/${id}`,
     method: "PATCH",
     headers: { "Content-Type": "application/json" },

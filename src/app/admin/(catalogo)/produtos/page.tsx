@@ -68,6 +68,9 @@ export default function AdminProdutos() {
   const [statusFilter, setStatusFilter] = useState<CmsProductRowStatus | null>(
     null,
   );
+  const [exportFilter, setExportFilter] = useState<"true" | "false" | null>(
+    null,
+  );
   const [filterOpen, setFilterOpen] = useState(false);
   const [page, setPage] = useState(1);
   const pageSize = 12;
@@ -80,6 +83,7 @@ export default function AdminProdutos() {
   const cmsProducts = useGetApiProductsAdmin({
     q: query || undefined,
     status: statusFilter ?? undefined,
+    is_export: exportFilter ? exportFilter === "true" : undefined,
     page,
     pageSize,
   });
@@ -89,16 +93,30 @@ export default function AdminProdutos() {
     [cmsProducts.data?.items],
   );
 
-  const chips: FilterChip[] = statusFilter
-    ? [
-        {
-          key: "status",
-          label:
-            STATUS_OPTIONS.find((s) => s.value === statusFilter)?.label ??
-            statusFilter,
-        },
-      ]
-    : [];
+  const chips: FilterChip[] =
+    statusFilter || exportFilter
+      ? [
+          ...(statusFilter
+            ? [
+                {
+                  key: "status",
+                  label:
+                    STATUS_OPTIONS.find((s) => s.value === statusFilter)
+                      ?.label || statusFilter,
+                },
+              ]
+            : []),
+          ...(exportFilter
+            ? [
+                {
+                  key: "export",
+                  label:
+                    exportFilter === "true" ? "Exportação" : "Não exportação",
+                },
+              ]
+            : []),
+        ]
+      : [];
 
   const columns: AdminTableColumn<CmsProductRow>[] = [
     {
@@ -142,10 +160,19 @@ export default function AdminProdutos() {
     },
     {
       key: "is_discontinued",
-      header: "Em linha",
+      header: "Linha",
       render: (row) => (
         <span className="text-sm font-medium text-foreground">
-          {row.is_discontinued ? "Não" : "Sim"}
+          {row.is_discontinued ? "Descontinuado" : "Em linha"}
+        </span>
+      ),
+    },
+    {
+      key: "is_export",
+      header: "Exportação",
+      render: (row) => (
+        <span className="text-sm font-medium text-foreground">
+          {row.is_export ? "Sim" : "Não"}
         </span>
       ),
     },
@@ -179,7 +206,7 @@ export default function AdminProdutos() {
       Cadastrar produto
     </Link>
   );
-  const hasActiveFilters = Boolean(query || statusFilter);
+  const hasActiveFilters = Boolean(query || statusFilter || exportFilter);
 
   if (cmsProducts.isError) {
     return (
@@ -270,14 +297,33 @@ export default function AdminProdutos() {
                         {opt.label}
                       </button>
                     ))}
+                    {["true", "false"].map((value) => (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => {
+                          setExportFilter(value as "true" | "false");
+                          setPage(1);
+                          setFilterOpen(false);
+                        }}
+                        className={cn(
+                          "block w-full rounded px-2 py-1.5 text-left text-sm hover:bg-muted",
+                          exportFilter === value &&
+                            "font-semibold text-primary",
+                        )}
+                      >
+                        {value === "true" ? "Exportação" : "Não exportação"}
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
             </div>
             <FilterChips
               chips={chips}
-              onRemove={() => {
-                setStatusFilter(null);
+              onRemove={(key) => {
+                if (key === "status") setStatusFilter(null);
+                if (key === "export") setExportFilter(null);
                 setPage(1);
               }}
             />

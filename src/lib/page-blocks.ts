@@ -1,4 +1,4 @@
-import type { PageBlock, ProductCardItem } from "@/api/stetsom/model";
+import type { PageBlock } from "@/api/stetsom/model";
 
 export function getPageBlock<T extends Record<string, unknown>>(
   blocks: PageBlock[],
@@ -15,18 +15,6 @@ export type FaqItem = { id: string; q: string; a: string };
 export type HomeHeroBlockData = {
   label?: string;
   title?: string;
-};
-
-export type HomeFeaturedBlockData = {
-  hidden?: boolean;
-  label?: string;
-  title?: string;
-  spotlightTitle?: string;
-  ctaHref?: string;
-  ctaLabel?: string;
-  tabs?: Array<{ id: string; label: string; categorySlug?: string }>;
-  products?: ProductCardItem[];
-  spotlight?: ProductCardItem | null;
 };
 
 export type HomeHistoryBlockData = {

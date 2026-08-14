@@ -99,7 +99,7 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
                 src={mobileSrc}
                 alt="Banner Stetsom"
                 fill
-                sizes="100vw"
+                sizes="(min-width: 640px) 0px, 100vw"
                 priority={index === 0}
               />
               <Image
@@ -107,7 +107,7 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
                 src={slide.desktop_image_url}
                 alt="Banner Stetsom"
                 fill
-                sizes="100vw"
+                sizes="(max-width: 639px) 0px, 100vw"
                 priority={index === 0}
               />
               <div className="bg-gradient-fade-black absolute inset-0 z-10" />

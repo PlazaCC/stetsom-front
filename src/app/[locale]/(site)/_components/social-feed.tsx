@@ -106,6 +106,7 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
                       src={post.media_url ?? post.image}
                       alt={post.caption ?? ""}
                       fill
+                      sizes="(min-width: 640px) 250px, calc(100vw - 40px)"
                       className="absolute inset-0 object-cover"
                       style={{ opacity: post.opacity ?? 1 }}
                     />

@@ -6,9 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { LibraryAsset } from "./libraryAsset";
-import type { UploadIntent } from "./uploadIntent";
 
 export type PostApiLibraryIdVersions201 = {
   asset: LibraryAsset;
-  upload: UploadIntent;
 };

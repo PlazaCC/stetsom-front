@@ -2667,7 +2667,7 @@
         "type": "TEXT",
         "order": 0,
         "data": {
-          "label": "Novidades",
+          "label": "Destaques",
           "title": "CONHEÇA A\nPRATICIDADE",
           "ctaLabel": "Ver todos",
           "ctaHref": "/produtos",
@@ -15468,7 +15468,8 @@
         "type": "TEXT",
         "order": 0,
         "data": {
-          "label": "Novidades",
+          "label": "Destaques",
+          "show_novelties_tab": true,
           "title": "CONHEÇA A\nPRATICIDADE",
           "ctaLabel": "Ver todos",
           "ctaHref": "/produtos"

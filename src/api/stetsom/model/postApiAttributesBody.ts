@@ -6,7 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { PostApiAttributesBodyName } from "./postApiAttributesBodyName";
+import type { PostApiAttributesBodyType } from "./postApiAttributesBodyType";
 
 export type PostApiAttributesBody = {
   name: PostApiAttributesBodyName;
+  type?: PostApiAttributesBodyType;
 };

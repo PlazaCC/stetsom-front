@@ -4,10 +4,10 @@ import type { FaqItem, HeroBannerSlide, PageBlock } from "@/api/stetsom/model";
 import {
   getPageBlock,
   type FaqBlockData,
-  type HomeFeaturedBlockData,
   type HomeHistoryBlockData,
   type HomeSocialBlockData,
 } from "@/lib/page-blocks";
+import type { NoveltyCategory } from "./build-novelties-by-category";
 import { EditableSection } from "./editable-section";
 import { FaqSection } from "./faq-section";
 import { FeaturedProducts } from "./featured-products";
@@ -19,6 +19,7 @@ export interface HomePageViewData {
   blocks: PageBlock[];
   banners: HeroBannerSlide[];
   faqItems: FaqItem[];
+  novelties?: NoveltyCategory[];
 }
 
 interface HomePageViewProps {
@@ -31,37 +32,18 @@ export function HomePageView({
   data,
   editable = false,
 }: Readonly<HomePageViewProps>) {
-  const { blocks, banners, faqItems } = data;
+  const { blocks, banners, faqItems, novelties = [] } = data;
 
-  const featuredData = getPageBlock<HomeFeaturedBlockData>(blocks, "featured");
   const historyData = getPageBlock<HomeHistoryBlockData>(blocks, "history");
   const socialData = getPageBlock<HomeSocialBlockData>(blocks, "social");
   const faqData = getPageBlock<FaqBlockData>(blocks, "faq");
-
-  const featuredProducts = (featuredData.products ?? []).slice(0, 4);
-  const spotlightProduct = featuredData.spotlight ?? featuredProducts[0];
 
   return (
     <>
       <EditableSection target="section:__banners__" editable={editable}>
         <HeroCarousel slides={banners} />
       </EditableSection>
-      {!featuredData.hidden && (
-        <EditableSection target="section:featured" editable={editable}>
-          <FeaturedProducts
-            featuredProducts={featuredProducts}
-            spotlightProduct={spotlightProduct}
-            tabs={featuredData.tabs ?? []}
-            section={{
-              label: featuredData.label ?? "",
-              title: featuredData.title ?? "",
-              spotlightTitle: featuredData.spotlightTitle,
-              ctaHref: featuredData.ctaHref ?? "/produtos",
-              ctaLabel: featuredData.ctaLabel ?? "Ver todos",
-            }}
-          />
-        </EditableSection>
-      )}
+      {novelties.length > 0 && <FeaturedProducts categories={novelties} />}
       {!historyData.hidden && historyData.image_url && (
         <EditableSection target="section:history" editable={editable}>
           <OurHistory

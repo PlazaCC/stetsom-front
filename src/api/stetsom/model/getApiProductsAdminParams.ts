@@ -20,4 +20,5 @@ export type GetApiProductsAdminParams = {
   pageSize?: number;
   q?: string;
   status?: (typeof GetApiProductsAdminStatus)[keyof typeof GetApiProductsAdminStatus];
+  is_export?: boolean;
 };

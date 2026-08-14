@@ -6,7 +6,7 @@ The repository is public, but external pull requests are not accepted. Report bu
 
 ## Getting Started
 
-See the [README](./README.md) for the stack, commands, and project structure. See [Develop Environment Setup](./docs/DEVELOP-ENVIRONMENT.md) for local variables, mock data, and Vercel environments.
+See the [README](./README.md) for the stack, commands, and project structure. See [Develop Environment Setup](./docs/DEPLOY-DEVELOP.md) for local variables, mock data, and Vercel environments.
 
 ```bash
 pnpm install
@@ -28,7 +28,7 @@ Husky runs local checks before each commit. It formats staged supported files, f
 
 Use `develop` for normal work. Create a short-lived branch only when direct work is impractical, then open a pull request into `develop`.
 
-See the [README](./README.md#deploy) for current deployment status and [Develop Environment Setup](./docs/DEVELOP-ENVIRONMENT.md) for environment details.
+See the [README](./README.md#deploy) for current deployment status and [Develop Environment Setup](./docs/DEPLOY-DEVELOP.md) for environment details.
 
 ### Pipeline Overview
 

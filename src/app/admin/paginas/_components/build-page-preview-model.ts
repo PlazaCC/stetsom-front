@@ -5,7 +5,10 @@ import type {
   PageBlock,
   PartnerLocation,
   PublicDepartmentItem,
+  ProductCardItem,
+  PublicCategory,
 } from "@/api/stetsom/model";
+import type { HomePageViewData } from "@/app/[locale]/(site)/_components/home-page-view";
 import type { PagePreviewModel } from "./page-editor-target";
 import { findSectionDef, type FieldSpec } from "./section-field-spec";
 
@@ -68,6 +71,50 @@ function resolveBlock(
   };
 }
 
+function buildPreviewNovelties(
+  block: PageBlock | undefined,
+  categories: PublicCategory[],
+  availableProducts: ProductCardItem[],
+): HomePageViewData["novelties"] {
+  const tabs =
+    block?.data && typeof block.data === "object" && "tabs" in block.data
+      ? (block.data.tabs as Array<{
+          category_id?: string;
+          product_ids?: string[];
+        }>)
+      : [];
+  const configuredTabs = tabs.flatMap((tab) => {
+    const category = categories.find((item) => item.id === tab.category_id);
+    const products = Array.isArray(tab.product_ids)
+      ? tab.product_ids.flatMap((id) =>
+          availableProducts.filter((product) => product.id === id),
+        )
+      : [];
+    if (!category || products.length === 0) return [];
+    return [
+      {
+        slug: category.slug,
+        name: category.name,
+        spotlight: products[0]!,
+        grid: products.slice(1),
+      },
+    ];
+  });
+  const data = (block?.data as Record<string, unknown>) ?? {};
+  if (data.show_novelties_tab !== true) return configuredTabs;
+  const newest = availableProducts.slice(0, 5);
+  if (newest.length === 0) return configuredTabs;
+  return [
+    {
+      slug: "novidades",
+      name: "Novidades",
+      spotlight: newest[0]!,
+      grid: newest.slice(1),
+    },
+    ...configuredTabs,
+  ];
+}
+
 export function buildPagePreviewModel(
   pageId: string,
   blocks: PageBlock[],
@@ -76,6 +123,8 @@ export function buildPagePreviewModel(
   departments: PublicDepartmentItem[],
   publicBlocks?: PageBlock[],
   faqItems?: FaqItem[],
+  categories: PublicCategory[] = [],
+  availableProducts: ProductCardItem[] = [],
 ): PagePreviewModel | null {
   const resolvedBlocks = blocks.map((b) => {
     const pb = publicBlocks?.find((p) => p.section_id === b.section_id);
@@ -86,7 +135,16 @@ export function buildPagePreviewModel(
     case "home":
       return {
         pageId: "home",
-        data: { blocks: resolvedBlocks, banners, faqItems: faqItems ?? [] },
+        data: {
+          blocks: resolvedBlocks,
+          banners,
+          faqItems: faqItems ?? [],
+          novelties: buildPreviewNovelties(
+            resolvedBlocks.find((block) => block.section_id === "featured"),
+            categories,
+            availableProducts,
+          ),
+        },
       };
     case "about":
       return { pageId: "about", data: { blocks: resolvedBlocks } };

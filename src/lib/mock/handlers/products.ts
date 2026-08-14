@@ -11,6 +11,8 @@ interface ProductItem {
   category: string;
   line: string | null;
   status: string;
+  is_discontinued: boolean;
+  is_export: boolean;
 }
 
 interface ProductResponse {
@@ -56,6 +58,8 @@ export function productsHandler(
   const q = params.get("q")?.trim().toLowerCase();
   const sort = params.get("sort") ?? "relevance";
   const status = params.get("status");
+  const isExport = params.get("is_export");
+  const isDiscontinued = params.get("is_discontinued");
   const page = Math.max(1, Number(params.get("page")) || 1);
   const pageSize = Math.min(
     100,
@@ -87,6 +91,14 @@ export function productsHandler(
         p.slug.toLowerCase().includes(q) ||
         (p.category && p.category.toLowerCase().includes(q)),
     );
+  }
+
+  if (isExport === "true" || isExport === "1") {
+    filtered = filtered.filter((p) => p.is_export);
+  }
+
+  if (isDiscontinued === "false" || isDiscontinued === "0") {
+    filtered = filtered.filter((p) => !p.is_discontinued);
   }
 
   // Sort: newest uses creation time inferred from MongoDB ObjectId (first 8 hex chars = timestamp)

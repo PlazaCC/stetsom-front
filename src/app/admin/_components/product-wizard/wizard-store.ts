@@ -33,7 +33,10 @@ export interface WizardSpec {
   id: string;
   attribute_id: string;
   attribute_name?: I18nString;
+  /** Main text of the line — e.g. "1 x 3500W". Required. */
   value: I18nString;
+  /** Optional condition shown beneath the value — e.g. "1 OHM". */
+  description?: I18nString;
   order: number;
   highlighted: boolean;
 }
@@ -75,6 +78,7 @@ export interface WizardState {
   /** Android Play Store link for this product. Empty string when unset. */
   play_store_url: string;
   is_discontinued: boolean;
+  is_export: boolean;
   /** No UI in the wizard. Preserved across edits, default false on create. */
   is_featured: boolean;
   is_spotlight: boolean;
@@ -110,6 +114,7 @@ export type WizardInfoPatch = Partial<
     | "app_store_url"
     | "play_store_url"
     | "is_discontinued"
+    | "is_export"
     | "is_featured"
     | "is_spotlight"
     | "available_locales"
@@ -184,6 +189,7 @@ function hydrateVariations(
           attribute_id: a.attribute_id,
           attribute_name: a.attribute_name,
           value: a.value ?? { pt: "" },
+          description: a.description ?? undefined,
           order: a.order,
           highlighted: a.highlighted,
         })),
@@ -229,6 +235,27 @@ function hydrateFiles(detail?: CmsProductDetailPayload): WizardFile[] {
   }));
 }
 
+/**
+ * Locales the switches start on.
+ *
+ * Products saved before publishing became explicit may carry an empty
+ * `available_locales` — which the API reads as "visible in every locale". For
+ * those, fall back to whichever locales actually have a name, so opening and
+ * saving a product never silently unpublishes a language.
+ */
+function initialLocales(
+  product?: CmsProductDetailPayload["product"],
+): WizardLocale[] {
+  const stored = (product?.available_locales as WizardLocale[]) ?? [];
+  if (stored.length > 0) return stored;
+
+  const derived: WizardLocale[] = ["pt"];
+  for (const locale of ["en", "es"] as const) {
+    if (product?.name?.[locale]?.trim()) derived.push(locale);
+  }
+  return derived;
+}
+
 export function initWizardState(
   mode: WizardMode,
   detail?: CmsProductDetailPayload,
@@ -252,9 +279,10 @@ export function initWizardState(
     app_store_url: p?.app_store_url ?? "",
     play_store_url: p?.play_store_url ?? "",
     is_discontinued: p?.is_discontinued ?? false,
+    is_export: p?.is_export ?? false,
     is_featured: p?.is_featured ?? false,
     is_spotlight: p?.is_spotlight ?? false,
-    available_locales: (p?.available_locales as WizardLocale[]) ?? ["pt"],
+    available_locales: initialLocales(p),
     status: p?.status ?? "DRAFT",
     launch_date: p?.launch_date?.split("T")[0] ?? "",
     launch_time: p?.launch_date?.includes("T")
@@ -407,12 +435,16 @@ export function deriveStatus(
   return "PUBLISHED";
 }
 
-/** Registered locales = pt plus any locale with content in name or description. */
-export function deriveLocales(state: WizardState): LocaleInput[] {
-  const set = new Set<WizardLocale>(["pt"]);
-  for (const loc of ["en", "es"] as const) {
-    if (state.name[loc] || state.description[loc]) set.add(loc);
-  }
+/**
+ * Locales the product is published in. `pt` is always included — it is the
+ * fallback locale and the only one the API requires.
+ *
+ * This used to be inferred from whichever fields happened to have content;
+ * publishing is now an explicit choice made in the publish step, and the API
+ * rejects a locale whose name is blank.
+ */
+export function publishedLocales(state: WizardState): LocaleInput[] {
+  const set = new Set<WizardLocale>(["pt", ...state.available_locales]);
   return [...set];
 }
 
@@ -441,11 +473,12 @@ export function buildPayload(
     play_store_url: state.play_store_url.trim() || null,
     status,
     is_discontinued: state.is_discontinued,
+    is_export: state.is_export,
     is_featured: state.is_featured,
     is_spotlight: state.is_spotlight,
     launch_date: launchISO,
     highlight_attributes: [...highlightIds],
-    available_locales: deriveLocales(state),
+    available_locales: publishedLocales(state),
     variants: state.variations.map((v) => ({
       variant_id: v.id.startsWith("variation-") ? undefined : v.id,
       name: v.label,
@@ -455,6 +488,9 @@ export function buildPayload(
         .map((s) => ({
           attribute_id: s.attribute_id,
           value: s.value,
+          // Sent as null when blank so clearing it in the CMS actually removes
+          // the line beneath the value.
+          description: s.description?.pt?.trim() ? s.description : null,
           order: s.order,
           highlighted: s.highlighted,
         })),
