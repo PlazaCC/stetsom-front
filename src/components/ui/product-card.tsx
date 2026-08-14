@@ -45,13 +45,15 @@ export function ProductCard({
       {/* Image area */}
       <div className="relative flex flex-1 items-center justify-center p-4">
         {img ? (
-          <Image
-            src={img}
-            alt={name}
-            width={160}
-            height={130}
-            className="max-h-32.5 object-contain"
-          />
+          <div className="relative h-32.5 w-full">
+            <Image
+              src={img}
+              alt={name}
+              fill
+              sizes="160px"
+              className="object-contain"
+            />
+          </div>
         ) : (
           <div className="h-20 w-24 rounded bg-muted" />
         )}

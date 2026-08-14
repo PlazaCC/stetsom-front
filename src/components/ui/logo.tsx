@@ -23,6 +23,7 @@ export function Logo({
       height={height}
       priority={priority}
       className={className}
+      style={{ width: `${width}px`, height: `${height}px` }}
     />
   );
 }
