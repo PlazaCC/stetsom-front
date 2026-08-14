@@ -27,8 +27,8 @@ interface HeaderProps {
 }
 
 export function Header({
-  logoDark = "/logo.png",
-  logoWhite = "/logo-white.png",
+  logoDark = "/logo-pt-br-white.svg",
+  logoWhite = "/logo-pt-br-black.svg",
 }: HeaderProps = {}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);

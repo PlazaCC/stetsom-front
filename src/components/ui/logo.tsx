@@ -24,6 +24,7 @@ export function Logo({
       priority={priority}
       className={className}
       style={{ width: `${width}px`, height: `${height}px` }}
+      unoptimized
     />
   );
 }
