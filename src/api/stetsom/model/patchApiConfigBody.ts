@@ -6,7 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { DepartmentConfigItemInput } from "./departmentConfigItemInput";
-import type { I18nStringInput } from "./i18nStringInput";
+import type { PatchApiConfigBodyLogoDark } from "./patchApiConfigBodyLogoDark";
+import type { PatchApiConfigBodyLogoWhite } from "./patchApiConfigBodyLogoWhite";
 
 export type PatchApiConfigBody = {
   company_name?: string;
@@ -21,7 +22,7 @@ export type PatchApiConfigBody = {
   /** Contact form department routing — each entry maps a slug to an internal email */
   contact_departments?: DepartmentConfigItemInput[];
   /** Logo variant for light backgrounds, by locale */
-  logo_dark?: I18nStringInput;
+  logo_dark?: PatchApiConfigBodyLogoDark;
   /** Logo variant for dark backgrounds, by locale */
-  logo_white?: I18nStringInput;
+  logo_white?: PatchApiConfigBodyLogoWhite;
 };
