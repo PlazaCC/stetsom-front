@@ -8,8 +8,8 @@ import type {
   PublicVariant,
 } from "@/api/stetsom/model";
 import { Breadcrumb, type BreadcrumbItem } from "@/components/ui/breadcrumb";
-import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
+import { Container } from "@/components/ui/container";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -198,6 +198,9 @@ export function ProductDetailView({
   const imagePackFile =
     files.find((f) => f.type === "IMAGE_PACK" && f.is_active) ??
     files.find((f) => f.type === "IMAGE_PACK");
+  const certificateFiles = files.filter(
+    (file) => file.type === "CERTIFICATE" && file.is_active && file.file_url,
+  );
 
   // App-store links are per-product and optional; a missing/blank link hides
   // its menu item, and the whole button hides when neither is set.
@@ -369,9 +372,10 @@ export function ProductDetailView({
               )}
 
               <div {...ed("files")} className="mt-5 flex flex-wrap gap-3">
-                {manualFile && manualFile.file_url && (
+                {manualFile?.file_url && (
                   <a
                     href={manualFile.file_url}
+                    target="_blank"
                     className="inline-flex h-10 items-center rounded-sm bg-brand px-5 font-sans text-button-md font-bold tracking-[0.8px] text-white uppercase transition-colors hover:bg-brand/90"
                   >
                     {t("manual")}
@@ -385,6 +389,46 @@ export function ProductDetailView({
                   >
                     {t("downloadPhotos")}
                   </a>
+                )}
+                {certificateFiles.length > 0 && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={
+                        <button
+                          type="button"
+                          className="inline-flex h-10 items-center gap-2 rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold tracking-[0.8px] text-brand-dark uppercase"
+                        >
+                          {t("certificates")}
+                          <ChevronDown size={16} />
+                        </button>
+                      }
+                    />
+                    <DropdownMenuContent
+                      align="start"
+                      className="w-auto min-w-64"
+                    >
+                      {certificateFiles.map((certificate) => (
+                        <DropdownMenuItem
+                          key={certificate.file_id}
+                          render={
+                            <a
+                              href={certificate.file_url ?? undefined}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={
+                                certificate.filename ?? certificate.file_id
+                              }
+                            />
+                          }
+                        >
+                          {certificate.filename ?? certificate.file_id}
+                          {certificate.version
+                            ? ` — V${certificate.version}`
+                            : ""}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 )}
                 {hasAppLinks && (
                   <DropdownMenu>
@@ -411,7 +455,9 @@ export function ProductDetailView({
                               href={appStoreUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                            />
+                            >
+                              {t("downloadIos")}
+                            </a>
                           }
                         >
                           {t("downloadIos")}
@@ -424,7 +470,9 @@ export function ProductDetailView({
                               href={playStoreUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                            />
+                            >
+                              {t("downloadAndroid")}
+                            </a>
                           }
                         >
                           {t("downloadAndroid")}

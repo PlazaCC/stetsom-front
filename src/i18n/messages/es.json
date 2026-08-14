@@ -119,6 +119,7 @@
     "discontinued": "Descontinuado",
     "filesAvailable": "{count, plural, one {# archivo disponible} other {# archivos disponibles}}",
     "manual": "Acceder al manual del producto",
+    "certificates": "Certificados",
     "downloadPhotos": "Descargar fotos",
     "downloadApp": "Descargar aplicación",
     "downloadIos": "Descargar iOS",

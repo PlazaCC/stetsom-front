@@ -33,8 +33,8 @@ export function LibraryAssetPicker({
   value,
   onChange,
   type = "IMAGE",
-  variant = "image",
   accept = "image/*",
+  variant = "image",
   className,
 }: LibraryAssetPickerProps) {
   const [open, setOpen] = useState(false);
