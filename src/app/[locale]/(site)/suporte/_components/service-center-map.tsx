@@ -84,7 +84,6 @@ export function ServiceCenterMap({
       style: MAP_STYLE,
       center: SP_CENTER,
       zoom: 8,
-      cooperativeGestures: true,
     });
     map.addControl(
       new maplibregl.NavigationControl({ showCompass: false }),
