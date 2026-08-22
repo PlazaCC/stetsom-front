@@ -97,7 +97,7 @@ export function SupportContact({
     : [];
 
   return (
-    <section id="contact" className="w-full scroll-mt-24 bg-white py-12">
+    <section id="contact" className="w-full scroll-mt-header bg-white py-12">
       <Container>
         <div className="flex flex-col lg:flex-row lg:items-start lg:gap-16">
           <div className="flex shrink-0 flex-col gap-6 lg:w-90">

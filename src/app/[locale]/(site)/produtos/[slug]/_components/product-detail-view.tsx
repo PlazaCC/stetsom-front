@@ -500,7 +500,11 @@ export function ProductDetailView({
           />
         ))}
 
-      <section {...ed("specs")} id="specifications" className="scroll-mt-38">
+      <section
+        {...ed("specs")}
+        id="specifications"
+        className="scroll-mt-section-scroll"
+      >
         <div className="bg-off-white px-5 py-4 lg:px-42.5">
           <h2 className="font-sans-condensed text-display-sm leading-none font-black text-brand-dark uppercase">
             {t("techSpecifications")}
@@ -564,7 +568,7 @@ export function ProductDetailView({
 
       <section
         id="related"
-        className="scroll-mt-38 bg-off-white py-10 md:py-12 lg:py-16"
+        className="scroll-mt-section-scroll bg-off-white py-10 md:py-12 lg:py-16"
       >
         <Container>
           <div className="flex items-center justify-between">

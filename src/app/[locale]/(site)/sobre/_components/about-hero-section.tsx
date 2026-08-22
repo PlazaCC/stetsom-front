@@ -16,7 +16,7 @@ interface AboutHeroSectionProps {
 
 export function AboutHeroSection({ section }: Readonly<AboutHeroSectionProps>) {
   return (
-    <section className="relative flex h-160 items-center overflow-hidden bg-brand-dark md:h-100">
+    <section className="relative hero-offset flex items-center overflow-hidden bg-brand-dark">
       <div className="bg-gradient-dark-overlay absolute inset-0" />
 
       <Container className="relative z-10 flex h-full flex-col justify-center md:flex-row md:items-end md:justify-between md:pb-6">

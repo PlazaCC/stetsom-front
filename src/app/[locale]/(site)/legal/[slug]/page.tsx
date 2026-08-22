@@ -23,8 +23,10 @@ export default async function LegalDetailPage(props: LegalPageProps) {
 
   if (!page) notFound();
 
+  // No hero to sit under, so this page reserves the fixed header's height
+  // itself via `mt-header` (the header is `fixed` on every route).
   return (
-    <section className="py-16">
+    <section className="mt-header py-16">
       <Container>
         <h1 className="mb-8 font-sans-condensed text-display-sm font-black text-foreground uppercase">
           {page.title}

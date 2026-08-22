@@ -50,7 +50,7 @@ export function AboutPageView({
     <div>
       {!heroData.hidden && (
         <EditableSection target="section:hero" editable={editable}>
-          <section className="relative flex h-109.75 items-center overflow-hidden bg-brand-dark">
+          <section className="relative hero-offset flex h-109.75 items-center overflow-hidden bg-brand-dark">
             {heroData.url && (
               <Image
                 src={heroData.url}

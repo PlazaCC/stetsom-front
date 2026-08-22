@@ -12,6 +12,8 @@ import "swiper/css/pagination";
 import { A11y, Autoplay, EffectFade, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+// No header offset here on purpose: the transparent header overlays the home
+// banner (slide text is bottom-anchored), so the artwork stays full-bleed.
 const HERO_HEIGHT_CLASS = "h-130 sm:h-155 lg:h-200";
 
 interface HeroCarouselProps {

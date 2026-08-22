@@ -10,35 +10,36 @@ import { useEffect, useRef, useState } from "react";
 import type { ProductCardItem } from "@/api/stetsom/model";
 import { useSearchSuggestions } from "./use-search-suggestions";
 
-const searchInputVariants = cva("font-sans text-sm outline-none", {
-  variants: {
-    variant: {
-      desktop:
-        "w-40 rounded-full border px-4 py-2 transition-all focus:w-56 focus:border-brand",
-      mobile:
-        "flex-1 bg-transparent py-2 text-foreground placeholder:text-muted-foreground",
+/** Desktop pill container — flat, translucent on the transparent header. */
+const searchPillVariants = cva(
+  "flex items-center gap-2 rounded-full px-3 py-1.5 transition-all focus-within:w-56",
+  {
+    variants: {
+      isWhite: {
+        true: "w-40 border border-border bg-muted",
+        false: "w-36 bg-white/20",
+      },
     },
-    isWhite: {
-      true: "",
-      false: "",
-    },
+    defaultVariants: { isWhite: true },
   },
-  compoundVariants: [
-    {
-      variant: "desktop",
-      isWhite: true,
-      className:
-        "border-border bg-muted text-foreground placeholder:text-muted-foreground",
+);
+
+const searchInputVariants = cva(
+  "w-full bg-transparent font-sans text-sm outline-none",
+  {
+    variants: {
+      variant: {
+        desktop: "",
+        mobile: "flex-1 py-2 text-foreground placeholder:text-muted-foreground",
+      },
+      isWhite: {
+        true: "text-foreground placeholder:text-muted-foreground",
+        false: "text-white placeholder:text-white/60",
+      },
     },
-    {
-      variant: "desktop",
-      isWhite: false,
-      className:
-        "border-white/30 bg-white/10 text-white placeholder:text-white/50",
-    },
-  ],
-  defaultVariants: { variant: "mobile", isWhite: true },
-});
+    defaultVariants: { variant: "mobile", isWhite: true },
+  },
+);
 
 interface HeaderSearchProps {
   variant: "desktop" | "mobile";
@@ -93,11 +94,18 @@ export function HeaderSearch({
     <div ref={containerRef} className="relative">
       <form
         onSubmit={handleSubmit}
-        className={cn("flex items-center", isDesktop ? "" : "gap-2")}
-      >
-        {!isDesktop && (
-          <Search size={18} className="shrink-0 text-icon-muted" />
+        className={cn(
+          "flex items-center",
+          isDesktop ? searchPillVariants({ isWhite }) : "gap-2",
         )}
+      >
+        <Search
+          size={isDesktop ? 16 : 18}
+          className={cn(
+            "shrink-0",
+            isDesktop && !isWhite ? "text-white/70" : "text-icon-muted",
+          )}
+        />
         <input
           name="q"
           type="search"
@@ -105,7 +113,9 @@ export function HeaderSearch({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setOpen(true)}
-          placeholder={t("searchPlaceholder")}
+          placeholder={t(
+            isDesktop ? "searchPlaceholderShort" : "searchPlaceholder",
+          )}
           className={searchInputVariants({ variant, isWhite })}
         />
       </form>

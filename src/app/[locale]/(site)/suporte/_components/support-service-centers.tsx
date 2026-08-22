@@ -16,7 +16,7 @@ export function SupportServiceCenters({
   return (
     <section
       id="service-centers"
-      className="w-full scroll-mt-24 bg-white py-12"
+      className="w-full scroll-mt-header bg-white py-12"
     >
       <Container>
         <SectionLabel label={t("label")} title={t("title")} />

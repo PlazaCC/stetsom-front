@@ -20,6 +20,8 @@
 
   /* Spacing — Figma layout values reused across components */
   --spacing-logo-nav: 3.1875rem;
+  --spacing-header: var(--header-height);
+  --spacing-section-scroll: var(--section-scroll-offset);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -127,6 +129,11 @@
   --muted: oklch(0.942 0 0);
   --muted-foreground: oklch(0.37 0 0);
   /* Stetsom custom tokens — follow :root → @theme inline var() pattern */
+  /* Altura do header fixo — consumida por h-header / pt-header / top-header.
+     Heroes e offsets de scroll derivam daqui; nunca hardcodar 64/100px. */
+  --header-height: 5rem;
+  /* Header + sticky nav de produto (88px) — offset de âncora nas seções */
+  --section-scroll-offset: calc(var(--header-height) + 5.5rem);
   --text-subtle: oklch(0.42 0 0);
   --text-subtle-dark: oklch(0.73 0 0);
   --surface-elevated: oklch(0.12 0 0);
@@ -389,6 +396,15 @@
 @utility icon-tint-black {
   filter: grayscale(1) brightness(0);
   transition: filter 150ms ease;
+}
+
+/* Reserva a altura do header no topo dos heroes. `content-box` faz o padding
+   SOMAR à altura declarada (h-72 → 288px de área útil + altura do header),
+   preservando a área de conteúdo desenhada no Figma. Só use em seções sem
+   padding/borda horizontal, onde `content-box` não altera a largura. */
+@utility hero-offset {
+  padding-top: var(--header-height);
+  box-sizing: content-box;
 }
 
 @utility icon-tint-brand {

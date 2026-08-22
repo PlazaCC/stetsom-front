@@ -83,6 +83,9 @@ export default function PreviewPaginaPage() {
     <div
       ref={rootRef}
       className="relative bg-white"
+      // The CMS iframe renders the page views without the site header, so the
+      // header offset baked into the heroes would show up as dead space.
+      style={{ "--header-height": "0px" } as React.CSSProperties}
       onClickCapture={handleClick}
     >
       <style dangerouslySetInnerHTML={{ __html: EDITOR_STYLE }} />

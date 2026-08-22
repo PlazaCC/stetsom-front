@@ -1,9 +1,9 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, getHeaderHeight } from "@/lib/utils";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const SECTION_IDS = ["specifications", "related"] as const;
 
@@ -17,6 +17,7 @@ export function StickySectionNav({
 }) {
   const t = useTranslations("ProductDetail");
   const [activeSection, setActiveSection] = useState<string>("overview");
+  const navRef = useRef<HTMLDivElement>(null);
 
   const sections = [
     { id: "overview", label: t("overview") },
@@ -59,15 +60,21 @@ export function StickySectionNav({
     }
     const el = document.getElementById(id);
     if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - 152;
+    // Clear both fixed layers stacked above the section: the site header
+    // (0 in preview, where it isn't rendered) and this sticky nav itself.
+    const offset =
+      (previewMode ? 0 : getHeaderHeight()) +
+      (navRef.current?.offsetHeight ?? 0);
+    const top = el.getBoundingClientRect().top + window.scrollY - offset;
     window.scrollTo({ top, behavior: "smooth" });
   };
 
   return (
     <div
+      ref={navRef}
       className={cn(
         "sticky z-100 w-full border-t border-zinc-200 bg-white",
-        previewMode ? "top-0" : "top-16",
+        previewMode ? "top-0" : "top-header",
       )}
     >
       <div className="flex justify-center gap-5 px-5 py-4 lg:px-42.5">
