@@ -357,10 +357,10 @@ function DesktopNavLink({
         "border-b-2 font-sans text-lg transition-colors",
         isWhite
           ? active
-            ? "border-brand font-bold text-foreground"
+            ? "border-brand font-semibold text-foreground"
             : "border-transparent font-normal text-muted-foreground hover:border-brand hover:text-brand"
           : active
-            ? "border-brand font-bold text-white"
+            ? "border-brand font-semibold text-white"
             : "border-transparent font-normal text-white/80 hover:border-brand hover:text-white",
       )}
     >
@@ -390,7 +390,7 @@ function MobileNavLink({
       className={cn(
         "block py-3 font-sans-condensed text-lg capitalize transition-colors",
         active
-          ? "font-bold text-brand-dark"
+          ? "font-semibold text-brand-dark"
           : "font-normal text-brand-dark hover:text-brand",
       )}
     >
