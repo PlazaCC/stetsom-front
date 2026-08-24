@@ -49,8 +49,8 @@ export function OurHistory({ section }: Readonly<OurHistoryProps>) {
 
       {/* Desktop: image flush-left (no left padding), content padded right */}
       <div className="hidden lg:flex lg:min-h-132">
-        <div className="mx-auto flex">
-          <div className="relative w-182.75 shrink-0 self-stretch overflow-hidden">
+        <div className="mx-auto flex w-full max-w-360">
+          <div className="relative w-182.75 min-w-0 self-stretch overflow-hidden">
             <Image
               src={section.image}
               alt={section.imageAlt}

@@ -45,7 +45,7 @@ export function LanguageSwitcher({ variant = "light" }: LanguageSwitcherProps) {
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "flex items-center gap-2 rounded-full px-3 py-1.5 text-sm transition-colors",
+          "flex h-8 w-28 items-center justify-center gap-2 rounded-full px-3 text-sm transition-colors",
           isLight
             ? "border border-border bg-muted text-foreground hover:border-brand"
             : "bg-white/20 text-white hover:bg-white/30",

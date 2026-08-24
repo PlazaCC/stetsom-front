@@ -16,7 +16,7 @@ const searchPillVariants = cva(
   {
     variants: {
       isWhite: {
-        true: "w-40 border border-border bg-muted",
+        true: "w-36 border border-border bg-muted",
         false: "w-36 bg-white/20",
       },
     },

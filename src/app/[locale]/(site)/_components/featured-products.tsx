@@ -5,6 +5,7 @@ import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { PackageSearch } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
+import { motion } from "motion/react";
 import type { Swiper as SwiperClass } from "swiper";
 import { A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -26,13 +27,24 @@ export function FeaturedProducts({
   const categoriesKey = categories.map((category) => category.slug).join(",");
   const isEmpty = categories.length === 0;
 
+  function handleCategorySelect(index: number) {
+    swiperRef.current?.slideTo(index);
+    document.getElementById("featured-products")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+
   return (
-    <section className="flex w-full flex-col gap-6 bg-background pt-12 pb-24 sm:gap-8">
+    <section
+      id="featured-products"
+      className="flex w-full scroll-mt-section-scroll flex-col gap-6 bg-background pt-4 pb-12 sm:gap-8"
+    >
       {!isEmpty && (
         <FeaturedTabStrip
           categories={categories}
           activeIndex={activeIndex}
-          onSelect={(index) => swiperRef.current?.slideTo(index)}
+          onSelect={handleCategorySelect}
         />
       )}
 
@@ -45,37 +57,44 @@ export function FeaturedProducts({
             className="min-h-180 rounded-2xl sm:min-h-300 lg:min-h-111.75"
           />
         ) : (
-          <Swiper
-            key={categoriesKey}
-            modules={[A11y]}
-            slidesPerView={1}
-            spaceBetween={0}
-            onSwiper={(swiper) => {
-              swiperRef.current = swiper;
-              setActiveIndex(swiper.activeIndex);
-            }}
-            onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ amount: 0.5, once: true }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
           >
-            {categories.map((category) => (
-              <SwiperSlide key={category.slug}>
-                <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-8">
-                  <FeaturedProductCard
-                    product={category.spotlight}
-                    variant="spotlight"
-                  />
-                  <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
-                    {category.grid.map((product) => (
-                      <FeaturedProductCard
-                        key={product.id}
-                        product={product}
-                        variant="grid"
-                      />
-                    ))}
+            <Swiper
+              key={categoriesKey}
+              modules={[A11y]}
+              slidesPerView={1}
+              spaceBetween={0}
+              onSwiper={(swiper) => {
+                swiperRef.current = swiper;
+                setActiveIndex(swiper.activeIndex);
+              }}
+              onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+            >
+              {categories.map((category) => (
+                <SwiperSlide key={category.slug}>
+                  <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-8">
+                    <FeaturedProductCard
+                      product={category.spotlight}
+                      variant="spotlight"
+                    />
+                    <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
+                      {category.grid.map((product) => (
+                        <FeaturedProductCard
+                          key={product.id}
+                          product={product}
+                          variant="grid"
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </motion.div>
         )}
       </Container>
     </section>

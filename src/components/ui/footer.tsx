@@ -142,8 +142,8 @@ export default async function Footer({
           <div className="max-w-63.25">
             <Logo
               src={logoDark}
-              width={160}
-              height={49}
+              width={239}
+              height={48}
               className="object-contain"
             />
             <p className="mt-4 text-sm text-text-subtle-dark">

@@ -10,8 +10,8 @@ interface LogoProps {
 
 export function Logo({
   src,
-  width = 158,
-  height = 35,
+  width = 239,
+  height = 48,
   priority,
   className,
 }: LogoProps) {
@@ -23,7 +23,7 @@ export function Logo({
       height={height}
       priority={priority}
       className={className}
-      style={{ width: `${width}px`, height: `${height}px` }}
+      style={{ width: "auto", height: `${height}px` }}
       unoptimized
     />
   );

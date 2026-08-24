@@ -189,18 +189,39 @@ export function Header({
         transition={{ duration: COLOR_MS / 1000, ease: "easeInOut" }}
       >
         <Container className="flex h-header items-center justify-between">
-          {/* Desktop: logo + nav (left) */}
-          <div className="hidden items-center gap-20 md:flex">
-            <Link href="/" className="shrink-0">
+          {/* Hamburger — only below the desktop breakpoint. */}
+          <button
+            aria-label={t("openMenu")}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-panel"
+            className={cn(
+              "inline-flex h-10 w-10 shrink-0 items-center justify-center xl:hidden",
+              iconClass,
+            )}
+            onClick={() => (mobileMenuOpen ? closePanels() : openPanel("menu"))}
+          >
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+
+          {/* Logo + nav share one element across both layouts: the logo is
+              absolutely centered below `xl` and flows inline from `xl` up.
+              `xl` (not `lg`) is the desktop breakpoint here because the
+              Container's `px-42.5` gutters leave too little room for the full
+              bar (logo + nav + search + language) at `lg` — it would overlap. */}
+          <div className="flex items-center gap-20">
+            <Link
+              href="/"
+              className="absolute left-1/2 shrink-0 -translate-x-1/2 xl:static xl:translate-x-0"
+            >
               <Logo
                 src={isWhite ? logoWhite : logoDark}
-                width={174}
-                height={39}
+                width={239}
+                height={48}
                 priority
               />
             </Link>
 
-            <nav className="flex items-center gap-10">
+            <nav className="hidden items-center gap-10 xl:flex">
               {NAV_LINKS.map(({ href, labelKey }) => (
                 <DesktopNavLink key={href} href={href} isWhite={isWhite}>
                   {t(labelKey)}
@@ -209,44 +230,20 @@ export function Header({
             </nav>
           </div>
 
-          {/* Desktop right: search + language */}
-          <div className="hidden items-center gap-8 md:flex">
-            <HeaderSearch variant="desktop" isWhite={isWhite} />
-            <LanguageSwitcher variant={langVariant} />
-          </div>
-
-          {/* Mobile: hamburger | logo (centered) | search icon */}
-          <div className="relative flex w-full items-center justify-between md:hidden">
-            <button
-              aria-label={t("openMenu")}
-              aria-expanded={mobileMenuOpen}
-              aria-controls="mobile-panel"
-              className={cn(
-                "inline-flex h-10 w-10 items-center justify-center",
-                iconClass,
-              )}
-              onClick={() =>
-                mobileMenuOpen ? closePanels() : openPanel("menu")
-              }
-            >
-              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
-
-            <Link href="/" className="absolute left-1/2 -translate-x-1/2">
-              <Logo
-                src={isWhite ? logoWhite : logoDark}
-                width={168}
-                height={37}
-                priority
-              />
-            </Link>
-
+          {/* Right: inline search + language on xl, search icon below. */}
+          <div className="flex items-center gap-8">
+            <div className="hidden xl:block">
+              <HeaderSearch variant="desktop" isWhite={isWhite} />
+            </div>
+            <div className="hidden xl:block">
+              <LanguageSwitcher variant={langVariant} />
+            </div>
             <button
               aria-label={t("openSearch")}
               aria-expanded={mobileSearchOpen}
               aria-controls="mobile-panel"
               className={cn(
-                "inline-flex h-10 w-10 items-center justify-center",
+                "inline-flex h-10 w-10 shrink-0 items-center justify-center xl:hidden",
                 iconClass,
               )}
               onClick={() =>
@@ -276,7 +273,7 @@ export function Header({
               : "0 0px 0px rgba(0, 0, 0, 0)",
           }}
           transition={drawerTransition(panelOpen, reduceMotion)}
-          className="absolute top-full left-0 -z-10 w-full overflow-hidden md:hidden"
+          className="absolute top-full left-0 -z-10 w-full overflow-hidden xl:hidden"
         >
           <motion.div
             className="bg-white"
@@ -309,9 +306,10 @@ export function Header({
 
                   <div className="my-3 border-t border-border" />
 
-                  {/* Language switcher */}
-                  <div className="flex justify-end py-2">
-                    <LanguageSwitcher variant="dark" />
+                  {/* Language switcher — same pill as the desktop bar, aligned
+                      left with the menu links above. */}
+                  <div className="flex py-2">
+                    <LanguageSwitcher variant="light" />
                   </div>
                 </div>
               )}
@@ -329,7 +327,7 @@ export function Header({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.2 }}
-            className="fixed inset-0 z-40 bg-black/30 md:hidden"
+            className="fixed inset-0 z-40 bg-black/30 xl:hidden"
             onClick={handleBackdropClick}
           />
         )}
@@ -356,14 +354,14 @@ function DesktopNavLink({
     <Link
       href={href}
       className={cn(
-        "border-b-2 font-sans text-lg font-normal transition-colors",
+        "border-b-2 font-sans text-lg transition-colors",
         isWhite
           ? active
-            ? "border-brand text-brand"
-            : "border-transparent text-muted-foreground hover:border-brand hover:text-brand"
+            ? "border-brand font-bold text-foreground"
+            : "border-transparent font-normal text-muted-foreground hover:border-brand hover:text-brand"
           : active
-            ? "border-brand text-white"
-            : "border-transparent text-white/80 hover:border-brand hover:text-white",
+            ? "border-brand font-bold text-white"
+            : "border-transparent font-normal text-white/80 hover:border-brand hover:text-white",
       )}
     >
       {children}
@@ -390,8 +388,10 @@ function MobileNavLink({
       href={href}
       onClick={onClick}
       className={cn(
-        "block py-3 font-sans-condensed text-lg font-black uppercase transition-colors",
-        active ? "text-brand" : "text-brand-dark hover:text-brand",
+        "block py-3 font-sans-condensed text-lg capitalize transition-colors",
+        active
+          ? "font-bold text-brand-dark"
+          : "font-normal text-brand-dark hover:text-brand",
       )}
     >
       {children}
