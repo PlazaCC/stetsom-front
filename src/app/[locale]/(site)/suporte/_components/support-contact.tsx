@@ -2,6 +2,7 @@ import type { PublicDepartmentItem } from "@/api/stetsom/model";
 import { Container } from "@/components/ui/container";
 import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { SectionLabel } from "@/components/ui/section-label";
+import { cn } from "@/lib/utils";
 import { Mail, MessagesSquare, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import QRCode from "react-qr-code";
@@ -112,9 +113,17 @@ export function SupportContact({
                 {infoItems.map(({ key, label, value }) => {
                   const Icon = CONTACT_INFO_ICONS[key];
                   return (
-                    <div
+                    <a
                       key={key}
-                      className="flex items-center gap-4 border border-border px-4 py-3"
+                      href={getContactHref(key, value ?? "")}
+                      target={key === "whatsapp" ? "_blank" : undefined}
+                      rel={
+                        key === "whatsapp" ? "noopener noreferrer" : undefined
+                      }
+                      className={cn(
+                        "group relative flex items-center gap-4 border border-border bg-white px-4 py-3",
+                        "transition-colors duration-200",
+                      )}
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center">
                         <Icon size={26} className="text-brand" />
@@ -123,20 +132,15 @@ export function SupportContact({
                         <p className="font-sans text-xs font-medium tracking-wide text-text-subtle uppercase">
                           {label}
                         </p>
-                        <a
-                          href={getContactHref(key, value ?? "")}
-                          target={key === "whatsapp" ? "_blank" : undefined}
-                          rel={
-                            key === "whatsapp"
-                              ? "noopener noreferrer"
-                              : undefined
-                          }
-                          className="font-sans text-sm font-semibold text-brand-dark transition-colors duration-200 hover:text-brand"
-                        >
+                        <p className="font-sans text-sm font-semibold text-brand-dark transition-colors duration-200 group-hover:text-brand">
                           {value}
-                        </a>
+                        </p>
                       </div>
-                    </div>
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute inset-x-0 -bottom-px h-0.5 origin-center scale-x-0 bg-brand transition-transform duration-200 group-hover:scale-x-100"
+                      />
+                    </a>
                   );
                 })}
               </div>

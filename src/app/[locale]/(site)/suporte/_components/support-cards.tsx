@@ -69,7 +69,6 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
                 className={cn(
                   "group relative flex max-w-83.75 flex-row items-center gap-4 border border-border bg-white p-2 md:flex-col md:items-start md:gap-1 lg:p-4",
                   "transition-colors duration-200",
-                  "hover:border-b-brand",
                 )}
               >
                 <div className="flex items-center justify-center rounded-xs">
@@ -83,6 +82,10 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
                     {card.description}
                   </p>
                 </div>
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-0 -bottom-px h-0.5 origin-center scale-x-0 bg-brand transition-transform duration-200 group-hover:scale-x-100"
+                />
                 <ArrowUpRight
                   size={32}
                   className="absolute right-1 bottom-1 hidden text-text-subtle transition-colors duration-200 group-hover:text-brand md:block"
