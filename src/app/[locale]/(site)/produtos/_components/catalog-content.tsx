@@ -122,7 +122,7 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
     activeCategory !== "todos" ||
     activeLine !== "todas" ||
     Boolean(search) ||
-    !showDiscontinued ||
+    showDiscontinued ||
     showExport;
   const isCatalogEmpty = catalog.total === 0 && !hasActiveFilters;
 

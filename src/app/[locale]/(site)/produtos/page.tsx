@@ -32,7 +32,9 @@ export default async function ProdutosPage({
   const line = sp.line && sp.line !== "todas" ? sp.line : undefined;
   const sort = sp.sort === "newest" ? "newest" : undefined;
   const page = Math.max(1, Number(sp.page) || 1);
-  const is_discontinued = sp.discontinued === "0" ? false : undefined;
+  // Descontinuados ficam ocultos por padrão; só entram no resultado quando o
+  // usuário liga o filtro "Exibir descontinuados" (discontinued=1 → sem filtro).
+  const is_discontinued = sp.discontinued === "1" ? undefined : false;
   const is_export = sp.export === "1" ? true : undefined;
 
   const [categories, catalog] = await Promise.all([

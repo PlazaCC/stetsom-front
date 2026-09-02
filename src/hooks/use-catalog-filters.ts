@@ -15,7 +15,8 @@ export function useCatalogFilters() {
   const search = searchParams.get("q") || "";
   const sort = searchParams.get("sort") || "relevance";
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
-  const showDiscontinued = searchParams.get("discontinued") !== "0";
+  // Desligado por padrão — só liga quando o usuário marca discontinued=1.
+  const showDiscontinued = searchParams.get("discontinued") === "1";
   const showExport = searchParams.get("export") === "1";
 
   const pushParams = useCallback(
@@ -87,7 +88,7 @@ export function useCatalogFilters() {
   const setShowDiscontinued = useCallback(
     (value: boolean) => {
       pushParams((p) => {
-        if (!value) p.set("discontinued", "0");
+        if (value) p.set("discontinued", "1");
         else p.delete("discontinued");
         p.delete("page"); // reset pagination when the filter changes
       });
