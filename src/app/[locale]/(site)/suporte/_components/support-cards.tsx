@@ -1,12 +1,14 @@
 import { Container } from "@/components/ui/container";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { WARRANTY_SYSTEM_URL } from "@/lib/warranty";
 import {
   ArrowRight,
   ArrowUpRight,
   FileText,
   MapPin,
   MessageCircleMore,
+  ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
 
@@ -20,6 +22,7 @@ const ICON_BY_KEYWORD: Record<string, LucideIcon> = {
   download: FileText,
   posto: MapPin,
   autorizados: MapPin,
+  garantia: ShieldCheck,
   fale: MessageCircleMore,
   contato: MessageCircleMore,
 };
@@ -29,6 +32,7 @@ const HREF_BY_KEYWORD: Record<string, string> = {
   download: "#",
   posto: "#service-centers",
   autorizados: "#service-centers",
+  garantia: WARRANTY_SYSTEM_URL,
   fale: "#contact",
   contato: "#contact",
 };
@@ -61,16 +65,15 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
           {cards.map((card) => {
             const Icon = pickIcon(card.title);
             const href = pickHref(card.title);
+            const isExternal = href.startsWith("http");
 
-            return (
-              <Link
-                key={card.title}
-                href={href}
-                className={cn(
-                  "group relative flex max-w-83.75 flex-row items-center gap-4 border border-border bg-white p-2 md:flex-col md:items-start md:gap-1 lg:p-4",
-                  "transition-colors duration-200",
-                )}
-              >
+            const cardClass = cn(
+              "group relative flex max-w-83.75 flex-row items-center gap-4 border border-border bg-white p-2 md:flex-col md:items-start md:gap-1 lg:p-4",
+              "transition-colors duration-200",
+            );
+
+            const inner = (
+              <>
                 <div className="flex items-center justify-center rounded-xs">
                   <Icon strokeWidth={1.5} size={36} className="text-brand" />
                 </div>
@@ -93,8 +96,28 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
                 <ArrowRight
                   size={20}
                   strokeWidth={3}
-                  className="text-[#666666] md:hidden"
+                  className="text-text-subtle md:hidden"
                 />
+              </>
+            );
+
+            if (isExternal) {
+              return (
+                <a
+                  key={card.title}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cardClass}
+                >
+                  {inner}
+                </a>
+              );
+            }
+
+            return (
+              <Link key={card.title} href={href} className={cardClass}>
+                {inner}
               </Link>
             );
           })}
