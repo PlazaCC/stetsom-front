@@ -1,17 +1,23 @@
 import "@/app/globals.css";
-import { Barlow, Barlow_Condensed, Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { getLocale } from "next-intl/server";
 
-const barlow = Barlow({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  variable: "--font-barlow",
-  subsets: ["latin"],
-});
-
-const barlowCondensed = Barlow_Condensed({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  variable: "--font-barlow-condensed",
-  subsets: ["latin"],
+// Satoshi — site typeface (headings + paragraphs).
+const satoshi = localFont({
+  src: [
+    {
+      path: "./fonts/Satoshi-Variable.woff2",
+      weight: "300 900",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Satoshi-VariableItalic.woff2",
+      weight: "300 900",
+      style: "italic",
+    },
+  ],
+  variable: "--font-satoshi",
 });
 
 const geistMono = Geist_Mono({
@@ -19,7 +25,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Geist Sans — CMS/admin typeface (Mantine-inspired). Public site stays Barlow.
+// Geist Sans — CMS/admin typeface (Mantine-inspired). Public site uses Satoshi.
 const geist = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -43,7 +49,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${barlow.variable} ${barlowCondensed.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${satoshi.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

@@ -36,7 +36,7 @@ export function OurFoundations({
           {bases.map((base, index) => (
             <motion.div
               key={base.id ?? index}
-              className="box-border h-50 w-[350px] border-brand bg-white p-3 pt-0"
+              className="box-border min-h-50 w-full border-brand bg-white p-3 pt-0 md:w-87.5"
               initial={{
                 borderBottomWidth: 0,
                 borderBottomColor: "transparent",
