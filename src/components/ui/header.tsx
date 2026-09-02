@@ -16,6 +16,7 @@ import { Container } from "./container";
 import { HeaderSearch } from "./header/header-search";
 import { LanguageSwitcher } from "./language-switcher";
 import { Logo } from "./logo";
+import { WhatsAppIcon } from "./whatsapp-icon";
 
 const SCROLL_THRESHOLD = 10;
 
@@ -65,11 +66,15 @@ interface HeaderProps {
   // case where the admin hasn't uploaded a CMS logo for this locale yet.
   logoDark?: string;
   logoWhite?: string;
+  /** WhatsApp number (e.g. "+55 18 98133-5671") — drives the contact button
+      in the mobile drawer. */
+  whatsapp?: string;
 }
 
 export function Header({
   logoDark = "/logo-pt-br-white.svg",
   logoWhite = "/logo-pt-br-black.svg",
+  whatsapp = "",
 }: HeaderProps = {}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
@@ -244,6 +249,9 @@ export function Header({
               aria-controls="mobile-panel"
               className={cn(
                 "inline-flex h-10 w-10 shrink-0 items-center justify-center xl:hidden",
+                // Drawer already carries the search field — drop the duplicate
+                // icon while the panel is open.
+                panelOpen && "hidden",
                 iconClass,
               )}
               onClick={() =>
@@ -306,10 +314,23 @@ export function Header({
 
                   <div className="my-3 border-t border-border" />
 
-                  {/* Language switcher — same pill as the desktop bar, aligned
-                      left with the menu links above. */}
-                  <div className="flex py-2">
+                  {/* Language switcher + WhatsApp — same pill height as the
+                      desktop bar, aligned left with the menu links above. */}
+                  <div className="flex items-center justify-between gap-3 py-2">
                     <LanguageSwitcher variant="light" />
+                    {whatsapp.trim() && (
+                      <a
+                        href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex h-8 shrink-0 items-center justify-center gap-2 rounded-full bg-brand px-4 text-white transition-colors hover:bg-brand/90"
+                      >
+                        <WhatsAppIcon size={20} />
+                        <span className="font-sans text-sm font-medium whitespace-nowrap">
+                          {t("whatsapp")}
+                        </span>
+                      </a>
+                    )}
                   </div>
                 </div>
               )}

@@ -42,7 +42,11 @@ export default async function SiteLayout({
 
   return (
     <>
-      <Header logoDark={logoDark} logoWhite={logoWhite} />
+      <Header
+        logoDark={logoDark}
+        logoWhite={logoWhite}
+        whatsapp={config.company_whatsapp}
+      />
       <main className="flex-1">{children}</main>
       <WarrantyFloat />
       <Footer
