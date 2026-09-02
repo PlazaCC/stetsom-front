@@ -24,7 +24,7 @@ import { ChevronDown, GitCompareArrows, Smartphone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { BlockRenderer } from "./block-renderer";
 import { StickySectionNav } from "./sticky-section-nav";
 
@@ -179,7 +179,6 @@ export function ProductDetailView({
 
   const sortedImages = [...product.images].sort((a, b) => a.order - b.order);
   const galleryImages = sortedImages
-    .slice(0, 4)
     .map((img) => img.image_url)
     .filter(Boolean) as string[];
   const thumbnailUrl = sortedImages[0]?.image_url ?? null;
@@ -189,6 +188,31 @@ export function ProductDetailView({
   const [activeIndex, setActiveIndex] = useState(0);
   const safeIndex = activeIndex < galleryImages.length ? activeIndex : 0;
   const activeImage = galleryImages[safeIndex] ?? thumbnailUrl;
+
+  // Wrap-around navigation used by the mobile photo marker (swipe).
+  const goToIndex = (index: number) => {
+    if (galleryImages.length === 0) return;
+    setActiveIndex(
+      ((index % galleryImages.length) + galleryImages.length) %
+        galleryImages.length,
+    );
+  };
+  const touchStartX = useRef<number | null>(null);
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  };
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStartX.current === null || galleryImages.length < 2) {
+      touchStartX.current = null;
+      return;
+    }
+    const endX = e.changedTouches[0]?.clientX ?? touchStartX.current;
+    const delta = endX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(delta) < 40) return;
+    if (delta < 0) goToIndex(safeIndex + 1);
+    else goToIndex(safeIndex - 1);
+  };
 
   const blocks = [...product.page_blocks].sort((a, b) => a.order - b.order);
   const files = product.files ?? [];
@@ -264,7 +288,9 @@ export function ProductDetailView({
             <div className="flex shrink-0 flex-col gap-4 lg:w-111.75">
               <div
                 {...ed("images")}
-                className="relative flex h-80 w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-card sm:h-100 lg:h-120"
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                className="relative flex h-80 w-full touch-pan-y items-center justify-center overflow-hidden rounded-2xl border border-border bg-card sm:h-100 lg:h-120"
               >
                 {activeImage && (
                   <ZoomableImage
@@ -276,11 +302,24 @@ export function ProductDetailView({
                     disabled={editable}
                   />
                 )}
+
+                {galleryImages.length > 1 && (
+                  <div
+                    aria-live="polite"
+                    aria-label={t("photoCounter", {
+                      current: safeIndex + 1,
+                      total: galleryImages.length,
+                    })}
+                    className="absolute top-3 right-3 z-10 rounded bg-neutral-900/70 px-2.5 py-1 font-sans text-xs font-semibold text-white lg:hidden"
+                  >
+                    {safeIndex + 1}/{galleryImages.length}
+                  </div>
+                )}
               </div>
 
               {galleryImages.length > 0 && (
-                <div className="flex items-center gap-3 overflow-x-auto pb-1">
-                  {galleryImages.map((image, index) => (
+                <div className="hidden items-center gap-3 overflow-x-auto pb-1 lg:flex">
+                  {galleryImages.slice(0, 4).map((image, index) => (
                     <button
                       key={`${image}-${index}`}
                       type="button"

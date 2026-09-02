@@ -157,6 +157,7 @@
     "blockModel3dOpen": "Abrir modelo",
     "blockModel3dLoading": "Carregando modelo…",
     "thumbnail": "{name} — miniatura {index}",
+    "photoCounter": "Foto {current} de {total}",
     "compare": "Comparar"
   },
   "Support": {
