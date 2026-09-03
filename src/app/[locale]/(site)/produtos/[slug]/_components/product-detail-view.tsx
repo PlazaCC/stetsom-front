@@ -26,6 +26,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { BlockRenderer } from "./block-renderer";
+import { ProductLightbox } from "./product-lightbox";
 import { StickySectionNav } from "./sticky-section-nav";
 
 /** Locale-resolved, public-shaped product payload consumed by the detail view. */
@@ -112,12 +113,15 @@ function ZoomableImage({
   sizes,
   previewMode,
   disabled,
+  onOpen,
 }: {
   src: string;
   alt: string;
   sizes?: string;
   previewMode?: boolean;
   disabled?: boolean;
+  /** Opens the fullscreen viewer when the image is clicked. */
+  onOpen?: () => void;
 }) {
   const [zoomed, setZoomed] = useState(false);
   const [origin, setOrigin] = useState("50% 50%");
@@ -145,6 +149,7 @@ function ZoomableImage({
   return (
     <div
       className="absolute inset-0 cursor-zoom-in"
+      onClick={onOpen}
       onMouseEnter={() => setZoomed(true)}
       onMouseLeave={() => setZoomed(false)}
       onMouseMove={handleMove}
@@ -196,6 +201,23 @@ export function ProductDetailView({
       ((index % galleryImages.length) + galleryImages.length) %
         galleryImages.length,
     );
+  };
+
+  // Fullscreen viewer state — `null` means closed; `lightboxIndex` tracks the
+  // image shown in the overlay while `activeIndex` keeps the main gallery in
+  // sync (both stay aligned via `handleLightboxIndexChange`).
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const openLightbox = (index: number) => {
+    if (galleryImages.length === 0) return;
+    setLightboxIndex(
+      ((index % galleryImages.length) + galleryImages.length) %
+        galleryImages.length,
+    );
+  };
+  const closeLightbox = () => setLightboxIndex(null);
+  const handleLightboxIndexChange = (index: number) => {
+    setLightboxIndex(index);
+    setActiveIndex(index);
   };
   const touchStartX = useRef<number | null>(null);
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -300,6 +322,7 @@ export function ProductDetailView({
                     sizes="(max-width: 1024px) 100vw, 447px"
                     previewMode={previewMode}
                     disabled={editable}
+                    onOpen={() => openLightbox(safeIndex)}
                   />
                 )}
 
@@ -644,6 +667,17 @@ export function ProductDetailView({
           )}
         </Container>
       </section>
+
+      {lightboxIndex !== null && !editable && (
+        <ProductLightbox
+          images={galleryImages}
+          index={lightboxIndex}
+          alt={product.name}
+          previewMode={previewMode}
+          onIndexChange={handleLightboxIndexChange}
+          onClose={closeLightbox}
+        />
+      )}
     </>
   );
 }

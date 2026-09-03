@@ -158,6 +158,9 @@
     "blockModel3dLoading": "Loading model…",
     "thumbnail": "{name} — thumbnail {index}",
     "photoCounter": "Photo {current} of {total}",
+    "lightboxClose": "Close viewer",
+    "lightboxPrevious": "Previous photo",
+    "lightboxNext": "Next photo",
     "compare": "Compare"
   },
   "Support": {
