@@ -21,9 +21,20 @@ export function FeaturedProductCard({
   return (
     <Link
       href={product.href}
-      className={cn("group flex w-full flex-col items-center gap-3", className)}
+      className={cn(
+        "group flex w-full flex-col overflow-hidden rounded-2xl bg-card shadow-md transition-all duration-300 hover:border-brand hover:shadow-lg",
+        className,
+      )}
     >
-      <div className="relative aspect-square w-full overflow-hidden">
+      {/* Image — full-bleed inside the card */}
+      <div
+        className={cn(
+          "relative w-full",
+          isSpotlight
+            ? "aspect-square lg:aspect-10/9"
+            : "aspect-square lg:aspect-auto lg:min-h-0 lg:flex-1",
+        )}
+      >
         {product.thumbnail_url ? (
           <Image
             src={product.thumbnail_url}
@@ -36,7 +47,9 @@ export function FeaturedProductCard({
             }
             className="object-contain transition-transform duration-300 group-hover:scale-105"
           />
-        ) : null}
+        ) : (
+          <div className="h-full w-full bg-muted" />
+        )}
 
         <div className="absolute inset-0 flex items-center justify-center bg-white/70 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           <span className="rounded-full bg-white px-4 py-2 font-sans text-xs font-semibold tracking-wide text-brand-dark uppercase shadow-sm">
@@ -45,13 +58,16 @@ export function FeaturedProductCard({
         </div>
       </div>
 
-      <div
-        className={cn(
-          "w-full truncate text-center font-sans-condensed leading-tight font-black tracking-wide text-brand-dark uppercase",
-          isSpotlight ? "text-xl lg:text-2xl" : "text-sm lg:text-base",
-        )}
-      >
-        {product.name}
+      {/* Product name — standardized, inside the card */}
+      <div className="px-4 py-3 text-center lg:px-5">
+        <div
+          className={cn(
+            "truncate font-sans-condensed leading-tight font-black tracking-wide text-brand-dark uppercase",
+            isSpotlight ? "text-lg lg:text-xl" : "text-sm lg:text-base",
+          )}
+        >
+          {product.name}
+        </div>
       </div>
     </Link>
   );

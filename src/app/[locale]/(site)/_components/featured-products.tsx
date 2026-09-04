@@ -67,7 +67,7 @@ export function FeaturedProducts({
               key={categoriesKey}
               modules={[A11y]}
               slidesPerView={1}
-              spaceBetween={0}
+              spaceBetween={24}
               onSwiper={(swiper) => {
                 swiperRef.current = swiper;
                 setActiveIndex(swiper.activeIndex);
@@ -76,17 +76,19 @@ export function FeaturedProducts({
             >
               {categories.map((category) => (
                 <SwiperSlide key={category.slug}>
-                  <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-8">
+                  <div className="grid grid-cols-1 gap-6 pb-6 lg:grid-cols-2 lg:items-stretch lg:gap-8">
                     <FeaturedProductCard
                       product={category.spotlight}
                       variant="spotlight"
+                      className="lg:h-full"
                     />
-                    <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
+                    <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-rows-2 lg:gap-6">
                       {category.grid.map((product) => (
                         <FeaturedProductCard
                           key={product.id}
                           product={product}
                           variant="grid"
+                          className="lg:h-full"
                         />
                       ))}
                     </div>
