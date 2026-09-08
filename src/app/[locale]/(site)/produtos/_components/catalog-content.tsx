@@ -10,6 +10,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CatalogHero } from "./catalog-hero";
 import { CatalogCategoryBar } from "./catalog-category-bar";
+import { CatalogDesktopActions } from "./catalog-desktop-actions";
 import { CatalogMobileActions } from "./catalog-mobile-actions";
 import { CatalogMobileFilterSheet } from "./catalog-mobile-filter-sheet";
 import { CatalogProductsList } from "./catalog-products-list";
@@ -69,6 +70,22 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
   // React's recommended pattern instead of setState-in-effect.
   const [searchInput, setSearchInput] = useState(search);
   const [syncedSearch, setSyncedSearch] = useState(search);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  // The desktop drawer and the mobile bottom sheet are both portaled `Sheet`s
+  // bound to the same `sidebarOpen` state. Rendering both at once would open
+  // two overlapping drawers, and CSS breakpoint classes can't toggle portaled
+  // content — so the active drawer must be selected in JS. `min-width: 1024px`
+  // mirrors Tailwind's `lg` breakpoint used by the action bars below.
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+    const updateViewport = () => setIsDesktop(mediaQuery.matches);
+
+    updateViewport();
+    mediaQuery.addEventListener("change", updateViewport);
+    return () => mediaQuery.removeEventListener("change", updateViewport);
+  }, []);
+
   if (search !== syncedSearch) {
     setSyncedSearch(search);
     setSearchInput(search);
@@ -190,8 +207,10 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
       <section className="bg-white pt-6 pb-12">
         <Container>
           <div className="flex gap-9">
-            {!isCatalogEmpty && (
+            {!isCatalogEmpty && isDesktop && (
               <CatalogSidebar
+                open={sidebarOpen}
+                onOpenChange={setSidebarOpen}
                 search={searchInput}
                 onSearchChange={setSearchInput}
                 activeCategory={activeCategory}
@@ -212,12 +231,18 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
 
             <div className="min-w-0 flex-1">
               {!isCatalogEmpty && (
-                <CatalogMobileActions
+                <CatalogDesktopActions
                   onToggleFilters={() => setSidebarOpen(true)}
                 />
               )}
 
               {!isCatalogEmpty && (
+                <CatalogMobileActions
+                  onToggleFilters={() => setSidebarOpen(true)}
+                />
+              )}
+
+              {!isCatalogEmpty && !isDesktop && (
                 <CatalogMobileFilterSheet
                   open={sidebarOpen}
                   onOpenChange={setSidebarOpen}
