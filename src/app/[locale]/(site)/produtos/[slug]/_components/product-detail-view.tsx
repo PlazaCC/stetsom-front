@@ -17,8 +17,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ProductCard } from "@/components/ui/product-card";
-import { SpecValue } from "@/components/ui/spec-value";
-import { entriesForAttribute } from "@/lib/specs/matrix";
 import { cn } from "@/lib/utils";
 import { ChevronDown, GitCompareArrows, Smartphone } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -27,6 +25,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { BlockRenderer } from "./block-renderer";
 import { ProductLightbox } from "./product-lightbox";
+import { SpecsTable } from "./specs-table";
 import { StickySectionNav } from "./sticky-section-nav";
 
 /** Locale-resolved, public-shaped product payload consumed by the detail view. */
@@ -567,60 +566,8 @@ export function ProductDetailView({
         id="specifications"
         className="scroll-mt-section-scroll"
       >
-        <div className="bg-off-white px-5 py-4 lg:px-42.5">
-          <h2 className="font-sans-condensed text-display-sm leading-none font-black text-brand-dark uppercase">
-            {t("techSpecifications")}
-          </h2>
-        </div>
         {allAttrKeys.length > 0 ? (
-          <div className="bg-white pb-9">
-            <div className="w-full overflow-x-auto">
-              {sortedVariants.length > 1 && (
-                <div
-                  className="grid items-center gap-8 bg-brand-dark px-5 py-4.5 lg:px-42.5"
-                  style={{
-                    gridTemplateColumns: `1fr repeat(${sortedVariants.length}, minmax(120px, 1fr))`,
-                  }}
-                >
-                  <span />
-                  {sortedVariants.map((v) => (
-                    <span
-                      key={v.variant_id}
-                      className="font-sans text-sm font-bold text-white uppercase"
-                    >
-                      {v.name}
-                    </span>
-                  ))}
-                </div>
-              )}
-              {allAttrKeys.map(({ attribute_id, attribute_name }, i) => (
-                <div
-                  key={attribute_id}
-                  className={cn(
-                    "grid items-center gap-8 px-5 py-4.5 lg:px-42.5",
-                    i % 2 === 0 ? "bg-muted" : "bg-white",
-                  )}
-                  style={{
-                    gridTemplateColumns:
-                      sortedVariants.length > 1
-                        ? `1fr repeat(${sortedVariants.length}, minmax(120px, 1fr))`
-                        : "1fr 1fr",
-                  }}
-                >
-                  <span className="font-sans text-sm font-medium text-brand-dark capitalize">
-                    {attribute_name ?? attribute_id}
-                  </span>
-                  {sortedVariants.map((v) => (
-                    <SpecValue
-                      key={v.variant_id}
-                      entries={entriesForAttribute(v.attributes, attribute_id)}
-                      className="font-sans text-sm text-text-subtle"
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
+          <SpecsTable variants={sortedVariants} attributeKeys={allAttrKeys} />
         ) : (
           <div className="bg-white px-5 py-9 lg:px-42.5">
             <p className="font-sans text-sm text-text-subtle">{t("noSpecs")}</p>
