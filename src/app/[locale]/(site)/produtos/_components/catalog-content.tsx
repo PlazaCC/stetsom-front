@@ -9,6 +9,10 @@ import { useCatalogFilters } from "@/hooks/use-catalog-filters";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CatalogHero } from "./catalog-hero";
+import {
+  CatalogLinesGrid,
+  type CatalogLineCardData,
+} from "./catalog-lines-grid";
 import { CatalogCategoryBar } from "./catalog-category-bar";
 import { CatalogDesktopActions } from "./catalog-desktop-actions";
 import { CatalogMobileActions } from "./catalog-mobile-actions";
@@ -39,9 +43,19 @@ function toCategoryOptions(
 interface CatalogContentProps {
   categories: PublicCategory[];
   catalog: ProductCatalogResponse;
+  /**
+   * Line cards for the intermediate category step (a category chosen, no line
+   * selected). When present the page renders the category's lines as cards
+   * instead of a product grid; `null`/absent on the Novidades and line views.
+   */
+  lineCards?: CatalogLineCardData[] | null;
 }
 
-function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
+function CatalogContentInner({
+  categories,
+  catalog,
+  lineCards = null,
+}: CatalogContentProps) {
   const t = useTranslations("Catalog");
 
   const {
@@ -142,6 +156,9 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
     showDiscontinued ||
     showExport;
   const isCatalogEmpty = catalog.total === 0 && !hasActiveFilters;
+  // Etapa intermediária da taxonomia: categoria escolhida sem linha selecionada
+  // mostra as linhas da categoria em cards (em vez do grid de produtos).
+  const isLineCardsView = activeCategory !== "todos" && activeLine === "todas";
 
   // Build a slug → ProductCardItem lookup map for the compare modal
   const catalogMap = useMemo(() => {
@@ -195,7 +212,10 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
 
   return (
     <div>
-      <CatalogHero totalProducts={catalog.total} />
+      <CatalogHero
+        totalProducts={catalog.total}
+        totalLines={isLineCardsView ? lineCards?.length : undefined}
+      />
 
       <CatalogCategoryBar
         categories={categoryOptions}
@@ -206,44 +226,15 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
 
       <section className="bg-white pt-6 pb-12">
         <Container>
-          <div className="flex gap-9">
-            {!isCatalogEmpty && isDesktop && (
-              <CatalogSidebar
-                open={sidebarOpen}
-                onOpenChange={setSidebarOpen}
-                search={searchInput}
-                onSearchChange={setSearchInput}
-                activeCategory={activeCategory}
-                onCategoryChange={setActiveCategory}
-                activeLine={activeLine}
-                onLineChange={setActiveLine}
-                sort={sort}
-                onSortChange={setSort}
-                onClear={clearFilters}
-                typeFilterOptions={typeFilterOptions}
-                productLines={productLines}
-                showDiscontinued={showDiscontinued}
-                onShowDiscontinuedChange={setShowDiscontinued}
-                showExport={showExport}
-                onShowExportChange={setShowExport}
-              />
-            )}
-
-            <div className="min-w-0 flex-1">
-              {!isCatalogEmpty && (
-                <CatalogDesktopActions
-                  onToggleFilters={() => setSidebarOpen(true)}
-                />
-              )}
-
-              {!isCatalogEmpty && (
-                <CatalogMobileActions
-                  onToggleFilters={() => setSidebarOpen(true)}
-                />
-              )}
-
-              {!isCatalogEmpty && !isDesktop && (
-                <CatalogMobileFilterSheet
+          {isLineCardsView ? (
+            <CatalogLinesGrid
+              lines={lineCards ?? []}
+              onSelectLine={setActiveLine}
+            />
+          ) : (
+            <div className="flex gap-9">
+              {!isCatalogEmpty && isDesktop && (
+                <CatalogSidebar
                   open={sidebarOpen}
                   onOpenChange={setSidebarOpen}
                   search={searchInput}
@@ -264,15 +255,51 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
                 />
               )}
 
-              <CatalogProductsList
-                products={productCards}
-                currentPage={page}
-                totalPages={catalog.totalPages}
-                onPageChange={setPage}
-                isCatalogEmpty={isCatalogEmpty}
-              />
+              <div className="min-w-0 flex-1">
+                {!isCatalogEmpty && (
+                  <CatalogDesktopActions
+                    onToggleFilters={() => setSidebarOpen(true)}
+                  />
+                )}
+
+                {!isCatalogEmpty && (
+                  <CatalogMobileActions
+                    onToggleFilters={() => setSidebarOpen(true)}
+                  />
+                )}
+
+                {!isCatalogEmpty && !isDesktop && (
+                  <CatalogMobileFilterSheet
+                    open={sidebarOpen}
+                    onOpenChange={setSidebarOpen}
+                    search={searchInput}
+                    onSearchChange={setSearchInput}
+                    activeCategory={activeCategory}
+                    onCategoryChange={setActiveCategory}
+                    activeLine={activeLine}
+                    onLineChange={setActiveLine}
+                    sort={sort}
+                    onSortChange={setSort}
+                    onClear={clearFilters}
+                    typeFilterOptions={typeFilterOptions}
+                    productLines={productLines}
+                    showDiscontinued={showDiscontinued}
+                    onShowDiscontinuedChange={setShowDiscontinued}
+                    showExport={showExport}
+                    onShowExportChange={setShowExport}
+                  />
+                )}
+
+                <CatalogProductsList
+                  products={productCards}
+                  currentPage={page}
+                  totalPages={catalog.totalPages}
+                  onPageChange={setPage}
+                  isCatalogEmpty={isCatalogEmpty}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </Container>
       </section>
 
@@ -282,10 +309,18 @@ function CatalogContentInner({ categories, catalog }: CatalogContentProps) {
   );
 }
 
-export function CatalogContent({ categories, catalog }: CatalogContentProps) {
+export function CatalogContent({
+  categories,
+  catalog,
+  lineCards = null,
+}: CatalogContentProps) {
   return (
     <CompareProvider>
-      <CatalogContentInner categories={categories} catalog={catalog} />
+      <CatalogContentInner
+        categories={categories}
+        catalog={catalog}
+        lineCards={lineCards}
+      />
     </CompareProvider>
   );
 }

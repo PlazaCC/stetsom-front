@@ -43,6 +43,8 @@ export interface ProductDetailViewData {
     play_store_url?: string | null;
   };
   category: { name: string; slug: string };
+  /** Product's line within the category, resolved server-side for the breadcrumb. */
+  line?: { name: string; slug: string } | null;
   relatedProducts: ProductCardItem[];
 }
 
@@ -175,7 +177,7 @@ export function ProductDetailView({
   editable = false,
 }: ProductDetailViewProps) {
   const t = useTranslations("ProductDetail");
-  const { product, category, relatedProducts } = data;
+  const { product, category, relatedProducts, line = null } = data;
 
   /** Stamp a `data-editor-target` only in editor mode; inert otherwise. */
   const ed = (target: string) =>
@@ -291,6 +293,14 @@ export function ProductDetailView({
       label: category.name,
       href: `/produtos?category=${encodeURIComponent(category.slug)}`,
     },
+    ...(line
+      ? [
+          {
+            label: line.name,
+            href: `/produtos?category=${encodeURIComponent(category.slug)}&line=${encodeURIComponent(line.slug)}`,
+          },
+        ]
+      : []),
     { label: product.name },
   ];
 
@@ -585,7 +595,7 @@ export function ProductDetailView({
               {t("related")}
             </h2>
             <Link
-              href={`/produtos?category=${encodeURIComponent(category.slug)}&first_comparation_product_slug=${product.slug}`}
+              href={`/produtos?category=${encodeURIComponent(category.slug)}${line ? `&line=${encodeURIComponent(line.slug)}` : ""}&first_comparation_product_slug=${product.slug}`}
             >
               <Button variant="brand-outline" size="md">
                 <GitCompareArrows size={18} />

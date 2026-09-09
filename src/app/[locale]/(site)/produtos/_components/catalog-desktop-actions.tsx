@@ -24,7 +24,7 @@ export function CatalogDesktopActions({
         <SlidersHorizontal size={14} />
         {t("filters")}
       </Button>
-      <CompareTriggerButton variant="sidebar" />
+      <CompareTriggerButton />
     </div>
   );
 }

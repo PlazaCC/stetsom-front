@@ -31,10 +31,15 @@ export default async function ProdutoDetalhePage(
 
   const { product, category, relatedProducts } = payload;
 
+  // A linha do produto (para o breadcrumb) é resolvida dentro da própria
+  // categoria retornada pela API — não há endpoint dedicado de linha.
+  const line =
+    category.lines.find((l) => l.line_id === product.line_id) ?? null;
+
   return (
     <>
       <PreviewBanner />
-      <ProductDetailView data={{ product, category, relatedProducts }} />
+      <ProductDetailView data={{ product, category, relatedProducts, line }} />
     </>
   );
 }

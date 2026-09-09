@@ -4,10 +4,13 @@ import { Container } from "@/components/ui/container";
 import { useTranslations } from "next-intl";
 
 interface CatalogHeroProps {
+  /** Product count shown on the Novidades and per-line listing views. */
   totalProducts: number;
+  /** Line count — when set (category's line-cards step) it overrides `totalProducts`. */
+  totalLines?: number;
 }
 
-export function CatalogHero({ totalProducts }: CatalogHeroProps) {
+export function CatalogHero({ totalProducts, totalLines }: CatalogHeroProps) {
   const t = useTranslations("Catalog");
 
   return (
@@ -34,8 +37,8 @@ export function CatalogHero({ totalProducts }: CatalogHeroProps) {
         </div>
         <div className="flex justify-end">
           <span className="mt-2 block text-base text-text-subtle-dark uppercase md:text-base">
-            {t.rich("products", {
-              count: totalProducts,
+            {t.rich(totalLines !== undefined ? "lines" : "products", {
+              count: totalLines !== undefined ? totalLines : totalProducts,
               number: (chunks) => (
                 <strong className="text-4xl font-bold text-white">
                   {chunks}

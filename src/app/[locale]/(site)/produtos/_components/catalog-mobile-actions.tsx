@@ -40,7 +40,7 @@ export function CatalogMobileActions({
   }
 
   return (
-    <div className="mb-4 flex gap-2 lg:hidden">
+    <div className="mb-4 flex items-center justify-between gap-2 lg:hidden">
       <Button
         variant="outline"
         onClick={onToggleFilters}
@@ -49,7 +49,7 @@ export function CatalogMobileActions({
         <SlidersHorizontal size={14} />
         {t("filters")}
       </Button>
-      <CompareTriggerButton variant="mobile" className="flex-1" />
+      <CompareTriggerButton />
     </div>
   );
 }
