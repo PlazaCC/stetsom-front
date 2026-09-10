@@ -37,8 +37,8 @@ export type PostApiBannersBody = {
    */
   href?: string | null;
   /**
-   * @maxLength 2048
    * @nullable
+   * @pattern ^(\?[^\s#]*|#[^\s]*)$
    */
   link_url?: string | null;
   status?: PostApiBannersBodyStatus;

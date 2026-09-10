@@ -45,7 +45,7 @@ export const config = {
     // Site routes — locale middleware + legacy redirect lookup.
     // Excludes infra paths and real static assets, but NOT `.pdf` (legacy QR
     // paths may end in `.pdf`), so those still reach the redirect resolver.
-    "/((?!_next|_vercel|api|admin|figma-assets|favicon\\.ico|.*\\.(?:js|css|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|txt|xml|json|map)$).*)",
+    "/((?!_next|_vercel|api|admin|figma-assets|favicon\\.ico|.*\\.(?:js|css|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|txt|xml|json|map|xlsx)$).*)",
     // Admin UI routes — redirect to login when no cookie
     "/admin/:path*",
   ],

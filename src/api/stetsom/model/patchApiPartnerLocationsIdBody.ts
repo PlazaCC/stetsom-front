@@ -29,10 +29,7 @@ export type PatchApiPartnerLocationsIdBody = {
    * @maxLength 2
    */
   state?: string;
-  /**
-   * @minLength 8
-   * @maxLength 9
-   */
+  /** @pattern ^\d{5}-?\d{3}$ */
   zip?: string;
   /** @nullable */
   lat?: number | null;

@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostApiPartnerLocationsImport200SkippedItem = {
+export type PostApiPartnerLocationsImportWorkbook200ReportSkippedItem = {
   sheet?: string;
   /**
    * @minimum -9007199254740991

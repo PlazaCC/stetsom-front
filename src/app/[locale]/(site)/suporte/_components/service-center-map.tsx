@@ -3,6 +3,7 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import type { PartnerLocation } from "@/api/stetsom/model";
+import { toValidLatLng } from "@/lib/geocode";
 import maplibregl, {
   type Map as MlMap,
   type Marker as MlMarker,
@@ -126,11 +127,12 @@ export function ServiceCenterMap({
     popupRef.current?.remove();
     popupRef.current = null;
 
-    const withCoords = locations.filter(
-      (loc) => loc.lat != null && loc.lng != null,
-    );
+    const withCoords = locations.flatMap((loc) => {
+      const coordinates = toValidLatLng(loc.lat, loc.lng);
+      return coordinates ? [{ loc, coordinates }] : [];
+    });
 
-    for (const loc of withCoords) {
+    for (const { loc, coordinates } of withCoords) {
       const wrapper = document.createElement("div");
       const el = document.createElement("button");
       el.type = "button";
@@ -141,9 +143,9 @@ export function ServiceCenterMap({
         popupRef.current?.remove();
         onSelectRef.current(loc.id);
 
-        if (loc.lat != null && loc.lng != null) {
+        if (coordinates) {
           map.flyTo({
-            center: [loc.lng, loc.lat],
+            center: [coordinates.lng, coordinates.lat],
             zoom: Math.max(map.getZoom(), 10),
             duration: 800,
             essential: true,
@@ -151,7 +153,7 @@ export function ServiceCenterMap({
         }
 
         const popup = new maplibregl.Popup({ closeButton: false, offset: 18 })
-          .setLngLat([loc.lng as number, loc.lat as number])
+          .setLngLat([coordinates.lng, coordinates.lat])
           .setDOMContent(buildPopupContent(loc))
           .addTo(map);
         popupRef.current = popup;
@@ -159,7 +161,7 @@ export function ServiceCenterMap({
       wrapper.appendChild(el);
 
       const marker = new maplibregl.Marker({ element: wrapper })
-        .setLngLat([loc.lng as number, loc.lat as number])
+        .setLngLat([coordinates.lng, coordinates.lat])
         .addTo(map);
       markersRef.current.set(loc.id, marker);
     }

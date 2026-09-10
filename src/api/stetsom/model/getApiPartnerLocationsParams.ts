@@ -15,14 +15,19 @@ export type GetApiPartnerLocationsParams = {
   specialty?: string;
   /**
    * Center latitude for proximity search
+   * @minimum -90
+   * @maximum 90
    */
   lat?: number;
   /**
    * Center longitude for proximity search
+   * @minimum -180
+   * @maximum 180
    */
   lng?: number;
   /**
    * Max distance radius in km. Defaults to 50 when lat/lng are provided
+   * @minimum 0
    */
   max_distance_km?: number;
   is_active?: boolean;

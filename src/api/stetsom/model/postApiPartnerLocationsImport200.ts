@@ -7,6 +7,7 @@
  */
 import type { PostApiPartnerLocationsImport200ErrorsItem } from "./postApiPartnerLocationsImport200ErrorsItem";
 import type { PostApiPartnerLocationsImport200SkippedItem } from "./postApiPartnerLocationsImport200SkippedItem";
+import type { PostApiPartnerLocationsImport200WarningsItem } from "./postApiPartnerLocationsImport200WarningsItem";
 import type { PostApiPartnerLocationsImport200WithoutCoordinatesItem } from "./postApiPartnerLocationsImport200WithoutCoordinatesItem";
 
 export type PostApiPartnerLocationsImport200 = {
@@ -21,9 +22,10 @@ export type PostApiPartnerLocationsImport200 = {
    * @maximum 9007199254740991
    */
   valid: number;
-  /** Rows whose name already exists — reported, never overwritten */
+  /** Rows whose full location identity already exists — reported, never overwritten */
   skipped: PostApiPartnerLocationsImport200SkippedItem[];
   errors: PostApiPartnerLocationsImport200ErrorsItem[];
+  warnings: PostApiPartnerLocationsImport200WarningsItem[];
   /** Imported without a map pin — city absent from the dataset */
   withoutCoordinates: PostApiPartnerLocationsImport200WithoutCoordinatesItem[];
   dryRun: boolean;

@@ -35,8 +35,9 @@ import {
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import { cn } from "@/lib/utils";
+import { isValidCoordinate } from "@/lib/geocode";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { FileUp, MapPin, Plus, Wrench } from "lucide-react";
+import { ExternalLink, FileUp, MapPin, Plus, Wrench } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ImportPartnersDialog } from "./import-partners-dialog";
 
@@ -99,6 +100,7 @@ function PartnerLocationForm({
     status: "idle" | "loading" | "notFound" | "noCoords" | "error" | "done";
     message?: string;
   }>({ status: "idle" });
+  const [formError, setFormError] = useState<string | null>(null);
 
   async function handleZipLookup() {
     const digits = zip.replace(/\D/g, "");
@@ -118,6 +120,7 @@ function PartnerLocationForm({
 
       setCity(hit.city);
       setState(hit.state);
+      setZip(`${digits.slice(0, 5)}-${digits.slice(5)}`);
       // The endpoint resolves the address via ViaCEP but only has coordinates
       // for cities present in its static dataset, so they can come back absent.
       if (hit.lat !== undefined && hit.lng !== undefined) {
@@ -141,6 +144,14 @@ function PartnerLocationForm({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (
+      (lat === null) !== (lng === null) ||
+      (lat !== null && !isValidCoordinate(lat, lng))
+    ) {
+      setFormError("Informe latitude e longitude válidas juntas.");
+      return;
+    }
+    setFormError(null);
     onSave({
       type,
       name,
@@ -159,6 +170,13 @@ function PartnerLocationForm({
   }
 
   const editing = !!location;
+  const mapsSearch = [address, city, state, zip]
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .join(", ");
+  const mapsUrl = mapsSearch
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsSearch)}`
+    : null;
   const title = isRepresentative
     ? editing
       ? "Editar Representante"
@@ -297,6 +315,22 @@ function PartnerLocationForm({
                 />
               </div>
             </div>
+            {mapsUrl ? (
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-primary underline-offset-4 hover:underline"
+              >
+                <ExternalLink className="size-3.5" />
+                Abrir endereço no Google Maps
+              </a>
+            ) : (
+              <p className="mt-3 text-xs text-muted-foreground">
+                Preencha o endereço para abrir no Google Maps e conferir as
+                coordenadas.
+              </p>
+            )}
             <p
               className={cn(
                 "mt-2 text-xs",
@@ -310,6 +344,9 @@ function PartnerLocationForm({
                   ? "Preenchidas. Use “Buscar” no CEP para atualizar."
                   : "Sem coordenadas, o parceiro não aparece no mapa. Use “Buscar” no CEP.")}
             </p>
+            {formError && (
+              <p className="mt-2 text-xs text-destructive">{formError}</p>
+            )}
           </div>
           <div>
             <AdminLabel>Website</AdminLabel>

@@ -1,5 +1,22 @@
 export type LatLng = { lat: number; lng: number };
 
+export function isValidCoordinate(lat: unknown, lng: unknown): lat is number {
+  return (
+    typeof lat === "number" &&
+    typeof lng === "number" &&
+    Number.isFinite(lat) &&
+    Number.isFinite(lng) &&
+    lat >= -90 &&
+    lat <= 90 &&
+    lng >= -180 &&
+    lng <= 180
+  );
+}
+
+export function toValidLatLng(lat: unknown, lng: unknown): LatLng | null {
+  return isValidCoordinate(lat, lng) ? { lat, lng: lng as number } : null;
+}
+
 export function toRad(value: number) {
   return (value * Math.PI) / 180;
 }
@@ -27,8 +44,8 @@ export type GeocodeSuggestion = {
   displayName: string;
   city: string;
   state: string;
-  lat: number;
-  lng: number;
+  lat?: number;
+  lng?: number;
 };
 
 export function maskCep(digits: string): string {

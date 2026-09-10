@@ -11,6 +11,8 @@ import {
   formatCepInput,
   haversineKm,
   isLikelyCep,
+  isValidCoordinate,
+  toValidLatLng,
 } from "@/lib/geocode";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { LocateFixed, MapPin, Search, X } from "lucide-react";
@@ -89,11 +91,11 @@ export function ServiceCentersExplorer({
     setGeoStatus("idle");
   };
   const handleGeoError = (err: GeolocationPositionError) => {
-    if (err.code === err.PERMISSION_DENIED) {
+    if (err.code === 1) {
       setGeoStatus("denied");
       return;
     }
-    if (err.code === err.TIMEOUT) {
+    if (err.code === 3) {
       setGeoStatus("timeout");
       return;
     }
@@ -198,8 +200,9 @@ export function ServiceCentersExplorer({
   const searchLocation: LatLng | null = useMemo(() => {
     if (selectedLocation && !selectedLocation.city && userLocation)
       return userLocation;
-    if (selectedLocation)
-      return { lat: selectedLocation.lat, lng: selectedLocation.lng };
+    if (selectedLocation) {
+      return toValidLatLng(selectedLocation.lat, selectedLocation.lng);
+    }
     return null;
   }, [selectedLocation, userLocation]);
 
@@ -218,17 +221,17 @@ export function ServiceCentersExplorer({
       selectedLocation && !selectedLocation.city
         ? (userLocation ?? null)
         : selectedLocation
-          ? { lat: selectedLocation.lat, lng: selectedLocation.lng }
+          ? toValidLatLng(selectedLocation.lat, selectedLocation.lng)
           : userLocation;
 
     if (!location) return base;
 
     return [...base]
       .map((p) => {
-        const distance =
-          p.lat != null && p.lng != null
-            ? haversineKm(location, { lat: p.lat, lng: p.lng })
-            : undefined;
+        const coordinates = toValidLatLng(p.lat, p.lng);
+        const distance = coordinates
+          ? haversineKm(location, coordinates)
+          : undefined;
         return { ...p, distance };
       })
       .sort(
@@ -241,7 +244,7 @@ export function ServiceCentersExplorer({
   // The map can only plot partners that have coordinates, so the list is built
   // from the same set — otherwise it would offer entries with no pin beside them.
   const mappable = useMemo(
-    () => filtered.filter((p) => p.lat != null && p.lng != null),
+    () => filtered.filter((p) => isValidCoordinate(p.lat, p.lng)),
     [filtered],
   );
 
@@ -256,6 +259,7 @@ export function ServiceCentersExplorer({
     if (!viewportBounds) return mappable;
     return mappable.filter(
       (p) =>
+        isValidCoordinate(p.lat, p.lng) &&
         p.lat != null &&
         p.lng != null &&
         p.lat >= viewportBounds.south &&

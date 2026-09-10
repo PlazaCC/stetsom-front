@@ -25,6 +25,8 @@ import type {
   PostApiPartnerLocationsBody,
   PostApiPartnerLocationsImport200,
   PostApiPartnerLocationsImportBody,
+  PostApiPartnerLocationsImportWorkbook200,
+  PostApiPartnerLocationsImportWorkbookBody,
 } from "../../model";
 
 import { orvalClient } from "../../orval-client";
@@ -187,6 +189,199 @@ export function usePostApiPartnerLocations<
 } {
   const queryOptions = getPostApiPartnerLocationsQueryOptions(
     postApiPartnerLocationsBody,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Reads every sheet, finds headers in the first 10 rows, ignores Instruções, and returns a sheet-level preview and correction report. Commit only selected sheets by sending selections as a JSON object of sheet name to partner type.
+ * @summary Preview or import partner locations from an XLSX workbook
+ */
+export const postApiPartnerLocationsImportWorkbook = (
+  postApiPartnerLocationsImportWorkbookBody: PostApiPartnerLocationsImportWorkbookBody,
+  signal?: AbortSignal,
+) => {
+  const formData = new FormData();
+  formData.append(
+    `file`,
+    postApiPartnerLocationsImportWorkbookBody.file as Blob,
+  );
+  if (postApiPartnerLocationsImportWorkbookBody.dry_run !== undefined) {
+    formData.append(
+      `dry_run`,
+      postApiPartnerLocationsImportWorkbookBody.dry_run,
+    );
+  }
+  if (postApiPartnerLocationsImportWorkbookBody.selections !== undefined) {
+    formData.append(
+      `selections`,
+      postApiPartnerLocationsImportWorkbookBody.selections,
+    );
+  }
+
+  return orvalClient<PostApiPartnerLocationsImportWorkbook200>({
+    url: `/api/partner-locations/import/workbook`,
+    method: "POST",
+    headers: { "Content-Type": "multipart/form-data" },
+    data: formData,
+    signal,
+  });
+};
+
+export const getPostApiPartnerLocationsImportWorkbookQueryKey = (
+  postApiPartnerLocationsImportWorkbookBody?: PostApiPartnerLocationsImportWorkbookBody,
+) => {
+  return [
+    "POST",
+    `/api/partner-locations/import/workbook`,
+    postApiPartnerLocationsImportWorkbookBody,
+  ] as const;
+};
+
+export const getPostApiPartnerLocationsImportWorkbookQueryOptions = <
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportWorkbookBody: PostApiPartnerLocationsImportWorkbookBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getPostApiPartnerLocationsImportWorkbookQueryKey(
+      postApiPartnerLocationsImportWorkbookBody,
+    );
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>
+  > = ({ signal }) =>
+    postApiPartnerLocationsImportWorkbook(
+      postApiPartnerLocationsImportWorkbookBody,
+      signal,
+    );
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostApiPartnerLocationsImportWorkbookQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>
+>;
+export type PostApiPartnerLocationsImportWorkbookQueryError = ApiErrorPayload;
+
+export function usePostApiPartnerLocationsImportWorkbook<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportWorkbookBody: PostApiPartnerLocationsImportWorkbookBody,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>,
+          TError,
+          Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsImportWorkbook<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportWorkbookBody: PostApiPartnerLocationsImportWorkbookBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>,
+          TError,
+          Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsImportWorkbook<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportWorkbookBody: PostApiPartnerLocationsImportWorkbookBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Preview or import partner locations from an XLSX workbook
+ */
+
+export function usePostApiPartnerLocationsImportWorkbook<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportWorkbookBody: PostApiPartnerLocationsImportWorkbookBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbook>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getPostApiPartnerLocationsImportWorkbookQueryOptions(
+    postApiPartnerLocationsImportWorkbookBody,
     options,
   );
 

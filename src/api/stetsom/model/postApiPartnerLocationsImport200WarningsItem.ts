@@ -6,12 +6,15 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostApiPartnerLocationsImport200SkippedItem = {
+export type PostApiPartnerLocationsImport200WarningsItem = {
   sheet?: string;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
    */
   line: number;
-  name: string;
+  field?: string;
+  reason: string;
+  orientation?: string;
+  original?: string[];
 };

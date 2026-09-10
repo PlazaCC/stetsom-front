@@ -7,6 +7,7 @@
  */
 
 export type PostApiPartnerLocationsImport200WithoutCoordinatesItem = {
+  sheet?: string;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991

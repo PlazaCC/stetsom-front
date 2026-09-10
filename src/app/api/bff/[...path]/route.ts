@@ -17,6 +17,8 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
+const MAX_MULTIPART_BODY_BYTES = 10_000_000;
+
 // Response headers worth forwarding back to the browser.
 const FORWARDED_HEADERS = [
   "x-request-id",
@@ -70,12 +72,33 @@ async function handle(
     if (token) headers.Authorization = `Bearer ${token}`;
 
     const hasBody = !["GET", "HEAD"].includes(request.method);
-    const body = hasBody ? await request.text() : undefined;
+    const isMultipart = contentType?.includes("multipart/form-data") ?? false;
+    const contentLength = request.headers.get("content-length");
+    if (
+      hasBody &&
+      isMultipart &&
+      contentLength &&
+      Number(contentLength) > MAX_MULTIPART_BODY_BYTES
+    ) {
+      return NextResponse.json(
+        { error: { code: "PAYLOAD_TOO_LARGE", message: "File is too large." } },
+        { status: 413 },
+      );
+    }
+
+    // Keep multipart uploads streaming through the BFF. The upstream multipart
+    // limits remain the final guard when the client omits Content-Length.
+    const body = hasBody
+      ? isMultipart
+        ? request.body
+        : await request.text()
+      : undefined;
 
     const upstream = await fetch(upstreamUrl, {
       method: request.method,
       headers,
       body,
+      ...(isMultipart ? { duplex: "half" as const } : {}),
       cache: "no-store",
     });
 

@@ -7,6 +7,7 @@
  */
 
 export type PostApiPartnerLocationsImport200ErrorsItem = {
+  sheet?: string;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
@@ -14,4 +15,6 @@ export type PostApiPartnerLocationsImport200ErrorsItem = {
   line: number;
   field?: string;
   reason: string;
+  orientation?: string;
+  original?: string[];
 };
