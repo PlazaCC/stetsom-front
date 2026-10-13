@@ -73,7 +73,11 @@ export function StickySectionNav({
     <div
       ref={navRef}
       className={cn(
-        "sticky z-100 w-full border-t border-zinc-200 bg-white",
+        // z-30 keeps this bar above the page content but BELOW the site header
+        // (z-50) and the mobile backdrop (z-40) — so the header's language
+        // selector (desktop dropdown and mobile drawer) always paints on top
+        // and both controls stay clickable.
+        "sticky z-30 w-full border-t border-zinc-200 bg-white",
         previewMode ? "top-0" : "top-header",
       )}
     >
