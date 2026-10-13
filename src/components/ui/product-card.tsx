@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { Check } from "lucide-react";
+import { Check, Lock } from "lucide-react";
 
 interface ProductCardProps {
   name: string;
@@ -17,9 +17,11 @@ interface ProductCardProps {
   compareMode?: boolean;
   isCompareSelected?: boolean;
   compareDisabled?: boolean;
+  compareBlocked?: boolean;
   onCompareToggle?: () => void;
   compareLabel?: string;
   compareSelectedLabel?: string;
+  compareBlockedLabel?: string;
 }
 
 export function ProductCard({
@@ -34,9 +36,11 @@ export function ProductCard({
   compareMode = false,
   isCompareSelected = false,
   compareDisabled = false,
+  compareBlocked = false,
   onCompareToggle,
   compareLabel = "Comparar",
   compareSelectedLabel = "Selecionado",
+  compareBlockedLabel = "Outra categoria",
 }: ProductCardProps) {
   const uniqueVariants = variants ? Array.from(new Set(variants)) : [];
 
@@ -77,13 +81,20 @@ export function ProductCard({
               "absolute top-2 right-2 flex items-center gap-1 rounded-sm px-2 py-0.5 font-sans-condensed text-2xs leading-tight font-semibold uppercase transition-colors",
               isCompareSelected
                 ? "bg-brand-dark text-white"
-                : compareDisabled
-                  ? "cursor-not-allowed bg-muted text-muted-foreground"
-                  : "bg-brand text-brand-dark",
+                : compareBlocked
+                  ? "bg-muted text-muted-foreground"
+                  : compareDisabled
+                    ? "cursor-not-allowed bg-muted text-muted-foreground"
+                    : "bg-brand text-brand-dark",
             )}
           >
             {isCompareSelected && <Check size={10} />}
-            {isCompareSelected ? compareSelectedLabel : compareLabel}
+            {compareBlocked && <Lock size={10} />}
+            {isCompareSelected
+              ? compareSelectedLabel
+              : compareBlocked
+                ? compareBlockedLabel
+                : compareLabel}
           </span>
         )}
       </div>
@@ -129,7 +140,9 @@ export function ProductCard({
           "flex w-full cursor-pointer flex-col overflow-hidden rounded-lg border bg-white text-left transition-all",
           isCompareSelected
             ? "border-brand-dark ring-1 ring-brand-dark"
-            : "border-border hover:border-brand hover:shadow-md",
+            : compareBlocked
+              ? "border-border opacity-60"
+              : "border-border hover:border-brand hover:shadow-md",
           compareDisabled && "cursor-not-allowed opacity-60",
         )}
       >

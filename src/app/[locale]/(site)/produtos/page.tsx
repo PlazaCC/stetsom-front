@@ -73,6 +73,7 @@ export default async function ProdutosPage({
     page?: string;
     discontinued?: string;
     export?: string;
+    all?: string;
   }>;
 }) {
   const [sp, locale] = await Promise.all([searchParams, getLocale()]);
@@ -88,6 +89,8 @@ export default async function ProdutosPage({
   // usuário liga o filtro "Exibir descontinuados" (discontinued=1 → sem filtro).
   const is_discontinued = sp.discontinued === "1" ? undefined : false;
   const is_export = sp.export === "1" ? true : undefined;
+  // "all=1" mostra todos os produtos da categoria (sem filtrar por linha).
+  const all = sp.all === "1";
 
   const categories = await getApiCategories({ locale: apiLocale }).catch(
     () => [] as PublicCategory[],
@@ -96,7 +99,7 @@ export default async function ProdutosPage({
   // Etapa intermediária da taxonomia: com uma categoria escolhida e nenhuma
   // linha, a página mostra as linhas da categoria em cards (imagem do último
   // produto cadastrado + nome) em vez de um grid de produtos.
-  if (category && !line) {
+  if (category && !line && !all) {
     const lineCards = await fetchCategoryLineCards(
       categories,
       category,

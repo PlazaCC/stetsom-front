@@ -67,8 +67,11 @@ function CatalogContentInner({
     sidebarOpen,
     showDiscontinued,
     showExport,
+    showAll,
     setActiveCategory,
     setActiveLine,
+    setShowAll,
+    setCategoryAll,
     setSearch,
     setSort,
     setPage,
@@ -158,7 +161,8 @@ function CatalogContentInner({
   const isCatalogEmpty = catalog.total === 0 && !hasActiveFilters;
   // Etapa intermediária da taxonomia: categoria escolhida sem linha selecionada
   // mostra as linhas da categoria em cards (em vez do grid de produtos).
-  const isLineCardsView = activeCategory !== "todos" && activeLine === "todas";
+  const isLineCardsView =
+    activeCategory !== "todos" && activeLine === "todas" && !showAll;
 
   // Build a slug → ProductCardItem lookup map for the compare modal
   const catalogMap = useMemo(() => {
@@ -170,44 +174,54 @@ function CatalogContentInner({
   }, [productCards]);
 
   // Compare context
-  const { mode, selectedSlugs } = useCompareContext();
+  const { mode, selectedSlugs, selectedCategory, setSelectedCategory } =
+    useCompareContext();
   const prevSelectedRef = useRef<string[]>([]);
 
-  // When first product is selected in compare mode, auto-filter by its category
+  // Anchor the comparison's category and, when the first product is selected,
+  // jump to its category/line view so the grid stays visible and only shows
+  // comparable (same-category) products.
   useEffect(() => {
-    if (mode !== "selecting") return;
     const prev = prevSelectedRef.current;
-    const curr = selectedSlugs;
 
-    // A product was added (first one)
-    if (curr.length === 1 && prev.length === 0) {
-      const product = catalogMap.get(curr[0]);
-      if (product) {
-        // Find the category slug from the categories list by name
-        const catSlug = categories.find(
-          (c) => c.name === product.category,
-        )?.slug;
-        if (catSlug && catSlug !== activeCategory) {
-          setActiveCategory(catSlug);
+    if (mode === "selecting") {
+      const product =
+        selectedSlugs.length === 1
+          ? catalogMap.get(selectedSlugs[0])
+          : undefined;
+
+      // Anchor the category (covers the deep-link case and products missing
+      // from the current page's map).
+      if (selectedSlugs.length === 1 && !selectedCategory) {
+        if (product) {
+          setSelectedCategory(product.category);
+        } else if (activeCategory !== "todos") {
+          const match = categories.find((c) => c.slug === activeCategory);
+          if (match) setSelectedCategory(match.name);
+        }
+      }
+
+      // First product just added → navigate to its category (all products) so
+      // the grid only shows same-category products.
+      if (selectedSlugs.length === 1 && prev.length === 0 && product) {
+        const cat = categories.find((c) => c.name === product.category);
+        if (cat && (cat.slug !== activeCategory || !showAll)) {
+          setCategoryAll(cat.slug);
         }
       }
     }
 
-    // All products removed — reset category
-    if (curr.length === 0 && prev.length > 0) {
-      if (activeCategory !== "todos") {
-        setActiveCategory("todos");
-      }
-    }
-
-    prevSelectedRef.current = curr;
+    prevSelectedRef.current = selectedSlugs;
   }, [
     selectedSlugs,
     mode,
+    selectedCategory,
     catalogMap,
     categories,
     activeCategory,
-    setActiveCategory,
+    showAll,
+    setSelectedCategory,
+    setCategoryAll,
   ]);
 
   return (
@@ -230,6 +244,7 @@ function CatalogContentInner({
             <CatalogLinesGrid
               lines={lineCards ?? []}
               onSelectLine={setActiveLine}
+              onSelectAll={() => setShowAll(true)}
             />
           ) : (
             <div className="flex gap-9">

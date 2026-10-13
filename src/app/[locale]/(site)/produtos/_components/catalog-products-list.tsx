@@ -24,7 +24,13 @@ export function CatalogProductsList({
 }: CatalogProductsListProps) {
   const t = useTranslations("Catalog");
   const compare = useCompareContext();
-  const { mode, selectedSlugs, selectProduct, isProductSelected } = compare;
+  const {
+    mode,
+    selectedSlugs,
+    selectedCategory,
+    selectProduct,
+    isProductSelected,
+  } = compare;
 
   const isSelecting = mode === "selecting";
 
@@ -62,9 +68,18 @@ export function CatalogProductsList({
             compareDisabled={
               selectedSlugs.length >= 2 && !isProductSelected(product.slug)
             }
-            onCompareToggle={() => selectProduct(product.slug)}
+            compareBlocked={
+              isSelecting &&
+              selectedCategory !== null &&
+              selectedCategory !== product.category &&
+              !isProductSelected(product.slug)
+            }
+            onCompareToggle={() =>
+              selectProduct(product.slug, product.category)
+            }
             compareLabel={t("compareBadge")}
             compareSelectedLabel={t("compareBadgeSelected")}
+            compareBlockedLabel={t("compareBlockedBadge")}
           />
         ))}
       </div>

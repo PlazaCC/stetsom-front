@@ -18,6 +18,8 @@ export function useCatalogFilters() {
   // Desligado por padrão — só liga quando o usuário marca discontinued=1.
   const showDiscontinued = searchParams.get("discontinued") === "1";
   const showExport = searchParams.get("export") === "1";
+  // "all" mostra todos os produtos de uma categoria (pulando a etapa de linhas).
+  const showAll = searchParams.get("all") === "1";
 
   const pushParams = useCallback(
     (updater: (p: URLSearchParams) => void) => {
@@ -36,6 +38,7 @@ export function useCatalogFilters() {
         else p.set("category", slug);
         // A line belongs to a category — changing the category invalidates it.
         p.delete("line");
+        p.delete("all"); // voltar à etapa de linhas da nova categoria
         p.delete("page"); // reset pagination when the filter changes
       });
     },
@@ -47,6 +50,32 @@ export function useCatalogFilters() {
       pushParams((p) => {
         if (slug === "todas") p.delete("line");
         else p.set("line", slug);
+        p.delete("all"); // uma linha específica substitui "todos os produtos"
+        p.delete("page"); // reset pagination when the filter changes
+      });
+    },
+    [pushParams],
+  );
+
+  const setShowAll = useCallback(
+    (value: boolean) => {
+      pushParams((p) => {
+        if (value) p.set("all", "1");
+        else p.delete("all");
+        p.delete("line");
+        p.delete("page"); // reset pagination when the filter changes
+      });
+    },
+    [pushParams],
+  );
+
+  const setCategoryAll = useCallback(
+    (category: string) => {
+      pushParams((p) => {
+        if (category === "todos") p.delete("category");
+        else p.set("category", category);
+        p.set("all", "1");
+        p.delete("line");
         p.delete("page"); // reset pagination when the filter changes
       });
     },
@@ -120,8 +149,11 @@ export function useCatalogFilters() {
     sidebarOpen,
     showDiscontinued,
     showExport,
+    showAll,
     setActiveCategory,
     setActiveLine,
+    setShowAll,
+    setCategoryAll,
     setSearch,
     setSort,
     setPage,

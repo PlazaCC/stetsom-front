@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { GitCompareArrows, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useEffect } from "react";
 import { useCompareContext } from "./compare-provider";
 import { Button } from "@/components/ui/button";
 
@@ -15,7 +16,21 @@ interface CompareCollapsedProps {
 
 export function CompareCollapsed({ catalogMap }: CompareCollapsedProps) {
   const t = useTranslations("Catalog");
-  const { selectedSlugs, removeProduct, exitCompareMode } = useCompareContext();
+  const {
+    selectedSlugs,
+    selectedCategory,
+    blockedReason,
+    removeProduct,
+    exitCompareMode,
+    clearBlocked,
+  } = useCompareContext();
+
+  // Auto-dismiss the same-category violation notice after a short delay.
+  useEffect(() => {
+    if (blockedReason !== "different-category") return;
+    const id = setTimeout(clearBlocked, 3000);
+    return () => clearTimeout(id);
+  }, [blockedReason, clearBlocked]);
 
   const selectedItems = selectedSlugs
     .map((slug) => catalogMap.get(slug))
@@ -57,9 +72,18 @@ export function CompareCollapsed({ catalogMap }: CompareCollapsedProps) {
           <span className="font-sans text-2xs text-text-subtle">
             {selectedSlugs.length === 0
               ? t("compareInstruction")
-              : t("compareInstructionSecond")}
+              : selectedCategory
+                ? t("compareSameCategoryHint", { category: selectedCategory })
+                : t("compareInstructionSecond")}
           </span>
         </div>
+
+        {/* Same-category violation notice */}
+        {blockedReason === "different-category" && (
+          <p className="mt-3 rounded-md border border-brand/30 bg-brand/10 px-3 py-2 font-sans text-2xs font-medium text-brand">
+            {t("compareDifferentCategory")}
+          </p>
+        )}
 
         {/* Mini previews of already-selected products */}
         {selectedItems.length > 0 && (
