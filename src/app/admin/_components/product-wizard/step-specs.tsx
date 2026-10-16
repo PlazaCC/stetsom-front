@@ -1,11 +1,15 @@
 "use client";
 
-import type { Attribute, Template } from "@/api/stetsom/model";
+import type { Attribute, AttributeGroup, Template } from "@/api/stetsom/model";
+import { Button } from "@/components/ui/button";
 import { CMS_UI } from "@/lib/cms/constants";
+import { FileSpreadsheet } from "lucide-react";
+import { SpecImportDialog } from "./spec-import-dialog";
 import { SpecTable, type SpecLocale } from "./spec-table";
 import { VariationTabs } from "./variation-tabs";
 import {
   newVariation,
+  templateLayoutOf,
   type WizardAction,
   type WizardSpec,
   type WizardState,
@@ -36,17 +40,28 @@ interface StepSpecsProps {
   state: WizardState;
   dispatch: React.Dispatch<WizardAction>;
   attributes: Attribute[];
+  attributeGroups: AttributeGroup[];
   templates: Template[];
   compact?: boolean;
 }
 
+/** One empty line per template attribute, group by group, in template order. */
 function buildSpecs(tpl: Template, attributes: Attribute[]): WizardSpec[] {
-  return [...tpl.attributes]
+  return [...tpl.groups]
     .sort((a, b) => a.order - b.order)
+    .flatMap((group) =>
+      [...group.attributes]
+        .sort((a, b) => a.order - b.order)
+        .map((ta) => ({
+          group_id: group.group_id,
+          attribute_id: ta.attribute_id,
+        })),
+    )
     .map((ta, i) => ({
       id: `spec-tpl-${ta.attribute_id}-${i}`,
       attribute_id: ta.attribute_id,
       attribute_name: attributes.find((a) => a.id === ta.attribute_id)?.name,
+      group_id: ta.group_id,
       value: { pt: "" },
       order: i,
       highlighted: false,
@@ -57,16 +72,21 @@ export function StepSpecs({
   state,
   dispatch,
   attributes,
+  attributeGroups,
   templates,
   compact = false,
 }: StepSpecsProps) {
   const [locale, setLocale] = useState<SpecLocale>("pt");
+  const [importOpen, setImportOpen] = useState(false);
 
   // Templates are scoped to the product's category — the list stays empty until
   // one is picked, so the combobox has nothing to apply before that.
   const hasCategory = Boolean(state.category_id);
   const categoryTemplates = templates.filter(
     (template) => template.category_id === state.category_id,
+  );
+  const currentTemplate = categoryTemplates.find(
+    (template) => template.id === state.template_id,
   );
 
   const active =
@@ -109,12 +129,14 @@ export function StepSpecs({
         <h2 className="text-sm font-semibold">Especificações Técnicas</h2>
         <Combobox
           items={categoryTemplates}
+          value={currentTemplate ?? null}
           itemToStringLabel={(item: Template) => item.name["pt"]}
-          onValueChange={(template) => {
+          onValueChange={(template: Template | null) => {
             if (!template) return;
 
             dispatch({
               type: "apply_template",
+              templateId: template.id,
               specs: buildSpecs(template, attributes),
             });
           }}
@@ -138,7 +160,33 @@ export function StepSpecs({
             </ComboboxList>
           </ComboboxContent>
         </Combobox>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="ml-auto"
+          onClick={() => setImportOpen(true)}
+        >
+          <FileSpreadsheet className="size-4" />
+          Importar planilha
+        </Button>
       </div>
+
+      {importOpen && (
+        <SpecImportDialog
+          templateId={state.template_id}
+          templateName={currentTemplate?.name.pt}
+          productName={state.name.pt}
+          variations={state.variations}
+          onApply={(variations) => {
+            setVariations(variations);
+            if (variations[0]) {
+              dispatch({ type: "set_active_variation", id: variations[0].id });
+            }
+          }}
+          onClose={() => setImportOpen(false)}
+        />
+      )}
 
       <div
         className={cn(
@@ -177,6 +225,8 @@ export function StepSpecs({
         <SpecTable
           specs={active.specs}
           attributes={attributes}
+          attributeGroups={attributeGroups}
+          templateLayout={templateLayoutOf(currentTemplate)}
           maxHighlights={CMS_UI.MAX_HIGHLIGHTS}
           locale={locale}
           onChange={patchActiveSpecs}

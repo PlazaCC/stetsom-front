@@ -13,11 +13,12 @@ import type {
   ProductCardItem,
   ProductImage,
   PublicVariant,
-  PublicVariantAttr,
 } from "@/api/stetsom/model";
+import { SpecValue } from "@/components/ui/spec-value";
 import { toApiLocale } from "@/lib/api/i18n-utils";
 import Image from "next/image";
-import { entriesForAttribute, entriesToInlineText } from "@/lib/specs/matrix";
+import { entriesForAttribute } from "@/lib/specs/matrix";
+import { buildSpecSections, hasGroupedSections } from "@/lib/specs/table";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -272,29 +273,14 @@ function UnifiedCompareMobile({
       productB.variants.sort((a, b) => a.order - b.order)[0])
     : null;
 
-  // Unified attribute keys: collect all unique attribute names from BOTH products
-  const allAttrKeys = (() => {
-    const map = new Map<string, string | null>();
-    const addVariant = (
-      v: {
-        attributes: PublicVariantAttr[];
-      } | null,
-    ) => {
-      if (!v) return;
-      for (const attr of v.attributes.sort((a, b) => a.order - b.order)) {
-        if (!map.has(attr.attribute_id)) {
-          map.set(attr.attribute_id, attr.attribute_name ?? null);
-        }
-      }
-    };
-    // Add from all variants of both products for completeness
-    productA?.variants?.forEach(addVariant);
-    productB?.variants?.forEach(addVariant);
-    return Array.from(map.entries()).map(([id, name]) => ({
-      attribute_id: id,
-      attribute_name: name,
-    }));
-  })();
+  // Unified layout: the groups and attributes of every variant of BOTH
+  // products. Compared products share a category, so their groups line up;
+  // anything only one of them records still gets a row, with "—" on the other.
+  const specSections = buildSpecSections([
+    ...(productA?.variants ?? []),
+    ...(productB?.variants ?? []),
+  ]);
+  const showGroupTitles = hasGroupedSections(specSections);
 
   if (!productA || !productB) return null;
 
@@ -317,7 +303,7 @@ function UnifiedCompareMobile({
       </div>
 
       {/* Unified specs table */}
-      {allAttrKeys.length > 0 && (
+      {specSections.length > 0 && (
         <div className="overflow-hidden rounded border border-border">
           {/* Table header */}
           <div className="grid grid-cols-[2fr_1fr_1fr] bg-brand-dark">
@@ -332,39 +318,45 @@ function UnifiedCompareMobile({
             </span>
           </div>
 
-          {/* Spec rows */}
-          {allAttrKeys.map(({ attribute_id, attribute_name }, i) => {
-            // An attribute may be listed more than once (matrix cell). This
-            // view is too dense to stack them, so they join on one line rather
-            // than being silently dropped.
-            const valA =
-              entriesToInlineText(
-                entriesForAttribute(activeA?.attributes, attribute_id),
-              ) || "—";
-            const valB =
-              entriesToInlineText(
-                entriesForAttribute(activeB?.attributes, attribute_id),
-              ) || "—";
-            return (
-              <div
-                key={attribute_id}
-                className={cn(
-                  "grid grid-cols-[2fr_1fr_1fr]",
-                  i % 2 === 0 ? "bg-muted/50" : "bg-white",
-                )}
-              >
-                <span className="px-2 py-1.5 font-sans text-2xs font-medium wrap-break-word text-brand-dark capitalize">
-                  {attribute_name ?? attribute_id}
-                </span>
-                <span className="px-1 py-1.5 text-center font-sans text-2xs text-text-subtle">
-                  {valA}
-                </span>
-                <span className="border-l border-border px-1 py-1.5 text-center font-sans text-2xs text-text-subtle">
-                  {valB}
-                </span>
-              </div>
-            );
-          })}
+          {/* Spec rows, grouped like the product page */}
+          {specSections.map((section) => (
+            <div key={section.group_id ?? "ungrouped"}>
+              {showGroupTitles && (
+                <div className="border-b border-border bg-white px-2 pt-2.5 pb-1 font-sans-condensed text-2xs font-black text-brand-dark uppercase">
+                  {section.group_name ?? t("compareOtherSpecs")}
+                </div>
+              )}
+              {section.rows.map(({ attribute_id, attribute_name }, i) => (
+                <div
+                  key={attribute_id}
+                  className={cn(
+                    "grid grid-cols-[2fr_1fr_1fr]",
+                    i % 2 === 0 ? "bg-muted/50" : "bg-white",
+                  )}
+                >
+                  <span className="px-2 py-1.5 font-sans text-2xs font-medium wrap-break-word text-brand-dark capitalize">
+                    {attribute_name ?? attribute_id}
+                  </span>
+                  <SpecValue
+                    size="compact"
+                    entries={entriesForAttribute(
+                      activeA?.attributes,
+                      attribute_id,
+                    )}
+                    className="justify-center px-1 py-1.5 text-center font-sans text-2xs text-text-subtle"
+                  />
+                  <SpecValue
+                    size="compact"
+                    entries={entriesForAttribute(
+                      activeB?.attributes,
+                      attribute_id,
+                    )}
+                    className="justify-center border-l border-border px-1 py-1.5 text-center font-sans text-2xs text-text-subtle"
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
       )}
     </div>

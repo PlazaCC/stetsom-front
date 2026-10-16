@@ -1,11 +1,12 @@
 /**
  * Reading the technical specifications table.
  *
- * MATRIX attributes are rendered as stacked cells. Each line carries its own
- * title and an optional description shown smaller beneath it:
+ * MATRIX attributes record several lines, rendered side by side in one cell.
+ * Each line carries its own title and an optional description shown smaller
+ * beneath it:
  *
- *   Potência Máxima @ 14,4V   →   "1 x 3500W"  /  "1 OHM"
- *                                 "1 x 1800W"  /  "2 OHMS"
+ *   Potência Nominal @ 14,4V   →   1 x 3500W │ 1 x 1800W
+ *                                  @1 OHM    │ @2 OHMS
  *
  * Both parts are stored as separate fields, so nothing is parsed out of the
  * text. A line without a title is dropped: there is nothing to render.
@@ -47,11 +48,4 @@ export function entriesForAttribute(
       description: a.description?.trim() || undefined,
     }))
     .filter((entry) => entry.title !== "");
-}
-
-/** Single-line rendering for dense layouts that cannot stack entries. */
-export function entriesToInlineText(entries: SpecEntry[]): string {
-  return entries
-    .map((e) => (e.description ? `${e.title} (${e.description})` : e.title))
-    .join(" · ");
 }

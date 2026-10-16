@@ -40,7 +40,11 @@ Multilingual fields use `I18nString`: `{ pt: string, en?: string, es?: string }`
 
 **Variant** (formerly `ProductVariation`): `{ variant_id, name, order, attributes: VariantAttr[] }`
 
-**VariantAttr** (formerly `ProductSpec`): `{ attribute, value, order }`
+**VariantAttr** (formerly `ProductSpec`): `{ attribute_id, attribute_name?, group_id, group_name?, value, description?, order, highlighted }` — one spec line. `group_id` (an **AttributeGroup**) is required on write; `null` only on legacy reads. Repeating an `attribute_id` (MATRIX attributes only) builds a matrix cell whose entries render side by side, `value` on top and `description` beneath. The API keeps a group's lines contiguous, so a group's position is that of its first line.
+
+**AttributeGroup**: `{ id, name: I18nString }` — a section of the specs table ("Alimentação"). Managed at `/admin/grupos-atributos`.
+
+**Template**: `{ id, category_id, name, groups: { group_id, order, attributes: { attribute_id, order }[] }[] }` — every attribute sits in exactly one group. Applying a template stamps its lines (with their groups) onto every variation and sets `template_id`; once set, the API only accepts the template's attributes, each under its template group.
 
 **ProductBlock**: `{ block_id, type: 'IMAGE'|'VIDEO'|'HTML'|'MODEL3D'|'TEXT', order, data: ProductBlockData }`
 
@@ -62,6 +66,8 @@ Server-side query params: `q`, `category` (category **slug**), `line` (line **sl
 ## Key Rules
 
 - `variants[].attributes[]` ordered by `order` ascending — never reintroduce flat `specifications`
+- Build the specs table with `buildSpecSections` (`src/lib/specs/table.ts`) and render cells with `SpecValue` — never re-derive the row union per component
+- Spec spreadsheets: one file per product, one sheet per variant (`group_id, group, attribute_id, attribute, title, value`); `POST /api/spec-sheets/import` only previews, the editor saves
 - `page_blocks` ordered by `order` ascending — sort before rendering
 - `files.version` increments per `product_id + type` — show highest active version only (`is_active: true`)
 - `available_locales` — product is hidden in locales not listed (empty/absent = visible everywhere)

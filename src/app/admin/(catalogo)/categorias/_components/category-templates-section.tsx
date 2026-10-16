@@ -44,7 +44,9 @@ export function CategoryTemplatesSection({
               {template.name.pt}
             </span>
             <span className="text-xs text-muted-foreground">
-              {template.attributes.length} atributos
+              {template.groups.length} grupos ·{" "}
+              {template.groups.reduce((n, g) => n + g.attributes.length, 0)}{" "}
+              atributos
             </span>
             <Link
               href={`/admin/categorias/${categoryId}/templates/${template.id}`}

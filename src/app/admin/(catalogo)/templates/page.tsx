@@ -34,7 +34,10 @@ export default function AdminTemplatesPage() {
       key: "attributes",
       header: "Atributos",
       render: (t) => (
-        <span className="text-muted-foreground">{t.attributes.length}</span>
+        <span className="text-muted-foreground">
+          {t.groups.reduce((n, g) => n + g.attributes.length, 0)} em{" "}
+          {t.groups.length} grupo(s)
+        </span>
       ),
     },
     {

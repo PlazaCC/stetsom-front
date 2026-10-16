@@ -1,6 +1,6 @@
 "use client";
 
-import type { Attribute, Template } from "@/api/stetsom/model";
+import type { Attribute, AttributeGroup, Template } from "@/api/stetsom/model";
 import { BlockManager } from "@/app/admin/_components/crud/block-manager";
 import { PRODUCT_BLOCK_REGISTRY } from "@/app/admin/_components/crud/product-block-registry";
 import { cn } from "@/lib/utils";
@@ -36,6 +36,7 @@ interface EditorPanelProps {
   categories: CategoryOption[];
   lines: LineOption[];
   attributes: Attribute[];
+  attributeGroups: AttributeGroup[];
   templates: Template[];
   /** Stacked layout for form sections — true when the panel is narrow. */
   compact?: boolean;
@@ -57,6 +58,7 @@ export function EditorPanel({
   categories,
   lines,
   attributes,
+  attributeGroups,
   templates,
   compact = false,
 }: EditorPanelProps) {
@@ -102,6 +104,7 @@ export function EditorPanel({
             state={state}
             dispatch={dispatch}
             attributes={attributes}
+            attributeGroups={attributeGroups}
             templates={templates}
             compact={compact}
           />

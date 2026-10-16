@@ -9,6 +9,7 @@ import {
   Home,
   Image as ImageIcon,
   LayoutTemplate,
+  Layers,
   ListChecks,
   Mail,
   Package,
@@ -98,6 +99,11 @@ export const config: Record<string, AppRouteStaticData> = {
   "/admin/atributos": {
     label: "Atributos",
     icon: ListChecks,
+    section: "admin",
+  },
+  "/admin/grupos-atributos": {
+    label: "Grupos de atributos",
+    icon: Layers,
     section: "admin",
   },
 

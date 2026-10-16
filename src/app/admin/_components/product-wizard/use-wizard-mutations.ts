@@ -2,6 +2,7 @@ import {
   deleteApiProductsId,
   patchApiProductsId,
   postApiProducts,
+  useGetApiAttributeGroups,
   useGetApiAttributes,
   useGetApiCategories,
   useGetApiTemplates,
@@ -17,6 +18,8 @@ import {
   buildPayload,
   combineLaunchDate,
   deriveStatus,
+  findSpecIssues,
+  templateLayoutOf,
   type PublishIntent,
   type WizardAction,
   type WizardState,
@@ -53,6 +56,7 @@ export function useWizardMutations(
     { query: { enabled: Boolean(state.category_id) } },
   );
   const attributesQuery = useGetApiAttributes();
+  const attributeGroupsQuery = useGetApiAttributeGroups();
 
   const categories = useMemo(
     () => (categoriesQuery.data ?? []).map((c) => ({ id: c.id, name: c.name })),
@@ -71,6 +75,7 @@ export function useWizardMutations(
   );
   const templates = templatesQuery.data ?? [];
   const attributes = attributesQuery.data ?? [];
+  const attributeGroups = attributeGroupsQuery.data ?? [];
 
   const createMutation = useMutation({
     mutationFn: (body: PostApiProductsBody) => postApiProducts(body),
@@ -135,7 +140,31 @@ export function useWizardMutations(
     };
   }
 
+  /**
+   * Spec lines the API would refuse — no group, or off-template. Reported up
+   * front so the toast names the variation and attribute.
+   */
+  function reportSpecIssues(): boolean {
+    const issues = findSpecIssues(state, {
+      attributeName: (id) =>
+        attributes.find((a) => a.id === id)?.name.pt ?? "atributo",
+      groupName: (id) =>
+        attributeGroups.find((g) => g.id === id)?.name.pt ?? "outro grupo",
+      templateLayout: templateLayoutOf(
+        templates.find((t) => t.id === state.template_id),
+      ),
+    });
+    if (issues.length === 0) return false;
+    adminToast.error(
+      "Revise as especificações antes de salvar",
+      issues.slice(0, 3).join(" ") +
+        (issues.length > 3 ? ` (+${issues.length - 3})` : ""),
+    );
+    return true;
+  }
+
   async function handleSaveDraft() {
+    if (reportSpecIssues()) return;
     try {
       await handleSave("draft");
       adminToast.draft(state.name.pt || undefined);
@@ -145,6 +174,7 @@ export function useWizardMutations(
   }
 
   async function handlePublish() {
+    if (reportSpecIssues()) return;
     try {
       const result = await handleSave("publish");
       adminToast.success(
@@ -190,6 +220,7 @@ export function useWizardMutations(
     lines,
     templates,
     attributes,
+    attributeGroups,
     isSaving,
     deleteMutation,
     publishedResult,

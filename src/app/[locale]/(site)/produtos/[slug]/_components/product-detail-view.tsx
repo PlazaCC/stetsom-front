@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ProductCard } from "@/components/ui/product-card";
+import { buildSpecSections } from "@/lib/specs/table";
 import { cn } from "@/lib/utils";
 import { ChevronDown, GitCompareArrows, Smartphone } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -271,20 +272,7 @@ export function ProductDetailView({
         list.findIndex((a) => a.attribute_id === attr.attribute_id) === i,
     )
     .slice(0, 3);
-  const allAttrKeys = sortedVariants.reduce<
-    { attribute_id: string; attribute_name?: string | null }[]
-  >((acc, variant) => {
-    const sorted = [...variant.attributes].sort((a, b) => a.order - b.order);
-    for (const attr of sorted) {
-      if (!acc.some((a) => a.attribute_id === attr.attribute_id)) {
-        acc.push({
-          attribute_id: attr.attribute_id,
-          attribute_name: attr.attribute_name,
-        });
-      }
-    }
-    return acc;
-  }, []);
+  const specSections = buildSpecSections(sortedVariants);
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: t("breadcrumbHome"), href: "/" },
@@ -576,8 +564,8 @@ export function ProductDetailView({
         id="specifications"
         className="scroll-mt-section-scroll"
       >
-        {allAttrKeys.length > 0 ? (
-          <SpecsTable variants={sortedVariants} attributeKeys={allAttrKeys} />
+        {specSections.length > 0 ? (
+          <SpecsTable variants={sortedVariants} sections={specSections} />
         ) : (
           <div className="bg-white px-5 py-9 lg:px-42.5">
             <p className="font-sans text-sm text-text-subtle">{t("noSpecs")}</p>

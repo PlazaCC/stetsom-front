@@ -36,6 +36,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     lines,
     templates,
     attributes,
+    attributeGroups,
     isSaving,
     deleteMutation,
     publishedResult,
@@ -67,7 +68,12 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   }
 
   const hasSaved = !!state.productId;
-  const previewModel = buildPreviewModel(state, categories, attributes);
+  const previewModel = buildPreviewModel(
+    state,
+    categories,
+    attributes,
+    attributeGroups,
+  );
 
   return (
     <AdminPageLayout
@@ -136,6 +142,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
             categories={categories}
             lines={lines}
             attributes={attributes}
+            attributeGroups={attributeGroups}
             templates={templates}
             compact={device === "desktop"}
           />

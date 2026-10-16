@@ -5,16 +5,27 @@ import {
   getGetApiTemplatesQueryKey,
   patchApiTemplatesId,
   postApiTemplates,
+  useGetApiAttributeGroups,
   useGetApiAttributes,
   useGetApiCategories,
   useGetApiTemplates,
 } from "@/api/stetsom";
-import type { I18nString, TemplateAttrInput } from "@/api/stetsom/model";
+import type {
+  Attribute,
+  I18nString,
+  TemplateGroupInput,
+} from "@/api/stetsom/model";
 import { AdminFormSection } from "@/app/admin/_components/crud/admin-form-section";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { SortableList } from "@/app/admin/_components/crud/sortable-list";
+import {
+  downloadTemplateSpecSheet,
+  specSheetFilename,
+} from "@/app/admin/_components/spec-sheets/download-spec-sheet";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -24,7 +35,8 @@ import {
 } from "@/components/ui/select";
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { GripVertical, X } from "lucide-react";
+import { FileSpreadsheet, X } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -32,6 +44,12 @@ interface TemplateFormProps {
   mode: "create" | "edit";
   categoryId: string;
   templateId?: string;
+}
+
+/** One section of the template while editing: a group and its attributes. */
+interface EditorGroup {
+  group_id: string;
+  attribute_ids: string[];
 }
 
 /**
@@ -73,11 +91,17 @@ export function TemplateForm({
       templateId={templateId}
       isEdit={isEdit}
       initialName={template?.name ?? { pt: "" }}
-      initialAttrIds={
-        template?.attributes
+      initialGroups={
+        template?.groups
           .slice()
           .sort((a, b) => a.order - b.order)
-          .map((a) => a.attribute_id) ?? []
+          .map((group) => ({
+            group_id: group.group_id,
+            attribute_ids: group.attributes
+              .slice()
+              .sort((a, b) => a.order - b.order)
+              .map((a) => a.attribute_id),
+          })) ?? []
       }
     />
   );
@@ -88,7 +112,7 @@ interface TemplateFormInnerProps {
   templateId?: string;
   isEdit: boolean;
   initialName: I18nString;
-  initialAttrIds: string[];
+  initialGroups: EditorGroup[];
 }
 
 function TemplateFormInner({
@@ -96,37 +120,72 @@ function TemplateFormInner({
   templateId,
   isEdit,
   initialName,
-  initialAttrIds,
+  initialGroups,
 }: TemplateFormInnerProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const toast = useAdminToast();
   const { data: allAttributes = [] } = useGetApiAttributes();
+  const { data: allGroups = [] } = useGetApiAttributeGroups();
   const { data: categories = [] } = useGetApiCategories();
   const categoryName =
     categories.find((c) => c.id === categoryId)?.name ?? "Categoria";
 
   const [name, setName] = useState<I18nString>(initialName);
-  const [selectedAttrIds, setSelectedAttrIds] =
-    useState<string[]>(initialAttrIds);
+  const [groups, setGroups] = useState<EditorGroup[]>(initialGroups);
+  const [isDirty, setIsDirty] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // Categories no longer have a per-id route — deep-link with a query param.
   const backHref = `/admin/categorias?category=${categoryId}`;
+
+  // An attribute sits in exactly one group, so the pickers only offer the
+  // attributes and groups not placed yet.
+  const usedAttributeIds = new Set(groups.flatMap((g) => g.attribute_ids));
   const availableAttributes = allAttributes.filter(
-    (a) => !selectedAttrIds.includes(a.id),
+    (a) => !usedAttributeIds.has(a.id),
   );
+  const availableGroups = allGroups.filter(
+    (g) => !groups.some((eg) => eg.group_id === g.id),
+  );
+
+  function update(next: (prev: EditorGroup[]) => EditorGroup[]) {
+    setGroups(next);
+    setIsDirty(true);
+  }
+
+  function updateGroup(groupId: string, attributeIds: string[]) {
+    update((prev) =>
+      prev.map((g) =>
+        g.group_id === groupId ? { ...g, attribute_ids: attributeIds } : g,
+      ),
+    );
+  }
+
+  function moveAttribute(attributeId: string, from: string, to: string) {
+    update((prev) =>
+      prev.map((g) => {
+        if (g.group_id === from) {
+          return {
+            ...g,
+            attribute_ids: g.attribute_ids.filter((id) => id !== attributeId),
+          };
+        }
+        if (g.group_id === to) {
+          return { ...g, attribute_ids: [...g.attribute_ids, attributeId] };
+        }
+        return g;
+      }),
+    );
+  }
 
   function invalidate() {
     queryClient.invalidateQueries({ queryKey: getGetApiTemplatesQueryKey() });
   }
 
   const createMutation = useMutation({
-    mutationFn: (attributes: TemplateAttrInput[]) =>
-      postApiTemplates({
-        name,
-        category_id: categoryId,
-        attributes: attributes.length > 0 ? attributes : undefined,
-      }),
+    mutationFn: (payload: TemplateGroupInput[]) =>
+      postApiTemplates({ name, category_id: categoryId, groups: payload }),
     onSuccess: () => {
       invalidate();
       toast.success("Template criado");
@@ -136,11 +195,8 @@ function TemplateFormInner({
   });
 
   const updateMutation = useMutation({
-    mutationFn: (attributes: TemplateAttrInput[]) =>
-      patchApiTemplatesId(templateId as string, {
-        name,
-        attributes,
-      }),
+    mutationFn: (payload: TemplateGroupInput[]) =>
+      patchApiTemplatesId(templateId as string, { name, groups: payload }),
     onSuccess: () => {
       invalidate();
       toast.success("Template salvo");
@@ -159,26 +215,42 @@ function TemplateFormInner({
     onError: (e) => toast.apiError(e, "Não foi possível excluir o template"),
   });
 
-  function move(attrId: string, dir: -1 | 1) {
-    setSelectedAttrIds((prev) => {
-      const idx = prev.indexOf(attrId);
-      const target = idx + dir;
-      if (idx === -1 || target < 0 || target >= prev.length) return prev;
-      const next = [...prev];
-      [next[idx], next[target]] = [next[target], next[idx]];
-      return next;
-    });
+  function groupName(groupId: string) {
+    return allGroups.find((g) => g.id === groupId)?.name.pt ?? "Grupo";
   }
 
   function handleSave() {
-    const attributes: TemplateAttrInput[] = selectedAttrIds.map((id, i) => ({
-      attribute_id: id,
-      order: i,
+    const empty = groups.find((g) => g.attribute_ids.length === 0);
+    if (empty) {
+      toast.error(
+        `O grupo "${groupName(empty.group_id)}" está vazio`,
+        "Adicione atributos a ele ou remova o grupo.",
+      );
+      return;
+    }
+    const payload: TemplateGroupInput[] = groups.map((group, order) => ({
+      group_id: group.group_id,
+      order,
+      attributes: group.attribute_ids.map((attribute_id, attrOrder) => ({
+        attribute_id,
+        order: attrOrder,
+      })),
     }));
-    if (isEdit) {
-      updateMutation.mutate(attributes);
-    } else {
-      createMutation.mutate(attributes);
+    if (isEdit) updateMutation.mutate(payload);
+    else createMutation.mutate(payload);
+  }
+
+  async function handleDownload() {
+    if (!templateId) return;
+    setIsDownloading(true);
+    try {
+      await downloadTemplateSpecSheet(templateId, {
+        filename: specSheetFilename(name.pt),
+      });
+    } catch (error) {
+      toast.apiError(error, "Não foi possível gerar a planilha");
+    } finally {
+      setIsDownloading(false);
     }
   }
 
@@ -209,7 +281,7 @@ function TemplateFormInner({
     >
       <AdminFormSection
         title="Dados do template"
-        description={`Atributos técnicos da categoria "${categoryName}".`}
+        description={`Atributos técnicos da categoria "${categoryName}", organizados em grupos.`}
         className="h-auto flex-none overflow-visible"
       >
         <form
@@ -226,82 +298,244 @@ function TemplateFormInner({
             </p>
           </div>
           <I18nInput label="Nome" required value={name} onChange={setName} />
+
           <div>
-            <AdminLabel>Atributos</AdminLabel>
-            <div className="space-y-1 rounded-md border border-border bg-card p-3">
-              {selectedAttrIds.length === 0 && (
-                <p className="py-2 text-center text-xs text-muted-foreground">
-                  Nenhum atributo selecionado
-                </p>
+            <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
+              <AdminLabel className="mb-0">Grupos e atributos</AdminLabel>
+              {isEdit && templateId && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDownload}
+                  disabled={isDownloading || isDirty}
+                  title={
+                    isDirty
+                      ? "Salve o template antes de baixar a planilha"
+                      : undefined
+                  }
+                >
+                  <FileSpreadsheet className="size-4" />
+                  {isDownloading ? "Gerando…" : "Baixar planilha modelo"}
+                </Button>
               )}
-              {selectedAttrIds.map((attrId, idx) => {
-                const attr = allAttributes.find((a) => a.id === attrId);
-                return (
-                  <div
-                    key={attrId}
-                    className="flex items-center gap-2 rounded bg-muted/50 px-2 py-1.5"
-                  >
-                    <GripVertical className="size-3.5 shrink-0 text-muted-foreground" />
-                    <span className="flex-1 text-sm text-foreground">
-                      {attr?.name.pt ?? attrId}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => move(attrId, -1)}
-                      disabled={idx === 0}
-                      className="text-xs text-muted-foreground disabled:opacity-30"
-                    >
-                      ↑
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => move(attrId, 1)}
-                      disabled={idx === selectedAttrIds.length - 1}
-                      className="text-xs text-muted-foreground disabled:opacity-30"
-                    >
-                      ↓
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setSelectedAttrIds((prev) =>
-                          prev.filter((id) => id !== attrId),
-                        )
-                      }
-                      className="text-destructive hover:opacity-80"
-                    >
-                      <X className="size-3.5" />
-                    </button>
-                  </div>
-                );
-              })}
             </div>
-            {availableAttributes.length > 0 && (
-              <div className="mt-2">
+            <p className="mb-3 text-xs text-muted-foreground">
+              Cada grupo vira uma seção da tabela de especificações. Todo
+              atributo pertence a um único grupo.{" "}
+              <Link
+                href="/admin/grupos-atributos"
+                className="font-medium text-primary hover:underline"
+              >
+                Gerenciar grupos
+              </Link>
+            </p>
+
+            {groups.length === 0 && (
+              <p className="rounded-md border border-dashed border-border py-6 text-center text-xs text-muted-foreground">
+                Nenhum grupo adicionado. Comece adicionando um grupo abaixo.
+              </p>
+            )}
+
+            <SortableList
+              items={groups}
+              getId={(g) => g.group_id}
+              onReorder={(next) => update(() => next)}
+              renderItem={(group, handle) => (
+                <TemplateGroupCard
+                  name={groupName(group.group_id)}
+                  handle={handle}
+                  attributeIds={group.attribute_ids}
+                  allAttributes={allAttributes}
+                  availableAttributes={availableAttributes}
+                  otherGroups={groups
+                    .filter((g) => g.group_id !== group.group_id)
+                    .map((g) => ({
+                      id: g.group_id,
+                      name: groupName(g.group_id),
+                    }))}
+                  onChange={(ids) => updateGroup(group.group_id, ids)}
+                  onMoveAttribute={(attributeId, to) =>
+                    moveAttribute(attributeId, group.group_id, to)
+                  }
+                  onRemove={() =>
+                    update((prev) =>
+                      prev.filter((g) => g.group_id !== group.group_id),
+                    )
+                  }
+                />
+              )}
+            />
+
+            {availableGroups.length > 0 && (
+              <div className="mt-3">
                 <Select
                   value=""
                   onValueChange={(value) => {
                     if (value) {
-                      setSelectedAttrIds((prev) => [...prev, value]);
+                      update((prev) => [
+                        ...prev,
+                        { group_id: value, attribute_ids: [] },
+                      ]);
                     }
                   }}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Adicionar atributo..." />
+                    <SelectValue placeholder="Adicionar grupo..." />
                   </SelectTrigger>
                   <SelectContent>
-                    {availableAttributes.map((attr) => (
-                      <SelectItem key={attr.id} value={attr.id}>
-                        {attr.name.pt}
+                    {availableGroups.map((group) => (
+                      <SelectItem key={group.id} value={group.id}>
+                        {group.name.pt}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
             )}
+            {allGroups.length === 0 && (
+              <p className="mt-3 text-xs text-muted-foreground">
+                Nenhum grupo cadastrado.{" "}
+                <Link
+                  href="/admin/grupos-atributos"
+                  className="font-medium text-primary hover:underline"
+                >
+                  Cadastre os grupos
+                </Link>{" "}
+                antes de montar o template.
+              </p>
+            )}
           </div>
         </form>
       </AdminFormSection>
     </AdminPageLayout>
+  );
+}
+
+interface TemplateGroupCardProps {
+  name: string;
+  handle: React.ReactNode;
+  attributeIds: string[];
+  allAttributes: Attribute[];
+  availableAttributes: Attribute[];
+  otherGroups: Array<{ id: string; name: string }>;
+  onChange: (attributeIds: string[]) => void;
+  onMoveAttribute: (attributeId: string, toGroupId: string) => void;
+  onRemove: () => void;
+}
+
+function TemplateGroupCard({
+  name,
+  handle,
+  attributeIds,
+  allAttributes,
+  availableAttributes,
+  otherGroups,
+  onChange,
+  onMoveAttribute,
+  onRemove,
+}: TemplateGroupCardProps) {
+  return (
+    <div className="rounded-md border border-border bg-card">
+      <div className="flex items-center gap-2 border-b border-border px-3 py-2">
+        {handle}
+        <span className="flex-1 text-sm font-semibold text-foreground">
+          {name}
+        </span>
+        <span className="text-xs text-muted-foreground">
+          {attributeIds.length} atributo(s)
+        </span>
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label={`Remover o grupo ${name}`}
+          className="text-destructive hover:opacity-80"
+        >
+          <X className="size-4" />
+        </button>
+      </div>
+
+      <div className="space-y-1 p-2">
+        {attributeIds.length === 0 && (
+          <p className="py-2 text-center text-xs text-muted-foreground">
+            Nenhum atributo neste grupo
+          </p>
+        )}
+        <SortableList
+          items={attributeIds}
+          getId={(id) => id}
+          onReorder={onChange}
+          className="space-y-1"
+          renderItem={(attributeId, attributeHandle) => {
+            const attribute = allAttributes.find((a) => a.id === attributeId);
+            return (
+              <div className="flex items-center gap-2 rounded bg-muted/50 px-2 py-1.5">
+                {attributeHandle}
+                <span className="flex-1 text-sm text-foreground">
+                  {attribute?.name.pt ?? attributeId}
+                </span>
+                {attribute?.type === "MATRIX" && (
+                  <span className="rounded bg-muted px-1.5 py-0.5 text-2xs font-medium text-muted-foreground uppercase">
+                    Matriz
+                  </span>
+                )}
+                {otherGroups.length > 0 && (
+                  <Select
+                    value=""
+                    onValueChange={(to) => {
+                      if (to) onMoveAttribute(attributeId, to);
+                    }}
+                  >
+                    <SelectTrigger
+                      size="sm"
+                      className="h-7 w-auto gap-1 border-none bg-transparent px-1.5 text-xs text-muted-foreground shadow-none"
+                      aria-label="Mover para outro grupo"
+                    >
+                      <SelectValue placeholder="Mover" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {otherGroups.map((group) => (
+                        <SelectItem key={group.id} value={group.id}>
+                          {group.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+                <button
+                  type="button"
+                  onClick={() =>
+                    onChange(attributeIds.filter((id) => id !== attributeId))
+                  }
+                  aria-label="Remover atributo"
+                  className="text-destructive hover:opacity-80"
+                >
+                  <X className="size-3.5" />
+                </button>
+              </div>
+            );
+          }}
+        />
+        {availableAttributes.length > 0 && (
+          <Select
+            value=""
+            onValueChange={(value) => {
+              if (value) onChange([...attributeIds, value]);
+            }}
+          >
+            <SelectTrigger className="mt-1 w-full">
+              <SelectValue placeholder="Adicionar atributo ao grupo..." />
+            </SelectTrigger>
+            <SelectContent>
+              {availableAttributes.map((attribute) => (
+                <SelectItem key={attribute.id} value={attribute.id}>
+                  {attribute.name.pt}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+      </div>
+    </div>
   );
 }

@@ -6,6 +6,7 @@ import type {
   LocaleInput,
   PostApiProductsBody,
   ProductStatus,
+  Template,
 } from "@/api/stetsom/model";
 import { reindexByOrder } from "@/lib/utils/reindex";
 import { slugify } from "@/lib/utils/slugify";
@@ -33,6 +34,11 @@ export interface WizardSpec {
   id: string;
   attribute_id: string;
   attribute_name?: I18nString;
+  /**
+   * Attribute group the line renders under. Required to save; empty only on
+   * lines stored before groups existed, until the editor assigns one.
+   */
+  group_id: string;
   /** Main text of the line — e.g. "1 x 3500W". Required. */
   value: I18nString;
   /** Optional condition shown beneath the value — e.g. "1 OHM". */
@@ -130,7 +136,7 @@ export type WizardAction =
   | { type: "set_images"; images: WizardImage[] }
   | { type: "set_variations"; variations: WizardVariation[] }
   | { type: "set_active_variation"; id: string }
-  | { type: "apply_template"; specs: WizardSpec[] }
+  | { type: "apply_template"; templateId: string; specs: WizardSpec[] }
   | { type: "set_blocks"; blocks: DraftBlock[] }
   | { type: "insert_block"; block: DraftBlock; index: number }
   | { type: "add_file"; file: WizardFile }
@@ -140,10 +146,11 @@ export type WizardAction =
 
 const DEFAULT_VARIATION_ID = "variation-default";
 
-export function newSpec(order: number): WizardSpec {
+export function newSpec(order: number, group_id = ""): WizardSpec {
   return {
     id: `spec-${crypto.randomUUID()}`,
     attribute_id: "",
+    group_id,
     value: { pt: "" },
     order,
     highlighted: false,
@@ -162,6 +169,7 @@ export function newVariation(
       id: `spec-${crypto.randomUUID()}`,
       attribute_id: spec.attribute_id,
       attribute_name: spec.attribute_name,
+      group_id: spec.group_id,
       value: { pt: "" },
       order: index,
       highlighted: spec.highlighted,
@@ -188,12 +196,58 @@ function hydrateVariations(
           id: `attr-${v.variant_id}-${a.attribute_id}-${i}`,
           attribute_id: a.attribute_id,
           attribute_name: a.attribute_name,
+          group_id: a.group_id ?? "",
           value: a.value ?? { pt: "" },
           description: a.description ?? undefined,
           order: a.order,
           highlighted: a.highlighted,
         })),
     }));
+}
+
+/**
+ * Lays a variation's lines out as the template does. `templateSpecs` holds one
+ * empty line per template attribute, in template order, each with its group.
+ * Lines of attributes outside the template keep their place after the rest.
+ */
+function mergeTemplateSpecs(
+  specs: WizardSpec[],
+  templateSpecs: WizardSpec[],
+): WizardSpec[] {
+  const rank = new Map(templateSpecs.map((s, i) => [s.attribute_id, i]));
+  const groupOf = new Map(
+    templateSpecs.map((s) => [s.attribute_id, s.group_id]),
+  );
+  const present = new Set(specs.map((s) => s.attribute_id));
+
+  const merged = [
+    ...[...specs]
+      .sort((a, b) => a.order - b.order)
+      .map((s) => ({
+        ...s,
+        group_id: groupOf.get(s.attribute_id) ?? s.group_id,
+      })),
+    ...templateSpecs
+      .filter((s) => !present.has(s.attribute_id))
+      .map((s) => ({
+        ...s,
+        id: `spec-${crypto.randomUUID()}`,
+        value: { pt: "" },
+        description: undefined,
+        highlighted: false,
+      })),
+  ];
+  const outside = templateSpecs.length;
+  return reindexByOrder(
+    merged
+      .map((s, index) => ({ s, index }))
+      .sort(
+        (a, b) =>
+          (rank.get(a.s.attribute_id) ?? outside) -
+            (rank.get(b.s.attribute_id) ?? outside) || a.index - b.index,
+      )
+      .map(({ s }) => s),
+  );
 }
 
 function hydrateImages(detail?: CmsProductDetailPayload): WizardImage[] {
@@ -343,30 +397,17 @@ export function wizardReducer(
       return { ...state, activeVariationId: action.id };
 
     case "apply_template":
+      // The template defines the table for every variation, so it is merged
+      // into all of them: values already typed are kept, missing attributes
+      // are added empty, and lines take the template's group and order.
       return {
         ...state,
         isDirty: true,
-        variations: state.variations.map((v) => {
-          if (v.id !== state.activeVariationId) return v;
-          const existingIds = new Set(
-            v.specs.map((s) => s.attribute_id).filter(Boolean),
-          );
-          const missing = action.specs.filter(
-            (s) => !existingIds.has(s.attribute_id),
-          );
-          if (missing.length === 0) return v;
-          const merged = reindexByOrder([
-            ...v.specs,
-            ...missing.map((s, i) => ({
-              ...s,
-              id: `spec-${crypto.randomUUID()}`,
-              order: v.specs.length + i,
-              value: { pt: "" },
-              highlighted: false,
-            })),
-          ]);
-          return { ...v, specs: merged };
-        }),
+        template_id: action.templateId,
+        variations: state.variations.map((v) => ({
+          ...v,
+          specs: mergeTemplateSpecs(v.specs, action.specs),
+        })),
       };
 
     case "set_blocks":
@@ -487,6 +528,7 @@ export function buildPayload(
         .filter((s) => s.attribute_id)
         .map((s) => ({
           attribute_id: s.attribute_id,
+          group_id: s.group_id,
           value: s.value,
           // Sent as null when blank so clearing it in the CMS actually removes
           // the line beneath the value.
@@ -496,4 +538,53 @@ export function buildPayload(
         })),
     })),
   };
+}
+
+/** Minimal view of a template's layout: attribute_id → group_id. */
+export type TemplateLayout = Map<string, string>;
+
+export function templateLayoutOf(template?: Template): TemplateLayout | null {
+  if (!template) return null;
+  return new Map(
+    template.groups.flatMap((group) =>
+      group.attributes.map((a) => [a.attribute_id, group.group_id] as const),
+    ),
+  );
+}
+
+/**
+ * Problems that would make the API refuse the spec lines, phrased for the
+ * editor. Checked before saving so the toast names the variation and the
+ * attribute instead of a generic validation error.
+ */
+export function findSpecIssues(
+  state: WizardState,
+  options: {
+    attributeName: (id: string) => string;
+    templateLayout: TemplateLayout | null;
+    groupName: (id: string) => string;
+  },
+): string[] {
+  const issues: string[] = [];
+  for (const variation of state.variations) {
+    for (const spec of variation.specs) {
+      if (!spec.attribute_id) continue;
+      const name = options.attributeName(spec.attribute_id);
+      if (!spec.group_id) {
+        issues.push(`${variation.label}: defina o grupo de "${name}".`);
+        continue;
+      }
+      const expected = options.templateLayout?.get(spec.attribute_id);
+      if (options.templateLayout && !expected) {
+        issues.push(
+          `${variation.label}: "${name}" não faz parte do template do produto.`,
+        );
+      } else if (expected && expected !== spec.group_id) {
+        issues.push(
+          `${variation.label}: no template, "${name}" fica em "${options.groupName(expected)}".`,
+        );
+      }
+    }
+  }
+  return [...new Set(issues)];
 }

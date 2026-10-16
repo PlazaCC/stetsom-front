@@ -21,6 +21,7 @@ const MAX_MULTIPART_BODY_BYTES = 10_000_000;
 
 // Response headers worth forwarding back to the browser.
 const FORWARDED_HEADERS = [
+  "content-disposition",
   "x-request-id",
   "x-ratelimit-limit",
   "x-ratelimit-remaining",
@@ -131,12 +132,13 @@ async function handle(
     const isJson = resContentType.includes("application/json");
 
     // Preserve the upstream body shape: JSON stays JSON, anything else is
-    // passed through verbatim (never re-encode text as a JSON string).
+    // passed through as raw bytes — never decoded as text, which would corrupt
+    // binary downloads such as the XLSX spec sheets.
     const response = isJson
       ? NextResponse.json(await upstream.json().catch(() => null), {
           status: upstream.status,
         })
-      : new NextResponse(await upstream.text(), {
+      : new NextResponse(await upstream.arrayBuffer(), {
           status: upstream.status,
           headers: resContentType
             ? { "Content-Type": resContentType }

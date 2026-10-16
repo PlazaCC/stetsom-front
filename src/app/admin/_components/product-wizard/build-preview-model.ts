@@ -1,5 +1,6 @@
 import type {
   Attribute,
+  AttributeGroup,
   I18nString,
   ProductBlock,
   ProductFile,
@@ -31,6 +32,7 @@ export function buildPreviewModel(
   state: WizardState,
   categories: PreviewCategory[],
   attributes: Attribute[],
+  attributeGroups: AttributeGroup[],
 ): ProductDetailViewData {
   const category = categories.find((c) => c.id === state.category_id);
 
@@ -51,6 +53,11 @@ export function buildPreviewModel(
       .map((s) => ({
         attribute_id: s.attribute_id || s.id,
         attribute_name: resolveAttrName(s),
+        group_id: s.group_id || null,
+        group_name: s.group_id
+          ? pick(attributeGroups.find((g) => g.id === s.group_id)?.name) ||
+            undefined
+          : undefined,
         value: pick(s.value),
         description: pick(s.description) || undefined,
         order: s.order,

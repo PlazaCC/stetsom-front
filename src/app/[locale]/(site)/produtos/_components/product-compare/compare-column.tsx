@@ -1,7 +1,9 @@
 "use client";
 
 import type { ProductImage, PublicVariant } from "@/api/stetsom/model";
-import { entriesForAttribute, entriesToInlineText } from "@/lib/specs/matrix";
+import { SpecValue } from "@/components/ui/spec-value";
+import { entriesForAttribute } from "@/lib/specs/matrix";
+import { buildSpecSections, hasGroupedSections } from "@/lib/specs/table";
 import { cn } from "@/lib/utils";
 import { ArrowLeftRight } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -48,21 +50,9 @@ export function CompareColumn({ product, onReplace }: CompareColumnProps) {
     .sort((a, b) => a.order - b.order);
   const mainImage = sortedImages[0]?.image_url ?? null;
 
-  // Collect all unique attribute keys across all variants
-  const allAttrKeys = sortedVariants.reduce<
-    { attribute_id: string; attribute_name?: string | null }[]
-  >((acc, v) => {
-    const sorted = [...v.attributes].sort((a, b) => a.order - b.order);
-    for (const attr of sorted) {
-      if (!acc.some((a) => a.attribute_id === attr.attribute_id)) {
-        acc.push({
-          attribute_id: attr.attribute_id,
-          attribute_name: attr.attribute_name,
-        });
-      }
-    }
-    return acc;
-  }, []);
+  // Groups and attributes across all variants, as on the product page.
+  const specSections = buildSpecSections(sortedVariants);
+  const showGroupTitles = hasGroupedSections(specSections);
 
   return (
     <div className="flex min-w-0 flex-1 flex-col rounded-lg border border-border bg-white">
@@ -137,37 +127,42 @@ export function CompareColumn({ product, onReplace }: CompareColumnProps) {
         )}
 
         {/* Specs table */}
-        {allAttrKeys.length > 0 && (
+        {specSections.length > 0 && (
           <div className="border-t border-border pt-3">
             <div className="flex flex-col gap-1">
-              {allAttrKeys.map(({ attribute_id, attribute_name }, i) => {
-                // An attribute may be listed more than once (matrix cell). This
-                // view is too dense to stack them, so they join on one line
-                // rather than being silently dropped.
-                const value =
-                  entriesToInlineText(
-                    entriesForAttribute(
-                      activeVariant?.attributes,
-                      attribute_id,
-                    ),
-                  ) || "—";
-                return (
-                  <div
-                    key={attribute_id}
-                    className={cn(
-                      "flex items-baseline justify-between gap-2 rounded-sm px-2 py-1.5",
-                      i % 2 === 0 ? "bg-muted/50" : "bg-transparent",
-                    )}
-                  >
-                    <span className="font-sans text-2xs font-medium text-brand-dark capitalize">
-                      {attribute_name ?? attribute_id}
+              {specSections.map((section) => (
+                <div
+                  key={section.group_id ?? "ungrouped"}
+                  className="flex flex-col gap-1"
+                >
+                  {showGroupTitles && (
+                    <span className="px-2 pt-2 font-sans-condensed text-2xs font-black text-brand-dark uppercase">
+                      {section.group_name ?? t("compareOtherSpecs")}
                     </span>
-                    <span className="text-right font-sans text-2xs text-text-subtle">
-                      {value}
-                    </span>
-                  </div>
-                );
-              })}
+                  )}
+                  {section.rows.map(({ attribute_id, attribute_name }, i) => (
+                    <div
+                      key={attribute_id}
+                      className={cn(
+                        "flex items-baseline justify-between gap-2 rounded-sm px-2 py-1.5",
+                        i % 2 === 0 ? "bg-muted/50" : "bg-transparent",
+                      )}
+                    >
+                      <span className="font-sans text-2xs font-medium text-brand-dark capitalize">
+                        {attribute_name ?? attribute_id}
+                      </span>
+                      <SpecValue
+                        size="compact"
+                        entries={entriesForAttribute(
+                          activeVariant?.attributes,
+                          attribute_id,
+                        )}
+                        className="justify-end text-right font-sans text-2xs text-text-subtle"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         )}
