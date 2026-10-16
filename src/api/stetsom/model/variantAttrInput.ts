@@ -13,6 +13,12 @@ import type { VariantAttrInputValue } from "./variantAttrInputValue";
 export interface VariantAttrInput {
   attribute_id: string;
   attribute_name?: I18nStringInput;
+  /**
+   * Attribute group the line renders under
+   * @nullable
+   */
+  group_id: string | null;
+  group_name?: I18nStringInput;
   value: VariantAttrInputValue;
   /** @nullable */
   description?: VariantAttrInputDescription;

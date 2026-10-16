@@ -5,7 +5,7 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
-import type { VariantAttrInput } from "./variantAttrInput";
+import type { VariantAttrBodyInput } from "./variantAttrBodyInput";
 
 export type PostApiProductsBodyVariantsItem = {
   variant_id?: string;
@@ -16,5 +16,5 @@ export type PostApiProductsBodyVariantsItem = {
    * @maximum 9007199254740991
    */
   order: number;
-  attributes: VariantAttrInput[];
+  attributes: VariantAttrBodyInput[];
 };

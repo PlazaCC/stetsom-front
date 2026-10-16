@@ -6,10 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { PatchApiTemplatesIdBodyName } from "./patchApiTemplatesIdBodyName";
-import type { TemplateAttrInput } from "./templateAttrInput";
+import type { TemplateGroupInput } from "./templateGroupInput";
 
 export type PatchApiTemplatesIdBody = {
   category_id?: string;
   name?: PatchApiTemplatesIdBodyName;
-  attributes?: TemplateAttrInput[];
+  /** Every attribute sits inside exactly one group; an attribute may not repeat across groups */
+  groups?: TemplateGroupInput[];
 };

@@ -14,6 +14,7 @@
 export * from "./model";
 
 // ── React Query hooks — CMS ───────────────────────────────────────────────────
+export * from "./endpoints/attribute-groups/attribute-groups";
 export * from "./endpoints/attributes/attributes";
 export * from "./endpoints/audit/audit";
 export * from "./endpoints/auth/auth";
@@ -29,6 +30,7 @@ export * from "./endpoints/messages/messages";
 export * from "./endpoints/pages/pages";
 export * from "./endpoints/partner-locations/partner-locations";
 export * from "./endpoints/products/products";
+export * from "./endpoints/spec-sheets/spec-sheets";
 export * from "./endpoints/templates/templates";
 export * from "./endpoints/upload/upload";
 export * from "./endpoints/users/users";

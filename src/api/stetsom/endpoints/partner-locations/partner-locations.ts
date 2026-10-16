@@ -209,10 +209,7 @@ export const postApiPartnerLocationsImportWorkbook = (
   signal?: AbortSignal,
 ) => {
   const formData = new FormData();
-  formData.append(
-    `file`,
-    postApiPartnerLocationsImportWorkbookBody.file as Blob,
-  );
+  formData.append(`file`, postApiPartnerLocationsImportWorkbookBody.file);
   if (postApiPartnerLocationsImportWorkbookBody.dry_run !== undefined) {
     formData.append(
       `dry_run`,

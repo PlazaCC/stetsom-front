@@ -208,7 +208,7 @@ export const getPostApiTemplatesQueryKey = (
 
 export const getPostApiTemplatesQueryOptions = <
   TData = Awaited<ReturnType<typeof postApiTemplates>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiTemplatesBody: PostApiTemplatesBody,
   options?: {
@@ -240,11 +240,11 @@ export const getPostApiTemplatesQueryOptions = <
 export type PostApiTemplatesQueryResult = NonNullable<
   Awaited<ReturnType<typeof postApiTemplates>>
 >;
-export type PostApiTemplatesQueryError = unknown;
+export type PostApiTemplatesQueryError = ApiErrorPayload;
 
 export function usePostApiTemplates<
   TData = Awaited<ReturnType<typeof postApiTemplates>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiTemplatesBody: PostApiTemplatesBody,
   options: {
@@ -270,7 +270,7 @@ export function usePostApiTemplates<
 };
 export function usePostApiTemplates<
   TData = Awaited<ReturnType<typeof postApiTemplates>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiTemplatesBody: PostApiTemplatesBody,
   options?: {
@@ -296,7 +296,7 @@ export function usePostApiTemplates<
 };
 export function usePostApiTemplates<
   TData = Awaited<ReturnType<typeof postApiTemplates>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiTemplatesBody: PostApiTemplatesBody,
   options?: {
@@ -318,7 +318,7 @@ export function usePostApiTemplates<
 
 export function usePostApiTemplates<
   TData = Awaited<ReturnType<typeof postApiTemplates>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiTemplatesBody: PostApiTemplatesBody,
   options?: {

@@ -6,13 +6,13 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { I18nStringInput } from "./i18nStringInput";
-import type { TemplateAttrInput } from "./templateAttrInput";
+import type { TemplateGroupInput } from "./templateGroupInput";
 
 export interface TemplateInput {
   id: string;
   category_id: string;
   name: I18nStringInput;
-  attributes: TemplateAttrInput[];
+  groups: TemplateGroupInput[];
   created_at: string;
   updated_at: string;
 }

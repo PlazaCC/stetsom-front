@@ -10,6 +10,9 @@ import type { PublicVariantAttrAttributeType } from "./publicVariantAttrAttribut
 export interface PublicVariantAttr {
   attribute_id: string;
   attribute_name?: string;
+  /** @nullable */
+  group_id: string | null;
+  group_name?: string;
   value: string;
   description?: string;
   /**
