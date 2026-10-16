@@ -5,13 +5,11 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
-import type { AttributeType } from "./attributeType";
 import type { I18nString } from "./i18nString";
 
 export interface Attribute {
   id: string;
   name: I18nString;
-  type: AttributeType;
   created_at: string;
   updated_at: string;
 }

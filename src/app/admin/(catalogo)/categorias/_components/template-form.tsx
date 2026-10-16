@@ -474,11 +474,6 @@ function TemplateGroupCard({
                 <span className="flex-1 text-sm text-foreground">
                   {attribute?.name.pt ?? attributeId}
                 </span>
-                {attribute?.type === "MATRIX" && (
-                  <span className="rounded bg-muted px-1.5 py-0.5 text-2xs font-medium text-muted-foreground uppercase">
-                    Matriz
-                  </span>
-                )}
                 {otherGroups.length > 0 && (
                   <Select
                     value=""

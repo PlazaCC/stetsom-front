@@ -1,9 +1,9 @@
 /**
  * Reading the technical specifications table.
  *
- * MATRIX attributes record several lines, rendered side by side in one cell.
- * Each line carries its own title and an optional description shown smaller
- * beneath it:
+ * Every attribute records one or more lines (entries) per variant. Several
+ * entries render side by side in one cell, each with its title and an optional
+ * description shown smaller beneath it:
  *
  *   Potência Nominal @ 14,4V   →   1 x 3500W │ 1 x 1800W
  *                                  @1 OHM    │ @2 OHMS
@@ -25,7 +25,6 @@ type AttributeLike = {
   order: number;
   value: string;
   description?: string | null;
-  attribute_type?: "TEXT" | "MATRIX";
 };
 
 /**

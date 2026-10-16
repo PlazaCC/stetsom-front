@@ -5,7 +5,6 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
-import type { PublicVariantAttrInputAttributeType } from "./publicVariantAttrInputAttributeType";
 
 export interface PublicVariantAttrInput {
   attribute_id: string;
@@ -21,5 +20,4 @@ export interface PublicVariantAttrInput {
    */
   order: number;
   highlighted?: boolean;
-  attribute_type?: PublicVariantAttrInputAttributeType;
 }

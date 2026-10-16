@@ -79,7 +79,6 @@ function toVariations(
         order: index,
         highlighted:
           highlighted.has(line.attribute_id) &&
-          line.attribute_type === "TEXT" &&
           lineCount.get(line.attribute_id) === 1,
       })),
     };
@@ -177,7 +176,7 @@ export function SpecImportDialog({
             <p className="basis-full text-xs text-muted-foreground">
               Um arquivo por produto, uma aba por variação. Colunas: group_id,
               group, attribute_id, attribute, title, value. Repita o atributo,
-              uma linha por entrada, para montar uma matriz.
+              uma linha por entrada, para mostrar valores lado a lado.
               {templateId
                 ? " As linhas são conferidas com o template do produto."
                 : ""}

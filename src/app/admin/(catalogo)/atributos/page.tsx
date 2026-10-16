@@ -10,6 +10,7 @@ import {
   AdminRowAction,
   AdminRowActions,
 } from "@/app/admin/_components/crud/admin-row-actions";
+import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,14 +27,50 @@ import {
   postApiAttributes,
   useGetApiAttributes,
   type Attribute,
-  type AttributeType,
   type I18nString,
   type PatchApiAttributesIdBody,
   type PostApiAttributesBody,
 } from "@/api/stetsom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ListFilter, Plus } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+
+type SortKey = "name-asc" | "name-desc" | "newest" | "oldest";
+
+const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: "name-asc", label: "Nome (A–Z)" },
+  { value: "name-desc", label: "Nome (Z–A)" },
+  { value: "newest", label: "Mais recentes" },
+  { value: "oldest", label: "Mais antigos" },
+];
+
+/** Lowercase without accents, so "potencia" finds "Potência". */
+function normalize(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+function matches(attribute: Attribute, query: string) {
+  if (!query) return true;
+  const { pt, en, es } = attribute.name;
+  return [pt, en, es].some((name) => name && normalize(name).includes(query));
+}
+
+function compare(a: Attribute, b: Attribute, sort: SortKey) {
+  switch (sort) {
+    case "name-asc":
+      return a.name.pt.localeCompare(b.name.pt, "pt-BR", { numeric: true });
+    case "name-desc":
+      return b.name.pt.localeCompare(a.name.pt, "pt-BR", { numeric: true });
+    case "newest":
+      return b.created_at.localeCompare(a.created_at);
+    case "oldest":
+      return a.created_at.localeCompare(b.created_at);
+  }
+}
 
 function AttributeForm({
   attribute,
@@ -47,11 +84,10 @@ function AttributeForm({
   isPending: boolean;
 }) {
   const [name, setName] = useState<I18nString>(attribute?.name ?? { pt: "" });
-  const [type, setType] = useState<AttributeType>(attribute?.type ?? "TEXT");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSave({ name, type });
+    onSave({ name });
   }
 
   return (
@@ -64,17 +100,10 @@ function AttributeForm({
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <I18nInput label="Nome" required value={name} onChange={setName} />
-          <label className="space-y-1.5 text-sm font-medium">
-            Tipo
-            <select
-              className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
-              value={type}
-              onChange={(event) => setType(event.target.value as AttributeType)}
-            >
-              <option value="TEXT">Texto</option>
-              <option value="MATRIX">Matriz</option>
-            </select>
-          </label>
+          <p className="text-xs text-muted-foreground">
+            No produto, cada atributo recebe uma ou mais entradas (valor +
+            rótulo opcional). Várias entradas aparecem lado a lado no site.
+          </p>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
@@ -95,6 +124,16 @@ export default function AdminAtributosPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Attribute | undefined>();
   const [deleteTarget, setDeleteTarget] = useState<Attribute | undefined>();
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<SortKey>("name-asc");
+
+  // The list is small and fully loaded, so search and sort run client-side.
+  const visibleAttributes = useMemo(() => {
+    const normalizedQuery = normalize(query);
+    return attributes
+      .filter((a) => matches(a, normalizedQuery))
+      .sort((a, b) => compare(a, b, sort));
+  }, [attributes, query, sort]);
 
   function invalidate() {
     queryClient.invalidateQueries({ queryKey: getGetApiAttributesQueryKey() });
@@ -144,15 +183,6 @@ export default function AdminAtributosPage() {
   }
 
   const columns: AdminTableColumn<Attribute>[] = [
-    {
-      key: "type",
-      header: "Tipo",
-      render: (a) => (
-        <span className="text-muted-foreground">
-          {a.type === "MATRIX" ? "Matriz" : "Texto"}
-        </span>
-      ),
-    },
     {
       key: "name.pt",
       header: "Nome (PT)",
@@ -238,14 +268,49 @@ export default function AdminAtributosPage() {
       />
       <AdminDataTable
         columns={columns}
-        data={attributes}
+        data={visibleAttributes}
         isLoading={isLoading}
         keyExtractor={(a) => a.id}
-        emptyTitle="Nenhum atributo cadastrado"
-        emptyDescription="Crie atributos para organizar as especificações dos produtos."
+        emptyTitle={
+          query ? "Nenhum atributo encontrado" : "Nenhum atributo cadastrado"
+        }
+        emptyDescription={
+          query
+            ? "Tente outro termo — a busca considera os nomes em PT, EN e ES."
+            : "Crie atributos para organizar as especificações dos produtos."
+        }
         emptyIcon={ListFilter}
-        emptyAction={createAttributeAction}
+        emptyAction={query ? undefined : createAttributeAction}
         action={createAttributeAction}
+        toolbar={
+          <div className="flex flex-wrap items-center gap-3">
+            <AdminSearchInput
+              value={query}
+              onChange={setQuery}
+              placeholder="Buscar atributo"
+              className="w-64 max-w-full"
+            />
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortKey)}
+              aria-label="Ordenar atributos"
+              className="h-9 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-primary"
+            >
+              {SORT_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            {!isLoading && (
+              <span className="text-xs text-muted-foreground">
+                {visibleAttributes.length === attributes.length
+                  ? `${attributes.length} atributos`
+                  : `${visibleAttributes.length} de ${attributes.length} atributos`}
+              </span>
+            )}
+          </div>
+        }
       />
     </AdminPageLayout>
   );

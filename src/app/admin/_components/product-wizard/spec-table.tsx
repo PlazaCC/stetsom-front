@@ -391,11 +391,13 @@ function AttributeCard({
 }: AttributeCardProps) {
   const isHighlighted = row.specs.some((s) => s.highlighted);
   const attribute = attributes.find((a) => a.id === row.attribute_id);
-  const isMatrix = attribute?.type === "MATRIX" || row.specs.length > 1;
+  // Several entries form one cell shown side by side; the highlight strip
+  // holds a single figure, so only a one-entry attribute can be highlighted.
+  const hasManyEntries = row.specs.length > 1;
   const highlightDisabledReason = !row.attribute_id
     ? "Selecione um atributo para marcar como destaque."
-    : isMatrix
-      ? "Atributos com múltiplas linhas não podem ser destacados."
+    : hasManyEntries
+      ? "Atributos com várias entradas não podem ser destacados."
       : !isHighlighted && highlightCount >= maxHighlights
         ? `Você pode destacar no máximo ${maxHighlights} atributos.`
         : null;
@@ -408,7 +410,7 @@ function AttributeCard({
         ...s,
         attribute_id: next?.id ?? "",
         attribute_name: next?.name,
-        highlighted: next?.type === "MATRIX" ? false : s.highlighted,
+        highlighted: s.highlighted,
       })),
     });
   }
@@ -578,39 +580,27 @@ function AttributeCard({
             <div
               className={cn(
                 "grid min-w-0 flex-1 gap-2",
-                compact || !isMatrix ? "grid-cols-1" : "grid-cols-2",
+                compact
+                  ? "grid-cols-1"
+                  : "grid-cols-[minmax(0,3fr)_minmax(0,2fr)]",
               )}
             >
-              {isMatrix ? (
-                <Input
-                  value={spec.value[locale] ?? ""}
-                  onChange={(e) =>
-                    setLineField(spec.id, "value", e.target.value)
-                  }
-                  placeholder="Valor — ex: 1 x 3500W"
-                />
-              ) : (
-                // Text values may span lines (e.g. "Freq: …" / "Boost: …");
-                // the site keeps the breaks.
-                <Textarea
-                  rows={1}
-                  value={spec.value[locale] ?? ""}
-                  onChange={(e) =>
-                    setLineField(spec.id, "value", e.target.value)
-                  }
-                  placeholder="Valor — ex: 2,8 kg"
-                  className="min-h-9 resize-y"
-                />
-              )}
-              {isMatrix && (
-                <Input
-                  value={spec.description?.[locale] ?? ""}
-                  onChange={(e) =>
-                    setLineField(spec.id, "description", e.target.value)
-                  }
-                  placeholder="Rótulo — ex: @1 Ohm"
-                />
-              )}
+              {/* The value may span lines (e.g. "Freq: …" / "Boost: …"); the
+                  site keeps the breaks. */}
+              <Textarea
+                rows={1}
+                value={spec.value[locale] ?? ""}
+                onChange={(e) => setLineField(spec.id, "value", e.target.value)}
+                placeholder="Valor — ex: 1 x 3500W"
+                className="min-h-9 resize-y"
+              />
+              <Input
+                value={spec.description?.[locale] ?? ""}
+                onChange={(e) =>
+                  setLineField(spec.id, "description", e.target.value)
+                }
+                placeholder="Rótulo (opcional) — ex: @1 Ohm"
+              />
             </div>
             <button
               type="button"

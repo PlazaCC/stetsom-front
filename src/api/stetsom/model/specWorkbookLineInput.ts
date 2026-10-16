@@ -5,7 +5,6 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
-import type { SpecWorkbookLineInputAttributeType } from "./specWorkbookLineInputAttributeType";
 import type { SpecWorkbookLineInputDescription } from "./specWorkbookLineInputDescription";
 import type { SpecWorkbookLineInputValue } from "./specWorkbookLineInputValue";
 
@@ -27,7 +26,6 @@ export interface SpecWorkbookLineInput {
   highlighted?: boolean;
   /** Attribute name in Portuguese */
   attribute_name: string;
-  attribute_type: SpecWorkbookLineInputAttributeType;
   /** Group name in Portuguese */
   group_name: string;
 }

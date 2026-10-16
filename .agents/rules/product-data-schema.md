@@ -40,7 +40,7 @@ Multilingual fields use `I18nString`: `{ pt: string, en?: string, es?: string }`
 
 **Variant** (formerly `ProductVariation`): `{ variant_id, name, order, attributes: VariantAttr[] }`
 
-**VariantAttr** (formerly `ProductSpec`): `{ attribute_id, attribute_name?, group_id, group_name?, value, description?, order, highlighted }` — one spec line. `group_id` (an **AttributeGroup**) is required on write; `null` only on legacy reads. Repeating an `attribute_id` (MATRIX attributes only) builds a matrix cell whose entries render side by side, `value` on top and `description` beneath. The API keeps a group's lines contiguous, so a group's position is that of its first line.
+**VariantAttr** (formerly `ProductSpec`): `{ attribute_id, attribute_name?, group_id, group_name?, value, description?, order, highlighted }` — one spec line. `group_id` (an **AttributeGroup**) is required on write; `null` only on legacy reads. Attributes have no type: repeating an `attribute_id` adds entries to its cell, rendered side by side, `value` on top and `description` beneath. The API keeps a group's lines contiguous, so a group's position is that of its first line.
 
 **AttributeGroup**: `{ id, name: I18nString }` — a section of the specs table ("Alimentação"). Managed at `/admin/grupos-atributos`.
 
