@@ -17,8 +17,6 @@ interface AboutPageSectionsProps {
   timeline: AboutTimelineBlockData;
   social: AboutSocialBlockData;
   factory: AboutFactoryBlockData;
-  foundingLabel: string;
-  foundingYear: string;
 }
 
 export function AboutPageSections({
@@ -27,30 +25,22 @@ export function AboutPageSections({
   timeline,
   social,
   factory,
-  foundingLabel,
-  foundingYear,
 }: Readonly<AboutPageSectionsProps>) {
   return (
     <>
-      {!quality.hidden && quality.image_url && (
+      {!quality.hidden && (quality.video_url || quality.image_url) && (
         <QualitySection
           section={{
-            label: quality.label ?? "",
+            label: quality.label,
             title: quality.title ?? "",
-            description: quality.description ?? "",
-            image: quality.image_url,
-            imageAlt: quality.imageAlt ?? "Qualidade Stetsom",
+            description: quality.description,
+            backgroundVideoUrl: quality.video_url,
+            fullVideoUrl: quality.fullVideo_url,
+            posterUrl: quality.image_url,
+            posterAlt: quality.imageAlt ?? "Qualidade Stetsom",
+            playLabel: quality.playLabel,
           }}
-          values={
-            (values.items ?? []) as Array<{
-              id: string;
-              icon: "zap" | "shield-check" | "rocket";
-              title: string;
-              description: string;
-            }>
-          }
-          foundingLabel={foundingLabel}
-          foundingYear={foundingYear}
+          values={values.items ?? []}
         />
       )}
 

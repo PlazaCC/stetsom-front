@@ -84,6 +84,8 @@ const ICON_OPTIONS = [
   { value: "rocket", label: "Foguete (Inovação)" },
 ];
 
+const VIDEO_ACCEPT = "video/mp4,video/webm";
+
 const FILE_TYPE_OPTIONS = [
   { value: "PDF", label: "PDF" },
   { value: "MANUAL", label: "Manual" },
@@ -259,18 +261,43 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
     {
       section_id: "quality",
       type: "IMAGE",
-      label: "Qualidade",
+      label: "Quem somos",
+      description:
+        "Vídeo de fundo com título e botão Play (abre o vídeo em tela cheia); abaixo, texto centralizado e os cards de valores (editados em “Valores e bases”).",
       icon: LayoutTemplate,
       kind: "editable",
       fields: [
-        { kind: "asset", key: "image_url", label: "Imagem", variant: "image" },
+        {
+          kind: "asset",
+          key: "video_url",
+          label: "Vídeo de fundo (loop, sem som)",
+          variant: "file",
+          assetType: "VIDEO",
+          accept: VIDEO_ACCEPT,
+        },
+        {
+          kind: "asset",
+          key: "fullVideo_url",
+          label:
+            "Vídeo do botão Play (opcional — usa o vídeo de fundo se vazio)",
+          variant: "file",
+          assetType: "VIDEO",
+          accept: VIDEO_ACCEPT,
+        },
+        {
+          kind: "asset",
+          key: "image_url",
+          label: "Imagem de capa (exibida enquanto o vídeo carrega)",
+          variant: "image",
+        },
         { kind: "text", key: "imageAlt", label: "Texto alternativo da imagem" },
         { kind: "i18n", key: "label", label: "Rótulo" },
         { kind: "i18n", key: "title", label: "Título" },
+        { kind: "i18n", key: "playLabel", label: "Texto do botão Play" },
         {
           kind: "i18n",
           key: "description",
-          label: "Descrição",
+          label: "Texto centralizado (abaixo do vídeo)",
           multiline: true,
         },
       ],

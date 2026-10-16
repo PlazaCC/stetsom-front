@@ -68,8 +68,14 @@ export type AboutQualityBlockData = {
   label?: string;
   title?: string;
   description?: string;
+  /** Poster for the background video; fallback when no video is set. */
   image_url?: string;
   imageAlt?: string;
+  /** Muted background loop. */
+  video_url?: string;
+  /** Video opened in fullscreen by the Play button; defaults to `video_url`. */
+  fullVideo_url?: string;
+  playLabel?: string;
 };
 
 export type AboutValuesBlockData = {

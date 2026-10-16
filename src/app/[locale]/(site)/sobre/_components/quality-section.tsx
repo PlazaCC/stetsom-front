@@ -1,7 +1,6 @@
 import { Container } from "@/components/ui/container";
-import { SectionLabel } from "@/components/ui/section-label";
 import { Rocket, ShieldCheck, Zap } from "lucide-react";
-import Image from "next/image";
+import { QualityVideoHero } from "./quality-video-hero";
 
 const ICONS = {
   zap: Zap,
@@ -10,88 +9,79 @@ const ICONS = {
 } as const;
 
 type AboutValue = {
-  id: string;
-  icon: keyof typeof ICONS;
+  id?: string;
+  icon: string;
   title: string;
   description: string;
 };
 
 interface QualitySectionData {
-  label: string;
+  label?: string;
   title: string;
-  description: string;
-  image: string;
-  imageAlt: string;
+  description?: string;
+  backgroundVideoUrl?: string;
+  fullVideoUrl?: string;
+  posterUrl?: string;
+  posterAlt?: string;
+  playLabel?: string;
 }
 
 interface QualitySectionProps {
   section: QualitySectionData;
   values: AboutValue[];
-  foundingLabel?: string;
-  foundingYear?: string;
 }
 
 export function QualitySection({
   section,
   values,
-  foundingLabel,
-  foundingYear,
 }: Readonly<QualitySectionProps>) {
   return (
-    <section className="bg-off-white py-20">
-      <Container>
-        <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-2">
-          <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden bg-muted">
-            <Image
-              src={section.image}
-              alt={section.imageAlt}
-              fill
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-            />
-            <div className="absolute right-0 bottom-0 flex flex-col gap-2">
-              <div className="flex flex-col items-center justify-center bg-brand px-2 pb-1">
-                <span className="font-sans-condensed text-6xl leading-none font-black text-white uppercase">
-                  {foundingYear ?? "1989"}
-                </span>
-                <span className="font-sans-condensed text-xs tracking-widest text-white uppercase drop-shadow-md">
-                  {foundingLabel}
-                </span>
+    <>
+      <QualityVideoHero
+        label={section.label}
+        title={section.title}
+        backgroundVideoUrl={section.backgroundVideoUrl}
+        fullVideoUrl={section.fullVideoUrl}
+        posterUrl={section.posterUrl}
+        posterAlt={section.posterAlt}
+        playLabel={section.playLabel}
+      />
+
+      {(section.description || values.length > 0) && (
+        <section className="bg-white py-20">
+          <Container>
+            {section.description && (
+              <p className="mx-auto max-w-3xl text-center text-lg text-balance text-text-subtle lg:text-xl">
+                {section.description}
+              </p>
+            )}
+
+            {values.length > 0 && (
+              <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+                {values.map((value, index) => (
+                  <ValueCard key={value.id ?? index} value={value} />
+                ))}
               </div>
-            </div>
-          </div>
+            )}
+          </Container>
+        </section>
+      )}
+    </>
+  );
+}
 
-          <div>
-            <SectionLabel label={section.label} title={section.title} />
+function ValueCard({ value }: Readonly<{ value: AboutValue }>) {
+  const Icon = ICONS[value.icon as keyof typeof ICONS] ?? Zap;
 
-            <p className="mt-6 text-base text-text-subtle">
-              {section.description}
-            </p>
-
-            <div className="mt-10 grid grid-cols-1 gap-6">
-              {values.map((value, index) => {
-                const Icon = ICONS[value.icon];
-
-                return (
-                  <div key={value.id ?? index} className="flex gap-4">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted font-bold">
-                      <Icon className="h-6 w-6 text-brand" aria-hidden="true" />
-                    </div>
-                    <div>
-                      <h3 className="mb-1 font-sans-condensed text-lg font-black text-brand-dark uppercase">
-                        {value.title}
-                      </h3>
-                      <p className="text-base text-text-subtle">
-                        {value.description}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </Container>
-    </section>
+  return (
+    <div className="flex flex-col items-center border-b-4 border-transparent bg-off-white px-6 py-10 text-center transition-colors duration-150 hover:border-brand">
+      <div className="flex size-12 items-center justify-center rounded-md bg-white">
+        <Icon className="size-6 text-brand" aria-hidden="true" />
+      </div>
+      <h3 className="mt-5 font-sans-condensed text-2xl font-black text-brand-dark uppercase">
+        {value.title}
+      </h3>
+      <p className="mt-2 text-base text-text-subtle">{value.description}</p>
+    </div>
   );
 }

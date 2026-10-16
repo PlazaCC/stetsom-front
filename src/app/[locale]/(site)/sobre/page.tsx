@@ -60,8 +60,6 @@ export default async function SobrePage() {
         timeline={timelineData}
         social={socialData}
         factory={factoryData}
-        foundingLabel={t("foundingLabel")}
-        foundingYear={heroData.foundedYear ?? "1989"}
       />
     </div>
   );

@@ -125,29 +125,24 @@ export function AboutPageView({
         <MilestonesMarquee items={heroData.milestones} />
       ) : null}
 
-      {!qualityData.hidden && qualityData.image_url && (
-        <EditableSection target="section:quality" editable={editable}>
-          <QualitySection
-            section={{
-              label: qualityData.label ?? "",
-              title: qualityData.title ?? "",
-              description: qualityData.description ?? "",
-              image: qualityData.image_url,
-              imageAlt: qualityData.imageAlt ?? "Qualidade Stetsom",
-            }}
-            values={
-              (valuesData.items ?? []) as Array<{
-                id: string;
-                icon: "zap" | "shield-check" | "rocket";
-                title: string;
-                description: string;
-              }>
-            }
-            foundingLabel={t("foundingLabel")}
-            foundingYear={heroData.foundedYear ?? "1989"}
-          />
-        </EditableSection>
-      )}
+      {!qualityData.hidden &&
+        (qualityData.video_url || qualityData.image_url) && (
+          <EditableSection target="section:quality" editable={editable}>
+            <QualitySection
+              section={{
+                label: qualityData.label,
+                title: qualityData.title ?? "",
+                description: qualityData.description,
+                backgroundVideoUrl: qualityData.video_url,
+                fullVideoUrl: qualityData.fullVideo_url,
+                posterUrl: qualityData.image_url,
+                posterAlt: qualityData.imageAlt ?? "Qualidade Stetsom",
+                playLabel: qualityData.playLabel,
+              }}
+              values={valuesData.items ?? []}
+            />
+          </EditableSection>
+        )}
       {!timelineData.hidden && timelineData.events?.length ? (
         <EditableSection target="section:timeline" editable={editable}>
           <TimelineCarousel

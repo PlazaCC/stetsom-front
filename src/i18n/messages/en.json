@@ -271,7 +271,9 @@
     "timelineTitle": "35 YEARS OF\nHISTORY",
     "timelineDescription": "A company of constant innovation that transformed Stetsom into Brazil's leading reference in automotive amplification.",
     "timelinePrevious": "Previous event",
-    "timelineNext": "Next event"
+    "timelineNext": "Next event",
+    "playVideo": "Play",
+    "closeVideo": "Close video"
   },
   "NotFound": {
     "title": "PAGE NOT FOUND",
