@@ -263,7 +263,7 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
       type: "IMAGE",
       label: "Quem somos",
       description:
-        "Vídeo de fundo com título e botão Play (abre o vídeo em tela cheia); abaixo, texto centralizado e os cards de valores (editados em “Valores e bases”).",
+        "Vídeo de fundo com título e botão Play (abre o vídeo num modal — arquivo, YouTube ou Vimeo); abaixo, texto centralizado e os cards de valores (editados em “Valores e bases”).",
       icon: LayoutTemplate,
       kind: "editable",
       fields: [
@@ -283,6 +283,14 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
           variant: "file",
           assetType: "VIDEO",
           accept: VIDEO_ACCEPT,
+        },
+        {
+          kind: "text",
+          key: "fullVideoLink",
+          label:
+            "Link do vídeo do botão Play — YouTube ou Vimeo (opcional, tem prioridade sobre o arquivo)",
+          inputType: "url",
+          placeholder: "https://www.youtube.com/watch?v=...",
         },
         {
           kind: "asset",

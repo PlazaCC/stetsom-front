@@ -6,13 +6,17 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { resolveVideoSource, type VideoSource } from "@/lib/video-embed";
 
 interface QualityVideoHeroProps {
   label?: string;
   title: string;
   /** Muted loop played behind the title. */
   backgroundVideoUrl?: string;
-  /** Video opened by the Play button; falls back to the background loop. */
+  /**
+   * Video opened by the Play button — an uploaded file or a YouTube/Vimeo
+   * link; falls back to the background loop.
+   */
   fullVideoUrl?: string;
   /** Poster for the loop and fallback when there is no video. */
   posterUrl?: string;
@@ -33,9 +37,9 @@ export function QualityVideoHero({
   const backgroundRef = useRef<HTMLVideoElement>(null);
   const [playerOpen, setPlayerOpen] = useState(false);
 
-  const playerUrl = fullVideoUrl || backgroundVideoUrl;
-
-  console.log("title", title);
+  const playerSource = resolveVideoSource(
+    fullVideoUrl || backgroundVideoUrl || "",
+  );
 
   // Respect reduced-motion: keep the poster frame instead of looping.
   useEffect(() => {
@@ -98,7 +102,7 @@ export function QualityVideoHero({
           {/* {title.split("\n").join(" ")} */}
         </h2>
 
-        {playerUrl && (
+        {playerSource && (
           <button
             type="button"
             onClick={() => setPlayerOpen(true)}
@@ -110,9 +114,9 @@ export function QualityVideoHero({
         )}
       </div>
 
-      {playerOpen && playerUrl && (
-        <FullscreenPlayer
-          src={playerUrl}
+      {playerOpen && playerSource && (
+        <VideoModal
+          source={playerSource}
           title={title.split("\n").join(" ")}
           closeLabel={t("closeVideo")}
           onClose={closePlayer}
@@ -122,75 +126,79 @@ export function QualityVideoHero({
   );
 }
 
-interface FullscreenPlayerProps {
-  src: string;
+interface VideoModalProps {
+  source: VideoSource;
   title: string;
   closeLabel: string;
   onClose: () => void;
 }
 
-function FullscreenPlayer({
-  src,
+function VideoModal({
+  source,
   title,
   closeLabel,
   onClose,
-}: Readonly<FullscreenPlayerProps>) {
-  const overlayRef = useRef<HTMLDivElement>(null);
+}: Readonly<VideoModalProps>) {
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const overlay = overlayRef.current;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     closeRef.current?.focus();
 
-    // Browser fullscreen when supported; the fixed overlay already covers the
-    // viewport where it isn't (e.g. iOS Safari).
-    overlay?.requestFullscreen?.().catch(() => {});
-
-    const onFullscreenChange = () => {
-      if (!document.fullscreenElement) onClose();
-    };
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
-    document.addEventListener("fullscreenchange", onFullscreenChange);
     document.addEventListener("keydown", onKeyDown);
 
     return () => {
       document.body.style.overflow = previousOverflow;
-      document.removeEventListener("fullscreenchange", onFullscreenChange);
       document.removeEventListener("keydown", onKeyDown);
-      if (document.fullscreenElement === overlay) {
-        void document.exitFullscreen().catch(() => {});
-      }
     };
   }, [onClose]);
 
   return createPortal(
     <div
-      ref={overlayRef}
       role="dialog"
       aria-modal="true"
       aria-label={title}
-      className="fixed inset-0 z-60 flex items-center justify-center bg-black"
+      onClick={onClose}
+      className="fixed inset-0 z-60 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm sm:p-8"
     >
-      <video
-        src={src}
-        controls
-        autoPlay
-        playsInline
-        className="h-full w-full object-contain"
-      />
-      <button
-        ref={closeRef}
-        type="button"
-        onClick={onClose}
-        aria-label={closeLabel}
-        className="absolute top-4 right-4 flex size-11 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-brand focus-visible:outline-2 focus-visible:outline-white"
+      <div
+        onClick={(event) => event.stopPropagation()}
+        className="relative w-full max-w-5xl"
       >
-        <X className="size-6" aria-hidden="true" />
-      </button>
+        <button
+          ref={closeRef}
+          type="button"
+          onClick={onClose}
+          aria-label={closeLabel}
+          className="absolute -top-12 right-0 flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-brand focus-visible:outline-2 focus-visible:outline-white"
+        >
+          <X className="size-5" aria-hidden="true" />
+        </button>
+
+        <div className="aspect-video w-full overflow-hidden rounded-md bg-black shadow-2xl">
+          {source.kind === "embed" ? (
+            <iframe
+              src={source.src}
+              title={title}
+              allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+              allowFullScreen
+              className="h-full w-full border-0"
+            />
+          ) : (
+            <video
+              src={source.src}
+              controls
+              autoPlay
+              playsInline
+              className="h-full w-full object-contain"
+            />
+          )}
+        </div>
+      </div>
     </div>,
     document.body,
   );

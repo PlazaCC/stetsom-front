@@ -73,8 +73,10 @@ export type AboutQualityBlockData = {
   imageAlt?: string;
   /** Muted background loop. */
   video_url?: string;
-  /** Video opened in fullscreen by the Play button; defaults to `video_url`. */
+  /** Uploaded video opened by the Play button; defaults to `video_url`. */
   fullVideo_url?: string;
+  /** YouTube/Vimeo (or direct) link for the Play modal; wins over `fullVideo_url`. */
+  fullVideoLink?: string;
   playLabel?: string;
 };
 

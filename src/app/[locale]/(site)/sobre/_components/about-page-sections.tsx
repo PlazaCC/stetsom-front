@@ -35,7 +35,7 @@ export function AboutPageSections({
             title: quality.title ?? "",
             description: quality.description,
             backgroundVideoUrl: quality.video_url,
-            fullVideoUrl: quality.fullVideo_url,
+            fullVideoUrl: quality.fullVideoLink || quality.fullVideo_url,
             posterUrl: quality.image_url,
             posterAlt: quality.imageAlt ?? "Qualidade Stetsom",
             playLabel: quality.playLabel,

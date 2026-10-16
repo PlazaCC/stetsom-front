@@ -134,7 +134,8 @@ export function AboutPageView({
                 title: qualityData.title ?? "",
                 description: qualityData.description,
                 backgroundVideoUrl: qualityData.video_url,
-                fullVideoUrl: qualityData.fullVideo_url,
+                fullVideoUrl:
+                  qualityData.fullVideoLink || qualityData.fullVideo_url,
                 posterUrl: qualityData.image_url,
                 posterAlt: qualityData.imageAlt ?? "Qualidade Stetsom",
                 playLabel: qualityData.playLabel,
