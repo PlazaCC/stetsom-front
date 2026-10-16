@@ -4,7 +4,7 @@ import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { SectionLabel } from "@/components/ui/section-label";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { cn } from "@/lib/utils";
-import { Mail, MessagesSquare, Phone } from "lucide-react";
+import { ArrowUpRight, Mail, MessagesSquare, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import QRCode from "react-qr-code";
 import { ContactForm } from "./contact-form";
@@ -108,13 +108,16 @@ export function SupportContact({
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center">
                         <Icon size={26} className="text-brand" />
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <p className="font-sans text-xs font-medium tracking-wide text-text-subtle uppercase">
                           {label}
                         </p>
                         <p className="font-sans text-sm font-semibold text-brand-dark transition-colors duration-200 group-hover:text-brand">
                           {value}
                         </p>
+                      </div>
+                      <div>
+                        <ArrowUpRight className="text-text-subtle group-hover:text-brand" />
                       </div>
                       <span
                         aria-hidden
