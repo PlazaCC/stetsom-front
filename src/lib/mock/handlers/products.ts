@@ -95,6 +95,8 @@ export function productsHandler(
 
   if (isExport === "true" || isExport === "1") {
     filtered = filtered.filter((p) => p.is_export);
+  } else if (isExport === "false" || isExport === "0") {
+    filtered = filtered.filter((p) => !p.is_export);
   }
 
   if (isDiscontinued === "false" || isDiscontinued === "0") {

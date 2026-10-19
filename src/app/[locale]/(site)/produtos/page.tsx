@@ -88,7 +88,9 @@ export default async function ProdutosPage({
   // Descontinuados ficam ocultos por padrão; só entram no resultado quando o
   // usuário liga o filtro "Exibir descontinuados" (discontinued=1 → sem filtro).
   const is_discontinued = sp.discontinued === "1" ? undefined : false;
-  const is_export = sp.export === "1" ? true : undefined;
+  // Mesmo padrão: produtos de exportação ficam ocultos por padrão e só entram
+  // quando o usuário liga "Produtos de exportação" (export=1 → sem filtro).
+  const is_export = sp.export === "1" ? undefined : false;
   // "all=1" mostra todos os produtos da categoria (sem filtrar por linha).
   const all = sp.all === "1";
 
