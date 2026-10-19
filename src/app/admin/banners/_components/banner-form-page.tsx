@@ -5,7 +5,6 @@ import type {
   BannerPayload,
   PatchApiBannersIdBody,
   PostApiBannersBody,
-  I18nString,
 } from "@/api/stetsom/model";
 import {
   postApiBanners,
@@ -14,6 +13,7 @@ import {
   getGetApiBannersQueryKey,
 } from "@/api/stetsom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAdminToast } from "@/hooks/use-admin-toast";
 import { toApiLocale } from "@/lib/api/i18n-utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -38,6 +38,7 @@ type Props = BannerFormPageProps | BannerFormPageEditProps;
 export function BannerFormPage(props: Props) {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const toast = useAdminToast();
   const isCreating = props.mode === "create";
   const initialBanner = props.mode === "edit" ? props.banner : null;
 
@@ -51,20 +52,23 @@ export function BannerFormPage(props: Props) {
 
   const createBanner = useMutation({
     mutationFn: (body: PostApiBannersBody) => postApiBanners(body),
+    onError: (e) => toast.apiError(e, "Não foi possível criar o banner"),
   });
   const updateBanner = useMutation({
     mutationFn: ({ id, body }: { id: string; body: PatchApiBannersIdBody }) =>
       patchApiBannersId(id, body),
+    onError: (e) => toast.apiError(e, "Não foi possível salvar o banner"),
   });
   const deleteBanner = useMutation({
     mutationFn: (id: string) => deleteApiBannersId(id),
     onSuccess: invalidate,
+    onError: (e) => toast.apiError(e, "Não foi possível excluir o banner"),
   });
   const isSaving = createBanner.isPending || updateBanner.isPending;
 
-  function handleDraftChange(
-    key: keyof BannerFormState,
-    value: string | I18nString,
+  function handleDraftChange<K extends keyof BannerFormState>(
+    key: K,
+    value: BannerFormState[K],
   ) {
     setDraft((prev) => ({ ...prev, [key]: value }));
   }
@@ -110,16 +114,19 @@ export function BannerFormPage(props: Props) {
   async function handleSave() {
     let result: BannerPayload;
 
-    if (isCreating) {
-      const payload = buildPayload();
-      result = await createBanner.mutateAsync(payload);
-    } else if (initialBanner) {
-      const payload = buildUpdatePayload();
-      result = await updateBanner.mutateAsync({
-        id: initialBanner.id,
-        body: payload,
-      });
-    } else {
+    try {
+      if (isCreating) {
+        result = await createBanner.mutateAsync(buildPayload());
+      } else if (initialBanner) {
+        result = await updateBanner.mutateAsync({
+          id: initialBanner.id,
+          body: buildUpdatePayload(),
+        });
+      } else {
+        return;
+      }
+    } catch {
+      // The mutation's onError already surfaced the toast; stay on the form.
       return;
     }
     void result.banner;
@@ -130,7 +137,11 @@ export function BannerFormPage(props: Props) {
 
   async function handleDelete() {
     if (!initialBanner) return;
-    await deleteBanner.mutateAsync(initialBanner.id);
+    try {
+      await deleteBanner.mutateAsync(initialBanner.id);
+    } catch {
+      return;
+    }
     router.push("/admin/banners");
   }
 

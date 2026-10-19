@@ -25,6 +25,8 @@ interface LibraryAssetPickerProps {
   /** "image" shows a thumbnail; "file" shows a filename row. */
   variant?: "image" | "file";
   accept?: string;
+  /** Guidance shown under the picker and in the upload dropzone (e.g. recommended size). */
+  hint?: string;
   className?: string;
 }
 
@@ -35,6 +37,7 @@ export function LibraryAssetPicker({
   type = "IMAGE",
   accept = "image/*",
   variant = "image",
+  hint,
   className,
 }: LibraryAssetPickerProps) {
   const [open, setOpen] = useState(false);
@@ -107,10 +110,13 @@ export function LibraryAssetPicker({
         </button>
       )}
 
+      {hint && <p className="mt-1.5 text-xs text-muted-foreground">{hint}</p>}
+
       {open && (
         <LibraryPickerModal
           type={type}
           accept={accept}
+          hint={hint}
           onClose={() => setOpen(false)}
           onPick={(asset) => {
             onChange(asset);
@@ -129,11 +135,13 @@ export function LibraryAssetPicker({
 export function LibraryPickerModal({
   type,
   accept = "image/*",
+  hint,
   onClose,
   onPick,
 }: {
   type: GetApiLibraryType;
   accept?: string;
+  hint?: string;
   onClose: () => void;
   onPick: (asset: LibraryPickedAsset) => void;
 }) {
@@ -232,6 +240,7 @@ export function LibraryPickerModal({
                 accept={accept}
                 multiple={false}
                 clearOnUpload
+                description={hint}
                 onUpload={(files) => void upload.upload(files, type)}
               />
               {upload.entries.map((e) => (

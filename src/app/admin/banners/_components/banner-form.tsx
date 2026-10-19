@@ -70,6 +70,19 @@ export const EMPTY_FORM_STATE: BannerFormState = {
   mobile_image_library_id: "",
 };
 
+/**
+ * Recommended art sizes, derived from the home hero (`hero-carousel.tsx`): it is
+ * full-width and 800px tall from `lg`, and 520px tall below `sm`, where the
+ * mobile image takes over. Images are cropped with `object-cover`, so keep text
+ * and products inside the central area.
+ */
+export const BANNER_IMAGE_HINTS = {
+  desktop:
+    "Recomendado: 1920 × 800 px (12:5). Mantenha textos e produtos no centro da arte.",
+  mobile:
+    "Recomendado: 1080 × 1440 px (3:4). Usada em telas menores que 640 px; sem ela, a imagem desktop é recortada.",
+} as const;
+
 export function bannerToFormState(b: Banner): BannerFormState {
   return {
     name: b.name,
@@ -286,9 +299,9 @@ interface BannerFormProps {
   draft: BannerFormState;
   isCreating: boolean;
   isSaving: boolean;
-  onDraftChange: (
-    key: keyof BannerFormState,
-    value: string | I18nString,
+  onDraftChange: <K extends keyof BannerFormState>(
+    key: K,
+    value: BannerFormState[K],
   ) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -426,15 +439,19 @@ export function BannerForm({
                   <Input
                     type="number"
                     min={0}
+                    step={1}
                     value={draft.order}
                     onChange={(e) =>
                       onDraftChange(
                         "order",
-                        String(Number(e.target.value) || 0),
+                        Math.max(0, Math.trunc(Number(e.target.value) || 0)),
                       )
                     }
                     placeholder="0"
                   />
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    Menor número aparece primeiro no carrossel da home.
+                  </p>
                 </div>
               </div>
 
@@ -461,9 +478,9 @@ export function BannerForm({
                   <AdminLabel>Status</AdminLabel>
                   <Select
                     value={draft.status}
-                    onValueChange={(value) =>
-                      onDraftChange("status", value ?? "")
-                    }
+                    onValueChange={(value) => {
+                      if (value) onDraftChange("status", value as BannerStatus);
+                    }}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Selecione..." />
@@ -518,6 +535,7 @@ export function BannerForm({
                     type="IMAGE"
                     variant="image"
                     accept="image/*"
+                    hint={BANNER_IMAGE_HINTS.desktop}
                     onChange={(asset: LibraryPickedAsset | null) =>
                       onDraftChange(
                         "desktop_image_library_id",
@@ -537,6 +555,7 @@ export function BannerForm({
                     type="IMAGE"
                     variant="image"
                     accept="image/*"
+                    hint={BANNER_IMAGE_HINTS.mobile}
                     onChange={(asset: LibraryPickedAsset | null) =>
                       onDraftChange(
                         "mobile_image_library_id",

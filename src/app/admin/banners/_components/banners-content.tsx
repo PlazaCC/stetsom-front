@@ -44,7 +44,18 @@ export function BannersContent({
     }) => patchApiBannersId(id, body),
   });
 
+  // The API already lists banners by `order`, the same sequence the home hero uses.
   const columns: AdminTableColumn<Banner>[] = [
+    {
+      key: "order",
+      header: "Ordem",
+      className: "w-16",
+      render: (banner) => (
+        <span className="text-sm text-muted-foreground tabular-nums">
+          {banner.order}
+        </span>
+      ),
+    },
     {
       key: "preview",
       header: "Preview",
