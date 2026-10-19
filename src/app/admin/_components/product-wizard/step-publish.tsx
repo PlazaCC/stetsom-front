@@ -1,12 +1,16 @@
 "use client";
 
-import {
-  AdminInput,
-  AdminLabel,
-} from "@/app/admin/_components/crud/admin-input";
+import { AdminInput } from "@/app/admin/_components/crud/admin-input";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { CalendarDays, Languages, PackageCheck, Tag } from "lucide-react";
+import {
+  CalendarDays,
+  Languages,
+  Layers,
+  PackageCheck,
+  Tag,
+  type LucideIcon,
+} from "lucide-react";
 import type { WizardAction, WizardLocale, WizardState } from "./wizard-store";
 
 const LOCALES: { id: WizardLocale; label: string }[] = [
@@ -15,10 +19,45 @@ const LOCALES: { id: WizardLocale; label: string }[] = [
   { id: "es", label: "Espanhol" },
 ];
 
+const LINE_OPTIONS = [
+  { label: "Em linha", discontinued: false },
+  { label: "Descontinuado", discontinued: true },
+];
+
 interface StepPublishProps {
   state: WizardState;
   dispatch: React.Dispatch<WizardAction>;
   compact?: boolean;
+}
+
+/** One publishing setting: title and hint on top, its control beneath. */
+function PublishSection({
+  icon: Icon,
+  title,
+  description,
+  children,
+}: {
+  icon: LucideIcon;
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="rounded-md border border-border bg-card px-4 py-3.5">
+      <div className="flex items-start gap-2.5">
+        <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+        <div className="min-w-0 flex-1">
+          <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+          {description && (
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {description}
+            </p>
+          )}
+          <div className="mt-3">{children}</div>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 export function StepPublish({
@@ -26,8 +65,6 @@ export function StepPublish({
   dispatch,
   compact = false,
 }: StepPublishProps) {
-  const variations = state.variations.map((v) => v.label).join(", ");
-
   /** pt is the fallback locale and is always published. */
   function isPublished(locale: WizardLocale): boolean {
     return locale === "pt" || state.available_locales.includes(locale);
@@ -50,75 +87,89 @@ export function StepPublish({
   }
 
   return (
-    <div>
-      <div
-        className={cn(
-          "grid gap-6",
-          compact
-            ? "grid-cols-1"
-            : "grid-cols-[repeat(auto-fill,minmax(250px,1fr))]",
-        )}
+    <div className={cn("flex flex-col gap-3", !compact && "max-w-2xl")}>
+      <PublishSection
+        icon={Languages}
+        title="Publicar nos idiomas"
+        description="Português é sempre publicado. Os outros idiomas exigem o nome do produto traduzido."
       >
-        <div>
-          <AdminLabel className="flex items-center gap-1.5">
-            <PackageCheck className="size-4 text-muted-foreground" />
-            Produto de exportação
-          </AdminLabel>
-          <div className="flex items-center gap-2 pt-2">
-            <Switch
-              size="sm"
-              checked={state.is_export}
-              onCheckedChange={(checked) =>
-                dispatch({ type: "patch_info", patch: { is_export: checked } })
-              }
-            />
-            <span className="text-sm text-foreground">
-              Disponível para exportação
-            </span>
-          </div>
-        </div>
-        <div>
-          <AdminLabel className="flex items-center gap-1.5">
-            <CalendarDays className="size-4 text-muted-foreground" />
-            Data de lançamento
-          </AdminLabel>
-          <div className="flex gap-2">
-            <AdminInput
-              type="date"
-              value={state.launch_date}
-              onChange={(e) =>
-                dispatch({
-                  type: "patch_info",
-                  patch: { launch_date: e.target.value },
-                })
-              }
-            />
-            <AdminInput
-              type="time"
-              value={state.launch_time}
-              onChange={(e) =>
-                dispatch({
-                  type: "patch_info",
-                  patch: { launch_time: e.target.value },
-                })
-              }
-            />
-          </div>
-          <p className="mt-1.5 text-xs text-muted-foreground">
-            Deixe em branco para publicar imediatamente.
-          </p>
-        </div>
+        <div className="flex flex-col gap-2.5">
+          {LOCALES.map((loc) => {
+            const locked = loc.id === "pt";
+            const blocked = !canPublish(loc.id);
 
-        <div>
-          <AdminLabel className="flex items-center gap-1.5">
-            <Tag className="size-4 text-muted-foreground" />
-            Linha
-          </AdminLabel>
-          <div className="flex items-center gap-6 pt-2">
-            {[
-              { label: "Em linha", discontinued: false },
-              { label: "Descontinuado", discontinued: true },
-            ].map((opt) => (
+            return (
+              <label
+                key={loc.id}
+                className={cn(
+                  "flex items-center gap-2.5 text-sm text-foreground",
+                  locked || blocked ? "cursor-not-allowed" : "cursor-pointer",
+                )}
+              >
+                <Switch
+                  size="sm"
+                  checked={isPublished(loc.id)}
+                  disabled={locked || blocked}
+                  onCheckedChange={(checked) => toggleLocale(loc.id, checked)}
+                />
+                <span className={cn(blocked && "text-muted-foreground")}>
+                  {loc.label}
+                </span>
+                {blocked && (
+                  <span className="text-xs text-muted-foreground">
+                    — preencha o nome em {loc.label.toLowerCase()}
+                  </span>
+                )}
+              </label>
+            );
+          })}
+        </div>
+      </PublishSection>
+
+      <PublishSection
+        icon={CalendarDays}
+        title="Data de lançamento"
+        description="Deixe em branco para publicar imediatamente."
+      >
+        <div className="flex flex-wrap gap-2">
+          <AdminInput
+            type="date"
+            value={state.launch_date}
+            onChange={(e) =>
+              dispatch({
+                type: "patch_info",
+                patch: { launch_date: e.target.value },
+              })
+            }
+            className="w-auto"
+          />
+          <AdminInput
+            type="time"
+            value={state.launch_time}
+            onChange={(e) =>
+              dispatch({
+                type: "patch_info",
+                patch: { launch_time: e.target.value },
+              })
+            }
+            className="w-auto"
+          />
+        </div>
+      </PublishSection>
+
+      <PublishSection
+        icon={Tag}
+        title="Situação"
+        description="Marca o produto como fora de linha no site."
+      >
+        <div
+          role="radiogroup"
+          aria-label="Situação do produto"
+          className="flex flex-wrap items-center gap-x-6 gap-y-2"
+        >
+          {LINE_OPTIONS.map((opt) => {
+            const checked = state.is_discontinued === opt.discontinued;
+            return (
               <label
                 key={opt.label}
                 className="flex cursor-pointer items-center gap-2 text-sm text-foreground"
@@ -126,12 +177,10 @@ export function StepPublish({
                 <span
                   className={cn(
                     "flex size-4 items-center justify-center rounded-full border",
-                    state.is_discontinued === opt.discontinued
-                      ? "border-primary"
-                      : "border-border",
+                    checked ? "border-primary" : "border-border",
                   )}
                 >
-                  {state.is_discontinued === opt.discontinued && (
+                  {checked && (
                     <span className="size-2 rounded-full bg-primary" />
                   )}
                 </span>
@@ -139,7 +188,7 @@ export function StepPublish({
                   type="radio"
                   name="publish-discontinued"
                   className="sr-only"
-                  checked={state.is_discontinued === opt.discontinued}
+                  checked={checked}
                   onChange={() =>
                     dispatch({
                       type: "patch_info",
@@ -149,55 +198,48 @@ export function StepPublish({
                 />
                 {opt.label}
               </label>
+            );
+          })}
+        </div>
+      </PublishSection>
+
+      <PublishSection
+        icon={PackageCheck}
+        title="Produto de exportação"
+        description="Aparece na listagem de produtos de exportação."
+      >
+        <label className="flex cursor-pointer items-center gap-2.5 text-sm text-foreground">
+          <Switch
+            size="sm"
+            checked={state.is_export}
+            onCheckedChange={(checked) =>
+              dispatch({ type: "patch_info", patch: { is_export: checked } })
+            }
+          />
+          Disponível para exportação
+        </label>
+      </PublishSection>
+
+      <PublishSection
+        icon={Layers}
+        title="Variações do produto"
+        description="Edite as variações no passo Specs."
+      >
+        {state.variations.length > 0 ? (
+          <div className="flex flex-wrap gap-1.5">
+            {state.variations.map((variation) => (
+              <span
+                key={variation.id}
+                className="rounded-md border border-border bg-muted/50 px-2 py-0.5 text-xs font-medium text-foreground"
+              >
+                {variation.label || "Sem nome"}
+              </span>
             ))}
           </div>
-        </div>
-
-        <div>
-          <AdminLabel className="flex items-center gap-1.5">
-            <Languages className="size-4 text-muted-foreground" />
-            Publicar nos idiomas
-          </AdminLabel>
-          <div className="flex flex-col gap-2 pt-2">
-            {LOCALES.map((loc) => {
-              const locked = loc.id === "pt";
-              const blocked = !canPublish(loc.id);
-
-              return (
-                <label
-                  key={loc.id}
-                  className={cn(
-                    "flex items-center gap-2 text-sm text-foreground",
-                    locked || blocked ? "cursor-not-allowed" : "cursor-pointer",
-                  )}
-                >
-                  <Switch
-                    size="sm"
-                    checked={isPublished(loc.id)}
-                    disabled={locked || blocked}
-                    onCheckedChange={(checked) => toggleLocale(loc.id, checked)}
-                  />
-                  <span className={cn(blocked && "text-muted-foreground")}>
-                    {loc.label}
-                  </span>
-                  {blocked && (
-                    <span className="text-xs text-muted-foreground">
-                      — preencha o nome em {loc.label.toLowerCase()}
-                    </span>
-                  )}
-                </label>
-              );
-            })}
-          </div>
-        </div>
-
-        <div>
-          <p className="text-sm text-muted-foreground">Variações do produto</p>
-          <p className="mt-1 text-sm font-medium text-foreground">
-            {variations || "—"}
-          </p>
-        </div>
-      </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">—</p>
+        )}
+      </PublishSection>
     </div>
   );
 }
