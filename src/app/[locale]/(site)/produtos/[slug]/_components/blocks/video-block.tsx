@@ -38,7 +38,7 @@ export function VideoBlock({
         </h3>
       )}
       {description && (
-        <p className="blockVideo__description mt-3 text-sm text-text-subtle">
+        <p className="blockVideo__description mt-3 text-sm whitespace-pre-line text-text-subtle">
           {description}
         </p>
       )}

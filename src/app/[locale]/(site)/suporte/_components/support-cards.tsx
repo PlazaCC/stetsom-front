@@ -1,6 +1,7 @@
 import { Container } from "@/components/ui/container";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 import { WARRANTY_SYSTEM_URL } from "@/lib/warranty";
 import {
   ArrowRight,
@@ -81,8 +82,8 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
                   <h3 className="font-sans-condensed text-xl font-bold text-brand-dark uppercase lg:text-3xl">
                     {card.title}
                   </h3>
-                  <p className="max-w-2xs flex-1 text-xs leading-tight text-text-subtle lg:text-sm lg:leading-relaxed">
-                    {card.description}
+                  <p className="max-w-2xs flex-1 text-xs leading-tight whitespace-pre-line text-text-subtle lg:text-sm lg:leading-relaxed">
+                    {decodeHtmlEntities(card.description)}
                   </p>
                 </div>
                 <span

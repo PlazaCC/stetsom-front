@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 
 interface SectionLabelProps {
   label: string;
@@ -43,11 +44,11 @@ export function SectionLabel({
       {subtitle && (
         <p
           className={cn(
-            "mt-1 text-base font-medium",
+            "mt-1 text-base font-medium whitespace-pre-line",
             dark ? "text-text-subtle-dark" : "text-text-subtle",
           )}
         >
-          {subtitle}
+          {decodeHtmlEntities(subtitle)}
         </p>
       )}
     </div>

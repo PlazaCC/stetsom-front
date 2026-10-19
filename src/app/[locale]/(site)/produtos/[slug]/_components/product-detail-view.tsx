@@ -19,6 +19,7 @@ import {
 import { ProductCard } from "@/components/ui/product-card";
 import { buildSpecSections } from "@/lib/specs/table";
 import { cn } from "@/lib/utils";
+import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 import { ChevronDown, GitCompareArrows, Smartphone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -390,9 +391,9 @@ export function ProductDetailView({
               {product.description && (
                 <p
                   {...ed("description")}
-                  className="mt-4 text-sm text-text-subtle lg:text-base"
+                  className="mt-4 text-sm whitespace-pre-line text-text-subtle lg:text-base"
                 >
-                  {product.description}
+                  {decodeHtmlEntities(product.description)}
                 </p>
               )}
 

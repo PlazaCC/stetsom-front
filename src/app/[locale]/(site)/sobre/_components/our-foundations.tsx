@@ -3,6 +3,7 @@
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
 import { cn } from "@/lib/utils";
+import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 import { useTranslations } from "next-intl";
 
 type AboutBase = {
@@ -45,7 +46,9 @@ export function OurFoundations({
               <h3 className="mb-1 font-sans-condensed text-3xl font-bold text-balance text-brand-dark uppercase">
                 {base.title}
               </h3>
-              <p className="text-base text-text-subtle">{base.description}</p>
+              <p className="text-base whitespace-pre-line text-text-subtle">
+                {decodeHtmlEntities(base.description)}
+              </p>
             </div>
           ))}
         </div>

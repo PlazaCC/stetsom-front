@@ -31,7 +31,7 @@ export function BlockHeader({
       )}
       {description && (
         <p
-          className={`${classPrefix}__description mt-2 text-sm text-text-subtle`}
+          className={`${classPrefix}__description mt-2 text-sm whitespace-pre-line text-text-subtle`}
         >
           {description}
         </p>

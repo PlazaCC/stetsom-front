@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import type { FaqItem } from "@/lib/page-blocks";
+import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 
 export function FaqAccordion({ items }: { items: FaqItem[] }) {
   return (
@@ -21,7 +22,9 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
             <span className="font-medium">{q}</span>
           </AccordionTrigger>
           <AccordionContent>
-            <p className="text-sm text-text-subtle">{a}</p>
+            <p className="text-sm whitespace-pre-line text-text-subtle">
+              {decodeHtmlEntities(a)}
+            </p>
           </AccordionContent>
         </AccordionItem>
       ))}

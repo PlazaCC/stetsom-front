@@ -1,4 +1,5 @@
 import { Container } from "@/components/ui/container";
+import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 import { Rocket, ShieldCheck, Zap } from "lucide-react";
 import { QualityVideoHero } from "./quality-video-hero";
 
@@ -51,8 +52,8 @@ export function QualitySection({
         <section className="bg-white py-20">
           <Container>
             {section.description && (
-              <p className="mx-auto max-w-3xl text-center text-lg text-balance text-text-subtle lg:text-xl">
-                {section.description}
+              <p className="mx-auto max-w-3xl text-center text-lg text-balance whitespace-pre-line text-text-subtle lg:text-xl">
+                {decodeHtmlEntities(section.description)}
               </p>
             )}
 
@@ -81,7 +82,9 @@ function ValueCard({ value }: Readonly<{ value: AboutValue }>) {
       <h3 className="mt-5 font-sans-condensed text-2xl font-black text-brand-dark uppercase">
         {value.title}
       </h3>
-      <p className="mt-2 text-base text-text-subtle">{value.description}</p>
+      <p className="mt-2 text-base whitespace-pre-line text-text-subtle">
+        {decodeHtmlEntities(value.description)}
+      </p>
     </div>
   );
 }

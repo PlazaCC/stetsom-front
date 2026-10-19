@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 import Image from "next/image";
 
 export type TimelineCarouselEvent = {
@@ -95,8 +96,8 @@ export function TimelineCarouselCard({
       </div>
 
       {isActive && (
-        <p className="absolute right-3.5 bottom-4 left-3.5 z-10 text-left text-sm leading-normal text-text-subtle-dark transition-opacity duration-500">
-          {event.description}
+        <p className="absolute right-3.5 bottom-4 left-3.5 z-10 text-left text-sm leading-normal whitespace-pre-line text-text-subtle-dark transition-opacity duration-500">
+          {decodeHtmlEntities(event.description)}
         </p>
       )}
 

@@ -29,7 +29,7 @@ export function TextBlock({
           {data.title}
         </h2>
       )}
-      <p className="blockText__paragraph mt-3 text-sm text-text-subtle md:text-base">
+      <p className="blockText__paragraph mt-3 text-sm whitespace-pre-line text-text-subtle md:text-base">
         {data.content}
       </p>
     </BlockArticle>

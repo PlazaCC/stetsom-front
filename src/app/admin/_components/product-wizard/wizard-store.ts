@@ -8,6 +8,7 @@ import type {
   ProductStatus,
   Template,
 } from "@/api/stetsom/model";
+import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 import { reindexByOrder } from "@/lib/utils/reindex";
 import { slugify } from "@/lib/utils/slugify";
 
@@ -310,6 +311,14 @@ function initialLocales(
   return derived;
 }
 
+function decodeI18n(value: I18nString): I18nString {
+  return {
+    pt: decodeHtmlEntities(value.pt),
+    ...(value.en !== undefined && { en: decodeHtmlEntities(value.en) }),
+    ...(value.es !== undefined && { es: decodeHtmlEntities(value.es) }),
+  };
+}
+
 export function initWizardState(
   mode: WizardMode,
   detail?: CmsProductDetailPayload,
@@ -326,7 +335,9 @@ export function initWizardState(
     name: p?.name ?? { pt: "" },
     slug: p?.slug ?? { pt: "" },
     slugTouched: !!p?.slug?.pt,
-    description: p?.description ?? { pt: "" },
+    // The API stores the description sanitized (`&` → `&amp;`); the textarea
+    // edits it as plain text, so it gets the characters back.
+    description: p?.description ? decodeI18n(p.description) : { pt: "" },
     category_id: p?.category_id ?? "",
     line_id: p?.line_id ?? "",
     template_id: p?.template_id ?? "",

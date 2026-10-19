@@ -1,4 +1,5 @@
 import { Container } from "@/components/ui/container";
+import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 
 type SupportHeroData = {
   image?: string;
@@ -38,8 +39,8 @@ export function SupportHero({ hero }: Readonly<SupportHeroProps>) {
           </h1>
         </div>
         {hero.description && (
-          <p className="max-w-120 text-base text-text-subtle-dark">
-            {hero.description}
+          <p className="max-w-120 text-base whitespace-pre-line text-text-subtle-dark">
+            {decodeHtmlEntities(hero.description)}
           </p>
         )}
       </Container>
