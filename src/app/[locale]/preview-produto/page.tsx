@@ -3,7 +3,7 @@
 import {
   ProductDetailView,
   type ProductDetailViewData,
-} from "@/app/[locale]/(site)/produtos/[slug]/_components/product-detail-view";
+} from "@/app/[locale]/(site)/produto/[slug]/_components/product-detail-view";
 import {
   escapeTarget,
   parseEditorTarget,

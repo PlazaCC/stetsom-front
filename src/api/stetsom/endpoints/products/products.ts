@@ -23,6 +23,8 @@ import type {
   CmsProductDetailPayload,
   CmsProductsPayload,
   GetApiProductsAdminParams,
+  GetApiProductsPreviewSlug200,
+  GetApiProductsPreviewSlugParams,
   PatchApiProductsId200,
   PatchApiProductsIdBlocksBlockIdBody,
   PatchApiProductsIdBody,
@@ -192,6 +194,185 @@ export function usePostApiProducts<
 } {
   const queryOptions = getPostApiProductsQueryOptions(
     postApiProductsBody,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Preview product
+ */
+export const getApiProductsPreviewSlug = (
+  slug: string,
+  params?: GetApiProductsPreviewSlugParams,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<GetApiProductsPreviewSlug200>({
+    url: `/api/products/preview/${slug}`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getGetApiProductsPreviewSlugQueryKey = (
+  slug: string,
+  params?: GetApiProductsPreviewSlugParams,
+) => {
+  return [
+    `/api/products/preview/${slug}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetApiProductsPreviewSlugQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiProductsPreviewSlug>>,
+  TError = ApiErrorPayload,
+>(
+  slug: string,
+  params?: GetApiProductsPreviewSlugParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiProductsPreviewSlug>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getGetApiProductsPreviewSlugQueryKey(slug, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiProductsPreviewSlug>>
+  > = ({ signal }) => getApiProductsPreviewSlug(slug, params, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: slug !== null && slug !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiProductsPreviewSlug>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiProductsPreviewSlugQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiProductsPreviewSlug>>
+>;
+export type GetApiProductsPreviewSlugQueryError = ApiErrorPayload;
+
+export function useGetApiProductsPreviewSlug<
+  TData = Awaited<ReturnType<typeof getApiProductsPreviewSlug>>,
+  TError = ApiErrorPayload,
+>(
+  slug: string,
+  params: undefined | GetApiProductsPreviewSlugParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiProductsPreviewSlug>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProductsPreviewSlug>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProductsPreviewSlug>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiProductsPreviewSlug<
+  TData = Awaited<ReturnType<typeof getApiProductsPreviewSlug>>,
+  TError = ApiErrorPayload,
+>(
+  slug: string,
+  params?: GetApiProductsPreviewSlugParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiProductsPreviewSlug>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProductsPreviewSlug>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProductsPreviewSlug>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiProductsPreviewSlug<
+  TData = Awaited<ReturnType<typeof getApiProductsPreviewSlug>>,
+  TError = ApiErrorPayload,
+>(
+  slug: string,
+  params?: GetApiProductsPreviewSlugParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiProductsPreviewSlug>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Preview product
+ */
+
+export function useGetApiProductsPreviewSlug<
+  TData = Awaited<ReturnType<typeof getApiProductsPreviewSlug>>,
+  TError = ApiErrorPayload,
+>(
+  slug: string,
+  params?: GetApiProductsPreviewSlugParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiProductsPreviewSlug>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiProductsPreviewSlugQueryOptions(
+    slug,
+    params,
     options,
   );
 

@@ -7,8 +7,9 @@ import type {
   ProductImage,
   PublicVariant,
 } from "@/api/stetsom/model";
-import type { ProductDetailViewData } from "@/app/[locale]/(site)/produtos/[slug]/_components/product-detail-view";
+import type { ProductDetailViewData } from "@/app/[locale]/(site)/produto/[slug]/_components/product-detail-view";
 import type { WizardState } from "./wizard-store";
+import { selectProductSlug } from "./wizard-store";
 
 /** Locale rendered in the live preview. The CMS edits all locales; preview shows pt. */
 const PREVIEW_LOCALE = "pt" as const;
@@ -101,7 +102,7 @@ export function buildPreviewModel(
 
   return {
     product: {
-      slug: pick(state.slug) || "",
+      slug: selectProductSlug(state),
       name: pick(state.name) || "Produto sem nome",
       description: pick(state.description) || null,
       images,

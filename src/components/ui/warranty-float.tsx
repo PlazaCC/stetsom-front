@@ -11,8 +11,8 @@ export function WarrantyFloat() {
   const pathname = usePathname();
   const t = useTranslations("Footer");
 
-  // Hide on /suporte and /produtos/[slug]
-  if (pathname === "/suporte" || /^\/produtos\/[^/]+$/.test(pathname)) {
+  // Product and support pages already expose contextual warranty actions.
+  if (pathname === "/suporte" || pathname === "/produto/[slug]") {
     return null;
   }
 

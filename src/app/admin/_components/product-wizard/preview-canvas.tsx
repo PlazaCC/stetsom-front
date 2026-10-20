@@ -1,6 +1,6 @@
 "use client";
 
-import type { ProductDetailViewData } from "@/app/[locale]/(site)/produtos/[slug]/_components/product-detail-view";
+import type { ProductDetailViewData } from "@/app/[locale]/(site)/produto/[slug]/_components/product-detail-view";
 import { usePreviewBridge } from "@/hooks/use-preview-bridge";
 import { cn } from "@/lib/utils";
 import { Monitor, Smartphone } from "lucide-react";

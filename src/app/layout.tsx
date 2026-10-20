@@ -3,6 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { getLocale } from "next-intl/server";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://stetsom.com.br";
+
+export const metadata = {
+  metadataBase: new URL(siteUrl),
+};
+
 // Satoshi — site typeface (headings + paragraphs).
 const satoshi = localFont({
   src: [

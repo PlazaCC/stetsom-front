@@ -1,13 +1,15 @@
 import type {
   PublicConfig,
+  PublicCategory,
   PublicLegalPageListItem,
 } from "@/api/stetsom/model";
 import { getApiConfigPublic } from "@/api/stetsom/server/config-public/config-public";
 import { getApiLegalPagesPublic } from "@/api/stetsom/server/legal-pages-public/legal-pages-public";
+import { getPublicCatalogCategories } from "@/lib/catalog/public-categories";
 import { Header } from "@/components/ui/header";
 import Footer from "@/components/ui/footer";
 import { WarrantyFloat } from "@/components/ui/warranty-float";
-import { toApiLocale } from "@/lib/api/i18n-utils";
+import { toApiLocale } from "@/i18n/locale";
 import { getLocale } from "next-intl/server";
 
 // Fallback logos shown when the admin hasn't published a CMS logo for a
@@ -25,16 +27,13 @@ export default async function SiteLayout({
 }) {
   const locale = await getLocale();
   const apiLocale = toApiLocale(locale);
-  const config = await getApiConfigPublic({
-    locale: apiLocale,
-  }).catch(() => {
-    return {} as PublicConfig;
-  });
-  const legalPages = await getApiLegalPagesPublic({
-    locale: apiLocale,
-  }).catch(() => {
-    return [] as PublicLegalPageListItem[];
-  });
+  const [config, legalPages, productCategories] = await Promise.all([
+    getApiConfigPublic({ locale: apiLocale }).catch(() => ({}) as PublicConfig),
+    getApiLegalPagesPublic({ locale: apiLocale }).catch(
+      () => [] as PublicLegalPageListItem[],
+    ),
+    getPublicCatalogCategories(apiLocale).catch(() => [] as PublicCategory[]),
+  ]);
 
   const fallbackLogos = FALLBACK_LOGOS[locale] ?? FALLBACK_LOGOS["pt-BR"];
   const logoDark = config.logo_dark ?? fallbackLogos.dark;
@@ -58,6 +57,7 @@ export default async function SiteLayout({
           linkedin: config.social_linkedin,
         }}
         legalPages={legalPages}
+        productCategories={productCategories}
       />
     </>
   );

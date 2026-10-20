@@ -3,10 +3,10 @@
 import {
   deleteApiCategoriesId,
   getGetApiCategoriesIdQueryKey,
-  getGetApiCategoriesQueryKey,
+  getGetApiCategoriesAdminQueryKey,
   patchApiCategoriesId,
   postApiCategories,
-  useGetApiCategories,
+  useGetApiCategoriesAdmin,
   useGetApiCategoriesId,
   useGetApiTemplates,
 } from "@/api/stetsom";
@@ -15,7 +15,6 @@ import type {
   I18nString,
   PatchApiCategoriesIdBody,
   PostApiCategoriesBody,
-  PublicCategory,
 } from "@/api/stetsom/model";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
@@ -60,10 +59,7 @@ function emptyDraft(): Draft {
  *  from the list's single-locale item — so en/es content is never dropped.
  *  `listItem.icon_url` (already resolved) is used just to skip the picker's
  *  own on-demand asset resolve when we already have it in hand. */
-function draftFromCategory(
-  category: Category,
-  listItem?: PublicCategory,
-): Draft {
+function draftFromCategory(category: Category): Draft {
   return {
     id: category.id,
     name: category.name,
@@ -71,7 +67,7 @@ function draftFromCategory(
     icon: category.icon_library_id
       ? {
           library_id: category.icon_library_id,
-          file_url: listItem?.icon_url ?? undefined,
+          file_url: undefined,
         }
       : null,
   };
@@ -88,15 +84,15 @@ export function CategoriesContent({
 }: Readonly<CategoriesContentProps>) {
   const queryClient = useQueryClient();
   const toast = useAdminToast();
-  const listQuery = useGetApiCategories();
+  const listQuery = useGetApiCategoriesAdmin();
   const { data: templates = [] } = useGetApiTemplates();
   const categories = useMemo(
     () => (listQuery.data ?? []).slice().sort((a, b) => a.order - b.order),
     [listQuery.data],
   );
-  const [localCategories, setLocalCategories] = useState<
-    PublicCategory[] | null
-  >(null);
+  const [localCategories, setLocalCategories] = useState<Category[] | null>(
+    null,
+  );
   const displayCategories = localCategories ?? categories;
 
   const [selectedId, setSelectedId] = useState<string | null>(
@@ -113,10 +109,7 @@ export function CategoriesContent({
   const baseDraft: Draft | null = isNew
     ? emptyDraft()
     : selectedId && full && full.id === selectedId
-      ? draftFromCategory(
-          full,
-          categories.find((c) => c.id === full.id),
-        )
+      ? draftFromCategory(full)
       : null;
   const draft: Draft | null = baseDraft ? { ...baseDraft, ...edits } : null;
   const isLoadingDraft = !!selectedId && !isNew && !baseDraft;
@@ -124,7 +117,7 @@ export function CategoriesContent({
   function invalidate() {
     const tasks = [
       queryClient.invalidateQueries({
-        queryKey: getGetApiCategoriesQueryKey(),
+        queryKey: getGetApiCategoriesAdminQueryKey(),
       }),
     ];
     // The list and the single-category detail are separate queries — a lines
@@ -140,7 +133,7 @@ export function CategoriesContent({
     return Promise.all(tasks);
   }
 
-  function selectCategory(category: PublicCategory) {
+  function selectCategory(category: Category) {
     setSelectedId(category.id);
     setEdits({});
   }
@@ -192,7 +185,7 @@ export function CategoriesContent({
       // (the selection clears on the next render), so invalidating it would
       // trigger an immediate refetch of a resource that no longer exists.
       await queryClient.invalidateQueries({
-        queryKey: getGetApiCategoriesQueryKey(),
+        queryKey: getGetApiCategoriesAdminQueryKey(),
       });
       toast.deleted(name);
       setSelectedId(null);
@@ -202,7 +195,7 @@ export function CategoriesContent({
   });
 
   const reorderMutation = useMutation({
-    mutationFn: (ordered: PublicCategory[]) => {
+    mutationFn: (ordered: Category[]) => {
       const changed = ordered.filter((c, i) => c.order !== i);
       return Promise.all(
         changed.map((c) =>
@@ -217,7 +210,7 @@ export function CategoriesContent({
     onSuccess: () => invalidate(),
   });
 
-  function handleReorder(ordered: PublicCategory[]) {
+  function handleReorder(ordered: Category[]) {
     setLocalCategories(ordered);
     reorderMutation.mutate(ordered);
   }
@@ -241,7 +234,8 @@ export function CategoriesContent({
   const lines: DisplayLine[] = full
     ? full.lines.map((l) => ({
         line_id: l.line_id,
-        name: l.name.pt,
+        name: l.name,
+        slug: l.slug,
         order: l.order,
       }))
     : [];
@@ -314,26 +308,16 @@ export function CategoriesContent({
                     )}
                   >
                     {handle}
-                    {category.icon_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={category.icon_url}
-                        alt=""
-                        loading="lazy"
-                        className="size-8 shrink-0 rounded object-cover"
-                      />
-                    ) : (
-                      <div className="flex size-8 shrink-0 items-center justify-center rounded bg-muted">
-                        <ImageIcon className="size-4 text-muted-foreground/50" />
-                      </div>
-                    )}
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded bg-muted">
+                      <ImageIcon className="size-4 text-muted-foreground/50" />
+                    </div>
                     <button
                       type="button"
                       onClick={() => selectCategory(category)}
                       className="min-w-0 flex-1 text-left"
                     >
                       <span className="block truncate text-sm font-medium text-foreground">
-                        {category.name}
+                        {category.name.pt}
                       </span>
                       <span className="block truncate text-2xs text-muted-foreground">
                         {templateCount(category.id)} templates ·{" "}
@@ -365,10 +349,15 @@ export function CategoriesContent({
                 onChange={(name) => setEdits((prev) => ({ ...prev, name }))}
               />
               <I18nInput
-                label="Slug"
+                label="Path público"
+                placeholder="amplificadores"
                 value={draft.slug}
                 onChange={(slug) => setEdits((prev) => ({ ...prev, slug }))}
               />
+              <p className="-mt-2 text-xs text-muted-foreground">
+                PT é obrigatório. EN e ES podem ficar vazios para usar o path em
+                português como fallback.
+              </p>
               <LibraryAssetPicker
                 label="Ícone"
                 type="CATEGORY_ICON"

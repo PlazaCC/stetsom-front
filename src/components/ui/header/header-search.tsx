@@ -77,16 +77,25 @@ export function HeaderSearch({
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [showDropdown]);
 
-  function go(href: string) {
+  function afterNavigate() {
     setOpen(false);
-    router.push(href);
     onNavigate?.();
+  }
+
+  function goToCatalog(q: string) {
+    router.push({ ...{ pathname: "/produtos" }, query: { q } });
+    afterNavigate();
+  }
+
+  function goToProduct(slug: string) {
+    router.push({ pathname: "/produto/[slug]", params: { slug } });
+    afterNavigate();
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const q = query.trim();
-    if (q) go(`/produtos?q=${encodeURIComponent(q)}`);
+    if (q) goToCatalog(q);
   }
 
   const isDesktop = variant === "desktop";
@@ -145,15 +154,13 @@ export function HeaderSearch({
                 <SuggestionRow
                   key={item.id}
                   item={item}
-                  onSelect={() => go(item.href)}
+                  onSelect={() => goToProduct(item.slug)}
                 />
               ))}
               {hasMore && (
                 <button
                   type="button"
-                  onClick={() =>
-                    go(`/produtos?q=${encodeURIComponent(query.trim())}`)
-                  }
+                  onClick={() => goToCatalog(query.trim())}
                   className="flex w-full items-center justify-center border-t border-border px-3 py-2.5 font-sans-condensed text-xs font-black text-brand uppercase transition-colors hover:bg-muted"
                 >
                   {t("viewMore", { count: remaining })}

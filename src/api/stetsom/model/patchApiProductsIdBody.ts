@@ -8,7 +8,6 @@
 import type { LocaleInput } from "./localeInput";
 import type { PatchApiProductsIdBodyDescription } from "./patchApiProductsIdBodyDescription";
 import type { PatchApiProductsIdBodyName } from "./patchApiProductsIdBodyName";
-import type { PatchApiProductsIdBodySlug } from "./patchApiProductsIdBodySlug";
 import type { PatchApiProductsIdBodyStatus } from "./patchApiProductsIdBodyStatus";
 import type { PatchApiProductsIdBodyVariantsItem } from "./patchApiProductsIdBodyVariantsItem";
 
@@ -19,7 +18,12 @@ export type PatchApiProductsIdBody = {
    */
   sku?: string | null;
   name?: PatchApiProductsIdBodyName;
-  slug?: PatchApiProductsIdBodySlug;
+  /**
+   * @minLength 1
+   * @maxLength 120
+   * @pattern ^[a-z0-9]+(?:-[a-z0-9]+)*$
+   */
+  slug?: string;
   description?: PatchApiProductsIdBodyDescription;
   category_id?: string;
   /** @nullable */

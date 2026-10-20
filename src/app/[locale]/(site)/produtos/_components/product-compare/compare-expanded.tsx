@@ -15,7 +15,7 @@ import type {
   PublicVariant,
 } from "@/api/stetsom/model";
 import { SpecValue } from "@/components/ui/spec-value";
-import { toApiLocale } from "@/lib/api/i18n-utils";
+import { toApiLocale } from "@/i18n/locale";
 import Image from "next/image";
 import { entriesForAttribute } from "@/lib/specs/matrix";
 import { buildSpecSections, hasGroupedSections } from "@/lib/specs/table";

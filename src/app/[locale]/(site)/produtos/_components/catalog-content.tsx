@@ -162,7 +162,10 @@ function CatalogContentInner({
   // Etapa intermediária da taxonomia: categoria escolhida sem linha selecionada
   // mostra as linhas da categoria em cards (em vez do grid de produtos).
   const isLineCardsView =
-    activeCategory !== "todos" && activeLine === "todas" && !showAll;
+    lineCards !== null &&
+    activeCategory !== "todos" &&
+    activeLine === "todas" &&
+    !showAll;
 
   // Build a slug → ProductCardItem lookup map for the compare modal
   const catalogMap = useMemo(() => {
@@ -235,7 +238,10 @@ function CatalogContentInner({
         categories={categoryOptions}
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
-        disabled={isCatalogEmpty}
+        // Category navigation must remain available even when the
+        // product query is empty or temporarily fails. The category
+        // endpoint is the source of truth for this control.
+        disabled={categories.length === 0}
       />
 
       <section className="bg-white pt-6 pb-12">

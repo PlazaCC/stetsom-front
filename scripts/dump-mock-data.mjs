@@ -13,6 +13,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { config as dotenv } from "dotenv";
+import { validateMockData } from "./validate-mock-data.mjs";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 dotenv({ path: path.join(ROOT, ".env.local"), quiet: true });
@@ -61,6 +62,7 @@ async function dump(apiPath, { token = null, params = {} } = {}) {
 }
 
 function save() {
+  validateMockData(store);
   const temporaryFile = `${DATA_FILE}.tmp`;
   fs.writeFileSync(temporaryFile, JSON.stringify(store, null, 2) + "\n");
   fs.renameSync(temporaryFile, DATA_FILE);

@@ -1,8 +1,11 @@
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import { Check, Lock } from "lucide-react";
+import type { ComponentProps } from "react";
+
+type ProductCardHref = ComponentProps<typeof Link>["href"];
 
 /** Status tag pinned to the top of a product (e.g. NOVO, DESCONTINUADO). */
 export const productStatusBadgeVariants = cva(
@@ -26,7 +29,7 @@ interface ProductCardProps {
   /** Visual tone of the status badge. "new" is the brand red, "discontinued" a neutral dark. */
   badgeTone?: "new" | "discontinued";
   img?: string;
-  href?: string;
+  href?: ProductCardHref;
   variantDirection?: "row" | "column";
   /** When true, the entire card becomes a compare toggle instead of navigating. */
   compareMode?: boolean;
@@ -46,7 +49,7 @@ export function ProductCard({
   badge,
   badgeTone = "new",
   img,
-  href = "/produtos",
+  href = { pathname: "/produtos" },
   variantDirection = "row",
   compareMode = false,
   isCompareSelected = false,

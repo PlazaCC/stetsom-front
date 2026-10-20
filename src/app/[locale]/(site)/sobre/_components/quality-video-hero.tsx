@@ -1,10 +1,15 @@
 "use client";
 
-import { SectionLabel } from "@/components/ui/section-label";
 import { Play, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { createPortal } from "react-dom";
 import { resolveVideoSource, type VideoSource } from "@/lib/video-embed";
 
@@ -25,7 +30,6 @@ interface QualityVideoHeroProps {
 }
 
 export function QualityVideoHero({
-  label,
   title,
   backgroundVideoUrl,
   fullVideoUrl,
@@ -67,34 +71,41 @@ export function QualityVideoHero({
 
   const closePlayer = useCallback(() => setPlayerOpen(false), []);
 
+  let backgroundVisual: ReactNode = null;
+  if (backgroundVideoUrl) {
+    backgroundVisual = (
+      <video
+        ref={backgroundRef}
+        src={backgroundVideoUrl}
+        poster={posterUrl}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-hidden="true"
+        tabIndex={-1}
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+    );
+  } else if (posterUrl) {
+    backgroundVisual = (
+      <Image
+        src={posterUrl}
+        alt={posterAlt}
+        fill
+        sizes="100vw"
+        className="object-cover"
+      />
+    );
+  }
+
   return (
     <section className="relative flex h-120 items-center justify-center overflow-hidden bg-brand-dark lg:h-[80vh]">
-      {backgroundVideoUrl ? (
-        <video
-          ref={backgroundRef}
-          src={backgroundVideoUrl}
-          poster={posterUrl}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-      ) : posterUrl ? (
-        <Image
-          src={posterUrl}
-          alt={posterAlt}
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
-      ) : null}
+      {backgroundVisual}
       <div className="absolute inset-0 bg-black/60" />
 
       <div className="relative z-10 flex w-full flex-col items-center px-4 text-center">
-        {/* {label && <SectionLabel label={label} />} */}
         <h2
           className="mt-3 font-sans-condensed text-5xl leading-none font-black text-balance text-white uppercase lg:text-display-2xl"
           dangerouslySetInnerHTML={{ __html: title.split("\n").join("<br />") }}

@@ -6,7 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { GetApiProductsSort } from "./getApiProductsSort";
-import type { GetApiProductsStatus } from "./getApiProductsStatus";
 import type { LocaleInput } from "./localeInput";
 
 export type GetApiProductsParams = {
@@ -23,11 +22,11 @@ export type GetApiProductsParams = {
   q?: string;
   category?: string;
   line?: string;
-  status?: (typeof GetApiProductsStatus)[keyof typeof GetApiProductsStatus];
   locale?: LocaleInput;
   is_featured?: boolean;
   is_spotlight?: boolean;
   is_discontinued?: boolean;
+  include_discontinued?: boolean;
   is_export?: boolean;
   sort?: GetApiProductsSort;
 };

@@ -8,7 +8,6 @@
 import type { LocaleInput } from "./localeInput";
 import type { PostApiProductsBodyDescription } from "./postApiProductsBodyDescription";
 import type { PostApiProductsBodyName } from "./postApiProductsBodyName";
-import type { PostApiProductsBodySlug } from "./postApiProductsBodySlug";
 import type { PostApiProductsBodyStatus } from "./postApiProductsBodyStatus";
 import type { PostApiProductsBodyVariantsItem } from "./postApiProductsBodyVariantsItem";
 
@@ -19,7 +18,12 @@ export type PostApiProductsBody = {
    */
   sku?: string | null;
   name: PostApiProductsBodyName;
-  slug: PostApiProductsBodySlug;
+  /**
+   * @minLength 1
+   * @maxLength 120
+   * @pattern ^[a-z0-9]+(?:-[a-z0-9]+)*$
+   */
+  slug: string;
   description?: PostApiProductsBodyDescription;
   category_id: string;
   /** @nullable */

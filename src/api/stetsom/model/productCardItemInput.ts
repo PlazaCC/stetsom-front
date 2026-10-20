@@ -13,13 +13,13 @@ export interface ProductCardItemInput {
   /** @nullable */
   sku: string | null;
   slug: string;
+  available_locales: string[];
   name: string;
   category: string;
   /** @nullable */
   line: string | null;
   /** @nullable */
   thumbnail_url: string | null;
-  href: string;
   status: ProductCardItemInputStatus;
   is_discontinued: boolean;
   is_export: boolean;

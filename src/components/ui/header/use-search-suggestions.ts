@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useGetApiProducts } from "@/api/stetsom/endpoints/products-public/products-public";
 import type { ProductCardItem } from "@/api/stetsom/model";
-import { toApiLocale } from "@/lib/api/i18n-utils";
+import { toApiLocale } from "@/i18n/locale";
 
 /** Minimum characters before we hit the API. */
 export const MIN_QUERY_LENGTH = 2;
@@ -49,7 +49,6 @@ export function useSearchSuggestions(query: string): SearchSuggestionsResult {
     {
       q: debounced,
       pageSize: MAX_SUGGESTIONS + 1,
-      status: "PUBLISHED",
       locale: toApiLocale(locale),
     },
     { query: { enabled: isActive } },

@@ -5,6 +5,7 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { PublicLineLocalizedSlugs } from "./publicLineLocalizedSlugs";
 
 export interface PublicLine {
   line_id: string;
@@ -18,4 +19,12 @@ export interface PublicLine {
    * @maximum 9007199254740991
    */
   order: number;
+  localized_slugs: PublicLineLocalizedSlugs;
+  /** @nullable */
+  cover_url: string | null;
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  product_count: number;
 }

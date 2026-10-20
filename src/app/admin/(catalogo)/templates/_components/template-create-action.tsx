@@ -1,12 +1,12 @@
 "use client";
 
-import type { PublicCategory } from "@/api/stetsom";
+import type { Category } from "@/api/stetsom";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 
 interface TemplateCreateActionProps {
-  categories: PublicCategory[];
+  categories: Category[];
 }
 
 export function TemplateCreateAction({
@@ -76,7 +76,7 @@ export function TemplateCreateAction({
               }}
               className="block w-full rounded px-2 py-1.5 text-left text-sm hover:bg-muted"
             >
-              {category.name}
+              {category.name.pt}
             </button>
           ))}
         </div>

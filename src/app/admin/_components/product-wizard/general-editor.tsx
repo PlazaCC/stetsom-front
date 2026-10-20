@@ -145,11 +145,11 @@ export function GeneralEditor({
           <FieldLabel>Slug (URL)</FieldLabel>
           <FieldContent>
             <AdminInput
-              value={state.slug.pt}
+              value={state.slug}
               onChange={(e) =>
                 dispatch({
                   type: "patch_info",
-                  patch: { slug: { ...state.slug, pt: e.target.value } },
+                  patch: { slug: e.target.value },
                 })
               }
               placeholder="st-4000eq"

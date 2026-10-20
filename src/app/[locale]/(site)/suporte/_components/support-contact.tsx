@@ -47,12 +47,14 @@ interface SupportContactProps {
   contact: SupportContactData;
   contactInfo?: ContactInfoData;
   departments: PublicDepartmentItem[];
+  privacyPolicySlug?: string;
 }
 
 export function SupportContact({
   contact,
   contactInfo,
   departments,
+  privacyPolicySlug,
 }: Readonly<SupportContactProps>) {
   const t = useTranslations("Support.contact");
 
@@ -160,7 +162,10 @@ export function SupportContact({
             )}
           </div>
           <div className="mt-8 flex-1 lg:mt-0">
-            <ContactForm departments={departments} />
+            <ContactForm
+              departments={departments}
+              privacyPolicySlug={privacyPolicySlug}
+            />
           </div>
         </div>
       </Container>

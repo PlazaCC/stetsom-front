@@ -5,9 +5,15 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { PublicLegalPageLocalizedSlugs } from "./publicLegalPageLocalizedSlugs";
+import type { PublicLegalPageSemanticKey } from "./publicLegalPageSemanticKey";
 
 export interface PublicLegalPage {
+  /** @nullable */
+  semantic_key: PublicLegalPageSemanticKey;
   slug: string;
+  /** Editorial slugs by locale for canonical links */
+  localized_slugs: PublicLegalPageLocalizedSlugs;
   /** Title resolved to the requested locale */
   title: string;
   /** HTML body resolved to the requested locale */

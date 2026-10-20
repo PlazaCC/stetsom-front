@@ -14,11 +14,14 @@ import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import { LegalEditor } from "@/components/editor/legal/legal-editor";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { getApiErrorMessage } from "@/lib/api/error-utils";
+import {
+  CMS_LOCALES,
+  compactI18n,
+  updateTrackedLocalizedSlugs,
+} from "@/lib/i18n/localized-form";
 import { cn } from "@/lib/utils";
-import { slugify } from "@/lib/utils/slugify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
 import { ChevronDown, ChevronUp, Plus } from "lucide-react";
@@ -27,17 +30,11 @@ import { toast } from "sonner";
 
 type LocaleKey = "pt" | "en" | "es";
 
-const LOCALES: { key: LocaleKey; label: string }[] = [
-  { key: "pt", label: "Português" },
-  { key: "en", label: "Inglês" },
-  { key: "es", label: "Espanhol" },
-];
-
 const NEW_ID = "__new__";
 
 type Draft = {
   id: string | null;
-  slug: string;
+  slug: I18nString;
   title: I18nString;
   content: Record<LocaleKey, string>;
   published: boolean;
@@ -62,7 +59,7 @@ function draftFromPage(page: LegalPage): Draft {
 function emptyDraft(order: number): Draft {
   return {
     id: null,
-    slug: "",
+    slug: { pt: "" },
     title: { pt: "" },
     content: { pt: "", en: "", es: "" },
     published: false,
@@ -103,9 +100,8 @@ export function LegalPagesContent() {
 
   const saveMutation = useMutation({
     mutationFn: async (d: Draft) => {
-      const title: I18nString = { pt: d.title.pt.trim() };
-      if (d.title.en?.trim()) title.en = d.title.en.trim();
-      if (d.title.es?.trim()) title.es = d.title.es.trim();
+      const title = compactI18n(d.title);
+      const slug = compactI18n(d.slug);
 
       const content: { pt: string; en?: string; es?: string } = {
         pt: sanitize(d.content.pt),
@@ -114,7 +110,7 @@ export function LegalPagesContent() {
       if (d.content.es.trim()) content.es = sanitize(d.content.es);
 
       const body = {
-        slug: d.slug.trim(),
+        slug,
         title,
         content,
         order: d.order,
@@ -174,17 +170,14 @@ export function LegalPagesContent() {
     setDraft((prev) => {
       if (!prev) return prev;
       const next = { ...prev, title: value };
-      // Auto-fill slug from the pt title while it tracks the title.
-      if (prev.slug === "" || prev.slug === slugify(prev.title.pt)) {
-        next.slug = slugify(value.pt);
-      }
+      next.slug = updateTrackedLocalizedSlugs(prev.slug, prev.title, value);
       return next;
     });
   }
 
   function handleSave() {
     if (!draft) return;
-    if (!draft.slug.trim()) return toast.error("Informe um slug.");
+    if (!draft.slug.pt.trim()) return toast.error("Informe um slug.");
     if (!draft.title.pt.trim())
       return toast.error("O título em português é obrigatório.");
     if (!draft.content.pt.replace(/<[^>]*>/g, "").trim())
@@ -205,7 +198,7 @@ export function LegalPagesContent() {
               draft.id
                 ? {
                     label: "Excluir página",
-                    confirmTitle: `Excluir "${draft.title.pt || draft.slug}"?`,
+                    confirmTitle: `Excluir "${draft.title.pt || draft.slug.pt}"?`,
                     confirmDescription:
                       "A página será removida permanentemente. Esta ação não pode ser desfeita.",
                     onConfirm: () => deleteMutation.mutate(draft.id!),
@@ -289,10 +282,10 @@ export function LegalPagesContent() {
                       className="min-w-0 flex-1 text-left"
                     >
                       <span className="block truncate text-sm font-medium text-foreground">
-                        {page.title.pt || page.slug}
+                        {page.title.pt || page.slug.pt}
                       </span>
                       <span className="block truncate text-2xs text-muted-foreground">
-                        /{page.slug}
+                        /{page.slug.pt}
                       </span>
                     </button>
                     <StatusBadge
@@ -316,10 +309,12 @@ export function LegalPagesContent() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <AdminLabel>Slug (URL)</AdminLabel>
-                  <Input
+                  <I18nInput
+                    label="Slug (URL)"
+                    required
                     value={draft.slug}
-                    onChange={(e) =>
-                      setDraft((p) => (p ? { ...p, slug: e.target.value } : p))
+                    onChange={(slug) =>
+                      setDraft((p) => (p ? { ...p, slug } : p))
                     }
                     placeholder="politica-de-privacidade"
                   />
@@ -347,7 +342,7 @@ export function LegalPagesContent() {
 
               {/* Locale tabs — content editor only (rich text can't live inside I18nInput) */}
               <div className="flex gap-1 border-b border-border">
-                {LOCALES.map(({ key, label }) => (
+                {CMS_LOCALES.map(({ key, label }) => (
                   <button
                     key={key}
                     type="button"

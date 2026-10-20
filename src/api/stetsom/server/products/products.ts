@@ -11,6 +11,10 @@ import type { CmsProductsPayload } from "../../model/cmsProductsPayload";
 
 import type { GetApiProductsAdminParams } from "../../model/getApiProductsAdminParams";
 
+import type { GetApiProductsPreviewSlug200 } from "../../model/getApiProductsPreviewSlug200";
+
+import type { GetApiProductsPreviewSlugParams } from "../../model/getApiProductsPreviewSlugParams";
+
 import type { PatchApiProductsId200 } from "../../model/patchApiProductsId200";
 
 import type { PatchApiProductsIdBlocksBlockIdBody } from "../../model/patchApiProductsIdBlocksBlockIdBody";
@@ -48,6 +52,19 @@ export const postApiProducts = (postApiProductsBody: PostApiProductsBody) => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     data: postApiProductsBody,
+  });
+};
+/**
+ * @summary Preview product
+ */
+export const getApiProductsPreviewSlug = (
+  slug: string,
+  params?: GetApiProductsPreviewSlugParams,
+) => {
+  return serverOrvalClient<GetApiProductsPreviewSlug200>({
+    url: `/api/products/preview/${slug}`,
+    method: "GET",
+    params,
   });
 };
 /**
@@ -232,6 +249,9 @@ export const deleteApiProductsIdFilesFileId = (id: string, fileId: string) => {
 };
 export type PostApiProductsResult = NonNullable<
   Awaited<ReturnType<typeof postApiProducts>>
+>;
+export type GetApiProductsPreviewSlugResult = NonNullable<
+  Awaited<ReturnType<typeof getApiProductsPreviewSlug>>
 >;
 export type GetApiProductsAdminResult = NonNullable<
   Awaited<ReturnType<typeof getApiProductsAdmin>>

@@ -194,6 +194,151 @@ export function usePostApiCategories<
 }
 
 /**
+ * @summary List all categories for CMS
+ */
+export const getApiCategoriesAdmin = (signal?: AbortSignal) => {
+  return orvalClient<Category[]>({
+    url: `/api/categories/admin`,
+    method: "GET",
+    signal,
+  });
+};
+
+export const getGetApiCategoriesAdminQueryKey = () => {
+  return [`/api/categories/admin`] as const;
+};
+
+export const getGetApiCategoriesAdminQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+  TError = ApiErrorPayload,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+      TError,
+      TData
+    >
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesAdminQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiCategoriesAdmin>>
+  > = ({ signal }) => getApiCategoriesAdmin(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiCategoriesAdminQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiCategoriesAdmin>>
+>;
+export type GetApiCategoriesAdminQueryError = ApiErrorPayload;
+
+export function useGetApiCategoriesAdmin<
+  TData = Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCategoriesAdmin>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiCategoriesAdmin<
+  TData = Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCategoriesAdmin>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiCategoriesAdmin<
+  TData = Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List all categories for CMS
+ */
+
+export function useGetApiCategoriesAdmin<
+  TData = Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiCategoriesAdminQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
  * @summary Get category
  */
 export const getApiCategoriesId = (id: string, signal?: AbortSignal) => {

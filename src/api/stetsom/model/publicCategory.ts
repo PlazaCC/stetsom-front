@@ -5,6 +5,7 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { PublicCategoryLocalizedSlugs } from "./publicCategoryLocalizedSlugs";
 import type { PublicLine } from "./publicLine";
 
 export interface PublicCategory {
@@ -22,4 +23,5 @@ export interface PublicCategory {
   order: number;
   created_at: string;
   updated_at: string;
+  localized_slugs: PublicCategoryLocalizedSlugs;
 }

@@ -8,9 +8,13 @@ import { submitContact } from "./actions";
 
 interface ContactFormProps {
   departments: PublicDepartmentItem[];
+  privacyPolicySlug?: string;
 }
 
-export function ContactForm({ departments }: ContactFormProps) {
+export function ContactForm({
+  departments,
+  privacyPolicySlug,
+}: ContactFormProps) {
   const t = useTranslations("Support.contact");
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
@@ -180,14 +184,20 @@ export function ContactForm({ departments }: ContactFormProps) {
         />
         <span className="font-sans text-xs leading-relaxed text-text-subtle">
           {t.rich("privacyText", {
-            privacyLink: (chunks) => (
-              <Link
-                href="/legal/politica-de-privacidade"
-                className="font-medium text-brand underline underline-offset-2 hover:text-brand/80"
-              >
-                {chunks}
-              </Link>
-            ),
+            privacyLink: (chunks) =>
+              privacyPolicySlug ? (
+                <Link
+                  href={{
+                    pathname: "/legal/[slug]",
+                    params: { slug: privacyPolicySlug },
+                  }}
+                  className="font-medium text-brand underline underline-offset-2 hover:text-brand/80"
+                >
+                  {chunks}
+                </Link>
+              ) : (
+                chunks
+              ),
           })}
         </span>
       </label>

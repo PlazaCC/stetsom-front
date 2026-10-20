@@ -6,14 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { LegalHtmlI18nInput } from "./legalHtmlI18nInput";
+import type { UpdateLegalPageInputInputSlug } from "./updateLegalPageInputInputSlug";
 import type { UpdateLegalPageInputInputTitle } from "./updateLegalPageInputInputTitle";
 
 export interface UpdateLegalPageInputInput {
-  /**
-   * @minLength 1
-   * @maxLength 200
-   */
-  slug?: string;
+  slug?: UpdateLegalPageInputInputSlug;
   title?: UpdateLegalPageInputInputTitle;
   content?: LegalHtmlI18nInput;
   /**

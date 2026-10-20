@@ -27,7 +27,7 @@ import {
 } from "@/api/stetsom";
 import type { CmsProductRow } from "@/api/stetsom/model";
 import { currentAssetUrl } from "@/app/admin/_components/crud/library-asset-ref";
-import { toDisplayLocale } from "@/lib/api/i18n-utils";
+import { toDisplayLocale } from "@/i18n/locale";
 import { Image, Check, ChevronDown, X } from "lucide-react";
 import { useEffect, useState } from "react";
 

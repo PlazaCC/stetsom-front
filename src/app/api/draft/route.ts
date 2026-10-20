@@ -1,4 +1,5 @@
 import { unauthorizedResponse } from "@/lib/api/route-utils";
+import { getPathname } from "@/i18n/navigation";
 import { cookies, draftMode } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -28,6 +29,9 @@ export async function GET(request: Request) {
   draft.enable();
 
   return NextResponse.redirect(
-    new URL(`/produtos/${slug}?preview=true`, request.url),
+    new URL(
+      `${getPathname({ locale: "pt-BR", href: { pathname: "/produto/[slug]", params: { slug } } })}?preview=true`,
+      request.url,
+    ),
   );
 }

@@ -56,10 +56,12 @@ function contentTransition(open: boolean, reduceMotion: boolean | null) {
 const WHITE_HOLD_MS = DRAWER_CLOSE_DELAY + DRAWER_MS;
 
 const NAV_LINKS = [
-  { href: "/produtos", labelKey: "products" },
-  { href: "/sobre", labelKey: "about" },
-  { href: "/suporte", labelKey: "support" },
+  { href: { pathname: "/produtos" }, labelKey: "products" },
+  { href: { pathname: "/sobre" }, labelKey: "about" },
+  { href: { pathname: "/suporte" }, labelKey: "support" },
 ] as const;
+
+type HeaderHref = (typeof NAV_LINKS)[number]["href"];
 
 interface HeaderProps {
   // Resolved by SiteLayout from GET /api/config/public. Defaults cover the
@@ -170,9 +172,10 @@ export function Header({
   // catalog bar context). Legal pages are plain content with no hero to sit
   // over, so they get the same treatment; they reserve the header height
   // themselves via `mt-header` (see legal/[slug]/page.tsx).
-  const isProdutos = pathname.startsWith("/produtos/");
+  const isCatalog =
+    pathname.startsWith("/produtos") || pathname === "/produto/[slug]";
   const isLegal = pathname.startsWith("/legal/");
-  const isWhite = isProdutos || isLegal || scrolled || panelOpen || whiteHold;
+  const isWhite = isCatalog || isLegal || scrolled || panelOpen || whiteHold;
   // The drawer carries the shadow while it is out, so the bar doesn't draw a
   // seam across the middle of the open panel.
   const barShadow = isWhite && !whiteHold;
@@ -215,7 +218,7 @@ export function Header({
               bar (logo + nav + search + language) at `lg` — it would overlap. */}
           <div className="flex items-center gap-20">
             <Link
-              href="/"
+              href={{ pathname: "/" }}
               className="absolute left-1/2 shrink-0 -translate-x-1/2 xl:static xl:translate-x-0"
             >
               <Logo
@@ -228,7 +231,7 @@ export function Header({
 
             <nav className="hidden items-center gap-10 xl:flex">
               {NAV_LINKS.map(({ href, labelKey }) => (
-                <DesktopNavLink key={href} href={href} isWhite={isWhite}>
+                <DesktopNavLink key={labelKey} href={href} isWhite={isWhite}>
                   {t(labelKey)}
                 </DesktopNavLink>
               ))}
@@ -307,7 +310,11 @@ export function Header({
 
                   {/* Nav links */}
                   {NAV_LINKS.map(({ href, labelKey }) => (
-                    <MobileNavLink key={href} href={href} onClick={closePanels}>
+                    <MobileNavLink
+                      key={labelKey}
+                      href={href}
+                      onClick={closePanels}
+                    >
                       {t(labelKey)}
                     </MobileNavLink>
                   ))}
@@ -364,12 +371,15 @@ function DesktopNavLink({
   children,
   isWhite,
 }: {
-  href: string;
+  href: HeaderHref;
   children: string;
   isWhite: boolean;
 }) {
   const pathname = usePathname();
-  const active = pathname === href || pathname.startsWith(href + "/");
+  const active =
+    pathname === href.pathname ||
+    (href.pathname === "/produtos" &&
+      (pathname.startsWith("/produtos") || pathname === "/produto/[slug]"));
 
   return (
     <Link
@@ -397,12 +407,15 @@ function MobileNavLink({
   children,
   onClick,
 }: {
-  href: string;
+  href: HeaderHref;
   children: string;
   onClick: () => void;
 }) {
   const pathname = usePathname();
-  const active = pathname === href || pathname.startsWith(href + "/");
+  const active =
+    pathname === href.pathname ||
+    (href.pathname === "/produtos" &&
+      (pathname.startsWith("/produtos") || pathname === "/produto/[slug]"));
 
   return (
     <Link

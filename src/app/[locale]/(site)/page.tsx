@@ -7,7 +7,7 @@ import type {
 import { getApiBannersActive } from "@/api/stetsom/server/banners-public/banners-public";
 import { getApiFaqs } from "@/api/stetsom/server/faq-public/faq-public";
 import { getApiPagesSlug } from "@/api/stetsom/server/pages-public/pages-public";
-import { toApiLocale } from "@/lib/api/i18n-utils";
+import { toApiLocale } from "@/i18n/locale";
 import { getLocale } from "next-intl/server";
 import { NOVELTIES_PAGE_SIZE } from "./_components/build-novelties-by-category";
 import { HomePageView } from "./_components/home-page-view";
