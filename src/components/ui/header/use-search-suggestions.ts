@@ -23,7 +23,7 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 }
 
 export interface SearchSuggestionsResult {
-  /** Up to 3 products matching the query (by name or SKU). */
+  /** Up to 3 products matching the query (by name or EAN, stored as `sku`). */
   suggestions: ProductCardItem[];
   /** Total matches reported by the API (may exceed the 3 shown). */
   total: number;
@@ -37,7 +37,7 @@ export interface SearchSuggestionsResult {
 
 /**
  * Typeahead search for the header. Debounces the input, queries the public
- * products endpoint (name + SKU match, server-side), and returns at most 3
+ * products endpoint (name + EAN match on `sku`, server-side), and returns at most 3
  * suggestions plus the remaining count for the "view more" affordance.
  */
 export function useSearchSuggestions(query: string): SearchSuggestionsResult {

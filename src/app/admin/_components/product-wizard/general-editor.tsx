@@ -126,7 +126,7 @@ export function GeneralEditor({
         )}
       >
         <Field>
-          <FieldLabel>SKU</FieldLabel>
+          <FieldLabel>EAN</FieldLabel>
           <FieldContent>
             <AdminInput
               value={state.sku}
@@ -136,7 +136,7 @@ export function GeneralEditor({
                   patch: { sku: e.target.value },
                 })
               }
-              placeholder="Ex: ST-4000EQ-1"
+              placeholder="Ex: 7891234567890"
             />
           </FieldContent>
         </Field>

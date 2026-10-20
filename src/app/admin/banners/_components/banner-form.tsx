@@ -176,7 +176,7 @@ export function ProductReferenceField({
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar por nome ou SKU"
+            placeholder="Buscar por nome ou EAN"
             autoFocus
           />
           <div className="mt-2 max-h-64 overflow-y-auto">
