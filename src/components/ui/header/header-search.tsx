@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import type { ProductCardItem } from "@/api/stetsom/model";
+import { productStatusBadgeVariants } from "@/components/ui/product-card";
 import { useSearchSuggestions } from "./use-search-suggestions";
 
 /** Desktop pill container — flat, translucent on the transparent header. */
@@ -122,11 +123,11 @@ export function HeaderSearch({
 
       {showDropdown && (
         <div
+          // Mobile stays in flow: the mobile search panel scrolls (overflow-y-auto)
+          // and would clip an absolutely positioned dropdown.
           className={cn(
             "z-50 overflow-hidden rounded-lg border border-border bg-white py-1 shadow-lg",
-            isDesktop
-              ? "absolute top-full right-0 mt-2 w-72"
-              : "absolute top-full left-0 mt-2 w-full",
+            isDesktop ? "absolute top-full right-0 mt-2 w-72" : "mt-2 w-full",
           )}
         >
           {isLoading ? (
@@ -175,6 +176,8 @@ function SuggestionRow({
   item: ProductCardItem;
   onSelect: () => void;
 }) {
+  const t = useTranslations("Header");
+
   return (
     <button
       type="button"
@@ -195,6 +198,16 @@ function SuggestionRow({
         )}
       </span>
       <span className="min-w-0 flex-1">
+        {item.is_discontinued && (
+          <span
+            className={cn(
+              productStatusBadgeVariants({ tone: "discontinued" }),
+              "mb-0.5 inline-block",
+            )}
+          >
+            {t("discontinued")}
+          </span>
+        )}
         <span className="block truncate font-sans-condensed text-sm font-black text-brand-dark uppercase">
           {item.name}
         </span>

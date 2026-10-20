@@ -1,7 +1,22 @@
 import { cn } from "@/lib/utils";
+import { cva } from "class-variance-authority";
 import Image from "next/image";
 import Link from "next/link";
 import { Check, Lock } from "lucide-react";
+
+/** Status tag pinned to the top of a product (e.g. NOVO, DESCONTINUADO). */
+export const productStatusBadgeVariants = cva(
+  "rounded-sm px-2 py-0.5 font-sans-condensed text-2xs leading-tight font-black text-white uppercase",
+  {
+    variants: {
+      tone: {
+        new: "bg-brand",
+        discontinued: "bg-brand-dark",
+      },
+    },
+    defaultVariants: { tone: "new" },
+  },
+);
 
 interface ProductCardProps {
   name: string;
@@ -66,8 +81,8 @@ export function ProductCard({
         {badge && !compareMode && (
           <span
             className={cn(
-              "absolute top-2 left-2 rounded-sm px-2 py-0.5 font-sans-condensed text-2xs leading-tight font-black text-white uppercase",
-              badgeTone === "discontinued" ? "bg-brand-dark" : "bg-brand",
+              productStatusBadgeVariants({ tone: badgeTone }),
+              "absolute top-2 left-2",
             )}
           >
             {badge}
