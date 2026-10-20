@@ -55,6 +55,7 @@ export default async function SobrePage() {
       )}
 
       <AboutPageSections
+        locale={locale}
         quality={qualityData}
         values={valuesData}
         timeline={timelineData}

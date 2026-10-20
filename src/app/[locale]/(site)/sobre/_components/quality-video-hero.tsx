@@ -185,6 +185,7 @@ function VideoModal({
               src={source.src}
               title={title}
               allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+              referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
               className="h-full w-full border-0"
             />

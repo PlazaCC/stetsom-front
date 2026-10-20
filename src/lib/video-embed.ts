@@ -70,3 +70,11 @@ function getYoutubeId(url: URL, host: string): string | null {
         url.pathname.match(/^\/(?:embed|shorts|live|v)\/([^/?]+)/)?.[1]);
   return candidate && YOUTUBE_ID.test(candidate) ? candidate : null;
 }
+
+/**
+ * Whether a CMS "video link" is from an allowed embed provider (YouTube or
+ * Vimeo). Direct files go through the uploaded-video field instead.
+ */
+export function isAllowedVideoLink(rawUrl: string): boolean {
+  return resolveVideoSource(rawUrl)?.kind === "embed";
+}

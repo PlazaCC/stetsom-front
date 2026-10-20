@@ -8,7 +8,8 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BrFlag, EsFlag, UsFlag } from "@/components/ui/flag-icons";
 
-type Locale = "pt" | "en" | "es";
+export type I18nLocale = "pt" | "en" | "es";
+type Locale = I18nLocale;
 
 const LOCALES: {
   id: Locale;
@@ -29,6 +30,10 @@ interface I18nInputProps {
   required?: boolean;
   multiline?: boolean;
   placeholder?: string;
+  /** Native input type for single-line fields (e.g. `url`). */
+  type?: "text" | "url";
+  /** Locales whose value failed validation — flags the tab and the input. */
+  invalid?: Partial<Record<Locale, boolean>>;
   className?: string;
 }
 
@@ -45,6 +50,8 @@ export function I18nInput({
   required,
   multiline,
   placeholder,
+  type = "text",
+  invalid,
   className,
 }: I18nInputProps) {
   const [active, setActive] = useState<Locale>("pt");
@@ -84,8 +91,12 @@ export function I18nInput({
                   <span className="text-xs leading-2 font-semibold uppercase">
                     {loc.label}
                   </span>
-                  {!filled && (
-                    <span className="size-1.5 rounded-full bg-primary" />
+                  {invalid?.[loc.id] ? (
+                    <span className="size-1.5 rounded-full bg-destructive" />
+                  ) : (
+                    !filled && (
+                      <span className="size-1.5 rounded-full bg-primary" />
+                    )
                   )}
                 </TabsTrigger>
               );
@@ -111,7 +122,9 @@ export function I18nInput({
                 />
               ) : (
                 <Input
+                  type={type}
                   required={loc.required && required}
+                  aria-invalid={invalid?.[loc.id] || undefined}
                   placeholder={placeholder}
                   value={fieldValue}
                   onChange={(e) => set(loc.id, e.target.value)}

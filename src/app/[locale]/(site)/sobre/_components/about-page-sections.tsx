@@ -3,15 +3,18 @@ import { OurFoundations } from "./our-foundations";
 import { QualitySection } from "./quality-section";
 import { SocialFeed } from "../../_components/social-feed";
 import { TimelineCarousel } from "./timeline-carousel";
-import type {
-  AboutFactoryBlockData,
-  AboutQualityBlockData,
-  AboutSocialBlockData,
-  AboutTimelineBlockData,
-  AboutValuesBlockData,
+import {
+  resolveQualityPlayerVideo,
+  type AboutFactoryBlockData,
+  type AboutQualityBlockData,
+  type AboutSocialBlockData,
+  type AboutTimelineBlockData,
+  type AboutValuesBlockData,
 } from "@/lib/page-blocks";
 
 interface AboutPageSectionsProps {
+  /** next-intl locale — picks the localized Play video. */
+  locale: string;
   quality: AboutQualityBlockData;
   values: AboutValuesBlockData;
   timeline: AboutTimelineBlockData;
@@ -20,6 +23,7 @@ interface AboutPageSectionsProps {
 }
 
 export function AboutPageSections({
+  locale,
   quality,
   values,
   timeline,
@@ -35,7 +39,7 @@ export function AboutPageSections({
             title: quality.title ?? "",
             description: quality.description,
             backgroundVideoUrl: quality.video_url,
-            fullVideoUrl: quality.fullVideoLink || quality.fullVideo_url,
+            fullVideoUrl: resolveQualityPlayerVideo(quality, locale),
             posterUrl: quality.image_url,
             posterAlt: quality.imageAlt ?? "Qualidade Stetsom",
             playLabel: quality.playLabel,

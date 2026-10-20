@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
 import {
   getPageBlock,
+  resolveQualityPlayerVideo,
   type AboutFactoryBlockData,
   type AboutHeroBlockData,
   type AboutQualityBlockData,
@@ -12,7 +13,7 @@ import {
   type AboutTimelineBlockData,
   type AboutValuesBlockData,
 } from "@/lib/page-blocks";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { EditableSection } from "../../_components/editable-section";
 import { MilestonesMarquee } from "../../_components/milestones-marquee";
@@ -37,6 +38,7 @@ export function AboutPageView({
   editable = false,
 }: Readonly<AboutPageViewProps>) {
   const t = useTranslations("About");
+  const locale = useLocale();
   const { blocks } = data;
 
   const heroData = getPageBlock<AboutHeroBlockData>(blocks, "hero");
@@ -134,8 +136,7 @@ export function AboutPageView({
                 title: qualityData.title ?? "",
                 description: qualityData.description,
                 backgroundVideoUrl: qualityData.video_url,
-                fullVideoUrl:
-                  qualityData.fullVideoLink || qualityData.fullVideo_url,
+                fullVideoUrl: resolveQualityPlayerVideo(qualityData, locale),
                 posterUrl: qualityData.image_url,
                 posterAlt: qualityData.imageAlt ?? "Qualidade Stetsom",
                 playLabel: qualityData.playLabel,

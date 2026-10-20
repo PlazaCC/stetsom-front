@@ -14,7 +14,16 @@ import {
 
 // Field spec interpreted by SectionFormRenderer; keys map 1:1 to block.data in page-blocks.ts.
 export type FieldSpec =
-  | { kind: "i18n"; key: string; label: string; multiline?: boolean }
+  | {
+      kind: "i18n";
+      key: string;
+      label: string;
+      multiline?: boolean;
+      inputType?: "text" | "url";
+      placeholder?: string;
+      /** Per-locale check run in the form and before saving. */
+      validate?: "video-link";
+    }
   | {
       kind: "text";
       key: string;
@@ -263,7 +272,7 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
       type: "IMAGE",
       label: "Quem somos",
       description:
-        "Vídeo de fundo com título e botão Play (abre o vídeo num modal — arquivo, YouTube ou Vimeo); abaixo, texto centralizado e os cards de valores (editados em “Valores e bases”).",
+        "Vídeo de fundo com título e botão Play (abre o vídeo num modal — arquivo, ou link YouTube/Vimeo por idioma); abaixo, texto centralizado e os cards de valores (editados em “Valores e bases”).",
       icon: LayoutTemplate,
       kind: "editable",
       fields: [
@@ -285,12 +294,13 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
           accept: VIDEO_ACCEPT,
         },
         {
-          kind: "text",
+          kind: "i18n",
           key: "fullVideoLink",
           label:
-            "Link do vídeo do botão Play — YouTube ou Vimeo (opcional, tem prioridade sobre o arquivo)",
+            "Link do vídeo do botão Play por idioma — YouTube ou Vimeo (opcional; EN/ES vazios usam o PT; tem prioridade sobre o arquivo)",
           inputType: "url",
           placeholder: "https://www.youtube.com/watch?v=...",
+          validate: "video-link",
         },
         {
           kind: "asset",

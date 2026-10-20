@@ -1,4 +1,6 @@
-import type { PageBlock } from "@/api/stetsom/model";
+import type { I18nString, PageBlock } from "@/api/stetsom/model";
+import { toApiLocale } from "@/lib/api/i18n-utils";
+import { isAllowedVideoLink } from "@/lib/video-embed";
 
 export function getPageBlock<T extends Record<string, unknown>>(
   blocks: PageBlock[],
@@ -75,10 +77,37 @@ export type AboutQualityBlockData = {
   video_url?: string;
   /** Uploaded video opened by the Play button; defaults to `video_url`. */
   fullVideo_url?: string;
-  /** YouTube/Vimeo (or direct) link for the Play modal; wins over `fullVideo_url`. */
-  fullVideoLink?: string;
+  /**
+   * YouTube/Vimeo link for the Play modal; wins over `fullVideo_url`. The CMS
+   * stores one per locale (`{ pt, en?, es? }`) and the public API resolves it
+   * to the request locale (falling back to `pt`); legacy blocks hold a string.
+   */
+  fullVideoLink?: string | I18nString;
   playLabel?: string;
 };
+
+/**
+ * Video opened by the "Quem somos" Play button for `locale`: localized link →
+ * PT link → uploaded file. Links outside YouTube/Vimeo are skipped. Returns
+ * `undefined` so the hero can fall back to the background loop, then the image.
+ */
+export function resolveQualityPlayerVideo(
+  data: Pick<AboutQualityBlockData, "fullVideoLink" | "fullVideo_url">,
+  locale: string,
+): string | undefined {
+  const link = data.fullVideoLink;
+  const candidates =
+    typeof link === "string"
+      ? [link]
+      : link
+        ? [link[toApiLocale(locale)], link.pt]
+        : [];
+  return (
+    candidates.find((url): url is string => !!url && isAllowedVideoLink(url)) ||
+    data.fullVideo_url ||
+    undefined
+  );
+}
 
 export type AboutValuesBlockData = {
   hidden?: boolean;

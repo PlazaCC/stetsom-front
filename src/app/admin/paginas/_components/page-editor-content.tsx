@@ -23,6 +23,8 @@ import {
 } from "@/app/admin/_components/crud/editor-section-nav";
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { ProductEditorLayout } from "@/app/admin/_components/product-wizard/product-editor-layout";
+import { useAdminToast } from "@/hooks/use-admin-toast";
+import { getApiErrorMessage } from "@/lib/api/error-utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   ExternalLink,
@@ -36,10 +38,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BannersSummaryPanel } from "./banners-summary-panel";
 import { buildPagePreviewModel } from "./build-page-preview-model";
+import { hasInvalidFeaturedTabs } from "./featured-tabs-validation";
 import { PAGE_LABELS, PAGE_PUBLIC_HREFS } from "./page-constants";
 import type { PageEditorTarget } from "./page-editor-target";
 import { PagePreviewCanvas } from "./page-preview-canvas";
 import { findSectionDef, getPageSections } from "./section-field-spec";
+import { hasInvalidFields } from "./section-field-validation";
 import { SectionFormRenderer } from "./section-form-renderer";
 
 const BANNERS_TARGET = "__banners__";
@@ -54,6 +58,7 @@ export function PageEditorContent({
 }: Readonly<PageEditorContentProps>) {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const toast = useAdminToast();
   const { data: page, isLoading } = useGetApiPagesSlugCms(pageId);
   const { data: publicPage } = useGetApiPagesSlug(
     pageId,
@@ -114,6 +119,7 @@ export function PageEditorContent({
   > | null>(null);
   const [device, setDevice] = useState<Device>("mobile");
   const [showAddPanel, setShowAddPanel] = useState(false);
+  const [showSectionErrors, setShowSectionErrors] = useState(false);
 
   const blocks =
     localBlocks ??
@@ -160,6 +166,7 @@ export function PageEditorContent({
     setSelection(sectionId);
     setSectionDraft(null);
     setShowAddPanel(false);
+    setShowSectionErrors(false);
   }
 
   const addMutation = useMutation({
@@ -175,6 +182,11 @@ export function PageEditorContent({
       invalidate();
       selectSection(created.section_id);
     },
+    onError: (error) =>
+      toast.error(
+        "Não foi possível adicionar a seção",
+        getApiErrorMessage(error, "Tente novamente."),
+      ),
   });
 
   const saveSectionMutation = useMutation({
@@ -188,11 +200,33 @@ export function PageEditorContent({
     onSuccess: () => {
       invalidate();
       setSectionDraft(null);
+      setShowSectionErrors(false);
     },
+    onError: (error) =>
+      toast.error(
+        "Não foi possível salvar a seção",
+        getApiErrorMessage(error, "Tente novamente."),
+      ),
   });
 
+  const draftInvalid =
+    !!sectionDraft &&
+    !!selectedDef &&
+    hasInvalidFields(selectedDef.fields, sectionDraft);
+
   function handleSaveSection() {
-    if (!selectedBlock || !sectionDraft) return;
+    if (!selectedBlock || !sectionDraft || draftInvalid) return;
+    if (
+      selectedDef &&
+      hasInvalidFeaturedTabs(selectedDef.fields, sectionDraft)
+    ) {
+      setShowSectionErrors(true);
+      toast.error(
+        "Não foi possível salvar a seção",
+        "Há abas sem categoria ou sem produtos. Adicione ao menos 1 produto em cada aba ou remova a aba.",
+      );
+      return;
+    }
     saveSectionMutation.mutate({
       blockId: selectedBlock.block_id,
       data: sectionDraft,
@@ -252,7 +286,7 @@ export function PageEditorContent({
                 : "Salvar alterações"
           }
           isPrimaryLoading={saveSectionMutation.isPending}
-          isPrimaryDisabled={!sectionDraft}
+          isPrimaryDisabled={!sectionDraft || draftInvalid}
         />
       }
     >
@@ -338,6 +372,7 @@ export function PageEditorContent({
                       fields={selectedDef.fields}
                       data={sectionDraft ?? selectedBlock?.data ?? {}}
                       onChange={setSectionDraft}
+                      showErrors={showSectionErrors}
                     />
                   ) : (
                     <p className="text-sm text-muted-foreground">

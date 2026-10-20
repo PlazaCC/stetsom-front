@@ -36,6 +36,11 @@ import { useGetApiCategories } from "@/api/stetsom";
 import { useGetApiProducts } from "@/api/stetsom";
 import type { FieldSpec } from "./section-field-spec";
 import { FaqItemsField } from "./faq-items-field";
+import { featuredTabError } from "./featured-tabs-validation";
+import { AdminFieldError } from "@/app/admin/_components/crud/admin-field-error";
+import { cn } from "@/lib/utils";
+import { invalidLocales, VIDEO_LINK_ERROR } from "./section-field-validation";
+import { FieldError } from "@/components/ui/field";
 import { useEffect, useState } from "react";
 
 type Data = Record<string, unknown>;
@@ -71,19 +76,34 @@ interface FieldProps {
   field: FieldSpec;
   data: Data;
   onChange: (data: Data) => void;
+  /** Show validation messages — set after a blocked save attempt. */
+  showErrors?: boolean;
 }
 
-function Field({ field, data, onChange }: FieldProps) {
+function Field({ field, data, onChange, showErrors }: FieldProps) {
   switch (field.kind) {
-    case "i18n":
+    case "i18n": {
+      const invalid = invalidLocales(field, data[field.key]);
+      const invalidLabels = Object.keys(invalid).map((l) => l.toUpperCase());
       return (
-        <I18nInput
-          label={field.label}
-          multiline={field.multiline}
-          value={asI18n(data[field.key])}
-          onChange={(v) => onChange({ ...data, [field.key]: v })}
-        />
+        <div className="space-y-1.5">
+          <I18nInput
+            label={field.label}
+            multiline={field.multiline}
+            type={field.inputType}
+            placeholder={field.placeholder}
+            invalid={invalid}
+            value={asI18n(data[field.key])}
+            onChange={(v) => onChange({ ...data, [field.key]: v })}
+          />
+          {invalidLabels.length > 0 && (
+            <FieldError>
+              {invalidLabels.join(", ")}: {VIDEO_LINK_ERROR}
+            </FieldError>
+          )}
+        </div>
       );
+    }
 
     case "text":
       return (
@@ -156,6 +176,7 @@ function Field({ field, data, onChange }: FieldProps) {
               key={sub.key}
               field={sub}
               data={group}
+              showErrors={showErrors}
               onChange={(next) => onChange({ ...data, [field.key]: next })}
             />
           ))}
@@ -165,14 +186,26 @@ function Field({ field, data, onChange }: FieldProps) {
 
     case "featured-tabs":
       return (
-        <FeaturedTabsField data={data} field={field} onChange={onChange} />
+        <FeaturedTabsField
+          data={data}
+          field={field}
+          onChange={onChange}
+          showErrors={showErrors}
+        />
       );
 
     case "stringList":
       return <StringListField field={field} data={data} onChange={onChange} />;
 
     case "list":
-      return <ListField field={field} data={data} onChange={onChange} />;
+      return (
+        <ListField
+          field={field}
+          data={data}
+          onChange={onChange}
+          showErrors={showErrors}
+        />
+      );
 
     case "faq-items":
       return <FaqItemsField field={field} />;
@@ -186,10 +219,12 @@ function FeaturedTabsField({
   field,
   data,
   onChange,
+  showErrors,
 }: {
   field: Extract<FieldSpec, { kind: "featured-tabs" }>;
   data: Data;
   onChange: (data: Data) => void;
+  showErrors?: boolean;
 }) {
   const categoriesQuery = useGetApiCategories({ locale: "pt" });
   const tabs = Array.isArray(data[field.key])
@@ -242,6 +277,7 @@ function FeaturedTabsField({
                 new Set(tabs.map((item) => item.category_id))
               }
               handle={handle}
+              error={showErrors ? featuredTabError(tab) : null}
               onChange={(next) =>
                 setTabs(
                   tabs.map((item, itemIndex) =>
@@ -273,6 +309,7 @@ function FeaturedTabEditor({
   categories,
   selectedCategoryIds,
   handle,
+  error,
   onChange,
   onRemove,
 }: {
@@ -281,6 +318,7 @@ function FeaturedTabEditor({
   categories: Array<{ id: string; name: string; slug: string }>;
   selectedCategoryIds: Set<string>;
   handle: React.ReactNode;
+  error?: string | null;
   onChange: (tab: { category_id: string; product_ids: string[] }) => void;
   onRemove: () => void;
 }) {
@@ -315,7 +353,12 @@ function FeaturedTabEditor({
   const hasReachedProductLimit = tab.product_ids.length >= 5;
 
   return (
-    <div className="space-y-3 rounded-md border border-border bg-muted/30 p-4">
+    <div
+      className={cn(
+        "space-y-3 rounded-md border bg-muted/30 p-4",
+        error ? "border-destructive" : "border-border",
+      )}
+    >
       <div className="flex items-center gap-2">
         <div className="[&_button]:cursor-grab [&_button]:active:cursor-grabbing">
           {handle}
@@ -400,7 +443,7 @@ function FeaturedTabEditor({
           <ComboboxContent>
             <ComboboxInput
               showTrigger={false}
-              placeholder="Buscar por nome ou SKU"
+              placeholder="Buscar por nome ou EAN"
             />
             <ComboboxEmpty>Nenhum produto encontrado.</ComboboxEmpty>
             <ComboboxList>
@@ -468,6 +511,7 @@ function FeaturedTabEditor({
       <p className="text-xs text-muted-foreground">
         Selecione de 1 a 5 produtos. A ordem define destaque e grade.
       </p>
+      <AdminFieldError message={error} />
     </div>
   );
 }
@@ -537,10 +581,12 @@ function ListField({
   field,
   data,
   onChange,
+  showErrors,
 }: {
   field: Extract<FieldSpec, { kind: "list" }>;
   data: Data;
   onChange: (data: Data) => void;
+  showErrors?: boolean;
 }) {
   const items: Item[] = Array.isArray(data[field.key])
     ? (data[field.key] as Item[])
@@ -594,6 +640,7 @@ function ListField({
                 key={sub.key}
                 field={sub}
                 data={item}
+                showErrors={showErrors}
                 onChange={(next) =>
                   set(items.map((it, j) => (j === i ? next : it)))
                 }
@@ -618,17 +665,25 @@ interface SectionFormRendererProps {
   fields: FieldSpec[];
   data: Data;
   onChange: (data: Data) => void;
+  showErrors?: boolean;
 }
 
 export function SectionFormRenderer({
   fields,
   data,
   onChange,
+  showErrors,
 }: SectionFormRendererProps) {
   return (
     <div className="space-y-4">
       {fields.map((field) => (
-        <Field key={field.key} field={field} data={data} onChange={onChange} />
+        <Field
+          key={field.key}
+          field={field}
+          data={data}
+          onChange={onChange}
+          showErrors={showErrors}
+        />
       ))}
     </div>
   );
