@@ -10,8 +10,23 @@ import {
   getGetApiLibraryQueryKey,
   postApiLibraryIdVersions,
 } from "@/api/stetsom";
+import { fetchWithSessionRefresh } from "@/lib/api/session-refresh";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
+
+const SESSION_EXPIRED_MESSAGE = "Sua sessão expirou. Faça login novamente.";
+
+/** Message for a failed /api/upload* response. The upstream 401 text ("Token
+ *  inválido ou ausente") is not meant for editors, so it is replaced. */
+async function readUploadError(res: Response, fallback: string) {
+  if (res.status === 401) return SESSION_EXPIRED_MESSAGE;
+  try {
+    const err = (await res.json()) as { error?: { message?: string } };
+    return err.error?.message ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 export type UploadStage =
   | "idle"
@@ -136,7 +151,7 @@ export function useLibraryUpload() {
   }> {
     patch(id, { status: "presigning", progress: 10 });
 
-    const presignRes = await fetch("/api/upload", {
+    const presignRes = await fetchWithSessionRefresh("/api/upload", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -148,17 +163,12 @@ export function useLibraryUpload() {
     });
 
     if (!presignRes.ok) {
-      let errorMessage: string;
-      try {
-        const err = (await presignRes.json()) as {
-          error?: { message?: string };
-        };
-        errorMessage =
-          err.error?.message ?? `Presign falhou (${presignRes.status})`;
-      } catch {
-        errorMessage = `Presign falhou (${presignRes.status})`;
-      }
-      throw new Error(errorMessage);
+      throw new Error(
+        await readUploadError(
+          presignRes,
+          `Presign falhou (${presignRes.status})`,
+        ),
+      );
     }
 
     const presign = (await presignRes.json()) as UploadPresignResponse;
@@ -213,25 +223,22 @@ export function useLibraryUpload() {
         ...(dims ?? {}),
       };
 
-      const completeRes = await fetch("/api/upload/complete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(completeBody),
-      });
+      const completeRes = await fetchWithSessionRefresh(
+        "/api/upload/complete",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(completeBody),
+        },
+      );
 
       if (!completeRes.ok) {
-        let errorMessage: string;
-        try {
-          const err = (await completeRes.json()) as {
-            error?: { message?: string };
-          };
-          errorMessage =
-            err.error?.message ??
-            `Registro na biblioteca falhou (${completeRes.status})`;
-        } catch {
-          errorMessage = `Registro na biblioteca falhou (${completeRes.status})`;
-        }
-        throw new Error(errorMessage);
+        throw new Error(
+          await readUploadError(
+            completeRes,
+            `Registro na biblioteca falhou (${completeRes.status})`,
+          ),
+        );
       }
 
       const { asset } = (await completeRes.json()) as { asset: LibraryAsset };

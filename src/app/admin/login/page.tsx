@@ -31,7 +31,15 @@ export default function AdminLoginPage() {
         throw new Error(body?.error?.message ?? "Credenciais inválidas.");
       }
 
-      router.push("/admin");
+      // Back to the page the proxy bounced us from; only same-site admin paths.
+      const redirect = new URLSearchParams(window.location.search).get(
+        "redirect",
+      );
+      router.push(
+        redirect?.startsWith("/admin") && !redirect.startsWith("/admin/login")
+          ? redirect
+          : "/admin",
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao autenticar.");
     } finally {

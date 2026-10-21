@@ -14,6 +14,10 @@
  */
 import type { AxiosError, AxiosRequestConfig } from "axios";
 import Axios from "axios";
+import {
+  notifySessionExpired,
+  refreshSession,
+} from "@/lib/api/session-refresh";
 
 const proxyAxios = Axios.create({ headers: { Accept: "application/json" } });
 
@@ -44,7 +48,35 @@ export function toApiError(err: unknown): OrvalApiError {
   );
 }
 
+function isUnauthorized(err: unknown): boolean {
+  return Axios.isAxiosError(err) && err.response?.status === 401;
+}
+
+/** On 401 the access token has usually just expired: renew it and retry once. */
+async function requestWithSessionRefresh<T>(
+  config: AxiosRequestConfig,
+): Promise<T> {
+  try {
+    const { data } = await proxyAxios(config);
+    return data as T;
+  } catch (err) {
+    if (!isUnauthorized(err)) throw err;
+    if (!(await refreshSession())) {
+      notifySessionExpired();
+      throw err;
+    }
+    try {
+      const { data } = await proxyAxios(config);
+      return data as T;
+    } catch (retryErr) {
+      if (isUnauthorized(retryErr)) notifySessionExpired();
+      throw retryErr;
+    }
+  }
+}
+
 export const orvalClient = <T>(config: AxiosRequestConfig): Promise<T> =>
-  proxyAxios({ ...config, url: toBffPath(config.url ?? "") })
-    .then(({ data }) => data as T)
-    .catch((err) => Promise.reject(toApiError(err)));
+  requestWithSessionRefresh<T>({
+    ...config,
+    url: toBffPath(config.url ?? ""),
+  }).catch((err) => Promise.reject(toApiError(err)));

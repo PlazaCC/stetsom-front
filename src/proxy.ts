@@ -1,3 +1,5 @@
+import { rotateAccessTokenCookie } from "@/lib/api/auth-cookies";
+import { refreshAccessToken } from "@/lib/api/refresh-access-token";
 import { verifyAdminToken } from "@/lib/api/verify-admin-token";
 import createMiddleware from "next-intl/middleware";
 import { type NextRequest, NextResponse } from "next/server";
@@ -22,6 +24,23 @@ export async function proxy(request: NextRequest) {
             : false;
 
       if (!isValid) {
+        // The access token is short-lived; renew it silently while the
+        // refresh token is still good instead of dropping the user's work.
+        const refreshToken = request.cookies.get("admin_refresh_token")?.value;
+        const accessToken = refreshToken
+          ? await refreshAccessToken(refreshToken)
+          : null;
+
+        if (accessToken) {
+          // Forward the new token to this request's server components too.
+          request.cookies.set("admin_token", accessToken);
+          const response = NextResponse.next({
+            request: { headers: request.headers },
+          });
+          rotateAccessTokenCookie(response, accessToken);
+          return response;
+        }
+
         const loginUrl = new URL("/admin/login", request.url);
         loginUrl.searchParams.set("redirect", pathname);
         return NextResponse.redirect(loginUrl);
