@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Filter, PackageOpen, Plus } from "lucide-react";
+import { ExternalLink, Filter, PackageOpen, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { AdminActionBar } from "@/app/admin/_components/crud/admin-action-bar";
@@ -10,6 +10,10 @@ import {
   type AdminTableColumn,
 } from "@/app/admin/_components/crud/admin-data-table";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import {
   FilterChips,
@@ -138,7 +142,12 @@ export default function AdminProdutos() {
             ) : null}
           </div>
           <div>
-            <p className="font-medium text-foreground">{row.name}</p>
+            <Link
+              href={`/admin/produtos/${row.id}`}
+              className="font-medium text-foreground hover:underline"
+            >
+              {row.name}
+            </Link>
             {row.line && (
               <p className="text-xs text-muted-foreground">{row.line}</p>
             )}
@@ -187,12 +196,19 @@ export default function AdminProdutos() {
       headerClassName: "text-right",
       className: "text-right",
       render: (row) => (
-        <Link
-          href={`/admin/produtos/${row.id}`}
-          className="rounded border border-border px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"
-        >
-          Editar
-        </Link>
+        <AdminRowActions>
+          {row.status === "PUBLISHED" && (
+            <AdminRowAction href={`/produtos/${row.slug}`} target="_blank">
+              <span className="inline-flex items-center gap-1">
+                <ExternalLink className="size-3" />
+                Ver
+              </span>
+            </AdminRowAction>
+          )}
+          <AdminRowAction href={`/admin/produtos/${row.id}`}>
+            Editar
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];

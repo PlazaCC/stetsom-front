@@ -31,9 +31,11 @@ import {
   Info,
   LayoutTemplate,
   Megaphone,
+  Package,
   Pointer,
   Plus,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BannersSummaryPanel } from "./banners-summary-panel";
@@ -79,6 +81,7 @@ export function PageEditorContent({
 
   const isHome = pageId === "home";
   const isSupport = pageId === "support";
+  const isCatalog = pageId === "catalog";
 
   const { data: activeBannersRes } = useGetApiBannersActive(
     { locale: "pt" },
@@ -380,6 +383,34 @@ export function PageEditorContent({
                     </p>
                   )}
                 </>
+              ) : isCatalog ? (
+                // The catalog page has no CMS sections: its content is the
+                // product catalog itself, so point editors to where it lives.
+                <div className="flex flex-col items-center justify-center py-20 text-center text-muted-foreground">
+                  <Package className="mb-4 size-16" />
+                  <p className="text-base font-medium">
+                    Os produtos são editados no Catálogo
+                  </p>
+                  <p className="mt-1 max-w-sm text-sm text-muted-foreground/70">
+                    Esta página lista os produtos publicados. Para cadastrar ou
+                    editar um produto, abra Catálogo › Produtos.
+                  </p>
+                  <div className="mt-6 flex items-center gap-2">
+                    <Link
+                      href={publicHref}
+                      target="_blank"
+                      className="rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                    >
+                      Ver no site
+                    </Link>
+                    <Link
+                      href="/admin/produtos"
+                      className="rounded-md bg-foreground px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+                    >
+                      Gerenciar produtos
+                    </Link>
+                  </div>
+                </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
                   <Pointer className="mb-4 size-16" />
