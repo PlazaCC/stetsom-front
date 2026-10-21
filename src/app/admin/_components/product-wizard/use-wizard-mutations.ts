@@ -13,7 +13,12 @@ import { slugify } from "@/lib/utils/slugify";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, type Dispatch } from "react";
-import { syncBlocks, syncFiles, syncImages } from "./wizard-sync";
+import {
+  createSyncLedger,
+  syncBlocks,
+  syncFiles,
+  syncImages,
+} from "./wizard-sync";
 import {
   buildPayload,
   combineLaunchDate,
@@ -118,12 +123,15 @@ export function useWizardMutations(
       id = created.id;
     }
 
+    const ledger = createSyncLedger(state);
+    let synced = true;
     if (id) {
       try {
-        await syncBlocks(id, state.blocks, state.initialBlockIds);
-        await syncImages(id, state.images, state.initialImageIds);
-        await syncFiles(id, state.files, state.initialFileIds);
+        await syncBlocks(id, state.blocks, ledger);
+        await syncImages(id, state.images, ledger);
+        await syncFiles(id, state.files, ledger);
       } catch (syncErr) {
+        synced = false;
         adminToast.apiError(
           syncErr,
           "Produto salvo, mas houve erro ao sincronizar blocos/mídias.",
@@ -131,7 +139,7 @@ export function useWizardMutations(
       }
     }
 
-    dispatch({ type: "mark_saved", productId: id!, status });
+    dispatch({ type: "mark_saved", productId: id!, status, ledger, synced });
     const slug = state.slug.pt || slugify(state.name.pt);
     return {
       id: id!,

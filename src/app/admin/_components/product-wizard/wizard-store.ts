@@ -11,6 +11,7 @@ import type {
 import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 import { reindexByOrder } from "@/lib/utils/reindex";
 import { slugify } from "@/lib/utils/slugify";
+import type { SyncLedger } from "./wizard-sync";
 
 export type WizardLocale = "pt" | "en" | "es";
 
@@ -100,9 +101,12 @@ export interface WizardState {
   blocks: DraftBlock[];
   files: WizardFile[];
 
+  /** Server ids the next save diffs against; refreshed by every save. */
   initialImageIds: string[];
   initialBlockIds: string[];
   initialFileIds: string[];
+  /** Editor block id → server `block_id`, for blocks created in this editor. */
+  blockServerIds: Record<string, string>;
 
   isDirty: boolean;
 }
@@ -143,7 +147,14 @@ export type WizardAction =
   | { type: "add_file"; file: WizardFile }
   | { type: "remove_file"; id: string }
   | { type: "toggle_file_active"; id: string }
-  | { type: "mark_saved"; productId: string; status: ProductStatus };
+  | {
+      type: "mark_saved";
+      productId: string;
+      status: ProductStatus;
+      ledger: SyncLedger;
+      /** False when a block/media request failed; the editor stays dirty. */
+      synced: boolean;
+    };
 
 const DEFAULT_VARIATION_ID = "variation-default";
 
@@ -363,6 +374,7 @@ export function initWizardState(
     initialImageIds: (p?.images ?? []).map((i) => i.image_id),
     initialBlockIds: (p?.page_blocks ?? []).map((b) => b.block_id),
     initialFileIds: (p?.files ?? []).map((f) => f.file_id),
+    blockServerIds: {},
 
     isDirty: mode === "edit",
   };
@@ -454,13 +466,29 @@ export function wizardReducer(
         isDirty: true,
       };
 
-    case "mark_saved":
+    case "mark_saved": {
+      const { ledger } = action;
       return {
         ...state,
         productId: action.productId,
         status: action.status,
-        isDirty: false,
+        images: state.images.map((img) =>
+          img.image_id || !ledger.newImageIds[img.id]
+            ? img
+            : { ...img, image_id: ledger.newImageIds[img.id] },
+        ),
+        files: state.files.map((f) =>
+          f.file_id || !ledger.newFileIds[f.id]
+            ? f
+            : { ...f, file_id: ledger.newFileIds[f.id] },
+        ),
+        initialImageIds: ledger.imageIds,
+        initialBlockIds: ledger.blockIds,
+        initialFileIds: ledger.fileIds,
+        blockServerIds: ledger.blockServerIds,
+        isDirty: !action.synced,
       };
+    }
 
     default:
       return state;
