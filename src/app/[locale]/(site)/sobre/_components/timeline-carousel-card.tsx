@@ -81,7 +81,15 @@ export function TimelineCarouselCard({
             "text-left font-sans-condensed text-display-sm leading-none font-black transition-colors duration-500",
             isActive ? "text-brand" : "text-[#980313]/60",
           )}
-          style={isActive ? { WebkitTextStroke: "1px #121212" } : undefined}
+          // A centred stroke drawn over the fill shows the variable font's
+          // overlapping contours as jagged seams. Painting the stroke first
+          // lets the fill cover its inner half: a 2px stroke leaves a clean
+          // 1px outline.
+          style={
+            isActive
+              ? { WebkitTextStroke: "2px #121212", paintOrder: "stroke fill" }
+              : undefined
+          }
         >
           {event.year}
         </span>
