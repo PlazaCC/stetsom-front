@@ -11,6 +11,10 @@ const CODE_MESSAGES: Record<string, string> = {
   CONFLICT: "Já existe um registro com esses dados.",
   VALIDATION_ERROR: "Dados inválidos. Verifique os campos e tente novamente.",
   INVALID_UPLOAD: "Arquivo inválido: tipo ou tamanho não permitido.",
+  INVALID_PRODUCT: "O produto associado precisa estar publicado.",
+  INVALID_IMAGE: "Escolha imagens válidas da biblioteca.",
+  INVALID_DESTINATION:
+    "Escolha um destino: associe um produto ou informe um link (não os dois).",
   SERVICE_UNAVAILABLE:
     "Serviço temporariamente indisponível. Tente novamente em instantes.",
   NOT_CONFIGURED:

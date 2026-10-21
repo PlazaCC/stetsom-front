@@ -6,7 +6,8 @@ import { BannerFormPage } from "../_components/banner-form-page";
 
 export default function AdminBannerEditPage() {
   const params = useParams<{ id: string }>();
-  const { data, isLoading } = useGetApiBanners();
+  // No single-banner endpoint: load the whole list (the API caps it at 200).
+  const { data, isLoading } = useGetApiBanners({ limit: 200 });
 
   if (isLoading || !data) {
     return (
@@ -26,5 +27,7 @@ export default function AdminBannerEditPage() {
     );
   }
 
-  return <BannerFormPage mode="edit" banner={banner} />;
+  // Remount when a refetch brings a newer version, so the form never edits
+  // the stale copy that was in the cache when the page opened.
+  return <BannerFormPage key={banner.updated_at} mode="edit" banner={banner} />;
 }

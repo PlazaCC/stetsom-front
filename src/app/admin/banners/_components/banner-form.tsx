@@ -27,7 +27,8 @@ import {
 } from "@/api/stetsom";
 import type { CmsProductRow } from "@/api/stetsom/model";
 import { currentAssetUrl } from "@/app/admin/_components/crud/library-asset-ref";
-import { toDisplayLocale } from "@/lib/api/i18n-utils";
+import { toApiLocale, toDisplayLocale } from "@/lib/api/i18n-utils";
+import { cn } from "@/lib/utils";
 import { Image, Check, ChevronDown, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -83,6 +84,16 @@ export const BANNER_IMAGE_HINTS = {
     "Recomendado: 1080 × 1440 px (3:4). Usada em telas menores que 640 px; sem ela, a imagem desktop é recortada.",
 } as const;
 
+/** ISO datetime → "YYYY-MM-DD" in local time, for `<input type="date">`. The
+ *  end of the period is stored as 23:59 local, which is the next day in UTC. */
+function isoToDateInput(iso: string | null | undefined): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 export function bannerToFormState(b: Banner): BannerFormState {
   return {
     name: b.name,
@@ -92,13 +103,46 @@ export function bannerToFormState(b: Banner): BannerFormState {
     label: b.label ?? "",
     href: b.href ?? "",
     link_url: b.link_url ?? "",
-    display_from: b.display_from ? b.display_from.split("T")[0] : "",
-    display_until: b.display_until ? b.display_until.split("T")[0] : "",
+    display_from: isoToDateInput(b.display_from),
+    display_until: isoToDateInput(b.display_until),
     order: b.order ?? 0,
     locale: toDisplayLocale(b.available_locales?.[0] ?? "pt"),
     desktop_image_library_id: b.desktop_image_library_id,
     mobile_image_library_id: b.mobile_image_library_id ?? "",
   };
+}
+
+/**
+ * Label + title over the preview image, laid out like the home hero
+ * (`hero-carousel.tsx`) at preview scale, in the banner's language.
+ */
+function BannerTextOverlay({ draft }: { draft: BannerFormState }) {
+  const locale = toApiLocale(draft.locale);
+  const title = draft.title[locale]?.trim() || draft.title.pt.trim();
+  const label = draft.label.trim();
+  if (!title && !label) return null;
+
+  return (
+    // The gradient keeps white text legible in the preview even before an
+    // image is chosen.
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent px-3 pt-8 pb-3">
+      {label && (
+        <p className="font-sans-condensed text-[10px] font-medium text-brand uppercase">
+          {label}
+        </p>
+      )}
+      {title && (
+        <p
+          className={cn(
+            "font-sans-condensed text-base leading-none font-black whitespace-pre-line text-white uppercase",
+            label && "mt-1",
+          )}
+        >
+          {title}
+        </p>
+      )}
+    </div>
+  );
 }
 
 export function ProductReferenceField({
@@ -573,7 +617,7 @@ export function BannerForm({
         <div className="space-y-4">
           <AdminFormSection title="Prévia — Desktop" raw>
             <AdminFormSectionContent>
-              <div className="overflow-hidden rounded-md border border-border bg-muted">
+              <div className="relative overflow-hidden rounded-md border border-border bg-muted">
                 {draft.desktop_image_library_id ? (
                   <BannerImagePreview
                     libraryId={draft.desktop_image_library_id}
@@ -586,6 +630,7 @@ export function BannerForm({
                     <Image className="size-10 text-muted-foreground/30" />
                   </div>
                 )}
+                <BannerTextOverlay draft={draft} />
               </div>
             </AdminFormSectionContent>
 
@@ -596,12 +641,13 @@ export function BannerForm({
                   className="border-t"
                 />
                 <AdminFormSectionContent>
-                  <div className="overflow-hidden rounded-md border border-border bg-muted">
+                  <div className="relative overflow-hidden rounded-md border border-border bg-muted">
                     <BannerImagePreview
                       libraryId={draft.mobile_image_library_id}
                       alt="Preview mobile"
                       className="h-24 w-full object-cover"
                     />
+                    <BannerTextOverlay draft={draft} />
                   </div>
                 </AdminFormSectionContent>
               </>

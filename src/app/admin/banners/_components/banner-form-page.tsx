@@ -3,6 +3,7 @@
 import type {
   Banner,
   BannerPayload,
+  I18nString,
   PatchApiBannersIdBody,
   PostApiBannersBody,
 } from "@/api/stetsom/model";
@@ -23,6 +24,52 @@ import {
   EMPTY_FORM_STATE,
   bannerToFormState,
 } from "./banner-form";
+
+/**
+ * `<input type="date">` gives "YYYY-MM-DD"; the API wants ISO datetimes. The
+ * period covers whole local days: from the start of the first to the end of
+ * the last.
+ */
+function dateInputToIso(value: string, edge: "start" | "end"): string | null {
+  if (!value) return null;
+  const time = edge === "start" ? "T00:00:00" : "T23:59:59.999";
+  return new Date(`${value}${time}`).toISOString();
+}
+
+/** The API needs `pt` whenever a title is sent; an all-empty title clears it. */
+function titlePayload(title: I18nString): I18nString | null {
+  const hasAny = [title.pt, title.en, title.es].some((v) => v?.trim());
+  return hasAny ? title : null;
+}
+
+/** Mirrors the API's create/update rules so the editor gets a reason up front. */
+function validateDraft(draft: BannerFormState): string[] {
+  const issues: string[] = [];
+  if (!draft.name.trim()) issues.push("Informe o nome do banner.");
+  if (!draft.desktop_image_library_id) issues.push("Escolha a imagem desktop.");
+  if (!draft.product_id && !draft.href.trim())
+    issues.push("Associe um produto ou informe um link.");
+  if (
+    !draft.product_id &&
+    draft.href.trim() &&
+    !/^(\/|https?:\/\/)/i.test(draft.href.trim())
+  )
+    issues.push('O link deve começar com "http://", "https://" ou "/".');
+  if (draft.product_id && draft.link_url && !/^[?#]/.test(draft.link_url))
+    issues.push('Os parâmetros da URL devem começar com "?" ou "#".');
+  if (
+    (draft.title.en?.trim() || draft.title.es?.trim()) &&
+    !draft.title.pt.trim()
+  )
+    issues.push("Preencha o título em português antes dos outros idiomas.");
+  if (
+    draft.display_from &&
+    draft.display_until &&
+    draft.display_until < draft.display_from
+  )
+    issues.push("O fim do período deve ser depois do início.");
+  return issues;
+}
 
 interface BannerFormPageProps {
   mode: "create";
@@ -82,13 +129,13 @@ export function BannerFormPage(props: Props) {
       mobile_image_library_id: draft.mobile_image_library_id || null,
       link_url: isProductDestination ? draft.link_url || null : null,
       href: isProductDestination ? null : draft.href || null,
-      title: draft.title.pt ? draft.title : undefined,
+      title: titlePayload(draft.title),
       label: draft.label || null,
       order: draft.order ?? 0,
       status: draft.status,
       available_locales: draft.locale ? [toApiLocale(draft.locale)] : undefined,
-      display_from: draft.display_from || null,
-      display_until: draft.display_until || null,
+      display_from: dateInputToIso(draft.display_from, "start"),
+      display_until: dateInputToIso(draft.display_until, "end"),
     };
   }
 
@@ -101,17 +148,23 @@ export function BannerFormPage(props: Props) {
       mobile_image_library_id: draft.mobile_image_library_id || null,
       link_url: isProductDestination ? draft.link_url || null : null,
       href: isProductDestination ? null : draft.href || null,
-      title: draft.title.pt ? draft.title : undefined,
+      title: titlePayload(draft.title),
       label: draft.label || null,
       order: draft.order ?? undefined,
       status: draft.status,
       available_locales: draft.locale ? [toApiLocale(draft.locale)] : undefined,
-      display_from: draft.display_from || null,
-      display_until: draft.display_until || null,
+      display_from: dateInputToIso(draft.display_from, "start"),
+      display_until: dateInputToIso(draft.display_until, "end"),
     };
   }
 
   async function handleSave() {
+    const issues = validateDraft(draft);
+    if (issues.length > 0) {
+      toast.error("Revise o banner antes de salvar", issues.join(" "));
+      return;
+    }
+
     let result: BannerPayload;
 
     try {
