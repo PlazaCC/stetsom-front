@@ -5,6 +5,7 @@ import {
   BookText,
   Building2,
   Clock,
+  FileQuestion,
   FileText,
   Home,
   Image as ImageIcon,
@@ -174,6 +175,12 @@ export const config: Record<string, AppRouteStaticData> = {
         icon: Paperclip,
         exact: true,
       },
+      {
+        href: "/admin/biblioteca/sem-categoria",
+        label: "PDFs sem categoria",
+        icon: FileQuestion,
+        exact: true,
+      },
     ],
   },
   "/admin/biblioteca/fotos": {
@@ -213,6 +220,12 @@ export const config: Record<string, AppRouteStaticData> = {
     hideInBreadcrumb: true,
   },
   "/admin/biblioteca/outros": {
+    label: "Biblioteca",
+    icon: Archive,
+    section: "admin",
+    hideInBreadcrumb: true,
+  },
+  "/admin/biblioteca/sem-categoria": {
     label: "Biblioteca",
     icon: Archive,
     section: "admin",

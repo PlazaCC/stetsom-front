@@ -8,6 +8,7 @@ import { FileText, ImageIcon, Trash2, Upload, X } from "lucide-react";
 import { useState } from "react";
 import { AdminFileUpload } from "./admin-file-upload";
 import { AdminLabel } from "./admin-input";
+import { AdminPagination } from "./admin-pagination";
 import { AdminSearchInput } from "./admin-search-input";
 import {
   currentAssetUrl,
@@ -22,6 +23,8 @@ interface LibraryAssetPickerProps {
   onChange: (asset: LibraryPickedAsset | null) => void;
   /** Library type filter + presign scope hint. */
   type?: GetApiLibraryType;
+  /** Types the library tab lists; defaults to `type`. Uploads still use `type`. */
+  listTypes?: GetApiLibraryType[];
   /** "image" shows a thumbnail; "file" shows a filename row. */
   variant?: "image" | "file";
   accept?: string;
@@ -35,6 +38,7 @@ export function LibraryAssetPicker({
   value,
   onChange,
   type = "IMAGE",
+  listTypes,
   accept = "image/*",
   variant = "image",
   hint,
@@ -115,6 +119,7 @@ export function LibraryAssetPicker({
       {open && (
         <LibraryPickerModal
           type={type}
+          listTypes={listTypes}
           accept={accept}
           hint={hint}
           onClose={() => setOpen(false)}
@@ -132,14 +137,19 @@ export function LibraryAssetPicker({
  * The "gallery wizard" modal: browse/search existing library assets or upload a
  * new one, then pick it. Reused by the product gallery and file steps.
  */
+const PICKER_PAGE_SIZE = 24;
+
 export function LibraryPickerModal({
   type,
+  listTypes,
   accept = "image/*",
   hint,
   onClose,
   onPick,
 }: {
   type: GetApiLibraryType;
+  /** Types the library tab lists; defaults to `type`. Uploads still use `type`. */
+  listTypes?: GetApiLibraryType[];
   accept?: string;
   hint?: string;
   onClose: () => void;
@@ -147,16 +157,24 @@ export function LibraryPickerModal({
 }) {
   const [tab, setTab] = useState<"library" | "upload">("library");
   const [q, setQ] = useState("");
-  const { data, isLoading } = useGetApiLibrary({ type, q: q || undefined });
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useGetApiLibrary({
+    ...(listTypes?.length ? { types: listTypes.join(",") } : { type }),
+    q: q || undefined,
+    limit: PICKER_PAGE_SIZE,
+    offset: (page - 1) * PICKER_PAGE_SIZE,
+  });
   const upload = useLibraryUpload();
 
   const assets = data?.items ?? [];
+  const total = data?.total ?? 0;
 
   function pickAsset(asset: LibraryAsset) {
     onPick({
       library_id: asset.id,
       file_url: currentAssetUrl(asset),
       alt: asset.alt,
+      type: asset.type,
     });
   }
 
@@ -210,7 +228,10 @@ export function LibraryPickerModal({
             <>
               <AdminSearchInput
                 value={q}
-                onChange={setQ}
+                onChange={(value) => {
+                  setQ(value);
+                  setPage(1);
+                }}
                 placeholder="Buscar na biblioteca"
                 className="mb-4 max-w-72"
               />
@@ -232,6 +253,15 @@ export function LibraryPickerModal({
                     />
                   ))}
                 </div>
+              )}
+              {!isLoading && total > PICKER_PAGE_SIZE && (
+                <AdminPagination
+                  page={page}
+                  pageSize={PICKER_PAGE_SIZE}
+                  total={total}
+                  onPageChange={setPage}
+                  className="mt-4"
+                />
               )}
             </>
           ) : (

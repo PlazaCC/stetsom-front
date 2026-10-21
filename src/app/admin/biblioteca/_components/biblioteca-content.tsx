@@ -36,6 +36,7 @@ interface BibliotecaContentProps {
  */
 export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
   const config = UPLOAD_CONFIG[activeTab];
+  const canUpload = config.canUpload ?? true;
   const queryClient = useQueryClient();
   const toast = useAdminToast();
 
@@ -57,7 +58,9 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
 
   // Pin the tab's asset type on upload — the backend infers type from MIME, and
   // MANUAL / CATALOG / CERTIFICATE all share `application/pdf`.
-  const uploadTyped = (files: File[]) => upload(files, config.libraryType);
+  const uploadTyped = (files: File[]) => {
+    if (canUpload) void upload(files, config.libraryType);
+  };
 
   // Drop completed uploads shortly after the real asset is fetched into the grid.
   useEffect(() => {
@@ -104,17 +107,18 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
   const emptyDescription = hasSearch
     ? "Tente buscar por outro termo."
     : config.emptyDescription;
-  const emptyAction = hasSearch ? undefined : (
-    <Button
-      type="button"
-      size="sm"
-      onClick={() => uploadInputRef.current?.click()}
-      disabled={isUploading}
-    >
-      <Upload />
-      {config.uploadLabel}
-    </Button>
-  );
+  const emptyAction =
+    hasSearch || !canUpload ? undefined : (
+      <Button
+        type="button"
+        size="sm"
+        onClick={() => uploadInputRef.current?.click()}
+        disabled={isUploading}
+      >
+        <Upload />
+        {config.uploadLabel}
+      </Button>
+    );
 
   return (
     <LibraryDropzone
@@ -132,7 +136,9 @@ export function BibliotecaContent({ activeTab }: BibliotecaContentProps) {
             total={total}
             uploadLabel={config.uploadLabel}
             searchPlaceholder={config.searchPlaceholder}
-            onUploadRequest={() => uploadInputRef.current?.click()}
+            onUploadRequest={
+              canUpload ? () => uploadInputRef.current?.click() : undefined
+            }
             disabled={isUploading}
           />
         }

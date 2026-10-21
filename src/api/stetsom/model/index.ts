@@ -182,6 +182,7 @@ export * from "./patchApiFaqsReorderBody";
 export * from "./patchApiFaqsReorderBodyItemsItem";
 export * from "./patchApiLibraryIdBody";
 export * from "./patchApiLibraryIdBodyAlt";
+export * from "./patchApiLibraryIdBodyType";
 export * from "./patchApiMessagesId200";
 export * from "./patchApiPagesSlugBlocksBlockIdBody";
 export * from "./patchApiPagesSlugBlocksBlockIdBodyData";

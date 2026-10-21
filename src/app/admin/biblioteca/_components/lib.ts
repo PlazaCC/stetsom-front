@@ -4,6 +4,7 @@ import {
   BadgeCheck,
   Box,
   FileArchive,
+  FileQuestion,
   FileText,
   Images,
   LibraryBig,
@@ -22,7 +23,8 @@ export type Tab =
   | "certificates"
   | "image-packs"
   | "category-icons"
-  | "others";
+  | "others"
+  | "unsorted-pdfs";
 export type ViewMode = "grid" | "table";
 
 /** Items per page. Numbered pagination lives at the bottom of the scroll area. */
@@ -36,6 +38,8 @@ export interface TabConfig {
   emptyIcon: LucideIcon;
   searchPlaceholder: string;
   libraryType: LibraryAssetType;
+  /** False for shelves that only hold files classified elsewhere. */
+  canUpload?: boolean;
 }
 
 const IMAGE_ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/svg+xml";
@@ -138,7 +142,32 @@ export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
     searchPlaceholder: "Buscar por nome",
     libraryType: LibraryAssetType.OTHER,
   },
+  // Legacy imports and uploads with no shelf land here as `PDF`; editors move
+  // them to Manuais, Catálogos or Certificados from the edit dialog.
+  "unsorted-pdfs": {
+    accept: PDF_ACCEPT,
+    uploadLabel: "Enviar PDFs",
+    emptyLabel: "Nenhum PDF sem categoria.",
+    emptyDescription:
+      "Todos os PDFs estão em Manuais, Catálogos ou Certificados.",
+    emptyIcon: FileQuestion,
+    searchPlaceholder: "Buscar por nome",
+    libraryType: LibraryAssetType.PDF,
+    canUpload: false,
+  },
 };
+
+/** The PDF shelves an asset can move between (mirrors the API rule). */
+export const PDF_SHELF_OPTIONS: { value: LibraryAssetType; label: string }[] = [
+  { value: LibraryAssetType.MANUAL, label: "Manual" },
+  { value: LibraryAssetType.CATALOG, label: "Catálogo" },
+  { value: LibraryAssetType.CERTIFICATE, label: "Certificado" },
+  { value: LibraryAssetType.PDF, label: "Sem categoria" },
+];
+
+export function isPdfShelf(type: LibraryAssetType): boolean {
+  return PDF_SHELF_OPTIONS.some((option) => option.value === type);
+}
 
 // ── Version helpers ──────────────────────────────────────────────────────────
 

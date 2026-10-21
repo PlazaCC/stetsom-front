@@ -43,6 +43,8 @@ export type FieldSpec =
       key: string;
       label: string;
       assetType?: GetApiLibraryType;
+      /** Types the picker lists; defaults to `assetType`. */
+      listTypes?: GetApiLibraryType[];
       variant?: "image" | "file";
       accept?: string;
     }
@@ -659,6 +661,7 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
               label: "Arquivo",
               variant: "file",
               assetType: "PDF",
+              listTypes: ["MANUAL", "CATALOG", "CERTIFICATE", "PDF"],
               accept: "application/pdf",
             },
             {

@@ -1,10 +1,23 @@
 "use client";
 
+import { patchApiLibraryId } from "@/api/stetsom";
+import { LibraryAssetType } from "@/api/stetsom/model";
 import { LibraryPickerModal } from "@/app/admin/_components/crud/library-asset-picker";
-import type { LibraryAssetType } from "@/api/stetsom/model";
+import type { LibraryPickedAsset } from "@/app/admin/_components/crud/library-asset-ref";
+import { useAdminToast } from "@/hooks/use-admin-toast";
 import { FileText, X, type LucideIcon } from "lucide-react";
 import { useState } from "react";
 import type { WizardFile } from "./wizard-store";
+
+/**
+ * PDF shelves that also list legacy `PDF` assets, so files imported from the
+ * old site can be picked; picking one moves it to the section's shelf.
+ */
+const ADOPTS_UNSORTED_PDFS: LibraryAssetType[] = [
+  LibraryAssetType.MANUAL,
+  LibraryAssetType.CERTIFICATE,
+  LibraryAssetType.CATALOG,
+];
 
 interface FileDropzoneProps {
   type: LibraryAssetType;
@@ -30,6 +43,28 @@ export function FileDropzone({
   onRemove,
 }: FileDropzoneProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
+  const toast = useAdminToast();
+  const adoptsUnsorted = ADOPTS_UNSORTED_PDFS.includes(type);
+
+  async function addPicked(asset: LibraryPickedAsset) {
+    if (asset.type === LibraryAssetType.PDF && adoptsUnsorted) {
+      try {
+        await patchApiLibraryId(asset.library_id, { type });
+      } catch (error) {
+        toast.apiError(error, "Não foi possível classificar o PDF");
+        return;
+      }
+    }
+    onAdd({
+      id: crypto.randomUUID(),
+      library_id: asset.library_id,
+      file_url: asset.file_url,
+      filename: asset.file_url.split("/").pop(),
+      type,
+      is_active: true,
+    });
+    setPickerOpen(false);
+  }
 
   // Single-file sections (e.g. IMAGE_PACK) hide the picker once one is linked.
   const canAdd = multiple || files.length === 0;
@@ -81,19 +116,10 @@ export function FileDropzone({
       {pickerOpen && (
         <LibraryPickerModal
           type={type}
+          listTypes={adoptsUnsorted ? [type, LibraryAssetType.PDF] : undefined}
           accept={accept}
           onClose={() => setPickerOpen(false)}
-          onPick={(asset) => {
-            onAdd({
-              id: crypto.randomUUID(),
-              library_id: asset.library_id,
-              file_url: asset.file_url,
-              filename: asset.file_url.split("/").pop(),
-              type,
-              is_active: true,
-            });
-            setPickerOpen(false);
-          }}
+          onPick={(asset) => void addPicked(asset)}
         />
       )}
     </div>

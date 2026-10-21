@@ -9,6 +9,10 @@ import type { GetApiLibraryType } from "./getApiLibraryType";
 
 export type GetApiLibraryParams = {
   type?: GetApiLibraryType;
+  /**
+   * Comma-separated asset types, e.g. MANUAL,PDF. Wins over type.
+   */
+  types?: string;
   q?: string;
   /**
    * @minimum 1

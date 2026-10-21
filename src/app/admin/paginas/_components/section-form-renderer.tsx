@@ -151,6 +151,7 @@ function Field({ field, data, onChange, showErrors }: FieldProps) {
         <LibraryAssetPicker
           label={field.label}
           type={field.assetType ?? "IMAGE"}
+          listTypes={field.listTypes}
           variant={field.variant ?? "image"}
           accept={field.accept}
           value={value}

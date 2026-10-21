@@ -1,7 +1,7 @@
 "use client";
 
 import { patchApiLibraryId } from "@/api/stetsom";
-import type { LibraryAsset } from "@/api/stetsom/model";
+import { LibraryAssetType, type LibraryAsset } from "@/api/stetsom/model";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,6 +13,7 @@ import {
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AdminSelect } from "@/app/admin/_components/crud/admin-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
@@ -23,11 +24,18 @@ import { z } from "zod";
 import { AssetRedirectsTab } from "./asset-redirects-tab";
 import { AssetTypeIcon } from "./asset-type-icon";
 import { AssetVersionsTab } from "./asset-versions-tab";
-import { assetAltText, getCurrentVersionUrl, isImageAsset } from "./lib";
+import {
+  assetAltText,
+  getCurrentVersionUrl,
+  isImageAsset,
+  isPdfShelf,
+  PDF_SHELF_OPTIONS,
+} from "./lib";
 
 // The file name is not editable: it comes from the uploaded file and shapes the
 // object key in the bucket, so a rename here would only desync the two.
 const formSchema = z.object({
+  type: z.enum(LibraryAssetType),
   alt: z.object({
     pt: z.string(),
     en: z.string().optional(),
@@ -57,6 +65,7 @@ export function EditAssetDialog({
   const form = useForm<FormValues>({
     resolver: standardSchemaResolver(formSchema),
     defaultValues: {
+      type: asset.type,
       alt: asset.alt ?? { pt: "" },
       tags: asset.tags.join(", "),
       redirect_paths: asset.redirect_paths ?? [],
@@ -72,6 +81,7 @@ export function EditAssetDialog({
       if (values.alt.es) alt.es = values.alt.es;
       const hasAnyAlt = Object.values(alt).some((v) => v.length > 0);
       return patchApiLibraryId(asset.id, {
+        type: values.type !== asset.type ? values.type : undefined,
         alt: hasAnyAlt ? alt : undefined,
         tags: values.tags
           .split(",")
@@ -150,6 +160,19 @@ export function EditAssetDialog({
 
                 <div className="min-h-0 flex-1 overflow-y-auto p-4">
                   <TabsContent value="data" className="flex flex-col gap-4">
+                    {isPdfShelf(asset.type) && (
+                      <Field>
+                        <FieldLabel htmlFor="asset-type">Categoria</FieldLabel>
+                        <AdminSelect id="asset-type" {...form.register("type")}>
+                          {PDF_SHELF_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </AdminSelect>
+                      </Field>
+                    )}
+
                     <Controller
                       control={form.control}
                       name="alt"

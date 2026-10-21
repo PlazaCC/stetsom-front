@@ -14,7 +14,8 @@ interface LibraryContentHeaderProps {
   total: number;
   uploadLabel: string;
   searchPlaceholder: string;
-  onUploadRequest: () => void;
+  /** Omit to hide the upload button. */
+  onUploadRequest?: () => void;
   disabled?: boolean;
 }
 
@@ -63,15 +64,17 @@ export function LibraryContentHeader({
           </ToggleGroupItem>
         </ToggleGroup>
 
-        <Button
-          type="button"
-          size="sm"
-          onClick={onUploadRequest}
-          disabled={disabled}
-        >
-          <Upload />
-          {uploadLabel}
-        </Button>
+        {onUploadRequest && (
+          <Button
+            type="button"
+            size="sm"
+            onClick={onUploadRequest}
+            disabled={disabled}
+          >
+            <Upload />
+            {uploadLabel}
+          </Button>
+        )}
       </div>
     </div>
   );

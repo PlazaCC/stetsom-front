@@ -1,10 +1,16 @@
-import type { I18nString, LibraryAsset } from "@/api/stetsom/model";
+import type {
+  I18nString,
+  LibraryAsset,
+  LibraryAssetType,
+} from "@/api/stetsom/model";
 
 /** Result of picking an existing asset or finishing an upload in `LibraryAssetPicker`. */
 export type LibraryPickedAsset = {
   library_id: string;
   file_url: string;
   alt?: I18nString;
+  /** Set when the asset came from the library list or a finished upload. */
+  type?: LibraryAssetType;
 };
 
 /** Loosely-known asset reference — a consumer may only have the id, only the
