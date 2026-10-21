@@ -100,8 +100,11 @@ export default async function ProdutosPage({
 
   // Etapa intermediária da taxonomia: com uma categoria escolhida e nenhuma
   // linha, a página mostra as linhas da categoria em cards (imagem do último
-  // produto cadastrado + nome) em vez de um grid de produtos.
-  if (category && !line && !all) {
+  // produto cadastrado + nome) em vez de um grid de produtos. Uma busca ou um
+  // filtro ligado pula essa etapa, para o resultado não ficar escondido.
+  const hasRefinement =
+    Boolean(q) || sp.discontinued === "1" || sp.export === "1";
+  if (category && !line && !all && !hasRefinement) {
     const lineCards = await fetchCategoryLineCards(
       categories,
       category,

@@ -160,9 +160,15 @@ function CatalogContentInner({
     showExport;
   const isCatalogEmpty = catalog.total === 0 && !hasActiveFilters;
   // Etapa intermediária da taxonomia: categoria escolhida sem linha selecionada
-  // mostra as linhas da categoria em cards (em vez do grid de produtos).
+  // mostra as linhas da categoria em cards (em vez do grid de produtos). Com
+  // busca ou filtros ligados, vai direto aos produtos — mesma regra da página.
   const isLineCardsView =
-    activeCategory !== "todos" && activeLine === "todas" && !showAll;
+    activeCategory !== "todos" &&
+    activeLine === "todas" &&
+    !showAll &&
+    !search &&
+    !showDiscontinued &&
+    !showExport;
 
   // Build a slug → ProductCardItem lookup map for the compare modal
   const catalogMap = useMemo(() => {
@@ -240,16 +246,46 @@ function CatalogContentInner({
 
       <section className="bg-white pt-6 pb-12">
         <Container>
-          {isLineCardsView ? (
-            <CatalogLinesGrid
-              lines={lineCards ?? []}
-              onSelectLine={setActiveLine}
-              onSelectAll={() => setShowAll(true)}
-            />
-          ) : (
-            <div className="flex gap-9">
-              {!isCatalogEmpty && isDesktop && (
-                <CatalogSidebar
+          {/* Filters stay available on the line step too, so the search can be
+              refined at every level of the taxonomy. */}
+          <div className="flex gap-9">
+            {!isCatalogEmpty && isDesktop && (
+              <CatalogSidebar
+                open={sidebarOpen}
+                onOpenChange={setSidebarOpen}
+                search={searchInput}
+                onSearchChange={setSearchInput}
+                activeCategory={activeCategory}
+                onCategoryChange={setActiveCategory}
+                activeLine={activeLine}
+                onLineChange={setActiveLine}
+                sort={sort}
+                onSortChange={setSort}
+                onClear={clearFilters}
+                typeFilterOptions={typeFilterOptions}
+                productLines={productLines}
+                showDiscontinued={showDiscontinued}
+                onShowDiscontinuedChange={setShowDiscontinued}
+                showExport={showExport}
+                onShowExportChange={setShowExport}
+              />
+            )}
+
+            <div className="min-w-0 flex-1">
+              {!isCatalogEmpty && (
+                <CatalogDesktopActions
+                  onToggleFilters={() => setSidebarOpen(true)}
+                />
+              )}
+
+              {!isCatalogEmpty && (
+                <CatalogMobileActions
+                  onToggleFilters={() => setSidebarOpen(true)}
+                />
+              )}
+
+              {!isCatalogEmpty && !isDesktop && (
+                <CatalogMobileFilterSheet
                   open={sidebarOpen}
                   onOpenChange={setSidebarOpen}
                   search={searchInput}
@@ -270,41 +306,13 @@ function CatalogContentInner({
                 />
               )}
 
-              <div className="min-w-0 flex-1">
-                {!isCatalogEmpty && (
-                  <CatalogDesktopActions
-                    onToggleFilters={() => setSidebarOpen(true)}
-                  />
-                )}
-
-                {!isCatalogEmpty && (
-                  <CatalogMobileActions
-                    onToggleFilters={() => setSidebarOpen(true)}
-                  />
-                )}
-
-                {!isCatalogEmpty && !isDesktop && (
-                  <CatalogMobileFilterSheet
-                    open={sidebarOpen}
-                    onOpenChange={setSidebarOpen}
-                    search={searchInput}
-                    onSearchChange={setSearchInput}
-                    activeCategory={activeCategory}
-                    onCategoryChange={setActiveCategory}
-                    activeLine={activeLine}
-                    onLineChange={setActiveLine}
-                    sort={sort}
-                    onSortChange={setSort}
-                    onClear={clearFilters}
-                    typeFilterOptions={typeFilterOptions}
-                    productLines={productLines}
-                    showDiscontinued={showDiscontinued}
-                    onShowDiscontinuedChange={setShowDiscontinued}
-                    showExport={showExport}
-                    onShowExportChange={setShowExport}
-                  />
-                )}
-
+              {isLineCardsView ? (
+                <CatalogLinesGrid
+                  lines={lineCards ?? []}
+                  onSelectLine={setActiveLine}
+                  onSelectAll={() => setShowAll(true)}
+                />
+              ) : (
                 <CatalogProductsList
                   products={productCards}
                   currentPage={page}
@@ -312,9 +320,9 @@ function CatalogContentInner({
                   onPageChange={setPage}
                   isCatalogEmpty={isCatalogEmpty}
                 />
-              </div>
+              )}
             </div>
-          )}
+          </div>
         </Container>
       </section>
 
