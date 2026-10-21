@@ -44,7 +44,13 @@ import { hasInvalidFeaturedTabs } from "./featured-tabs-validation";
 import { PAGE_LABELS, PAGE_PUBLIC_HREFS } from "./page-constants";
 import type { PageEditorTarget } from "./page-editor-target";
 import { PagePreviewCanvas } from "./page-preview-canvas";
-import { findSectionDef, getPageSections } from "./section-field-spec";
+import {
+  findSectionDef,
+  getPageSections,
+  getSectionNavEntries,
+  sectionIdOfTarget,
+  toNavTarget,
+} from "./section-field-spec";
 import { hasInvalidFields } from "./section-field-validation";
 import { SectionFormRenderer } from "./section-form-renderer";
 
@@ -136,26 +142,40 @@ export function PageEditorContent({
     (def) => !presentIds.has(def.section_id),
   );
 
+  // A tab is a section, or one view of it (`values:bases`); see SectionView.
+  const navEntries = getSectionNavEntries(
+    pageId,
+    blocks.map((b) => b.section_id),
+  );
+  const selectedEntry =
+    selection && selection !== BANNERS_TARGET
+      ? navEntries.find((entry) => entry.id === selection)
+      : undefined;
   const selectedBlock =
     selection && selection !== BANNERS_TARGET
-      ? blocks.find((b) => b.section_id === selection)
+      ? blocks.find((b) => b.section_id === sectionIdOfTarget(selection))
       : undefined;
-  const selectedDef = selectedBlock
-    ? findSectionDef(pageId, selectedBlock.section_id)
-    : undefined;
+  const selectedDef = selectedEntry?.def;
+  const selectedFields = selectedEntry?.fields ?? [];
 
+  const knownSectionIds = new Set(navEntries.map((e) => e.section_id));
   const navItems: NavItem[] = [
     ...(isHome
       ? [{ id: BANNERS_TARGET, label: "Banners", icon: Megaphone }]
       : []),
-    ...blocks.map((b) => {
-      const def = findSectionDef(pageId, b.section_id);
-      return {
+    ...navEntries.map((entry) => ({
+      id: entry.id,
+      label: entry.label,
+      icon: entry.icon,
+    })),
+    // Stored sections without a spec still get a tab (with no editor).
+    ...blocks
+      .filter((b) => !knownSectionIds.has(b.section_id))
+      .map((b) => ({
         id: b.section_id,
-        label: def?.label ?? b.section_id,
-        icon: def?.icon ?? LayoutTemplate,
-      };
-    }),
+        label: b.section_id,
+        icon: LayoutTemplate,
+      })),
   ];
 
   function invalidate() {
@@ -165,8 +185,12 @@ export function PageEditorContent({
     });
   }
 
-  function selectSection(sectionId: PageEditorTarget) {
-    setSelection(sectionId);
+  function selectSection(target: PageEditorTarget) {
+    setSelection(
+      target && target !== BANNERS_TARGET
+        ? toNavTarget(pageId, target)
+        : target,
+    );
     setSectionDraft(null);
     setShowAddPanel(false);
     setShowSectionErrors(false);
@@ -215,14 +239,11 @@ export function PageEditorContent({
   const draftInvalid =
     !!sectionDraft &&
     !!selectedDef &&
-    hasInvalidFields(selectedDef.fields, sectionDraft);
+    hasInvalidFields(selectedFields, sectionDraft);
 
   function handleSaveSection() {
     if (!selectedBlock || !sectionDraft || draftInvalid) return;
-    if (
-      selectedDef &&
-      hasInvalidFeaturedTabs(selectedDef.fields, sectionDraft)
-    ) {
+    if (selectedDef && hasInvalidFeaturedTabs(selectedFields, sectionDraft)) {
       setShowSectionErrors(true);
       toast.error(
         "Não foi possível salvar a seção",
@@ -362,6 +383,11 @@ export function PageEditorContent({
                 />
               ) : selectedBlock ? (
                 <>
+                  {selectedEntry?.description && (
+                    <p className="mb-4 text-sm text-muted-foreground">
+                      {selectedEntry.description}
+                    </p>
+                  )}
                   {selectedDef?.autoNote && (
                     <div className="mb-4 flex items-start gap-3 rounded-md border border-border bg-muted/40 px-4 py-3">
                       <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
@@ -372,7 +398,7 @@ export function PageEditorContent({
                   )}
                   {selectedDef ? (
                     <SectionFormRenderer
-                      fields={selectedDef.fields}
+                      fields={selectedFields}
                       data={sectionDraft ?? selectedBlock?.data ?? {}}
                       onChange={setSectionDraft}
                       showErrors={showSectionErrors}

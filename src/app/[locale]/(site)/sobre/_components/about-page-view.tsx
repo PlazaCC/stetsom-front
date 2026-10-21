@@ -159,7 +159,7 @@ export function AboutPageView({
         </EditableSection>
       ) : null}
       {!valuesData.hidden && valuesData.bases?.length ? (
-        <EditableSection target="section:values" editable={editable}>
+        <EditableSection target="section:values:bases" editable={editable}>
           <OurFoundations bases={valuesData.bases} />
         </EditableSection>
       ) : null}

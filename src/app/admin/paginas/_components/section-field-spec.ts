@@ -85,6 +85,32 @@ export interface SectionDef {
   kind: "editable" | "auto";
   autoNote?: string;
   fields: FieldSpec[];
+  /**
+   * Splits one stored block into several editor tabs, for content the site
+   * shows in different places. Each view edits only its `fieldKeys`; the
+   * block is still saved whole.
+   */
+  views?: SectionView[];
+}
+
+export interface SectionView {
+  /** Tab id is `${section_id}:${id}` — also the preview's editor target. */
+  id: string;
+  label: string;
+  description?: string;
+  icon?: LucideIcon;
+  fieldKeys: string[];
+}
+
+/** One tab of the page editor: a whole section, or one view of it. */
+export interface SectionNavEntry {
+  id: string;
+  section_id: string;
+  label: string;
+  description?: string;
+  icon: LucideIcon;
+  fields: FieldSpec[];
+  def: SectionDef;
 }
 
 const ICON_OPTIONS = [
@@ -272,7 +298,7 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
       type: "IMAGE",
       label: "Quem somos",
       description:
-        "Vídeo de fundo com título e botão Play (abre o vídeo num modal — arquivo, ou link YouTube/Vimeo por idioma); abaixo, texto centralizado e os cards de valores (editados em “Valores e bases”).",
+        "Vídeo de fundo com título e botão Play (abre o vídeo num modal — arquivo, ou link YouTube/Vimeo por idioma); abaixo, texto centralizado e os cards de valores (editados na aba “Valores”, logo ao lado).",
       icon: LayoutTemplate,
       kind: "editable",
       fields: [
@@ -326,6 +352,24 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
       label: "Valores e bases",
       icon: List,
       kind: "editable",
+      // On the site the value cards sit under "Quem somos" and the bases come
+      // after the timeline, so each gets its own tab in that position.
+      views: [
+        {
+          id: "items",
+          label: "Valores",
+          description:
+            "Cards exibidos logo abaixo do texto de “Quem somos” (ex.: Potência, Qualidade, Inovação).",
+          fieldKeys: ["items"],
+        },
+        {
+          id: "bases",
+          label: "Bases",
+          description:
+            "Fundamentos exibidos depois da linha do tempo (ex.: Excelência, Compromisso, Inovação contínua).",
+          fieldKeys: ["bases"],
+        },
+      ],
       fields: [
         {
           kind: "list",
@@ -654,8 +698,83 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
   ],
 };
 
+/**
+ * Tab order that mirrors the public page, for pages whose stored block order
+ * drifted from it. Pages not listed keep the stored order.
+ */
+const PAGE_NAV_ORDER: Record<string, string[]> = {
+  about: [
+    "hero",
+    "quality",
+    "values:items",
+    "timeline",
+    "values:bases",
+    "social",
+    "jobs-cta",
+  ],
+};
+
 export function getPageSections(pageId: string): SectionDef[] {
   return PAGE_SECTIONS[pageId] ?? [];
+}
+
+/** Editor tabs for the stored sections, one per view where a section has views. */
+export function getSectionNavEntries(
+  pageId: string,
+  sectionIds: string[],
+): SectionNavEntry[] {
+  const entries = sectionIds.flatMap((sectionId): SectionNavEntry[] => {
+    const def = findSectionDef(pageId, sectionId);
+    if (!def) return [];
+    if (!def.views?.length) {
+      return [
+        {
+          id: def.section_id,
+          section_id: def.section_id,
+          label: def.label,
+          description: def.description,
+          icon: def.icon,
+          fields: def.fields,
+          def,
+        },
+      ];
+    }
+    return def.views.map((view) => ({
+      id: `${def.section_id}:${view.id}`,
+      section_id: def.section_id,
+      label: view.label,
+      description: view.description,
+      icon: view.icon ?? def.icon,
+      fields: def.fields.filter((f) => view.fieldKeys.includes(f.key)),
+      def,
+    }));
+  });
+
+  const order = PAGE_NAV_ORDER[pageId];
+  if (!order) return entries;
+  const rank = (id: string) => {
+    const index = order.indexOf(id);
+    return index === -1 ? order.length : index;
+  };
+  return entries
+    .map((entry, index) => ({ entry, index }))
+    .sort((a, b) => rank(a.entry.id) - rank(b.entry.id) || a.index - b.index)
+    .map(({ entry }) => entry);
+}
+
+/** The stored section a tab id belongs to (`values:bases` → `values`). */
+export function sectionIdOfTarget(target: string): string {
+  return target.split(":")[0];
+}
+
+/**
+ * Normalizes a section id coming from the preview or a new block to a tab id:
+ * a section with views opens on its first view.
+ */
+export function toNavTarget(pageId: string, target: string): string {
+  if (target.includes(":")) return target;
+  const view = findSectionDef(pageId, target)?.views?.[0];
+  return view ? `${target}:${view.id}` : target;
 }
 
 export function findSectionDef(
