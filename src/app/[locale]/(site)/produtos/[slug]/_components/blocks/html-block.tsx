@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import DOMPurify from "dompurify";
+import { sanitizeBlockHtml } from "@/lib/utils/block-html";
 import { useSyncExternalStore } from "react";
 
 import type { BlockComponentProps } from "./types";
@@ -27,18 +27,21 @@ export function HtmlBlock({ block, rootProps }: BlockComponentProps) {
   const rawHtml = block.data.content ?? block.data.html;
   if (typeof rawHtml !== "string" || !rawHtml.trim()) return null;
 
-  const safeHtml = isClient
-    ? DOMPurify.sanitize(rawHtml, { USE_PROFILES: { html: true } })
-    : "";
+  const { html, css } = isClient
+    ? sanitizeBlockHtml(rawHtml, rootProps["data-block-scope"])
+    : { html: "", css: "" };
 
   return (
-    <article
-      id={rootProps.id}
-      data-block-scope={rootProps["data-block-scope"]}
-      data-editor-target={rootProps["data-editor-target"]}
-      className={cn("blockHtml", rootProps.className)}
-      style={rootProps.style}
-      dangerouslySetInnerHTML={{ __html: safeHtml }}
-    />
+    <>
+      {css && <style dangerouslySetInnerHTML={{ __html: css }} />}
+      <article
+        id={rootProps.id}
+        data-block-scope={rootProps["data-block-scope"]}
+        data-editor-target={rootProps["data-editor-target"]}
+        className={cn("blockHtml", rootProps.className)}
+        style={rootProps.style}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    </>
   );
 }

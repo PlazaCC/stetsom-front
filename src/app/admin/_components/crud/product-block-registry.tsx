@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { AdminTextarea } from "./admin-input";
 import { AdminTextEditor } from "./admin-text-editor";
+import { HtmlBlockPreview } from "./html-block-preview";
 import { LibraryAssetPicker } from "./library-asset-picker";
 import {
   readLibraryAssetRef,
@@ -216,6 +217,9 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
         value={str(data, "content")}
         onChange={(v) => onChange({ ...data, content: v })}
         placeholder="<section>...</section>"
+        rows={10}
+        monospace
+        renderPreview={(html) => <HtmlBlockPreview html={html} />}
       />
     ),
   },

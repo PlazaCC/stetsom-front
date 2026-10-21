@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 interface AdminTextEditorProps {
   value: string;
@@ -9,6 +9,10 @@ interface AdminTextEditorProps {
   placeholder?: string;
   rows?: number;
   className?: string;
+  /** Monospaced textarea, for code such as the free-HTML block. */
+  monospace?: boolean;
+  /** Custom "Pré-visualizar" tab; the default shows the plain text. */
+  renderPreview?: (value: string) => ReactNode;
 }
 
 export function AdminTextEditor({
@@ -17,6 +21,8 @@ export function AdminTextEditor({
   placeholder = "Digite o conteúdo...",
   rows = 6,
   className,
+  monospace = false,
+  renderPreview,
 }: AdminTextEditorProps) {
   const [mode, setMode] = useState<"edit" | "preview">("edit");
 
@@ -46,8 +52,13 @@ export function AdminTextEditor({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           rows={rows}
-          className="w-full resize-none bg-card p-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+          className={cn(
+            "w-full resize-none bg-card p-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none",
+            monospace && "font-mono text-xs",
+          )}
         />
+      ) : renderPreview && value.trim() ? (
+        <div className="min-h-24 p-3">{renderPreview(value)}</div>
       ) : (
         <div className="min-h-24 p-3 text-sm whitespace-pre-wrap text-foreground">
           {value || (
