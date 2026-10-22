@@ -20,12 +20,11 @@ export type WizardMode = "create" | "edit";
 
 /**
  * A product gallery image, always backed by a library asset (`library_id`).
- * `image_id` is set once the link is persisted on the product; new picks carry
- * only the `library_id` until saved.
+ * `id` is a stable client-generated id for new picks and the persisted
+ * `image_id` for existing product images.
  */
 export interface WizardImage {
   id: string;
-  image_id?: string;
   library_id: string;
   preview_url: string;
   order: number;
@@ -58,11 +57,11 @@ export interface WizardVariation {
 /** A product file linked from the library. `type` groups it into the Certificados / Manuais sections. */
 export interface WizardFile {
   id: string;
-  file_id?: string;
   library_id: string;
   file_url: string;
   filename?: string;
   type: LibraryAssetType;
+  locale?: LocaleInput | null;
   is_active: boolean;
 }
 
@@ -99,10 +98,6 @@ export interface WizardState {
   activeVariationId: string;
   blocks: DraftBlock[];
   files: WizardFile[];
-
-  initialImageIds: string[];
-  initialBlockIds: string[];
-  initialFileIds: string[];
 
   isDirty: boolean;
 }
@@ -143,7 +138,14 @@ export type WizardAction =
   | { type: "add_file"; file: WizardFile }
   | { type: "remove_file"; id: string }
   | { type: "toggle_file_active"; id: string }
-  | { type: "mark_saved"; productId: string; status: ProductStatus };
+  | {
+      type: "mark_saved";
+      productId: string;
+      status: ProductStatus;
+      blocks: DraftBlock[];
+      images: WizardImage[];
+      files: WizardFile[];
+    };
 
 const DEFAULT_VARIATION_ID = "variation-default";
 
@@ -257,7 +259,6 @@ function hydrateImages(detail?: CmsProductDetailPayload): WizardImage[] {
     .sort((a, b) => a.order - b.order)
     .map((img) => ({
       id: img.image_id,
-      image_id: img.image_id,
       library_id: img.library_id,
       preview_url: img.image_url ?? "",
       order: img.order,
@@ -281,11 +282,11 @@ function hydrateFiles(detail?: CmsProductDetailPayload): WizardFile[] {
   if (!detail) return [];
   return (detail.product.files ?? []).map((f) => ({
     id: f.file_id,
-    file_id: f.file_id,
     library_id: f.library_id,
     file_url: f.file_url ?? "",
     filename: f.filename ?? undefined,
     type: (f.type as LibraryAssetType) ?? "OTHER",
+    locale: f.locale ?? null,
     is_active: f.is_active,
   }));
 }
@@ -359,10 +360,6 @@ export function initWizardState(
     activeVariationId: variations[0]!.id,
     blocks: hydrateBlocks(detail),
     files: hydrateFiles(detail),
-
-    initialImageIds: (p?.images ?? []).map((i) => i.image_id),
-    initialBlockIds: (p?.page_blocks ?? []).map((b) => b.block_id),
-    initialFileIds: (p?.files ?? []).map((f) => f.file_id),
 
     isDirty: mode === "edit",
   };
@@ -459,6 +456,9 @@ export function wizardReducer(
         ...state,
         productId: action.productId,
         status: action.status,
+        blocks: action.blocks,
+        images: action.images,
+        files: action.files,
         isDirty: false,
       };
 
@@ -553,6 +553,23 @@ export function buildPayload(
           order: s.order,
           highlighted: s.highlighted,
         })),
+    })),
+    blocks: state.blocks.map((block) => ({
+      id: block.id,
+      type: block.type as NonNullable<
+        PostApiProductsBody["blocks"]
+      >[number]["type"],
+      data: block.data,
+    })),
+    images: state.images.map((image) => ({
+      id: image.id,
+      library_id: image.library_id,
+    })),
+    files: state.files.map((file) => ({
+      id: file.id,
+      library_id: file.library_id,
+      locale: file.locale,
+      is_active: file.is_active,
     })),
   };
 }

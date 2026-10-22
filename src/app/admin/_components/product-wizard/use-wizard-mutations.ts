@@ -15,8 +15,7 @@ import type {
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState, type Dispatch } from "react";
-import { syncBlocks, syncFiles, syncImages } from "./wizard-sync";
+import { useEffect, useMemo, useRef, useState, type Dispatch } from "react";
 import {
   buildPayload,
   combineLaunchDate,
@@ -50,6 +49,8 @@ export function useWizardMutations(
 
   const [publishedResult, setPublishedResult] =
     useState<ProductMutationResult | null>(null);
+  const savingRef = useRef(false);
+  const [isSavingCollections, setIsSavingCollections] = useState(false);
 
   const categoriesQuery = useGetApiCategoriesAdmin();
   // A template belongs to a single category, so only the selected category's
@@ -99,7 +100,8 @@ export function useWizardMutations(
   const isSaving =
     createMutation.isPending ||
     updateMutation.isPending ||
-    deleteMutation.isPending;
+    deleteMutation.isPending ||
+    isSavingCollections;
 
   useEffect(() => {
     if (!state.isDirty) return;
@@ -114,48 +116,69 @@ export function useWizardMutations(
   async function handleSave(
     intent: PublishIntent,
   ): Promise<ProductMutationResult> {
-    const launchISO = combineLaunchDate(state.launch_date, state.launch_time);
-    const status = deriveStatus(intent, launchISO);
-    const payload = buildPayload(state, status);
-    const basePayload =
-      status === "DRAFT" ? payload : { ...payload, status: "DRAFT" as const };
+    if (savingRef.current) throw new Error("A save is already in progress");
+    savingRef.current = true;
+    setIsSavingCollections(true);
 
-    let id = state.productId;
-    if (id) {
-      await updateMutation.mutateAsync({ id, body: basePayload });
-    } else {
-      const created = await createMutation.mutateAsync(basePayload);
-      id = created.id;
-    }
+    try {
+      const launchISO = combineLaunchDate(state.launch_date, state.launch_time);
+      const status = deriveStatus(intent, launchISO);
+      const payload = buildPayload(state, status);
 
-    if (id) {
-      try {
-        await syncBlocks(id, state.blocks, state.initialBlockIds);
-        await syncImages(id, state.images, state.initialImageIds);
-        await syncFiles(id, state.files, state.initialFileIds);
-      } catch (syncErr) {
-        adminToast.apiError(
-          syncErr,
-          "Produto salvo, mas houve erro ao sincronizar blocos/mídias.",
-        );
-        throw syncErr;
-      }
-    }
+      const product = state.productId
+        ? await updateMutation.mutateAsync({
+            id: state.productId,
+            body: payload satisfies PatchApiProductsIdBody,
+          })
+        : await createMutation.mutateAsync(payload);
 
-    if (status !== "DRAFT") {
-      await updateMutation.mutateAsync({
-        id: id!,
-        body: { status, launch_date: payload.launch_date },
+      dispatch({
+        type: "mark_saved",
+        productId: product.id,
+        status: product.status,
+        blocks: product.page_blocks.map((block) => ({
+          id: block.block_id,
+          type: block.type,
+          data: block.data,
+          order: block.order,
+        })),
+        images: product.images.map((image) => ({
+          id: image.image_id,
+          library_id: image.library_id,
+          preview_url:
+            image.image_url ??
+            state.images.find((item) => item.id === image.image_id)
+              ?.preview_url ??
+            "",
+          order: image.order,
+        })),
+        files: product.files.map((file) => ({
+          id: file.file_id,
+          library_id: file.library_id,
+          file_url:
+            file.file_url ??
+            state.files.find((item) => item.id === file.file_id)?.file_url ??
+            "",
+          filename:
+            file.filename ??
+            state.files.find((item) => item.id === file.file_id)?.filename,
+          type:
+            (file.type as WizardState["files"][number]["type"]) ??
+            state.files.find((item) => item.id === file.file_id)?.type ??
+            "OTHER",
+          locale: file.locale ?? null,
+          is_active: file.is_active,
+        })),
       });
+      return {
+        id: product.id,
+        slug: product.slug,
+        status: product.status,
+      };
+    } finally {
+      savingRef.current = false;
+      setIsSavingCollections(false);
     }
-
-    dispatch({ type: "mark_saved", productId: id!, status });
-    const slug = selectProductSlug(state);
-    return {
-      id: id!,
-      slug,
-      status,
-    };
   }
 
   /**

@@ -7,7 +7,11 @@
  */
 import type { LocaleInput } from "./localeInput";
 
-export type PatchApiProductsIdFilesFileIdBody = {
-  locale?: LocaleInput;
-  is_active?: boolean;
+export type PatchApiProductsIdBodyFilesItem = {
+  /** @minLength 1 */
+  id: string;
+  /** @minLength 1 */
+  library_id: string;
+  locale?: LocaleInput | null;
+  is_active: boolean;
 };

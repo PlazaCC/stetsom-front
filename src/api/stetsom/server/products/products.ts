@@ -15,31 +15,11 @@ import type { GetApiProductsPreviewSlug200 } from "../../model/getApiProductsPre
 
 import type { GetApiProductsPreviewSlugParams } from "../../model/getApiProductsPreviewSlugParams";
 
-import type { PatchApiProductsId200 } from "../../model/patchApiProductsId200";
-
-import type { PatchApiProductsIdBlocksBlockIdBody } from "../../model/patchApiProductsIdBlocksBlockIdBody";
-
 import type { PatchApiProductsIdBody } from "../../model/patchApiProductsIdBody";
-
-import type { PatchApiProductsIdFilesFileIdBody } from "../../model/patchApiProductsIdFilesFileIdBody";
-
-import type { PatchApiProductsIdImagesImageIdBody } from "../../model/patchApiProductsIdImagesImageIdBody";
-
-import type { PostApiProducts201 } from "../../model/postApiProducts201";
 
 import type { PostApiProductsBody } from "../../model/postApiProductsBody";
 
-import type { PostApiProductsIdBlocksBody } from "../../model/postApiProductsIdBlocksBody";
-
-import type { PostApiProductsIdFilesBody } from "../../model/postApiProductsIdFilesBody";
-
-import type { PostApiProductsIdImagesBody } from "../../model/postApiProductsIdImagesBody";
-
-import type { ProductBlock } from "../../model/productBlock";
-
-import type { ProductFile } from "../../model/productFile";
-
-import type { ProductImage } from "../../model/productImage";
+import type { Product } from "../../model/product";
 
 import { serverOrvalClient } from "../../orval-server";
 
@@ -47,7 +27,7 @@ import { serverOrvalClient } from "../../orval-server";
  * @summary Create product
  */
 export const postApiProducts = (postApiProductsBody: PostApiProductsBody) => {
-  return serverOrvalClient<PostApiProducts201>({
+  return serverOrvalClient<Product>({
     url: `/api/products`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -93,7 +73,7 @@ export const patchApiProductsId = (
   id: string,
   patchApiProductsIdBody: PatchApiProductsIdBody,
 ) => {
-  return serverOrvalClient<PatchApiProductsId200>({
+  return serverOrvalClient<Product>({
     url: `/api/products/${id}`,
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -106,144 +86,6 @@ export const patchApiProductsId = (
 export const deleteApiProductsId = (id: string) => {
   return serverOrvalClient<unknown>({
     url: `/api/products/${id}`,
-    method: "DELETE",
-  });
-};
-/**
- * @summary Add image
- */
-export const postApiProductsIdImages = (
-  id: string,
-  postApiProductsIdImagesBody: PostApiProductsIdImagesBody,
-) => {
-  return serverOrvalClient<ProductImage>({
-    url: `/api/products/${id}/images`,
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    data: postApiProductsIdImagesBody,
-  });
-};
-/**
- * @summary Reorder image
- */
-export const patchApiProductsIdImagesImageId = (
-  id: string,
-  imageId: string,
-  patchApiProductsIdImagesImageIdBody: PatchApiProductsIdImagesImageIdBody,
-) => {
-  return serverOrvalClient<ProductImage>({
-    url: `/api/products/${id}/images/${imageId}`,
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    data: patchApiProductsIdImagesImageIdBody,
-  });
-};
-/**
- * @summary Remove image
- */
-export const deleteApiProductsIdImagesImageId = (
-  id: string,
-  imageId: string,
-) => {
-  return serverOrvalClient<unknown>({
-    url: `/api/products/${id}/images/${imageId}`,
-    method: "DELETE",
-  });
-};
-/**
- * @summary List blocks
- */
-export const getApiProductsIdBlocks = (id: string) => {
-  return serverOrvalClient<ProductBlock[]>({
-    url: `/api/products/${id}/blocks`,
-    method: "GET",
-  });
-};
-/**
- * @summary Add block
- */
-export const postApiProductsIdBlocks = (
-  id: string,
-  postApiProductsIdBlocksBody: PostApiProductsIdBlocksBody,
-) => {
-  return serverOrvalClient<ProductBlock>({
-    url: `/api/products/${id}/blocks`,
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    data: postApiProductsIdBlocksBody,
-  });
-};
-/**
- * @summary Update block
- */
-export const patchApiProductsIdBlocksBlockId = (
-  id: string,
-  blockId: string,
-  patchApiProductsIdBlocksBlockIdBody: PatchApiProductsIdBlocksBlockIdBody,
-) => {
-  return serverOrvalClient<ProductBlock>({
-    url: `/api/products/${id}/blocks/${blockId}`,
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    data: patchApiProductsIdBlocksBlockIdBody,
-  });
-};
-/**
- * @summary Remove block
- */
-export const deleteApiProductsIdBlocksBlockId = (
-  id: string,
-  blockId: string,
-) => {
-  return serverOrvalClient<unknown>({
-    url: `/api/products/${id}/blocks/${blockId}`,
-    method: "DELETE",
-  });
-};
-/**
- * @summary List files
- */
-export const getApiProductsIdFiles = (id: string) => {
-  return serverOrvalClient<ProductFile[]>({
-    url: `/api/products/${id}/files`,
-    method: "GET",
-  });
-};
-/**
- * @summary Add file
- */
-export const postApiProductsIdFiles = (
-  id: string,
-  postApiProductsIdFilesBody: PostApiProductsIdFilesBody,
-) => {
-  return serverOrvalClient<ProductFile>({
-    url: `/api/products/${id}/files`,
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    data: postApiProductsIdFilesBody,
-  });
-};
-/**
- * @summary Update file
- */
-export const patchApiProductsIdFilesFileId = (
-  id: string,
-  fileId: string,
-  patchApiProductsIdFilesFileIdBody: PatchApiProductsIdFilesFileIdBody,
-) => {
-  return serverOrvalClient<ProductFile>({
-    url: `/api/products/${id}/files/${fileId}`,
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    data: patchApiProductsIdFilesFileIdBody,
-  });
-};
-/**
- * @summary Remove file
- */
-export const deleteApiProductsIdFilesFileId = (id: string, fileId: string) => {
-  return serverOrvalClient<unknown>({
-    url: `/api/products/${id}/files/${fileId}`,
     method: "DELETE",
   });
 };
@@ -264,37 +106,4 @@ export type PatchApiProductsIdResult = NonNullable<
 >;
 export type DeleteApiProductsIdResult = NonNullable<
   Awaited<ReturnType<typeof deleteApiProductsId>>
->;
-export type PostApiProductsIdImagesResult = NonNullable<
-  Awaited<ReturnType<typeof postApiProductsIdImages>>
->;
-export type PatchApiProductsIdImagesImageIdResult = NonNullable<
-  Awaited<ReturnType<typeof patchApiProductsIdImagesImageId>>
->;
-export type DeleteApiProductsIdImagesImageIdResult = NonNullable<
-  Awaited<ReturnType<typeof deleteApiProductsIdImagesImageId>>
->;
-export type GetApiProductsIdBlocksResult = NonNullable<
-  Awaited<ReturnType<typeof getApiProductsIdBlocks>>
->;
-export type PostApiProductsIdBlocksResult = NonNullable<
-  Awaited<ReturnType<typeof postApiProductsIdBlocks>>
->;
-export type PatchApiProductsIdBlocksBlockIdResult = NonNullable<
-  Awaited<ReturnType<typeof patchApiProductsIdBlocksBlockId>>
->;
-export type DeleteApiProductsIdBlocksBlockIdResult = NonNullable<
-  Awaited<ReturnType<typeof deleteApiProductsIdBlocksBlockId>>
->;
-export type GetApiProductsIdFilesResult = NonNullable<
-  Awaited<ReturnType<typeof getApiProductsIdFiles>>
->;
-export type PostApiProductsIdFilesResult = NonNullable<
-  Awaited<ReturnType<typeof postApiProductsIdFiles>>
->;
-export type PatchApiProductsIdFilesFileIdResult = NonNullable<
-  Awaited<ReturnType<typeof patchApiProductsIdFilesFileId>>
->;
-export type DeleteApiProductsIdFilesFileIdResult = NonNullable<
-  Awaited<ReturnType<typeof deleteApiProductsIdFilesFileId>>
 >;

@@ -6,6 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PatchApiProductsIdBlocksBlockIdBodyData = {
-  [key: string]: unknown;
+export type PostApiProductsBodyImagesItem = {
+  /** @minLength 1 */
+  id: string;
+  /** @minLength 1 */
+  library_id: string;
 };

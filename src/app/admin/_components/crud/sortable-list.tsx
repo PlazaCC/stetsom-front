@@ -69,6 +69,7 @@ function SortableItem<T>({
       disabled={disabled}
       aria-label="Reordenar"
       className="cursor-grab touch-none text-muted-foreground active:cursor-grabbing disabled:cursor-not-allowed disabled:opacity-50"
+      onClick={(event) => event.stopPropagation()}
       {...attributes}
       {...listeners}
     >

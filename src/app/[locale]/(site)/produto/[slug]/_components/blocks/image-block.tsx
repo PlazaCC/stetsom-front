@@ -16,7 +16,7 @@ export function ImageBlock({
 }: BlockComponentProps) {
   const data = toImageBlockData(block.data);
   const { title, description } = toBlockHeading(block.data);
-  const images = data.images?.length ? data.images : [fallbackImage];
+  const image = data.file_url || fallbackImage;
   const hasHeading = Boolean(title || description);
 
   if (data.layout === "side") {
@@ -25,18 +25,13 @@ export function ImageBlock({
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
           {/* Imagem: 50% no desktop */}
           <div className="flex w-full flex-col gap-3 lg:w-1/2">
-            {images.map((src, i) => (
-              <div
-                key={`${block.block_id}-${i}`}
-                className="blockImage__item relative w-full"
-              >
-                <img
-                  src={src}
-                  alt={`${productName} visual ${i + 1}`}
-                  className="blockImage__image h-auto w-full"
-                />
-              </div>
-            ))}
+            <div className="blockImage__item relative w-full">
+              <img
+                src={image}
+                alt={`${productName} visual`}
+                className="blockImage__image h-auto w-full"
+              />
+            </div>
           </div>
           {/* Conteúdo ao lado — só renderiza (e só ganha padding) com conteúdo */}
           {hasHeading && (
@@ -66,18 +61,13 @@ export function ImageBlock({
         classPrefix="blockImage"
         className="mb-1"
       />
-      {images.map((src, i) => (
-        <div
-          key={`${block.block_id}-${i}`}
-          className="blockImage__item relative w-full"
-        >
-          <img
-            src={src}
-            alt={`${productName} visual ${i + 1}`}
-            className="blockImage__image h-auto w-full"
-          />
-        </div>
-      ))}
+      <div className="blockImage__item relative w-full">
+        <img
+          src={image}
+          alt={`${productName} visual`}
+          className="blockImage__image h-auto w-full"
+        />
+      </div>
       {data.caption && (
         <p className="blockImage__caption text-sm text-text-subtle">
           {data.caption}

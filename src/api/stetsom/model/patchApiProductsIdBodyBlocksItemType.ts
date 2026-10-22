@@ -6,10 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PatchApiProductsIdBlocksBlockIdBodyType =
-  (typeof PatchApiProductsIdBlocksBlockIdBodyType)[keyof typeof PatchApiProductsIdBlocksBlockIdBodyType];
+export type PatchApiProductsIdBodyBlocksItemType =
+  (typeof PatchApiProductsIdBodyBlocksItemType)[keyof typeof PatchApiProductsIdBodyBlocksItemType];
 
-export const PatchApiProductsIdBlocksBlockIdBodyType = {
+export const PatchApiProductsIdBodyBlocksItemType = {
   IMAGE: "IMAGE",
   VIDEO: "VIDEO",
   HTML: "HTML",

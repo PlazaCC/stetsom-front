@@ -6,10 +6,4 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PatchApiProductsIdImagesImageIdBody = {
-  /**
-   * @minimum -9007199254740991
-   * @maximum 9007199254740991
-   */
-  order: number;
-};
+export type PatchApiProductsIdBodyBlocksItemData = { [key: string]: unknown };

@@ -126,10 +126,13 @@ export function EditorPanel({
             }
             menuOpen={selection.kind === "addBlock"}
             onMenuOpenChange={(open) => {
-              if (!open) onSelectionChange({ kind: "blocks" });
+              onSelectionChange(
+                open
+                  ? { kind: "addBlock", index: state.blocks.length }
+                  : { kind: "blocks" },
+              );
             }}
             insertIndex={selection.kind === "addBlock" ? selection.index : null}
-            compact={compact}
           />
         )}
         {activeSection === "publish" && (

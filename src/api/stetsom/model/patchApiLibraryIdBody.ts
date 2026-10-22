@@ -6,8 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { PatchApiLibraryIdBodyAlt } from "./patchApiLibraryIdBodyAlt";
+import type { PatchApiLibraryIdBodyType } from "./patchApiLibraryIdBodyType";
 
 export type PatchApiLibraryIdBody = {
+  type?: PatchApiLibraryIdBodyType;
   /** @nullable */
   alt?: PatchApiLibraryIdBodyAlt;
   tags?: string[];

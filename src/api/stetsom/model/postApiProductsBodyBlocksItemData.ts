@@ -6,8 +6,4 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostApiProductsIdImagesBodyFile = {
-  fileName: string;
-  mimeType: string;
-  sizeBytes?: number;
-};
+export type PostApiProductsBodyBlocksItemData = { [key: string]: unknown };
