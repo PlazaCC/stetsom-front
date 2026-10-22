@@ -11,7 +11,10 @@ import type { PatchApiCategoriesIdBodySlug } from "./patchApiCategoriesIdBodySlu
 export type PatchApiCategoriesIdBody = {
   name?: PatchApiCategoriesIdBodyName;
   slug?: PatchApiCategoriesIdBodySlug;
-  icon_library_id?: string;
+  /** @nullable */
+  icon_library_id?: string | null;
+  /** @nullable */
+  all_products_cover_library_id?: string | null;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991

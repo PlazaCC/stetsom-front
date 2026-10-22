@@ -136,8 +136,7 @@ function TemplateFormInner({
   const [isDirty, setIsDirty] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  // Categories no longer have a per-id route — deep-link with a query param.
-  const backHref = `/admin/categorias?category=${categoryId}`;
+  const backHref = `/admin/categorias/${categoryId}`;
 
   // An attribute sits in exactly one group, so the pickers only offer the
   // attributes and groups not placed yet.

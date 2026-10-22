@@ -16,6 +16,10 @@ import {
   type FilterChip,
 } from "@/app/admin/_components/crud/filter-chips";
 import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
 
 import { useGetApiProductsAdmin } from "@/api/stetsom";
 import type { CmsProductRow, CmsProductRowStatus } from "@/api/stetsom/model";
@@ -187,12 +191,11 @@ export default function AdminProdutos() {
       headerClassName: "text-right",
       className: "text-right",
       render: (row) => (
-        <Link
-          href={`/admin/produtos/${row.id}`}
-          className="rounded border border-border px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"
-        >
-          Editar
-        </Link>
+        <AdminRowActions>
+          <AdminRowAction href={`/admin/produtos/${row.id}`}>
+            Editar
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];

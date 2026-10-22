@@ -52,19 +52,24 @@ function withCatalogSearchParams(
 async function lineCardsFor(
   categories: PublicCategory[],
   categorySlug: string,
-): Promise<CatalogLineCardData[]> {
+): Promise<{
+  allProductsCoverUrl: string | null;
+  lines: CatalogLineCardData[];
+}> {
   const category = categories.find((item) => item.slug === categorySlug);
-  if (!category) return [];
+  if (!category) return { allProductsCoverUrl: null, lines: [] };
 
-  return [...category.lines]
-    .sort((a, b) => a.order - b.order)
-    .map((line) => ({
-      line_id: line.line_id,
-      name: line.name,
-      slug: line.slug,
-      icon_url: line.icon_url ?? null,
-      cover_url: line.cover_url ?? line.icon_url ?? null,
-    }));
+  return {
+    allProductsCoverUrl: category.all_products_cover_url,
+    lines: [...category.lines]
+      .sort((a, b) => a.order - b.order)
+      .map((line) => ({
+        line_id: line.line_id,
+        name: line.name,
+        slug: line.slug,
+        cover_url: line.cover_url,
+      })),
+  };
 }
 
 export async function renderCatalogPage({

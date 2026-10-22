@@ -38,6 +38,7 @@ interface AdminDataTableProps<T> {
   columns: AdminTableColumn<T>[];
   data: T[];
   isLoading?: boolean;
+  error?: React.ReactNode;
   emptyTitle?: string;
   emptyDescription?: string;
   emptyIcon?: LucideIcon;
@@ -55,6 +56,7 @@ export function AdminDataTable<T>({
   columns,
   data,
   isLoading,
+  error,
   emptyTitle,
   emptyDescription,
   emptyIcon,
@@ -98,9 +100,9 @@ export function AdminDataTable<T>({
     <div className={cn("flex h-full min-h-0 flex-col", className)}>
       {/* ── Top bar ──────────────────────────────────────────────────────────── */}
       {(toolbar || action) && (
-        <div className="flex shrink-0 items-start justify-between gap-4 pb-3">
+        <div className="flex shrink-0 flex-col gap-3 pb-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <div className="min-w-0 flex-1">{toolbar}</div>
-          {action && <div className="shrink-0">{action}</div>}
+          {action && <div className="w-full shrink-0 sm:w-auto">{action}</div>}
         </div>
       )}
 
@@ -113,7 +115,11 @@ export function AdminDataTable<T>({
        * chain (min-h-0 flex-1); the parent page bounds it via AdminPageLayout.
        */}
       <div className="min-h-0 flex-1 overflow-y-auto rounded-card border border-border bg-card shadow-cms-card">
-        {isLoading ? (
+        {error ? (
+          <div className="flex items-center justify-center px-6 py-16 text-center text-sm text-destructive">
+            {error}
+          </div>
+        ) : isLoading ? (
           <div className="flex items-center justify-center py-16">
             <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
           </div>

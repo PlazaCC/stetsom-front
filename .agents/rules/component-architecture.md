@@ -12,6 +12,11 @@ applyTo: 'src/**/*.{ts,tsx}'
 - Use `cn()` from `@/lib/utils` for conditional Tailwind class merging
 - Static data constants at the top of the file in `SCREAMING_SNAKE_CASE`
 - Avoid excessive prop drilling — prefer component composition
+- Keep JSX readable: extract sections larger than one responsibility into named
+  components. Avoid nested ternaries; calculate display state before `return` or
+  use early-return components.
+- Components shared by two Admin features belong in
+  `src/app/admin/_components/`, never in a feature's `_components/` folder.
 
 ## Folder Structure — Three Destinations
 

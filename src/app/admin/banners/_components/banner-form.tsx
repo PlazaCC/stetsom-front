@@ -7,6 +7,7 @@ import {
 } from "@/app/admin/_components/crud/admin-form-section";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import { AdminProductPicker } from "@/app/admin/_components/crud/admin-product-picker";
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { Input } from "@/components/ui/input";
@@ -20,16 +21,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Banner, BannerStatus, I18nString } from "@/api/stetsom/model";
-import {
-  useGetApiProductsAdmin,
-  useGetApiProductsAdminId,
-  useGetApiLibraryId,
-} from "@/api/stetsom";
-import type { CmsProductRow } from "@/api/stetsom/model";
+import { useGetApiLibraryId } from "@/api/stetsom";
 import { currentAssetUrl } from "@/app/admin/_components/crud/library-asset-ref";
 import { toDisplayLocale } from "@/i18n/locale";
-import { Image, Check, ChevronDown, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Image } from "lucide-react";
+import { useState } from "react";
 
 /**
  * Banner form state - UI layer representation
@@ -99,166 +95,6 @@ export function bannerToFormState(b: Banner): BannerFormState {
     desktop_image_library_id: b.desktop_image_library_id,
     mobile_image_library_id: b.mobile_image_library_id ?? "",
   };
-}
-
-export function ProductReferenceField({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [loadedProducts, setLoadedProducts] = useState<CmsProductRow[]>([]);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(query.trim());
-      setPage(1);
-    }, 350);
-    return () => clearTimeout(timer);
-  }, [query]);
-  const { data, isLoading, isError } = useGetApiProductsAdmin(
-    { page, pageSize: 20, q: debouncedQuery || undefined },
-    { query: { enabled: open } },
-  );
-  const { data: selectedProduct } = useGetApiProductsAdminId(value, {
-    query: { enabled: Boolean(value) && !open },
-  });
-  const products = data?.items ?? [];
-  useEffect(() => {
-    if (!data) return;
-    const timer = setTimeout(() => {
-      setLoadedProducts((current) =>
-        page === 1
-          ? data.items
-          : [
-              ...current,
-              ...data.items.filter(
-                (item) => !current.some((existing) => existing.id === item.id),
-              ),
-            ],
-      );
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [data, page]);
-  const hasMore = Boolean(data && page < data.totalPages);
-  const selected =
-    products.find((product) => product.id === value) ??
-    selectedProduct?.product;
-  const selectedName = selected
-    ? typeof selected.name === "string"
-      ? selected.name
-      : selected.name.pt
-    : "";
-  const selectedSku = selected && "sku" in selected ? selected.sku : null;
-
-  return (
-    <div className="relative">
-      <button
-        type="button"
-        className="flex h-9 w-full items-center justify-between rounded-md border border-border bg-card px-3 text-left text-sm"
-        onClick={() => setOpen((current) => !current)}
-      >
-        <span
-          className={selected ? "text-foreground" : "text-muted-foreground"}
-        >
-          {selected
-            ? `${selectedName}${selectedSku ? ` · ${selectedSku}` : ""}`
-            : "Selecione um produto"}
-        </span>
-        <ChevronDown className="size-4 text-muted-foreground" />
-      </button>
-      {open && (
-        <div className="absolute z-20 mt-1 w-full rounded-md border border-border bg-card p-2 shadow-lg">
-          <Input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar por nome ou EAN"
-            autoFocus
-          />
-          <div className="mt-2 max-h-64 overflow-y-auto">
-            {isLoading && (
-              <p className="p-3 text-sm text-muted-foreground">Carregando...</p>
-            )}
-            {isError && (
-              <p className="p-3 text-sm text-destructive">
-                Não foi possível carregar produtos.
-              </p>
-            )}
-            {!isLoading && !isError && products.length === 0 && (
-              <p className="p-3 text-sm text-muted-foreground">
-                Nenhum produto encontrado.
-              </p>
-            )}
-            {loadedProducts.map((product) => (
-              <button
-                key={product.id}
-                type="button"
-                className="flex w-full items-start gap-2 rounded p-2 text-left hover:bg-muted"
-                onClick={() => {
-                  onChange(product.id);
-                  setOpen(false);
-                }}
-              >
-                {product.id === value ? (
-                  <Check className="mt-0.5 size-4" />
-                ) : (
-                  <span className="size-4" />
-                )}
-                <div className="size-8 shrink-0 overflow-hidden rounded bg-muted">
-                  {product.thumbnail_url && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={product.thumbnail_url}
-                      alt=""
-                      className="size-full object-cover"
-                    />
-                  )}
-                </div>
-                <span className="min-w-0 text-sm">
-                  <span className="block truncate">{product.name}</span>
-                  <span className="block text-xs text-muted-foreground">
-                    {[
-                      product.sku,
-                      product.category,
-                      product.status,
-                      product.is_discontinued ? "Descontinuado" : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" · ")}
-                  </span>
-                </span>
-              </button>
-            ))}
-            {hasMore && (
-              <button
-                type="button"
-                className="w-full p-2 text-sm text-primary hover:bg-muted"
-                onClick={() => setPage((current) => current + 1)}
-              >
-                Ver mais
-              </button>
-            )}
-          </div>
-          {value && (
-            <button
-              type="button"
-              className="mt-2 flex w-full items-center justify-center gap-1 border-t border-border pt-2 text-xs text-muted-foreground hover:text-destructive"
-              onClick={() => {
-                onChange("");
-                setOpen(false);
-              }}
-            >
-              <X className="size-3" /> Limpar seleção
-            </button>
-          )}
-        </div>
-      )}
-    </div>
-  );
 }
 
 function BannerImagePreview({
@@ -390,7 +226,7 @@ export function BannerForm({
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <AdminLabel>Produto associado</AdminLabel>
-                    <ProductReferenceField
+                    <AdminProductPicker
                       value={draft.product_id}
                       onChange={(value) => onDraftChange("product_id", value)}
                     />

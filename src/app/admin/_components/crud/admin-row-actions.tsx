@@ -16,7 +16,9 @@ export function AdminRowActions({
   className?: string;
 }) {
   return (
-    <div className={cn("flex items-center justify-end gap-2", className)}>
+    <div
+      className={cn("flex flex-wrap items-center justify-end gap-2", className)}
+    >
       {children}
     </div>
   );
@@ -51,7 +53,7 @@ export function AdminRowAction({
   children,
 }: AdminRowActionProps) {
   const classes = cn(
-    "rounded border px-3 py-1 text-xs font-medium transition-colors disabled:pointer-events-none disabled:opacity-50",
+    "inline-flex min-h-8 cursor-pointer items-center justify-center gap-1.5 rounded border px-3 py-1 text-xs font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:size-3.5 [&_svg]:shrink-0",
     VARIANT_CLASS[variant],
     className,
   );

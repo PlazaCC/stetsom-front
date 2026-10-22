@@ -15,6 +15,8 @@ export interface PublicCategoryInput {
   icon_library_id?: string;
   /** @nullable */
   icon_url?: string | null;
+  /** @nullable */
+  all_products_cover_url: string | null;
   lines: PublicLineInput[];
   /**
    * @minimum -9007199254740991

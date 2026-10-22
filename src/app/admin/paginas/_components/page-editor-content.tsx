@@ -253,6 +253,7 @@ export function PageEditorContent({
       name: category.name.pt,
       slug: category.slug.pt,
       localized_slugs: category.slug,
+      all_products_cover_url: null,
       lines: category.lines.map((line) => ({
         line_id: line.line_id,
         name: line.name.pt,

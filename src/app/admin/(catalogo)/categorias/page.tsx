@@ -1,10 +1,5 @@
-import { CategoriesContent } from "./_components/categories-content";
+import { CategoriesList } from "./categories-list";
 
-export default async function AdminCategoriasPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ category?: string }>;
-}) {
-  const { category } = await searchParams;
-  return <CategoriesContent initialSelectedId={category} />;
+export default function AdminCategoriasPage() {
+  return <CategoriesList />;
 }

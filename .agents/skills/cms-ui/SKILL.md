@@ -22,6 +22,14 @@ before adding a screen, form, dialog, table, or any `src/components/ui` primitiv
 - The admin shell owns the page scroll — `<main>` is the only scroll container. Don't
   nest scroll containers unless the screen deliberately fills `<main>` and owns a single
   inner scroll (see the biblioteca and product-editor layouts).
+- `AdminShellHeader` is the canonical header. Register every Admin route in
+  `src/lib/cms/config.ts` and use `SetRouteLabel` for dynamic edit labels; do not
+  create page-specific title or breadcrumb bars.
+- Use `/admin/produtos` as the list UX reference. Related records need debounce,
+  server-side filters, `AdminDataTable`, `AdminPagination`, loading/error/empty states
+  and `next/link`.
+- Prefer named components and early returns over long JSX expressions and nested
+  ternaries. Promote selectors used by multiple features to the Admin shared folder.
 
 ## Installing a component
 

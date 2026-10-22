@@ -48,7 +48,10 @@ interface CatalogContentProps {
    * selected). When present the page renders the category's lines as cards
    * instead of a product grid; `null`/absent on the Novidades and line views.
    */
-  lineCards?: CatalogLineCardData[] | null;
+  lineCards?: {
+    allProductsCoverUrl: string | null;
+    lines: CatalogLineCardData[];
+  } | null;
 }
 
 function CatalogContentInner({
@@ -231,7 +234,7 @@ function CatalogContentInner({
     <div>
       <CatalogHero
         totalProducts={catalog.total}
-        totalLines={isLineCardsView ? lineCards?.length : undefined}
+        totalLines={isLineCardsView ? lineCards?.lines.length : undefined}
       />
 
       <CatalogCategoryBar
@@ -248,7 +251,8 @@ function CatalogContentInner({
         <Container>
           {isLineCardsView ? (
             <CatalogLinesGrid
-              lines={lineCards ?? []}
+              lines={lineCards?.lines ?? []}
+              allProductsCoverUrl={lineCards?.allProductsCoverUrl ?? null}
               onSelectLine={setActiveLine}
               onSelectAll={() => setShowAll(true)}
             />

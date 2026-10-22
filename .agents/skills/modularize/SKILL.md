@@ -15,6 +15,8 @@ Extends `/simplify` with a focus on **structural decomposition**: breaking large
 - A single component handles both data-fetching and presentation
 - UI sections inside `_components/` are large enough to warrant sub-components
 - A `"use client"` boundary wraps code that could be split into smaller server + client parts
+- A page is missing shell metadata, has nested scroll containers, or embeds a large
+  overlay inside a clipped card
 
 ## Procedure
 

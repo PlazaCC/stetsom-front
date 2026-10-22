@@ -9,6 +9,9 @@ import type { CmsProductRowInputStatus } from "./cmsProductRowInputStatus";
 
 export interface CmsProductRowInput {
   id: string;
+  category_id: string;
+  /** @nullable */
+  line_id?: string | null;
   /** @nullable */
   sku: string | null;
   slug: string;
