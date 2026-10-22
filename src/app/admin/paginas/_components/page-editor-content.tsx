@@ -17,6 +17,7 @@ import { useGetApiFaqs } from "@/api/stetsom/endpoints/faq-public/faq-public";
 import type { PageBlock } from "@/api/stetsom/model";
 import { SetRouteLabel } from "@/app/admin/_components/admin-route-meta";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import { DraftRestoreBanner } from "@/app/admin/_components/crud/draft-restore-banner";
 import {
   EditorSectionNav,
   type NavItem,
@@ -24,6 +25,7 @@ import {
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { ProductEditorLayout } from "@/app/admin/_components/product-wizard/product-editor-layout";
 import { useAdminToast } from "@/hooks/use-admin-toast";
+import { clearLocalDraft } from "@/hooks/use-local-draft";
 import { getApiErrorMessage } from "@/lib/api/error-utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -53,6 +55,10 @@ import {
 } from "./section-field-spec";
 import { hasInvalidFields } from "./section-field-validation";
 import { SectionFormRenderer } from "./section-form-renderer";
+import {
+  sectionDraftKey,
+  useSectionLocalDraft,
+} from "./use-section-local-draft";
 
 const BANNERS_TARGET = "__banners__";
 type Device = "mobile" | "desktop";
@@ -224,7 +230,8 @@ export function PageEditorContent({
       blockId: string;
       data: Record<string, unknown>;
     }) => patchApiPagesSlugBlocksBlockId(pageId, blockId, { data }),
-    onSuccess: () => {
+    onSuccess: (_, { blockId }) => {
+      clearLocalDraft(sectionDraftKey(pageId, blockId));
       invalidate();
       setSectionDraft(null);
       setShowSectionErrors(false);
@@ -235,6 +242,13 @@ export function PageEditorContent({
         getApiErrorMessage(error, "Tente novamente."),
       ),
   });
+
+  const localDraft = useSectionLocalDraft(
+    pageId,
+    selectedBlock,
+    sectionDraft,
+    setSectionDraft,
+  );
 
   const draftInvalid =
     !!sectionDraft &&
@@ -383,6 +397,15 @@ export function PageEditorContent({
                 />
               ) : selectedBlock ? (
                 <>
+                  {localDraft.draft && (
+                    <DraftRestoreBanner
+                      className="mb-4 rounded-md border"
+                      savedAt={localDraft.draft.savedAt}
+                      changedSince={localDraft.changedSince}
+                      onRestore={localDraft.restore}
+                      onDiscard={localDraft.discard}
+                    />
+                  )}
                   {selectedEntry?.description && (
                     <p className="mb-4 text-sm text-muted-foreground">
                       {selectedEntry.description}

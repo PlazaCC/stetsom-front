@@ -154,7 +154,54 @@ export type WizardAction =
       ledger: SyncLedger;
       /** False when a block/media request failed; the editor stays dirty. */
       synced: boolean;
-    };
+    }
+  | { type: "restore_draft"; draft: WizardDraft };
+
+/**
+ * What a local draft keeps of the editor: everything the editor typed, plus
+ * the block mapping from a save that only half went through. Navigation
+ * (`step`, `activeVariationId`) and the server ledger are left out; the ledger
+ * always comes from the product as it is loaded now.
+ */
+export type WizardDraft = Omit<
+  WizardState,
+  | "step"
+  | "mode"
+  | "productId"
+  | "activeVariationId"
+  | "initialImageIds"
+  | "initialBlockIds"
+  | "initialFileIds"
+  | "isDirty"
+>;
+
+export function draftOf(state: WizardState): WizardDraft {
+  return {
+    sku: state.sku,
+    name: state.name,
+    slug: state.slug,
+    slugTouched: state.slugTouched,
+    description: state.description,
+    category_id: state.category_id,
+    line_id: state.line_id,
+    template_id: state.template_id,
+    app_store_url: state.app_store_url,
+    play_store_url: state.play_store_url,
+    is_discontinued: state.is_discontinued,
+    is_export: state.is_export,
+    is_featured: state.is_featured,
+    is_spotlight: state.is_spotlight,
+    available_locales: state.available_locales,
+    status: state.status,
+    launch_date: state.launch_date,
+    launch_time: state.launch_time,
+    images: state.images,
+    variations: state.variations,
+    blocks: state.blocks,
+    files: state.files,
+    blockServerIds: state.blockServerIds,
+  };
+}
 
 const DEFAULT_VARIATION_ID = "variation-default";
 
@@ -487,6 +534,41 @@ export function wizardReducer(
         initialFileIds: ledger.fileIds,
         blockServerIds: ledger.blockServerIds,
         isDirty: !action.synced,
+      };
+    }
+
+    case "restore_draft": {
+      // The draft may be older than the product as loaded now: server ids it
+      // holds that no longer exist are dropped, so the next save recreates
+      // those links instead of patching what is gone.
+      const { draft } = action;
+      const imageIds = new Set(state.initialImageIds);
+      const blockIds = new Set(state.initialBlockIds);
+      const fileIds = new Set(state.initialFileIds);
+      return {
+        ...state,
+        ...draft,
+        images: draft.images.map((img) =>
+          img.image_id && !imageIds.has(img.image_id)
+            ? { ...img, image_id: undefined }
+            : img,
+        ),
+        files: draft.files.map((f) =>
+          f.file_id && !fileIds.has(f.file_id)
+            ? { ...f, file_id: undefined }
+            : f,
+        ),
+        blockServerIds: Object.fromEntries(
+          Object.entries(draft.blockServerIds).filter(([, id]) =>
+            blockIds.has(id),
+          ),
+        ),
+        activeVariationId: draft.variations.some(
+          (v) => v.id === state.activeVariationId,
+        )
+          ? state.activeVariationId
+          : (draft.variations[0]?.id ?? state.activeVariationId),
+        isDirty: true,
       };
     }
 

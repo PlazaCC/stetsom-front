@@ -1,5 +1,6 @@
 import type { TokensResponse } from "@/api/stetsom/model";
 import type { NextResponse } from "next/server";
+import { readJwtExp } from "./jwt-exp";
 
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
@@ -14,15 +15,9 @@ type CookieWriter = Pick<NextResponse, "cookies" | "headers">;
 
 /** Seconds until the JWT's `exp`, so the cookie never outlives the token. */
 function accessTokenMaxAge(accessToken: string): number {
-  try {
-    const payload = JSON.parse(
-      atob(accessToken.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")),
-    ) as { exp?: number };
-    if (typeof payload.exp !== "number") return ACCESS_TOKEN_FALLBACK_MAX_AGE;
-    return Math.max(0, payload.exp - Math.floor(Date.now() / 1000));
-  } catch {
-    return ACCESS_TOKEN_FALLBACK_MAX_AGE;
-  }
+  const exp = readJwtExp(accessToken);
+  if (exp === null) return ACCESS_TOKEN_FALLBACK_MAX_AGE;
+  return Math.max(0, exp - Math.floor(Date.now() / 1000));
 }
 
 /** Must run after every `response.cookies.set` call: those rewrite the

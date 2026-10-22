@@ -8,6 +8,7 @@ import { AdminShellHeader } from "./admin-shell-header";
 import { AdminRouteMetaProvider } from "./admin-route-meta";
 import { NavProgressBar } from "./nav-progress-bar";
 import { SessionExpiredDialog } from "./session-expired-dialog";
+import { SessionExpiryWarning } from "./session-expiry-warning";
 import { resolveRoute } from "@/lib/cms/resolve-route";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -30,6 +31,7 @@ function PanelLayout({ children }: { children: React.ReactNode }) {
       <AdminRouteMetaProvider>
         <NavProgressBar />
         <SessionExpiredDialog />
+        {showSidebar && <SessionExpiryWarning />}
         <div className="flex h-screen overflow-hidden">
           {showSidebar && (
             <AdminSidebar open={navOpen} onClose={() => setNavOpen(false)} />

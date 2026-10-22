@@ -2,6 +2,7 @@
 
 import type { CmsProductDetailPayload } from "@/api/stetsom/model";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
+import { DraftRestoreBanner } from "@/app/admin/_components/crud/draft-restore-banner";
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { ProductWizardStepSuccess } from "@/app/admin/_components/product-wizard-step-success";
 import { Eye, Save } from "lucide-react";
@@ -12,6 +13,7 @@ import { EditorPanel } from "./editor-panel";
 import { escapeTarget, type EditorTarget } from "./editor-target";
 import { PreviewCanvas } from "./preview-canvas";
 import { ProductEditorLayout } from "./product-editor-layout";
+import { useWizardDraft } from "./use-wizard-draft";
 import { useWizardMutations } from "./use-wizard-mutations";
 import { initWizardState, wizardReducer } from "./wizard-store";
 
@@ -47,6 +49,10 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     handlePreview,
   } = useWizardMutations(mode, state, dispatch);
 
+  const localDraft = useWizardDraft(state, dispatch, {
+    deleted: deleteMutation.isSuccess,
+  });
+
   // Escape collapses a drill-in selection back to its section root. Covers focus
   // in the panel; the preview frame handles Escape for clicks on the canvas.
   useEffect(() => {
@@ -78,6 +84,16 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   return (
     <AdminPageLayout
       contentClassName="overflow-hidden p-0"
+      header={
+        localDraft.draft && (
+          <DraftRestoreBanner
+            savedAt={localDraft.draft.savedAt}
+            changedSince={localDraft.changedSince}
+            onRestore={localDraft.restore}
+            onDiscard={localDraft.discard}
+          />
+        )
+      }
       footer={
         <EditorFooter
           onBack={() => router.push("/admin/produtos")}
