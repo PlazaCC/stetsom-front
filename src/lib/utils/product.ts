@@ -1,6 +1,6 @@
 type TextBlockData = { title?: string; content?: string; align?: string };
 type ImageBlockData = {
-  images?: string[];
+  file_url?: string;
   caption?: string;
   layout?: "full" | "side";
 };
@@ -82,12 +82,6 @@ export const BLOCK_BEM_CLASSES: Record<
   },
 };
 
-function isStringArray(v: unknown): v is string[] {
-  return (
-    Array.isArray(v) && v.every((i) => typeof i === "string" && i.length > 0)
-  );
-}
-
 export function toTextBlockData(data: Record<string, unknown>): TextBlockData {
   return {
     title: typeof data.title === "string" ? data.title : undefined,
@@ -111,8 +105,10 @@ export function toBlockHeading(data: Record<string, unknown>): {
 export function toImageBlockData(
   data: Record<string, unknown>,
 ): ImageBlockData {
+  const fileUrl = data.file_url;
   return {
-    images: isStringArray(data.images) ? data.images : undefined,
+    file_url:
+      typeof fileUrl === "string" && fileUrl.length > 0 ? fileUrl : undefined,
     caption: typeof data.caption === "string" ? data.caption : undefined,
     layout: data.layout === "side" ? "side" : "full",
   };

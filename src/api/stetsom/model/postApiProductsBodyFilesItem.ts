@@ -7,8 +7,11 @@
  */
 import type { LocaleInput } from "./localeInput";
 
-export type PostApiProductsIdFilesBody = {
+export type PostApiProductsBodyFilesItem = {
+  /** @minLength 1 */
+  id: string;
+  /** @minLength 1 */
   library_id: string;
-  locale?: LocaleInput;
-  is_active?: boolean;
+  locale?: LocaleInput | null;
+  is_active: boolean;
 };

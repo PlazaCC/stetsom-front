@@ -2,8 +2,8 @@
 
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
-import { Plus, Trash2, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { ChevronDown, Plus, Trash2, X } from "lucide-react";
+import { useState } from "react";
 import { BlockStyleForm } from "./block-style-form";
 import { SortableList } from "./sortable-list";
 import {
@@ -48,8 +48,6 @@ interface BlockManagerProps {
   onMenuOpenChange?: (open: boolean) => void;
   /** When set, the picked block is inserted at this index instead of appended. */
   insertIndex?: number | null;
-  /** Stacked layout — true when the parent panel is narrow. */
-  compact?: boolean;
 }
 
 type DetailTab = "content" | "style";
@@ -60,15 +58,12 @@ const DETAIL_TABS: { id: DetailTab; label: string }[] = [
 ];
 
 function generateId(): string {
-  return `block-${crypto.randomUUID()}`;
+  return crypto.randomUUID();
 }
 
 /**
- * Registry-driven master-detail block editor. The left card lists the blocks
- * with reorder/delete actions; the right card edits the selected block's
- * content (`def.Form`) and styling (`BlockStyleForm`). Replaces the old
- * single-list `BlockBuilder` so ordering and per-block editing don't compete
- * for the same space.
+ * Registry-driven accordion block editor. Each block owns its header, ordering
+ * controls and editor so the form can use the full width of the panel.
  */
 export function BlockManager({
   registry,
@@ -81,7 +76,6 @@ export function BlockManager({
   menuOpen,
   onMenuOpenChange,
   insertIndex = null,
-  compact = false,
 }: BlockManagerProps) {
   const controlled = onSelectChange !== undefined;
   const [internalId, setInternalId] = useState<string | null>(
@@ -136,165 +130,153 @@ export function BlockManager({
     onChange(value.map((b) => (b.id === id ? { ...b, data } : b)));
   }
 
-  function selectBlock(id: string) {
+  function toggleBlock(id: string) {
+    if (selectedId === id) {
+      setSelectedId(null);
+      return;
+    }
     setSelectedId(id);
     setDetailTab("content");
   }
 
   const menuItems = Object.entries(registry).filter(([, d]) => !d.hideFromMenu);
-  const selected = value.find((b) => b.id === selectedId) ?? null;
-  const selectedDef = selected ? registry[selected.type] : null;
-  const SelectedIcon = selectedDef?.icon;
-  const SelectedForm = selectedDef?.Form;
-  const editorRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (selectedId && editorRef.current) {
-      editorRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
-    }
-  }, [selectedId]);
 
   return (
-    <div
-      className={cn(
-        "flex h-full flex-col gap-4",
-        !compact && "lg:flex-row lg:items-start",
-        className,
-      )}
-    >
-      {/* Card 1 — block list + actions */}
-      <div className={cn(compact ? "w-full" : "w-72 shrink-0")}>
-        <AdminFormSection title="Blocos" className="w-full" raw>
-          <AdminFormSectionContent className="gap-2">
-            {value.length === 0 ? (
-              <div className="rounded-md border border-dashed border-border py-8 text-center text-sm text-muted-foreground">
-                Nenhum bloco adicionado.
-              </div>
-            ) : (
-              <SortableList
-                items={value}
-                getId={(b) => b.id}
-                onReorder={(items) => onChange(reindex(items))}
-                renderItem={(block, handle) => {
-                  const def = registry[block.type];
-                  if (!def) return null;
-                  const Icon = def.icon;
-                  const isActive = block.id === selectedId;
-                  return (
-                    <div
-                      className={cn(
-                        "flex items-center gap-2 rounded-md border px-2.5 py-2 transition-colors",
-                        isActive
-                          ? "border-primary bg-primary/5"
-                          : "border-border bg-card hover:border-primary/40",
-                      )}
-                    >
-                      {handle}
-                      <button
-                        type="button"
-                        onClick={() => selectBlock(block.id)}
-                        className="flex min-w-0 flex-1 items-center gap-2 text-left"
-                      >
-                        <Icon
-                          className={cn(
-                            "size-4 shrink-0",
-                            isActive ? "text-primary" : "text-muted-foreground",
-                          )}
-                        />
-                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">
-                          {def.label}
-                        </span>
-                        <span className="shrink-0 text-2xs text-muted-foreground">
-                          #{block.order + 1}
-                        </span>
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Remover bloco"
-                        onClick={() => removeBlock(block.id)}
-                        className="shrink-0 rounded p-1 text-muted-foreground hover:bg-muted hover:text-destructive"
-                      >
-                        <Trash2 className="size-4" />
-                      </button>
-                    </div>
-                  );
-                }}
-              />
-            )}
-
-            <button
-              type="button"
-              onClick={() => setMenu(true)}
-              className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-            >
-              <Plus className="size-4" />
-              {addLabel}
-            </button>
-          </AdminFormSectionContent>
-        </AdminFormSection>
-      </div>
-
-      {/* Card 2 — selected block editor */}
-      <AdminFormSection title="" raw>
-        <div ref={editorRef}>
-          {selected && selectedDef && SelectedIcon && SelectedForm ? (
-            <>
-              <div className="flex items-center gap-3 border-b border-border px-4 py-3">
-                <SelectedIcon className="size-4 shrink-0 text-muted-foreground" />
-                <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                  {selectedDef.label}
-                </span>
-                <span className="ml-auto text-xs text-muted-foreground">
-                  #{selected.order + 1}
-                </span>
-              </div>
-
-              <div className="flex gap-1 border-b border-border px-4 pt-3">
-                {DETAIL_TABS.map(({ id, label }) => (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => setDetailTab(id)}
-                    className={cn(
-                      "-mb-px border-b-2 px-3 py-2 text-xs font-semibold transition-colors",
-                      detailTab === id
-                        ? "border-primary text-foreground"
-                        : "border-transparent text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-
-              <div className="p-4">
-                {detailTab === "content" ? (
-                  <SelectedForm
-                    // Rich-text editors are seeded once; a new block remounts.
-                    key={selected.id}
-                    data={selected.data}
-                    onChange={(d) => updateData(selected.id, d)}
-                  />
-                ) : (
-                  <BlockStyleForm
-                    blockType={selected.type}
-                    data={selected.data}
-                    onChange={(d) => updateData(selected.id, d)}
-                  />
-                )}
-              </div>
-            </>
-          ) : (
-            <div className="flex h-full min-h-48 items-center justify-center p-8 text-center text-sm text-muted-foreground">
-              {value.length === 0
-                ? "Adicione um bloco para começar."
-                : "Selecione um bloco para editar."}
+    <div className={cn("w-full", className)}>
+      <AdminFormSection title="Blocos" className="w-full" raw>
+        <AdminFormSectionContent className="gap-3">
+          {value.length === 0 && (
+            <div className="rounded-md border border-dashed border-border py-8 text-center text-sm text-muted-foreground">
+              Nenhum bloco adicionado.
             </div>
           )}
-        </div>
+
+          <SortableList
+            items={value}
+            getId={(b) => b.id}
+            onReorder={(items) => onChange(reindex(items))}
+            append={
+              <button
+                type="button"
+                onClick={() => setMenu(true)}
+                className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-border px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary"
+              >
+                <Plus className="size-4" />
+                {addLabel}
+              </button>
+            }
+            renderItem={(block, handle) => {
+              const def = registry[block.type];
+              if (!def) return null;
+              const Icon = def.icon;
+              const isExpanded = block.id === selectedId;
+              const Form = def.Form;
+
+              return (
+                <div
+                  className={cn(
+                    "overflow-hidden rounded-md border bg-card transition-colors",
+                    isExpanded
+                      ? "border-primary shadow-sm"
+                      : "border-border hover:border-primary/40",
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "flex min-h-12 items-center gap-2 px-3 py-2.5 transition-colors",
+                      isExpanded ? "bg-primary/5" : "hover:bg-muted/40",
+                    )}
+                  >
+                    {handle}
+                    <button
+                      type="button"
+                      aria-expanded={isExpanded}
+                      onClick={() => toggleBlock(block.id)}
+                      className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                    >
+                      <Icon
+                        className={cn(
+                          "size-4 shrink-0",
+                          isExpanded ? "text-primary" : "text-muted-foreground",
+                        )}
+                      />
+                      <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">
+                        {def.label}
+                      </span>
+                      <span className="shrink-0 text-2xs text-muted-foreground">
+                        #{block.order + 1}
+                      </span>
+                      <ChevronDown
+                        className={cn(
+                          "size-4 shrink-0 text-muted-foreground transition-transform",
+                          isExpanded && "rotate-180 text-primary",
+                        )}
+                      />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={`Remover ${def.label}`}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        removeBlock(block.id);
+                      }}
+                      className="shrink-0 rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-destructive"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
+
+                  {isExpanded && (
+                    <div className="border-t border-border">
+                      <div className="flex items-center gap-3 border-b border-border px-4 py-3">
+                        <Icon className="size-4 shrink-0 text-muted-foreground" />
+                        <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                          {def.label}
+                        </span>
+                        <span className="ml-auto text-xs text-muted-foreground">
+                          #{block.order + 1}
+                        </span>
+                      </div>
+
+                      <div className="flex gap-1 border-b border-border px-4 pt-3">
+                        {DETAIL_TABS.map(({ id, label }) => (
+                          <button
+                            key={id}
+                            type="button"
+                            onClick={() => setDetailTab(id)}
+                            className={cn(
+                              "-mb-px border-b-2 px-3 py-2 text-xs font-semibold transition-colors",
+                              detailTab === id
+                                ? "border-primary text-foreground"
+                                : "border-transparent text-muted-foreground hover:text-foreground",
+                            )}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="p-4">
+                        {detailTab === "content" ? (
+                          <Form
+                            data={block.data}
+                            onChange={(data) => updateData(block.id, data)}
+                          />
+                        ) : (
+                          <BlockStyleForm
+                            blockType={block.type}
+                            data={block.data}
+                            onChange={(data) => updateData(block.id, data)}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            }}
+          />
+        </AdminFormSectionContent>
       </AdminFormSection>
 
       {/* Add-block type menu */}

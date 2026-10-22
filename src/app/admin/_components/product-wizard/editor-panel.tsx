@@ -125,17 +125,14 @@ export function EditorPanel({
               )
             }
             menuOpen={selection.kind === "addBlock"}
-            onMenuOpenChange={(open) =>
-              // The panel's own "add" button appends; the preview's "+"
-              // buttons open the menu with their own insert index.
+            onMenuOpenChange={(open) => {
               onSelectionChange(
                 open
                   ? { kind: "addBlock", index: state.blocks.length }
                   : { kind: "blocks" },
-              )
-            }
+              );
+            }}
             insertIndex={selection.kind === "addBlock" ? selection.index : null}
-            compact={compact}
           />
         )}
         {activeSection === "publish" && (

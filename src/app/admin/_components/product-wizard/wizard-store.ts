@@ -11,7 +11,6 @@ import type {
 import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 import { reindexByOrder } from "@/lib/utils/reindex";
 import { slugify } from "@/lib/utils/slugify";
-import type { SyncLedger } from "./wizard-sync";
 
 export type WizardLocale = "pt" | "en" | "es";
 
@@ -21,12 +20,11 @@ export type WizardMode = "create" | "edit";
 
 /**
  * A product gallery image, always backed by a library asset (`library_id`).
- * `image_id` is set once the link is persisted on the product; new picks carry
- * only the `library_id` until saved.
+ * `id` is a stable client-generated id for new picks and the persisted
+ * `image_id` for existing product images.
  */
 export interface WizardImage {
   id: string;
-  image_id?: string;
   library_id: string;
   preview_url: string;
   order: number;
@@ -59,11 +57,11 @@ export interface WizardVariation {
 /** A product file linked from the library. `type` groups it into the Certificados / Manuais sections. */
 export interface WizardFile {
   id: string;
-  file_id?: string;
   library_id: string;
   file_url: string;
   filename?: string;
   type: LibraryAssetType;
+  locale?: LocaleInput | null;
   is_active: boolean;
 }
 
@@ -100,13 +98,6 @@ export interface WizardState {
   activeVariationId: string;
   blocks: DraftBlock[];
   files: WizardFile[];
-
-  /** Server ids the next save diffs against; refreshed by every save. */
-  initialImageIds: string[];
-  initialBlockIds: string[];
-  initialFileIds: string[];
-  /** Editor block id → server `block_id`, for blocks created in this editor. */
-  blockServerIds: Record<string, string>;
 
   isDirty: boolean;
 }
@@ -151,28 +142,19 @@ export type WizardAction =
       type: "mark_saved";
       productId: string;
       status: ProductStatus;
-      ledger: SyncLedger;
-      /** False when a block/media request failed; the editor stays dirty. */
-      synced: boolean;
+      blocks: DraftBlock[];
+      images: WizardImage[];
+      files: WizardFile[];
     }
   | { type: "restore_draft"; draft: WizardDraft };
 
 /**
- * What a local draft keeps of the editor: everything the editor typed, plus
- * the block mapping from a save that only half went through. Navigation
- * (`step`, `activeVariationId`) and the server ledger are left out; the ledger
- * always comes from the product as it is loaded now.
+ * What a local draft keeps of the editor: everything the editor typed.
+ * Navigation (`step`, `activeVariationId`) is left out.
  */
 export type WizardDraft = Omit<
   WizardState,
-  | "step"
-  | "mode"
-  | "productId"
-  | "activeVariationId"
-  | "initialImageIds"
-  | "initialBlockIds"
-  | "initialFileIds"
-  | "isDirty"
+  "step" | "mode" | "productId" | "activeVariationId" | "isDirty"
 >;
 
 export function draftOf(state: WizardState): WizardDraft {
@@ -199,7 +181,6 @@ export function draftOf(state: WizardState): WizardDraft {
     variations: state.variations,
     blocks: state.blocks,
     files: state.files,
-    blockServerIds: state.blockServerIds,
   };
 }
 
@@ -315,7 +296,6 @@ function hydrateImages(detail?: CmsProductDetailPayload): WizardImage[] {
     .sort((a, b) => a.order - b.order)
     .map((img) => ({
       id: img.image_id,
-      image_id: img.image_id,
       library_id: img.library_id,
       preview_url: img.image_url ?? "",
       order: img.order,
@@ -339,11 +319,11 @@ function hydrateFiles(detail?: CmsProductDetailPayload): WizardFile[] {
   if (!detail) return [];
   return (detail.product.files ?? []).map((f) => ({
     id: f.file_id,
-    file_id: f.file_id,
     library_id: f.library_id,
     file_url: f.file_url ?? "",
     filename: f.filename ?? undefined,
     type: (f.type as LibraryAssetType) ?? "OTHER",
+    locale: f.locale ?? null,
     is_active: f.is_active,
   }));
 }
@@ -417,11 +397,6 @@ export function initWizardState(
     activeVariationId: variations[0]!.id,
     blocks: hydrateBlocks(detail),
     files: hydrateFiles(detail),
-
-    initialImageIds: (p?.images ?? []).map((i) => i.image_id),
-    initialBlockIds: (p?.page_blocks ?? []).map((b) => b.block_id),
-    initialFileIds: (p?.files ?? []).map((f) => f.file_id),
-    blockServerIds: {},
 
     isDirty: mode === "edit",
   };
@@ -513,56 +488,24 @@ export function wizardReducer(
         isDirty: true,
       };
 
-    case "mark_saved": {
-      const { ledger } = action;
+    case "mark_saved":
       return {
         ...state,
         productId: action.productId,
         status: action.status,
-        images: state.images.map((img) =>
-          img.image_id || !ledger.newImageIds[img.id]
-            ? img
-            : { ...img, image_id: ledger.newImageIds[img.id] },
-        ),
-        files: state.files.map((f) =>
-          f.file_id || !ledger.newFileIds[f.id]
-            ? f
-            : { ...f, file_id: ledger.newFileIds[f.id] },
-        ),
-        initialImageIds: ledger.imageIds,
-        initialBlockIds: ledger.blockIds,
-        initialFileIds: ledger.fileIds,
-        blockServerIds: ledger.blockServerIds,
-        isDirty: !action.synced,
+        blocks: action.blocks,
+        images: action.images,
+        files: action.files,
+        isDirty: false,
       };
-    }
 
     case "restore_draft": {
-      // The draft may be older than the product as loaded now: server ids it
-      // holds that no longer exist are dropped, so the next save recreates
-      // those links instead of patching what is gone.
+      // Saves send whole collections, so the draft's blocks, images and files
+      // replace the product's as they are; nothing to reconcile.
       const { draft } = action;
-      const imageIds = new Set(state.initialImageIds);
-      const blockIds = new Set(state.initialBlockIds);
-      const fileIds = new Set(state.initialFileIds);
       return {
         ...state,
         ...draft,
-        images: draft.images.map((img) =>
-          img.image_id && !imageIds.has(img.image_id)
-            ? { ...img, image_id: undefined }
-            : img,
-        ),
-        files: draft.files.map((f) =>
-          f.file_id && !fileIds.has(f.file_id)
-            ? { ...f, file_id: undefined }
-            : f,
-        ),
-        blockServerIds: Object.fromEntries(
-          Object.entries(draft.blockServerIds).filter(([, id]) =>
-            blockIds.has(id),
-          ),
-        ),
         activeVariationId: draft.variations.some(
           (v) => v.id === state.activeVariationId,
         )
@@ -663,6 +606,23 @@ export function buildPayload(
           order: s.order,
           highlighted: s.highlighted,
         })),
+    })),
+    blocks: state.blocks.map((block) => ({
+      id: block.id,
+      type: block.type as NonNullable<
+        PostApiProductsBody["blocks"]
+      >[number]["type"],
+      data: block.data,
+    })),
+    images: state.images.map((image) => ({
+      id: image.id,
+      library_id: image.library_id,
+    })),
+    files: state.files.map((file) => ({
+      id: file.id,
+      library_id: file.library_id,
+      locale: file.locale,
+      is_active: file.is_active,
     })),
   };
 }

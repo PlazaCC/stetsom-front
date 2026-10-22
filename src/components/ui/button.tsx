@@ -16,6 +16,10 @@ const buttonVariants = cva(
           "rounded-sm py-4.5 bg-surface-elevated text-white hover:bg-brand-dark font-sans font-semibold uppercase",
         "brand-outline":
           "rounded-sm border-2 border-brand bg-transparent text-brand hover:bg-brand hover:text-brand-dark font-sans font-semibold uppercase [&_svg]:text-brand hover:[&_svg]:text-brand-dark",
+        draft:
+          "rounded-lg border border-amber-200 bg-amber-100 text-amber-900 hover:bg-amber-200 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100 dark:hover:bg-amber-900/60",
+        success:
+          "rounded-lg border border-emerald-200 bg-emerald-100 text-emerald-900 hover:bg-emerald-200 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-100 dark:hover:bg-emerald-900/60",
         outline:
           "rounded-lg border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         pill: "rounded-full bg-brand text-white hover:bg-brand/90 font-sans font-semibold uppercase",
@@ -47,6 +51,10 @@ const buttonVariants = cva(
     },
   },
 );
+
+export type ButtonVariant = NonNullable<
+  VariantProps<typeof buttonVariants>["variant"]
+>;
 
 function Button({
   className,

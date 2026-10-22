@@ -27,8 +27,7 @@ function isWizardDraft(value: unknown): value is WizardDraft {
     Array.isArray(draft.images) &&
     Array.isArray(draft.variations) &&
     Array.isArray(draft.blocks) &&
-    Array.isArray(draft.files) &&
-    typeof draft.blockServerIds === "object"
+    Array.isArray(draft.files)
   );
 }
 

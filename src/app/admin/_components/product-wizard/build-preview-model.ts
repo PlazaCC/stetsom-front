@@ -77,7 +77,7 @@ export function buildPreviewModel(
 
   const images: ProductImage[] = state.images.map((img, i) => ({
     image_id: img.id,
-    library_id: img.image_id ?? "",
+    library_id: img.library_id,
     image_url: img.preview_url,
     order: img.order ?? i,
     created_at: now,
@@ -91,7 +91,7 @@ export function buildPreviewModel(
   }));
 
   const files: ProductFile[] = state.files.map((f) => ({
-    file_id: f.file_id ?? f.id,
+    file_id: f.id,
     library_id: f.library_id,
     file_url: f.file_url,
     filename: f.filename ?? null,

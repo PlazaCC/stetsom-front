@@ -6,7 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { LocaleInput } from "./localeInput";
+import type { PostApiProductsBodyBlocksItem } from "./postApiProductsBodyBlocksItem";
 import type { PostApiProductsBodyDescription } from "./postApiProductsBodyDescription";
+import type { PostApiProductsBodyFilesItem } from "./postApiProductsBodyFilesItem";
+import type { PostApiProductsBodyImagesItem } from "./postApiProductsBodyImagesItem";
 import type { PostApiProductsBodyName } from "./postApiProductsBodyName";
 import type { PostApiProductsBodyStatus } from "./postApiProductsBodyStatus";
 import type { PostApiProductsBodyVariantsItem } from "./postApiProductsBodyVariantsItem";
@@ -53,4 +56,7 @@ export type PostApiProductsBody = {
   available_locales?: LocaleInput[];
   highlight_attributes?: string[];
   variants?: PostApiProductsBodyVariantsItem[];
+  blocks?: PostApiProductsBodyBlocksItem[];
+  images?: PostApiProductsBodyImagesItem[];
+  files?: PostApiProductsBodyFilesItem[];
 };

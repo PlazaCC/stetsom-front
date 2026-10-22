@@ -5,7 +5,7 @@ import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout"
 import { DraftRestoreBanner } from "@/app/admin/_components/crud/draft-restore-banner";
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { ProductWizardStepSuccess } from "@/app/admin/_components/product-wizard-step-success";
-import { Eye, Save } from "lucide-react";
+import { Eye, Rocket, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useState } from "react";
 import { buildPreviewModel } from "./build-preview-model";
@@ -74,6 +74,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
   }
 
   const hasSaved = !!state.productId;
+  const isNewProduct = !hasSaved;
+  const isPersistedDraft = hasSaved && state.status === "DRAFT";
   const previewModel = buildPreviewModel(
     state,
     categories,
@@ -107,18 +109,45 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
                 }
               : undefined
           }
-          saveDraftAction={
-            state.isDirty
+          secondaryAction={
+            isNewProduct
               ? {
                   key: "save-draft",
                   label: "Salvar rascunho",
                   icon: Save,
                   onClick: handleSaveDraft,
+                  isLoading: isSaving,
+                  variant: "draft",
                 }
               : undefined
           }
+          extraMenuActions={
+            isPersistedDraft
+              ? [
+                  {
+                    key: "publish",
+                    label: "Publicar",
+                    icon: Rocket,
+                    onClick: handlePublish,
+                    isLoading: isSaving,
+                    variant: "success",
+                  },
+                ]
+              : hasSaved
+                ? [
+                    {
+                      key: "move-to-draft",
+                      label: "Alterar para rascunho",
+                      icon: Save,
+                      onClick: handleSaveDraft,
+                      isLoading: isSaving,
+                      variant: "draft",
+                    },
+                  ]
+                : undefined
+          }
           deleteAction={
-            mode === "edit" && state.productId
+            state.productId
               ? {
                   label: "Excluir produto",
                   confirmTitle: `Excluir "${state.name.pt}"?`,
@@ -130,9 +159,16 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
                 }
               : undefined
           }
-          onPrimary={handlePublish}
+          onPrimary={isPersistedDraft ? handleSaveDraft : handlePublish}
           primaryLabel={
-            mode === "create" ? "Publicar produto" : "Salvar alterações"
+            isNewProduct
+              ? "Publicar"
+              : isPersistedDraft
+                ? "Salvar rascunho"
+                : "Salvar alterações"
+          }
+          primaryVariant={
+            isNewProduct ? "success" : isPersistedDraft ? "draft" : "default"
           }
           isPrimaryLoading={isSaving}
         />

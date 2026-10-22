@@ -6,10 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostApiProductsIdBlocksBodyType =
-  (typeof PostApiProductsIdBlocksBodyType)[keyof typeof PostApiProductsIdBlocksBodyType];
+export type PostApiProductsBodyBlocksItemType =
+  (typeof PostApiProductsBodyBlocksItemType)[keyof typeof PostApiProductsBodyBlocksItemType];
 
-export const PostApiProductsIdBlocksBodyType = {
+export const PostApiProductsBodyBlocksItemType = {
   IMAGE: "IMAGE",
   VIDEO: "VIDEO",
   HTML: "HTML",

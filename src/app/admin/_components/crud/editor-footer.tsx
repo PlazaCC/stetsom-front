@@ -5,7 +5,11 @@ import type { LucideIcon } from "lucide-react";
 import { Loader2, MoreVertical, Trash2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import {
+  Button,
+  buttonVariants,
+  type ButtonVariant,
+} from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +25,8 @@ export interface EditorFooterMenuAction {
   icon?: LucideIcon;
   onClick: () => void;
   disabled?: boolean;
+  isLoading?: boolean;
+  variant?: ButtonVariant;
 }
 
 export interface EditorFooterDeleteAction {
@@ -38,9 +44,12 @@ export interface EditorFooterProps {
   onBack?: () => void;
   backLabel?: string;
 
-  /** Itens do dropdown "..." — o menu só é renderizado se ao menos um destes existir. */
+  /** Itens do botão "Ações" — o menu só é renderizado se ao menos um destes existir. */
   previewAction?: EditorFooterMenuAction;
+  /** Ação de rascunho, exibida como o primeiro item do menu de ações. */
   saveDraftAction?: EditorFooterMenuAction;
+  /** Ação secundária visível à esquerda da CTA primária. */
+  secondaryAction?: EditorFooterMenuAction;
   deleteAction?: EditorFooterDeleteAction;
   extraMenuActions?: EditorFooterMenuAction[];
 
@@ -50,6 +59,7 @@ export interface EditorFooterProps {
   /** Cluster direito — a única CTA primária. */
   onPrimary: () => void;
   primaryLabel: string;
+  primaryVariant?: ButtonVariant;
   isPrimaryLoading?: boolean;
   isPrimaryDisabled?: boolean;
 
@@ -61,11 +71,13 @@ export function EditorFooter({
   backLabel = "Voltar",
   previewAction,
   saveDraftAction,
+  secondaryAction,
   deleteAction,
   extraMenuActions,
   statusText,
   onPrimary,
   primaryLabel,
+  primaryVariant = "default",
   isPrimaryLoading = false,
   isPrimaryDisabled = false,
   className,
@@ -73,9 +85,9 @@ export function EditorFooter({
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const menuActions = [
-    ...(previewAction ? [previewAction] : []),
     ...(saveDraftAction ? [saveDraftAction] : []),
     ...(extraMenuActions ?? []),
+    ...(previewAction ? [previewAction] : []),
   ];
   const hasMenu = menuActions.length > 0 || !!deleteAction;
   const DeleteIcon = deleteAction?.icon ?? Trash2;
@@ -99,6 +111,12 @@ export function EditorFooter({
           </Button>
         )}
 
+        {statusText && (
+          <span className="text-xs text-muted-foreground">{statusText}</span>
+        )}
+      </div>
+
+      <div className="flex flex-1 items-center justify-end gap-3">
         {hasMenu && (
           <DropdownMenu>
             <DropdownMenuTrigger
@@ -106,31 +124,55 @@ export function EditorFooter({
                 <Button
                   type="button"
                   variant="outline"
-                  size="icon-md"
-                  aria-label="Mais ações"
+                  size="md"
+                  disabled={isPrimaryLoading}
                 />
               }
             >
               <MoreVertical className="size-4" />
+              Ações
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              {menuActions.map((action) => (
-                <DropdownMenuItem
-                  key={action.key}
-                  disabled={action.disabled}
-                  onClick={action.onClick}
-                >
-                  {action.icon && <action.icon />}
-                  {action.label}
-                </DropdownMenuItem>
-              ))}
+            <DropdownMenuContent
+              align="end"
+              side="top"
+              className="w-56 space-y-2 p-2"
+            >
+              {menuActions.map((action) => {
+                const isLoading = action.isLoading ?? false;
+                return (
+                  <DropdownMenuItem
+                    key={action.key}
+                    disabled={isPrimaryLoading || action.disabled || isLoading}
+                    onClick={action.onClick}
+                    className={buttonVariants({
+                      variant: action.variant ?? "outline",
+                      size: "md",
+                      className: "h-10 w-full justify-start",
+                    })}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      action.icon && <action.icon />
+                    )}
+                    {action.label}
+                  </DropdownMenuItem>
+                );
+              })}
               {deleteAction && (
                 <>
-                  {menuActions.length > 0 && <DropdownMenuSeparator />}
+                  {menuActions.length > 0 && (
+                    <DropdownMenuSeparator className="my-2" />
+                  )}
                   <DropdownMenuItem
                     variant="destructive"
-                    disabled={deleteAction.isLoading}
+                    disabled={isPrimaryLoading || deleteAction.isLoading}
                     onClick={() => setDeleteOpen(true)}
+                    className={buttonVariants({
+                      variant: "destructive",
+                      size: "md",
+                      className: "h-10 w-full justify-start",
+                    })}
                   >
                     <DeleteIcon />
                     {deleteAction.label}
@@ -140,15 +182,30 @@ export function EditorFooter({
             </DropdownMenuContent>
           </DropdownMenu>
         )}
-
-        {statusText && (
-          <span className="text-xs text-muted-foreground">{statusText}</span>
+        {secondaryAction && (
+          <Button
+            type="button"
+            variant={secondaryAction.variant ?? "outline"}
+            size="md"
+            onClick={secondaryAction.onClick}
+            disabled={
+              isPrimaryLoading ||
+              isPrimaryDisabled ||
+              secondaryAction.disabled ||
+              secondaryAction.isLoading
+            }
+          >
+            {secondaryAction.isLoading ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              secondaryAction.icon && <secondaryAction.icon />
+            )}
+            {secondaryAction.label}
+          </Button>
         )}
-      </div>
-
-      <div className="flex flex-1 items-center justify-end gap-3">
         <Button
           type="button"
+          variant={primaryVariant}
           size="md"
           onClick={onPrimary}
           disabled={isPrimaryLoading || isPrimaryDisabled}

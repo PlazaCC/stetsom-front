@@ -6,7 +6,42 @@ import { Select as SelectPrimitive } from "@base-ui/react/select";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon, CheckIcon, ChevronUpIcon } from "lucide-react";
 
-const Select = SelectPrimitive.Root;
+const SelectLabelContext = React.createContext<Map<string, React.ReactNode>>(
+  new Map(),
+);
+
+function collectItemLabels(
+  children: React.ReactNode,
+  labels: Map<string, React.ReactNode>,
+) {
+  React.Children.forEach(children, (child) => {
+    if (!React.isValidElement(child)) return;
+    const childProps = child.props as {
+      value?: unknown;
+      children?: React.ReactNode;
+    };
+
+    if (child.type === SelectItem && typeof childProps.value === "string") {
+      labels.set(childProps.value, childProps.children);
+    }
+
+    collectItemLabels(childProps.children, labels);
+  });
+}
+
+function Select<Value = string, Multiple extends boolean | undefined = false>({
+  children,
+  ...props
+}: SelectPrimitive.Root.Props<Value, Multiple>) {
+  const labels = new Map<string, React.ReactNode>();
+  collectItemLabels(children, labels);
+
+  return (
+    <SelectLabelContext.Provider value={labels}>
+      <SelectPrimitive.Root {...props}>{children}</SelectPrimitive.Root>
+    </SelectLabelContext.Provider>
+  );
+}
 
 function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
   return (
@@ -18,13 +53,21 @@ function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
   );
 }
 
-function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
+function SelectValue({
+  className,
+  children,
+  ...props
+}: SelectPrimitive.Value.Props) {
+  const labels = React.useContext(SelectLabelContext);
+
   return (
     <SelectPrimitive.Value
       data-slot="select-value"
       className={cn("flex flex-1 text-left", className)}
       {...props}
-    />
+    >
+      {children ?? ((value: string | null) => labels.get(value ?? "") ?? value)}
+    </SelectPrimitive.Value>
   );
 }
 
