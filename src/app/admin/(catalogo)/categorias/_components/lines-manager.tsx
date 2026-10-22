@@ -1,29 +1,28 @@
 "use client";
 
-import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
-import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
-import { SortableList } from "@/app/admin/_components/crud/sortable-list";
-import {
-  deleteApiCategoriesIdLinesLineId,
-  patchApiCategoriesIdLinesLineId,
-  postApiCategoriesIdLines,
-} from "@/api/stetsom";
-import type { I18nString } from "@/api/stetsom/model";
-import { slugify } from "@/lib/utils/slugify";
+import Link from "next/link";
+import { Layers, Plus } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { putApiCategoriesIdLinesOrder } from "@/api/stetsom";
+import type { I18nString } from "@/api/stetsom/model";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
+import { SortableList } from "@/app/admin/_components/crud/sortable-list";
+import { useAdminToast } from "@/hooks/use-admin-toast";
 
 export interface DisplayLine {
   line_id: string;
-  name: string;
+  name: I18nString;
+  slug: I18nString;
   order: number;
 }
 
 interface LinesManagerProps {
   categoryId: string;
   lines: DisplayLine[];
-  onChanged: () => void;
+  onChanged: () => Promise<unknown> | void;
 }
 
 export function LinesManager({
@@ -31,104 +30,67 @@ export function LinesManager({
   lines,
   onChanged,
 }: LinesManagerProps) {
-  const [newName, setNewName] = useState<I18nString>({ pt: "" });
-  const [localLines, setLocalLines] = useState<DisplayLine[] | null>(null);
-
-  const sortedLines = lines.slice().sort((a, b) => a.order - b.order);
-  const displayLines = localLines ?? sortedLines;
-
-  const addMutation = useMutation({
-    mutationFn: () =>
-      postApiCategoriesIdLines(categoryId, {
-        name: newName,
-        slug: { pt: slugify(newName.pt) },
-        order: lines.length,
-      }),
-    onSuccess: () => {
-      setNewName({ pt: "" });
-      onChanged();
-    },
-  });
-
-  const removeMutation = useMutation({
-    mutationFn: (lineId: string) =>
-      deleteApiCategoriesIdLinesLineId(categoryId, lineId),
-    onSuccess: onChanged,
-  });
-
+  const toast = useAdminToast();
   const reorderMutation = useMutation({
-    mutationFn: (ordered: DisplayLine[]) => {
-      const changed = ordered.filter((l, i) => l.order !== i);
-      return Promise.all(
-        changed.map((l) =>
-          patchApiCategoriesIdLinesLineId(categoryId, l.line_id, {
-            order: ordered.indexOf(l),
-          }),
-        ),
-      );
-    },
-    onError: () => {
-      setLocalLines(null);
-      onChanged();
-    },
+    mutationFn: (ordered: DisplayLine[]) =>
+      putApiCategoriesIdLinesOrder(categoryId, {
+        line_ids: ordered.map((line) => line.line_id),
+      }),
     onSuccess: onChanged,
+    onError: (error) =>
+      toast.apiError(error, "Não foi possível reordenar as linhas"),
   });
 
-  function handleReorder(ordered: DisplayLine[]) {
-    setLocalLines(ordered);
-    reorderMutation.mutate(ordered);
-  }
+  const orderedLines = [...lines].sort((a, b) => a.order - b.order);
 
   return (
-    <div className="rounded-md border border-border bg-muted/30 p-3">
-      <AdminLabel>Linhas</AdminLabel>
-      <div className="space-y-1">
-        {displayLines.length === 0 && (
-          <p className="py-2 text-center text-xs text-muted-foreground">
-            Nenhuma linha cadastrada
-          </p>
-        )}
-        {displayLines.length > 0 && (
-          <SortableList
-            items={displayLines}
-            getId={(line) => line.line_id}
-            onReorder={handleReorder}
-            renderItem={(line, handle) => (
-              <div className="flex items-center gap-2 rounded bg-card px-2 py-1.5">
-                {handle}
-                <span className="flex-1 text-sm text-foreground">
-                  {line.name}
-                </span>
-                <button
-                  type="button"
-                  aria-label="Remover linha"
-                  onClick={() => removeMutation.mutate(line.line_id)}
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <Trash2 className="size-3.5" />
-                </button>
-              </div>
-            )}
-          />
-        )}
-      </div>
-      <div className="mt-2 flex items-end gap-2">
-        <I18nInput
-          className="flex-1"
-          value={newName}
-          onChange={setNewName}
-          placeholder="Nova linha"
-        />
-        <button
-          type="button"
-          disabled={!newName.pt || addMutation.isPending}
-          onClick={() => addMutation.mutate()}
-          className="flex h-9 items-center gap-1 rounded-md border border-border px-3 text-sm font-medium hover:bg-muted disabled:opacity-50"
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-sm text-muted-foreground">
+          A ordem define a apresentação no catálogo público.
+        </p>
+        <Link
+          href={`/admin/linhas/novo?category=${categoryId}`}
+          className="inline-flex min-h-8 items-center gap-1.5 rounded-md border border-border px-3 py-2 text-sm font-medium hover:bg-muted"
         >
           <Plus className="size-4" />
-          Adicionar
-        </button>
+          Nova linha
+        </Link>
       </div>
+
+      {orderedLines.length === 0 ? (
+        <div className="flex flex-col items-center gap-2 rounded-md border border-dashed border-border py-8 text-center">
+          <Layers className="size-6 text-muted-foreground/50" />
+          <p className="text-sm text-muted-foreground">
+            Nenhuma linha cadastrada nesta categoria.
+          </p>
+        </div>
+      ) : (
+        <SortableList
+          items={orderedLines}
+          getId={(line) => line.line_id}
+          disabled={reorderMutation.isPending}
+          onReorder={(next) => reorderMutation.mutate(next)}
+          renderItem={(line, handle) => (
+            <div className="flex items-center gap-3 rounded-md border border-border bg-card px-3 py-2.5">
+              {handle}
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium">{line.name.pt}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  /{line.slug.pt}
+                </p>
+              </div>
+              <AdminRowActions>
+                <AdminRowAction
+                  href={`/admin/linhas/${line.line_id}?category=${categoryId}`}
+                >
+                  Editar
+                </AdminRowAction>
+              </AdminRowActions>
+            </div>
+          )}
+        />
+      )}
     </div>
   );
 }

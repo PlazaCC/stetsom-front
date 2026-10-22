@@ -9,17 +9,17 @@ import {
   AdminRowAction,
   AdminRowActions,
 } from "@/app/admin/_components/crud/admin-row-actions";
-import { useGetApiCategories, useGetApiTemplates } from "@/api/stetsom";
+import { useGetApiCategoriesAdmin, useGetApiTemplates } from "@/api/stetsom";
 import type { Template } from "@/api/stetsom";
 import { LayoutTemplate } from "lucide-react";
 import { TemplateCreateAction } from "./_components/template-create-action";
 
 export default function AdminTemplatesPage() {
   const { data: templates = [], isLoading } = useGetApiTemplates();
-  const { data: categories = [] } = useGetApiCategories();
+  const { data: categories = [] } = useGetApiCategoriesAdmin();
 
   function categoryName(t: Template): string {
-    return categories.find((c) => c.id === t.category_id)?.name ?? "—";
+    return categories.find((c) => c.id === t.category_id)?.name.pt ?? "—";
   }
 
   const columns: AdminTableColumn<Template>[] = [

@@ -28,6 +28,7 @@ export interface SupportPageViewData {
   serviceCenters: PartnerLocation[];
   departments: PublicDepartmentItem[];
   faqItems: FaqItem[];
+  privacyPolicySlug?: string;
 }
 
 interface SupportPageViewProps {
@@ -40,7 +41,8 @@ export function SupportPageView({
   data,
   editable = false,
 }: Readonly<SupportPageViewProps>) {
-  const { blocks, serviceCenters, departments, faqItems } = data;
+  const { blocks, serviceCenters, departments, faqItems, privacyPolicySlug } =
+    data;
 
   const heroData = getPageBlock<SupportHeroBlockData>(blocks, "hero");
   const cardsData = getPageBlock<SupportCardsBlockData>(blocks, "cards");
@@ -90,6 +92,7 @@ export function SupportPageView({
               whatsapp: contactData.whatsapp,
             }}
             departments={departments}
+            privacyPolicySlug={privacyPolicySlug}
           />
         </EditableSection>
       )}

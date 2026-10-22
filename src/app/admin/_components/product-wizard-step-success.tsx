@@ -1,11 +1,13 @@
 "use client";
 
 import { AdminSuccessPage } from "@/app/admin/_components/crud/admin-success-page";
+import { getPathname } from "@/i18n/navigation";
+import { CheckCircle2, FilePen } from "lucide-react";
+
 interface CmsProductMutationResult {
   status: string;
   slug: string;
 }
-import { CheckCircle2, FilePen } from "lucide-react";
 
 interface ProductWizardStepSuccessProps {
   result: CmsProductMutationResult;
@@ -40,7 +42,13 @@ export function ProductWizardStepSuccess({
           ? [
               {
                 label: "Abrir página atualizada",
-                href: `/produtos/${result.slug}`,
+                href: getPathname({
+                  locale: "pt-BR",
+                  href: {
+                    pathname: "/produto/[slug]",
+                    params: { slug: result.slug },
+                  },
+                }),
                 variant: "secondary" as const,
                 external: true,
               },

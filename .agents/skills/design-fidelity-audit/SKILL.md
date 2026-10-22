@@ -267,7 +267,7 @@ Pages to audit (in order):
 
 1. Home (`src/app/(site)/page.tsx` + `_components/`)
 2. Produtos (`src/app/(site)/produtos/page.tsx` + `_components/`)
-3. Produto Selecionado (`src/app/(site)/produtos/[slug]/page.tsx` + `_components/`)
+3. Produto Selecionado (`src/app/(site)/produto/[slug]/page.tsx` + `_components/`)
 4. Sobre (`src/app/(site)/sobre/page.tsx` + `_components/`)
 5. Suporte (`src/app/(site)/suporte/page.tsx` + `_components/`)
 6. 404 (`src/app/not-found.tsx`)
@@ -352,7 +352,7 @@ Re-download all page frames to update the `.raw/figma-design/` baseline. Same pr
 src/app/(site)/
   page.tsx                          ← Home
   produtos/page.tsx                 ← Produtos listing
-  produtos/[slug]/page.tsx          ← Produto detalhe
+  produto/[slug]/page.tsx           ← Produto detalhe
   sobre/page.tsx                    ← Sobre
   suporte/page.tsx                  ← Suporte
 src/app/not-found.tsx               ← 404

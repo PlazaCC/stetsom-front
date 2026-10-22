@@ -25,6 +25,8 @@ import type {
   PatchApiCategoriesIdLinesLineIdBody,
   PostApiCategoriesBody,
   PostApiCategoriesIdLinesBody,
+  PutApiCategoriesIdLinesOrderBody,
+  PutApiCategoriesOrderBody,
 } from "../../model";
 
 import { orvalClient } from "../../orval-client";
@@ -184,6 +186,151 @@ export function usePostApiCategories<
     postApiCategoriesBody,
     options,
   );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary List all categories for CMS
+ */
+export const getApiCategoriesAdmin = (signal?: AbortSignal) => {
+  return orvalClient<Category[]>({
+    url: `/api/categories/admin`,
+    method: "GET",
+    signal,
+  });
+};
+
+export const getGetApiCategoriesAdminQueryKey = () => {
+  return [`/api/categories/admin`] as const;
+};
+
+export const getGetApiCategoriesAdminQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+  TError = ApiErrorPayload,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+      TError,
+      TData
+    >
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesAdminQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiCategoriesAdmin>>
+  > = ({ signal }) => getApiCategoriesAdmin(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiCategoriesAdminQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiCategoriesAdmin>>
+>;
+export type GetApiCategoriesAdminQueryError = ApiErrorPayload;
+
+export function useGetApiCategoriesAdmin<
+  TData = Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCategoriesAdmin>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiCategoriesAdmin<
+  TData = Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCategoriesAdmin>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiCategoriesAdmin<
+  TData = Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List all categories for CMS
+ */
+
+export function useGetApiCategoriesAdmin<
+  TData = Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiCategoriesAdmin>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiCategoriesAdminQueryOptions(options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,
@@ -677,6 +824,355 @@ export function useDeleteApiCategoriesId<
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
   const queryOptions = getDeleteApiCategoriesIdQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Reorder categories
+ */
+export const putApiCategoriesOrder = (
+  putApiCategoriesOrderBody: PutApiCategoriesOrderBody,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<Category[]>({
+    url: `/api/categories/order`,
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    data: putApiCategoriesOrderBody,
+    signal,
+  });
+};
+
+export const getPutApiCategoriesOrderQueryKey = (
+  putApiCategoriesOrderBody?: PutApiCategoriesOrderBody,
+) => {
+  return ["PUT", `/api/categories/order`, putApiCategoriesOrderBody] as const;
+};
+
+export const getPutApiCategoriesOrderQueryOptions = <
+  TData = Awaited<ReturnType<typeof putApiCategoriesOrder>>,
+  TError = ApiErrorPayload,
+>(
+  putApiCategoriesOrderBody: PutApiCategoriesOrderBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiCategoriesOrder>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getPutApiCategoriesOrderQueryKey(putApiCategoriesOrderBody);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof putApiCategoriesOrder>>
+  > = ({ signal }) => putApiCategoriesOrder(putApiCategoriesOrderBody, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof putApiCategoriesOrder>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PutApiCategoriesOrderQueryResult = NonNullable<
+  Awaited<ReturnType<typeof putApiCategoriesOrder>>
+>;
+export type PutApiCategoriesOrderQueryError = ApiErrorPayload;
+
+export function usePutApiCategoriesOrder<
+  TData = Awaited<ReturnType<typeof putApiCategoriesOrder>>,
+  TError = ApiErrorPayload,
+>(
+  putApiCategoriesOrderBody: PutApiCategoriesOrderBody,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiCategoriesOrder>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof putApiCategoriesOrder>>,
+          TError,
+          Awaited<ReturnType<typeof putApiCategoriesOrder>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePutApiCategoriesOrder<
+  TData = Awaited<ReturnType<typeof putApiCategoriesOrder>>,
+  TError = ApiErrorPayload,
+>(
+  putApiCategoriesOrderBody: PutApiCategoriesOrderBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiCategoriesOrder>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof putApiCategoriesOrder>>,
+          TError,
+          Awaited<ReturnType<typeof putApiCategoriesOrder>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePutApiCategoriesOrder<
+  TData = Awaited<ReturnType<typeof putApiCategoriesOrder>>,
+  TError = ApiErrorPayload,
+>(
+  putApiCategoriesOrderBody: PutApiCategoriesOrderBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiCategoriesOrder>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Reorder categories
+ */
+
+export function usePutApiCategoriesOrder<
+  TData = Awaited<ReturnType<typeof putApiCategoriesOrder>>,
+  TError = ApiErrorPayload,
+>(
+  putApiCategoriesOrderBody: PutApiCategoriesOrderBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiCategoriesOrder>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getPutApiCategoriesOrderQueryOptions(
+    putApiCategoriesOrderBody,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Reorder category lines
+ */
+export const putApiCategoriesIdLinesOrder = (
+  id: string,
+  putApiCategoriesIdLinesOrderBody: PutApiCategoriesIdLinesOrderBody,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<Category>({
+    url: `/api/categories/${id}/lines/order`,
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    data: putApiCategoriesIdLinesOrderBody,
+    signal,
+  });
+};
+
+export const getPutApiCategoriesIdLinesOrderQueryKey = (
+  id: string,
+  putApiCategoriesIdLinesOrderBody?: PutApiCategoriesIdLinesOrderBody,
+) => {
+  return [
+    "PUT",
+    `/api/categories/${id}/lines/order`,
+    putApiCategoriesIdLinesOrderBody,
+  ] as const;
+};
+
+export const getPutApiCategoriesIdLinesOrderQueryOptions = <
+  TData = Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  putApiCategoriesIdLinesOrderBody: PutApiCategoriesIdLinesOrderBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getPutApiCategoriesIdLinesOrderQueryKey(
+      id,
+      putApiCategoriesIdLinesOrderBody,
+    );
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>
+  > = ({ signal }) =>
+    putApiCategoriesIdLinesOrder(id, putApiCategoriesIdLinesOrderBody, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: id !== null && id !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PutApiCategoriesIdLinesOrderQueryResult = NonNullable<
+  Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>
+>;
+export type PutApiCategoriesIdLinesOrderQueryError = ApiErrorPayload;
+
+export function usePutApiCategoriesIdLinesOrder<
+  TData = Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  putApiCategoriesIdLinesOrderBody: PutApiCategoriesIdLinesOrderBody,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>,
+          TError,
+          Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePutApiCategoriesIdLinesOrder<
+  TData = Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  putApiCategoriesIdLinesOrderBody: PutApiCategoriesIdLinesOrderBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>,
+          TError,
+          Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePutApiCategoriesIdLinesOrder<
+  TData = Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  putApiCategoriesIdLinesOrderBody: PutApiCategoriesIdLinesOrderBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Reorder category lines
+ */
+
+export function usePutApiCategoriesIdLinesOrder<
+  TData = Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  putApiCategoriesIdLinesOrderBody: PutApiCategoriesIdLinesOrderBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiCategoriesIdLinesOrder>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getPutApiCategoriesIdLinesOrderQueryOptions(
+    id,
+    putApiCategoriesIdLinesOrderBody,
+    options,
+  );
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,

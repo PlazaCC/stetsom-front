@@ -8,6 +8,7 @@
 
 /** Route prefixes owned by the site — redirects must never shadow these. */
 export const RESERVED_REDIRECT_PREFIXES = [
+  "/produto",
   "/produtos",
   "/sobre",
   "/suporte",

@@ -12,12 +12,12 @@ export interface CatalogLineCardData {
   line_id: string;
   name: string;
   slug: string;
-  icon_url?: string | null;
   cover_url: string | null;
 }
 
 interface CatalogLinesGridProps {
   lines: CatalogLineCardData[];
+  allProductsCoverUrl: string | null;
   onSelectLine: (slug: string) => void;
   onSelectAll: () => void;
 }
@@ -28,6 +28,7 @@ interface CatalogLinesGridProps {
  */
 export function CatalogLinesGrid({
   lines,
+  allProductsCoverUrl,
   onSelectLine,
   onSelectAll,
 }: CatalogLinesGridProps) {
@@ -43,12 +44,22 @@ export function CatalogLinesGrid({
       >
         <span className="relative block aspect-square w-full overflow-hidden bg-off-white">
           <span className="flex h-full w-full items-center justify-center">
-            <LayoutGrid
-              size={48}
-              strokeWidth={1}
-              aria-hidden
-              className="text-muted-foreground/30"
-            />
+            {allProductsCoverUrl ? (
+              <Image
+                src={allProductsCoverUrl}
+                alt={t("allLines")}
+                fill
+                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                className="object-contain p-2"
+              />
+            ) : (
+              <LayoutGrid
+                size={48}
+                strokeWidth={1}
+                aria-hidden
+                className="text-muted-foreground/30"
+              />
+            )}
           </span>
         </span>
         <span className="flex min-h-14 flex-col items-center justify-center px-4 py-3 text-center lg:px-5 lg:py-3.5">

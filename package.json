@@ -11,7 +11,8 @@
     "prepare": "husky",
     "api:generate": "orval",
     "api:watch": "orval --watch",
-    "mock:dump": "node scripts/dump-mock-data.mjs"
+    "mock:dump": "node scripts/dump-mock-data.mjs",
+    "mock:validate": "node scripts/validate-mock-data.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

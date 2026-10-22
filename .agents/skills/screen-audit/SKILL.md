@@ -129,7 +129,7 @@ Read these files as needed (based on scope):
 **Public site screens:**
 - `src/app/(site)/page.tsx` + `_components/`
 - `src/app/(site)/produtos/page.tsx` + `_components/`
-- `src/app/(site)/produtos/[slug]/page.tsx` + `_components/`
+- `src/app/(site)/produto/[slug]/page.tsx` + `_components/`
 - `src/app/(site)/sobre/page.tsx` + `_components/`
 - `src/app/(site)/suporte/page.tsx` + `_components/`
 - `src/app/not-found.tsx`

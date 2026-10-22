@@ -5,7 +5,7 @@ Referência dos blocos de página de produto: tipos, campos de conteúdo, estili
 Fonte no código:
 
 - Editor CMS: `src/app/admin/_components/crud/product-block-registry.tsx`
-- Renderização pública: `src/app/[locale]/(site)/produtos/[slug]/_components/blocks/`
+- Renderização pública: `src/app/[locale]/(site)/produto/[slug]/_components/blocks/`
 - Helpers e tipos: `src/lib/utils/product.ts`
 - Modelos da API: `@/api/stetsom/model` (`ProductBlock`, `ProductBlockType`, `ProductBlockData`)
 

@@ -10,7 +10,7 @@ import {
   useGetApiPagesSlugCms,
   useGetApiPartnerLocations,
   useGetApiPagesSlug,
-  useGetApiCategories,
+  useGetApiCategoriesAdmin,
   useGetApiProducts,
 } from "@/api/stetsom";
 import { useGetApiFaqs } from "@/api/stetsom/endpoints/faq-public/faq-public";
@@ -111,14 +111,12 @@ export function PageEditorContent({
     query: { enabled: isSupport },
   });
   const { data: faqItems = [] } = useGetApiFaqs();
-  const { data: previewCategories = [] } = useGetApiCategories(
-    { locale: "pt" },
-    { query: { enabled: isHome } },
-  );
+  const { data: previewCategories = [] } = useGetApiCategoriesAdmin({
+    query: { enabled: isHome },
+  });
   const { data: previewProducts } = useGetApiProducts(
     {
       locale: "pt",
-      status: "PUBLISHED",
       sort: "newest",
       page: 1,
       pageSize: 100,
@@ -288,7 +286,25 @@ export function PageEditorContent({
     departments,
     publicPage?.blocks,
     faqItems,
-    previewCategories,
+    previewCategories.map((category) => ({
+      id: category.id,
+      name: category.name.pt,
+      slug: category.slug.pt,
+      localized_slugs: category.slug,
+      all_products_cover_url: null,
+      lines: category.lines.map((line) => ({
+        line_id: line.line_id,
+        name: line.name.pt,
+        slug: line.slug.pt,
+        localized_slugs: line.slug,
+        order: line.order,
+        cover_url: null,
+        product_count: 0,
+      })),
+      order: category.order,
+      created_at: category.created_at,
+      updated_at: category.updated_at,
+    })),
     previewProducts?.items ?? [],
   );
 

@@ -47,6 +47,7 @@ const MAIN_NAV: NavNode[] = [
     children: [
       { href: "/admin/produtos", label: "Produtos", icon: Package },
       { href: "/admin/categorias", label: "Categorias", icon: Tags },
+      { href: "/admin/linhas", label: "Linhas", icon: Layers },
       { href: "/admin/templates", label: "Templates", icon: LayoutTemplate },
       { href: "/admin/atributos", label: "Atributos", icon: ListChecks },
       {

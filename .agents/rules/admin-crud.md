@@ -7,7 +7,8 @@ applyTo: 'src/app/admin/**/*.{ts,tsx}'
 
 ## List / Table Pages
 
-Every CRUD list page follows this pattern:
+Every CRUD list page follows this pattern. Use `/admin/produtos` as the canonical
+UX reference for debounce, filters, loading/error/empty states and pagination.
 
 ```tsx
 "use client"
@@ -20,7 +21,7 @@ const { data, isLoading } = useGetApiEntity({ search, page, pageSize: 20 })
 
 // 3. Column definitions typed as AdminTableColumn<T>[]
 const columns: AdminTableColumn<Entity>[] = [
-  { header: "Nome", accessor: "name", sortable: true },
+  { key: "name", header: "Nome", render: (row) => row.name },
   // ...trailing actions column
 ]
 
@@ -33,7 +34,7 @@ const columns: AdminTableColumn<Entity>[] = [
     emptyDescription="Crie o primeiro registro para começar"
     toolbar={<SearchInput />}
     action={<Button href="/novo">Novo</Button>}
-    pagination={{ page, totalPages, onPageChange: setPage }}
+    pagination={{ page, pageSize, total: data?.total ?? 0, onPageChange: setPage }}
   />
 </AdminPageLayout>
 ```
@@ -76,6 +77,38 @@ Both form types accept a `mode: "create" | "edit"` prop.
 - Use `<AdminFormSection>` for each logical group of fields (bordered card with optional title)
 - Use `<AdminFormSectionContent>` for consistent padding
 - Use `<AdminFormSectionTitle>` for visual dividers within a section
+- Forms use the full available width by default. Use responsive grids (`grid-cols-1`
+  with `sm:`/`lg:` variants) for short fields and stack them on mobile.
+- Do not put `overflow-hidden` or `overflow-auto` on ordinary form sections. The
+  shell/page owns the vertical scroll; inner scroll is reserved for explicit
+  full-height editor surfaces.
+
+## Related data
+
+Related products and similar records use `AdminSearchInput`, a debounced query,
+`AdminDataTable`, `AdminPagination`, and `next/link`. Never use `.slice()` as a
+substitute for pagination or raw `<a>` elements for internal Admin navigation.
+
+## Table actions
+
+- Use `AdminRowActions` and `AdminRowAction` for every trailing action cell.
+- Keep one or two frequent actions inline; use `variant="destructive"` for
+  unlink/delete/deactivate actions.
+- Actions that navigate to a long-form editor use `target="_blank"` and
+  `rel="noopener noreferrer"` when the current parent editor must remain open.
+- Do not duplicate button classes inside table cells.
+- Use `StatusBadge` for status enums; never print raw values such as `PUBLISHED`.
+- `AdminDataTable` toolbars contain search and filters. Primary creation or
+  relationship actions belong in its `action` slot so hierarchy stays consistent.
+- Toolbars stack at the base breakpoint and become horizontal at `sm`.
+
+## Readability and decomposition
+
+- Keep page components as orchestration layers; extract data hooks, table columns,
+  form sections and picker components when a file mixes those responsibilities.
+- Prefer named variables, early returns and small components over nested ternaries.
+- Feature-local components must not be imported from another feature. Promote shared
+  Admin behavior to `src/app/admin/_components/`.
 
 ## Confirmation Dialog
 

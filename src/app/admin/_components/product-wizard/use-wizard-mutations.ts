@@ -4,12 +4,15 @@ import {
   postApiProducts,
   useGetApiAttributeGroups,
   useGetApiAttributes,
-  useGetApiCategories,
+  useGetApiCategoriesAdmin,
   useGetApiTemplates,
 } from "@/api/stetsom";
-import type { PostApiProductsBody, ProductStatus } from "@/api/stetsom/model";
+import type {
+  PatchApiProductsIdBody,
+  PostApiProductsBody,
+  ProductStatus,
+} from "@/api/stetsom/model";
 import { useAdminToast } from "@/hooks/use-admin-toast";
-import { slugify } from "@/lib/utils/slugify";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, type Dispatch } from "react";
@@ -23,6 +26,7 @@ import {
   buildPayload,
   combineLaunchDate,
   deriveStatus,
+  selectProductSlug,
   findSpecIssues,
   templateLayoutOf,
   type PublishIntent,
@@ -52,7 +56,7 @@ export function useWizardMutations(
   const [publishedResult, setPublishedResult] =
     useState<ProductMutationResult | null>(null);
 
-  const categoriesQuery = useGetApiCategories();
+  const categoriesQuery = useGetApiCategoriesAdmin();
   // A template belongs to a single category, so only the selected category's
   // templates may be applied. Without a category there is nothing to offer —
   // skip the request instead of listing templates from every category.
@@ -64,7 +68,11 @@ export function useWizardMutations(
   const attributeGroupsQuery = useGetApiAttributeGroups();
 
   const categories = useMemo(
-    () => (categoriesQuery.data ?? []).map((c) => ({ id: c.id, name: c.name })),
+    () =>
+      (categoriesQuery.data ?? []).map((c) => ({
+        id: c.id,
+        name: c.name.pt,
+      })),
     [categoriesQuery.data],
   );
   const lines = useMemo(
@@ -72,7 +80,7 @@ export function useWizardMutations(
       (categoriesQuery.data ?? []).flatMap((c) =>
         c.lines.map((l) => ({
           id: l.line_id,
-          name: l.name,
+          name: l.name.pt,
           category_id: c.id,
         })),
       ),
@@ -86,7 +94,7 @@ export function useWizardMutations(
     mutationFn: (body: PostApiProductsBody) => postApiProducts(body),
   });
   const updateMutation = useMutation({
-    mutationFn: ({ id, body }: { id: string; body: PostApiProductsBody }) =>
+    mutationFn: ({ id, body }: { id: string; body: PatchApiProductsIdBody }) =>
       patchApiProductsId(id, body),
   });
   const deleteMutation = useMutation({
@@ -114,33 +122,56 @@ export function useWizardMutations(
     const launchISO = combineLaunchDate(state.launch_date, state.launch_time);
     const status = deriveStatus(intent, launchISO);
     const payload = buildPayload(state, status);
+    const basePayload =
+      status === "DRAFT" ? payload : { ...payload, status: "DRAFT" as const };
 
     let id = state.productId;
     if (id) {
-      await updateMutation.mutateAsync({ id, body: payload });
+      await updateMutation.mutateAsync({ id, body: basePayload });
     } else {
-      const created = await createMutation.mutateAsync(payload);
+      const created = await createMutation.mutateAsync(basePayload);
       id = created.id;
     }
 
     const ledger = createSyncLedger(state);
-    let synced = true;
     if (id) {
       try {
         await syncBlocks(id, state.blocks, ledger);
         await syncImages(id, state.images, ledger);
         await syncFiles(id, state.files, ledger);
       } catch (syncErr) {
-        synced = false;
+        // Keep what did reach the server, so the retry does not create it
+        // again; the product stays a draft until the sync goes through.
+        dispatch({
+          type: "mark_saved",
+          productId: id,
+          status: basePayload.status ?? "DRAFT",
+          ledger,
+          synced: false,
+        });
         adminToast.apiError(
           syncErr,
           "Produto salvo, mas houve erro ao sincronizar blocos/mídias.",
         );
+        throw syncErr;
       }
     }
 
-    dispatch({ type: "mark_saved", productId: id!, status, ledger, synced });
-    const slug = state.slug.pt || slugify(state.name.pt);
+    if (status !== "DRAFT") {
+      await updateMutation.mutateAsync({
+        id: id!,
+        body: { status, launch_date: payload.launch_date },
+      });
+    }
+
+    dispatch({
+      type: "mark_saved",
+      productId: id!,
+      status,
+      ledger,
+      synced: true,
+    });
+    const slug = selectProductSlug(state);
     return {
       id: id!,
       slug,
@@ -215,7 +246,7 @@ export function useWizardMutations(
       );
       return;
     }
-    const slug = state.slug.pt || slugify(state.name.pt);
+    const slug = selectProductSlug(state);
     window.open(
       `/api/draft?slug=${encodeURIComponent(slug)}`,
       "_blank",

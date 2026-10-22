@@ -19,6 +19,13 @@ export type GetApiProductsAdminParams = {
    */
   pageSize?: number;
   q?: string;
+  category_id?: string;
+  /**
+   * @nullable
+   */
+  line_id?: string | null;
+  exclude_line_id?: string;
+  has_line?: boolean;
   status?: (typeof GetApiProductsAdminStatus)[keyof typeof GetApiProductsAdminStatus];
   is_export?: boolean;
 };

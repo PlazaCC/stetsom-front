@@ -7,76 +7,37 @@
       "icon_url": null,
       "lines": [
         {
-          "line_id": "afb1d12d-5599-4795-867d-df6137de6d5a",
-          "name": "Adaptadores & Controladores",
-          "slug": "adaptadores",
-          "icon_url": null,
-          "order": 0
-        },
-        {
-          "line_id": "dfb56718-5fa3-43e1-b79b-5730903146e4",
-          "name": "Antena Automotiva",
-          "slug": "antena-automotiva",
-          "icon_url": null,
-          "order": 1
-        },
-        {
-          "line_id": "d1e43156-83ec-41b5-8dea-69d8a27d6964",
-          "name": "Barramento",
-          "slug": "busbar",
-          "icon_url": null,
-          "order": 2
-        },
-        {
-          "line_id": "51020fdb-1e17-4793-99ff-5089cc3bde73",
-          "name": "Cabos RCA",
-          "slug": "cabos-rca",
-          "icon_url": null,
-          "order": 3
-        },
-        {
-          "line_id": "a1dd1091-fa61-468b-870d-93e3c90d376a",
-          "name": "Iluminação",
-          "slug": "iluminacao",
-          "icon_url": null,
-          "order": 4
-        },
-        {
-          "line_id": "7d161d70-9f51-4494-953c-7b921a438252",
-          "name": "Supressores de Ruídos",
-          "slug": "supressores-de-ruidos",
-          "icon_url": null,
-          "order": 5
-        },
-        {
           "line_id": "f047a9c2-3f8b-454f-81b3-516a9b381f34",
           "name": "Voltímetros",
           "slug": "voltimetros",
           "icon_url": null,
-          "order": 6
+          "order": 6,
+          "localized_slugs": {
+            "pt": "voltimetros"
+          },
+          "cover_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/96b505e3-2b2a-4895-8886-ded2d17e77d9.png",
+          "product_count": 2
         }
       ],
       "order": 0,
       "created_at": "2026-07-14T16:35:35.101Z",
-      "updated_at": "2026-07-14T16:35:35.101Z"
+      "updated_at": "2026-07-14T16:35:35.101Z",
+      "localized_slugs": {
+        "pt": "acessorios-automotivos"
+      }
     },
     {
       "id": "6a56655705fb043f41a39875",
       "name": "Alarmes",
       "slug": "alarmes",
       "icon_url": null,
-      "lines": [
-        {
-          "line_id": "84cac237-a6d0-4c50-97dc-6fb7a5fb1200",
-          "name": "Evolution Moto",
-          "slug": "evolution-moto",
-          "icon_url": null,
-          "order": 0
-        }
-      ],
+      "lines": [],
       "order": 1,
       "created_at": "2026-07-14T16:35:35.111Z",
-      "updated_at": "2026-07-14T16:35:35.111Z"
+      "updated_at": "2026-07-14T16:35:35.111Z",
+      "localized_slugs": {
+        "pt": "alarmes"
+      }
     },
     {
       "id": "6a56655705fb043f41a39876",
@@ -85,110 +46,24 @@
       "icon_url": null,
       "lines": [
         {
-          "line_id": "54f4a9b9-d50a-4cd5-8b54-77d6c1110bb0",
-          "name": "Bravo Attack",
-          "slug": "bravo-attack",
-          "icon_url": null,
-          "order": 0
-        },
-        {
-          "line_id": "111fb89c-8720-4d8a-9a54-3c5197b0621d",
-          "name": "Bravo Bass",
-          "slug": "bravo-bass",
-          "icon_url": null,
-          "order": 1
-        },
-        {
-          "line_id": "8f36cb79-d98b-49ca-b042-5c023bc47d95",
-          "name": "Bravo Full",
-          "slug": "bravo-full",
-          "icon_url": null,
-          "order": 2
-        },
-        {
-          "line_id": "1e0533a9-e3bf-45f6-8b4f-03d1ec092e49",
-          "name": "Bravo HQ",
-          "slug": "bravo-hq",
-          "icon_url": null,
-          "order": 3
-        },
-        {
-          "line_id": "008aad6c-45d5-425e-ab25-0cfdb504542b",
-          "name": "Bravo Rider",
-          "slug": "bravo-rider",
-          "icon_url": null,
-          "order": 4
-        },
-        {
-          "line_id": "0cf3938e-3977-4831-8f09-a1a5037ac777",
-          "name": "Combat Line",
-          "slug": "combat",
-          "icon_url": null,
-          "order": 5
-        },
-        {
-          "line_id": "64a70b32-2ed1-4fcf-8012-aab601b2430a",
-          "name": "Digital Bass",
-          "slug": "digital-bass",
-          "icon_url": null,
-          "order": 6
-        },
-        {
-          "line_id": "a69710bf-1943-40f0-9f9a-1e88983c82ac",
-          "name": "Export Line",
-          "slug": "export-line",
-          "icon_url": null,
-          "order": 7
-        },
-        {
-          "line_id": "55b10d8a-aae6-4705-8184-97c5e2037841",
-          "name": "High Line",
-          "slug": "high-line",
-          "icon_url": null,
-          "order": 8
-        },
-        {
-          "line_id": "9e5af189-2e40-4b28-9105-7ae7c4606c0d",
-          "name": "High Voltage",
-          "slug": "high-voltage",
-          "icon_url": null,
-          "order": 9
-        },
-        {
-          "line_id": "57f44a2c-90d2-4dc8-9fe1-787ddece1393",
-          "name": "Iron Line",
-          "slug": "iron-line",
-          "icon_url": null,
-          "order": 10
-        },
-        {
-          "line_id": "0184c3e7-2d23-41b5-87c5-f48b5f6a7aa4",
-          "name": "PA",
-          "slug": "pa",
-          "icon_url": null,
-          "order": 11
-        },
-        {
           "line_id": "56717213-423f-4877-a73d-f26e793ec9c0",
           "name": "Vulcan",
           "slug": "vulcan",
           "icon_url": null,
-          "order": 12
+          "order": 12,
+          "localized_slugs": {
+            "pt": "vulcan"
+          },
+          "cover_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b56b0432-19f6-44b6-8ed2-9eeb960c8dbb.png",
+          "product_count": 12
         }
       ],
       "order": 2,
       "created_at": "2026-07-14T16:35:35.120Z",
-      "updated_at": "2026-07-14T16:35:35.120Z"
-    },
-    {
-      "id": "6a56655705fb043f41a39877",
-      "name": "Crossovers",
-      "slug": "crossovers",
-      "icon_url": null,
-      "lines": [],
-      "order": 3,
-      "created_at": "2026-07-14T16:35:35.129Z",
-      "updated_at": "2026-07-14T16:35:35.129Z"
+      "updated_at": "2026-07-14T16:35:35.120Z",
+      "localized_slugs": {
+        "pt": "amplificadores"
+      }
     },
     {
       "id": "6a56655705fb043f41a39878",
@@ -198,17 +73,10 @@
       "lines": [],
       "order": 4,
       "created_at": "2026-07-14T16:35:35.137Z",
-      "updated_at": "2026-07-14T16:35:35.137Z"
-    },
-    {
-      "id": "6a56655b16e507fbd6cfed45",
-      "name": "Sem Categoria",
-      "slug": "sem-categoria",
-      "icon_url": null,
-      "lines": [],
-      "order": 9999,
-      "created_at": "2026-07-14T16:35:39.636Z",
-      "updated_at": "2026-07-14T16:35:39.636Z"
+      "updated_at": "2026-07-14T16:35:35.137Z",
+      "localized_slugs": {
+        "pt": "processadores"
+      }
     }
   ],
   "partner-locations": [
@@ -2680,11 +2548,11 @@
               "category": "Amplificadores",
               "line": null,
               "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/1dd71ca7-242d-47d5-923e-afcaee4ec9f2.png",
-              "href": "/produtos/1k4d-1-ohm",
               "status": "PUBLISHED",
               "is_discontinued": false,
               "highlighted_specs": [],
-              "variants": ["Padrão"]
+              "variants": ["Padrão"],
+              "available_locales": []
             },
             {
               "id": "6a56659e16e507fbd6cff3e1",
@@ -2694,11 +2562,11 @@
               "category": "Amplificadores",
               "line": null,
               "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/e17f3e58-2943-4e7e-a212-bf37a2a09b27.png",
-              "href": "/produtos/1k2d",
               "status": "PUBLISHED",
               "is_discontinued": false,
               "highlighted_specs": [],
-              "variants": ["Padrão"]
+              "variants": ["Padrão"],
+              "available_locales": []
             },
             {
               "id": "6a56659e16e507fbd6cff3e0",
@@ -2708,11 +2576,11 @@
               "category": "Amplificadores",
               "line": null,
               "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/20ed2549-e5ac-427b-a944-03f5c10dd13a.png",
-              "href": "/produtos/1k1d-1-ohm",
               "status": "PUBLISHED",
               "is_discontinued": false,
               "highlighted_specs": [],
-              "variants": ["Padrão"]
+              "variants": ["Padrão"],
+              "available_locales": []
             },
             {
               "id": "6a56659e16e507fbd6cff3df",
@@ -2722,11 +2590,11 @@
               "category": "Amplificadores",
               "line": null,
               "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/05e1f2f1-da18-40ef-b221-6082e038af7e.png",
-              "href": "/produtos/1k-eq",
               "status": "PUBLISHED",
               "is_discontinued": false,
               "highlighted_specs": [],
-              "variants": ["1 Ohm", "2 Ohms", "4 Ohms"]
+              "variants": ["1 Ohm", "2 Ohms", "4 Ohms"],
+              "available_locales": []
             },
             {
               "id": "6a56659e16e507fbd6cff3de",
@@ -2736,11 +2604,11 @@
               "category": "Amplificadores",
               "line": null,
               "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/0509df17-a24a-4bb2-92a9-1b1248a7904b.png",
-              "href": "/produtos/14k2es",
               "status": "PUBLISHED",
               "is_discontinued": false,
               "highlighted_specs": [],
-              "variants": ["1 Ohm"]
+              "variants": ["1 Ohm"],
+              "available_locales": []
             },
             {
               "id": "6a56659e16e507fbd6cff3dd",
@@ -2750,11 +2618,11 @@
               "category": "Amplificadores",
               "line": null,
               "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/f40f41c8-44ac-4e46-9af6-24e031193d97.png",
-              "href": "/produtos/14k2-d-1-ohm",
               "status": "PUBLISHED",
               "is_discontinued": false,
               "highlighted_specs": [],
-              "variants": ["Padrão"]
+              "variants": ["Padrão"],
+              "available_locales": []
             },
             {
               "id": "6a56659e16e507fbd6cff3dc",
@@ -2764,11 +2632,11 @@
               "category": "Amplificadores",
               "line": null,
               "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/9bb60793-92a9-4b14-9942-010931004c5b.png",
-              "href": "/produtos/11k2es",
               "status": "PUBLISHED",
               "is_discontinued": false,
               "highlighted_specs": [],
-              "variants": ["1 Ohm"]
+              "variants": ["1 Ohm"],
+              "available_locales": []
             },
             {
               "id": "6a56659e16e507fbd6cff3db",
@@ -2778,11 +2646,11 @@
               "category": "Amplificadores",
               "line": null,
               "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8defc0de-6bae-42ef-8028-353662eefc6f.png",
-              "href": "/produtos/11k2-eq",
               "status": "PUBLISHED",
               "is_discontinued": false,
               "highlighted_specs": [],
-              "variants": ["1 Ohm"]
+              "variants": ["1 Ohm"],
+              "available_locales": []
             }
           ],
           "spotlight": {
@@ -2793,11 +2661,11 @@
             "category": "Amplificadores",
             "line": null,
             "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8defc0de-6bae-42ef-8028-353662eefc6f.png",
-            "href": "/produtos/11k2-eq",
             "status": "PUBLISHED",
             "is_discontinued": false,
             "highlighted_specs": [],
-            "variants": ["1 Ohm"]
+            "variants": ["1 Ohm"],
+            "available_locales": []
           }
         },
         "available_locales": []
@@ -3383,11 +3251,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b56b0432-19f6-44b6-8ed2-9eeb960c8dbb.png",
-        "href": "/produtos/vulcan-8000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51e",
@@ -3397,11 +3265,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8ad7dbf8-1fe5-46f4-8b0b-c1f8b54a5523.png",
-        "href": "/produtos/vulcan-5000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["2 OHMS", "4 OHMS", "1 OHM"]
+        "variants": ["2 OHMS", "4 OHMS", "1 OHM"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51d",
@@ -3411,11 +3279,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/c88a1ff8-30c1-43a0-803d-0d01f472fce9.png",
-        "href": "/produtos/vulcan-3000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "4 OHMS", "2 OHMS"]
+        "variants": ["1 OHM", "4 OHMS", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51c",
@@ -3425,11 +3293,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/d6ff53cc-fe29-4d0c-a06b-b41d205f5903.png",
-        "href": "/produtos/vulcan-2000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS", "4 OHMS"]
+        "variants": ["1 OHM", "2 OHMS", "4 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51b",
@@ -3439,11 +3307,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/1f654a67-7b84-4142-af6d-ce521fd665e9.png",
-        "href": "/produtos/vulcan-12000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51a",
@@ -3453,11 +3321,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/fdbe3cfe-9be9-48e9-9d4b-b685dc092be6.png",
-        "href": "/produtos/vulcan-1200",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS", "4 OHMS"]
+        "variants": ["1 OHM", "2 OHMS", "4 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff519",
@@ -3467,11 +3335,11 @@
         "category": "Acessórios",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/3947f1c1-975b-48bd-a224-5e55499d8182.png",
-        "href": "/produtos/vt-5",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff518",
@@ -3481,11 +3349,11 @@
         "category": "Acessórios",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/ce7dc0f4-64ec-461f-8498-9d5c13fbff15.png",
-        "href": "/produtos/vt-4",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff517",
@@ -3495,11 +3363,11 @@
         "category": "Acessórios",
         "line": "Voltímetros",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/96b505e3-2b2a-4895-8886-ded2d17e77d9.png",
-        "href": "/produtos/vt-3",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff516",
@@ -3509,11 +3377,11 @@
         "category": "Amplificadores",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b87db752-78e6-497b-baea-e0db28aa8187.png",
-        "href": "/produtos/vs-650-1",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["2 Ohms"]
+        "variants": ["2 Ohms"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff515",
@@ -3523,11 +3391,11 @@
         "category": "Amplificadores",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/71979aea-e28b-4c31-9f4a-04e3e03c4f0e.png",
-        "href": "/produtos/vs-600-4",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff514",
@@ -3537,11 +3405,11 @@
         "category": "Amplificadores",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/05f51f3b-10d4-4c3b-96a0-2255f9d2bb79.png",
-        "href": "/produtos/vs-400-4",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff513",
@@ -3551,11 +3419,11 @@
         "category": "Amplificadores",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/2d6ed8be-8fea-4a4e-8fef-793a7131a377.png",
-        "href": "/produtos/vs-400-4-mini",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff512",
@@ -3565,11 +3433,11 @@
         "category": "Amplificadores",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/d1308149-fa36-4471-9ed5-4c392eac420c.png",
-        "href": "/produtos/vs-380-4",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff511",
@@ -3579,11 +3447,11 @@
         "category": "Amplificadores",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/49d49fed-ee0c-46e3-9134-fecb9e3331d1.png",
-        "href": "/produtos/vs-380-3",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       }
     ],
     "total": 325,
@@ -4178,11 +4046,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8ad7dbf8-1fe5-46f4-8b0b-c1f8b54a5523.png",
-        "href": "/produtos/vulcan-5000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["2 OHMS", "4 OHMS", "1 OHM"]
+        "variants": ["2 OHMS", "4 OHMS", "1 OHM"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51d",
@@ -4192,11 +4060,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/c88a1ff8-30c1-43a0-803d-0d01f472fce9.png",
-        "href": "/produtos/vulcan-3000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "4 OHMS", "2 OHMS"]
+        "variants": ["1 OHM", "4 OHMS", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51c",
@@ -4206,11 +4074,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/d6ff53cc-fe29-4d0c-a06b-b41d205f5903.png",
-        "href": "/produtos/vulcan-2000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS", "4 OHMS"]
+        "variants": ["1 OHM", "2 OHMS", "4 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51b",
@@ -4220,11 +4088,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/1f654a67-7b84-4142-af6d-ce521fd665e9.png",
-        "href": "/produtos/vulcan-12000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       }
     ]
   },
@@ -4997,11 +4865,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b56b0432-19f6-44b6-8ed2-9eeb960c8dbb.png",
-        "href": "/produtos/vulcan-8000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51d",
@@ -5011,11 +4879,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/c88a1ff8-30c1-43a0-803d-0d01f472fce9.png",
-        "href": "/produtos/vulcan-3000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "4 OHMS", "2 OHMS"]
+        "variants": ["1 OHM", "4 OHMS", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51c",
@@ -5025,11 +4893,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/d6ff53cc-fe29-4d0c-a06b-b41d205f5903.png",
-        "href": "/produtos/vulcan-2000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS", "4 OHMS"]
+        "variants": ["1 OHM", "2 OHMS", "4 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51b",
@@ -5039,11 +4907,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/1f654a67-7b84-4142-af6d-ce521fd665e9.png",
-        "href": "/produtos/vulcan-12000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       }
     ]
   },
@@ -5748,11 +5616,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b56b0432-19f6-44b6-8ed2-9eeb960c8dbb.png",
-        "href": "/produtos/vulcan-8000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51e",
@@ -5762,11 +5630,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8ad7dbf8-1fe5-46f4-8b0b-c1f8b54a5523.png",
-        "href": "/produtos/vulcan-5000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["2 OHMS", "4 OHMS", "1 OHM"]
+        "variants": ["2 OHMS", "4 OHMS", "1 OHM"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51c",
@@ -5776,11 +5644,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/d6ff53cc-fe29-4d0c-a06b-b41d205f5903.png",
-        "href": "/produtos/vulcan-2000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS", "4 OHMS"]
+        "variants": ["1 OHM", "2 OHMS", "4 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51b",
@@ -5790,11 +5658,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/1f654a67-7b84-4142-af6d-ce521fd665e9.png",
-        "href": "/produtos/vulcan-12000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       }
     ]
   },
@@ -6526,11 +6394,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b56b0432-19f6-44b6-8ed2-9eeb960c8dbb.png",
-        "href": "/produtos/vulcan-8000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51e",
@@ -6540,11 +6408,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8ad7dbf8-1fe5-46f4-8b0b-c1f8b54a5523.png",
-        "href": "/produtos/vulcan-5000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["2 OHMS", "4 OHMS", "1 OHM"]
+        "variants": ["2 OHMS", "4 OHMS", "1 OHM"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51d",
@@ -6554,11 +6422,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/c88a1ff8-30c1-43a0-803d-0d01f472fce9.png",
-        "href": "/produtos/vulcan-3000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "4 OHMS", "2 OHMS"]
+        "variants": ["1 OHM", "4 OHMS", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51b",
@@ -6568,11 +6436,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/1f654a67-7b84-4142-af6d-ce521fd665e9.png",
-        "href": "/produtos/vulcan-12000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       }
     ]
   },
@@ -7164,11 +7032,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b56b0432-19f6-44b6-8ed2-9eeb960c8dbb.png",
-        "href": "/produtos/vulcan-8000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51e",
@@ -7178,11 +7046,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8ad7dbf8-1fe5-46f4-8b0b-c1f8b54a5523.png",
-        "href": "/produtos/vulcan-5000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["2 OHMS", "4 OHMS", "1 OHM"]
+        "variants": ["2 OHMS", "4 OHMS", "1 OHM"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51d",
@@ -7192,11 +7060,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/c88a1ff8-30c1-43a0-803d-0d01f472fce9.png",
-        "href": "/produtos/vulcan-3000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "4 OHMS", "2 OHMS"]
+        "variants": ["1 OHM", "4 OHMS", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51c",
@@ -7206,11 +7074,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/d6ff53cc-fe29-4d0c-a06b-b41d205f5903.png",
-        "href": "/produtos/vulcan-2000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS", "4 OHMS"]
+        "variants": ["1 OHM", "2 OHMS", "4 OHMS"],
+        "available_locales": []
       }
     ]
   },
@@ -7934,11 +7802,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b56b0432-19f6-44b6-8ed2-9eeb960c8dbb.png",
-        "href": "/produtos/vulcan-8000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51e",
@@ -7948,11 +7816,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8ad7dbf8-1fe5-46f4-8b0b-c1f8b54a5523.png",
-        "href": "/produtos/vulcan-5000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["2 OHMS", "4 OHMS", "1 OHM"]
+        "variants": ["2 OHMS", "4 OHMS", "1 OHM"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51d",
@@ -7962,11 +7830,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/c88a1ff8-30c1-43a0-803d-0d01f472fce9.png",
-        "href": "/produtos/vulcan-3000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "4 OHMS", "2 OHMS"]
+        "variants": ["1 OHM", "4 OHMS", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51c",
@@ -7976,11 +7844,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/d6ff53cc-fe29-4d0c-a06b-b41d205f5903.png",
-        "href": "/produtos/vulcan-2000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS", "4 OHMS"]
+        "variants": ["1 OHM", "2 OHMS", "4 OHMS"],
+        "available_locales": []
       }
     ]
   },
@@ -8122,11 +7990,11 @@
         "category": "Acessórios",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/ce7dc0f4-64ec-461f-8498-9d5c13fbff15.png",
-        "href": "/produtos/vt-4",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff517",
@@ -8136,11 +8004,11 @@
         "category": "Acessórios",
         "line": "Voltímetros",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/96b505e3-2b2a-4895-8886-ded2d17e77d9.png",
-        "href": "/produtos/vt-3",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ad16e507fbd6cff500",
@@ -8150,11 +8018,11 @@
         "category": "Acessórios",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b983d3fa-bc06-4ecc-9807-ee85e063f9d0.png",
-        "href": "/produtos/ultra-batcap-600f",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ad16e507fbd6cff4ff",
@@ -8164,11 +8032,11 @@
         "category": "Acessórios",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/243df420-e7d6-4361-b61a-4aa540d6ad4e.png",
-        "href": "/produtos/ultra-batcap-300f",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       }
     ]
   },
@@ -8310,11 +8178,11 @@
         "category": "Acessórios",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/3947f1c1-975b-48bd-a224-5e55499d8182.png",
-        "href": "/produtos/vt-5",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff517",
@@ -8324,11 +8192,11 @@
         "category": "Acessórios",
         "line": "Voltímetros",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/96b505e3-2b2a-4895-8886-ded2d17e77d9.png",
-        "href": "/produtos/vt-3",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ad16e507fbd6cff500",
@@ -8338,11 +8206,11 @@
         "category": "Acessórios",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b983d3fa-bc06-4ecc-9807-ee85e063f9d0.png",
-        "href": "/produtos/ultra-batcap-600f",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ad16e507fbd6cff4ff",
@@ -8352,11 +8220,11 @@
         "category": "Acessórios",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/243df420-e7d6-4361-b61a-4aa540d6ad4e.png",
-        "href": "/produtos/ultra-batcap-300f",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       }
     ]
   },
@@ -8541,11 +8409,11 @@
         "category": "Acessórios",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/3947f1c1-975b-48bd-a224-5e55499d8182.png",
-        "href": "/produtos/vt-5",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff518",
@@ -8555,11 +8423,11 @@
         "category": "Acessórios",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/ce7dc0f4-64ec-461f-8498-9d5c13fbff15.png",
-        "href": "/produtos/vt-4",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ad16e507fbd6cff500",
@@ -8569,11 +8437,11 @@
         "category": "Acessórios",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b983d3fa-bc06-4ecc-9807-ee85e063f9d0.png",
-        "href": "/produtos/ultra-batcap-600f",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       },
       {
         "id": "6a5665ad16e507fbd6cff4ff",
@@ -8583,11 +8451,11 @@
         "category": "Acessórios",
         "line": null,
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/243df420-e7d6-4361-b61a-4aa540d6ad4e.png",
-        "href": "/produtos/ultra-batcap-300f",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["Padrão"]
+        "variants": ["Padrão"],
+        "available_locales": []
       }
     ]
   },
@@ -8799,11 +8667,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b56b0432-19f6-44b6-8ed2-9eeb960c8dbb.png",
-        "href": "/produtos/vulcan-8000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51e",
@@ -8813,11 +8681,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8ad7dbf8-1fe5-46f4-8b0b-c1f8b54a5523.png",
-        "href": "/produtos/vulcan-5000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["2 OHMS", "4 OHMS", "1 OHM"]
+        "variants": ["2 OHMS", "4 OHMS", "1 OHM"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51d",
@@ -8827,11 +8695,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/c88a1ff8-30c1-43a0-803d-0d01f472fce9.png",
-        "href": "/produtos/vulcan-3000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "4 OHMS", "2 OHMS"]
+        "variants": ["1 OHM", "4 OHMS", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51c",
@@ -8841,11 +8709,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/d6ff53cc-fe29-4d0c-a06b-b41d205f5903.png",
-        "href": "/produtos/vulcan-2000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS", "4 OHMS"]
+        "variants": ["1 OHM", "2 OHMS", "4 OHMS"],
+        "available_locales": []
       }
     ]
   },
@@ -9043,11 +8911,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b56b0432-19f6-44b6-8ed2-9eeb960c8dbb.png",
-        "href": "/produtos/vulcan-8000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51e",
@@ -9057,11 +8925,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8ad7dbf8-1fe5-46f4-8b0b-c1f8b54a5523.png",
-        "href": "/produtos/vulcan-5000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["2 OHMS", "4 OHMS", "1 OHM"]
+        "variants": ["2 OHMS", "4 OHMS", "1 OHM"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51d",
@@ -9071,11 +8939,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/c88a1ff8-30c1-43a0-803d-0d01f472fce9.png",
-        "href": "/produtos/vulcan-3000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "4 OHMS", "2 OHMS"]
+        "variants": ["1 OHM", "4 OHMS", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51c",
@@ -9085,11 +8953,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/d6ff53cc-fe29-4d0c-a06b-b41d205f5903.png",
-        "href": "/produtos/vulcan-2000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS", "4 OHMS"]
+        "variants": ["1 OHM", "2 OHMS", "4 OHMS"],
+        "available_locales": []
       }
     ]
   },
@@ -9287,11 +9155,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b56b0432-19f6-44b6-8ed2-9eeb960c8dbb.png",
-        "href": "/produtos/vulcan-8000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51e",
@@ -9301,11 +9169,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8ad7dbf8-1fe5-46f4-8b0b-c1f8b54a5523.png",
-        "href": "/produtos/vulcan-5000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["2 OHMS", "4 OHMS", "1 OHM"]
+        "variants": ["2 OHMS", "4 OHMS", "1 OHM"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51d",
@@ -9315,11 +9183,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/c88a1ff8-30c1-43a0-803d-0d01f472fce9.png",
-        "href": "/produtos/vulcan-3000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "4 OHMS", "2 OHMS"]
+        "variants": ["1 OHM", "4 OHMS", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51c",
@@ -9329,11 +9197,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/d6ff53cc-fe29-4d0c-a06b-b41d205f5903.png",
-        "href": "/produtos/vulcan-2000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS", "4 OHMS"]
+        "variants": ["1 OHM", "2 OHMS", "4 OHMS"],
+        "available_locales": []
       }
     ]
   },
@@ -9539,11 +9407,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b56b0432-19f6-44b6-8ed2-9eeb960c8dbb.png",
-        "href": "/produtos/vulcan-8000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51e",
@@ -9553,11 +9421,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8ad7dbf8-1fe5-46f4-8b0b-c1f8b54a5523.png",
-        "href": "/produtos/vulcan-5000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["2 OHMS", "4 OHMS", "1 OHM"]
+        "variants": ["2 OHMS", "4 OHMS", "1 OHM"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51d",
@@ -9567,11 +9435,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/c88a1ff8-30c1-43a0-803d-0d01f472fce9.png",
-        "href": "/produtos/vulcan-3000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "4 OHMS", "2 OHMS"]
+        "variants": ["1 OHM", "4 OHMS", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51c",
@@ -9581,11 +9449,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/d6ff53cc-fe29-4d0c-a06b-b41d205f5903.png",
-        "href": "/produtos/vulcan-2000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS", "4 OHMS"]
+        "variants": ["1 OHM", "2 OHMS", "4 OHMS"],
+        "available_locales": []
       }
     ]
   },
@@ -9783,11 +9651,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b56b0432-19f6-44b6-8ed2-9eeb960c8dbb.png",
-        "href": "/produtos/vulcan-8000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51e",
@@ -9797,11 +9665,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8ad7dbf8-1fe5-46f4-8b0b-c1f8b54a5523.png",
-        "href": "/produtos/vulcan-5000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["2 OHMS", "4 OHMS", "1 OHM"]
+        "variants": ["2 OHMS", "4 OHMS", "1 OHM"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51d",
@@ -9811,11 +9679,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/c88a1ff8-30c1-43a0-803d-0d01f472fce9.png",
-        "href": "/produtos/vulcan-3000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "4 OHMS", "2 OHMS"]
+        "variants": ["1 OHM", "4 OHMS", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51c",
@@ -9825,11 +9693,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/d6ff53cc-fe29-4d0c-a06b-b41d205f5903.png",
-        "href": "/produtos/vulcan-2000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS", "4 OHMS"]
+        "variants": ["1 OHM", "2 OHMS", "4 OHMS"],
+        "available_locales": []
       }
     ]
   },
@@ -10027,11 +9895,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/b56b0432-19f6-44b6-8ed2-9eeb960c8dbb.png",
-        "href": "/produtos/vulcan-8000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS"]
+        "variants": ["1 OHM", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51e",
@@ -10041,11 +9909,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/8ad7dbf8-1fe5-46f4-8b0b-c1f8b54a5523.png",
-        "href": "/produtos/vulcan-5000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["2 OHMS", "4 OHMS", "1 OHM"]
+        "variants": ["2 OHMS", "4 OHMS", "1 OHM"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51d",
@@ -10055,11 +9923,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/c88a1ff8-30c1-43a0-803d-0d01f472fce9.png",
-        "href": "/produtos/vulcan-3000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "4 OHMS", "2 OHMS"]
+        "variants": ["1 OHM", "4 OHMS", "2 OHMS"],
+        "available_locales": []
       },
       {
         "id": "6a5665ae16e507fbd6cff51c",
@@ -10069,11 +9937,11 @@
         "category": "Amplificadores",
         "line": "Vulcan",
         "thumbnail_url": "https://stetsom-api-develop.s3.sa-east-1.amazonaws.com/scraper/migration/2026/06/d6ff53cc-fe29-4d0c-a06b-b41d205f5903.png",
-        "href": "/produtos/vulcan-2000",
         "status": "PUBLISHED",
         "is_discontinued": false,
         "highlighted_specs": [],
-        "variants": ["1 OHM", "2 OHMS", "4 OHMS"]
+        "variants": ["1 OHM", "2 OHMS", "4 OHMS"],
+        "available_locales": []
       }
     ]
   },

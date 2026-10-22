@@ -1,17 +1,21 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useCallback, useState } from "react";
 
 export function useCatalogFilters() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-
+  const params = useParams<{ category?: string; line?: string }>();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const activeCategory = searchParams.get("category") || "todos";
-  const activeLine = searchParams.get("line") || "todas";
+  const pathCategory = params.category ? String(params.category) : undefined;
+  const pathLine = params.line ? String(params.line) : undefined;
+  const activeCategory = pathCategory || "todos";
+  const activeLine = pathLine || "todas";
   const search = searchParams.get("q") || "";
   const sort = searchParams.get("sort") || "relevance";
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
@@ -19,67 +23,101 @@ export function useCatalogFilters() {
   const showDiscontinued = searchParams.get("discontinued") === "1";
   const showExport = searchParams.get("export") === "1";
   // "all" mostra todos os produtos de uma categoria (pulando a etapa de linhas).
-  const showAll = searchParams.get("all") === "1";
+  const showAll = pathname === "/produtos/[category]/produtos";
+
+  const replaceTaxonomyPath = useCallback(
+    (category?: string, line?: string, all = false) => {
+      const p = new URLSearchParams(searchParams.toString());
+      p.delete("page");
+      const path = !category
+        ? { pathname: "/produtos" as const }
+        : line
+          ? {
+              pathname: "/produtos/[category]/[line]" as const,
+              params: { category, line },
+            }
+          : all
+            ? {
+                pathname: "/produtos/[category]/produtos" as const,
+                params: { category },
+              }
+            : {
+                pathname: "/produtos/[category]" as const,
+                params: { category },
+              };
+      router.replace(
+        { ...path, query: Object.fromEntries(p.entries()) },
+        { scroll: false },
+      );
+    },
+    [router, searchParams],
+  );
 
   const pushParams = useCallback(
     (updater: (p: URLSearchParams) => void) => {
       const p = new URLSearchParams(searchParams.toString());
       updater(p);
-      const qs = p.toString();
-      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      const currentHref = pathLine
+        ? {
+            pathname: "/produtos/[category]/[line]" as const,
+            params: { category: pathCategory ?? "", line: pathLine },
+          }
+        : pathCategory
+          ? showAll
+            ? {
+                pathname: "/produtos/[category]/produtos" as const,
+                params: { category: pathCategory },
+              }
+            : {
+                pathname: "/produtos/[category]" as const,
+                params: { category: pathCategory },
+              }
+          : { pathname: "/produtos" as const };
+      router.replace(
+        { ...currentHref, query: Object.fromEntries(p.entries()) },
+        { scroll: false },
+      );
     },
-    [searchParams, router, pathname],
+    [searchParams, router, pathCategory, pathLine, showAll],
   );
 
   const setActiveCategory = useCallback(
     (slug: string) => {
-      pushParams((p) => {
-        if (slug === "todos") p.delete("category");
-        else p.set("category", slug);
-        // A line belongs to a category — changing the category invalidates it.
-        p.delete("line");
-        p.delete("all"); // voltar à etapa de linhas da nova categoria
-        p.delete("page"); // reset pagination when the filter changes
-      });
+      replaceTaxonomyPath(slug === "todos" ? undefined : slug);
     },
-    [pushParams],
+    [replaceTaxonomyPath],
   );
 
   const setActiveLine = useCallback(
     (slug: string) => {
-      pushParams((p) => {
-        if (slug === "todas") p.delete("line");
-        else p.set("line", slug);
-        p.delete("all"); // uma linha específica substitui "todos os produtos"
-        p.delete("page"); // reset pagination when the filter changes
-      });
+      replaceTaxonomyPath(
+        activeCategory === "todos" ? undefined : activeCategory,
+        slug === "todas" ? undefined : slug,
+      );
     },
-    [pushParams],
+    [activeCategory, replaceTaxonomyPath],
   );
 
   const setShowAll = useCallback(
     (value: boolean) => {
-      pushParams((p) => {
-        if (value) p.set("all", "1");
-        else p.delete("all");
-        p.delete("line");
-        p.delete("page"); // reset pagination when the filter changes
-      });
+      replaceTaxonomyPath(
+        activeCategory === "todos" ? undefined : activeCategory,
+        undefined,
+        value,
+      );
     },
-    [pushParams],
+    [activeCategory, replaceTaxonomyPath],
   );
 
   const setCategoryAll = useCallback(
     (category: string) => {
-      pushParams((p) => {
-        if (category === "todos") p.delete("category");
-        else p.set("category", category);
-        p.set("all", "1");
-        p.delete("line");
-        p.delete("page"); // reset pagination when the filter changes
-      });
+      replaceTaxonomyPath(
+        category === "todos" ? undefined : category,
+        undefined,
+        true,
+      );
     },
-    [pushParams],
+    [replaceTaxonomyPath],
   );
 
   const setSort = useCallback(
@@ -137,8 +175,8 @@ export function useCatalogFilters() {
   );
 
   const clearFilters = useCallback(() => {
-    router.replace(pathname, { scroll: false });
-  }, [router, pathname]);
+    router.replace({ pathname: "/produtos" }, { scroll: false });
+  }, [router]);
 
   return {
     activeCategory,

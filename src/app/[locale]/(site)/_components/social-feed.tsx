@@ -1,7 +1,6 @@
 "use client";
 
 import { PublicEmptyState } from "@/components/ui/public-empty-state";
-import { Link } from "@/i18n/navigation";
 import { Camera } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
@@ -60,12 +59,12 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
             subtitle={section.subtitle}
             className="max-w-180"
           />
-          <Link
+          <a
             href={section.ctaHref}
             className="w-fit font-sans-condensed text-base font-medium text-brand transition-colors hover:text-brand/80"
           >
             {section.ctaLabel} ›
-          </Link>
+          </a>
         </div>
         {posts.length === 0 && (
           <PublicEmptyState
@@ -87,7 +86,7 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
                 key={post.id}
                 className="w-[calc(100vw-2.5rem)] max-w-62.5 sm:w-62.5"
               >
-                <Link
+                <a
                   href={post.permalink ?? "#"}
                   className="relative flex aspect-292/356 w-full flex-col overflow-hidden"
                 >
@@ -146,7 +145,7 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
                       </span>
                     </div>
                   )}
-                </Link>
+                </a>
               </SwiperSlide>
             ))}
           </Swiper>

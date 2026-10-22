@@ -19,16 +19,14 @@ export function AdminFormSection({
   return (
     <div
       className={cn(
-        "flex h-full flex-1 flex-col overflow-hidden rounded-[16px] border border-border bg-card",
+        "flex flex-col rounded-[16px] border border-border bg-card",
         className,
       )}
     >
       {(title || description) && (
         <AdminFormSectionTitle title={title} description={description} />
       )}
-      <div className={cn("flex-1 overflow-auto", !raw && "px-6 py-4")}>
-        {children}
-      </div>
+      <div className={cn(!raw && "px-6 py-4")}>{children}</div>
     </div>
   );
 }

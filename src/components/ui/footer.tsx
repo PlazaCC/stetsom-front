@@ -1,4 +1,7 @@
-import type { PublicLegalPageListItem } from "@/api/stetsom/model";
+import type {
+  PublicCategory,
+  PublicLegalPageListItem,
+} from "@/api/stetsom/model";
 import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 import { Logo } from "./logo";
@@ -80,12 +83,14 @@ interface FooterProps {
   socials?: Partial<Record<SocialKey, string | undefined>>;
   // Published legal pages (slug + locale-resolved title) from the API.
   legalPages?: PublicLegalPageListItem[];
+  productCategories?: PublicCategory[];
 }
 
 export default async function Footer({
   logoDark = "/logo-pt-br-white.svg",
   socials,
   legalPages = [],
+  productCategories = [],
 }: FooterProps = {}) {
   const t = await getTranslations("Footer");
   const year = new Date().getFullYear();
@@ -98,41 +103,67 @@ export default async function Footer({
     Boolean(s.href),
   );
 
+  const productLinks = productCategories.slice(0, 8).map((category) => ({
+    id: category.id,
+    label: category.name,
+    href: {
+      pathname: "/produtos/[category]",
+      params: { category: category.slug },
+    } as const,
+  }));
   const footerColumns = [
     {
       title: t("company"),
       links: [
-        { label: t("about"), href: "/sobre" },
-        { label: t("products"), href: "/produtos" },
-        { label: t("support"), href: "/suporte" },
-        { label: t("warranty"), href: "/suporte" },
+        { id: "about", label: t("about"), href: { pathname: "/sobre" } },
+        {
+          id: "products",
+          label: t("products"),
+          href: { pathname: "/produtos" },
+        },
+        { id: "support", label: t("support"), href: { pathname: "/suporte" } },
+        {
+          id: "warranty",
+          label: t("warranty"),
+          href: { pathname: "/suporte" },
+        },
       ],
     },
     {
       title: t("products"),
       links: [
-        { label: t("allProducts"), href: "/produtos" },
-        { label: t("amplifiers"), href: "/produtos?category=amplificadores" },
-        { label: t("processors"), href: "/produtos?category=processadores" },
-        { label: t("controllers"), href: "/produtos?category=controles" },
-        { label: t("accessories"), href: "/produtos?category=acessorios" },
+        {
+          id: "all-products",
+          label: t("allProducts"),
+          href: { pathname: "/produtos" },
+        },
+        ...productLinks,
       ],
     },
     {
       title: t("support"),
       links: [
-        { label: t("helpCenter"), href: "/suporte" },
-        { label: t("warranty"), href: "/suporte" },
-        { label: t("manuals"), href: "/suporte" },
-        { label: t("authorizedCenters"), href: "/suporte" },
-        { label: t("contact"), href: "/suporte" },
+        { id: "help", label: t("helpCenter"), href: { pathname: "/suporte" } },
+        {
+          id: "warranty",
+          label: t("warranty"),
+          href: { pathname: "/suporte" },
+        },
+        { id: "manuals", label: t("manuals"), href: { pathname: "/suporte" } },
+        {
+          id: "centers",
+          label: t("authorizedCenters"),
+          href: { pathname: "/suporte" },
+        },
+        { id: "contact", label: t("contact"), href: { pathname: "/suporte" } },
       ],
     },
-  ];
+  ] as const;
 
   const legalLinks = legalPages.map((page) => ({
+    id: page.slug,
     label: page.title,
-    href: `/legal/${page.slug}`,
+    href: { pathname: "/legal/[slug]", params: { slug: page.slug } } as const,
   }));
 
   return (
@@ -173,9 +204,9 @@ export default async function Footer({
               <span className="mb-1 font-sans text-base font-medium text-white uppercase">
                 {title}
               </span>
-              {links.map(({ label, href }) => (
+              {links.map(({ id, label, href }) => (
                 <Link
-                  key={label || href}
+                  key={id}
                   href={href}
                   className="text-base text-text-subtle-dark transition-colors hover:text-white hover:underline"
                 >
@@ -193,8 +224,8 @@ export default async function Footer({
 
           {legalLinks.length > 0 && (
             <div className="flex flex-wrap items-center gap-y-1 text-sm font-medium text-text-subtle-dark">
-              {legalLinks.map(({ label, href }, index) => (
-                <div key={href} className="flex items-center">
+              {legalLinks.map(({ id, label, href }, index) => (
+                <div key={id} className="flex items-center">
                   {index > 0 ? <span className="px-2">|</span> : null}
                   <Link
                     href={href}

@@ -12,7 +12,8 @@ export interface HeroBannerSlideInput {
   mobile_image_url?: string;
   title?: string;
   label?: string;
-  href?: string;
+  product_slug?: string;
+  link_url?: string;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991

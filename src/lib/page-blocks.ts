@@ -1,5 +1,5 @@
 import type { I18nString, PageBlock } from "@/api/stetsom/model";
-import { toApiLocale } from "@/lib/api/i18n-utils";
+import { toApiLocale } from "@/i18n/locale";
 import { isAllowedVideoLink } from "@/lib/video-embed";
 
 export function getPageBlock<T extends Record<string, unknown>>(

@@ -7,7 +7,7 @@ import {
   postApiTemplates,
   useGetApiAttributeGroups,
   useGetApiAttributes,
-  useGetApiCategories,
+  useGetApiCategoriesAdmin,
   useGetApiTemplates,
 } from "@/api/stetsom";
 import type {
@@ -127,17 +127,16 @@ function TemplateFormInner({
   const toast = useAdminToast();
   const { data: allAttributes = [] } = useGetApiAttributes();
   const { data: allGroups = [] } = useGetApiAttributeGroups();
-  const { data: categories = [] } = useGetApiCategories();
+  const { data: categories = [] } = useGetApiCategoriesAdmin();
   const categoryName =
-    categories.find((c) => c.id === categoryId)?.name ?? "Categoria";
+    categories.find((c) => c.id === categoryId)?.name.pt ?? "Categoria";
 
   const [name, setName] = useState<I18nString>(initialName);
   const [groups, setGroups] = useState<EditorGroup[]>(initialGroups);
   const [isDirty, setIsDirty] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  // Categories no longer have a per-id route — deep-link with a query param.
-  const backHref = `/admin/categorias?category=${categoryId}`;
+  const backHref = `/admin/categorias/${categoryId}`;
 
   // An attribute sits in exactly one group, so the pickers only offer the
   // attributes and groups not placed yet.

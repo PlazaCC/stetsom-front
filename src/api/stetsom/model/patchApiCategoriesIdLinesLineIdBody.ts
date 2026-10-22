@@ -5,16 +5,18 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { PatchApiCategoriesIdLinesLineIdBodyCoverSource } from "./patchApiCategoriesIdLinesLineIdBodyCoverSource";
 import type { PatchApiCategoriesIdLinesLineIdBodyName } from "./patchApiCategoriesIdLinesLineIdBodyName";
 import type { PatchApiCategoriesIdLinesLineIdBodySlug } from "./patchApiCategoriesIdLinesLineIdBodySlug";
 
 export type PatchApiCategoriesIdLinesLineIdBody = {
   name?: PatchApiCategoriesIdLinesLineIdBodyName;
   slug?: PatchApiCategoriesIdLinesLineIdBodySlug;
-  icon_library_id?: string;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
    */
   order?: number;
+  /** @nullable */
+  cover_source?: PatchApiCategoriesIdLinesLineIdBodyCoverSource;
 };

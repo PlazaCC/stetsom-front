@@ -5,6 +5,7 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { PublicCategoryLocalizedSlugs } from "./publicCategoryLocalizedSlugs";
 import type { PublicLine } from "./publicLine";
 
 export interface PublicCategory {
@@ -14,6 +15,8 @@ export interface PublicCategory {
   icon_library_id?: string;
   /** @nullable */
   icon_url?: string | null;
+  /** @nullable */
+  all_products_cover_url: string | null;
   lines: PublicLine[];
   /**
    * @minimum -9007199254740991
@@ -22,4 +25,5 @@ export interface PublicCategory {
   order: number;
   created_at: string;
   updated_at: string;
+  localized_slugs: PublicCategoryLocalizedSlugs;
 }

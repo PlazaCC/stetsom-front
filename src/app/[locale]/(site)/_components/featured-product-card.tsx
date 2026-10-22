@@ -20,7 +20,7 @@ export function FeaturedProductCard({
 
   return (
     <Link
-      href={product.href}
+      href={{ pathname: "/produto/[slug]", params: { slug: product.slug } }}
       className={cn(
         "group flex w-full flex-col overflow-hidden rounded-2xl bg-card shadow-md transition-all duration-300 hover:border-brand hover:shadow-lg",
         className,

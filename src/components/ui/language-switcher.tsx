@@ -2,10 +2,15 @@
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { type Locale, routing } from "@/i18n/routing";
+import { toApiLocale } from "@/i18n/locale";
+import { getApiCategories } from "@/api/stetsom/endpoints/categories-public/categories-public";
+import { getApiLegalPagesPublic } from "@/api/stetsom/endpoints/legal-pages-public/legal-pages-public";
+import { localizedTaxonomySlug } from "@/lib/catalog/taxonomy";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { useParams, useSearchParams } from "next/navigation";
 import { LocaleFlag } from "./flag-icons";
 
 interface LanguageSwitcherProps {
@@ -16,6 +21,12 @@ export function LanguageSwitcher({ variant = "light" }: LanguageSwitcherProps) {
   const locale = useLocale() as Locale;
   const router = useRouter();
   const pathname = usePathname();
+  const params = useParams<{
+    category?: string | string[];
+    line?: string | string[];
+    slug?: string | string[];
+  }>();
+  const searchParams = useSearchParams();
   const t = useTranslations("LanguageSwitcher");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -30,9 +41,87 @@ export function LanguageSwitcher({ variant = "light" }: LanguageSwitcherProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  function switchLocale(next: Locale) {
+  async function switchLocale(next: Locale) {
     setOpen(false);
-    router.replace(pathname, { locale: next });
+    const query = Object.fromEntries(searchParams.entries());
+    const category = firstParam(params.category);
+    const line = firstParam(params.line);
+    const slug = firstParam(params.slug);
+
+    if (pathname === "/produto/[slug]" && slug) {
+      router.replace(
+        { pathname: "/produto/[slug]", params: { slug }, query },
+        { locale: next },
+      );
+      return;
+    }
+    if (pathname === "/legal/[slug]" && slug) {
+      const pages = await getApiLegalPagesPublic({
+        locale: toApiLocale(locale),
+      }).catch(() => []);
+      const page = pages.find((item) => item.slug === slug);
+      const target =
+        (page &&
+          (page.localized_slugs[toApiLocale(next)] ??
+            page.localized_slugs.pt)) ??
+        slug;
+      router.replace(
+        { pathname: "/legal/[slug]", params: { slug: target }, query },
+        { locale: next },
+      );
+      return;
+    }
+    if (
+      category &&
+      (pathname === "/produtos/[category]" ||
+        pathname === "/produtos/[category]/produtos" ||
+        pathname === "/produtos/[category]/[line]")
+    ) {
+      const categories = await getApiCategories({
+        locale: toApiLocale(locale),
+      }).catch(() => []);
+      const item = categories.find(
+        (entry) =>
+          localizedTaxonomySlug(entry.localized_slugs, locale) === category,
+      );
+      const targetCategory = item
+        ? localizedTaxonomySlug(item.localized_slugs, next)
+        : category;
+      const targetLine =
+        line &&
+        item?.lines.find(
+          (entry) =>
+            localizedTaxonomySlug(entry.localized_slugs, locale) === line,
+        );
+      const target = targetLine
+        ? {
+            pathname: "/produtos/[category]/[line]" as const,
+            params: {
+              category: targetCategory,
+              line: localizedTaxonomySlug(targetLine.localized_slugs, next),
+            },
+          }
+        : pathname === "/produtos/[category]/produtos"
+          ? {
+              pathname: "/produtos/[category]/produtos" as const,
+              params: { category: targetCategory },
+            }
+          : {
+              pathname: "/produtos/[category]" as const,
+              params: { category: targetCategory },
+            };
+      router.replace({ ...target, query }, { locale: next });
+      return;
+    }
+    if (["/", "/produtos", "/sobre", "/suporte"].includes(pathname)) {
+      router.replace(
+        {
+          pathname: pathname as "/" | "/produtos" | "/sobre" | "/suporte",
+          query,
+        },
+        { locale: next },
+      );
+    }
   }
 
   const isLight = variant === "light";
@@ -97,6 +186,10 @@ export function LanguageSwitcher({ variant = "light" }: LanguageSwitcherProps) {
       )}
     </div>
   );
+}
+
+function firstParam(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
 }
 
 // ─── Round Flag ───────────────────────────────────────────────────────────────

@@ -5,15 +5,12 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { CreateLegalPageInputSlug } from "./createLegalPageInputSlug";
 import type { CreateLegalPageInputTitle } from "./createLegalPageInputTitle";
 import type { LegalHtmlI18n } from "./legalHtmlI18n";
 
 export interface CreateLegalPageInput {
-  /**
-   * @minLength 1
-   * @maxLength 200
-   */
-  slug: string;
+  slug: CreateLegalPageInputSlug;
   title: CreateLegalPageInputTitle;
   content: LegalHtmlI18n;
   /**

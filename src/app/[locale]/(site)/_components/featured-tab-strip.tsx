@@ -68,7 +68,7 @@ export function FeaturedTabStrip({
         })}
       </div>
       <Link
-        href="/produtos"
+        href={{ pathname: "/produtos" }}
         className="flex shrink-0 items-center gap-2 pb-1 font-sans text-base font-semibold text-brand transition-colors hover:text-brand-dark"
       >
         {t("viewAll")}

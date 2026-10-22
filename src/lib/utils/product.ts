@@ -37,7 +37,7 @@ export type BlockStyle = {
 /**
  * BEM classes baked into each block's HTML structure. Authors target these in
  * the "Estilização" CSS field. Keep in sync with the block components under
- * `produtos/[slug]/_components/blocks/`.
+ * `produto/[slug]/_components/blocks/`.
  */
 export const BLOCK_BEM_CLASSES: Record<
   string,

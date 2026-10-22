@@ -198,7 +198,7 @@ export default function AdminProdutos() {
       render: (row) => (
         <AdminRowActions>
           {row.status === "PUBLISHED" && (
-            <AdminRowAction href={`/produtos/${row.slug}`} target="_blank">
+            <AdminRowAction href={`/produto/${row.slug}`} target="_blank">
               <span className="inline-flex items-center gap-1">
                 <ExternalLink className="size-3" />
                 Ver

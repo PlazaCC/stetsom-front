@@ -11,7 +11,6 @@ import type { PostApiCategoriesIdLinesBodySlug } from "./postApiCategoriesIdLine
 export type PostApiCategoriesIdLinesBody = {
   name: PostApiCategoriesIdLinesBodyName;
   slug: PostApiCategoriesIdLinesBodySlug;
-  icon_library_id?: string;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991

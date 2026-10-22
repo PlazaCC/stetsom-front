@@ -1,7 +1,6 @@
 import { Container } from "@/components/ui/container";
 import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { SectionLabel } from "@/components/ui/section-label";
-import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Download, FileDown, FileText, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -109,13 +108,13 @@ export function SupportDocumentation({
                     </p>
                   </div>
                 </div>
-                <Link
+                <a
                   href={file.file_url}
                   className="inline-flex shrink-0 items-center gap-1.5 font-sans text-2xs font-bold tracking-[0.6px] text-brand uppercase transition-colors hover:text-brand/80"
                 >
                   <Download size={14} />
                   {t("downloadLabel")}
-                </Link>
+                </a>
               </div>
             ))}
           </div>

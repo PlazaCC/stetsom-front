@@ -138,14 +138,25 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
 
           return (
             <SwiperSlide key={slide.id}>
-              {slide.href ? (
+              {slide.product_slug ? (
                 <Link
-                  href={slide.href}
+                  href={{
+                    pathname: "/produto/[slug]",
+                    params: { slug: slide.product_slug },
+                  }}
                   className="relative block h-full w-full"
                   aria-label={t("openBanner", { index: index + 1 })}
                 >
                   {bannerContent}
                 </Link>
+              ) : slide.link_url ? (
+                <a
+                  href={slide.link_url}
+                  className="relative block h-full w-full"
+                  aria-label={t("openBanner", { index: index + 1 })}
+                >
+                  {bannerContent}
+                </a>
               ) : (
                 <div className="relative h-full w-full">{bannerContent}</div>
               )}

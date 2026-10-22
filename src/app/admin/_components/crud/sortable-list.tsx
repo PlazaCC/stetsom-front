@@ -31,6 +31,8 @@ interface SortableListProps<T> {
   className?: string;
   /** Sortable strategy. Defaults to `verticalListSortingStrategy` for vertical lists. Use `rectSortingStrategy` for grids. */
   strategy?: SortingStrategy;
+  /** Prevents dragging while a reorder mutation is in flight. */
+  disabled?: boolean;
   /** Non-sortable node rendered as the last cell, inside the same container (e.g. an add button). */
   append?: React.ReactNode;
 }
@@ -39,10 +41,12 @@ function SortableItem<T>({
   id,
   item,
   renderItem,
+  disabled = false,
 }: {
   id: string;
   item: T;
   renderItem: SortableListProps<T>["renderItem"];
+  disabled?: boolean;
 }) {
   const {
     attributes,
@@ -51,7 +55,7 @@ function SortableItem<T>({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ id, disabled });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -62,8 +66,9 @@ function SortableItem<T>({
   const handle = (
     <button
       type="button"
+      disabled={disabled}
       aria-label="Reordenar"
-      className="cursor-grab touch-none text-muted-foreground active:cursor-grabbing"
+      className="cursor-grab touch-none text-muted-foreground active:cursor-grabbing disabled:cursor-not-allowed disabled:opacity-50"
       {...attributes}
       {...listeners}
     >
@@ -91,6 +96,7 @@ export function SortableList<T>({
   className,
   strategy = verticalListSortingStrategy,
   append,
+  disabled = false,
 }: SortableListProps<T>) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -101,7 +107,7 @@ export function SortableList<T>({
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
-    if (!over || active.id === over.id) return;
+    if (disabled || !over || active.id === over.id) return;
     const oldIndex = items.findIndex((i) => getId(i) === active.id);
     const newIndex = items.findIndex((i) => getId(i) === over.id);
     if (oldIndex === -1 || newIndex === -1) return;
@@ -122,6 +128,7 @@ export function SortableList<T>({
               id={getId(item)}
               item={item}
               renderItem={renderItem}
+              disabled={disabled}
             />
           ))}
           {append}

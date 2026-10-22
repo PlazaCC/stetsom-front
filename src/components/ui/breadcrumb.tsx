@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils";
+import { Link } from "@/i18n/navigation";
 import { ChevronRight } from "lucide-react";
-import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
 
 export type BreadcrumbItem = {
   label: string;
-  href?: string;
+  href?: ComponentPropsWithoutRef<typeof Link>["href"];
 };
 
 interface BreadcrumbProps extends ComponentPropsWithoutRef<"nav"> {

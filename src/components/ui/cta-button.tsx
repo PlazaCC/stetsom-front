@@ -1,7 +1,7 @@
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ArrowRight, ExternalLink } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 interface CTAButtonProps {
   href: string;
@@ -41,7 +41,7 @@ export function CTAButton({
   }
 
   return (
-    <Link href={href} className={classes}>
+    <Link href={href as Parameters<typeof Link>[0]["href"]} className={classes}>
       {label}
       <ArrowRight className="size-4" strokeWidth={2.5} />
     </Link>

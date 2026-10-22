@@ -13,6 +13,7 @@ export interface CategoryInput {
   name: I18nStringInput;
   slug: I18nStringInput;
   icon_library_id?: string;
+  all_products_cover_library_id?: string;
   lines: LineInput[];
   /**
    * @minimum -9007199254740991

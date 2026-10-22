@@ -20,10 +20,10 @@ import { ProductCard } from "@/components/ui/product-card";
 import { buildSpecSections } from "@/lib/specs/table";
 import { cn } from "@/lib/utils";
 import { decodeHtmlEntities } from "@/lib/utils/plain-text";
+import { Link } from "@/i18n/navigation";
 import { ChevronDown, GitCompareArrows, Smartphone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import Link from "next/link";
 import { useRef, useState } from "react";
 import { BlockRenderer } from "./block-renderer";
 import { ProductLightbox } from "./product-lightbox";
@@ -44,9 +44,9 @@ export interface ProductDetailViewData {
     app_store_url?: string | null;
     play_store_url?: string | null;
   };
-  category: { name: string; slug: string };
+  category: { name: string; slug: string; href?: string };
   /** Product's line within the category, resolved server-side for the breadcrumb. */
-  line?: { name: string; slug: string } | null;
+  line?: { name: string; slug: string; href?: string } | null;
   relatedProducts: ProductCardItem[];
 }
 
@@ -276,17 +276,23 @@ export function ProductDetailView({
   const specSections = buildSpecSections(sortedVariants);
 
   const breadcrumbItems: BreadcrumbItem[] = [
-    { label: t("breadcrumbHome"), href: "/" },
-    { label: t("breadcrumbProducts"), href: "/produtos" },
+    { label: t("breadcrumbHome"), href: { pathname: "/" } },
+    { label: t("breadcrumbProducts"), href: { pathname: "/produtos" } },
     {
       label: category.name,
-      href: `/produtos?category=${encodeURIComponent(category.slug)}`,
+      href: {
+        pathname: "/produtos/[category]",
+        params: { category: category.slug },
+      },
     },
     ...(line
       ? [
           {
             label: line.name,
-            href: `/produtos?category=${encodeURIComponent(category.slug)}&line=${encodeURIComponent(line.slug)}`,
+            href: {
+              pathname: "/produtos/[category]/[line]",
+              params: { category: category.slug, line: line.slug },
+            } as const,
           },
         ]
       : []),
@@ -584,7 +590,18 @@ export function ProductDetailView({
               {t("related")}
             </h2>
             <Link
-              href={`/produtos?category=${encodeURIComponent(category.slug)}${line ? `&line=${encodeURIComponent(line.slug)}` : ""}&first_comparation_product_slug=${product.slug}`}
+              href={{
+                ...(line
+                  ? {
+                      pathname: "/produtos/[category]/[line]",
+                      params: { category: category.slug, line: line.slug },
+                    }
+                  : {
+                      pathname: "/produtos/[category]/produtos",
+                      params: { category: category.slug },
+                    }),
+                query: { first_comparation_product_slug: product.slug },
+              }}
             >
               <Button variant="brand-outline" size="md">
                 <GitCompareArrows size={18} />
@@ -603,7 +620,10 @@ export function ProductDetailView({
                   badge={p.is_discontinued ? t("discontinued") : undefined}
                   badgeTone="discontinued"
                   img={p.thumbnail_url ?? undefined}
-                  href={p.href}
+                  href={{
+                    pathname: "/produto/[slug]",
+                    params: { slug: p.slug },
+                  }}
                   variantDirection="column"
                 />
               ))}

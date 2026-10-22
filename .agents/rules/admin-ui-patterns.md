@@ -35,6 +35,25 @@ const Model3DViewer = dynamic(
 )
 ```
 
+## Overlays and responsive forms
+
+- Dropdowns, searchable pickers and menus must render through a Portal or the
+  project Base UI primitive that portals by default. Never position a large overlay
+  inside an `overflow-hidden` form card.
+- Use `w-full` controls and mobile-first grids. Short fields may share a row at
+  `sm`/`lg`, but must stack at the base breakpoint.
+- `LibraryAssetPicker` is the standard asset selector. Product selection uses the
+  shared `AdminProductPicker`; do not import picker implementations from another
+  feature.
+- Related records use a shared table composition with debounce, server filters,
+  links and `AdminPagination`.
+- Table actions use `AdminRowActions`/`AdminRowAction`; destructive actions use
+  the destructive variant and every icon-only action needs a tooltip/title and
+  an accessible label.
+- Use semantic `StatusBadge` components instead of exposing raw enum values.
+- Keep `AdminDataTable` search/filter controls in `toolbar` and primary CTAs in
+  `action`; the layout stacks on small screens.
+
 ## Mutation Loading State Naming
 
 - Use `isSaving` for save/publish actions (OR of create + update pending states)

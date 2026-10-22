@@ -11,7 +11,10 @@ import type { PostApiCategoriesBodySlug } from "./postApiCategoriesBodySlug";
 export type PostApiCategoriesBody = {
   name: PostApiCategoriesBodyName;
   slug: PostApiCategoriesBodySlug;
-  icon_library_id?: string;
+  /** @nullable */
+  icon_library_id?: string | null;
+  /** @nullable */
+  all_products_cover_library_id?: string | null;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991

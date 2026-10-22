@@ -7,11 +7,14 @@
  */
 import type { I18nStringInput } from "./i18nStringInput";
 import type { LegalHtmlI18nInput } from "./legalHtmlI18nInput";
+import type { LegalPageInputSemanticKey } from "./legalPageInputSemanticKey";
+import type { LegalPageInputSlug } from "./legalPageInputSlug";
 
 export interface LegalPageInput {
   id: string;
-  /** URL-friendly identifier, e.g. "politica-de-privacidade" */
-  slug: string;
+  /** @nullable */
+  semantic_key: LegalPageInputSemanticKey;
+  slug: LegalPageInputSlug;
   /** Footer label and page heading, by locale */
   title: I18nStringInput;
   /** Sanitized HTML body, by locale */

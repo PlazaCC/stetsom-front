@@ -86,6 +86,8 @@
     "clearAll": "Limpiar todo",
     "searchPlaceholder": "Buscar producto...",
     "allCategories": "Novedades",
+    "productsTitle": "Productos",
+    "allProductsTitle": "Todos los productos",
     "products": "<number>{count}</number> <label>productos</label>",
     "lines": "<number>{count}</number> <label>líneas</label>",
     "sortBy": "Ordenar por",

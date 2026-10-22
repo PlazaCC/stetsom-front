@@ -18,7 +18,12 @@ export interface Product {
   /** @nullable */
   sku?: string | null;
   name: I18nString;
-  slug: I18nString;
+  /**
+   * @minLength 1
+   * @maxLength 120
+   * @pattern ^[a-z0-9]+(?:-[a-z0-9]+)*$
+   */
+  slug: string;
   /** @nullable */
   description?: ProductDescription;
   status: ProductStatus;

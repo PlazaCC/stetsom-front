@@ -6,15 +6,17 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { I18nString } from "./i18nString";
+import type { LineCoverSource } from "./lineCoverSource";
 
 export interface Line {
   line_id: string;
   name: I18nString;
   slug: I18nString;
-  icon_library_id?: string;
   /**
    * @minimum -9007199254740991
    * @maximum 9007199254740991
    */
   order: number;
+  /** @nullable */
+  cover_source?: LineCoverSource;
 }

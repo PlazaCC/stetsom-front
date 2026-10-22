@@ -1,5 +1,4 @@
 import { Container } from "@/components/ui/container";
-import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 import { WARRANTY_SYSTEM_URL } from "@/lib/warranty";
@@ -117,9 +116,9 @@ export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
             }
 
             return (
-              <Link key={card.title} href={href} className={cardClass}>
+              <a key={card.title} href={href} className={cardClass}>
                 {inner}
-              </Link>
+              </a>
             );
           })}
         </div>

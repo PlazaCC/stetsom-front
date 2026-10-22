@@ -13,6 +13,7 @@ export interface Category {
   name: I18nString;
   slug: I18nString;
   icon_library_id?: string;
+  all_products_cover_library_id?: string;
   lines: Line[];
   /**
    * @minimum -9007199254740991

@@ -15,7 +15,7 @@ import {
 } from "@/api/stetsom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminToast } from "@/hooks/use-admin-toast";
-import { toApiLocale } from "@/lib/api/i18n-utils";
+import { toApiLocale } from "@/i18n/locale";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {

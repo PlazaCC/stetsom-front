@@ -32,7 +32,7 @@ import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-p
 import type { LibraryUrlOnlyRef } from "@/app/admin/_components/crud/library-asset-ref";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
 import { Plus, Trash2 } from "lucide-react";
-import { useGetApiCategories } from "@/api/stetsom";
+import { useGetApiCategoriesAdmin } from "@/api/stetsom";
 import { useGetApiProducts } from "@/api/stetsom";
 import type { FieldSpec } from "./section-field-spec";
 import { FaqItemsField } from "./faq-items-field";
@@ -227,11 +227,15 @@ function FeaturedTabsField({
   onChange: (data: Data) => void;
   showErrors?: boolean;
 }) {
-  const categoriesQuery = useGetApiCategories({ locale: "pt" });
+  const categoriesQuery = useGetApiCategoriesAdmin();
   const tabs = Array.isArray(data[field.key])
     ? (data[field.key] as Array<{ category_id: string; product_ids: string[] }>)
     : [];
-  const categories = categoriesQuery.data ?? [];
+  const categories = (categoriesQuery.data ?? []).map((category) => ({
+    id: category.id,
+    name: category.name.pt,
+    slug: category.slug.pt,
+  }));
   const showNoveltiesTab = data.show_novelties_tab === true;
 
   function setTabs(next: typeof tabs) {
@@ -332,14 +336,12 @@ function FeaturedTabEditor({
   const productsQuery = useGetApiProducts({
     category: category?.slug,
     q: debouncedSearch || undefined,
-    status: "PUBLISHED",
     page: 1,
     pageSize: 100,
     locale: "pt",
   });
   const selectedProductsQuery = useGetApiProducts({
     category: category?.slug,
-    status: "PUBLISHED",
     page: 1,
     pageSize: 100,
     locale: "pt",

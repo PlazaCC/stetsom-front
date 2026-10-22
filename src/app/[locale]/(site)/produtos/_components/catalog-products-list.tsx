@@ -61,7 +61,10 @@ export function CatalogProductsList({
             badge={product.is_discontinued ? t("discontinued") : undefined}
             badgeTone="discontinued"
             img={product.thumbnail_url ?? undefined}
-            href={product.href}
+            href={{
+              pathname: "/produto/[slug]",
+              params: { slug: product.slug },
+            }}
             variantDirection="column"
             compareMode={isSelecting}
             isCompareSelected={isProductSelected(product.slug)}

@@ -86,6 +86,8 @@
     "clearAll": "Clear all",
     "searchPlaceholder": "Search product...",
     "allCategories": "New",
+    "productsTitle": "Products",
+    "allProductsTitle": "All products",
     "products": "<number>{count}</number> <label>products</label>",
     "lines": "<number>{count}</number> <label>lines</label>",
     "sortBy": "Sort by",

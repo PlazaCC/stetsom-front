@@ -30,6 +30,21 @@ Every admin page lives in a three-zone layout:
 </AdminShell>
 ```
 
+## Header and route metadata
+
+`AdminShellHeader` is the only Admin page header. Every new `/admin` route,
+including `novo` and dynamic edit routes, must be registered in
+`src/lib/cms/config.ts`. Edit pages should call `SetRouteLabel` with the loaded
+entity name so the shell breadcrumb/title is meaningful. Pages must not render a
+second custom breadcrumb or title bar.
+
+## Scroll ownership
+
+There should normally be one vertical scroll owner: the shell content area. Avoid
+combining `overflow-hidden` on a card with `overflow-auto` on its child. Portalled
+selects, comboboxes and pickers must be used when an overlay could otherwise be
+clipped by a card or form container.
+
 ## Config-Driven Header
 
 All route metadata lives in `@/lib/cms/config.ts` — a static map keyed by route pattern:

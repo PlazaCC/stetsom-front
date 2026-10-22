@@ -48,7 +48,10 @@ interface CatalogContentProps {
    * selected). When present the page renders the category's lines as cards
    * instead of a product grid; `null`/absent on the Novidades and line views.
    */
-  lineCards?: CatalogLineCardData[] | null;
+  lineCards?: {
+    allProductsCoverUrl: string | null;
+    lines: CatalogLineCardData[];
+  } | null;
 }
 
 function CatalogContentInner({
@@ -163,6 +166,7 @@ function CatalogContentInner({
   // mostra as linhas da categoria em cards (em vez do grid de produtos). Com
   // busca ou filtros ligados, vai direto aos produtos — mesma regra da página.
   const isLineCardsView =
+    lineCards !== null &&
     activeCategory !== "todos" &&
     activeLine === "todas" &&
     !showAll &&
@@ -234,14 +238,17 @@ function CatalogContentInner({
     <div>
       <CatalogHero
         totalProducts={catalog.total}
-        totalLines={isLineCardsView ? lineCards?.length : undefined}
+        totalLines={isLineCardsView ? lineCards?.lines.length : undefined}
       />
 
       <CatalogCategoryBar
         categories={categoryOptions}
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
-        disabled={isCatalogEmpty}
+        // Category navigation must remain available even when the
+        // product query is empty or temporarily fails. The category
+        // endpoint is the source of truth for this control.
+        disabled={categories.length === 0}
       />
 
       <section className="bg-white pt-6 pb-12">
@@ -308,7 +315,8 @@ function CatalogContentInner({
 
               {isLineCardsView ? (
                 <CatalogLinesGrid
-                  lines={lineCards ?? []}
+                  lines={lineCards?.lines ?? []}
+                  allProductsCoverUrl={lineCards?.allProductsCoverUrl ?? null}
                   onSelectLine={setActiveLine}
                   onSelectAll={() => setShowAll(true)}
                 />

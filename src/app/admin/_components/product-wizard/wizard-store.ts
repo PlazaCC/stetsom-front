@@ -75,7 +75,7 @@ export interface WizardState {
   /** Manufacturer stock-keeping unit. Empty string when unset. */
   sku: string;
   name: I18nString;
-  slug: I18nString;
+  slug: string;
   slugTouched: boolean;
   description: I18nString;
   category_id: string;
@@ -391,8 +391,8 @@ export function initWizardState(
 
     sku: p?.sku ?? "",
     name: p?.name ?? { pt: "" },
-    slug: p?.slug ?? { pt: "" },
-    slugTouched: !!p?.slug?.pt,
+    slug: p?.slug ?? "",
+    slugTouched: Boolean(p?.slug),
     // The API stores the description sanitized (`&` → `&amp;`); the textarea
     // edits it as plain text, so it gets the characters back.
     description: p?.description ? decodeI18n(p.description) : { pt: "" },
@@ -442,7 +442,7 @@ export function wizardReducer(
         !state.slugTouched &&
         state.mode === "create"
       ) {
-        next.slug = { pt: slugify(action.patch.name?.pt ?? "") };
+        next.slug = slugify(action.patch.name?.pt ?? "");
       }
       if ("slug" in action.patch) {
         next.slugTouched = true;
@@ -610,6 +610,12 @@ export function publishedLocales(state: WizardState): LocaleInput[] {
   return [...set];
 }
 
+export function selectProductSlug(
+  state: Pick<WizardState, "slug" | "name">,
+): string {
+  return state.slug || slugify(state.name.pt);
+}
+
 export function buildPayload(
   state: WizardState,
   status: ProductStatus,
@@ -626,7 +632,7 @@ export function buildPayload(
   return {
     sku: state.sku.trim() || null,
     name: state.name,
-    slug: state.slug.pt ? state.slug : { pt: slugify(state.name.pt) },
+    slug: selectProductSlug(state),
     description: state.description.pt ? state.description : undefined,
     category_id: state.category_id,
     line_id: state.line_id || null,

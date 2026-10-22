@@ -8,6 +8,10 @@ import {
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { AdminStatusToggle } from "@/app/admin/_components/crud/admin-status-toggle";
 import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
+import {
+  AdminRowAction,
+  AdminRowActions,
+} from "@/app/admin/_components/crud/admin-row-actions";
 import type { Banner, BannersPayload } from "@/api/stetsom/model";
 import { patchApiBannersId, getGetApiBannersQueryKey } from "@/api/stetsom";
 import type { PatchApiBannersIdBodyStatus } from "@/api/stetsom/model";
@@ -129,12 +133,11 @@ export function BannersContent({
       headerClassName: "text-right",
       className: "text-right",
       render: (banner) => (
-        <Link
-          href={`/admin/banners/${banner.id}`}
-          className="rounded border border-border px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"
-        >
-          Editar
-        </Link>
+        <AdminRowActions>
+          <AdminRowAction href={`/admin/banners/${banner.id}`}>
+            Editar
+          </AdminRowAction>
+        </AdminRowActions>
       ),
     },
   ];
