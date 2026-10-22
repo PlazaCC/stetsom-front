@@ -1,5 +1,6 @@
 "use client";
 
+import { BlockTextEditor } from "@/components/editor/block-text/block-text-editor";
 import { YouTubeEmbed } from "@/components/ui/youtube-embed";
 import { getYouTubeEmbedUrl } from "@/lib/utils/product";
 import { Box, Code, FileText, ImageIcon, Images, Video } from "lucide-react";
@@ -109,11 +110,13 @@ export const PRODUCT_BLOCK_REGISTRY: BlockRegistry = {
             placeholder="Título do bloco"
           />
         </div>
-        <AdminTextEditor
-          value={str(data, "content")}
-          onChange={(v) => onChange({ ...data, content: v })}
-          placeholder="Conteúdo do bloco..."
-        />
+        <div>
+          <label className={fieldLabel}>Conteúdo</label>
+          <BlockTextEditor
+            initialContent={str(data, "content")}
+            onChange={(html) => onChange({ ...data, content: html })}
+          />
+        </div>
         <div>
           <label className={fieldLabel}>Alinhamento</label>
           <Select

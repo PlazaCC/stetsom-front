@@ -273,6 +273,8 @@ export function BlockManager({
               <div className="p-4">
                 {detailTab === "content" ? (
                   <SelectedForm
+                    // Rich-text editors are seeded once; a new block remounts.
+                    key={selected.id}
                     data={selected.data}
                     onChange={(d) => updateData(selected.id, d)}
                   />
