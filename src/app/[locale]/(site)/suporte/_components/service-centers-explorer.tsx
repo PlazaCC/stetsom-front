@@ -9,7 +9,6 @@ import {
   type LatLng,
   extractCepDigits,
   formatCepInput,
-  haversineKm,
   isLikelyCep,
   isValidCoordinate,
   toValidLatLng,
@@ -44,7 +43,6 @@ type GeoStatus =
   | "unavailable"
   | "timeout"
   | "unsupported";
-type NearbyPartner = PartnerLocation & { distance?: number };
 
 const GEO_OPTS: PositionOptions = {
   enableHighAccuracy: false,
@@ -206,46 +204,12 @@ export function ServiceCentersExplorer({
     return null;
   }, [selectedLocation, userLocation]);
 
-  const filtered: NearbyPartner[] = useMemo(() => {
-    let base = serviceCenters;
-
-    if (selectedLocation?.city && selectedLocation?.state) {
-      base = base.filter(
-        (p) =>
-          p.city.toLowerCase() === selectedLocation.city.toLowerCase() &&
-          p.state.toLowerCase() === selectedLocation.state.toLowerCase(),
-      );
-    }
-
-    const location =
-      selectedLocation && !selectedLocation.city
-        ? (userLocation ?? null)
-        : selectedLocation
-          ? toValidLatLng(selectedLocation.lat, selectedLocation.lng)
-          : userLocation;
-
-    if (!location) return base;
-
-    return [...base]
-      .map((p) => {
-        const coordinates = toValidLatLng(p.lat, p.lng);
-        const distance = coordinates
-          ? haversineKm(location, coordinates)
-          : undefined;
-        return { ...p, distance };
-      })
-      .sort(
-        (a, b) =>
-          (a.distance ?? Number.POSITIVE_INFINITY) -
-          (b.distance ?? Number.POSITIVE_INFINITY),
-      );
-  }, [serviceCenters, selectedLocation, userLocation]);
-
-  // The map can only plot partners that have coordinates, so the list is built
-  // from the same set — otherwise it would offer entries with no pin beside them.
+  // Location search only navigates the map. The map owns the viewport filter;
+  // therefore the full active collection must remain available to it regardless
+  // of the selected city, CEP, or current user location.
   const mappable = useMemo(
-    () => filtered.filter((p) => isValidCoordinate(p.lat, p.lng)),
-    [filtered],
+    () => serviceCenters.filter((p) => isValidCoordinate(p.lat, p.lng)),
+    [serviceCenters],
   );
 
   /**
@@ -253,9 +217,9 @@ export function ServiceCentersExplorer({
    * mixed into the list: they cannot be placed on the map, and hiding them
    * silently would make a data gap look like an empty region.
    */
-  const withoutCoordsCount = filtered.length - mappable.length;
+  const withoutCoordsCount = serviceCenters.length - mappable.length;
 
-  const visibleFiltered: NearbyPartner[] = useMemo(() => {
+  const visibleFiltered: PartnerLocation[] = useMemo(() => {
     if (!viewportBounds) return mappable;
     return mappable.filter(
       (p) =>
@@ -269,7 +233,7 @@ export function ServiceCentersExplorer({
     );
   }, [mappable, viewportBounds]);
 
-  const reordered: NearbyPartner[] = useMemo(() => {
+  const reordered: PartnerLocation[] = useMemo(() => {
     if (selectedId) {
       const item = visibleFiltered.find((p) => p.id === selectedId);
       return item ? [item] : visibleFiltered;
@@ -413,7 +377,6 @@ export function ServiceCentersExplorer({
             >
               {virtualRows.map((virtualRow) => {
                 const posto = reordered[virtualRow.index];
-                const distance = posto.distance;
                 return (
                   <div
                     key={virtualRow.key}
@@ -453,11 +416,6 @@ export function ServiceCentersExplorer({
                           </p>
                         )}
                       </div>
-                      {distance != null && (
-                        <p className="font-sans text-2xs tracking-wide text-icon-muted uppercase">
-                          {t("distanceAway", { km: distance.toFixed(1) })}
-                        </p>
-                      )}
                     </button>
                   </div>
                 );
