@@ -2,30 +2,55 @@
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import type { PartnerLocation } from "@/api/stetsom/model";
-import { toValidLatLng } from "@/lib/geocode";
+import { toValidLatLng, type Bounds, type LatLng } from "@/lib/geocode";
 import maplibregl, {
+  type GeoJSONSource,
   type Map as MlMap,
   type Marker as MlMarker,
   type Popup as MlPopup,
 } from "maplibre-gl";
-import { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  getLocationsBounds,
+  getMappableLocations,
+  toFeatureCollection,
+} from "./service-center-map-data";
+import type { PartnerLocation } from "@/api/stetsom/model";
 
 const SP_CENTER: [number, number] = [-46.6333, -23.5505];
-
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/bright";
-
-const PIN_CLASS =
-  "size-5 cursor-pointer rounded-full border-2 border-white bg-brand shadow-md transition-transform hover:scale-110";
+const SOURCE_ID = "service-centers";
+const CLUSTERS_LAYER = "service-center-clusters";
+const CLUSTER_COUNT_LAYER = "service-center-cluster-count";
+const POINTS_LAYER = "service-center-points";
+const POINTS_HIT_LAYER = "service-center-points-hit";
+const SELECTED_LAYER = "service-center-selected";
+const CLUSTER_MAX_ZOOM = 12;
 const SEARCH_PIN_CLASS =
   "size-4 rounded-full border-2 border-white bg-blue-500 shadow-md";
 
-type LatLng = { lat: number; lng: number };
-type Bounds = { north: number; south: number; east: number; west: number };
+type MapStatus = "loading" | "ready" | "unavailable";
+
+function isGpuInitializationError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    (error.name === "GPUInitializationError" ||
+      error.constructor.name === "GPUInitializationError")
+  );
+}
+
+interface ServiceCenterMapProps {
+  locations: PartnerLocation[];
+  searchLocation: LatLng | null;
+  selectedId: string | null;
+  onSelectLocation: (id: string) => void;
+  onBoundsChange?: (bounds: Bounds) => void;
+  fitAllTrigger: number;
+}
 
 function buildPopupContent(loc: PartnerLocation): HTMLElement {
   const container = document.createElement("div");
-
   const name = document.createElement("strong");
   name.className = "text-sm";
   name.textContent = loc.name;
@@ -48,13 +73,83 @@ function buildPopupContent(loc: PartnerLocation): HTMLElement {
   return container;
 }
 
-interface ServiceCenterMapProps {
-  locations: PartnerLocation[];
-  searchLocation: LatLng | null;
-  selectedId: string | null;
-  onSelectLocation: (id: string) => void;
-  onBoundsChange?: (bounds: Bounds) => void;
-  fitAllTrigger: number;
+function addDataLayers(
+  map: MlMap,
+  data: ReturnType<typeof toFeatureCollection>,
+) {
+  map.addSource(SOURCE_ID, {
+    type: "geojson",
+    data,
+    cluster: true,
+    clusterMaxZoom: CLUSTER_MAX_ZOOM,
+    clusterRadius: 52,
+    promoteId: "id",
+  });
+
+  map.addLayer({
+    id: CLUSTERS_LAYER,
+    type: "circle",
+    source: SOURCE_ID,
+    filter: ["has", "point_count"],
+    paint: {
+      "circle-color": "rgb(232, 19, 42)",
+      "circle-radius": ["step", ["get", "point_count"], 20, 10, 24, 50, 30],
+      "circle-stroke-color": "#ffffff",
+      "circle-stroke-width": 2,
+    },
+  });
+
+  map.addLayer({
+    id: CLUSTER_COUNT_LAYER,
+    type: "symbol",
+    source: SOURCE_ID,
+    filter: ["has", "point_count"],
+    layout: {
+      "text-field": "{point_count_abbreviated}",
+      "text-font": ["Noto Sans Bold"],
+      "text-size": 12,
+      "text-allow-overlap": true,
+    },
+    paint: { "text-color": "#ffffff" },
+  });
+
+  map.addLayer({
+    id: POINTS_HIT_LAYER,
+    type: "circle",
+    source: SOURCE_ID,
+    filter: ["!", ["has", "point_count"]],
+    paint: {
+      "circle-color": "#000000",
+      "circle-opacity": 0,
+      "circle-radius": 18,
+    },
+  });
+
+  map.addLayer({
+    id: POINTS_LAYER,
+    type: "circle",
+    source: SOURCE_ID,
+    filter: ["!", ["has", "point_count"]],
+    paint: {
+      "circle-color": "rgb(232, 19, 42)",
+      "circle-radius": 7,
+      "circle-stroke-color": "#ffffff",
+      "circle-stroke-width": 2,
+    },
+  });
+
+  map.addLayer({
+    id: SELECTED_LAYER,
+    type: "circle",
+    source: SOURCE_ID,
+    filter: ["==", ["get", "id"], ""],
+    paint: {
+      "circle-color": "rgb(18, 18, 18)",
+      "circle-radius": 9,
+      "circle-stroke-color": "#ffffff",
+      "circle-stroke-width": 3,
+    },
+  });
 }
 
 export function ServiceCenterMap({
@@ -65,13 +160,16 @@ export function ServiceCenterMap({
   onBoundsChange,
   fitAllTrigger,
 }: ServiceCenterMapProps) {
+  const t = useTranslations("Support.serviceCenters");
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
-  const markersRef = useRef<Map<string, MlMarker>>(new Map());
-  const searchMarkerRef = useRef<MlMarker | null>(null);
   const popupRef = useRef<MlPopup | null>(null);
+  const searchMarkerRef = useRef<MlMarker | null>(null);
   const onSelectRef = useRef(onSelectLocation);
   const onBoundsRef = useRef(onBoundsChange);
+  const locationMapRef = useRef(new Map<string, PartnerLocation>());
+  const [status, setStatus] = useState<MapStatus>("loading");
+  const mappable = useMemo(() => getMappableLocations(locations), [locations]);
 
   useEffect(() => {
     onSelectRef.current = onSelectLocation;
@@ -79,170 +177,224 @@ export function ServiceCenterMap({
   });
 
   useEffect(() => {
+    locationMapRef.current = new Map(
+      locations.map((location) => [location.id, location]),
+    );
+  }, [locations]);
+
+  useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
-    const map = new maplibregl.Map({
-      container: containerRef.current,
-      style: MAP_STYLE,
-      center: SP_CENTER,
-      zoom: 8,
-    });
+
+    let map: MlMap;
+    try {
+      map = new maplibregl.Map({
+        container: containerRef.current,
+        style: MAP_STYLE,
+        center: SP_CENTER,
+        zoom: 4,
+        cooperativeGestures: true,
+        locale: {
+          "Map.Title": t("mapAriaLabel"),
+          "NavigationControl.ZoomIn": t("zoomIn"),
+          "NavigationControl.ZoomOut": t("zoomOut"),
+          "NavigationControl.ResetBearing": t("resetBearing"),
+          "Popup.Close": t("closePopup"),
+          "CooperativeGesturesHandler.WindowsHelpText": t(
+            "cooperativeGesturesWindows",
+          ),
+          "CooperativeGesturesHandler.MacHelpText": t("cooperativeGesturesMac"),
+          "CooperativeGesturesHandler.MobileHelpText": t(
+            "cooperativeGesturesMobile",
+          ),
+        },
+      });
+    } catch (error) {
+      if (isGpuInitializationError(error)) {
+        setTimeout(() => setStatus("unavailable"), 0);
+        return;
+      }
+      throw error;
+    }
+
+    mapRef.current = map;
     map.addControl(
       new maplibregl.NavigationControl({ showCompass: false }),
       "top-right",
     );
 
+    let hasLoaded = false;
     const emitBounds = () => {
-      const b = map.getBounds();
+      const bounds = map.getBounds();
       onBoundsRef.current?.({
-        north: b.getNorth(),
-        south: b.getSouth(),
-        east: b.getEast(),
-        west: b.getWest(),
+        north: bounds.getNorth(),
+        south: bounds.getSouth(),
+        east: bounds.getEast(),
+        west: bounds.getWest(),
       });
     };
 
-    emitBounds();
-    // `moveend`, not `move`: the latter fires every animation frame, so each
-    // 800ms flyTo pushed dozens of bounds updates and re-filtered the list
-    // mid-flight. The list only needs the viewport once it settles.
+    const handleError = (event: { error?: unknown }) => {
+      if (isGpuInitializationError(event.error)) {
+        setTimeout(() => setStatus("unavailable"), 0);
+        return;
+      }
+      console.error(event.error);
+      if (!hasLoaded) {
+        setTimeout(() => setStatus("unavailable"), 0);
+      }
+    };
+
+    map.on("error", handleError);
     map.on("moveend", emitBounds);
-    mapRef.current = map;
-    const markers = markersRef.current;
+    map.on("load", () => {
+      hasLoaded = true;
+      addDataLayers(map, toFeatureCollection(mappable));
+      setStatus("ready");
+      const bounds = getLocationsBounds(mappable);
+      if (bounds) {
+        map.fitBounds(
+          [
+            [bounds.west, bounds.south],
+            [bounds.east, bounds.north],
+          ],
+          { padding: 40, maxZoom: 8, duration: 0 },
+        );
+      } else {
+        emitBounds();
+      }
+    });
+
+    const setCursor = (cursor: string) => {
+      map.getCanvas().style.cursor = cursor;
+    };
+    map.on("mouseenter", CLUSTERS_LAYER, () => setCursor("pointer"));
+    map.on("mouseleave", CLUSTERS_LAYER, () => setCursor(""));
+    map.on("mouseenter", POINTS_HIT_LAYER, () => setCursor("pointer"));
+    map.on("mouseleave", POINTS_HIT_LAYER, () => setCursor(""));
+
+    map.on("click", CLUSTERS_LAYER, async (event) => {
+      const feature = map.queryRenderedFeatures(event.point, {
+        layers: [CLUSTERS_LAYER],
+      })[0];
+      const clusterId = feature?.properties?.cluster_id;
+      const coordinates =
+        feature?.geometry?.type === "Point"
+          ? feature.geometry.coordinates
+          : null;
+      const source = map.getSource(SOURCE_ID) as GeoJSONSource | undefined;
+      if (source && clusterId != null && coordinates) {
+        const zoom = await source.getClusterExpansionZoom(Number(clusterId));
+        map.easeTo({ center: coordinates as [number, number], zoom });
+      }
+    });
+
+    map.on("click", POINTS_HIT_LAYER, (event) => {
+      const feature = map.queryRenderedFeatures(event.point, {
+        layers: [POINTS_HIT_LAYER],
+      })[0];
+      const id = feature?.properties?.id;
+      const coordinates =
+        feature?.geometry?.type === "Point"
+          ? feature.geometry.coordinates
+          : null;
+      const location =
+        typeof id === "string" ? locationMapRef.current.get(id) : undefined;
+      if (!location || !coordinates) return;
+
+      popupRef.current?.remove();
+      onSelectRef.current(location.id);
+      popupRef.current = new maplibregl.Popup({ closeButton: true, offset: 18 })
+        .setLngLat(coordinates as [number, number])
+        .setDOMContent(buildPopupContent(location))
+        .addTo(map);
+    });
 
     return () => {
+      popupRef.current?.remove();
+      searchMarkerRef.current?.remove();
       map.remove();
       mapRef.current = null;
-      markers.clear();
-      searchMarkerRef.current = null;
-      popupRef.current = null;
     };
+    // The map is intentionally initialized once. Labels are fixed for the page locale.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
-
-    for (const marker of markersRef.current.values()) marker.remove();
-    markersRef.current.clear();
-    popupRef.current?.remove();
-    popupRef.current = null;
-
-    const withCoords = locations.flatMap((loc) => {
-      const coordinates = toValidLatLng(loc.lat, loc.lng);
-      return coordinates ? [{ loc, coordinates }] : [];
-    });
-
-    for (const { loc, coordinates } of withCoords) {
-      const wrapper = document.createElement("div");
-      const el = document.createElement("button");
-      el.type = "button";
-      el.className = PIN_CLASS;
-      el.setAttribute("aria-label", loc.name);
-      el.addEventListener("click", (event) => {
-        event.stopPropagation();
-        popupRef.current?.remove();
-        onSelectRef.current(loc.id);
-
-        if (coordinates) {
-          map.flyTo({
-            center: [coordinates.lng, coordinates.lat],
-            zoom: Math.max(map.getZoom(), 10),
-            duration: 800,
-            essential: true,
-          });
-        }
-
-        const popup = new maplibregl.Popup({ closeButton: false, offset: 18 })
-          .setLngLat([coordinates.lng, coordinates.lat])
-          .setDOMContent(buildPopupContent(loc))
-          .addTo(map);
-        popupRef.current = popup;
-      });
-      wrapper.appendChild(el);
-
-      const marker = new maplibregl.Marker({ element: wrapper })
-        .setLngLat([coordinates.lng, coordinates.lat])
-        .addTo(map);
-      markersRef.current.set(loc.id, marker);
-    }
-  }, [locations]);
+    if (!map || status !== "ready") return;
+    const source = map.getSource(SOURCE_ID) as GeoJSONSource | undefined;
+    source?.setData(toFeatureCollection(mappable));
+  }, [locations, mappable, status]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
-
-    if (searchMarkerRef.current) {
-      searchMarkerRef.current.remove();
-      searchMarkerRef.current = null;
-    }
-
-    if (searchLocation) {
-      const el = document.createElement("div");
-      el.className = SEARCH_PIN_CLASS;
-      searchMarkerRef.current = new maplibregl.Marker({ element: el })
-        .setLngLat([searchLocation.lng, searchLocation.lat])
-        .addTo(map);
-
-      map.flyTo({
-        center: [searchLocation.lng, searchLocation.lat],
-        zoom: 10,
-        duration: 800,
-        essential: true,
-      });
-    }
-  }, [searchLocation]);
-
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map) return;
-
-    for (const [id, marker] of markersRef.current.entries()) {
-      const el = marker.getElement().firstElementChild;
-      if (!el) continue;
-      const selected = id === selectedId;
-      el.classList.toggle("bg-brand-dark", selected);
-      el.classList.toggle("ring-2", selected);
-      el.classList.toggle("ring-brand-dark", selected);
-    }
+    if (!map || status !== "ready") return;
+    map.setFilter(SELECTED_LAYER, ["==", ["get", "id"], selectedId ?? ""]);
 
     if (!selectedId) return;
-
-    const loc = locations.find((l) => l.id === selectedId);
-    if (loc?.lat != null && loc?.lng != null) {
+    const location = locationMapRef.current.get(selectedId);
+    const coordinates = location
+      ? toValidLatLng(location.lat, location.lng)
+      : null;
+    if (coordinates) {
       map.flyTo({
-        center: [loc.lng, loc.lat],
-        zoom: Math.max(map.getZoom(), 10),
+        center: [coordinates.lng, coordinates.lat],
+        zoom: Math.max(map.getZoom(), CLUSTER_MAX_ZOOM + 1),
         duration: 800,
-        essential: true,
       });
     }
-  }, [selectedId, locations]);
+  }, [selectedId, status]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || fitAllTrigger === 0) return;
+    if (!map || status !== "ready") return;
 
-    if (searchLocation) {
-      map.flyTo({
-        center: [searchLocation.lng, searchLocation.lat],
-        zoom: 10,
-        duration: 800,
-        essential: true,
-      });
-    } else {
-      map.flyTo({
-        center: SP_CENTER,
-        zoom: 8,
-        duration: 800,
-        essential: true,
-      });
-    }
-  }, [fitAllTrigger, searchLocation]);
+    searchMarkerRef.current?.remove();
+    searchMarkerRef.current = null;
+    popupRef.current?.remove();
+
+    if (!searchLocation) return;
+    const element = document.createElement("div");
+    element.className = SEARCH_PIN_CLASS;
+    searchMarkerRef.current = new maplibregl.Marker({ element })
+      .setLngLat([searchLocation.lng, searchLocation.lat])
+      .addTo(map);
+    map.flyTo({
+      center: [searchLocation.lng, searchLocation.lat],
+      zoom: 10,
+      duration: 800,
+    });
+  }, [searchLocation, status]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || status !== "ready" || fitAllTrigger === 0) return;
+    const bounds = getLocationsBounds(mappable);
+    if (!bounds) return;
+    popupRef.current?.remove();
+    map.fitBounds(
+      [
+        [bounds.west, bounds.south],
+        [bounds.east, bounds.north],
+      ],
+      { padding: 40, maxZoom: 8, duration: 800 },
+    );
+  }, [fitAllTrigger, mappable, status]);
 
   return (
-    <div
-      ref={containerRef}
-      className="h-75 w-full overflow-hidden rounded-2xl bg-muted sm:h-100 lg:h-150"
-    />
+    <div className="relative h-75 w-full overflow-hidden rounded-2xl bg-muted sm:h-100 lg:h-150">
+      <div ref={containerRef} className="size-full" />
+      {status === "loading" && (
+        <div
+          className="absolute inset-0 animate-pulse bg-muted"
+          aria-hidden="true"
+        />
+      )}
+      {status === "unavailable" && (
+        <div className="absolute inset-0 flex items-center justify-center bg-muted px-6 text-center text-sm text-text-subtle">
+          {t("mapUnavailable")}
+        </div>
+      )}
+    </div>
   );
 }

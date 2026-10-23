@@ -10,7 +10,6 @@ import {
   extractCepDigits,
   formatCepInput,
   isLikelyCep,
-  isValidCoordinate,
   toValidLatLng,
 } from "@/lib/geocode";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -19,6 +18,7 @@ import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GeocodeDropdown } from "./geocode-dropdown";
+import { getMappableLocations } from "./service-center-map-data";
 
 const ServiceCenterMap = dynamic(
   () => import("./service-center-map").then((m) => m.ServiceCenterMap),
@@ -70,11 +70,11 @@ export function ServiceCentersExplorer({
   const [geocodeLoading, setGeocodeLoading] = useState(false);
   const [isCepMode, setIsCepMode] = useState(false);
   const [viewportBounds, setViewportBounds] = useState<Bounds | null>(null);
-  const [showAll, setShowAll] = useState(false);
   const [fitAllCount, setFitAllCount] = useState(0);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const handleGeoSuccess = (pos: GeolocationPosition) => {
     setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
@@ -138,10 +138,14 @@ export function ServiceCentersExplorer({
       setSuggestionsOpen(false);
       return;
     }
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
     setGeocodeLoading(true);
     try {
       const res = await fetch(
         `/api/bff/geocode/search?q=${encodeURIComponent(searchQuery)}`,
+        { signal: controller.signal },
       );
       if (!res.ok) {
         setSuggestions([]);
@@ -150,16 +154,21 @@ export function ServiceCentersExplorer({
       const data: { results: GeocodeSuggestion[] } = await res.json();
       setSuggestions(data.results);
       setSuggestionsOpen(true);
-    } catch {
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
       setSuggestions([]);
     } finally {
-      setGeocodeLoading(false);
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;
+        setGeocodeLoading(false);
+      }
     }
   }, []);
 
   const debounceTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const handleInputChange = (raw: string) => {
+    abortControllerRef.current?.abort();
     const cepMode = isLikelyCep(raw) && raw !== t("currentLocation");
     setIsCepMode(cepMode);
 
@@ -190,7 +199,6 @@ export function ServiceCentersExplorer({
     setIsCepMode(false);
     setSelectedLocation(suggestion);
     setSelectedId(null);
-    setShowAll(false);
     setSuggestionsOpen(false);
     resetScroll();
   };
@@ -208,24 +216,14 @@ export function ServiceCentersExplorer({
   // therefore the full active collection must remain available to it regardless
   // of the selected city, CEP, or current user location.
   const mappable = useMemo(
-    () => serviceCenters.filter((p) => isValidCoordinate(p.lat, p.lng)),
+    () => getMappableLocations(serviceCenters),
     [serviceCenters],
   );
-
-  /**
-   * Partners the CMS has no coordinates for. Surfaced as a count instead of being
-   * mixed into the list: they cannot be placed on the map, and hiding them
-   * silently would make a data gap look like an empty region.
-   */
-  const withoutCoordsCount = serviceCenters.length - mappable.length;
 
   const visibleFiltered: PartnerLocation[] = useMemo(() => {
     if (!viewportBounds) return mappable;
     return mappable.filter(
       (p) =>
-        isValidCoordinate(p.lat, p.lng) &&
-        p.lat != null &&
-        p.lng != null &&
         p.lat >= viewportBounds.south &&
         p.lat <= viewportBounds.north &&
         p.lng >= viewportBounds.west &&
@@ -238,9 +236,8 @@ export function ServiceCentersExplorer({
       const item = visibleFiltered.find((p) => p.id === selectedId);
       return item ? [item] : visibleFiltered;
     }
-    if (showAll) return mappable;
     return visibleFiltered;
-  }, [visibleFiltered, selectedId, showAll, mappable]);
+  }, [visibleFiltered, selectedId]);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const rowVirtualizer = useVirtualizer({
@@ -256,6 +253,7 @@ export function ServiceCentersExplorer({
   useEffect(() => {
     return () => {
       if (debounceTimer.current) clearTimeout(debounceTimer.current);
+      abortControllerRef.current?.abort();
     };
   }, []);
 
@@ -306,8 +304,15 @@ export function ServiceCentersExplorer({
                   setSuggestions([]);
                   setSuggestionsOpen(false);
                   setIsCepMode(false);
+                  if (debounceTimer.current) {
+                    clearTimeout(debounceTimer.current);
+                    debounceTimer.current = undefined;
+                  }
+                  abortControllerRef.current?.abort();
                   inputRef.current?.focus();
                 }}
+                aria-label={t("clearSearch")}
+                className="flex min-h-11 min-w-11 items-center justify-center"
               >
                 <X size={14} className="text-icon-muted" />
               </button>
@@ -336,6 +341,7 @@ export function ServiceCentersExplorer({
           <button
             type="button"
             onClick={requestLocation}
+            disabled={geoStatus === "loading"}
             className="flex items-center gap-1.5 text-2xs font-bold tracking-[0.6px] text-brand uppercase transition-colors hover:text-brand-dark"
           >
             <LocateFixed size={14} className="shrink-0" />
@@ -343,19 +349,13 @@ export function ServiceCentersExplorer({
           </button>
           <span className="text-2xs text-text-subtle">
             {t("resultsCount", {
-              count: showAll ? mappable.length : visibleFiltered.length,
+              count: visibleFiltered.length,
             })}
           </span>
         </div>
 
         {geoMessage && (
           <p className="text-2xs text-text-subtle">{geoMessage}</p>
-        )}
-
-        {withoutCoordsCount > 0 && (
-          <p className="text-2xs text-text-subtle">
-            {t("withoutCoordinates", { count: withoutCoordsCount })}
-          </p>
         )}
 
         {mappable.length === 0 ? (
@@ -389,7 +389,6 @@ export function ServiceCentersExplorer({
                       type="button"
                       onClick={() => {
                         setSelectedId(posto.id);
-                        setShowAll(false);
                       }}
                       className={cn(
                         "flex w-full flex-col gap-0.5 border bg-white px-4 py-3 text-left transition-colors",
@@ -421,21 +420,16 @@ export function ServiceCentersExplorer({
                 );
               })}
             </div>
-            {selectedId || showAll ? (
+            {selectedId ? (
               <button
                 type="button"
                 onClick={() => {
                   setSelectedId(null);
-                  if (showAll) {
-                    setShowAll(false);
-                  } else {
-                    setShowAll(true);
-                    setFitAllCount((c) => c + 1);
-                  }
+                  setFitAllCount((c) => c + 1);
                 }}
                 className="flex w-full items-center justify-center gap-1.5 border border-dashed border-border bg-white px-4 py-2 text-xs text-brand transition-colors hover:text-brand-dark"
               >
-                {showAll ? t("filterByMap") : t("showAll")}
+                {t("showAll")}
               </button>
             ) : null}
           </div>
@@ -449,7 +443,6 @@ export function ServiceCentersExplorer({
           selectedId={selectedId}
           onSelectLocation={(id) => {
             setSelectedId(id);
-            setShowAll(false);
           }}
           onBoundsChange={setViewportBounds}
           fitAllTrigger={fitAllCount}
