@@ -51,7 +51,7 @@ export const getPostApiFaqsQueryKey = (postApiFaqsBody?: PostApiFaqsBody) => {
 
 export const getPostApiFaqsQueryOptions = <
   TData = Awaited<ReturnType<typeof postApiFaqs>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiFaqsBody: PostApiFaqsBody,
   options?: {
@@ -79,11 +79,11 @@ export const getPostApiFaqsQueryOptions = <
 export type PostApiFaqsQueryResult = NonNullable<
   Awaited<ReturnType<typeof postApiFaqs>>
 >;
-export type PostApiFaqsQueryError = unknown;
+export type PostApiFaqsQueryError = ApiErrorPayload;
 
 export function usePostApiFaqs<
   TData = Awaited<ReturnType<typeof postApiFaqs>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiFaqsBody: PostApiFaqsBody,
   options: {
@@ -105,7 +105,7 @@ export function usePostApiFaqs<
 };
 export function usePostApiFaqs<
   TData = Awaited<ReturnType<typeof postApiFaqs>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiFaqsBody: PostApiFaqsBody,
   options?: {
@@ -127,7 +127,7 @@ export function usePostApiFaqs<
 };
 export function usePostApiFaqs<
   TData = Awaited<ReturnType<typeof postApiFaqs>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiFaqsBody: PostApiFaqsBody,
   options?: {
@@ -145,7 +145,7 @@ export function usePostApiFaqs<
 
 export function usePostApiFaqs<
   TData = Awaited<ReturnType<typeof postApiFaqs>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiFaqsBody: PostApiFaqsBody,
   options?: {
@@ -184,7 +184,7 @@ export const getGetApiFaqsAdminQueryKey = () => {
 
 export const getGetApiFaqsAdminQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiFaqsAdmin>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(options?: {
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof getApiFaqsAdmin>>, TError, TData>
@@ -208,11 +208,11 @@ export const getGetApiFaqsAdminQueryOptions = <
 export type GetApiFaqsAdminQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiFaqsAdmin>>
 >;
-export type GetApiFaqsAdminQueryError = unknown;
+export type GetApiFaqsAdminQueryError = ApiErrorPayload;
 
 export function useGetApiFaqsAdmin<
   TData = Awaited<ReturnType<typeof getApiFaqsAdmin>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options: {
     query: Partial<
@@ -237,7 +237,7 @@ export function useGetApiFaqsAdmin<
 };
 export function useGetApiFaqsAdmin<
   TData = Awaited<ReturnType<typeof getApiFaqsAdmin>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -262,7 +262,7 @@ export function useGetApiFaqsAdmin<
 };
 export function useGetApiFaqsAdmin<
   TData = Awaited<ReturnType<typeof getApiFaqsAdmin>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -283,7 +283,7 @@ export function useGetApiFaqsAdmin<
 
 export function useGetApiFaqsAdmin<
   TData = Awaited<ReturnType<typeof getApiFaqsAdmin>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -332,7 +332,7 @@ export const getPatchApiFaqsReorderQueryKey = (
 
 export const getPatchApiFaqsReorderQueryOptions = <
   TData = Awaited<ReturnType<typeof patchApiFaqsReorder>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   patchApiFaqsReorderBody: PatchApiFaqsReorderBody,
   options?: {
@@ -365,11 +365,11 @@ export const getPatchApiFaqsReorderQueryOptions = <
 export type PatchApiFaqsReorderQueryResult = NonNullable<
   Awaited<ReturnType<typeof patchApiFaqsReorder>>
 >;
-export type PatchApiFaqsReorderQueryError = unknown;
+export type PatchApiFaqsReorderQueryError = ApiErrorPayload;
 
 export function usePatchApiFaqsReorder<
   TData = Awaited<ReturnType<typeof patchApiFaqsReorder>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   patchApiFaqsReorderBody: PatchApiFaqsReorderBody,
   options: {
@@ -395,7 +395,7 @@ export function usePatchApiFaqsReorder<
 };
 export function usePatchApiFaqsReorder<
   TData = Awaited<ReturnType<typeof patchApiFaqsReorder>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   patchApiFaqsReorderBody: PatchApiFaqsReorderBody,
   options?: {
@@ -421,7 +421,7 @@ export function usePatchApiFaqsReorder<
 };
 export function usePatchApiFaqsReorder<
   TData = Awaited<ReturnType<typeof patchApiFaqsReorder>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   patchApiFaqsReorderBody: PatchApiFaqsReorderBody,
   options?: {
@@ -443,7 +443,7 @@ export function usePatchApiFaqsReorder<
 
 export function usePatchApiFaqsReorder<
   TData = Awaited<ReturnType<typeof patchApiFaqsReorder>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   patchApiFaqsReorderBody: PatchApiFaqsReorderBody,
   options?: {

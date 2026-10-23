@@ -19,11 +19,13 @@ export function ContactForm({
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSending(true);
     setError(null);
+    setFieldErrors({});
 
     const form = e.currentTarget;
     const data = new FormData(form);
@@ -42,6 +44,7 @@ export function ContactForm({
       subject: `Contato via site - ${name}`,
       message: (data.get("message") as string) || "",
       department,
+      privacy_accepted: data.get("privacy") === "on",
     });
 
     setSending(false);
@@ -49,11 +52,8 @@ export function ContactForm({
     if (result.ok) {
       setSent(true);
     } else {
-      setError(
-        result.code === "NOT_CONFIGURED"
-          ? "Serviço de contato temporariamente indisponível. Tente novamente mais tarde."
-          : "Não foi possível enviar sua mensagem. Tente novamente.",
-      );
+      setError(result.message);
+      setFieldErrors(result.fields);
     }
   }
 
@@ -78,7 +78,7 @@ export function ContactForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
       {departments.length > 0 && (
         <div>
           <label
@@ -91,6 +91,10 @@ export function ContactForm({
             id="department"
             name="department"
             required
+            aria-invalid={Boolean(fieldErrors.department)}
+            onChange={() =>
+              setFieldErrors((current) => ({ ...current, department: "" }))
+            }
             className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark focus:ring-1 focus:ring-brand focus:outline-none"
           >
             <option value="">{t("sectorPlaceholder")}</option>
@@ -100,6 +104,11 @@ export function ContactForm({
               </option>
             ))}
           </select>
+          {fieldErrors.department && (
+            <p className="mt-1 text-xs text-destructive" role="alert">
+              {fieldErrors.department}
+            </p>
+          )}
         </div>
       )}
 
@@ -116,11 +125,18 @@ export function ContactForm({
             id="name"
             name="name"
             required
-            minLength={2}
-            maxLength={100}
+            aria-invalid={Boolean(fieldErrors.name)}
+            onChange={() =>
+              setFieldErrors((current) => ({ ...current, name: "" }))
+            }
             placeholder={t("namePlaceholder")}
             className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:ring-1 focus:ring-brand focus:outline-none"
           />
+          {fieldErrors.name && (
+            <p className="mt-1 text-xs text-destructive" role="alert">
+              {fieldErrors.name}
+            </p>
+          )}
         </div>
         <div>
           <label
@@ -151,9 +167,18 @@ export function ContactForm({
           id="email"
           name="email"
           required
+          aria-invalid={Boolean(fieldErrors.email)}
+          onChange={() =>
+            setFieldErrors((current) => ({ ...current, email: "" }))
+          }
           placeholder={t("emailPlaceholder")}
           className="w-full border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:ring-1 focus:ring-brand focus:outline-none"
         />
+        {fieldErrors.email && (
+          <p className="mt-1 text-xs text-destructive" role="alert">
+            {fieldErrors.email}
+          </p>
+        )}
       </div>
 
       <div>
@@ -168,11 +193,18 @@ export function ContactForm({
           name="message"
           rows={5}
           required
-          minLength={10}
-          maxLength={5000}
+          aria-invalid={Boolean(fieldErrors.message)}
+          onChange={() =>
+            setFieldErrors((current) => ({ ...current, message: "" }))
+          }
           placeholder={t("messagePlaceholder")}
           className="w-full resize-none border border-border bg-white px-4 py-3 font-sans text-sm text-brand-dark placeholder:text-icon-muted focus:ring-1 focus:ring-brand focus:outline-none"
         />
+        {fieldErrors.message && (
+          <p className="mt-1 text-xs text-destructive" role="alert">
+            {fieldErrors.message}
+          </p>
+        )}
       </div>
 
       <label className="flex cursor-pointer items-start gap-3">
@@ -180,6 +212,10 @@ export function ContactForm({
           type="checkbox"
           name="privacy"
           required
+          aria-invalid={Boolean(fieldErrors.privacy_accepted)}
+          onChange={() =>
+            setFieldErrors((current) => ({ ...current, privacy_accepted: "" }))
+          }
           className="mt-0.5 h-4 w-4 shrink-0 accent-brand"
         />
         <span className="font-sans text-xs leading-relaxed text-text-subtle">
@@ -201,6 +237,11 @@ export function ContactForm({
           })}
         </span>
       </label>
+      {fieldErrors.privacy_accepted && (
+        <p className="text-xs text-destructive" role="alert">
+          {fieldErrors.privacy_accepted}
+        </p>
+      )}
 
       {error && <p className="text-sm font-medium text-destructive">{error}</p>}
 

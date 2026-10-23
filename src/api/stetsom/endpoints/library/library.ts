@@ -52,7 +52,7 @@ export const getGetApiLibraryQueryKey = (params?: GetApiLibraryParams) => {
 
 export const getGetApiLibraryQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiLibrary>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiLibraryParams,
   options?: {
@@ -79,11 +79,11 @@ export const getGetApiLibraryQueryOptions = <
 export type GetApiLibraryQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiLibrary>>
 >;
-export type GetApiLibraryQueryError = unknown;
+export type GetApiLibraryQueryError = ApiErrorPayload;
 
 export function useGetApiLibrary<
   TData = Awaited<ReturnType<typeof getApiLibrary>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiLibraryParams,
   options: {
@@ -105,7 +105,7 @@ export function useGetApiLibrary<
 };
 export function useGetApiLibrary<
   TData = Awaited<ReturnType<typeof getApiLibrary>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiLibraryParams,
   options?: {
@@ -127,7 +127,7 @@ export function useGetApiLibrary<
 };
 export function useGetApiLibrary<
   TData = Awaited<ReturnType<typeof getApiLibrary>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiLibraryParams,
   options?: {
@@ -145,7 +145,7 @@ export function useGetApiLibrary<
 
 export function useGetApiLibrary<
   TData = Awaited<ReturnType<typeof getApiLibrary>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiLibraryParams,
   options?: {

@@ -31,4 +31,5 @@ export type PostApiContactBody = {
    * @minLength 1
    */
   department: string;
+  privacy_accepted: boolean;
 };

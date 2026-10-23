@@ -32,6 +32,7 @@ export class OrvalApiError extends Error {
     readonly status: number,
     readonly code: string,
     message: string,
+    readonly fields: Record<string, string> = {},
   ) {
     super(message);
     this.name = "OrvalApiError";
@@ -40,11 +41,18 @@ export class OrvalApiError extends Error {
 
 /** Maps an Axios error (or any thrown value) to a typed OrvalApiError. */
 export function toApiError(err: unknown): OrvalApiError {
-  const e = err as AxiosError<{ error?: { code?: string; message?: string } }>;
+  const e = err as AxiosError<{
+    error?: {
+      code?: string;
+      message?: string;
+      fields?: Record<string, string>;
+    };
+  }>;
   return new OrvalApiError(
     e.response?.status ?? 0,
     e.response?.data?.error?.code ?? "UNKNOWN",
     e.response?.data?.error?.message ?? e.message ?? "Request failed",
+    e.response?.data?.error?.fields ?? {},
   );
 }
 

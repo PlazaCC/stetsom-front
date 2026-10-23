@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { GripVertical, Info } from "lucide-react";
+import { AdminFieldError } from "@/app/admin/_components/crud/admin-field-error";
 import { ImageGallery } from "./image-gallery";
 import type { WizardAction, WizardImage, WizardState } from "./wizard-store";
 
@@ -41,6 +42,8 @@ interface GeneralEditorProps {
   categories: CategoryOption[];
   lines: LineOption[];
   compact?: boolean;
+  errors?: Record<string, string>;
+  onClearError?: (path?: string) => void;
 }
 
 interface EntityComboboxProps<T extends { id: string; name: string }> {
@@ -53,6 +56,9 @@ interface EntityComboboxProps<T extends { id: string; name: string }> {
   disabled?: boolean;
   /** Remounts the combobox (clearing its internal input) when this changes. */
   resetKey?: string;
+  required?: boolean;
+  error?: string;
+  onClearError?: () => void;
 }
 
 function EntityCombobox<T extends { id: string; name: string }>({
@@ -64,17 +70,25 @@ function EntityCombobox<T extends { id: string; name: string }>({
   emptyMessage,
   disabled,
   resetKey,
+  required,
+  error,
+  onClearError,
 }: EntityComboboxProps<T>) {
   return (
     <Field>
-      <FieldLabel>{label}</FieldLabel>
+      <FieldLabel>
+        {label} {required ? <span className="text-destructive">*</span> : null}
+      </FieldLabel>
       <FieldContent>
         <Combobox
           key={resetKey}
           items={items}
           value={value}
           itemToStringLabel={(item: T) => item.name}
-          onValueChange={onValueChange}
+          onValueChange={(next) => {
+            onClearError?.();
+            onValueChange(next);
+          }}
         >
           <ComboboxInput placeholder={placeholder} disabled={disabled} />
           <ComboboxContent>
@@ -88,6 +102,7 @@ function EntityCombobox<T extends { id: string; name: string }>({
             </ComboboxList>
           </ComboboxContent>
         </Combobox>
+        <AdminFieldError message={error} />
       </FieldContent>
     </Field>
   );
@@ -99,6 +114,8 @@ export function GeneralEditor({
   categories,
   lines,
   compact = false,
+  errors = {},
+  onClearError,
 }: GeneralEditorProps) {
   const categoryLines = lines.filter(
     (l) => l.category_id === state.category_id,
@@ -111,10 +128,22 @@ export function GeneralEditor({
     <div className="flex flex-col gap-4">
       <I18nInput
         label="Nome do produto"
+        fieldPath="name"
         required
         value={state.name}
-        onChange={(name) => dispatch({ type: "patch_info", patch: { name } })}
+        onChange={(name) => {
+          onClearError?.("name");
+          dispatch({ type: "patch_info", patch: { name } });
+        }}
         placeholder="Ex: ST-4000EQ"
+        invalid={{
+          pt: Boolean(errors["name.pt"]),
+          en: Boolean(errors["name.en"]),
+          es: Boolean(errors["name.es"]),
+        }}
+      />
+      <AdminFieldError
+        message={errors["name.pt"] ?? errors["name.en"] ?? errors["name.es"]}
       />
 
       <div
@@ -130,12 +159,13 @@ export function GeneralEditor({
           <FieldContent>
             <AdminInput
               value={state.sku}
-              onChange={(e) =>
+              onChange={(e) => (
+                onClearError?.("sku"),
                 dispatch({
                   type: "patch_info",
                   patch: { sku: e.target.value },
                 })
-              }
+              )}
               placeholder="Ex: 7891234567890"
             />
           </FieldContent>
@@ -146,14 +176,17 @@ export function GeneralEditor({
           <FieldContent>
             <AdminInput
               value={state.slug}
-              onChange={(e) =>
+              onChange={(e) => (
+                onClearError?.("slug"),
                 dispatch({
                   type: "patch_info",
                   patch: { slug: e.target.value },
                 })
-              }
+              )}
               placeholder="st-4000eq"
+              aria-invalid={Boolean(errors.slug)}
             />
+            <AdminFieldError message={errors.slug} />
           </FieldContent>
         </Field>
       </div>
@@ -223,14 +256,18 @@ export function GeneralEditor({
           label="Categoria"
           items={categories}
           value={currentCategory}
-          onValueChange={(value) =>
+          onValueChange={(value) => (
+            onClearError?.("category_id"),
             dispatch({
               type: "patch_info",
               patch: { category_id: value?.id ?? "" },
             })
-          }
+          )}
           placeholder="Selecione uma categoria"
           emptyMessage="Nenhuma categoria encontrada."
+          required
+          error={errors.category_id}
+          onClearError={() => onClearError?.("category_id")}
         />
 
         <EntityCombobox
@@ -249,6 +286,8 @@ export function GeneralEditor({
           }
           emptyMessage="Nenhuma linha encontrada."
           disabled={!categoryLines.length}
+          error={errors.line_id}
+          onClearError={() => onClearError?.("line_id")}
         />
       </div>
 

@@ -9,10 +9,11 @@ import type { VariantAttrBodyDescription } from "./variantAttrBodyDescription";
 import type { VariantAttrBodyValue } from "./variantAttrBodyValue";
 
 export interface VariantAttrBody {
+  /** @pattern ^[a-f\d]{24}$ */
   attribute_id: string;
   /**
    * Attribute group the line renders under. When the product has a template, the attribute must sit in this group there.
-   * @minLength 1
+   * @pattern ^[a-f\d]{24}$
    */
   group_id: string;
   value: VariantAttrBodyValue;

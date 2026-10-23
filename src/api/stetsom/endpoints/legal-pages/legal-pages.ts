@@ -44,7 +44,7 @@ export const getGetApiLegalPagesQueryKey = () => {
 
 export const getGetApiLegalPagesQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiLegalPages>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(options?: {
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof getApiLegalPages>>, TError, TData>
@@ -68,11 +68,11 @@ export const getGetApiLegalPagesQueryOptions = <
 export type GetApiLegalPagesQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiLegalPages>>
 >;
-export type GetApiLegalPagesQueryError = unknown;
+export type GetApiLegalPagesQueryError = ApiErrorPayload;
 
 export function useGetApiLegalPages<
   TData = Awaited<ReturnType<typeof getApiLegalPages>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options: {
     query: Partial<
@@ -97,7 +97,7 @@ export function useGetApiLegalPages<
 };
 export function useGetApiLegalPages<
   TData = Awaited<ReturnType<typeof getApiLegalPages>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -122,7 +122,7 @@ export function useGetApiLegalPages<
 };
 export function useGetApiLegalPages<
   TData = Awaited<ReturnType<typeof getApiLegalPages>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -143,7 +143,7 @@ export function useGetApiLegalPages<
 
 export function useGetApiLegalPages<
   TData = Awaited<ReturnType<typeof getApiLegalPages>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<

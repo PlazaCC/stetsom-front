@@ -397,7 +397,7 @@ export const getGetApiProductsAdminQueryKey = (
 
 export const getGetApiProductsAdminQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiProductsAdmin>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiProductsAdminParams,
   options?: {
@@ -429,11 +429,11 @@ export const getGetApiProductsAdminQueryOptions = <
 export type GetApiProductsAdminQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiProductsAdmin>>
 >;
-export type GetApiProductsAdminQueryError = unknown;
+export type GetApiProductsAdminQueryError = ApiErrorPayload;
 
 export function useGetApiProductsAdmin<
   TData = Awaited<ReturnType<typeof getApiProductsAdmin>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiProductsAdminParams,
   options: {
@@ -459,7 +459,7 @@ export function useGetApiProductsAdmin<
 };
 export function useGetApiProductsAdmin<
   TData = Awaited<ReturnType<typeof getApiProductsAdmin>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiProductsAdminParams,
   options?: {
@@ -485,7 +485,7 @@ export function useGetApiProductsAdmin<
 };
 export function useGetApiProductsAdmin<
   TData = Awaited<ReturnType<typeof getApiProductsAdmin>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiProductsAdminParams,
   options?: {
@@ -507,7 +507,7 @@ export function useGetApiProductsAdmin<
 
 export function useGetApiProductsAdmin<
   TData = Awaited<ReturnType<typeof getApiProductsAdmin>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiProductsAdminParams,
   options?: {

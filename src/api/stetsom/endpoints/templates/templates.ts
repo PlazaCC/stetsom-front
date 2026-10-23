@@ -49,7 +49,7 @@ export const getGetApiTemplatesQueryKey = (params?: GetApiTemplatesParams) => {
 
 export const getGetApiTemplatesQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiTemplates>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiTemplatesParams,
   options?: {
@@ -80,11 +80,11 @@ export const getGetApiTemplatesQueryOptions = <
 export type GetApiTemplatesQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiTemplates>>
 >;
-export type GetApiTemplatesQueryError = unknown;
+export type GetApiTemplatesQueryError = ApiErrorPayload;
 
 export function useGetApiTemplates<
   TData = Awaited<ReturnType<typeof getApiTemplates>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiTemplatesParams,
   options: {
@@ -110,7 +110,7 @@ export function useGetApiTemplates<
 };
 export function useGetApiTemplates<
   TData = Awaited<ReturnType<typeof getApiTemplates>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiTemplatesParams,
   options?: {
@@ -136,7 +136,7 @@ export function useGetApiTemplates<
 };
 export function useGetApiTemplates<
   TData = Awaited<ReturnType<typeof getApiTemplates>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiTemplatesParams,
   options?: {
@@ -158,7 +158,7 @@ export function useGetApiTemplates<
 
 export function useGetApiTemplates<
   TData = Awaited<ReturnType<typeof getApiTemplates>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiTemplatesParams,
   options?: {

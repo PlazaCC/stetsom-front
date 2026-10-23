@@ -7,5 +7,8 @@
  */
 
 export type GetApiTemplatesParams = {
+  /**
+   * @pattern ^[a-f\d]{24}$
+   */
   category_id?: string;
 };

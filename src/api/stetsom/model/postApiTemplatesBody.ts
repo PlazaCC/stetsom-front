@@ -9,6 +9,7 @@ import type { PostApiTemplatesBodyName } from "./postApiTemplatesBodyName";
 import type { TemplateGroupInput } from "./templateGroupInput";
 
 export type PostApiTemplatesBody = {
+  /** @pattern ^[a-f\d]{24}$ */
   category_id: string;
   name: PostApiTemplatesBodyName;
   /** Every attribute sits inside exactly one group; an attribute may not repeat across groups */

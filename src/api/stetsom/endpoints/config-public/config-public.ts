@@ -18,7 +18,11 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { GetApiConfigPublicParams, PublicConfig } from "../../model";
+import type {
+  ApiErrorPayload,
+  GetApiConfigPublicParams,
+  PublicConfig,
+} from "../../model";
 
 import { orvalClient } from "../../orval-client";
 
@@ -46,7 +50,7 @@ export const getGetApiConfigPublicQueryKey = (
 
 export const getGetApiConfigPublicQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiConfigPublic>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiConfigPublicParams,
   options?: {
@@ -78,11 +82,11 @@ export const getGetApiConfigPublicQueryOptions = <
 export type GetApiConfigPublicQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiConfigPublic>>
 >;
-export type GetApiConfigPublicQueryError = unknown;
+export type GetApiConfigPublicQueryError = ApiErrorPayload;
 
 export function useGetApiConfigPublic<
   TData = Awaited<ReturnType<typeof getApiConfigPublic>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiConfigPublicParams,
   options: {
@@ -108,7 +112,7 @@ export function useGetApiConfigPublic<
 };
 export function useGetApiConfigPublic<
   TData = Awaited<ReturnType<typeof getApiConfigPublic>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiConfigPublicParams,
   options?: {
@@ -134,7 +138,7 @@ export function useGetApiConfigPublic<
 };
 export function useGetApiConfigPublic<
   TData = Awaited<ReturnType<typeof getApiConfigPublic>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiConfigPublicParams,
   options?: {
@@ -156,7 +160,7 @@ export function useGetApiConfigPublic<
 
 export function useGetApiConfigPublic<
   TData = Awaited<ReturnType<typeof getApiConfigPublic>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiConfigPublicParams,
   options?: {

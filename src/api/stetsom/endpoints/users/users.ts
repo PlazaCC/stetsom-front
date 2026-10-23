@@ -50,7 +50,7 @@ export const getGetApiUsersQueryKey = (params?: GetApiUsersParams) => {
 
 export const getGetApiUsersQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiUsers>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiUsersParams,
   options?: {
@@ -77,11 +77,11 @@ export const getGetApiUsersQueryOptions = <
 export type GetApiUsersQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiUsers>>
 >;
-export type GetApiUsersQueryError = unknown;
+export type GetApiUsersQueryError = ApiErrorPayload;
 
 export function useGetApiUsers<
   TData = Awaited<ReturnType<typeof getApiUsers>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiUsersParams,
   options: {
@@ -103,7 +103,7 @@ export function useGetApiUsers<
 };
 export function useGetApiUsers<
   TData = Awaited<ReturnType<typeof getApiUsers>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiUsersParams,
   options?: {
@@ -125,7 +125,7 @@ export function useGetApiUsers<
 };
 export function useGetApiUsers<
   TData = Awaited<ReturnType<typeof getApiUsers>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiUsersParams,
   options?: {
@@ -143,7 +143,7 @@ export function useGetApiUsers<
 
 export function useGetApiUsers<
   TData = Awaited<ReturnType<typeof getApiUsers>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiUsersParams,
   options?: {

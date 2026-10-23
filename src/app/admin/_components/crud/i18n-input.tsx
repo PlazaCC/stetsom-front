@@ -34,6 +34,8 @@ interface I18nInputProps {
   type?: "text" | "url";
   /** Locales whose value failed validation — flags the tab and the input. */
   invalid?: Partial<Record<Locale, boolean>>;
+  /** API field path prefix, e.g. `name` produces `name.pt`. */
+  fieldPath?: string;
   className?: string;
 }
 
@@ -52,6 +54,7 @@ export function I18nInput({
   placeholder,
   type = "text",
   invalid,
+  fieldPath,
   className,
 }: I18nInputProps) {
   const [active, setActive] = useState<Locale>("pt");
@@ -116,6 +119,8 @@ export function I18nInput({
                 <Textarea
                   className="min-h-24"
                   required={loc.required && required}
+                  aria-invalid={invalid?.[loc.id] || undefined}
+                  name={fieldPath ? `${fieldPath}.${loc.id}` : undefined}
                   placeholder={placeholder}
                   value={fieldValue}
                   onChange={(e) => set(loc.id, e.target.value)}
@@ -125,6 +130,7 @@ export function I18nInput({
                   type={type}
                   required={loc.required && required}
                   aria-invalid={invalid?.[loc.id] || undefined}
+                  name={fieldPath ? `${fieldPath}.${loc.id}` : undefined}
                   placeholder={placeholder}
                   value={fieldValue}
                   onChange={(e) => set(loc.id, e.target.value)}

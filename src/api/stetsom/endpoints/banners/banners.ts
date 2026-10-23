@@ -50,7 +50,7 @@ export const getGetApiBannersQueryKey = (params?: GetApiBannersParams) => {
 
 export const getGetApiBannersQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiBanners>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiBannersParams,
   options?: {
@@ -77,11 +77,11 @@ export const getGetApiBannersQueryOptions = <
 export type GetApiBannersQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiBanners>>
 >;
-export type GetApiBannersQueryError = unknown;
+export type GetApiBannersQueryError = ApiErrorPayload;
 
 export function useGetApiBanners<
   TData = Awaited<ReturnType<typeof getApiBanners>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiBannersParams,
   options: {
@@ -103,7 +103,7 @@ export function useGetApiBanners<
 };
 export function useGetApiBanners<
   TData = Awaited<ReturnType<typeof getApiBanners>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiBannersParams,
   options?: {
@@ -125,7 +125,7 @@ export function useGetApiBanners<
 };
 export function useGetApiBanners<
   TData = Awaited<ReturnType<typeof getApiBanners>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiBannersParams,
   options?: {
@@ -143,7 +143,7 @@ export function useGetApiBanners<
 
 export function useGetApiBanners<
   TData = Awaited<ReturnType<typeof getApiBanners>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiBannersParams,
   options?: {

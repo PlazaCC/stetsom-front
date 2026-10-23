@@ -19,6 +19,7 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
+  ApiErrorPayload,
   GetApiBannersActiveParams,
   HeroBannerSlidesPayload,
 } from "../../model";
@@ -48,7 +49,7 @@ export const getGetApiBannersActiveQueryKey = (
 
 export const getGetApiBannersActiveQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiBannersActive>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiBannersActiveParams,
   options?: {
@@ -80,11 +81,11 @@ export const getGetApiBannersActiveQueryOptions = <
 export type GetApiBannersActiveQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiBannersActive>>
 >;
-export type GetApiBannersActiveQueryError = unknown;
+export type GetApiBannersActiveQueryError = ApiErrorPayload;
 
 export function useGetApiBannersActive<
   TData = Awaited<ReturnType<typeof getApiBannersActive>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiBannersActiveParams,
   options: {
@@ -110,7 +111,7 @@ export function useGetApiBannersActive<
 };
 export function useGetApiBannersActive<
   TData = Awaited<ReturnType<typeof getApiBannersActive>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiBannersActiveParams,
   options?: {
@@ -136,7 +137,7 @@ export function useGetApiBannersActive<
 };
 export function useGetApiBannersActive<
   TData = Awaited<ReturnType<typeof getApiBannersActive>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiBannersActiveParams,
   options?: {
@@ -158,7 +159,7 @@ export function useGetApiBannersActive<
 
 export function useGetApiBannersActive<
   TData = Awaited<ReturnType<typeof getApiBannersActive>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiBannersActiveParams,
   options?: {

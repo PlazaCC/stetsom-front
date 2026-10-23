@@ -14,7 +14,7 @@
 import type { AxiosRequestConfig } from "axios";
 import Axios from "axios";
 import * as Sentry from "@sentry/nextjs";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { handleMockRequest } from "@/lib/mock/handlers";
 import { OrvalApiError, toApiError } from "./orval-client";
 
@@ -52,12 +52,14 @@ export async function serverOrvalClient<T>(
   }
 
   const token = (await cookies()).get("admin_token")?.value;
+  const acceptLanguage = (await headers()).get("accept-language");
   try {
     const { data } = await directAxios({
       ...config,
       headers: {
         ...config.headers,
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(acceptLanguage ? { "Accept-Language": acceptLanguage } : {}),
       },
     });
     return data as T;

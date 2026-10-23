@@ -7,6 +7,7 @@
  */
 
 export interface TemplateAttrInput {
+  /** @pattern ^[a-f\d]{24}$ */
   attribute_id: string;
   /**
    * @minimum -9007199254740991

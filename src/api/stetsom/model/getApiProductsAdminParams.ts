@@ -19,6 +19,9 @@ export type GetApiProductsAdminParams = {
    */
   pageSize?: number;
   q?: string;
+  /**
+   * @pattern ^[a-f\d]{24}$
+   */
   category_id?: string;
   /**
    * @nullable

@@ -44,7 +44,7 @@ export const getGetApiAttributesQueryKey = () => {
 
 export const getGetApiAttributesQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiAttributes>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(options?: {
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof getApiAttributes>>, TError, TData>
@@ -68,11 +68,11 @@ export const getGetApiAttributesQueryOptions = <
 export type GetApiAttributesQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiAttributes>>
 >;
-export type GetApiAttributesQueryError = unknown;
+export type GetApiAttributesQueryError = ApiErrorPayload;
 
 export function useGetApiAttributes<
   TData = Awaited<ReturnType<typeof getApiAttributes>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options: {
     query: Partial<
@@ -97,7 +97,7 @@ export function useGetApiAttributes<
 };
 export function useGetApiAttributes<
   TData = Awaited<ReturnType<typeof getApiAttributes>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -122,7 +122,7 @@ export function useGetApiAttributes<
 };
 export function useGetApiAttributes<
   TData = Awaited<ReturnType<typeof getApiAttributes>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -143,7 +143,7 @@ export function useGetApiAttributes<
 
 export function useGetApiAttributes<
   TData = Awaited<ReturnType<typeof getApiAttributes>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -192,7 +192,7 @@ export const getPostApiAttributesQueryKey = (
 
 export const getPostApiAttributesQueryOptions = <
   TData = Awaited<ReturnType<typeof postApiAttributes>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiAttributesBody: PostApiAttributesBody,
   options?: {
@@ -225,11 +225,11 @@ export const getPostApiAttributesQueryOptions = <
 export type PostApiAttributesQueryResult = NonNullable<
   Awaited<ReturnType<typeof postApiAttributes>>
 >;
-export type PostApiAttributesQueryError = unknown;
+export type PostApiAttributesQueryError = ApiErrorPayload;
 
 export function usePostApiAttributes<
   TData = Awaited<ReturnType<typeof postApiAttributes>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiAttributesBody: PostApiAttributesBody,
   options: {
@@ -255,7 +255,7 @@ export function usePostApiAttributes<
 };
 export function usePostApiAttributes<
   TData = Awaited<ReturnType<typeof postApiAttributes>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiAttributesBody: PostApiAttributesBody,
   options?: {
@@ -281,7 +281,7 @@ export function usePostApiAttributes<
 };
 export function usePostApiAttributes<
   TData = Awaited<ReturnType<typeof postApiAttributes>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiAttributesBody: PostApiAttributesBody,
   options?: {
@@ -303,7 +303,7 @@ export function usePostApiAttributes<
 
 export function usePostApiAttributes<
   TData = Awaited<ReturnType<typeof postApiAttributes>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiAttributesBody: PostApiAttributesBody,
   options?: {

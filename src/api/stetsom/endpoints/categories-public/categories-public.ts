@@ -18,7 +18,11 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { GetApiCategoriesParams, PublicCategory } from "../../model";
+import type {
+  ApiErrorPayload,
+  GetApiCategoriesParams,
+  PublicCategory,
+} from "../../model";
 
 import { orvalClient } from "../../orval-client";
 
@@ -45,7 +49,7 @@ export const getGetApiCategoriesQueryKey = (
 
 export const getGetApiCategoriesQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiCategories>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiCategoriesParams,
   options?: {
@@ -77,11 +81,11 @@ export const getGetApiCategoriesQueryOptions = <
 export type GetApiCategoriesQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiCategories>>
 >;
-export type GetApiCategoriesQueryError = unknown;
+export type GetApiCategoriesQueryError = ApiErrorPayload;
 
 export function useGetApiCategories<
   TData = Awaited<ReturnType<typeof getApiCategories>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiCategoriesParams,
   options: {
@@ -107,7 +111,7 @@ export function useGetApiCategories<
 };
 export function useGetApiCategories<
   TData = Awaited<ReturnType<typeof getApiCategories>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiCategoriesParams,
   options?: {
@@ -133,7 +137,7 @@ export function useGetApiCategories<
 };
 export function useGetApiCategories<
   TData = Awaited<ReturnType<typeof getApiCategories>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiCategoriesParams,
   options?: {
@@ -155,7 +159,7 @@ export function useGetApiCategories<
 
 export function useGetApiCategories<
   TData = Awaited<ReturnType<typeof getApiCategories>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiCategoriesParams,
   options?: {

@@ -18,7 +18,11 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { CmsConfig, PatchApiConfigBody } from "../../model";
+import type {
+  ApiErrorPayload,
+  CmsConfig,
+  PatchApiConfigBody,
+} from "../../model";
 
 import { orvalClient } from "../../orval-client";
 
@@ -35,7 +39,7 @@ export const getGetApiConfigQueryKey = () => {
 
 export const getGetApiConfigQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiConfig>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(options?: {
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof getApiConfig>>, TError, TData>
@@ -59,11 +63,11 @@ export const getGetApiConfigQueryOptions = <
 export type GetApiConfigQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiConfig>>
 >;
-export type GetApiConfigQueryError = unknown;
+export type GetApiConfigQueryError = ApiErrorPayload;
 
 export function useGetApiConfig<
   TData = Awaited<ReturnType<typeof getApiConfig>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options: {
     query: Partial<
@@ -84,7 +88,7 @@ export function useGetApiConfig<
 };
 export function useGetApiConfig<
   TData = Awaited<ReturnType<typeof getApiConfig>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -105,7 +109,7 @@ export function useGetApiConfig<
 };
 export function useGetApiConfig<
   TData = Awaited<ReturnType<typeof getApiConfig>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -122,7 +126,7 @@ export function useGetApiConfig<
 
 export function useGetApiConfig<
   TData = Awaited<ReturnType<typeof getApiConfig>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -167,7 +171,7 @@ export const getPatchApiConfigQueryKey = (
 
 export const getPatchApiConfigQueryOptions = <
   TData = Awaited<ReturnType<typeof patchApiConfig>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   patchApiConfigBody: PatchApiConfigBody,
   options?: {
@@ -195,11 +199,11 @@ export const getPatchApiConfigQueryOptions = <
 export type PatchApiConfigQueryResult = NonNullable<
   Awaited<ReturnType<typeof patchApiConfig>>
 >;
-export type PatchApiConfigQueryError = unknown;
+export type PatchApiConfigQueryError = ApiErrorPayload;
 
 export function usePatchApiConfig<
   TData = Awaited<ReturnType<typeof patchApiConfig>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   patchApiConfigBody: PatchApiConfigBody,
   options: {
@@ -221,7 +225,7 @@ export function usePatchApiConfig<
 };
 export function usePatchApiConfig<
   TData = Awaited<ReturnType<typeof patchApiConfig>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   patchApiConfigBody: PatchApiConfigBody,
   options?: {
@@ -243,7 +247,7 @@ export function usePatchApiConfig<
 };
 export function usePatchApiConfig<
   TData = Awaited<ReturnType<typeof patchApiConfig>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   patchApiConfigBody: PatchApiConfigBody,
   options?: {
@@ -261,7 +265,7 @@ export function usePatchApiConfig<
 
 export function usePatchApiConfig<
   TData = Awaited<ReturnType<typeof patchApiConfig>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   patchApiConfigBody: PatchApiConfigBody,
   options?: {

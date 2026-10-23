@@ -19,6 +19,7 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
+  ApiErrorPayload,
   GetApiPartnerLocationsParams,
   PartnerLocation,
 } from "../../model";
@@ -48,7 +49,7 @@ export const getGetApiPartnerLocationsQueryKey = (
 
 export const getGetApiPartnerLocationsQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiPartnerLocations>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiPartnerLocationsParams,
   options?: {
@@ -80,11 +81,11 @@ export const getGetApiPartnerLocationsQueryOptions = <
 export type GetApiPartnerLocationsQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiPartnerLocations>>
 >;
-export type GetApiPartnerLocationsQueryError = unknown;
+export type GetApiPartnerLocationsQueryError = ApiErrorPayload;
 
 export function useGetApiPartnerLocations<
   TData = Awaited<ReturnType<typeof getApiPartnerLocations>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiPartnerLocationsParams,
   options: {
@@ -110,7 +111,7 @@ export function useGetApiPartnerLocations<
 };
 export function useGetApiPartnerLocations<
   TData = Awaited<ReturnType<typeof getApiPartnerLocations>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiPartnerLocationsParams,
   options?: {
@@ -136,7 +137,7 @@ export function useGetApiPartnerLocations<
 };
 export function useGetApiPartnerLocations<
   TData = Awaited<ReturnType<typeof getApiPartnerLocations>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiPartnerLocationsParams,
   options?: {
@@ -158,7 +159,7 @@ export function useGetApiPartnerLocations<
 
 export function useGetApiPartnerLocations<
   TData = Awaited<ReturnType<typeof getApiPartnerLocations>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiPartnerLocationsParams,
   options?: {

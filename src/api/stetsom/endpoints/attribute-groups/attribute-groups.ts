@@ -44,7 +44,7 @@ export const getGetApiAttributeGroupsQueryKey = () => {
 
 export const getGetApiAttributeGroupsQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiAttributeGroups>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(options?: {
   query?: Partial<
     UseQueryOptions<
@@ -72,11 +72,11 @@ export const getGetApiAttributeGroupsQueryOptions = <
 export type GetApiAttributeGroupsQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiAttributeGroups>>
 >;
-export type GetApiAttributeGroupsQueryError = unknown;
+export type GetApiAttributeGroupsQueryError = ApiErrorPayload;
 
 export function useGetApiAttributeGroups<
   TData = Awaited<ReturnType<typeof getApiAttributeGroups>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options: {
     query: Partial<
@@ -101,7 +101,7 @@ export function useGetApiAttributeGroups<
 };
 export function useGetApiAttributeGroups<
   TData = Awaited<ReturnType<typeof getApiAttributeGroups>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -126,7 +126,7 @@ export function useGetApiAttributeGroups<
 };
 export function useGetApiAttributeGroups<
   TData = Awaited<ReturnType<typeof getApiAttributeGroups>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -147,7 +147,7 @@ export function useGetApiAttributeGroups<
 
 export function useGetApiAttributeGroups<
   TData = Awaited<ReturnType<typeof getApiAttributeGroups>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -196,7 +196,7 @@ export const getPostApiAttributeGroupsQueryKey = (
 
 export const getPostApiAttributeGroupsQueryOptions = <
   TData = Awaited<ReturnType<typeof postApiAttributeGroups>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiAttributeGroupsBody: PostApiAttributeGroupsBody,
   options?: {
@@ -230,11 +230,11 @@ export const getPostApiAttributeGroupsQueryOptions = <
 export type PostApiAttributeGroupsQueryResult = NonNullable<
   Awaited<ReturnType<typeof postApiAttributeGroups>>
 >;
-export type PostApiAttributeGroupsQueryError = unknown;
+export type PostApiAttributeGroupsQueryError = ApiErrorPayload;
 
 export function usePostApiAttributeGroups<
   TData = Awaited<ReturnType<typeof postApiAttributeGroups>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiAttributeGroupsBody: PostApiAttributeGroupsBody,
   options: {
@@ -260,7 +260,7 @@ export function usePostApiAttributeGroups<
 };
 export function usePostApiAttributeGroups<
   TData = Awaited<ReturnType<typeof postApiAttributeGroups>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiAttributeGroupsBody: PostApiAttributeGroupsBody,
   options?: {
@@ -286,7 +286,7 @@ export function usePostApiAttributeGroups<
 };
 export function usePostApiAttributeGroups<
   TData = Awaited<ReturnType<typeof postApiAttributeGroups>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiAttributeGroupsBody: PostApiAttributeGroupsBody,
   options?: {
@@ -308,7 +308,7 @@ export function usePostApiAttributeGroups<
 
 export function usePostApiAttributeGroups<
   TData = Awaited<ReturnType<typeof postApiAttributeGroups>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiAttributeGroupsBody: PostApiAttributeGroupsBody,
   options?: {

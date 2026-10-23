@@ -47,6 +47,7 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     handlePublish,
     handleDelete,
     handlePreview,
+    formErrors,
   } = useWizardMutations(mode, state, dispatch);
 
   const localDraft = useWizardDraft(state, dispatch, {
@@ -197,6 +198,8 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
             attributeGroups={attributeGroups}
             templates={templates}
             compact={device === "desktop"}
+            errors={formErrors.errors}
+            onClearError={formErrors.clear}
           />
         }
       />

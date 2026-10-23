@@ -8,7 +8,10 @@
 import type { TemplateAttrInput } from "./templateAttrInput";
 
 export interface TemplateGroupInput {
-  /** Attribute group this section renders as */
+  /**
+   * Attribute group this section renders as
+   * @pattern ^[a-f\d]{24}$
+   */
   group_id: string;
   /**
    * @minimum -9007199254740991

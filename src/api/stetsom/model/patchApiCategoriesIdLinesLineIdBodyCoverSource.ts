@@ -10,6 +10,7 @@
  * @nullable
  */
 export type PatchApiCategoriesIdLinesLineIdBodyCoverSource = {
+  /** @pattern ^[a-f\d]{24}$ */
   product_id: string;
   /** @nullable */
   image_id?: string | null;

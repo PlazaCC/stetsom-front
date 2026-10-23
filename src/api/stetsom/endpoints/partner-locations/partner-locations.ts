@@ -59,7 +59,7 @@ export const getPostApiPartnerLocationsQueryKey = (
 
 export const getPostApiPartnerLocationsQueryOptions = <
   TData = Awaited<ReturnType<typeof postApiPartnerLocations>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiPartnerLocationsBody: PostApiPartnerLocationsBody,
   options?: {
@@ -93,11 +93,11 @@ export const getPostApiPartnerLocationsQueryOptions = <
 export type PostApiPartnerLocationsQueryResult = NonNullable<
   Awaited<ReturnType<typeof postApiPartnerLocations>>
 >;
-export type PostApiPartnerLocationsQueryError = unknown;
+export type PostApiPartnerLocationsQueryError = ApiErrorPayload;
 
 export function usePostApiPartnerLocations<
   TData = Awaited<ReturnType<typeof postApiPartnerLocations>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiPartnerLocationsBody: PostApiPartnerLocationsBody,
   options: {
@@ -123,7 +123,7 @@ export function usePostApiPartnerLocations<
 };
 export function usePostApiPartnerLocations<
   TData = Awaited<ReturnType<typeof postApiPartnerLocations>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiPartnerLocationsBody: PostApiPartnerLocationsBody,
   options?: {
@@ -149,7 +149,7 @@ export function usePostApiPartnerLocations<
 };
 export function usePostApiPartnerLocations<
   TData = Awaited<ReturnType<typeof postApiPartnerLocations>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiPartnerLocationsBody: PostApiPartnerLocationsBody,
   options?: {
@@ -171,7 +171,7 @@ export function usePostApiPartnerLocations<
 
 export function usePostApiPartnerLocations<
   TData = Awaited<ReturnType<typeof postApiPartnerLocations>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   postApiPartnerLocationsBody: PostApiPartnerLocationsBody,
   options?: {

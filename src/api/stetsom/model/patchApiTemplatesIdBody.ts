@@ -9,6 +9,7 @@ import type { PatchApiTemplatesIdBodyName } from "./patchApiTemplatesIdBodyName"
 import type { TemplateGroupInput } from "./templateGroupInput";
 
 export type PatchApiTemplatesIdBody = {
+  /** @pattern ^[a-f\d]{24}$ */
   category_id?: string;
   name?: PatchApiTemplatesIdBodyName;
   /** Every attribute sits inside exactly one group; an attribute may not repeat across groups */

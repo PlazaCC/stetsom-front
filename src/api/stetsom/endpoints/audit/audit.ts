@@ -18,7 +18,11 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { AuditPayload, GetApiAuditParams } from "../../model";
+import type {
+  ApiErrorPayload,
+  AuditPayload,
+  GetApiAuditParams,
+} from "../../model";
 
 import { orvalClient } from "../../orval-client";
 
@@ -43,7 +47,7 @@ export const getGetApiAuditQueryKey = (params?: GetApiAuditParams) => {
 
 export const getGetApiAuditQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiAudit>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiAuditParams,
   options?: {
@@ -70,11 +74,11 @@ export const getGetApiAuditQueryOptions = <
 export type GetApiAuditQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiAudit>>
 >;
-export type GetApiAuditQueryError = unknown;
+export type GetApiAuditQueryError = ApiErrorPayload;
 
 export function useGetApiAudit<
   TData = Awaited<ReturnType<typeof getApiAudit>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiAuditParams,
   options: {
@@ -96,7 +100,7 @@ export function useGetApiAudit<
 };
 export function useGetApiAudit<
   TData = Awaited<ReturnType<typeof getApiAudit>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiAuditParams,
   options?: {
@@ -118,7 +122,7 @@ export function useGetApiAudit<
 };
 export function useGetApiAudit<
   TData = Awaited<ReturnType<typeof getApiAudit>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiAuditParams,
   options?: {
@@ -136,7 +140,7 @@ export function useGetApiAudit<
 
 export function useGetApiAudit<
   TData = Awaited<ReturnType<typeof getApiAudit>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiAuditParams,
   options?: {

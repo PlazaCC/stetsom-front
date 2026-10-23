@@ -18,7 +18,7 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { AdminDashboardPayload } from "../../model";
+import type { AdminDashboardPayload, ApiErrorPayload } from "../../model";
 
 import { orvalClient } from "../../orval-client";
 
@@ -39,7 +39,7 @@ export const getGetApiDashboardQueryKey = () => {
 
 export const getGetApiDashboardQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiDashboard>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(options?: {
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof getApiDashboard>>, TError, TData>
@@ -63,11 +63,11 @@ export const getGetApiDashboardQueryOptions = <
 export type GetApiDashboardQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiDashboard>>
 >;
-export type GetApiDashboardQueryError = unknown;
+export type GetApiDashboardQueryError = ApiErrorPayload;
 
 export function useGetApiDashboard<
   TData = Awaited<ReturnType<typeof getApiDashboard>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options: {
     query: Partial<
@@ -92,7 +92,7 @@ export function useGetApiDashboard<
 };
 export function useGetApiDashboard<
   TData = Awaited<ReturnType<typeof getApiDashboard>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -117,7 +117,7 @@ export function useGetApiDashboard<
 };
 export function useGetApiDashboard<
   TData = Awaited<ReturnType<typeof getApiDashboard>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<
@@ -138,7 +138,7 @@ export function useGetApiDashboard<
 
 export function useGetApiDashboard<
   TData = Awaited<ReturnType<typeof getApiDashboard>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   options?: {
     query?: Partial<

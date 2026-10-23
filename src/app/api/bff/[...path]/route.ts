@@ -68,6 +68,8 @@ async function handle(
     const token = (await cookies()).get("admin_token")?.value;
 
     const headers: Record<string, string> = { Accept: "application/json" };
+    const acceptLanguage = request.headers.get("accept-language");
+    if (acceptLanguage) headers["Accept-Language"] = acceptLanguage;
     const contentType = request.headers.get("content-type");
     if (contentType) headers["Content-Type"] = contentType;
     if (token) headers.Authorization = `Bearer ${token}`;

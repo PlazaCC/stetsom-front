@@ -51,7 +51,7 @@ export const getGetApiLegalPagesPublicQueryKey = (
 
 export const getGetApiLegalPagesPublicQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiLegalPagesPublic>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiLegalPagesPublicParams,
   options?: {
@@ -83,11 +83,11 @@ export const getGetApiLegalPagesPublicQueryOptions = <
 export type GetApiLegalPagesPublicQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiLegalPagesPublic>>
 >;
-export type GetApiLegalPagesPublicQueryError = unknown;
+export type GetApiLegalPagesPublicQueryError = ApiErrorPayload;
 
 export function useGetApiLegalPagesPublic<
   TData = Awaited<ReturnType<typeof getApiLegalPagesPublic>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiLegalPagesPublicParams,
   options: {
@@ -113,7 +113,7 @@ export function useGetApiLegalPagesPublic<
 };
 export function useGetApiLegalPagesPublic<
   TData = Awaited<ReturnType<typeof getApiLegalPagesPublic>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiLegalPagesPublicParams,
   options?: {
@@ -139,7 +139,7 @@ export function useGetApiLegalPagesPublic<
 };
 export function useGetApiLegalPagesPublic<
   TData = Awaited<ReturnType<typeof getApiLegalPagesPublic>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiLegalPagesPublicParams,
   options?: {
@@ -161,7 +161,7 @@ export function useGetApiLegalPagesPublic<
 
 export function useGetApiLegalPagesPublic<
   TData = Awaited<ReturnType<typeof getApiLegalPagesPublic>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiLegalPagesPublicParams,
   options?: {

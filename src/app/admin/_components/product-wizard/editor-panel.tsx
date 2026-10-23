@@ -40,6 +40,8 @@ interface EditorPanelProps {
   templates: Template[];
   /** Stacked layout for form sections — true when the panel is narrow. */
   compact?: boolean;
+  errors?: Record<string, string>;
+  onClearError?: (path?: string) => void;
 }
 
 const NAV_ITEMS: { id: EditorSection; label: string; icon: LucideIcon }[] = [
@@ -61,6 +63,8 @@ export function EditorPanel({
   attributeGroups,
   templates,
   compact = false,
+  errors = {},
+  onClearError,
 }: EditorPanelProps) {
   const activeSection = targetToSection(selection);
 
@@ -97,6 +101,8 @@ export function EditorPanel({
             categories={categories}
             lines={lines}
             compact={compact}
+            errors={errors}
+            onClearError={onClearError}
           />
         )}
         {activeSection === "specs" && (

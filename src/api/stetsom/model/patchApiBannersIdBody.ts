@@ -15,7 +15,10 @@ export type PatchApiBannersIdBody = {
    * @maxLength 200
    */
   name?: string;
-  /** @nullable */
+  /**
+   * @nullable
+   * @pattern ^[a-f\d]{24}$
+   */
   product_id?: string | null;
   /** @minLength 1 */
   desktop_image_library_id?: string;

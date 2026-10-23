@@ -18,7 +18,7 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { FaqItem, GetApiFaqsParams } from "../../model";
+import type { ApiErrorPayload, FaqItem, GetApiFaqsParams } from "../../model";
 
 import { orvalClient } from "../../orval-client";
 
@@ -40,7 +40,7 @@ export const getGetApiFaqsQueryKey = (params?: GetApiFaqsParams) => {
 
 export const getGetApiFaqsQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiFaqs>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiFaqsParams,
   options?: {
@@ -67,11 +67,11 @@ export const getGetApiFaqsQueryOptions = <
 export type GetApiFaqsQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiFaqs>>
 >;
-export type GetApiFaqsQueryError = unknown;
+export type GetApiFaqsQueryError = ApiErrorPayload;
 
 export function useGetApiFaqs<
   TData = Awaited<ReturnType<typeof getApiFaqs>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiFaqsParams,
   options: {
@@ -93,7 +93,7 @@ export function useGetApiFaqs<
 };
 export function useGetApiFaqs<
   TData = Awaited<ReturnType<typeof getApiFaqs>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiFaqsParams,
   options?: {
@@ -115,7 +115,7 @@ export function useGetApiFaqs<
 };
 export function useGetApiFaqs<
   TData = Awaited<ReturnType<typeof getApiFaqs>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiFaqsParams,
   options?: {
@@ -133,7 +133,7 @@ export function useGetApiFaqs<
 
 export function useGetApiFaqs<
   TData = Awaited<ReturnType<typeof getApiFaqs>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiFaqsParams,
   options?: {

@@ -5,8 +5,10 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { ApiErrorPayloadErrorFields } from "./apiErrorPayloadErrorFields";
 
 export type ApiErrorPayloadError = {
   code: string;
   message: string;
+  fields?: ApiErrorPayloadErrorFields;
 };

@@ -28,10 +28,14 @@ export type PostApiProductsBody = {
    */
   slug: string;
   description?: PostApiProductsBodyDescription;
+  /** @pattern ^[a-f\d]{24}$ */
   category_id: string;
   /** @nullable */
   line_id?: string | null;
-  /** @nullable */
+  /**
+   * @nullable
+   * @pattern ^[a-f\d]{24}$
+   */
   template_id?: string | null;
   /**
    * @maxLength 2048

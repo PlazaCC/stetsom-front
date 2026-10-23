@@ -48,7 +48,7 @@ export const getGetApiMessagesQueryKey = (params?: GetApiMessagesParams) => {
 
 export const getGetApiMessagesQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiMessages>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiMessagesParams,
   options?: {
@@ -75,11 +75,11 @@ export const getGetApiMessagesQueryOptions = <
 export type GetApiMessagesQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiMessages>>
 >;
-export type GetApiMessagesQueryError = unknown;
+export type GetApiMessagesQueryError = ApiErrorPayload;
 
 export function useGetApiMessages<
   TData = Awaited<ReturnType<typeof getApiMessages>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiMessagesParams,
   options: {
@@ -101,7 +101,7 @@ export function useGetApiMessages<
 };
 export function useGetApiMessages<
   TData = Awaited<ReturnType<typeof getApiMessages>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiMessagesParams,
   options?: {
@@ -123,7 +123,7 @@ export function useGetApiMessages<
 };
 export function useGetApiMessages<
   TData = Awaited<ReturnType<typeof getApiMessages>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiMessagesParams,
   options?: {
@@ -141,7 +141,7 @@ export function useGetApiMessages<
 
 export function useGetApiMessages<
   TData = Awaited<ReturnType<typeof getApiMessages>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiMessagesParams,
   options?: {

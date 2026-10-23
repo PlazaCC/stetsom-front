@@ -13,6 +13,7 @@ import type {
   ProductStatus,
 } from "@/api/stetsom/model";
 import { useAdminToast } from "@/hooks/use-admin-toast";
+import { useApiFormErrors } from "@/lib/forms/api-form-errors";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, type Dispatch } from "react";
@@ -21,8 +22,6 @@ import {
   combineLaunchDate,
   deriveStatus,
   selectProductSlug,
-  findSpecIssues,
-  templateLayoutOf,
   type PublishIntent,
   type WizardAction,
   type WizardState,
@@ -46,6 +45,7 @@ export function useWizardMutations(
 ) {
   const router = useRouter();
   const adminToast = useAdminToast();
+  const formErrors = useApiFormErrors();
 
   const [publishedResult, setPublishedResult] =
     useState<ProductMutationResult | null>(null);
@@ -181,41 +181,17 @@ export function useWizardMutations(
     }
   }
 
-  /**
-   * Spec lines the API would refuse — no group, or off-template. Reported up
-   * front so the toast names the variation and attribute.
-   */
-  function reportSpecIssues(): boolean {
-    const issues = findSpecIssues(state, {
-      attributeName: (id) =>
-        attributes.find((a) => a.id === id)?.name.pt ?? "atributo",
-      groupName: (id) =>
-        attributeGroups.find((g) => g.id === id)?.name.pt ?? "outro grupo",
-      templateLayout: templateLayoutOf(
-        templates.find((t) => t.id === state.template_id),
-      ),
-    });
-    if (issues.length === 0) return false;
-    adminToast.error(
-      "Revise as especificações antes de salvar",
-      issues.slice(0, 3).join(" ") +
-        (issues.length > 3 ? ` (+${issues.length - 3})` : ""),
-    );
-    return true;
-  }
-
   async function handleSaveDraft() {
-    if (reportSpecIssues()) return;
     try {
       await handleSave("draft");
       adminToast.draft(state.name.pt || undefined);
     } catch (err) {
+      formErrors.capture(err);
       adminToast.apiError(err, "Erro ao salvar rascunho");
     }
   }
 
   async function handlePublish() {
-    if (reportSpecIssues()) return;
     try {
       const result = await handleSave("publish");
       adminToast.success(
@@ -226,6 +202,7 @@ export function useWizardMutations(
       );
       setPublishedResult(result);
     } catch (err) {
+      formErrors.capture(err);
       adminToast.apiError(err, "Erro ao publicar produto");
     }
   }
@@ -270,5 +247,6 @@ export function useWizardMutations(
     handlePublish,
     handleDelete,
     handlePreview,
+    formErrors,
   };
 }

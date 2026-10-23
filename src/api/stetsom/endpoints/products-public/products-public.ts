@@ -49,7 +49,7 @@ export const getGetApiProductsQueryKey = (params?: GetApiProductsParams) => {
 
 export const getGetApiProductsQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiProducts>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiProductsParams,
   options?: {
@@ -76,11 +76,11 @@ export const getGetApiProductsQueryOptions = <
 export type GetApiProductsQueryResult = NonNullable<
   Awaited<ReturnType<typeof getApiProducts>>
 >;
-export type GetApiProductsQueryError = unknown;
+export type GetApiProductsQueryError = ApiErrorPayload;
 
 export function useGetApiProducts<
   TData = Awaited<ReturnType<typeof getApiProducts>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params: undefined | GetApiProductsParams,
   options: {
@@ -102,7 +102,7 @@ export function useGetApiProducts<
 };
 export function useGetApiProducts<
   TData = Awaited<ReturnType<typeof getApiProducts>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiProductsParams,
   options?: {
@@ -124,7 +124,7 @@ export function useGetApiProducts<
 };
 export function useGetApiProducts<
   TData = Awaited<ReturnType<typeof getApiProducts>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiProductsParams,
   options?: {
@@ -142,7 +142,7 @@ export function useGetApiProducts<
 
 export function useGetApiProducts<
   TData = Awaited<ReturnType<typeof getApiProducts>>,
-  TError = unknown,
+  TError = ApiErrorPayload,
 >(
   params?: GetApiProductsParams,
   options?: {
