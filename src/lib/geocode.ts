@@ -26,10 +26,12 @@ export type Bounds = {
 
 export type GeocodeSuggestion = {
   displayName: string;
-  city: string;
-  state: string;
+  city?: string;
+  state?: string;
   lat?: number;
   lng?: number;
+  countryCode?: string;
+  resultType?: "CITY" | "STATE" | "POSTAL_CODE";
 };
 
 export function maskCep(digits: string): string {

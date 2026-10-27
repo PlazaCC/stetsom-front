@@ -1,10 +1,10 @@
 "use client";
 
 import {
+  postApiPartnerLocationsImportWorkbookDiscover,
   postApiPartnerLocationsImportWorkbook,
-  postApiPartnerLocationsImport,
   type PartnerLocationType,
-  type PostApiPartnerLocationsImport200,
+  type PostApiPartnerLocationsImportWorkbookDiscover200,
 } from "@/api/stetsom";
 import type { PostApiPartnerLocationsImportWorkbook200 } from "@/api/stetsom/model/postApiPartnerLocationsImportWorkbook200";
 import { Button } from "@/components/ui/button";
@@ -22,32 +22,16 @@ import {
   CheckCircle2,
   Download,
   FileUp,
-  MapPinOff,
+  MapPin,
 } from "lucide-react";
 import { useRef, useState } from "react";
 
 const EXPECTED_COLUMNS =
-  "Nome Fantasia, Fone, Cidade, UF, CEP, Endereço, Número, E-mail, Site, Região, Especialidade, Latitude, Longitude";
-
-const CORRECTION_COLUMNS = [
-  ["Nome Fantasia", "name"],
-  ["Fone", "phone"],
-  ["Cidade", "city"],
-  ["UF", "state"],
-  ["CEP", "zip"],
-  ["Endereço", "address"],
-  ["Número", "number"],
-  ["E-mail", "email"],
-  ["Site", "website"],
-  ["Região", "region"],
-  ["Especialidade", "specialty"],
-  ["Latitude", "lat"],
-  ["Longitude", "lng"],
-] as const;
+  "Nome Fantasia, Fone, Cidade, Estado/Província, País, Código postal, Endereço, Número, E-mail, Site, Especialidade";
 
 type WorkbookReport = PostApiPartnerLocationsImportWorkbook200;
-type CsvReport = PostApiPartnerLocationsImport200;
-type ImportReport = WorkbookReport["report"] | CsvReport;
+type ImportReport = WorkbookReport["report"];
+type WorkbookDiscovery = PostApiPartnerLocationsImportWorkbookDiscover200;
 const MAX_RENDERED_REPORT_ITEMS = 100;
 
 interface ImportPartnersDialogProps {
@@ -64,14 +48,16 @@ export function ImportPartnersDialog({
   onImported,
 }: ImportPartnersDialogProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const importInFlightRef = useRef(false);
   const toast = useAdminToast();
   const [fileName, setFileName] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [csv, setCsv] = useState("");
-  const [csvReport, setCsvReport] = useState<CsvReport | null>(null);
   const [workbookReport, setWorkbookReport] = useState<WorkbookReport | null>(
     null,
   );
+  const [discovery, setDiscovery] = useState<WorkbookDiscovery | null>(null);
+  const [importReport, setImportReport] = useState<ImportReport | null>(null);
+  const [phase, setPhase] = useState<"setup" | "result">("setup");
   const [selections, setSelections] = useState<
     Record<string, PartnerLocationType>
   >({});
@@ -84,59 +70,35 @@ export function ImportPartnersDialog({
 
     setFileName(selected.name);
     setFile(selected);
-    setCsvReport(null);
     setWorkbookReport(null);
+    setDiscovery(null);
+    setImportReport(null);
     setSelections({});
+    setPhase("setup");
 
-    if (selected.name.toLowerCase().endsWith(".xlsx")) {
-      await runWorkbook(selected, true);
+    if (!selected.name.toLowerCase().endsWith(".xlsx")) {
+      toast.error("Selecione um arquivo XLSX para importar parceiros");
+      setFile(null);
+      setFileName("");
       return;
     }
-
-    const text = await selected.text();
-    setCsv(text);
-    await runCsv(text, true);
+    await inspectWorkbook(selected);
   }
 
-  async function runCsv(text: string, dryRun: boolean) {
+  async function inspectWorkbook(selectedFile: File) {
     setBusy(true);
     try {
-      const result = await postApiPartnerLocationsImport({
-        csv: text,
-        type,
-        dry_run: dryRun,
-      });
-      setCsvReport(result);
-      if (!dryRun) finishImport(result.created);
-    } catch (err) {
-      toast.apiError(err, "Não foi possível processar a planilha");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function runWorkbook(selectedFile: File, dryRun: boolean) {
-    setBusy(true);
-    try {
-      const result = await postApiPartnerLocationsImportWorkbook({
+      const result = await postApiPartnerLocationsImportWorkbookDiscover({
         file: selectedFile,
-        dry_run: String(dryRun),
-        selections: dryRun ? undefined : JSON.stringify(selections),
       });
-      setWorkbookReport(result);
-      if (dryRun) {
-        setSelections(
-          Object.fromEntries(
-            result.sheets
-              .filter((sheet) => sheet.status === "ready")
-              .map(
-                (sheet) => [sheet.name, sheet.suggestedType ?? type] as const,
-              ),
-          ),
-        );
-      } else {
-        finishImport(result.report.created);
-      }
+      setDiscovery(result);
+      setSelections(
+        Object.fromEntries(
+          result.sheets
+            .filter((sheet) => sheet.status === "ready")
+            .map((sheet) => [sheet.name, sheet.suggestedType ?? type] as const),
+        ),
+      );
     } catch (err) {
       toast.apiError(err, "Não foi possível processar o arquivo XLSX");
     } finally {
@@ -144,99 +106,100 @@ export function ImportPartnersDialog({
     }
   }
 
-  function finishImport(created: number) {
-    toast.success(
-      `${created} ${created === 1 ? "registro importado" : "registros importados"}`,
-    );
-    onImported();
-    onClose();
+  async function importWorkbook() {
+    if (!file || importInFlightRef.current) return;
+    importInFlightRef.current = true;
+    setBusy(true);
+    try {
+      const result = await postApiPartnerLocationsImportWorkbook({
+        file,
+        selections: JSON.stringify(selections),
+      });
+      setWorkbookReport(result);
+      setImportReport(result.report);
+      setPhase("result");
+      onImported();
+      if (result.report.created > 0) {
+        toast.success(
+          `${result.report.created} ${result.report.created === 1 ? "registro importado" : "registros importados"}`,
+        );
+      }
+    } catch (err) {
+      toast.apiError(err, "Não foi possível importar o arquivo XLSX");
+    } finally {
+      importInFlightRef.current = false;
+      setBusy(false);
+    }
   }
 
   function downloadCorrections() {
-    if (!workbookReport) return;
-    const rowsByLocation = new Map<
-      string,
-      { values: string[]; details: string[]; orientations: string[] }
-    >();
-    const sheetsByName = new Map(
-      workbookReport.sheets.map((sheet) => [sheet.name, sheet]),
-    );
-
-    for (const error of workbookReport.report.errors) {
-      if (!error.sheet || !error.original) continue;
-      const sheet = sheetsByName.get(error.sheet);
-      const sourceRow = sheet?.rows.find((row) => row.line === error.line);
-      if (!sourceRow) continue;
-      const key = `${error.sheet}:${error.line}`;
-      const current = rowsByLocation.get(key) ?? {
-        values: CORRECTION_COLUMNS.map(
-          ([, field]) => sourceRow.values[field] ?? "",
-        ),
-        details: [],
-        orientations: [],
-      };
-      current.details.push(`${error.field ?? "linha"}: ${error.reason}`);
-      if (error.orientation) current.orientations.push(error.orientation);
-      rowsByLocation.set(key, current);
+    if (!file || !workbookReport || !importReport) return;
+    const errorLinesBySheet = new Map<string, Set<number>>();
+    for (const error of importReport.errors) {
+      if (!error.sheet || error.line <= 0) continue;
+      const lines = errorLinesBySheet.get(error.sheet) ?? new Set<number>();
+      lines.add(error.line);
+      errorLinesBySheet.set(error.sheet, lines);
     }
+    if (errorLinesBySheet.size === 0) return;
 
-    if (rowsByLocation.size === 0) return;
-
-    const correctionRows = [
-      [
-        ...CORRECTION_COLUMNS.map(([label]) => label),
-        "Problema encontrado",
-        "Orientação para correção",
-      ],
-      ...Array.from(rowsByLocation.values()).map((row) => [
-        ...row.values,
-        row.details.join(" | "),
-        row.orientations.join(" | "),
-      ]),
-    ];
-    const reportRows = [
-      ["Aba", "Linha original", "Campo", "Problema", "Orientação"],
-      ...workbookReport.report.errors
-        .filter((error) => error.sheet)
-        .map((error) => [
-          error.sheet ?? "",
-          String(error.line),
-          error.field ?? "",
-          error.reason,
-          error.orientation ?? "",
-        ]),
-    ];
-
-    void import("@e965/xlsx")
-      .then(({ utils, writeFile }) => {
-        const workbook = utils.book_new();
-        utils.book_append_sheet(
-          workbook,
-          utils.aoa_to_sheet(correctionRows),
-          "Corrigir - Rede Nacional",
+    void file
+      .arrayBuffer()
+      .then((buffer) => import("@e965/xlsx").then((XLSX) => ({ XLSX, buffer })))
+      .then(({ XLSX, buffer }) => {
+        const workbook = XLSX.read(buffer, { cellStyles: true, cellNF: true });
+        const metadata = new Map(
+          workbookReport.sheets.map((sheet) => [sheet.name, sheet]),
         );
-        utils.book_append_sheet(
-          workbook,
-          utils.aoa_to_sheet(reportRows),
-          "Relatório",
-        );
-        writeFile(workbook, "correcoes-rede-autorizada.xlsx");
+
+        for (const name of workbook.SheetNames) {
+          const source = workbook.Sheets[name];
+          const sheet = metadata.get(name);
+          const errorLines = errorLinesBySheet.get(name) ?? new Set<number>();
+          const headerRow = sheet?.headerRow;
+          if (!source || !headerRow) continue;
+          const range = source["!ref"]
+            ? XLSX.utils.decode_range(source["!ref"])
+            : null;
+          if (!range) continue;
+          const filtered: typeof source = {
+            "!ref": XLSX.utils.encode_range({
+              s: range.s,
+              e: { c: range.e.c, r: headerRow - 1 + errorLines.size },
+            }),
+          };
+          for (const [key, value] of Object.entries(source)) {
+            if (key.startsWith("!")) continue;
+            const address = XLSX.utils.decode_cell(key);
+            if (address.r < headerRow) filtered[key] = value;
+          }
+          const originalRows = [...errorLines].sort((a, b) => a - b);
+          originalRows.forEach((line, index) => {
+            for (let column = range.s.c; column <= range.e.c; column += 1) {
+              const from = XLSX.utils.encode_cell({ c: column, r: line - 1 });
+              const to = XLSX.utils.encode_cell({
+                c: column,
+                r: headerRow + index,
+              });
+              if (source[from]) filtered[to] = source[from];
+            }
+          });
+          filtered["!cols"] = source["!cols"];
+          filtered["!rows"] = source["!rows"];
+          filtered["!merges"] = source["!merges"]?.filter(
+            (merge) => merge.e.r < headerRow,
+          );
+          workbook.Sheets[name] = filtered;
+        }
+        XLSX.writeFile(workbook, "correcoes-parceiros.xlsx");
       })
       .catch(() => {
         toast.error("Não foi possível gerar a planilha de correções");
       });
   }
 
-  const report: ImportReport | null =
-    workbookReport?.report ?? csvReport ?? null;
-  const isWorkbook = Boolean(workbookReport);
   const selectedSheetCount = Object.keys(selections).length;
-  const canCommit = Boolean(
-    report &&
-    report.valid > 0 &&
-    !busy &&
-    (!isWorkbook || selectedSheetCount > 0),
-  );
+  const canCommit = Boolean(file && !busy && selectedSheetCount > 0);
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
@@ -254,7 +217,7 @@ export function ImportPartnersDialog({
               onClick={() => inputRef.current?.click()}
             >
               <FileUp className="size-4" />
-              {fileName || "Selecionar arquivo XLSX ou CSV"}
+              {fileName || "Selecionar arquivo XLSX"}
             </Button>
             <a
               href="/templates/rede-autorizada-nacional.xlsx"
@@ -267,25 +230,26 @@ export function ImportPartnersDialog({
             <input
               ref={inputRef}
               type="file"
-              accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
+              accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               hidden
               onChange={handleFile}
             />
             <p className="basis-full text-xs text-muted-foreground">
-              XLSX aceita múltiplas abas. CSV continua disponível. Colunas do
-              modelo: {EXPECTED_COLUMNS}.
+              Selecione as abas e informe o tipo de parceiro antes de importar.
+              Colunas do modelo: {EXPECTED_COLUMNS}. Latitude e longitude não
+              fazem parte do formato oficial.
             </p>
           </div>
 
-          {busy && !report && (
-            <p className="text-sm text-muted-foreground">Validando planilha…</p>
+          {busy && !importReport && (
+            <p className="text-sm text-muted-foreground">Lendo planilha…</p>
           )}
 
-          {workbookReport && (
+          {phase === "setup" && discovery && (
             <div className="space-y-3 rounded-md border border-border p-3">
               <p className="text-sm font-medium">Abas encontradas</p>
               <div className="space-y-2">
-                {workbookReport.sheets.map((sheet) => (
+                {discovery.sheets.map((sheet) => (
                   <div
                     key={sheet.name}
                     className="rounded-md border border-border p-3"
@@ -312,7 +276,7 @@ export function ImportPartnersDialog({
                       <span className="font-medium">{sheet.name}</span>
                       <span className="text-xs text-muted-foreground">
                         {sheet.status === "ready"
-                          ? `${sheet.rows.length} linha(s)`
+                          ? `${sheet.rowCount} linha(s)`
                           : sheet.status === "ignored"
                             ? "Informativa"
                             : "Não suportada"}
@@ -353,36 +317,45 @@ export function ImportPartnersDialog({
             </div>
           )}
 
-          {report && <ImportReportView report={report} />}
-
-          {workbookReport && workbookReport.report.errors.length > 0 && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={downloadCorrections}
-            >
-              <Download className="size-4" />
-              Baixar planilha com erros
-            </Button>
+          {phase === "result" && importReport && (
+            <ImportReportView report={importReport} />
           )}
+
+          {phase === "result" &&
+            importReport &&
+            importReport.errors.length > 0 && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={downloadCorrections}
+              >
+                <Download className="size-4" />
+                Baixar planilha com erros
+              </Button>
+            )}
         </div>
 
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button
-            type="button"
-            disabled={!canCommit}
-            onClick={() => {
-              if (workbookReport && file) void runWorkbook(file, false);
-              else void runCsv(csv, false);
-            }}
-          >
-            {busy && report
-              ? "Importando…"
-              : `Importar ${report?.valid ?? 0} registro(s)`}
-          </Button>
+          {phase === "result" ? (
+            <Button type="button" onClick={onClose}>
+              Concluir
+            </Button>
+          ) : (
+            <>
+              <Button type="button" variant="outline" onClick={onClose}>
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                disabled={!canCommit}
+                onClick={() => void importWorkbook()}
+              >
+                {busy
+                  ? "Importando…"
+                  : `Importar ${selectedSheetCount} ${selectedSheetCount === 1 ? "aba selecionada" : "abas selecionadas"}`}
+              </Button>
+            </>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -397,7 +370,7 @@ function ImportReportView({ report }: { report: ImportReport }) {
           Linhas lidas: <strong>{report.total}</strong>
         </span>
         <span className="text-muted-foreground">
-          A importar: <strong>{report.valid}</strong>
+          Importados: <strong>{report.created}</strong>
         </span>
         <span className="text-muted-foreground">
           Avisos: <strong>{report.warnings.length}</strong>
@@ -407,17 +380,17 @@ function ImportReportView({ report }: { report: ImportReport }) {
         </span>
       </div>
 
-      {report.valid > 0 && (
+      {report.created > 0 && (
         <p className="flex items-start gap-1.5 text-xs text-muted-foreground">
           <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-primary" />
-          Nada foi gravado ainda. Confirme para importar os registros válidos.
+          Registros válidos foram importados com sucesso.
         </p>
       )}
 
       {report.skipped.length > 0 && (
         <ReportGroup
           icon={<AlertTriangle className="size-3.5 shrink-0" />}
-          title={`${report.skipped.length} duplicado(s) — serão ignorados`}
+          title={`${report.skipped.length} duplicado(s) — ignorados`}
           items={report.skipped.map(
             (item) =>
               `${item.sheet ? `${item.sheet}, ` : ""}linha ${item.line}: ${item.name}`,
@@ -425,11 +398,11 @@ function ImportReportView({ report }: { report: ImportReport }) {
         />
       )}
 
-      {report.withoutCoordinates.length > 0 && (
+      {report.queuedForGeocoding.length > 0 && (
         <ReportGroup
-          icon={<MapPinOff className="size-3.5 shrink-0" />}
-          title={`${report.withoutCoordinates.length} sem coordenadas — não aparecerão no mapa`}
-          items={report.withoutCoordinates.map(
+          icon={<MapPin className="size-3.5 shrink-0" />}
+          title={`${report.queuedForGeocoding.length} endereço(s) na fila de geocodificação`}
+          items={report.queuedForGeocoding.map(
             (item) =>
               `${item.sheet ? `${item.sheet}, ` : ""}linha ${item.line}: ${item.name}`,
           )}
@@ -439,7 +412,7 @@ function ImportReportView({ report }: { report: ImportReport }) {
       {report.warnings.length > 0 && (
         <ReportGroup
           icon={<AlertTriangle className="size-3.5 shrink-0" />}
-          title={`${report.warnings.length} aviso(s) — serão importados`}
+          title={`${report.warnings.length} aviso(s)`}
           items={report.warnings.map(formatIssue)}
         />
       )}
@@ -448,7 +421,7 @@ function ImportReportView({ report }: { report: ImportReport }) {
         <ReportGroup
           destructive
           icon={<AlertTriangle className="size-3.5 shrink-0" />}
-          title={`${report.errors.length} erro(s) — linhas serão ignoradas`}
+          title={`${report.errors.length} erro(s) — linhas não foram importadas`}
           items={report.errors.map(formatIssue)}
         />
       )}

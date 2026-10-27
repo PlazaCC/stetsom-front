@@ -11,8 +11,12 @@ export type GetApiPartnerLocationsParams = {
   type?: GetApiPartnerLocationsType;
   state?: string;
   city?: string;
-  region?: string;
   specialty?: string;
+  /**
+   * @minLength 2
+   * @maxLength 2
+   */
+  country_code?: string;
   /**
    * Center latitude for proximity search
    * @minimum -90

@@ -5,12 +5,19 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { GetApiGeocodeSearchPurpose } from "./getApiGeocodeSearchPurpose";
 
 export type GetApiGeocodeSearchParams = {
   /**
-   * City name, state, or 8-digit CEP
+   * Postal code or address query
    * @minLength 2
    * @maxLength 100
    */
   q: string;
+  /**
+   * @minLength 2
+   * @maxLength 2
+   */
+  country_code: string;
+  purpose?: GetApiGeocodeSearchPurpose;
 };

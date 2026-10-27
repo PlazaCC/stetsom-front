@@ -45,6 +45,7 @@ interface ServiceCenterMapProps {
   searchLocation: LatLng | null;
   selectedId: string | null;
   onSelectLocation: (id: string) => void;
+  onClearSelection: () => void;
   onBoundsChange?: (bounds: Bounds) => void;
   fitAllTrigger: number;
 }
@@ -58,7 +59,8 @@ function buildPopupContent(loc: PartnerLocation): HTMLElement {
 
   const lines = [
     loc.address,
-    loc.city ? `${loc.city}, ${loc.state}` : undefined,
+    loc.city ? `${loc.city}${loc.state ? `, ${loc.state}` : ""}` : undefined,
+    loc.country_code !== "BR" ? loc.country_code : undefined,
     loc.phone,
   ].filter((line): line is string => Boolean(line));
 
@@ -157,6 +159,7 @@ export function ServiceCenterMap({
   searchLocation,
   selectedId,
   onSelectLocation,
+  onClearSelection,
   onBoundsChange,
   fitAllTrigger,
 }: ServiceCenterMapProps) {
@@ -166,6 +169,7 @@ export function ServiceCenterMap({
   const popupRef = useRef<MlPopup | null>(null);
   const searchMarkerRef = useRef<MlMarker | null>(null);
   const onSelectRef = useRef(onSelectLocation);
+  const onClearSelectionRef = useRef(onClearSelection);
   const onBoundsRef = useRef(onBoundsChange);
   const locationMapRef = useRef(new Map<string, PartnerLocation>());
   const [status, setStatus] = useState<MapStatus>("loading");
@@ -173,6 +177,7 @@ export function ServiceCenterMap({
 
   useEffect(() => {
     onSelectRef.current = onSelectLocation;
+    onClearSelectionRef.current = onClearSelection;
     onBoundsRef.current = onBoundsChange;
   });
 
@@ -220,6 +225,13 @@ export function ServiceCenterMap({
     map.addControl(
       new maplibregl.NavigationControl({ showCompass: false }),
       "top-right",
+    );
+    map.addControl(
+      new maplibregl.AttributionControl({
+        compact: true,
+        customAttribution: "Localidades: GeoNames / Municípios Brasileiros",
+      }),
+      "bottom-right",
     );
 
     let hasLoaded = false;
@@ -303,10 +315,17 @@ export function ServiceCenterMap({
 
       popupRef.current?.remove();
       onSelectRef.current(location.id);
-      popupRef.current = new maplibregl.Popup({ closeButton: true, offset: 18 })
+      const popup = new maplibregl.Popup({ closeButton: true, offset: 18 })
         .setLngLat(coordinates as [number, number])
         .setDOMContent(buildPopupContent(location))
         .addTo(map);
+      popup.on("close", () => {
+        if (popupRef.current === popup) {
+          popupRef.current = null;
+          onClearSelectionRef.current();
+        }
+      });
+      popupRef.current = popup;
     });
 
     return () => {

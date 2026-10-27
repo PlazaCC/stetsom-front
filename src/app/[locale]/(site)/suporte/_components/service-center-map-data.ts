@@ -7,6 +7,7 @@ type ServiceCenterProperties = {
   name: string;
   city: string;
   state: string;
+  country_code: string;
 };
 export type ServiceCenterFeature = {
   type: "Feature";
@@ -49,6 +50,7 @@ export function toFeatureCollection(
         name: location.name,
         city: location.city,
         state: location.state,
+        country_code: location.country_code,
       },
       geometry: {
         type: "Point",

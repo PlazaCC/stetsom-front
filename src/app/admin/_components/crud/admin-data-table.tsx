@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { AdminEmptyState } from "./admin-empty-state";
 import { AdminPagination } from "./admin-pagination";
@@ -48,8 +49,13 @@ interface AdminDataTableProps<T> {
   toolbar?: React.ReactNode;
   /** Action slot — rendered top-right (create buttons, etc.). */
   action?: React.ReactNode;
+  /** Toolbox slot — rendered in the fixed footer of the table card. */
+  tableFooter?: React.ReactNode;
   pagination?: AdminPaginationConfig;
   className?: string;
+  selectable?: boolean;
+  selectedRowIds?: string[];
+  onSelectedRowIdsChange?: (ids: string[]) => void;
 }
 
 export function AdminDataTable<T>({
@@ -64,8 +70,12 @@ export function AdminDataTable<T>({
   keyExtractor,
   toolbar,
   action,
+  tableFooter,
   pagination,
   className,
+  selectable = false,
+  selectedRowIds = [],
+  onSelectedRowIdsChange,
 }: AdminDataTableProps<T>) {
   const columnMap = React.useMemo(
     () => new Map(columns.map((c) => [c.key, c])),
@@ -94,6 +104,21 @@ export function AdminDataTable<T>({
     columns: tanstackColumns,
     getCoreRowModel: getCoreRowModel(),
     getRowId: keyExtractor,
+    enableRowSelection: selectable,
+    state: {
+      rowSelection: Object.fromEntries(selectedRowIds.map((id) => [id, true])),
+    },
+    onRowSelectionChange: (updater) => {
+      const current = Object.fromEntries(
+        selectedRowIds.map((id) => [id, true]),
+      );
+      const next = typeof updater === "function" ? updater(current) : updater;
+      onSelectedRowIdsChange?.(
+        Object.entries(next)
+          .filter(([, selected]) => selected)
+          .map(([id]) => id),
+      );
+    },
   });
 
   return (
@@ -108,83 +133,114 @@ export function AdminDataTable<T>({
 
       {/* ── Table ────────────────────────────────────────────────────────────── */}
       {/*
-       * The scroll container IS the rounded/bordered card. overflow-y-auto clips
-       * descendants (including the sticky <thead>) to the border-radius, and
-       * position:sticky sticks relative to this same element — so the corners
-       * clip cleanly AND the header keeps pinning. Height comes from the flex
-       * chain (min-h-0 flex-1); the parent page bounds it via AdminPageLayout.
+       * The rounded/bordered card owns the scroll body and toolbox footer.
+       * overflow-y-auto clips descendants (including the sticky <thead>) to the
+       * border-radius, while the footer stays fixed below the scroll region.
+       * Height comes from the flex chain (min-h-0 flex-1); the parent page bounds
+       * it via AdminPageLayout.
        */}
-      <div className="min-h-0 flex-1 overflow-y-auto rounded-card border border-border bg-card shadow-cms-card">
-        {error ? (
-          <div className="flex items-center justify-center px-6 py-16 text-center text-sm text-destructive">
-            {error}
-          </div>
-        ) : isLoading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
-          </div>
-        ) : data.length === 0 ? (
-          <AdminEmptyState
-            title={emptyTitle}
-            description={emptyDescription}
-            icon={emptyIcon}
-            action={emptyAction}
-          />
-        ) : (
-          <table className="w-full text-sm">
-            {/*
-             * bg-muted is opaque so rows scrolling beneath are fully covered;
-             * shadow-sm gives visual separation from the body.
-             */}
-            <TableHeader className="sticky top-0 z-10 bg-muted shadow-sm">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="hover:bg-muted">
-                  {headerGroup.headers.map((header) => {
-                    const col = columnMap.get(header.id);
-                    return (
-                      <TableHead
-                        key={header.id}
-                        className={cn(
-                          "h-auto bg-muted px-4 py-3 text-xs font-medium text-muted-foreground",
-                          col?.headerClassName,
-                        )}
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-card border border-border bg-card shadow-cms-card">
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          {error ? (
+            <div className="flex items-center justify-center px-6 py-16 text-center text-sm text-destructive">
+              {error}
+            </div>
+          ) : isLoading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
+            </div>
+          ) : data.length === 0 ? (
+            <AdminEmptyState
+              title={emptyTitle}
+              description={emptyDescription}
+              icon={emptyIcon}
+              action={emptyAction}
+            />
+          ) : (
+            <table className="w-full text-sm">
+              {/*
+               * bg-muted is opaque so rows scrolling beneath are fully covered;
+               * shadow-sm gives visual separation from the body.
+               */}
+              <TableHeader className="sticky top-0 z-10 bg-muted shadow-sm">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id} className="hover:bg-muted">
+                    {selectable && (
+                      <TableHead className="w-12 bg-muted px-4 py-3">
+                        <Checkbox
+                          aria-label="Selecionar todos os itens visíveis"
+                          checked={table.getIsAllRowsSelected()}
+                          indeterminate={table.getIsSomeRowsSelected()}
+                          onCheckedChange={(checked) =>
+                            table.toggleAllRowsSelected(checked)
+                          }
+                        />
                       </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} className="hover:bg-muted/30">
-                  {row.getVisibleCells().map((cell) => {
-                    const col = columnMap.get(cell.column.id);
-                    return (
-                      <TableCell
-                        key={cell.id}
-                        className={cn(
-                          "px-4 py-3 whitespace-normal",
-                          col?.className,
-                        )}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
+                    )}
+                    {headerGroup.headers.map((header) => {
+                      const col = columnMap.get(header.id);
+                      return (
+                        <TableHead
+                          key={header.id}
+                          className={cn(
+                            "h-auto bg-muted px-4 py-3 text-xs font-medium text-muted-foreground",
+                            col?.headerClassName,
+                          )}
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} className="hover:bg-muted/30">
+                    {selectable && (
+                      <TableCell className="w-12 px-4 py-3">
+                        <Checkbox
+                          aria-label={`Selecionar ${keyExtractor(row.original)}`}
+                          checked={row.getIsSelected()}
+                          onCheckedChange={(checked) =>
+                            row.toggleSelected(checked)
+                          }
+                        />
                       </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableBody>
-          </table>
+                    )}
+                    {row.getVisibleCells().map((cell) => {
+                      const col = columnMap.get(cell.column.id);
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className={cn(
+                            "px-4 py-3 whitespace-normal",
+                            col?.className,
+                          )}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </table>
+          )}
+        </div>
+
+        {tableFooter && (
+          <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border bg-card px-4 py-3 text-sm">
+            {tableFooter}
+          </div>
         )}
       </div>
 

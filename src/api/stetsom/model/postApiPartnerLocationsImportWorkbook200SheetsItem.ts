@@ -5,7 +5,6 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
-import type { PostApiPartnerLocationsImportWorkbook200SheetsItemRowsItem } from "./postApiPartnerLocationsImportWorkbook200SheetsItemRowsItem";
 import type { PostApiPartnerLocationsImportWorkbook200SheetsItemStatus } from "./postApiPartnerLocationsImportWorkbook200SheetsItemStatus";
 import type { PostApiPartnerLocationsImportWorkbook200SheetsItemSuggestedType } from "./postApiPartnerLocationsImportWorkbook200SheetsItemSuggestedType";
 
@@ -18,7 +17,5 @@ export type PostApiPartnerLocationsImportWorkbook200SheetsItem = {
    * @maximum 9007199254740991
    */
   headerRow?: number;
-  headers: string[];
   suggestedType?: PostApiPartnerLocationsImportWorkbook200SheetsItemSuggestedType;
-  rows: PostApiPartnerLocationsImportWorkbook200SheetsItemRowsItem[];
 };

@@ -3,10 +3,12 @@
 import {
   deleteApiPartnerLocationsId,
   getApiGeocodeSearch,
-  getGetApiPartnerLocationsQueryKey,
+  getGetApiPartnerLocationsAdminQueryKey,
   patchApiPartnerLocationsId,
   postApiPartnerLocations,
-  useGetApiPartnerLocations,
+  postApiPartnerLocationsBulkDelete,
+  postApiPartnerLocationsGeocodingRequeue,
+  useGetApiPartnerLocationsAdmin,
   type PartnerLocation,
   type PartnerLocationType,
   type PatchApiPartnerLocationsIdBody,
@@ -22,11 +24,11 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useAdminToast } from "@/hooks/use-admin-toast";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import {
   AdminRowAction,
@@ -34,14 +36,37 @@ import {
 } from "@/app/admin/_components/crud/admin-row-actions";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
 import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
+import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
+import {
+  getPartnerLocationDisplayStatus,
+  PartnerLocationStatus,
+} from "./partner-location-status";
 import { cn } from "@/lib/utils";
 import { isValidCoordinate } from "@/lib/geocode";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ExternalLink, FileUp, MapPin, Plus, Wrench } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { ImportPartnersDialog } from "./import-partners-dialog";
 
 const PAGE_SIZE = 10;
+
+const COUNTRIES = [
+  ["BR", "Brasil"],
+  ["US", "Estados Unidos"],
+  ["AR", "Argentina"],
+  ["BO", "Bolívia"],
+  ["CL", "Chile"],
+  ["CO", "Colômbia"],
+  ["EC", "Equador"],
+  ["MX", "México"],
+  ["PA", "Panamá"],
+  ["PY", "Paraguai"],
+  ["PE", "Peru"],
+  ["PR", "Porto Rico"],
+  ["DO", "República Dominicana"],
+  ["TT", "Trinidad e Tobago"],
+  ["VE", "Venezuela"],
+] as const;
 
 const TAB_CONFIG: Record<
   PartnerLocationType,
@@ -71,7 +96,12 @@ interface PartnerLocationFormProps {
   location?: PartnerLocation;
   onClose: () => void;
   onSave: (data: PostApiPartnerLocationsBody) => void;
+  onToggle?: () => void;
+  onDelete?: () => void;
+  onRequeue?: () => void;
   isPending: boolean;
+  isDeleting?: boolean;
+  isRequeueing?: boolean;
 }
 
 function PartnerLocationForm({
@@ -79,71 +109,81 @@ function PartnerLocationForm({
   location,
   onClose,
   onSave,
+  onToggle,
+  onDelete,
+  onRequeue,
   isPending,
+  isDeleting = false,
+  isRequeueing = false,
 }: PartnerLocationFormProps) {
   const isRepresentative = type === "REPRESENTATIVE";
   const [name, setName] = useState(location?.name ?? "");
+  const [countryCode, setCountryCode] = useState(
+    location?.country_code ?? "BR",
+  );
   const [address, setAddress] = useState(location?.address ?? "");
   const [city, setCity] = useState(location?.city ?? "");
   const [state, setState] = useState(location?.state ?? "");
   const [zip, setZip] = useState(location?.zip ?? "");
   const [phone, setPhone] = useState(location?.phone ?? "");
+  const [phone2, setPhone2] = useState(location?.phone2 ?? "");
   const [email, setEmail] = useState(location?.email ?? "");
   const [website, setWebsite] = useState(location?.website ?? "");
-  const [region, setRegion] = useState(location?.region ?? "");
   const [specialty, setSpecialty] = useState(location?.specialty ?? "");
-  // Coordinates place the partner on the public map. They are filled by the CEP
-  // lookup rather than typed, but stay editable for a manual correction.
+  // Coordinates are filled asynchronously by default and stay editable for
+  // verification or an explicit administrative correction.
   const [lat, setLat] = useState<number | null>(location?.lat ?? null);
   const [lng, setLng] = useState<number | null>(location?.lng ?? null);
+  const [coordinatesTouched, setCoordinatesTouched] = useState(false);
   const [lookup, setLookup] = useState<{
     status: "idle" | "loading" | "notFound" | "noCoords" | "error" | "done";
     message?: string;
   }>({ status: "idle" });
   const [formError, setFormError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   async function handleZipLookup() {
-    const digits = zip.replace(/\D/g, "");
-    if (digits.length !== 8) {
-      setLookup({ status: "error", message: "Informe um CEP de 8 dígitos." });
+    if (zip.trim().length < 2) {
+      setLookup({
+        status: "error",
+        message: "Informe um código postal válido.",
+      });
       return;
     }
 
     setLookup({ status: "loading" });
     try {
-      const { results } = await getApiGeocodeSearch({ q: digits });
+      const { results } = await getApiGeocodeSearch({
+        q: zip.trim(),
+        country_code: countryCode,
+        purpose: "address",
+      });
       const hit = results[0];
       if (!hit) {
-        setLookup({ status: "notFound", message: "CEP não encontrado." });
+        setLookup({
+          status: "notFound",
+          message: "Código postal não encontrado.",
+        });
         return;
       }
 
-      setCity(hit.city);
-      setState(hit.state);
-      setZip(`${digits.slice(0, 5)}-${digits.slice(5)}`);
-      // The endpoint resolves the address via ViaCEP but only has coordinates
-      // for cities present in its static dataset, so they can come back absent.
-      if (hit.lat !== undefined && hit.lng !== undefined) {
-        setLat(hit.lat);
-        setLng(hit.lng);
-        setLookup({ status: "done", message: hit.displayName });
-        return;
-      }
+      if (hit.address) setAddress(hit.address);
+      if (hit.city) setCity(hit.city);
+      if (hit.state) setState(hit.state);
+      if (hit.postalCode) setZip(hit.postalCode);
       setLookup({
-        status: "noCoords",
-        message:
-          "Endereço encontrado, mas sem coordenadas para esta cidade. Preencha manualmente para aparecer no mapa.",
+        status: "done",
+        message: `${hit.displayName} · aguardando geocodificação`,
       });
     } catch {
       setLookup({
         status: "error",
-        message: "Não foi possível consultar o CEP agora.",
+        message: "Não foi possível consultar o código postal agora.",
       });
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function submit() {
     if (
       (lat === null) !== (lng === null) ||
       (lat !== null && !isValidCoordinate(lat, lng))
@@ -152,31 +192,75 @@ function PartnerLocationForm({
       return;
     }
     setFormError(null);
+    const coordinates =
+      !location || coordinatesTouched ? { lat, lng } : undefined;
     onSave({
       type,
       name,
+      country_code: countryCode,
       address,
       city,
       state,
       zip,
-      lat,
-      lng,
+      ...coordinates,
       phone: phone || null,
+      phone2: phone2 || null,
       email: email || null,
       website: website || null,
-      region: region || null,
-      specialty: specialty || null,
+      specialty: isRepresentative ? null : specialty || null,
     });
   }
 
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    submit();
+  }
+
   const editing = !!location;
-  const mapsSearch = [address, city, state, zip]
-    .map((value) => value.trim())
-    .filter(Boolean)
-    .join(", ");
-  const mapsUrl = mapsSearch
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsSearch)}`
-    : null;
+  const addressChanged =
+    !!location &&
+    [
+      [address, location.address],
+      [city, location.city],
+      [state, location.state],
+      [zip, location.zip],
+      [countryCode, location.country_code],
+    ].some(([current, original]) => current.trim() !== original.trim());
+  const canRequeue =
+    !!location &&
+    getPartnerLocationDisplayStatus(location) === "NOT_CONFIGURED";
+  const extraMenuActions = [
+    ...(location && onToggle
+      ? [
+          {
+            key: "toggle",
+            label: location.is_active ? "Desativar" : "Ativar",
+            onClick: onToggle,
+            variant: location.is_active
+              ? ("destructive" as const)
+              : ("success" as const),
+          },
+        ]
+      : []),
+    ...(canRequeue && onRequeue
+      ? [
+          {
+            key: "requeue-geocoding",
+            label: addressChanged
+              ? "Salve antes de reenviar"
+              : "Enviar novamente para a fila",
+            onClick: onRequeue,
+            disabled: addressChanged,
+            isLoading: isRequeueing,
+          },
+        ]
+      : []),
+  ];
+  const hasCoordinates =
+    lat !== null && lng !== null && isValidCoordinate(lat, lng);
+  const mapsUrl = hasCoordinates
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${lat},${lng}`)}`
+    : "https://www.google.com/maps";
   const title = isRepresentative
     ? editing
       ? "Editar Representante"
@@ -187,56 +271,40 @@ function PartnerLocationForm({
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="px-4 pt-4 pr-12 pb-3">{title}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <AdminLabel>Nome</AdminLabel>
-            <Input
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-          <div>
-            <AdminLabel>Endereço</AdminLabel>
-            <Input
-              required
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2">
-              <AdminLabel>Cidade</AdminLabel>
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          className="flex min-h-0 flex-1 flex-col"
+        >
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pt-3 pb-4">
+            <p className="border-b border-border pb-2 text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+              Dados do parceiro
+            </p>
+            <div>
+              <AdminLabel>Nome</AdminLabel>
               <Input
                 required
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
+            <p className="border-b border-border pt-2 pb-2 text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+              Endereço
+            </p>
             <div>
-              <AdminLabel>UF</AdminLabel>
-              <Input
-                required
-                maxLength={2}
-                className="uppercase"
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <AdminLabel>CEP</AdminLabel>
+              <AdminLabel>Código postal</AdminLabel>
               <div className="flex gap-2">
                 <Input
-                  required
+                  required={!["BO", "TT"].includes(countryCode)}
                   value={zip}
                   onChange={(e) => setZip(e.target.value)}
-                  placeholder="00000-000"
+                  placeholder={
+                    countryCode === "BR" ? "00000-000" : "Código postal"
+                  }
                 />
                 <Button
                   type="button"
@@ -245,77 +313,157 @@ function PartnerLocationForm({
                   disabled={lookup.status === "loading"}
                   className="shrink-0"
                 >
-                  {lookup.status === "loading" ? "Buscando…" : "Buscar"}
+                  {lookup.status === "loading"
+                    ? "Buscando…"
+                    : "Buscar endereço"}
                 </Button>
+              </div>
+              {lookup.message && (
+                <p
+                  className={cn(
+                    "mt-2 text-xs",
+                    lookup.status === "error" || lookup.status === "notFound"
+                      ? "text-destructive"
+                      : "text-muted-foreground",
+                  )}
+                >
+                  {lookup.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <AdminLabel>Endereço completo</AdminLabel>
+              <Input
+                required
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="col-span-2">
+                <AdminLabel>Cidade</AdminLabel>
+                <Input
+                  required
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                />
+              </div>
+              <div>
+                <AdminLabel>
+                  {countryCode === "BR" ? "UF" : "Estado / província"}
+                </AdminLabel>
+                <Input
+                  required={!["BO", "PA", "DO", "TT"].includes(countryCode)}
+                  maxLength={100}
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                />
               </div>
             </div>
             <div>
-              <AdminLabel>
-                {isRepresentative ? "Região" : "Especialidade"}
-              </AdminLabel>
-              {isRepresentative ? (
-                <Input
-                  value={region}
-                  onChange={(e) => setRegion(e.target.value)}
-                />
-              ) : (
+              <AdminLabel>País</AdminLabel>
+              <select
+                required
+                value={countryCode}
+                onChange={(e) => {
+                  setCountryCode(e.target.value);
+                  setLookup({ status: "idle" });
+                }}
+                className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus:border-primary"
+              >
+                {COUNTRIES.map(([code, label]) => (
+                  <option key={code} value={code}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {!isRepresentative && (
+              <div>
+                <AdminLabel>Especialidade</AdminLabel>
                 <Input
                   value={specialty}
                   onChange={(e) => setSpecialty(e.target.value)}
                 />
-              )}
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <AdminLabel>Telefone</AdminLabel>
-              <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
-            </div>
-            <div>
-              <AdminLabel>E-mail</AdminLabel>
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="rounded-md border border-border p-3">
-            <div className="mb-2 flex items-center gap-1.5">
-              <MapPin className="size-3.5 text-muted-foreground" />
-              <AdminLabel className="mb-0">Coordenadas do mapa</AdminLabel>
-            </div>
+              </div>
+            )}
+            <p className="border-b border-border pt-2 pb-2 text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+              Contato
+            </p>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <AdminLabel>Latitude</AdminLabel>
+                <AdminLabel>Telefone</AdminLabel>
                 <Input
-                  type="number"
-                  step="any"
-                  value={lat ?? ""}
-                  onChange={(e) =>
-                    setLat(
-                      e.target.value === "" ? null : Number(e.target.value),
-                    )
-                  }
-                  placeholder="-23.5505"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
               <div>
-                <AdminLabel>Longitude</AdminLabel>
+                <AdminLabel>Telefone 2</AdminLabel>
                 <Input
-                  type="number"
-                  step="any"
-                  value={lng ?? ""}
-                  onChange={(e) =>
-                    setLng(
-                      e.target.value === "" ? null : Number(e.target.value),
-                    )
-                  }
-                  placeholder="-46.6333"
+                  value={phone2}
+                  onChange={(e) => setPhone2(e.target.value)}
+                />
+              </div>
+              <div className="col-span-2">
+                <AdminLabel>E-mail</AdminLabel>
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
-            {mapsUrl ? (
+            <div>
+              <AdminLabel>Website</AdminLabel>
+              <Input
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+              />
+            </div>
+            <p className="border-b border-border pt-2 pb-2 text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+              Localização no mapa
+            </p>
+            <div className="rounded-md border border-border p-3">
+              <div className="mb-2 flex items-center gap-1.5">
+                <MapPin className="size-3.5 text-muted-foreground" />
+                <AdminLabel className="mb-0">Localização</AdminLabel>
+              </div>
+              <p className="mb-3 text-xs text-muted-foreground">
+                Preenchimento automático. Ajuste as coordenadas se necessário.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <AdminLabel>Latitude</AdminLabel>
+                  <Input
+                    type="number"
+                    step="any"
+                    value={lat ?? ""}
+                    onChange={(e) => {
+                      setCoordinatesTouched(true);
+                      setLat(
+                        e.target.value === "" ? null : Number(e.target.value),
+                      );
+                    }}
+                    placeholder="-0.0"
+                  />
+                </div>
+                <div>
+                  <AdminLabel>Longitude</AdminLabel>
+                  <Input
+                    type="number"
+                    step="any"
+                    value={lng ?? ""}
+                    onChange={(e) => {
+                      setCoordinatesTouched(true);
+                      setLng(
+                        e.target.value === "" ? null : Number(e.target.value),
+                      );
+                    }}
+                    placeholder="-0.0"
+                  />
+                </div>
+              </div>
               <a
                 href={mapsUrl}
                 target="_blank"
@@ -323,46 +471,51 @@ function PartnerLocationForm({
                 className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-primary underline-offset-4 hover:underline"
               >
                 <ExternalLink className="size-3.5" />
-                Abrir endereço no Google Maps
+                {hasCoordinates ? "Abrir localização" : "Buscar localização"}
               </a>
-            ) : (
-              <p className="mt-3 text-xs text-muted-foreground">
-                Preencha o endereço para abrir no Google Maps e conferir as
-                coordenadas.
+              <p
+                className={cn(
+                  "mt-2 text-xs",
+                  lookup.status === "error" || lookup.status === "notFound"
+                    ? "text-destructive"
+                    : "text-muted-foreground",
+                )}
+              >
+                {lookup.message ??
+                  (hasCoordinates
+                    ? location?.geocode_status === "MANUAL" ||
+                      coordinatesTouched
+                      ? "Coordenadas informadas ou corrigidas manualmente."
+                      : "Coordenadas preenchidas automaticamente."
+                    : "Sem coordenadas: o endereço seguirá para geocodificação automática.")}
               </p>
-            )}
-            <p
-              className={cn(
-                "mt-2 text-xs",
-                lookup.status === "error" || lookup.status === "notFound"
-                  ? "text-destructive"
-                  : "text-muted-foreground",
+              {formError && (
+                <p className="mt-2 text-xs text-destructive">{formError}</p>
               )}
-            >
-              {lookup.message ??
-                (lat !== null && lng !== null
-                  ? "Preenchidas. Use “Buscar” no CEP para atualizar."
-                  : "Sem coordenadas, o parceiro não aparece no mapa. Use “Buscar” no CEP.")}
-            </p>
-            {formError && (
-              <p className="mt-2 text-xs text-destructive">{formError}</p>
-            )}
+            </div>
           </div>
-          <div>
-            <AdminLabel>Website</AdminLabel>
-            <Input
-              value={website}
-              onChange={(e) => setWebsite(e.target.value)}
-            />
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Salvando..." : "Salvar"}
-            </Button>
-          </DialogFooter>
+          <EditorFooter
+            onBack={onClose}
+            backLabel="Cancelar"
+            extraMenuActions={
+              extraMenuActions.length > 0 ? extraMenuActions : undefined
+            }
+            deleteAction={
+              location && onDelete
+                ? {
+                    label: "Excluir parceiro",
+                    confirmTitle: `Excluir "${location.name}"?`,
+                    confirmDescription:
+                      "O parceiro deixará de aparecer nas listagens.",
+                    onConfirm: onDelete,
+                    isLoading: isDeleting,
+                  }
+                : undefined
+            }
+            onPrimary={() => formRef.current?.requestSubmit()}
+            primaryLabel={isPending ? "Salvando..." : "Salvar"}
+            isPrimaryLoading={isPending}
+          />
         </form>
       </DialogContent>
     </Dialog>
@@ -377,15 +530,18 @@ interface ParceirosContentProps {
 
 export function ParceirosContent({ activeType }: ParceirosContentProps) {
   const queryClient = useQueryClient();
+  const toast = useAdminToast();
   const tab = TAB_CONFIG[activeType];
 
-  const { data: locations = [], isLoading } = useGetApiPartnerLocations({
+  const { data: locations = [], isLoading } = useGetApiPartnerLocationsAdmin({
     type: activeType,
   });
 
   const [query, setQuery] = useState("");
   const [stateFilter, setStateFilter] = useState("");
+  const [locationFilter, setLocationFilter] = useState("");
   const [page, setPage] = useState(1);
+  const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
 
   const states = useMemo(
     () =>
@@ -401,25 +557,36 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
         l.name.toLowerCase().includes(q) ||
         l.city.toLowerCase().includes(q);
       const matchesState = !stateFilter || l.state === stateFilter;
-      return matchesQuery && matchesState;
+      const matchesLocation =
+        !locationFilter ||
+        getPartnerLocationDisplayStatus(l) === locationFilter;
+      return matchesQuery && matchesState && matchesLocation;
     });
-  }, [locations, query, stateFilter]);
+  }, [locations, query, stateFilter, locationFilter]);
 
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const selectedExistingRowIds = selectedRowIds.filter((id) =>
+    locations.some((location) => location.id === id),
+  );
+  const selectedRequeueIds = selectedExistingRowIds.filter((id) => {
+    const location = locations.find((item) => item.id === id);
+    return (
+      location && getPartnerLocationDisplayStatus(location) === "NOT_CONFIGURED"
+    );
+  });
 
   const [formOpen, setFormOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [editing, setEditing] = useState<PartnerLocation | undefined>();
-  const [deleteTarget, setDeleteTarget] = useState<
-    PartnerLocation | undefined
-  >();
   const [toggleTarget, setToggleTarget] = useState<
     PartnerLocation | undefined
   >();
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
 
   function invalidate() {
     queryClient.invalidateQueries({
-      queryKey: getGetApiPartnerLocationsQueryKey(),
+      queryKey: getGetApiPartnerLocationsAdminQueryKey(),
     });
   }
 
@@ -429,7 +596,10 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
     onSuccess: () => {
       invalidate();
       closeForm();
+      toast.success(`${tab.noun} criado com sucesso`);
     },
+    onError: (error) =>
+      toast.apiError(error, `Não foi possível criar ${tab.noun}`),
   });
 
   const updateMutation = useMutation({
@@ -443,7 +613,10 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
     onSuccess: () => {
       invalidate();
       closeForm();
+      toast.success(`${tab.noun} atualizado com sucesso`);
     },
+    onError: (error) =>
+      toast.apiError(error, `Não foi possível atualizar ${tab.noun}`),
   });
 
   const toggleMutation = useMutation({
@@ -457,15 +630,52 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
     onSuccess: () => {
       invalidate();
       setToggleTarget(undefined);
+      closeForm();
+      toast.success(`${tab.noun} atualizado com sucesso`);
     },
+    onError: (error) =>
+      toast.apiError(error, `Não foi possível atualizar ${tab.noun}`),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteApiPartnerLocationsId(id),
     onSuccess: () => {
       invalidate();
-      setDeleteTarget(undefined);
+      closeForm();
+      toast.deleted("Parceiro");
     },
+    onError: (error) =>
+      toast.apiError(error, `Não foi possível excluir ${tab.noun}`),
+  });
+
+  const bulkDeleteMutation = useMutation({
+    mutationFn: (ids: string[]) => postApiPartnerLocationsBulkDelete({ ids }),
+    onSuccess: (result) => {
+      invalidate();
+      setSelectedRowIds([]);
+      setBulkDeleteOpen(false);
+      toast.success(
+        `${result.deleted} ${result.deleted === 1 ? "parceiro excluído" : "parceiros excluídos"}`,
+      );
+    },
+    onError: (error) =>
+      toast.apiError(error, `Não foi possível excluir ${tab.noun}s`),
+  });
+
+  const requeueMutation = useMutation({
+    mutationFn: (ids: string[]) =>
+      postApiPartnerLocationsGeocodingRequeue({ ids }),
+    onSuccess: (result, ids) => {
+      invalidate();
+      setSelectedRowIds((current) => current.filter((id) => !ids.includes(id)));
+      toast.success(
+        result.queued === 1
+          ? "Parceiro enviado para a fila"
+          : `${result.queued} parceiros enviados para a fila`,
+      );
+    },
+    onError: (error) =>
+      toast.apiError(error, "Não foi possível reenviar para a fila"),
   });
 
   function openCreate() {
@@ -509,19 +719,14 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
       ),
     },
     {
-      key: "phone",
-      header: "Telefone",
+      key: "location",
+      header: "Localização",
       render: (l) => (
-        <span className="text-muted-foreground">{l.phone ?? "—"}</span>
-      ),
-    },
-    {
-      key: "detail",
-      header: activeType === "REPRESENTATIVE" ? "Região" : "Especialidade",
-      render: (l) => (
-        <span className="text-muted-foreground">
-          {(activeType === "REPRESENTATIVE" ? l.region : l.specialty) ?? "—"}
-        </span>
+        <PartnerLocationStatus
+          location={l}
+          onRequeue={() => requeueMutation.mutate([l.id])}
+          isRequeueing={requeueMutation.isPending}
+        />
       ),
     },
     {
@@ -539,15 +744,6 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
       render: (l) => (
         <AdminRowActions>
           <AdminRowAction onClick={() => openEdit(l)}>Editar</AdminRowAction>
-          <AdminRowAction onClick={() => setToggleTarget(l)}>
-            {l.is_active ? "Desativar" : "Ativar"}
-          </AdminRowAction>
-          <AdminRowAction
-            variant="destructive"
-            onClick={() => setDeleteTarget(l)}
-          >
-            Excluir
-          </AdminRowAction>
         </AdminRowActions>
       ),
     },
@@ -578,7 +774,38 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
     </div>
   );
 
-  const hasActiveFilters = Boolean(query.trim() || stateFilter);
+  const tableFooter = selectedExistingRowIds.length > 0 && (
+    <>
+      <span className="text-muted-foreground">
+        {selectedExistingRowIds.length} selecionado
+        {selectedExistingRowIds.length === 1 ? "" : "s"}
+      </span>
+      <div className="flex flex-wrap items-center gap-2">
+        {selectedRequeueIds.length > 0 && (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => requeueMutation.mutate(selectedRequeueIds)}
+            disabled={requeueMutation.isPending}
+          >
+            Enviar para fila ({selectedRequeueIds.length})
+          </Button>
+        )}
+        <Button
+          type="button"
+          variant="destructive"
+          onClick={() => setBulkDeleteOpen(true)}
+          disabled={bulkDeleteMutation.isPending}
+        >
+          Excluir selecionados ({selectedExistingRowIds.length})
+        </Button>
+      </div>
+    </>
+  );
+
+  const hasActiveFilters = Boolean(
+    query.trim() || stateFilter || locationFilter,
+  );
 
   return (
     <>
@@ -588,6 +815,9 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
           data={paginated}
           isLoading={isLoading}
           keyExtractor={(l) => l.id}
+          selectable
+          selectedRowIds={selectedRowIds}
+          onSelectedRowIdsChange={setSelectedRowIds}
           emptyTitle={
             hasActiveFilters ? "Nenhum parceiro encontrado" : tab.emptyTitle
           }
@@ -606,6 +836,7 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
                 onChange={(v) => {
                   setQuery(v);
                   setPage(1);
+                  setSelectedRowIds([]);
                 }}
                 placeholder="Buscar por nome ou cidade"
                 className="max-w-64"
@@ -615,6 +846,7 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
                 onChange={(e) => {
                   setStateFilter(e.target.value);
                   setPage(1);
+                  setSelectedRowIds([]);
                 }}
                 className="h-9 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-primary"
               >
@@ -625,13 +857,32 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
                   </option>
                 ))}
               </select>
+              <select
+                value={locationFilter}
+                onChange={(e) => {
+                  setLocationFilter(e.target.value);
+                  setPage(1);
+                  setSelectedRowIds([]);
+                }}
+                className="h-9 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-primary"
+              >
+                <option value="">Todas as localizações</option>
+                <option value="CONFIGURED">Configurada</option>
+                <option value="PENDING">Em fila</option>
+                <option value="PROCESSING">Sincronizando</option>
+                <option value="NOT_CONFIGURED">Não configurada</option>
+              </select>
             </div>
           }
+          tableFooter={tableFooter}
           pagination={{
             page,
             pageSize: PAGE_SIZE,
             total: filtered.length,
-            onPageChange: setPage,
+            onPageChange: (nextPage) => {
+              setPage(nextPage);
+              setSelectedRowIds([]);
+            },
           }}
         />
       </AdminPageLayout>
@@ -642,7 +893,12 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
           location={editing}
           onClose={closeForm}
           onSave={handleSave}
+          onToggle={() => setToggleTarget(editing)}
+          onDelete={() => editing && deleteMutation.mutate(editing.id)}
+          onRequeue={() => editing && requeueMutation.mutate([editing.id])}
           isPending={createMutation.isPending || updateMutation.isPending}
+          isDeleting={deleteMutation.isPending}
+          isRequeueing={requeueMutation.isPending}
         />
       )}
 
@@ -677,17 +933,14 @@ export function ParceirosContent({ activeType }: ParceirosContentProps) {
       />
 
       <AdminConfirmDialog
-        open={!!deleteTarget}
-        title={`Excluir ${tab.noun}?`}
-        description={`${deleteTarget?.name} será removido permanentemente.`}
-        confirmLabel="Excluir"
+        open={bulkDeleteOpen}
+        title={`Excluir ${selectedExistingRowIds.length} ${tab.noun}${selectedExistingRowIds.length === 1 ? "" : "s"}?`}
+        description="Os registros selecionados deixarão de aparecer nas listagens. Esta ação não pode ser desfeita."
+        confirmLabel="Excluir selecionados"
         destructive
-        isPending={deleteMutation.isPending}
-        onConfirm={() => {
-          if (!deleteTarget) return;
-          deleteMutation.mutate(deleteTarget.id);
-        }}
-        onCancel={() => setDeleteTarget(undefined)}
+        isPending={bulkDeleteMutation.isPending}
+        onConfirm={() => bulkDeleteMutation.mutate(selectedExistingRowIds)}
+        onCancel={() => setBulkDeleteOpen(false)}
       />
     </>
   );

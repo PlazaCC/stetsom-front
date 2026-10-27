@@ -21,13 +21,25 @@ import type {
 import type {
   ApiErrorPayload,
   GeocodeSearchResponse,
+  GetApiGeocodeLocationsParams,
   GetApiGeocodeSearchParams,
 } from "../../model";
 
 import { orvalClient } from "../../orval-client";
 
+export const getApiGeocodeLocations = (
+  params: GetApiGeocodeLocationsParams,
+  signal?: AbortSignal,
+) =>
+  orvalClient<GeocodeSearchResponse>({
+    url: `/api/geocode/locations`,
+    method: "GET",
+    params,
+    signal,
+  });
+
 /**
- * @summary Search for Brazilian cities, states, or CEP addresses
+ * @summary Search for postal codes and address components
  */
 export const getApiGeocodeSearch = (
   params: GetApiGeocodeSearchParams,
@@ -154,7 +166,7 @@ export function useGetApiGeocodeSearch<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Search for Brazilian cities, states, or CEP addresses
+ * @summary Search for postal codes and address components
  */
 
 export function useGetApiGeocodeSearch<

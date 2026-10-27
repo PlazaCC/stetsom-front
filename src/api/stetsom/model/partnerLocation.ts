@@ -5,6 +5,8 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { PartnerLocationGeocodeSource } from "./partnerLocationGeocodeSource";
+import type { PartnerLocationGeocodeStatus } from "./partnerLocationGeocodeStatus";
 import type { PartnerLocationType } from "./partnerLocationType";
 
 export interface PartnerLocation {
@@ -15,13 +17,20 @@ export interface PartnerLocation {
   city: string;
   state: string;
   zip: string;
+  /**
+   * @minLength 2
+   * @maxLength 2
+   */
+  country_code: string;
   lat?: number;
   lng?: number;
+  has_map_location: boolean;
+  geocode_status: PartnerLocationGeocodeStatus;
+  geocode_source?: PartnerLocationGeocodeSource;
   phone?: string;
   phone2?: string;
   email?: string;
   website?: string;
-  region?: string;
   specialty?: string;
   is_active: boolean;
   created_at: string;

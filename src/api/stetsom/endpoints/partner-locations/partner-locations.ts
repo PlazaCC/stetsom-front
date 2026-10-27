@@ -20,6 +20,9 @@ import type {
 
 import type {
   ApiErrorPayload,
+  DeletePartnerLocationsInputInput,
+  DeletePartnerLocationsResponse,
+  GetApiPartnerLocationsAdminParams,
   PartnerLocation,
   PatchApiPartnerLocationsIdBody,
   PostApiPartnerLocationsBody,
@@ -27,6 +30,10 @@ import type {
   PostApiPartnerLocationsImportBody,
   PostApiPartnerLocationsImportWorkbook200,
   PostApiPartnerLocationsImportWorkbookBody,
+  PostApiPartnerLocationsImportWorkbookDiscover200,
+  PostApiPartnerLocationsImportWorkbookDiscoverBody,
+  RequeuePartnerLocationsInputInput,
+  RequeuePartnerLocationsResponse,
 } from "../../model";
 
 import { orvalClient } from "../../orval-client";
@@ -201,8 +208,381 @@ export function usePostApiPartnerLocations<
 }
 
 /**
- * Reads every sheet, finds headers in the first 10 rows, ignores Instruções, and returns a sheet-level preview and correction report. Commit only selected sheets by sending selections as a JSON object of sheet name to partner type.
- * @summary Preview or import partner locations from an XLSX workbook
+ * @summary List partner locations for administration
+ */
+export const getApiPartnerLocationsAdmin = (
+  params?: GetApiPartnerLocationsAdminParams,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<PartnerLocation[]>({
+    url: `/api/partner-locations/admin`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getGetApiPartnerLocationsAdminQueryKey = (
+  params?: GetApiPartnerLocationsAdminParams,
+) => {
+  return [`/api/partner-locations/admin`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetApiPartnerLocationsAdminQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  params?: GetApiPartnerLocationsAdminParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetApiPartnerLocationsAdminQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>
+  > = ({ signal }) => getApiPartnerLocationsAdmin(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiPartnerLocationsAdminQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>
+>;
+export type GetApiPartnerLocationsAdminQueryError = ApiErrorPayload;
+
+export function useGetApiPartnerLocationsAdmin<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  params: undefined | GetApiPartnerLocationsAdminParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiPartnerLocationsAdmin<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  params?: GetApiPartnerLocationsAdminParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiPartnerLocationsAdmin<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  params?: GetApiPartnerLocationsAdminParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List partner locations for administration
+ */
+
+export function useGetApiPartnerLocationsAdmin<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  params?: GetApiPartnerLocationsAdminParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiPartnerLocationsAdminQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Discover importable sheets in an XLSX workbook
+ */
+export const postApiPartnerLocationsImportWorkbookDiscover = (
+  postApiPartnerLocationsImportWorkbookDiscoverBody: PostApiPartnerLocationsImportWorkbookDiscoverBody,
+  signal?: AbortSignal,
+) => {
+  const formData = new FormData();
+  formData.append(
+    `file`,
+    postApiPartnerLocationsImportWorkbookDiscoverBody.file,
+  );
+
+  return orvalClient<PostApiPartnerLocationsImportWorkbookDiscover200>({
+    url: `/api/partner-locations/import/workbook/discover`,
+    method: "POST",
+    headers: { "Content-Type": "multipart/form-data" },
+    data: formData,
+    signal,
+  });
+};
+
+export const getPostApiPartnerLocationsImportWorkbookDiscoverQueryKey = (
+  postApiPartnerLocationsImportWorkbookDiscoverBody?: PostApiPartnerLocationsImportWorkbookDiscoverBody,
+) => {
+  return [
+    "POST",
+    `/api/partner-locations/import/workbook/discover`,
+    postApiPartnerLocationsImportWorkbookDiscoverBody,
+  ] as const;
+};
+
+export const getPostApiPartnerLocationsImportWorkbookDiscoverQueryOptions = <
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+  >,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportWorkbookDiscoverBody: PostApiPartnerLocationsImportWorkbookDiscoverBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<
+          ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+        >,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getPostApiPartnerLocationsImportWorkbookDiscoverQueryKey(
+      postApiPartnerLocationsImportWorkbookDiscoverBody,
+    );
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>>
+  > = ({ signal }) =>
+    postApiPartnerLocationsImportWorkbookDiscover(
+      postApiPartnerLocationsImportWorkbookDiscoverBody,
+      signal,
+    );
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostApiPartnerLocationsImportWorkbookDiscoverQueryResult =
+  NonNullable<
+    Awaited<ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>>
+  >;
+export type PostApiPartnerLocationsImportWorkbookDiscoverQueryError =
+  ApiErrorPayload;
+
+export function usePostApiPartnerLocationsImportWorkbookDiscover<
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+  >,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportWorkbookDiscoverBody: PostApiPartnerLocationsImportWorkbookDiscoverBody,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<
+          ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+        >,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+          >,
+          TError,
+          Awaited<
+            ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+          >
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsImportWorkbookDiscover<
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+  >,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportWorkbookDiscoverBody: PostApiPartnerLocationsImportWorkbookDiscoverBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<
+          ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+        >,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+          >,
+          TError,
+          Awaited<
+            ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+          >
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsImportWorkbookDiscover<
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+  >,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportWorkbookDiscoverBody: PostApiPartnerLocationsImportWorkbookDiscoverBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<
+          ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+        >,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Discover importable sheets in an XLSX workbook
+ */
+
+export function usePostApiPartnerLocationsImportWorkbookDiscover<
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+  >,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsImportWorkbookDiscoverBody: PostApiPartnerLocationsImportWorkbookDiscoverBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<
+          ReturnType<typeof postApiPartnerLocationsImportWorkbookDiscover>
+        >,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions =
+    getPostApiPartnerLocationsImportWorkbookDiscoverQueryOptions(
+      postApiPartnerLocationsImportWorkbookDiscoverBody,
+      options,
+    );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Imports valid rows from selected sheets and returns a correction report. Discover sheets first with /import/workbook/discover.
+ * @summary Import selected partner-location sheets from an XLSX workbook
  */
 export const postApiPartnerLocationsImportWorkbook = (
   postApiPartnerLocationsImportWorkbookBody: PostApiPartnerLocationsImportWorkbookBody,
@@ -210,18 +590,10 @@ export const postApiPartnerLocationsImportWorkbook = (
 ) => {
   const formData = new FormData();
   formData.append(`file`, postApiPartnerLocationsImportWorkbookBody.file);
-  if (postApiPartnerLocationsImportWorkbookBody.dry_run !== undefined) {
-    formData.append(
-      `dry_run`,
-      postApiPartnerLocationsImportWorkbookBody.dry_run,
-    );
-  }
-  if (postApiPartnerLocationsImportWorkbookBody.selections !== undefined) {
-    formData.append(
-      `selections`,
-      postApiPartnerLocationsImportWorkbookBody.selections,
-    );
-  }
+  formData.append(
+    `selections`,
+    postApiPartnerLocationsImportWorkbookBody.selections,
+  );
 
   return orvalClient<PostApiPartnerLocationsImportWorkbook200>({
     url: `/api/partner-locations/import/workbook`,
@@ -356,7 +728,7 @@ export function usePostApiPartnerLocationsImportWorkbook<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Preview or import partner locations from an XLSX workbook
+ * @summary Import selected partner-location sheets from an XLSX workbook
  */
 
 export function usePostApiPartnerLocationsImportWorkbook<
@@ -391,7 +763,7 @@ export function usePostApiPartnerLocationsImportWorkbook<
 }
 
 /**
- * Two-pass import. With dry_run=true (the default) nothing is written and the report shows what would happen. Rows whose name already exists are skipped, never overwritten. Coordinates come from the sheet when present, otherwise from the city dataset.
+ * Two-pass import. With dry_run=true (the default) nothing is written and the report shows what would happen. Rows whose full location identity already exists are skipped. Imported addresses are queued for asynchronous geocoding.
  * @summary Import partner locations from CSV
  */
 export const postApiPartnerLocationsImport = (
@@ -894,6 +1266,351 @@ export function useDeleteApiPartnerLocationsId<
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
   const queryOptions = getDeleteApiPartnerLocationsIdQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Requeue partner locations for geocoding
+ */
+export const postApiPartnerLocationsGeocodingRequeue = (
+  requeuePartnerLocationsInputInput: RequeuePartnerLocationsInputInput,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<RequeuePartnerLocationsResponse>({
+    url: `/api/partner-locations/geocoding/requeue`,
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    data: requeuePartnerLocationsInputInput,
+    signal,
+  });
+};
+
+export const getPostApiPartnerLocationsGeocodingRequeueQueryKey = (
+  requeuePartnerLocationsInputInput?: RequeuePartnerLocationsInputInput,
+) => {
+  return [
+    "POST",
+    `/api/partner-locations/geocoding/requeue`,
+    requeuePartnerLocationsInputInput,
+  ] as const;
+};
+
+export const getPostApiPartnerLocationsGeocodingRequeueQueryOptions = <
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>,
+  TError = ApiErrorPayload,
+>(
+  requeuePartnerLocationsInputInput: RequeuePartnerLocationsInputInput,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getPostApiPartnerLocationsGeocodingRequeueQueryKey(
+      requeuePartnerLocationsInputInput,
+    );
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>
+  > = ({ signal }) =>
+    postApiPartnerLocationsGeocodingRequeue(
+      requeuePartnerLocationsInputInput,
+      signal,
+    );
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostApiPartnerLocationsGeocodingRequeueQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>
+>;
+export type PostApiPartnerLocationsGeocodingRequeueQueryError = ApiErrorPayload;
+
+export function usePostApiPartnerLocationsGeocodingRequeue<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>,
+  TError = ApiErrorPayload,
+>(
+  requeuePartnerLocationsInputInput: RequeuePartnerLocationsInputInput,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>,
+          TError,
+          Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsGeocodingRequeue<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>,
+  TError = ApiErrorPayload,
+>(
+  requeuePartnerLocationsInputInput: RequeuePartnerLocationsInputInput,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>,
+          TError,
+          Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsGeocodingRequeue<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>,
+  TError = ApiErrorPayload,
+>(
+  requeuePartnerLocationsInputInput: RequeuePartnerLocationsInputInput,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Requeue partner locations for geocoding
+ */
+
+export function usePostApiPartnerLocationsGeocodingRequeue<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>,
+  TError = ApiErrorPayload,
+>(
+  requeuePartnerLocationsInputInput: RequeuePartnerLocationsInputInput,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsGeocodingRequeue>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getPostApiPartnerLocationsGeocodingRequeueQueryOptions(
+    requeuePartnerLocationsInputInput,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Delete partner locations in bulk
+ */
+export const postApiPartnerLocationsBulkDelete = (
+  deletePartnerLocationsInputInput: DeletePartnerLocationsInputInput,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<DeletePartnerLocationsResponse>({
+    url: `/api/partner-locations/bulk-delete`,
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    data: deletePartnerLocationsInputInput,
+    signal,
+  });
+};
+
+export const getPostApiPartnerLocationsBulkDeleteQueryKey = (
+  deletePartnerLocationsInputInput?: DeletePartnerLocationsInputInput,
+) => {
+  return [
+    "POST",
+    `/api/partner-locations/bulk-delete`,
+    deletePartnerLocationsInputInput,
+  ] as const;
+};
+
+export const getPostApiPartnerLocationsBulkDeleteQueryOptions = <
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>,
+  TError = ApiErrorPayload,
+>(
+  deletePartnerLocationsInputInput: DeletePartnerLocationsInputInput,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getPostApiPartnerLocationsBulkDeleteQueryKey(
+      deletePartnerLocationsInputInput,
+    );
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>
+  > = ({ signal }) =>
+    postApiPartnerLocationsBulkDelete(deletePartnerLocationsInputInput, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostApiPartnerLocationsBulkDeleteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>
+>;
+export type PostApiPartnerLocationsBulkDeleteQueryError = ApiErrorPayload;
+
+export function usePostApiPartnerLocationsBulkDelete<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>,
+  TError = ApiErrorPayload,
+>(
+  deletePartnerLocationsInputInput: DeletePartnerLocationsInputInput,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>,
+          TError,
+          Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsBulkDelete<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>,
+  TError = ApiErrorPayload,
+>(
+  deletePartnerLocationsInputInput: DeletePartnerLocationsInputInput,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>,
+          TError,
+          Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsBulkDelete<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>,
+  TError = ApiErrorPayload,
+>(
+  deletePartnerLocationsInputInput: DeletePartnerLocationsInputInput,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Delete partner locations in bulk
+ */
+
+export function usePostApiPartnerLocationsBulkDelete<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>,
+  TError = ApiErrorPayload,
+>(
+  deletePartnerLocationsInputInput: DeletePartnerLocationsInputInput,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsBulkDelete>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getPostApiPartnerLocationsBulkDeleteQueryOptions(
+    deletePartnerLocationsInputInput,
+    options,
+  );
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,

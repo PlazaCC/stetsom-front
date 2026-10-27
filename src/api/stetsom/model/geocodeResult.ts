@@ -8,10 +8,16 @@
 
 export interface GeocodeResult {
   displayName: string;
-  city: string;
-  state: string;
-  /** Omitted when the city has no match in the static dataset */
+  address?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  /**
+   * @minLength 2
+   * @maxLength 2
+   */
+  countryCode: string;
   lat?: number;
-  /** Omitted when the city has no match in the static dataset */
   lng?: number;
+  resultType?: "CITY" | "STATE" | "POSTAL_CODE";
 }

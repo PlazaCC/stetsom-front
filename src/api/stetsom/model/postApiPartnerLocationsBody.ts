@@ -24,24 +24,26 @@ export type PostApiPartnerLocationsBody = {
    * @maxLength 100
    */
   city: string;
+  /** @maxLength 100 */
+  state?: string;
+  /** @maxLength 20 */
+  zip?: string;
   /**
    * @minLength 2
    * @maxLength 2
    */
-  state: string;
-  /** @pattern ^\d{5}-?\d{3}$ */
-  zip: string;
+  country_code: string;
   /** @nullable */
   lat?: number | null;
   /** @nullable */
   lng?: number | null;
   /**
-   * @maxLength 20
+   * @maxLength 80
    * @nullable
    */
   phone?: string | null;
   /**
-   * @maxLength 20
+   * @maxLength 80
    * @nullable
    */
   phone2?: string | null;
@@ -52,11 +54,6 @@ export type PostApiPartnerLocationsBody = {
   email?: string | null;
   /** @nullable */
   website?: string | null;
-  /**
-   * @maxLength 100
-   * @nullable
-   */
-  region?: string | null;
   /**
    * @maxLength 200
    * @nullable

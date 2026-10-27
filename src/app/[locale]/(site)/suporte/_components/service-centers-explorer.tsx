@@ -1,15 +1,13 @@
 "use client";
 
 import type { PartnerLocation } from "@/api/stetsom/model";
+import { getApiGeocodeLocations } from "@/api/stetsom/endpoints/geocode/geocode";
 import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { cn } from "@/lib/utils";
 import {
   type Bounds,
   type GeocodeSuggestion,
   type LatLng,
-  extractCepDigits,
-  formatCepInput,
-  isLikelyCep,
   toValidLatLng,
 } from "@/lib/geocode";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -50,6 +48,8 @@ const GEO_OPTS: PositionOptions = {
   maximumAge: 300000,
 };
 
+const GEOCODE_SEARCH_DEBOUNCE_MS = 250;
+
 interface ServiceCentersExplorerProps {
   serviceCenters: PartnerLocation[];
 }
@@ -68,7 +68,7 @@ export function ServiceCentersExplorer({
   const [suggestions, setSuggestions] = useState<GeocodeSuggestion[]>([]);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [geocodeLoading, setGeocodeLoading] = useState(false);
-  const [isCepMode, setIsCepMode] = useState(false);
+  const [searchError, setSearchError] = useState(false);
   const [viewportBounds, setViewportBounds] = useState<Bounds | null>(null);
   const [fitAllCount, setFitAllCount] = useState(0);
 
@@ -124,39 +124,31 @@ export function ServiceCentersExplorer({
             ? t("locationUnsupported")
             : null;
 
-  const cepDigits = extractCepDigits(query);
-  const cepComplete = cepDigits.length === 8;
-  const missingCount = 8 - cepDigits.length;
-  const showDropdown =
-    suggestionsOpen || geocodeLoading || (isCepMode && cepDigits.length > 0);
+  const showDropdown = suggestionsOpen || geocodeLoading;
 
   const fetchGeocode = useCallback(async (q: string) => {
-    const raw = extractCepDigits(q);
-    const searchQuery = isLikelyCep(q) && raw.length >= 3 ? raw : q;
-    if (searchQuery.trim().length < (isLikelyCep(q) ? 3 : 2)) {
+    const searchQuery = q.trim();
+    if (searchQuery.length < 2) {
       setSuggestions([]);
       setSuggestionsOpen(false);
       return;
     }
+    setSearchError(false);
     abortControllerRef.current?.abort();
     const controller = new AbortController();
     abortControllerRef.current = controller;
     setGeocodeLoading(true);
     try {
-      const res = await fetch(
-        `/api/bff/geocode/search?q=${encodeURIComponent(searchQuery)}`,
-        { signal: controller.signal },
+      const data = await getApiGeocodeLocations(
+        { q: searchQuery },
+        controller.signal,
       );
-      if (!res.ok) {
-        setSuggestions([]);
-        return;
-      }
-      const data: { results: GeocodeSuggestion[] } = await res.json();
       setSuggestions(data.results);
       setSuggestionsOpen(true);
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return;
       setSuggestions([]);
+      setSearchError(true);
     } finally {
       if (abortControllerRef.current === controller) {
         abortControllerRef.current = null;
@@ -169,25 +161,17 @@ export function ServiceCentersExplorer({
 
   const handleInputChange = (raw: string) => {
     abortControllerRef.current?.abort();
-    const cepMode = isLikelyCep(raw) && raw !== t("currentLocation");
-    setIsCepMode(cepMode);
-
-    if (cepMode) {
-      const formatted = formatCepInput(raw);
-      setQuery(formatted);
-    } else {
-      setQuery(raw);
-    }
+    setQuery(raw);
 
     setSelectedLocation(null);
+    setSearchError(false);
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
-    const minLength = cepMode ? 3 : 2;
-    if (
-      raw.replace(/\D/g, "").length >= minLength ||
-      (!cepMode && raw.length >= minLength)
-    ) {
-      debounceTimer.current = setTimeout(() => fetchGeocode(raw), 300);
+    if (raw.trim().length >= 2) {
+      debounceTimer.current = setTimeout(
+        () => fetchGeocode(raw),
+        GEOCODE_SEARCH_DEBOUNCE_MS,
+      );
     } else {
       setSuggestions([]);
       setSuggestionsOpen(false);
@@ -196,7 +180,6 @@ export function ServiceCentersExplorer({
 
   const selectSuggestion = (suggestion: GeocodeSuggestion) => {
     setQuery(suggestion.displayName);
-    setIsCepMode(false);
     setSelectedLocation(suggestion);
     setSelectedId(null);
     setSuggestionsOpen(false);
@@ -282,14 +265,14 @@ export function ServiceCentersExplorer({
             <input
               ref={inputRef}
               type="text"
-              inputMode={isCepMode ? "numeric" : "text"}
+              inputMode="search"
               value={query}
               onChange={(e) => {
                 handleInputChange(e.target.value);
                 resetScroll();
               }}
               onFocus={() => {
-                if (suggestions.length > 0 || isCepMode)
+                if (suggestions.length > 0 || query.trim().length >= 2)
                   setSuggestionsOpen(true);
               }}
               placeholder={t("searchLocationPlaceholder")}
@@ -303,7 +286,7 @@ export function ServiceCentersExplorer({
                   setSelectedLocation(null);
                   setSuggestions([]);
                   setSuggestionsOpen(false);
-                  setIsCepMode(false);
+                  setSearchError(false);
                   if (debounceTimer.current) {
                     clearTimeout(debounceTimer.current);
                     debounceTimer.current = undefined;
@@ -322,10 +305,7 @@ export function ServiceCentersExplorer({
           {showDropdown && (
             <div className="absolute top-full right-0 left-0 z-10 mt-1 max-h-48 overflow-y-auto border border-border bg-white shadow-lg">
               <GeocodeDropdown
-                isCepMode={isCepMode}
                 geocodeLoading={geocodeLoading}
-                cepComplete={cepComplete}
-                missingCount={missingCount}
                 suggestions={suggestions}
                 query={query}
                 onSelect={(s) => {
@@ -334,6 +314,11 @@ export function ServiceCentersExplorer({
                 }}
               />
             </div>
+          )}
+          {searchError && (
+            <p className="mt-1 text-xs text-destructive">
+              {t("searchUnavailable")}
+            </p>
           )}
         </div>
 
@@ -403,6 +388,17 @@ export function ServiceCentersExplorer({
                       <p className="font-sans text-xs text-text-subtle">
                         {posto.address}
                       </p>
+                      <p className="font-sans text-xs text-text-subtle">
+                        {[
+                          posto.city,
+                          posto.state,
+                          posto.country_code !== "BR"
+                            ? posto.country_code
+                            : null,
+                        ]
+                          .filter(Boolean)
+                          .join(", ")}
+                      </p>
                       <div className="flex flex-wrap items-center gap-3">
                         {posto.phone && (
                           <p className="font-sans text-xs text-brand">
@@ -444,6 +440,7 @@ export function ServiceCentersExplorer({
           onSelectLocation={(id) => {
             setSelectedId(id);
           }}
+          onClearSelection={() => setSelectedId(null)}
           onBoundsChange={setViewportBounds}
           fitAllTrigger={fitAllCount}
         />

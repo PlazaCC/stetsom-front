@@ -6,9 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { PostApiPartnerLocationsImport200ErrorsItem } from "./postApiPartnerLocationsImport200ErrorsItem";
+import type { PostApiPartnerLocationsImport200QueuedForGeocodingItem } from "./postApiPartnerLocationsImport200QueuedForGeocodingItem";
 import type { PostApiPartnerLocationsImport200SkippedItem } from "./postApiPartnerLocationsImport200SkippedItem";
 import type { PostApiPartnerLocationsImport200WarningsItem } from "./postApiPartnerLocationsImport200WarningsItem";
-import type { PostApiPartnerLocationsImport200WithoutCoordinatesItem } from "./postApiPartnerLocationsImport200WithoutCoordinatesItem";
 
 export type PostApiPartnerLocationsImport200 = {
   /**
@@ -26,8 +26,8 @@ export type PostApiPartnerLocationsImport200 = {
   skipped: PostApiPartnerLocationsImport200SkippedItem[];
   errors: PostApiPartnerLocationsImport200ErrorsItem[];
   warnings: PostApiPartnerLocationsImport200WarningsItem[];
-  /** Imported without a map pin — city absent from the dataset */
-  withoutCoordinates: PostApiPartnerLocationsImport200WithoutCoordinatesItem[];
+  /** Imported and queued for address geocoding */
+  queuedForGeocoding: PostApiPartnerLocationsImport200QueuedForGeocodingItem[];
   dryRun: boolean;
   /**
    * @minimum -9007199254740991

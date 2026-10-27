@@ -9,8 +9,9 @@
 export type PostApiPartnerLocationsImportWorkbookBody = {
   /** XLSX workbook file */
   file: Blob;
-  /** Whether to validate only */
-  dry_run?: string;
-  /** JSON map of sheet names to partner types */
-  selections?: string;
+  /**
+   * JSON map of sheet names to partner types
+   * @minLength 1
+   */
+  selections: string;
 };
