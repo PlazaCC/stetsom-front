@@ -51,6 +51,34 @@ Use `<SortableList>` built on `@dnd-kit`:
 - `renderItem` lets each consumer place the drag `handle` (a `<GripVertical>` button) wherever desired
 - Re-invalidate the query after each reorder to keep server state in sync
 
+For a complete CMS reorder workflow, use the shared Admin wrappers instead of
+assembling a feature-local dialog:
+
+- `<AdminReorderDialog>` — launched from a table action; omit `movableItemId`
+  when every item may move.
+- `<AdminReorderField>` — used inside an edit form; pass `currentItemId` so only
+  that record is draggable while every other record remains a drop target.
+- Both wrappers include arrow controls as an accessible alternative to drag.
+- Display positions as `1..n`; keep zero-based `order` values as an API detail.
+- Reordering a filtered or incomplete page is ambiguous. Load the complete
+  orderable collection or disable the action.
+
+For reorderable CMS tables, use the optional `reorder` prop on
+`<AdminDataTable>`. It adds a standard `GripVertical` handle and makes the
+whole row a drop target while keeping the handle as the only drag activator.
+The callback must return a promise; the table updates optimistically and
+restores the previous order when that promise rejects. Keep reordering disabled
+when the table does not contain the complete orderable collection.
+
+## Admin Action Dialog
+
+Use `<AdminActionDialog>` from `admin-action-dialog.tsx` for non-destructive
+form and action modals. It standardizes a fixed header and footer, a vertically
+scrollable body, maximum viewport height, action placement and pending states.
+Do not duplicate `max-h`, `overflow-y-auto`, header padding or footer button
+placement in feature-local dialogs. Keep `<AdminConfirmDialog>` for destructive
+confirmations.
+
 ## Upload Flows
 
 | Hook | When to use |

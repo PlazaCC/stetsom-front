@@ -13,6 +13,7 @@ export interface BannerInput {
   name: string;
   product_id?: string;
   desktop_image_library_id: string;
+  desktop_image_url?: string;
   mobile_image_library_id?: string;
   title?: I18nStringInput;
   label?: string;

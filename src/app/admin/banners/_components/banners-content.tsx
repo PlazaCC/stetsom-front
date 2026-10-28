@@ -13,11 +13,16 @@ import {
   AdminRowActions,
 } from "@/app/admin/_components/crud/admin-row-actions";
 import type { Banner, BannersPayload } from "@/api/stetsom/model";
-import { patchApiBannersId, getGetApiBannersQueryKey } from "@/api/stetsom";
+import {
+  getGetApiBannersQueryKey,
+  patchApiBannersId,
+  patchApiBannersIdPosition,
+} from "@/api/stetsom";
 import type { PatchApiBannersIdBodyStatus } from "@/api/stetsom/model";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Image as ImageIcon, Plus } from "lucide-react";
 import Link from "next/link";
+import { useAdminToast } from "@/hooks/use-admin-toast";
 import { formatDateRange } from "./banner-form";
 
 function toLocaleDisplay(locale: string): string {
@@ -32,6 +37,7 @@ export function BannersContent({
   initialBanners: BannersPayload;
 }) {
   const queryClient = useQueryClient();
+  const toast = useAdminToast();
   const banners = initialBanners.items;
 
   function invalidate() {
@@ -48,15 +54,22 @@ export function BannersContent({
     }) => patchApiBannersId(id, body),
   });
 
+  const repositionBanner = useMutation({
+    mutationFn: ({ id, position }: { id: string; position: number }) =>
+      patchApiBannersIdPosition(id, { position }),
+    onError: (error) =>
+      toast.apiError(error, "Não foi possível reordenar os banners"),
+  });
+
   // The API already lists banners by `order`, the same sequence the home hero uses.
   const columns: AdminTableColumn<Banner>[] = [
     {
       key: "order",
-      header: "Ordem",
+      header: "Posição",
       className: "w-16",
-      render: (banner) => (
+      render: (_banner, index) => (
         <span className="text-sm text-muted-foreground tabular-nums">
-          {banner.order}
+          {index + 1}
         </span>
       ),
     },
@@ -64,9 +77,18 @@ export function BannersContent({
       key: "preview",
       header: "Preview",
       className: "w-20",
-      render: () => (
+      render: (banner) => (
         <div className="flex h-10 w-16 items-center justify-center overflow-hidden rounded-md bg-muted">
-          <ImageIcon className="size-4 text-muted-foreground/40" />
+          {banner.desktop_image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={banner.desktop_image_url}
+              alt=""
+              className="size-full object-cover"
+            />
+          ) : (
+            <ImageIcon className="size-4 text-muted-foreground/40" />
+          )}
         </div>
       ),
     },
@@ -163,6 +185,21 @@ export function BannersContent({
         emptyIcon={ImageIcon}
         emptyAction={createBannerAction}
         action={<AdminActionBar>{createBannerAction}</AdminActionBar>}
+        reorder={{
+          disabled: banners.length !== initialBanners.total,
+          disabledReason:
+            "A ordem só pode ser alterada quando todos os banners estão carregados.",
+          getLabel: (banner) => banner.name,
+          onMove: async ({ item, toIndex }) => {
+            await repositionBanner.mutateAsync({
+              id: item.id,
+              position: toIndex,
+            });
+            await queryClient.invalidateQueries({
+              queryKey: getGetApiBannersQueryKey(),
+            });
+          },
+        }}
       />
     </AdminPageLayout>
   );

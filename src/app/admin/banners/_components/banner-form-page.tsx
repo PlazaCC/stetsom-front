@@ -10,6 +10,7 @@ import type {
 import {
   postApiBanners,
   patchApiBannersId,
+  patchApiBannersIdPosition,
   deleteApiBannersId,
   getGetApiBannersQueryKey,
 } from "@/api/stetsom";
@@ -78,6 +79,7 @@ interface BannerFormPageProps {
 interface BannerFormPageEditProps {
   mode: "edit";
   banner: Banner;
+  banners: Banner[];
 }
 
 type Props = BannerFormPageProps | BannerFormPageEditProps;
@@ -91,6 +93,9 @@ export function BannerFormPage(props: Props) {
 
   const [draft, setDraft] = useState<BannerFormState>(
     initialBanner ? bannerToFormState(initialBanner) : EMPTY_FORM_STATE,
+  );
+  const [orderedBanners, setOrderedBanners] = useState<Banner[]>(
+    props.mode === "edit" ? props.banners : [],
   );
 
   function invalidate() {
@@ -110,6 +115,12 @@ export function BannerFormPage(props: Props) {
     mutationFn: (id: string) => deleteApiBannersId(id),
     onSuccess: invalidate,
     onError: (e) => toast.apiError(e, "Não foi possível excluir o banner"),
+  });
+  const repositionBanner = useMutation({
+    mutationFn: ({ id, position }: { id: string; position: number }) =>
+      patchApiBannersIdPosition(id, { position }),
+    onError: (e) =>
+      toast.apiError(e, "Não foi possível alterar a posição do banner"),
   });
   const isSaving = createBanner.isPending || updateBanner.isPending;
 
@@ -131,7 +142,6 @@ export function BannerFormPage(props: Props) {
       href: isProductDestination ? null : draft.href || null,
       title: titlePayload(draft.title),
       label: draft.label || null,
-      order: draft.order ?? 0,
       status: draft.status,
       available_locales: draft.locale ? [toApiLocale(draft.locale)] : undefined,
       display_from: dateInputToIso(draft.display_from, "start"),
@@ -150,7 +160,6 @@ export function BannerFormPage(props: Props) {
       href: isProductDestination ? null : draft.href || null,
       title: titlePayload(draft.title),
       label: draft.label || null,
-      order: draft.order ?? undefined,
       status: draft.status,
       available_locales: draft.locale ? [toApiLocale(draft.locale)] : undefined,
       display_from: dateInputToIso(draft.display_from, "start"),
@@ -198,6 +207,29 @@ export function BannerFormPage(props: Props) {
     router.push("/admin/banners");
   }
 
+  async function handleReorder(items: Banner[]) {
+    if (!initialBanner) return;
+    const position = items.findIndex((item) => item.id === initialBanner.id);
+    if (position < 0) return;
+
+    const result = await repositionBanner.mutateAsync({
+      id: initialBanner.id,
+      position,
+    });
+    const positions = new Map(
+      result.positions.map((item) => [item.id, item.order]),
+    );
+    setOrderedBanners((current) =>
+      current
+        .map((banner) => ({
+          ...banner,
+          order: positions.get(banner.id) ?? banner.order,
+        }))
+        .sort((a, b) => a.order - b.order),
+    );
+    toast.success("Posição do banner atualizada");
+  }
+
   function handleCancel() {
     router.push("/admin/banners");
   }
@@ -212,6 +244,9 @@ export function BannerFormPage(props: Props) {
       onCancel={handleCancel}
       onDelete={initialBanner ? handleDelete : undefined}
       isDeleting={deleteBanner.isPending}
+      banners={orderedBanners}
+      currentBannerId={initialBanner?.id}
+      onReorder={initialBanner ? handleReorder : undefined}
     />
   );
 }

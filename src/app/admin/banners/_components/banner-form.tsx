@@ -8,8 +8,10 @@ import {
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { AdminProductPicker } from "@/app/admin/_components/crud/admin-product-picker";
+import { AdminReorderField } from "@/app/admin/_components/crud/admin-reorder-field";
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import { Input } from "@/components/ui/input";
 import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-picker";
 import type { LibraryPickedAsset } from "@/app/admin/_components/crud/library-asset-ref";
@@ -25,7 +27,7 @@ import { useGetApiLibraryId } from "@/api/stetsom";
 import { currentAssetUrl } from "@/app/admin/_components/crud/library-asset-ref";
 import { toApiLocale, toDisplayLocale } from "@/i18n/locale";
 import { cn } from "@/lib/utils";
-import { Image } from "lucide-react";
+import { Image as ImageIcon } from "lucide-react";
 import { useState } from "react";
 
 /**
@@ -45,7 +47,6 @@ export interface BannerFormState {
   link_url: string;
   display_from: string;
   display_until: string;
-  order: number;
   locale: string;
   desktop_image_library_id: string;
   mobile_image_library_id: string;
@@ -61,7 +62,6 @@ export const EMPTY_FORM_STATE: BannerFormState = {
   link_url: "",
   display_from: "",
   display_until: "",
-  order: 0,
   locale: "pt-BR",
   desktop_image_library_id: "",
   mobile_image_library_id: "",
@@ -101,7 +101,6 @@ export function bannerToFormState(b: Banner): BannerFormState {
     link_url: b.link_url ?? "",
     display_from: isoToDateInput(b.display_from),
     display_until: isoToDateInput(b.display_until),
-    order: b.order ?? 0,
     locale: toDisplayLocale(b.available_locales?.[0] ?? "pt"),
     desktop_image_library_id: b.desktop_image_library_id,
     mobile_image_library_id: b.mobile_image_library_id ?? "",
@@ -187,6 +186,9 @@ interface BannerFormProps {
   onCancel: () => void;
   onDelete?: () => void;
   isDeleting?: boolean;
+  banners?: Banner[];
+  currentBannerId?: string;
+  onReorder?: (items: Banner[]) => Promise<void>;
 }
 
 export function BannerForm({
@@ -198,6 +200,9 @@ export function BannerForm({
   onCancel,
   onDelete,
   isDeleting,
+  banners = [],
+  currentBannerId,
+  onReorder,
 }: BannerFormProps) {
   const [destinationType, setDestinationType] = useState<"product" | "link">(
     draft.product_id ? "product" : "link",
@@ -305,7 +310,14 @@ export function BannerForm({
                 placeholder="Texto que aparece sobre o banner"
               />
 
-              <div className="grid grid-cols-2 gap-4">
+              <div
+                className={cn(
+                  "grid gap-4",
+                  !isCreating && currentBannerId && onReorder
+                    ? "grid-cols-1 sm:grid-cols-2"
+                    : "grid-cols-1",
+                )}
+              >
                 <div>
                   <AdminLabel>Etiqueta</AdminLabel>
                   <Input
@@ -314,25 +326,48 @@ export function BannerForm({
                     placeholder="Ex: LANÇAMENTO"
                   />
                 </div>
-                <div>
-                  <AdminLabel>Ordem</AdminLabel>
-                  <Input
-                    type="number"
-                    min={0}
-                    step={1}
-                    value={draft.order}
-                    onChange={(e) =>
-                      onDraftChange(
-                        "order",
-                        Math.max(0, Math.trunc(Number(e.target.value) || 0)),
-                      )
-                    }
-                    placeholder="0"
+                {!isCreating && currentBannerId && onReorder ? (
+                  <AdminReorderField
+                    label="Posição no carrossel"
+                    description="Define a ordem de exibição na página inicial."
+                    dialogTitle="Alterar posição do banner"
+                    items={banners}
+                    currentItemId={currentBannerId}
+                    getId={(banner) => banner.id}
+                    onSave={onReorder}
+                    renderItem={(banner, { isCurrent }) => (
+                      <div className="flex min-w-0 items-center gap-3">
+                        <div className="flex h-12 w-20 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted">
+                          {banner.desktop_image_url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={banner.desktop_image_url}
+                              alt=""
+                              className="size-full object-cover"
+                            />
+                          ) : (
+                            <ImageIcon className="size-4 text-muted-foreground/40" />
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium text-foreground">
+                            {isCurrent && draft.name.trim()
+                              ? draft.name
+                              : banner.name}
+                          </p>
+                          <div className="mt-1 flex flex-wrap items-center gap-2">
+                            <StatusBadge status={banner.status} />
+                            {isCurrent ? (
+                              <span className="text-xs font-medium text-primary">
+                                Banner atual
+                              </span>
+                            ) : null}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   />
-                  <p className="mt-1.5 text-xs text-muted-foreground">
-                    Menor número aparece primeiro no carrossel da home.
-                  </p>
-                </div>
+                ) : null}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -462,8 +497,7 @@ export function BannerForm({
                   />
                 ) : (
                   <div className="flex h-36 items-center justify-center">
-                    {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                    <Image className="size-10 text-muted-foreground/30" />
+                    <ImageIcon className="size-10 text-muted-foreground/30" />
                   </div>
                 )}
                 <BannerTextOverlay draft={draft} />

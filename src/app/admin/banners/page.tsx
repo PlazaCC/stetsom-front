@@ -4,7 +4,7 @@ import { useGetApiBanners } from "@/api/stetsom";
 import { BannersContent } from "./_components/banners-content";
 
 export default function AdminBannersPage() {
-  const { data, isLoading, dataUpdatedAt } = useGetApiBanners();
+  const { data, isLoading, dataUpdatedAt } = useGetApiBanners({ limit: 200 });
 
   if (isLoading || !data) {
     return (

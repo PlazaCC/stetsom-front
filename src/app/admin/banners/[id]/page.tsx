@@ -27,7 +27,14 @@ export default function AdminBannerEditPage() {
     );
   }
 
-  // Remount when a refetch brings a newer version, so the form never edits
-  // the stale copy that was in the cache when the page opened.
-  return <BannerFormPage key={banner.updated_at} mode="edit" banner={banner} />;
+  // Keep the editor mounted while position changes update the collection so
+  // unsaved fields in the current draft are never discarded.
+  return (
+    <BannerFormPage
+      key={banner.id}
+      mode="edit"
+      banner={banner}
+      banners={data.items}
+    />
+  );
 }

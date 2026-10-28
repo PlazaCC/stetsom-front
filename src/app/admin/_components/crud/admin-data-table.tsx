@@ -1,6 +1,21 @@
 "use client";
 
 import * as React from "react";
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import type { LucideIcon } from "lucide-react";
 import {
   type ColumnDef,
@@ -18,6 +33,7 @@ import {
 import { cn } from "@/lib/utils";
 import { AdminEmptyState } from "./admin-empty-state";
 import { AdminPagination } from "./admin-pagination";
+import { AdminSortableTableRow } from "./admin-sortable-table-row";
 
 export interface AdminTableColumn<T> {
   key: string;
@@ -25,6 +41,20 @@ export interface AdminTableColumn<T> {
   className?: string;
   headerClassName?: string;
   render?: (row: T, index: number) => React.ReactNode;
+}
+
+export interface AdminTableReorderEvent<T> {
+  item: T;
+  fromIndex: number;
+  toIndex: number;
+  items: T[];
+}
+
+export interface AdminTableReorderConfig<T> {
+  onMove: (event: AdminTableReorderEvent<T>) => Promise<void>;
+  getLabel?: (item: T) => string;
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
 interface AdminPaginationConfig {
@@ -49,6 +79,7 @@ interface AdminDataTableProps<T> {
   /** Action slot — rendered top-right (create buttons, etc.). */
   action?: React.ReactNode;
   pagination?: AdminPaginationConfig;
+  reorder?: AdminTableReorderConfig<T>;
   className?: string;
 }
 
@@ -65,8 +96,27 @@ export function AdminDataTable<T>({
   toolbar,
   action,
   pagination,
+  reorder,
   className,
 }: AdminDataTableProps<T>) {
+  const [orderedData, setOrderedData] = React.useState(data);
+  const [isReordering, setIsReordering] = React.useState(false);
+  const previousDataRef = React.useRef(data);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  React.useEffect(() => {
+    if (!isReordering && previousDataRef.current !== data) {
+      setOrderedData(data);
+    }
+    previousDataRef.current = data;
+  }, [data, isReordering]);
+
+  const isReorderDisabled = Boolean(reorder?.disabled || isReordering);
   const columnMap = React.useMemo(
     () => new Map(columns.map((c) => [c.key, c])),
     [columns],
@@ -90,11 +140,45 @@ export function AdminDataTable<T>({
   // TanStack Table returns stateful functions that must not be compiler-memoized.
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
-    data,
+    data: orderedData,
     columns: tanstackColumns,
     getCoreRowModel: getCoreRowModel(),
     getRowId: keyExtractor,
   });
+
+  function handleDragEnd(event: DragEndEvent) {
+    if (!reorder || isReorderDisabled || !event.over) return;
+    if (event.active.id === event.over.id) return;
+
+    const fromIndex = orderedData.findIndex(
+      (row) => keyExtractor(row) === event.active.id,
+    );
+    const toIndex = orderedData.findIndex(
+      (row) => keyExtractor(row) === event.over?.id,
+    );
+    if (fromIndex < 0 || toIndex < 0) return;
+
+    const previousItems = orderedData;
+    const nextItems = arrayMove(orderedData, fromIndex, toIndex);
+    const movedItem = orderedData[fromIndex];
+    if (!movedItem) return;
+
+    setOrderedData(nextItems);
+    setIsReordering(true);
+    void reorder
+      .onMove({
+        item: movedItem,
+        fromIndex,
+        toIndex,
+        items: nextItems,
+      })
+      .catch(() => {
+        setOrderedData(previousItems);
+      })
+      .finally(() => {
+        setIsReordering(false);
+      });
+  }
 
   return (
     <div className={cn("flex h-full min-h-0 flex-col", className)}>
@@ -123,7 +207,7 @@ export function AdminDataTable<T>({
           <div className="flex items-center justify-center py-16">
             <div className="size-6 animate-spin rounded-full border-2 border-border border-t-primary" />
           </div>
-        ) : data.length === 0 ? (
+        ) : orderedData.length === 0 ? (
           <AdminEmptyState
             title={emptyTitle}
             description={emptyDescription}
@@ -131,60 +215,105 @@ export function AdminDataTable<T>({
             action={emptyAction}
           />
         ) : (
-          <table className="w-full text-sm">
-            {/*
-             * bg-muted is opaque so rows scrolling beneath are fully covered;
-             * shadow-sm gives visual separation from the body.
-             */}
-            <TableHeader className="sticky top-0 z-10 bg-muted shadow-sm">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="hover:bg-muted">
-                  {headerGroup.headers.map((header) => {
-                    const col = columnMap.get(header.id);
-                    return (
-                      <TableHead
-                        key={header.id}
-                        className={cn(
-                          "h-auto bg-muted px-4 py-3 text-xs font-medium text-muted-foreground",
-                          col?.headerClassName,
-                        )}
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={orderedData.map(keyExtractor)}
+              strategy={verticalListSortingStrategy}
+            >
+              <table className="w-full text-sm">
+                {/*
+                 * bg-muted is opaque so rows scrolling beneath are fully covered;
+                 * shadow-sm gives visual separation from the body.
+                 */}
+                <TableHeader className="sticky top-0 z-10 bg-muted shadow-sm">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id} className="hover:bg-muted">
+                      {reorder ? (
+                        <TableHead
+                          aria-label="Reordenação"
+                          className="w-10 bg-muted px-2 py-3"
+                        />
+                      ) : null}
+                      {headerGroup.headers.map((header) => {
+                        const col = columnMap.get(header.id);
+                        return (
+                          <TableHead
+                            key={header.id}
+                            className={cn(
+                              "h-auto bg-muted px-4 py-3 text-xs font-medium text-muted-foreground",
+                              col?.headerClassName,
                             )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} className="hover:bg-muted/30">
-                  {row.getVisibleCells().map((cell) => {
-                    const col = columnMap.get(cell.column.id);
-                    return (
-                      <TableCell
-                        key={cell.id}
-                        className={cn(
-                          "px-4 py-3 whitespace-normal",
-                          col?.className,
-                        )}
+                          >
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext(),
+                                )}
+                          </TableHead>
+                        );
+                      })}
+                    </TableRow>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows.map((row) =>
+                    reorder ? (
+                      <AdminSortableTableRow
+                        key={row.id}
+                        id={row.id}
+                        label={reorder.getLabel?.(row.original)}
+                        disabled={isReorderDisabled}
+                        disabledReason={reorder.disabledReason}
                       >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableBody>
-          </table>
+                        {row.getVisibleCells().map((cell) => {
+                          const col = columnMap.get(cell.column.id);
+                          return (
+                            <TableCell
+                              key={cell.id}
+                              className={cn(
+                                "px-4 py-3 whitespace-normal",
+                                col?.className,
+                              )}
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext(),
+                              )}
+                            </TableCell>
+                          );
+                        })}
+                      </AdminSortableTableRow>
+                    ) : (
+                      <TableRow key={row.id} className="hover:bg-muted/30">
+                        {row.getVisibleCells().map((cell) => {
+                          const col = columnMap.get(cell.column.id);
+                          return (
+                            <TableCell
+                              key={cell.id}
+                              className={cn(
+                                "px-4 py-3 whitespace-normal",
+                                col?.className,
+                              )}
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext(),
+                              )}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    ),
+                  )}
+                </TableBody>
+              </table>
+            </SortableContext>
+          </DndContext>
         )}
       </div>
 

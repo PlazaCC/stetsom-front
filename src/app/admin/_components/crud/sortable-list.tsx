@@ -21,18 +21,34 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
 
+export interface SortableListItemControls {
+  index: number;
+  position: number;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
+  moveUp: () => void;
+  moveDown: () => void;
+  isDragging: boolean;
+}
+
 interface SortableListProps<T> {
   items: T[];
   getId: (item: T) => string;
   /** Receives the items in their new order after a drag. */
   onReorder: (items: T[]) => void;
   /** `handle` is the drag-handle element to place wherever you want. */
-  renderItem: (item: T, handle: React.ReactNode) => React.ReactNode;
+  renderItem: (
+    item: T,
+    handle: React.ReactNode,
+    controls: SortableListItemControls,
+  ) => React.ReactNode;
   className?: string;
   /** Sortable strategy. Defaults to `verticalListSortingStrategy` for vertical lists. Use `rectSortingStrategy` for grids. */
   strategy?: SortingStrategy;
   /** Prevents dragging while a reorder mutation is in flight. */
   disabled?: boolean;
+  /** Restricts which items can be dragged while keeping the others droppable. */
+  isItemDraggable?: (item: T) => boolean;
   /** Non-sortable node rendered as the last cell, inside the same container (e.g. an add button). */
   append?: React.ReactNode;
 }
@@ -41,21 +57,29 @@ function SortableItem<T>({
   id,
   item,
   renderItem,
+  controls,
+  draggable = true,
   disabled = false,
 }: {
   id: string;
   item: T;
   renderItem: SortableListProps<T>["renderItem"];
+  controls: Omit<SortableListItemControls, "isDragging">;
+  draggable?: boolean;
   disabled?: boolean;
 }) {
   const {
     attributes,
     listeners,
     setNodeRef,
+    setActivatorNodeRef,
     transform,
     transition,
     isDragging,
-  } = useSortable({ id, disabled });
+  } = useSortable({
+    id,
+    disabled: disabled ? true : { draggable: !draggable },
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -63,8 +87,9 @@ function SortableItem<T>({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const handle = (
+  const handle = draggable ? (
     <button
+      ref={setActivatorNodeRef}
       type="button"
       disabled={disabled}
       aria-label="Reordenar"
@@ -75,11 +100,11 @@ function SortableItem<T>({
     >
       <GripVertical className="size-4" />
     </button>
-  );
+  ) : null;
 
   return (
     <div ref={setNodeRef} style={style}>
-      {renderItem(item, handle)}
+      {renderItem(item, handle, { ...controls, isDragging })}
     </div>
   );
 }
@@ -98,6 +123,7 @@ export function SortableList<T>({
   strategy = verticalListSortingStrategy,
   append,
   disabled = false,
+  isItemDraggable,
 }: SortableListProps<T>) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -115,6 +141,13 @@ export function SortableList<T>({
     onReorder(arrayMove(items, oldIndex, newIndex));
   }
 
+  function move(index: number, direction: -1 | 1) {
+    if (disabled) return;
+    const nextIndex = index + direction;
+    if (nextIndex < 0 || nextIndex >= items.length) return;
+    onReorder(arrayMove(items, index, nextIndex));
+  }
+
   return (
     <DndContext
       sensors={sensors}
@@ -123,13 +156,22 @@ export function SortableList<T>({
     >
       <SortableContext items={items.map(getId)} strategy={strategy}>
         <div className={cn("space-y-2", className)}>
-          {items.map((item) => (
+          {items.map((item, index) => (
             <SortableItem
               key={getId(item)}
               id={getId(item)}
               item={item}
               renderItem={renderItem}
               disabled={disabled}
+              draggable={isItemDraggable?.(item) ?? true}
+              controls={{
+                index,
+                position: index + 1,
+                canMoveUp: !disabled && index > 0,
+                canMoveDown: !disabled && index < items.length - 1,
+                moveUp: () => move(index, -1),
+                moveDown: () => move(index, 1),
+              }}
             />
           ))}
           {append}

@@ -21,9 +21,11 @@ import type {
 import type {
   ApiErrorPayload,
   BannerPayload,
+  BannerPositionsPayload,
   BannersPayload,
   GetApiBannersParams,
   PatchApiBannersIdBody,
+  PatchApiBannersIdPositionBody,
   PostApiBannersBody,
 } from "../../model";
 
@@ -298,6 +300,188 @@ export function usePostApiBanners<
 } {
   const queryOptions = getPostApiBannersQueryOptions(
     postApiBannersBody,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Reposition banner
+ */
+export const patchApiBannersIdPosition = (
+  id: string,
+  patchApiBannersIdPositionBody: PatchApiBannersIdPositionBody,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<BannerPositionsPayload>({
+    url: `/api/banners/${id}/position`,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    data: patchApiBannersIdPositionBody,
+    signal,
+  });
+};
+
+export const getPatchApiBannersIdPositionQueryKey = (
+  id: string,
+  patchApiBannersIdPositionBody?: PatchApiBannersIdPositionBody,
+) => {
+  return [
+    "PATCH",
+    `/api/banners/${id}/position`,
+    patchApiBannersIdPositionBody,
+  ] as const;
+};
+
+export const getPatchApiBannersIdPositionQueryOptions = <
+  TData = Awaited<ReturnType<typeof patchApiBannersIdPosition>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  patchApiBannersIdPositionBody: PatchApiBannersIdPositionBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof patchApiBannersIdPosition>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getPatchApiBannersIdPositionQueryKey(id, patchApiBannersIdPositionBody);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof patchApiBannersIdPosition>>
+  > = ({ signal }) =>
+    patchApiBannersIdPosition(id, patchApiBannersIdPositionBody, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: id !== null && id !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof patchApiBannersIdPosition>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PatchApiBannersIdPositionQueryResult = NonNullable<
+  Awaited<ReturnType<typeof patchApiBannersIdPosition>>
+>;
+export type PatchApiBannersIdPositionQueryError = ApiErrorPayload;
+
+export function usePatchApiBannersIdPosition<
+  TData = Awaited<ReturnType<typeof patchApiBannersIdPosition>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  patchApiBannersIdPositionBody: PatchApiBannersIdPositionBody,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof patchApiBannersIdPosition>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof patchApiBannersIdPosition>>,
+          TError,
+          Awaited<ReturnType<typeof patchApiBannersIdPosition>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePatchApiBannersIdPosition<
+  TData = Awaited<ReturnType<typeof patchApiBannersIdPosition>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  patchApiBannersIdPositionBody: PatchApiBannersIdPositionBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof patchApiBannersIdPosition>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof patchApiBannersIdPosition>>,
+          TError,
+          Awaited<ReturnType<typeof patchApiBannersIdPosition>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePatchApiBannersIdPosition<
+  TData = Awaited<ReturnType<typeof patchApiBannersIdPosition>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  patchApiBannersIdPositionBody: PatchApiBannersIdPositionBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof patchApiBannersIdPosition>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Reposition banner
+ */
+
+export function usePatchApiBannersIdPosition<
+  TData = Awaited<ReturnType<typeof patchApiBannersIdPosition>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  patchApiBannersIdPositionBody: PatchApiBannersIdPositionBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof patchApiBannersIdPosition>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getPatchApiBannersIdPositionQueryOptions(
+    id,
+    patchApiBannersIdPositionBody,
     options,
   );
 
