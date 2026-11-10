@@ -45,7 +45,7 @@ export async function serverOrvalClient<T>(
       throw new OrvalApiError(
         404,
         "MOCK_NOT_FOUND",
-        `No mock data for: ${segments.join("/")}. Run pnpm mock:dump.`,
+        "Este conteúdo não está disponível no modo de demonstração.",
       );
     }
     return {} as T;

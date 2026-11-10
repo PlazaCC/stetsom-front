@@ -16,6 +16,7 @@ import {
 } from "@/api/stetsom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminToast } from "@/hooks/use-admin-toast";
+import { useApiFormErrors } from "@/lib/forms/api-form-errors";
 import { toApiLocale } from "@/i18n/locale";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -88,6 +89,7 @@ export function BannerFormPage(props: Props) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const toast = useAdminToast();
+  const formErrors = useApiFormErrors();
   const isCreating = props.mode === "create";
   const initialBanner = props.mode === "edit" ? props.banner : null;
 
@@ -104,12 +106,18 @@ export function BannerFormPage(props: Props) {
 
   const createBanner = useMutation({
     mutationFn: (body: PostApiBannersBody) => postApiBanners(body),
-    onError: (e) => toast.apiError(e, "Não foi possível criar o banner"),
+    onError: (e) => {
+      formErrors.capture(e);
+      toast.apiError(e, "Não foi possível criar o banner");
+    },
   });
   const updateBanner = useMutation({
     mutationFn: ({ id, body }: { id: string; body: PatchApiBannersIdBody }) =>
       patchApiBannersId(id, body),
-    onError: (e) => toast.apiError(e, "Não foi possível salvar o banner"),
+    onError: (e) => {
+      formErrors.capture(e);
+      toast.apiError(e, "Não foi possível salvar o banner");
+    },
   });
   const deleteBanner = useMutation({
     mutationFn: (id: string) => deleteApiBannersId(id),
@@ -128,6 +136,7 @@ export function BannerFormPage(props: Props) {
     key: K,
     value: BannerFormState[K],
   ) {
+    formErrors.clear(String(key));
     setDraft((prev) => ({ ...prev, [key]: value }));
   }
 
@@ -247,6 +256,8 @@ export function BannerFormPage(props: Props) {
       banners={orderedBanners}
       currentBannerId={initialBanner?.id}
       onReorder={initialBanner ? handleReorder : undefined}
+      errors={formErrors.errors}
+      onClearError={formErrors.clear}
     />
   );
 }

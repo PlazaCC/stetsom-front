@@ -2,7 +2,10 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
+import { RecoveryState } from "@/components/ui/recovery-state";
 
+/** Root fallback for failures above the locale segment. Locale-aware failures
+ * are handled by [locale]/error.tsx, where next-intl is available. */
 export default function GlobalError({
   error,
   unstable_retry,
@@ -16,25 +19,14 @@ export default function GlobalError({
 
   return (
     <html lang="pt-BR">
-      <body className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
-        <main className="max-w-lg text-center">
-          <p className="mb-3 text-sm font-semibold tracking-[0.24em] text-red-500 uppercase">
-            Erro inesperado
-          </p>
-          <h1 className="text-3xl font-bold">
-            Não foi possível carregar a página.
-          </h1>
-          <p className="mt-4 text-white/70">
-            Tente novamente em alguns instantes.
-          </p>
-          <button
-            type="button"
-            onClick={unstable_retry}
-            className="mt-8 rounded-md bg-red-600 px-5 py-3 font-semibold transition-colors hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
-          >
-            Tentar novamente
-          </button>
-        </main>
+      <body>
+        <RecoveryState
+          eyebrow="Erro inesperado"
+          title="Não foi possível carregar a página."
+          description="Tente novamente em alguns instantes."
+          actionLabel="Tentar novamente"
+          onAction={unstable_retry}
+        />
       </body>
     </html>
   );

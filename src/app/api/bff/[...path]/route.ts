@@ -10,7 +10,11 @@
  * dedicated /api/auth/* routes that manage the HttpOnly cookies.
  */
 import { handleMockRequest } from "@/lib/mock/handlers";
-import { getCmsApiBaseUrl, toErrorResponse } from "@/lib/api/route-utils";
+import {
+  getCmsApiBaseUrl,
+  sanitizeUpstreamError,
+  toErrorResponse,
+} from "@/lib/api/route-utils";
 import * as Sentry from "@sentry/nextjs";
 import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
@@ -38,7 +42,7 @@ async function handle(
     // Reject path traversal
     if (path.some((seg) => seg === ".." || seg === ".")) {
       return NextResponse.json(
-        { error: { code: "BAD_REQUEST", message: "Invalid path." } },
+        { error: { code: "BAD_REQUEST", message: "Caminho inválido." } },
         { status: 400 },
       );
     }
@@ -51,7 +55,8 @@ async function handle(
           {
             error: {
               code: "MOCK_NOT_FOUND",
-              message: `No mock data for: ${path.join("/")}. Run pnpm mock:dump.`,
+              message:
+                "Este recurso não está disponível no modo de demonstração.",
             },
           },
           { status: 404 },
@@ -84,7 +89,12 @@ async function handle(
       Number(contentLength) > MAX_MULTIPART_BODY_BYTES
     ) {
       return NextResponse.json(
-        { error: { code: "PAYLOAD_TOO_LARGE", message: "File is too large." } },
+        {
+          error: {
+            code: "PAYLOAD_TOO_LARGE",
+            message: "O arquivo é muito grande.",
+          },
+        },
         { status: 413 },
       );
     }
@@ -137,9 +147,12 @@ async function handle(
     // passed through as raw bytes — never decoded as text, which would corrupt
     // binary downloads such as the XLSX spec sheets.
     const response = isJson
-      ? NextResponse.json(await upstream.json().catch(() => null), {
-          status: upstream.status,
-        })
+      ? NextResponse.json(
+          upstream.status >= 400
+            ? sanitizeUpstreamError(await upstream.json().catch(() => null))
+            : await upstream.json().catch(() => null),
+          { status: upstream.status },
+        )
       : new NextResponse(await upstream.arrayBuffer(), {
           status: upstream.status,
           headers: resContentType

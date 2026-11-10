@@ -29,6 +29,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toApiError } from "@/api/stetsom/orval-client";
+import { useApiFormErrors } from "@/lib/forms/api-form-errors";
 
 interface CategoryFormProps {
   categoryId?: string;
@@ -51,6 +52,7 @@ const EMPTY_DRAFT: CategoryDraft = {
 export function CategoryForm({ categoryId }: CategoryFormProps) {
   const router = useRouter();
   const toast = useAdminToast();
+  const formErrors = useApiFormErrors();
   const queryClient = useQueryClient();
   const isCreating = !categoryId;
   const categoriesQuery = useGetApiCategoriesAdmin();
@@ -114,8 +116,10 @@ export function CategoryForm({ categoryId }: CategoryFormProps) {
       toast.success(isCreating ? "Categoria criada" : "Categoria salva");
       if (isCreating) router.replace(`/admin/categorias/${saved.id}`);
     },
-    onError: (error) =>
-      toast.apiError(error, "Não foi possível salvar a categoria"),
+    onError: (error) => {
+      formErrors.capture(error);
+      toast.apiError(error, "Não foi possível salvar a categoria");
+    },
   });
 
   const deleteMutation = useMutation({
@@ -185,16 +189,32 @@ export function CategoryForm({ categoryId }: CategoryFormProps) {
                   label="Nome"
                   required
                   value={draft.name}
-                  onChange={(name) =>
-                    setDraft((current) => ({ ...current, name }))
-                  }
+                  onChange={(name) => {
+                    formErrors.clear("name");
+                    setDraft((current) => ({ ...current, name }));
+                  }}
+                  fieldPath="name"
+                  errors={{
+                    pt: formErrors.get("name.pt"),
+                    en: formErrors.get("name.en"),
+                    es: formErrors.get("name.es"),
+                  }}
+                  onClearError={(locale) => formErrors.clear(`name.${locale}`)}
                 />
                 <I18nInput
                   label="Path público"
                   value={draft.slug}
-                  onChange={(slug) =>
-                    setDraft((current) => ({ ...current, slug }))
-                  }
+                  onChange={(slug) => {
+                    formErrors.clear("slug");
+                    setDraft((current) => ({ ...current, slug }));
+                  }}
+                  fieldPath="slug"
+                  errors={{
+                    pt: formErrors.get("slug.pt"),
+                    en: formErrors.get("slug.en"),
+                    es: formErrors.get("slug.es"),
+                  }}
+                  onClearError={(locale) => formErrors.clear(`slug.${locale}`)}
                   placeholder="amplificadores"
                 />
               </div>

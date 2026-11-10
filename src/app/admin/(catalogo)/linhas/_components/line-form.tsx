@@ -36,6 +36,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toApiError } from "@/api/stetsom/orval-client";
+import { useApiFormErrors } from "@/lib/forms/api-form-errors";
 
 interface LineFormProps {
   lineId?: string;
@@ -63,6 +64,7 @@ const EMPTY_DRAFT: LineDraft = {
 export function LineForm({ lineId, initialCategoryId }: LineFormProps) {
   const router = useRouter();
   const toast = useAdminToast();
+  const formErrors = useApiFormErrors();
   const queryClient = useQueryClient();
   const isCreating = !lineId;
   const categoriesQuery = useGetApiCategoriesAdmin();
@@ -149,8 +151,10 @@ export function LineForm({ lineId, initialCategoryId }: LineFormProps) {
         );
       }
     },
-    onError: (error) =>
-      toast.apiError(error, "Não foi possível salvar a linha"),
+    onError: (error) => {
+      formErrors.capture(error);
+      toast.apiError(error, "Não foi possível salvar a linha");
+    },
   });
 
   const deleteMutation = useMutation({
@@ -220,16 +224,32 @@ export function LineForm({ lineId, initialCategoryId }: LineFormProps) {
                   label="Nome"
                   required
                   value={draft.name}
-                  onChange={(name) =>
-                    setDraft((current) => ({ ...current, name }))
-                  }
+                  onChange={(name) => {
+                    formErrors.clear("name");
+                    setDraft((current) => ({ ...current, name }));
+                  }}
+                  fieldPath="name"
+                  errors={{
+                    pt: formErrors.get("name.pt"),
+                    en: formErrors.get("name.en"),
+                    es: formErrors.get("name.es"),
+                  }}
+                  onClearError={(locale) => formErrors.clear(`name.${locale}`)}
                 />
                 <I18nInput
                   label="Path público"
                   value={draft.slug}
-                  onChange={(slug) =>
-                    setDraft((current) => ({ ...current, slug }))
-                  }
+                  onChange={(slug) => {
+                    formErrors.clear("slug");
+                    setDraft((current) => ({ ...current, slug }));
+                  }}
+                  fieldPath="slug"
+                  errors={{
+                    pt: formErrors.get("slug.pt"),
+                    en: formErrors.get("slug.en"),
+                    es: formErrors.get("slug.es"),
+                  }}
+                  onClearError={(locale) => formErrors.clear(`slug.${locale}`)}
                   placeholder="vulcan"
                 />
               </div>

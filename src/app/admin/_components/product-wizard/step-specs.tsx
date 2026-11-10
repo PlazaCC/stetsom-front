@@ -15,7 +15,7 @@ import {
   type WizardState,
   type WizardVariation,
 } from "./wizard-store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Combobox,
@@ -43,6 +43,8 @@ interface StepSpecsProps {
   attributeGroups: AttributeGroup[];
   templates: Template[];
   compact?: boolean;
+  errors?: Record<string, string>;
+  onClearError?: (path?: string) => void;
 }
 
 /** One empty line per template attribute, group by group, in template order. */
@@ -75,6 +77,8 @@ export function StepSpecs({
   attributeGroups,
   templates,
   compact = false,
+  errors = {},
+  onClearError,
 }: StepSpecsProps) {
   const [locale, setLocale] = useState<SpecLocale>("pt");
   const [importOpen, setImportOpen] = useState(false);
@@ -92,9 +96,41 @@ export function StepSpecs({
   const active =
     state.variations.find((v) => v.id === state.activeVariationId) ??
     state.variations[0]!;
+  const activeVariationIndex = Math.max(
+    0,
+    state.variations.findIndex((variation) => variation.id === active.id),
+  );
+
+  useEffect(() => {
+    const firstPath = Object.keys(errors).find((path) =>
+      path.startsWith("variants."),
+    );
+    if (!firstPath) return;
+    const match = firstPath.match(/^variants\.(\d+)/);
+    const variationIndex = match ? Number(match[1]) : -1;
+    const variation = state.variations[variationIndex];
+    if (variation && variation.id !== state.activeVariationId) {
+      dispatch({ type: "set_active_variation", id: variation.id });
+    }
+    const locale = firstPath.match(/\.(pt|en|es)$/)?.[1] as
+      | SpecLocale
+      | undefined;
+    if (locale) window.setTimeout(() => setLocale(locale), 0);
+    window.setTimeout(() => {
+      const element = document.querySelector<HTMLElement>(
+        `[data-field-path="${CSS.escape(firstPath)}"]`,
+      );
+      element?.focus();
+      element?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
+  }, [dispatch, errors, locale, state.activeVariationId, state.variations]);
 
   function setVariations(variations: WizardVariation[]) {
     dispatch({ type: "set_variations", variations });
+  }
+
+  function clearVariationErrors() {
+    onClearError?.("variants");
   }
 
   function patchActiveSpecs(specs: WizardSpec[]) {
@@ -104,12 +140,14 @@ export function StepSpecs({
   }
 
   function addVariation() {
+    clearVariationErrors();
     const created = newVariation(state.variations.length + 1, active.specs);
     setVariations([...state.variations, created]);
     dispatch({ type: "set_active_variation", id: created.id });
   }
 
   function removeVariation(id: string) {
+    clearVariationErrors();
     const next = state.variations.filter((v) => v.id !== id);
     setVariations(next);
     if (id === state.activeVariationId && next[0]) {
@@ -133,6 +171,9 @@ export function StepSpecs({
           itemToStringLabel={(item: Template) => item.name["pt"]}
           onValueChange={(template: Template | null) => {
             if (!template) return;
+
+            clearVariationErrors();
+            onClearError?.("template_id");
 
             dispatch({
               type: "apply_template",
@@ -179,6 +220,7 @@ export function StepSpecs({
           productName={state.name.pt}
           variations={state.variations}
           onApply={(variations) => {
+            clearVariationErrors();
             setVariations(variations);
             if (variations[0]) {
               dispatch({ type: "set_active_variation", id: variations[0].id });
@@ -205,18 +247,35 @@ export function StepSpecs({
             onRename={renameVariation}
             onRemove={removeVariation}
             onAdd={addVariation}
+            errors={errors}
+            onClearError={onClearError}
           />
         </div>
         <Tabs value={locale} onValueChange={(v) => setLocale(v as SpecLocale)}>
           <TabsList className="gap-0.5">
-            {LOCALES.map((loc) => (
-              <TabsTrigger key={loc.id} value={loc.id} className="gap-1.5">
-                <loc.Flag />
-                <span className="text-xs font-semibold uppercase">
-                  {loc.label}
-                </span>
-              </TabsTrigger>
-            ))}
+            {LOCALES.map((loc) => {
+              const localeErrors = Object.keys(errors).filter(
+                (path) =>
+                  path.startsWith(`variants.${activeVariationIndex}.`) &&
+                  path.endsWith(`.${loc.id}`),
+              ).length;
+              return (
+                <TabsTrigger
+                  key={loc.id}
+                  value={loc.id}
+                  className="gap-1.5"
+                  aria-invalid={localeErrors > 0}
+                >
+                  <loc.Flag />
+                  <span className="text-xs font-semibold uppercase">
+                    {loc.label}
+                  </span>
+                  {localeErrors > 0 ? (
+                    <span className="text-destructive">•{localeErrors}</span>
+                  ) : null}
+                </TabsTrigger>
+              );
+            })}
           </TabsList>
         </Tabs>
       </div>
@@ -231,6 +290,9 @@ export function StepSpecs({
           locale={locale}
           onChange={patchActiveSpecs}
           compact={compact}
+          variationIndex={activeVariationIndex}
+          errors={errors}
+          onClearError={onClearError}
         />
       </div>
     </div>

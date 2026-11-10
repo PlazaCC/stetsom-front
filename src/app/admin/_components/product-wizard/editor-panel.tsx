@@ -74,6 +74,13 @@ export function EditorPanel({
       <nav className="flex shrink-0 items-stretch gap-0.5 border-b border-border bg-card px-2 py-2">
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
           const isActive = activeSection === id;
+          const errorCount = Object.keys(errors).filter((path) =>
+            id === "specs"
+              ? path.startsWith("variants.")
+              : id === "general"
+                ? !path.startsWith("variants.")
+                : false,
+          ).length;
           return (
             <button
               key={id}
@@ -87,7 +94,17 @@ export function EditorPanel({
               )}
             >
               <Icon className="size-4" />
-              {label}
+              <span className="inline-flex items-center gap-1">
+                {label}
+                {errorCount > 0 ? (
+                  <span
+                    className="text-destructive"
+                    aria-label={`${errorCount} erros`}
+                  >
+                    •{errorCount}
+                  </span>
+                ) : null}
+              </span>
             </button>
           );
         })}
@@ -113,6 +130,8 @@ export function EditorPanel({
             attributeGroups={attributeGroups}
             templates={templates}
             compact={compact}
+            errors={errors}
+            onClearError={onClearError}
           />
         )}
         {activeSection === "files" && (

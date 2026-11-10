@@ -9,6 +9,7 @@ import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
 import { AdminProductPicker } from "@/app/admin/_components/crud/admin-product-picker";
 import { AdminReorderField } from "@/app/admin/_components/crud/admin-reorder-field";
+import { AdminFieldError } from "@/app/admin/_components/crud/admin-field-error";
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
@@ -189,6 +190,8 @@ interface BannerFormProps {
   banners?: Banner[];
   currentBannerId?: string;
   onReorder?: (items: Banner[]) => Promise<void>;
+  errors?: Record<string, string>;
+  onClearError?: (path?: string) => void;
 }
 
 export function BannerForm({
@@ -203,6 +206,8 @@ export function BannerForm({
   banners = [],
   currentBannerId,
   onReorder,
+  errors = {},
+  onClearError,
 }: BannerFormProps) {
   const [destinationType, setDestinationType] = useState<"product" | "link">(
     draft.product_id ? "product" : "link",
@@ -240,10 +245,19 @@ export function BannerForm({
                 <AdminLabel>Nome do banner *</AdminLabel>
                 <Input
                   required
+                  name="name"
+                  aria-invalid={Boolean(errors.name)}
+                  aria-describedby={
+                    errors.name ? "banner-name-error" : undefined
+                  }
                   value={draft.name}
-                  onChange={(e) => onDraftChange("name", e.target.value)}
+                  onChange={(e) => {
+                    onClearError?.("name");
+                    onDraftChange("name", e.target.value);
+                  }}
                   placeholder="Ex: ST-4000EQ — Lançamento 2026"
                 />
+                <AdminFieldError id="banner-name-error" message={errors.name} />
               </div>
 
               <div>
@@ -261,7 +275,11 @@ export function BannerForm({
                     }
                   }}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger
+                    className="w-full"
+                    data-field-path="product_id"
+                    aria-invalid={errors.product_id ? true : undefined}
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -279,16 +297,21 @@ export function BannerForm({
                       value={draft.product_id}
                       onChange={(value) => onDraftChange("product_id", value)}
                     />
+                    <AdminFieldError message={errors.product_id} />
                   </div>
                   <div>
                     <AdminLabel>Parâmetros da URL do produto</AdminLabel>
                     <Input
                       value={draft.link_url}
+                      name="link_url"
+                      data-field-path="link_url"
+                      aria-invalid={errors.link_url ? true : undefined}
                       onChange={(e) =>
                         onDraftChange("link_url", e.target.value)
                       }
                       placeholder="?utm_source=home"
                     />
+                    <AdminFieldError message={errors.link_url} />
                   </div>
                 </div>
               ) : (
@@ -297,9 +320,13 @@ export function BannerForm({
                   <Input
                     type="url"
                     value={draft.href}
+                    name="href"
+                    data-field-path="href"
+                    aria-invalid={errors.href ? true : undefined}
                     onChange={(e) => onDraftChange("href", e.target.value)}
                     placeholder="https://exemplo.com/promocao"
                   />
+                  <AdminFieldError message={errors.href} />
                 </div>
               )}
 
@@ -307,6 +334,13 @@ export function BannerForm({
                 label="Título do banner"
                 value={draft.title}
                 onChange={(title) => onDraftChange("title", title)}
+                fieldPath="title"
+                errors={{
+                  pt: errors["title.pt"],
+                  en: errors["title.en"],
+                  es: errors["title.es"],
+                }}
+                onClearError={(locale) => onClearError?.(`title.${locale}`)}
                 placeholder="Texto que aparece sobre o banner"
               />
 
@@ -379,7 +413,11 @@ export function BannerForm({
                       onDraftChange("locale", value ?? "")
                     }
                   >
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger
+                      className="w-full"
+                      data-field-path="locale"
+                      aria-invalid={errors.locale ? true : undefined}
+                    >
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -397,7 +435,11 @@ export function BannerForm({
                       if (value) onDraftChange("status", value as BannerStatus);
                     }}
                   >
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger
+                      className="w-full"
+                      data-field-path="status"
+                      aria-invalid={errors.status ? true : undefined}
+                    >
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -421,21 +463,29 @@ export function BannerForm({
                   <AdminLabel>Início</AdminLabel>
                   <Input
                     type="date"
+                    name="display_from"
+                    data-field-path="display_from"
+                    aria-invalid={errors.display_from ? true : undefined}
                     value={draft.display_from}
                     onChange={(e) =>
                       onDraftChange("display_from", e.target.value)
                     }
                   />
+                  <AdminFieldError message={errors.display_from} />
                 </div>
                 <div>
                   <AdminLabel>Fim</AdminLabel>
                   <Input
                     type="date"
+                    name="display_until"
+                    data-field-path="display_until"
+                    aria-invalid={errors.display_until ? true : undefined}
                     value={draft.display_until}
                     onChange={(e) =>
                       onDraftChange("display_until", e.target.value)
                     }
                   />
+                  <AdminFieldError message={errors.display_until} />
                 </div>
               </div>
             </AdminFormSectionContent>
@@ -451,6 +501,9 @@ export function BannerForm({
                     variant="image"
                     accept="image/*"
                     hint={BANNER_IMAGE_HINTS.desktop}
+                    fieldPath="desktop_image_library_id"
+                    error={errors.desktop_image_library_id}
+                    errorId="banner-desktop-image-error"
                     onChange={(asset: LibraryPickedAsset | null) =>
                       onDraftChange(
                         "desktop_image_library_id",
@@ -471,6 +524,9 @@ export function BannerForm({
                     variant="image"
                     accept="image/*"
                     hint={BANNER_IMAGE_HINTS.mobile}
+                    fieldPath="mobile_image_library_id"
+                    error={errors.mobile_image_library_id}
+                    errorId="banner-mobile-image-error"
                     onChange={(asset: LibraryPickedAsset | null) =>
                       onDraftChange(
                         "mobile_image_library_id",

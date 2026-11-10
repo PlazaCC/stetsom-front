@@ -52,8 +52,23 @@ export function ContactForm({
     if (result.ok) {
       setSent(true);
     } else {
-      setError(result.message);
-      setFieldErrors(result.fields);
+      const message =
+        result.code === "NETWORK_ERROR"
+          ? t("errors.network")
+          : result.code === "NOT_CONFIGURED" ||
+              result.code === "SERVICE_UNAVAILABLE"
+            ? t("errors.unavailable")
+            : result.code === "TOO_MANY_REQUESTS"
+              ? t("errors.rateLimit")
+              : result.code === "VALIDATION_ERROR"
+                ? t("errors.validation")
+                : t("errors.generic");
+      setError(message);
+      setFieldErrors(
+        Object.fromEntries(
+          Object.keys(result.fields).map((key) => [key, t("errors.field")]),
+        ),
+      );
     }
   }
 

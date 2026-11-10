@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AdminFieldError } from "./admin-field-error";
 import { BrFlag, EsFlag, UsFlag } from "@/components/ui/flag-icons";
 
 export type I18nLocale = "pt" | "en" | "es";
@@ -37,6 +38,8 @@ interface I18nInputProps {
   /** API field path prefix, e.g. `name` produces `name.pt`. */
   fieldPath?: string;
   className?: string;
+  errors?: Partial<Record<Locale, string>>;
+  onClearError?: (locale: Locale) => void;
 }
 
 /**
@@ -56,6 +59,8 @@ export function I18nInput({
   invalid,
   fieldPath,
   className,
+  errors,
+  onClearError,
 }: I18nInputProps) {
   const [active, setActive] = useState<Locale>("pt");
   const current: I18nString = value ?? { pt: "" };
@@ -84,6 +89,7 @@ export function I18nInput({
           <TabsList className="ml-auto gap-0.5">
             {LOCALES.map((loc) => {
               const filled = loc.id === "pt" ? !!current.pt : !!current[loc.id];
+              const isInvalid = Boolean(invalid?.[loc.id] || errors?.[loc.id]);
               return (
                 <TabsTrigger
                   key={loc.id}
@@ -94,7 +100,7 @@ export function I18nInput({
                   <span className="text-xs leading-2 font-semibold uppercase">
                     {loc.label}
                   </span>
-                  {invalid?.[loc.id] ? (
+                  {isInvalid ? (
                     <span className="size-1.5 rounded-full bg-destructive" />
                   ) : (
                     !filled && (
@@ -113,29 +119,50 @@ export function I18nInput({
         {LOCALES.map((loc) => {
           const fieldValue =
             (loc.id === "pt" ? current.pt : current[loc.id]) ?? "";
+          const isInvalid = Boolean(invalid?.[loc.id] || errors?.[loc.id]);
           return (
             <TabsContent key={loc.id} value={loc.id} keepMounted={false}>
               {multiline ? (
                 <Textarea
                   className="min-h-24"
                   required={loc.required && required}
-                  aria-invalid={invalid?.[loc.id] || undefined}
+                  aria-invalid={isInvalid || undefined}
+                  aria-describedby={
+                    errors?.[loc.id]
+                      ? `${fieldPath ?? label ?? "field"}.${loc.id}-error`
+                      : undefined
+                  }
                   name={fieldPath ? `${fieldPath}.${loc.id}` : undefined}
                   placeholder={placeholder}
                   value={fieldValue}
-                  onChange={(e) => set(loc.id, e.target.value)}
+                  onChange={(e) => {
+                    onClearError?.(loc.id);
+                    set(loc.id, e.target.value);
+                  }}
                 />
               ) : (
                 <Input
                   type={type}
                   required={loc.required && required}
-                  aria-invalid={invalid?.[loc.id] || undefined}
+                  aria-invalid={isInvalid || undefined}
+                  aria-describedby={
+                    errors?.[loc.id]
+                      ? `${fieldPath ?? label ?? "field"}.${loc.id}-error`
+                      : undefined
+                  }
                   name={fieldPath ? `${fieldPath}.${loc.id}` : undefined}
                   placeholder={placeholder}
                   value={fieldValue}
-                  onChange={(e) => set(loc.id, e.target.value)}
+                  onChange={(e) => {
+                    onClearError?.(loc.id);
+                    set(loc.id, e.target.value);
+                  }}
                 />
               )}
+              <AdminFieldError
+                id={`${fieldPath ?? label ?? "field"}.${loc.id}-error`}
+                message={errors?.[loc.id]}
+              />
             </TabsContent>
           );
         })}

@@ -5,6 +5,7 @@ interface AdminFormFieldProps {
   label: string;
   required?: boolean;
   error?: string;
+  errorId?: string;
   description?: string;
   children: React.ReactNode;
   className?: string;
@@ -14,6 +15,7 @@ export function AdminFormField({
   label,
   required,
   error,
+  errorId,
   description,
   children,
   className,
@@ -32,7 +34,7 @@ export function AdminFormField({
       {description && !error ? (
         <p className="text-xs text-muted-foreground">{description}</p>
       ) : null}
-      <AdminFieldError message={error} />
+      <AdminFieldError id={errorId} message={error} />
     </div>
   );
 }

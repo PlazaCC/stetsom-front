@@ -1,5 +1,6 @@
 import { toast } from "sonner";
-import { getApiErrorMessage } from "@/lib/api/error-utils";
+import { getApiError, getApiErrorMessage } from "@/lib/api/error-utils";
+import { createElement } from "react";
 
 export function useAdminToast() {
   return {
@@ -15,7 +16,24 @@ export function useAdminToast() {
 
     /** Error toast whose message is resolved from the contract error code. */
     apiError(error: unknown, fallback: string) {
-      toast.error(getApiErrorMessage(error, fallback));
+      const apiError = getApiError(error);
+      const messages = Object.values(apiError.fields);
+      if (messages.length <= 1) {
+        toast.error(messages[0] ?? getApiErrorMessage(error, fallback));
+        return;
+      }
+
+      const visible = messages.slice(0, 3).join("\n");
+      const remaining = messages.length - 3;
+      toast.error(`Corrija ${messages.length} campos`, {
+        description: createElement(
+          "span",
+          { className: "whitespace-pre-line" },
+          remaining > 0
+            ? `${visible}\n+ ${remaining} campo(s) com erro.`
+            : visible,
+        ),
+      });
     },
 
     draft(name?: string) {

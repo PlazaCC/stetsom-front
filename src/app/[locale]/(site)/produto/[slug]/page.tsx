@@ -14,6 +14,8 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { cache } from "react";
 import { ProductDetailView } from "./_components/product-detail-view";
 import { PreviewBanner } from "./_components/preview-banner";
+import { getTranslations } from "next-intl/server";
+import * as Sentry from "@sentry/nextjs";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -77,18 +79,38 @@ export default async function ProductPage(props: ProductPageProps) {
   const apiLocale = toApiLocale(locale);
   const { isEnabled } = await draftMode();
   const isPreview = preview === "true" || isEnabled;
-  const payload = await (
-    isPreview
-      ? getApiProductsPreviewSlug(slug, {
-          locale: apiLocale,
-        } satisfies GetApiProductsPreviewSlugParams)
-      : getPublicProduct(
-          slug,
-          apiLocale satisfies GetApiProductsSlugParams["locale"],
-        )
-  ).catch(() => null);
+  const result = await (async () => {
+    try {
+      const payload = await (isPreview
+        ? getApiProductsPreviewSlug(slug, {
+            locale: apiLocale,
+          } satisfies GetApiProductsPreviewSlugParams)
+        : getPublicProduct(
+            slug,
+            apiLocale satisfies GetApiProductsSlugParams["locale"],
+          ));
+      return { payload, error: null };
+    } catch (error) {
+      return { payload: null, error };
+    }
+  })();
+  const { payload, error: requestError } = result;
 
-  if (!payload) notFound();
+  if (!payload) {
+    const status = (requestError as { status?: number })?.status;
+    const code = (requestError as { code?: string })?.code;
+    if (status === 404 || code === "NOT_FOUND") notFound();
+    if (requestError) Sentry.captureException(requestError);
+    const t = await getTranslations("PublicErrors");
+    return (
+      <section className="flex min-h-100 flex-col items-center justify-center gap-4 px-6 text-center">
+        <h1 className="font-sans-condensed text-3xl font-black text-brand-dark">
+          {t("unavailableTitle")}
+        </h1>
+        <p className="text-text-subtle">{t("unavailableDescription")}</p>
+      </section>
+    );
+  }
 
   const { product, category, relatedProducts } = payload;
   if (product.slug !== slug) {

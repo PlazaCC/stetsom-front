@@ -10,6 +10,7 @@ import { AdminFileUpload } from "./admin-file-upload";
 import { AdminLabel } from "./admin-input";
 import { AdminPagination } from "./admin-pagination";
 import { AdminSearchInput } from "./admin-search-input";
+import { AdminFieldError } from "./admin-field-error";
 import {
   currentAssetUrl,
   type LibraryAssetRef,
@@ -31,6 +32,9 @@ interface LibraryAssetPickerProps {
   /** Guidance shown under the picker and in the upload dropzone (e.g. recommended size). */
   hint?: string;
   className?: string;
+  error?: string;
+  errorId?: string;
+  fieldPath?: string;
 }
 
 export function LibraryAssetPicker({
@@ -43,6 +47,9 @@ export function LibraryAssetPicker({
   variant = "image",
   hint,
   className,
+  error,
+  errorId,
+  fieldPath,
 }: LibraryAssetPickerProps) {
   const [open, setOpen] = useState(false);
 
@@ -62,7 +69,11 @@ export function LibraryAssetPicker({
       {label && <AdminLabel>{label}</AdminLabel>}
 
       {previewUrl ? (
-        <div className="flex items-center gap-3 rounded-md border border-border bg-card p-2">
+        <div
+          className="flex items-center gap-3 rounded-md border border-border bg-card p-2"
+          data-field-path={fieldPath}
+          aria-invalid={error ? true : undefined}
+        >
           {variant === "image" ? (
             <div className="relative size-16 shrink-0 overflow-hidden rounded bg-muted">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -102,6 +113,7 @@ export function LibraryAssetPicker({
       ) : (
         <button
           type="button"
+          data-field-path={fieldPath}
           onClick={() => setOpen(true)}
           className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card py-6 text-sm text-muted-foreground hover:border-primary hover:text-foreground"
         >
@@ -115,6 +127,7 @@ export function LibraryAssetPicker({
       )}
 
       {hint && <p className="mt-1.5 text-xs text-muted-foreground">{hint}</p>}
+      <AdminFieldError id={errorId} message={error} />
 
       {open && (
         <LibraryPickerModal

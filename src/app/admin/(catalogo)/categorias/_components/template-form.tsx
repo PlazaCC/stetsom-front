@@ -34,6 +34,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAdminToast } from "@/hooks/use-admin-toast";
+import { useApiFormErrors } from "@/lib/forms/api-form-errors";
+import { AdminFieldError } from "@/app/admin/_components/crud/admin-field-error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FileSpreadsheet, X } from "lucide-react";
 import Link from "next/link";
@@ -125,6 +127,7 @@ function TemplateFormInner({
   const router = useRouter();
   const queryClient = useQueryClient();
   const toast = useAdminToast();
+  const formErrors = useApiFormErrors();
   const { data: allAttributes = [] } = useGetApiAttributes();
   const { data: allGroups = [] } = useGetApiAttributeGroups();
   const { data: categories = [] } = useGetApiCategoriesAdmin();
@@ -190,7 +193,10 @@ function TemplateFormInner({
       toast.success("Template criado");
       router.push(backHref);
     },
-    onError: (e) => toast.apiError(e, "Não foi possível criar o template"),
+    onError: (e) => {
+      formErrors.capture(e);
+      toast.apiError(e, "Não foi possível criar o template");
+    },
   });
 
   const updateMutation = useMutation({
@@ -201,7 +207,10 @@ function TemplateFormInner({
       toast.success("Template salvo");
       router.push(backHref);
     },
-    onError: (e) => toast.apiError(e, "Não foi possível salvar o template"),
+    onError: (e) => {
+      formErrors.capture(e);
+      toast.apiError(e, "Não foi possível salvar o template");
+    },
   });
 
   const deleteMutation = useMutation({
@@ -296,7 +305,22 @@ function TemplateFormInner({
               {categoryName}
             </p>
           </div>
-          <I18nInput label="Nome" required value={name} onChange={setName} />
+          <I18nInput
+            label="Nome"
+            required
+            value={name}
+            onChange={(next) => {
+              formErrors.clear("name");
+              setName(next);
+            }}
+            fieldPath="name"
+            errors={{
+              pt: formErrors.get("name.pt"),
+              en: formErrors.get("name.en"),
+              es: formErrors.get("name.es"),
+            }}
+            onClearError={(locale) => formErrors.clear(`name.${locale}`)}
+          />
 
           <div>
             <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
@@ -339,9 +363,13 @@ function TemplateFormInner({
             <SortableList
               items={groups}
               getId={(g) => g.group_id}
-              onReorder={(next) => update(() => next)}
+              onReorder={(next) => {
+                formErrors.clear("groups");
+                update(() => next);
+              }}
               renderItem={(group, handle) => (
                 <TemplateGroupCard
+                  groupIndex={groups.indexOf(group)}
                   name={groupName(group.group_id)}
                   handle={handle}
                   attributeIds={group.attribute_ids}
@@ -357,11 +385,14 @@ function TemplateFormInner({
                   onMoveAttribute={(attributeId, to) =>
                     moveAttribute(attributeId, group.group_id, to)
                   }
-                  onRemove={() =>
+                  onRemove={() => {
+                    formErrors.clear("groups");
                     update((prev) =>
                       prev.filter((g) => g.group_id !== group.group_id),
-                    )
-                  }
+                    );
+                  }}
+                  errors={formErrors.errors}
+                  onClearError={formErrors.clear}
                 />
               )}
             />
@@ -412,6 +443,7 @@ function TemplateFormInner({
 }
 
 interface TemplateGroupCardProps {
+  groupIndex: number;
   name: string;
   handle: React.ReactNode;
   attributeIds: string[];
@@ -421,9 +453,12 @@ interface TemplateGroupCardProps {
   onChange: (attributeIds: string[]) => void;
   onMoveAttribute: (attributeId: string, toGroupId: string) => void;
   onRemove: () => void;
+  errors: Record<string, string>;
+  onClearError: (path?: string) => void;
 }
 
 function TemplateGroupCard({
+  groupIndex,
   name,
   handle,
   attributeIds,
@@ -433,7 +468,10 @@ function TemplateGroupCard({
   onChange,
   onMoveAttribute,
   onRemove,
+  errors,
+  onClearError,
 }: TemplateGroupCardProps) {
+  const groupPath = `groups.${groupIndex}.group_id`;
   return (
     <div className="rounded-md border border-border bg-card">
       <div className="flex items-center gap-2 border-b border-border px-3 py-2">
@@ -467,45 +505,57 @@ function TemplateGroupCard({
           className="space-y-1"
           renderItem={(attributeId, attributeHandle) => {
             const attribute = allAttributes.find((a) => a.id === attributeId);
+            const attributeIndex = attributeIds.indexOf(attributeId);
+            const attributePath = `groups.${groupIndex}.attributes.${attributeIndex}.attribute_id`;
             return (
-              <div className="flex items-center gap-2 rounded bg-muted/50 px-2 py-1.5">
-                {attributeHandle}
-                <span className="flex-1 text-sm text-foreground">
-                  {attribute?.name.pt ?? attributeId}
-                </span>
-                {otherGroups.length > 0 && (
-                  <Select
-                    value=""
-                    onValueChange={(to) => {
-                      if (to) onMoveAttribute(attributeId, to);
-                    }}
-                  >
-                    <SelectTrigger
-                      size="sm"
-                      className="h-7 w-auto gap-1 border-none bg-transparent px-1.5 text-xs text-muted-foreground shadow-none"
-                      aria-label="Mover para outro grupo"
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 rounded bg-muted/50 px-2 py-1.5">
+                  {attributeHandle}
+                  <span className="flex-1 text-sm text-foreground">
+                    {attribute?.name.pt ?? attributeId}
+                  </span>
+                  {otherGroups.length > 0 && (
+                    <Select
+                      value=""
+                      onValueChange={(to) => {
+                        if (to) {
+                          onClearError("groups");
+                          onClearError(attributePath);
+                          onMoveAttribute(attributeId, to);
+                        }
+                      }}
                     >
-                      <SelectValue placeholder="Mover" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {otherGroups.map((group) => (
-                        <SelectItem key={group.id} value={group.id}>
-                          {group.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-                <button
-                  type="button"
-                  onClick={() =>
-                    onChange(attributeIds.filter((id) => id !== attributeId))
-                  }
-                  aria-label="Remover atributo"
-                  className="text-destructive hover:opacity-80"
-                >
-                  <X className="size-3.5" />
-                </button>
+                      <SelectTrigger
+                        size="sm"
+                        className="h-7 w-auto gap-1 border-none bg-transparent px-1.5 text-xs text-muted-foreground shadow-none"
+                        aria-label="Mover para outro grupo"
+                        data-field-path={groupPath}
+                        aria-invalid={errors[groupPath] ? true : undefined}
+                      >
+                        <SelectValue placeholder="Mover" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {otherGroups.map((group) => (
+                          <SelectItem key={group.id} value={group.id}>
+                            {group.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClearError("groups");
+                      onChange(attributeIds.filter((id) => id !== attributeId));
+                    }}
+                    aria-label="Remover atributo"
+                    className="text-destructive hover:opacity-80"
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                </div>
+                <AdminFieldError message={errors[attributePath]} />
               </div>
             );
           }}
@@ -514,10 +564,20 @@ function TemplateGroupCard({
           <Select
             value=""
             onValueChange={(value) => {
-              if (value) onChange([...attributeIds, value]);
+              if (value) {
+                onClearError("groups");
+                onClearError(
+                  `groups.${groupIndex}.attributes.${attributeIds.length}.attribute_id`,
+                );
+                onChange([...attributeIds, value]);
+              }
             }}
           >
-            <SelectTrigger className="mt-1 w-full">
+            <SelectTrigger
+              className="mt-1 w-full"
+              data-field-path={groupPath}
+              aria-invalid={errors[groupPath] ? true : undefined}
+            >
               <SelectValue placeholder="Adicionar atributo ao grupo..." />
             </SelectTrigger>
             <SelectContent>
@@ -529,6 +589,10 @@ function TemplateGroupCard({
             </SelectContent>
           </Select>
         )}
+        <AdminFieldError
+          id={`${groupPath}-error`}
+          message={errors[groupPath]}
+        />
       </div>
     </div>
   );

@@ -5,7 +5,36 @@ type ErrorPayload = {
   error?: {
     code?: string;
     message?: string;
+    fields?: Record<string, string>;
   };
+};
+
+const SAFE_UPSTREAM_CODES = new Set([
+  "BAD_REQUEST",
+  "NOT_FOUND",
+  "CONFLICT",
+  "UNAUTHORIZED",
+  "FORBIDDEN",
+  "VALIDATION_ERROR",
+  "PAYLOAD_TOO_LARGE",
+  "TOO_MANY_REQUESTS",
+  "SERVICE_UNAVAILABLE",
+  "NOT_CONFIGURED",
+  "INTERNAL_ERROR",
+]);
+
+const SAFE_ERROR_MESSAGES: Record<string, string> = {
+  BAD_REQUEST: "Não foi possível processar a solicitação.",
+  NOT_FOUND: "Recurso não encontrado.",
+  CONFLICT: "Não foi possível concluir porque os dados entram em conflito.",
+  UNAUTHORIZED: "Autenticação necessária.",
+  FORBIDDEN: "Você não tem permissão para realizar esta ação.",
+  VALIDATION_ERROR: "Revise os dados enviados.",
+  PAYLOAD_TOO_LARGE: "O arquivo ou conteúdo enviado é muito grande.",
+  TOO_MANY_REQUESTS: "Muitas tentativas. Aguarde e tente novamente.",
+  SERVICE_UNAVAILABLE: "Serviço temporariamente indisponível.",
+  NOT_CONFIGURED: "Serviço temporariamente indisponível.",
+  INTERNAL_ERROR: "Não foi possível concluir a operação. Tente novamente.",
 };
 
 export function getCmsApiBaseUrl(): string {
@@ -56,10 +85,11 @@ export async function readUpstreamError(
   if (contentType.includes("application/json")) {
     try {
       const body = (await response.json()) as ErrorPayload;
-      return {
-        code: body.error?.code ?? fallbackCode,
-        message: body.error?.message ?? fallbackMessage,
-      };
+      const code =
+        body.error?.code && SAFE_UPSTREAM_CODES.has(body.error.code)
+          ? body.error.code
+          : fallbackCode;
+      return { code, message: SAFE_ERROR_MESSAGES[code] ?? fallbackMessage };
     } catch {
       return {
         code: fallbackCode,
@@ -68,11 +98,42 @@ export async function readUpstreamError(
     }
   }
 
-  const text = await response.text().catch(() => "");
-
   return {
     code: fallbackCode,
-    message: text.trim() || fallbackMessage,
+    message: fallbackMessage,
+  };
+}
+
+export function sanitizeUpstreamError(
+  payload: unknown,
+  fallbackCode = "INTERNAL_ERROR",
+): {
+  error: { code: string; message: string; fields?: Record<string, string> };
+} {
+  const candidate =
+    payload && typeof payload === "object" && "error" in payload
+      ? (payload as { error?: unknown }).error
+      : undefined;
+  const error = candidate && typeof candidate === "object" ? candidate : {};
+  const rawCode =
+    "code" in error && typeof error.code === "string" ? error.code : "";
+  const code = SAFE_UPSTREAM_CODES.has(rawCode) ? rawCode : fallbackCode;
+  const rawFields = "fields" in error && error.fields;
+  const fields =
+    code === "VALIDATION_ERROR" && rawFields && typeof rawFields === "object"
+      ? Object.fromEntries(
+          Object.entries(rawFields).filter(
+            ([key, value]) =>
+              /^[A-Za-z0-9_.-]+$/.test(key) && typeof value === "string",
+          ),
+        )
+      : undefined;
+  return {
+    error: {
+      code,
+      message: SAFE_ERROR_MESSAGES[code] ?? SAFE_ERROR_MESSAGES.INTERNAL_ERROR,
+      ...(fields && Object.keys(fields).length > 0 ? { fields } : {}),
+    },
   };
 }
 
@@ -100,8 +161,8 @@ export function toErrorResponse(error: unknown) {
   return NextResponse.json(
     {
       error: {
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Unexpected server error",
+        code: "INTERNAL_ERROR",
+        message: "Não foi possível concluir a operação. Tente novamente.",
       },
     },
     { status: 500 },

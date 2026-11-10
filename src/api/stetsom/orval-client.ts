@@ -39,6 +39,20 @@ export class OrvalApiError extends Error {
   }
 }
 
+const API_ERROR_CODES = new Set([
+  "BAD_REQUEST",
+  "NOT_FOUND",
+  "CONFLICT",
+  "UNAUTHORIZED",
+  "FORBIDDEN",
+  "NOT_CONFIGURED",
+  "SERVICE_UNAVAILABLE",
+  "INTERNAL_ERROR",
+  "TOO_MANY_REQUESTS",
+  "PAYLOAD_TOO_LARGE",
+  "VALIDATION_ERROR",
+]);
+
 /** Maps an Axios error (or any thrown value) to a typed OrvalApiError. */
 export function toApiError(err: unknown): OrvalApiError {
   const e = err as AxiosError<{
@@ -48,11 +62,32 @@ export function toApiError(err: unknown): OrvalApiError {
       fields?: Record<string, string>;
     };
   }>;
+  const status = e.response?.status ?? 0;
+  const upstreamCode = e.response?.data?.error?.code;
+  const code =
+    upstreamCode && API_ERROR_CODES.has(upstreamCode)
+      ? upstreamCode
+      : status >= 500
+        ? "INTERNAL_ERROR"
+        : "UNKNOWN";
+  const message =
+    status >= 500 || status === 0
+      ? "Não foi possível concluir a operação. Tente novamente."
+      : (e.response?.data?.error?.message ??
+        "Não foi possível concluir a solicitação.");
+  const fields = e.response?.data?.error?.fields;
   return new OrvalApiError(
-    e.response?.status ?? 0,
-    e.response?.data?.error?.code ?? "UNKNOWN",
-    e.response?.data?.error?.message ?? e.message ?? "Request failed",
-    e.response?.data?.error?.fields ?? {},
+    status,
+    code,
+    message,
+    fields && typeof fields === "object"
+      ? Object.fromEntries(
+          Object.entries(fields).filter(
+            ([key, value]) =>
+              /^[A-Za-z0-9_.-]+$/.test(key) && typeof value === "string",
+          ),
+        )
+      : {},
   );
 }
 

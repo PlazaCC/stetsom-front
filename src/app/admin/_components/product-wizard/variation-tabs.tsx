@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { AdminFieldError } from "@/app/admin/_components/crud/admin-field-error";
 import { Plus, X } from "lucide-react";
 import type { WizardVariation } from "./wizard-store";
 
@@ -11,6 +12,8 @@ interface VariationTabsProps {
   onRename: (id: string, label: string) => void;
   onRemove: (id: string) => void;
   onAdd: () => void;
+  errors?: Record<string, string>;
+  onClearError?: (path?: string) => void;
 }
 
 /** Segmented variation control: "1 Ohm", "2 Ohm", "+". The active tab is editable. */
@@ -21,11 +24,17 @@ export function VariationTabs({
   onRename,
   onRemove,
   onAdd,
+  errors = {},
+  onClearError,
 }: VariationTabsProps) {
   return (
     <div className="inline-flex items-center gap-1 rounded-md bg-muted p-1">
       {variations.map((v) => {
         const active = v.id === activeId;
+        const variationIndex = variations.indexOf(v);
+        const errorCount = Object.keys(errors).filter((path) =>
+          path.startsWith(`variants.${variationIndex}.`),
+        ).length;
         return (
           <div
             key={v.id}
@@ -33,14 +42,30 @@ export function VariationTabs({
               "flex items-center gap-1 rounded px-1 transition-colors",
               active ? "bg-card shadow-cms-card" : "",
             )}
+            aria-invalid={errorCount > 0}
           >
             {active ? (
-              <input
-                value={v.label}
-                onChange={(e) => onRename(v.id, e.target.value)}
-                className="w-16 bg-transparent px-1 py-1 text-sm font-medium text-foreground outline-none"
-                aria-label="Nome da variação"
-              />
+              <div>
+                <input
+                  value={v.label}
+                  name={`variants.${variationIndex}.name`}
+                  data-field-path={`variants.${variationIndex}.name`}
+                  aria-invalid={Boolean(
+                    errors[`variants.${variationIndex}.name`],
+                  )}
+                  required
+                  onChange={(e) => {
+                    onClearError?.(`variants.${variationIndex}.name`);
+                    onRename(v.id, e.target.value);
+                  }}
+                  className="w-16 bg-transparent px-1 py-1 text-sm font-medium text-foreground outline-none"
+                  aria-label="Nome da variação"
+                />
+                <AdminFieldError
+                  id={`variants.${variationIndex}.name-error`}
+                  message={errors[`variants.${variationIndex}.name`]}
+                />
+              </div>
             ) : (
               <button
                 type="button"
@@ -50,6 +75,14 @@ export function VariationTabs({
                 {v.label}
               </button>
             )}
+            {errorCount > 0 ? (
+              <span
+                className="text-xs text-destructive"
+                aria-label={`${errorCount} erros`}
+              >
+                •{errorCount}
+              </span>
+            ) : null}
             {active && variations.length > 1 && (
               <button
                 type="button"

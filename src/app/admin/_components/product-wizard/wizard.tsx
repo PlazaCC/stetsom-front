@@ -54,6 +54,12 @@ export function ProductWizard({ initial, mode }: ProductWizardProps) {
     deleted: deleteMutation.isSuccess,
   });
 
+  useEffect(() => {
+    if (formErrors.firstPath?.startsWith("variants.")) {
+      window.setTimeout(() => setSelection({ kind: "specs" }), 0);
+    }
+  }, [formErrors.firstPath]);
+
   // Escape collapses a drill-in selection back to its section root. Covers focus
   // in the panel; the preview frame handles Escape for clicks on the canvas.
   useEffect(() => {

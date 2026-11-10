@@ -52,5 +52,11 @@ export function useApiFormErrors() {
     clear,
     focusFirst,
     get: (path: string) => errors[path],
+    has: (path: string) => Boolean(errors[path]),
+    hasDescendant: (path: string) =>
+      Object.keys(errors).some(
+        (key) => key === path || key.startsWith(`${path}.`),
+      ),
+    firstPath: Object.keys(errors)[0],
   };
 }

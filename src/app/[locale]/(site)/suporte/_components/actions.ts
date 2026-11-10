@@ -9,7 +9,6 @@ export type ContactResult =
   | {
       ok: false;
       code: string;
-      message: string;
       fields: Record<string, string>;
     };
 
@@ -23,15 +22,31 @@ export async function submitContact(
     if (err instanceof OrvalApiError) {
       return {
         ok: false,
-        code: err.code,
-        message: err.message,
-        fields: err.fields,
+        code:
+          err.status === 0
+            ? "NETWORK_ERROR"
+            : err.status >= 500
+              ? "SERVICE_UNAVAILABLE"
+              : err.status === 429
+                ? "TOO_MANY_REQUESTS"
+                : err.code,
+        fields: Object.fromEntries(
+          Object.entries(err.fields).filter(([key]) =>
+            [
+              "name",
+              "email",
+              "phone",
+              "message",
+              "department",
+              "privacy_accepted",
+            ].includes(key),
+          ),
+        ),
       };
     }
     return {
       ok: false,
       code: "NETWORK_ERROR",
-      message: "Não foi possível conectar ao serviço.",
       fields: {},
     };
   }

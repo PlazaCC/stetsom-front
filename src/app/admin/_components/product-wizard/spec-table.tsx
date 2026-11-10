@@ -1,6 +1,7 @@
 "use client";
 
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
+import { AdminFieldError } from "@/app/admin/_components/crud/admin-field-error";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,9 @@ interface SpecTableProps {
   onChange: (specs: WizardSpec[]) => void;
   /** Tightens spacing when the editor panel is narrow. */
   compact?: boolean;
+  variationIndex: number;
+  errors?: Record<string, string>;
+  onClearError?: (path?: string) => void;
 }
 
 /**
@@ -135,6 +139,9 @@ export function SpecTable({
   locale,
   onChange,
   compact = false,
+  variationIndex,
+  errors = {},
+  onClearError,
 }: SpecTableProps) {
   const sections = toSections(specs);
   const allRows = sections.flatMap((s) => s.rows);
@@ -163,16 +170,24 @@ export function SpecTable({
     return attributeGroups.find((g) => g.id === groupId)?.name.pt ?? "Grupo";
   }
 
-  function commit(next: GroupSection[]) {
+  function commit(next: GroupSection[], clearStructuralErrors = true) {
+    if (clearStructuralErrors) {
+      onClearError?.(`variants.${variationIndex}.attributes`);
+    }
     onChange(flattenSections(next));
   }
 
-  function replaceSection(groupId: string, next: GroupSection | null) {
+  function replaceSection(
+    groupId: string,
+    next: GroupSection | null,
+    clearStructuralErrors = true,
+  ) {
     commit(
       sections.flatMap((s) => {
         if (s.group_id !== groupId) return [s];
         return next && next.rows.length > 0 ? [next] : [];
       }),
+      clearStructuralErrors,
     );
   }
 
@@ -181,13 +196,17 @@ export function SpecTable({
     key: string,
     next: AttributeRows | null,
   ) {
-    replaceSection(section.group_id, {
-      ...section,
-      rows: section.rows.flatMap((r) => {
-        if (r.key !== key) return [r];
-        return next ? [next] : [];
-      }),
-    });
+    replaceSection(
+      section.group_id,
+      {
+        ...section,
+        rows: section.rows.flatMap((r) => {
+          if (r.key !== key) return [r];
+          return next ? [next] : [];
+        }),
+      },
+      false,
+    );
   }
 
   /** Moves an attribute (all its lines) to another group, at the end. */
@@ -293,6 +312,13 @@ export function SpecTable({
                       maxHighlights={maxHighlights}
                       locale={locale}
                       compact={compact}
+                      variationIndex={variationIndex}
+                      payloadIndex={allRows
+                        .flatMap((item) => item.specs)
+                        .filter((item) => item.attribute_id)
+                        .findIndex((item) => item.id === row.specs[0]?.id)}
+                      errors={errors}
+                      onClearError={onClearError}
                       onChange={(next) => replaceRows(section, row.key, next)}
                       onMove={(toGroupId) => moveRows(section, row, toGroupId)}
                     />
@@ -373,6 +399,10 @@ interface AttributeCardProps {
   compact: boolean;
   onChange: (next: AttributeRows | null) => void;
   onMove: (toGroupId: string) => void;
+  variationIndex: number;
+  payloadIndex: number;
+  errors: Record<string, string>;
+  onClearError?: (path?: string) => void;
 }
 
 function AttributeCard({
@@ -388,6 +418,10 @@ function AttributeCard({
   compact,
   onChange,
   onMove,
+  variationIndex,
+  payloadIndex,
+  errors,
+  onClearError,
 }: AttributeCardProps) {
   const isHighlighted = row.specs.some((s) => s.highlighted);
   const attribute = attributes.find((a) => a.id === row.attribute_id);
@@ -403,6 +437,7 @@ function AttributeCard({
         : null;
 
   function setAttribute(next: Attribute | null) {
+    onClearError?.(attributePath);
     onChange({
       key: next?.id ?? row.specs[0]!.id,
       attribute_id: next?.id ?? "",
@@ -452,9 +487,23 @@ function AttributeCard({
   }
 
   function removeLine(specId: string) {
+    onClearError?.(`variants.${variationIndex}.attributes`);
     const remaining = row.specs.filter((s) => s.id !== specId);
     onChange(remaining.length ? { ...row, specs: remaining } : null);
   }
+
+  function fieldPath(spec: WizardSpec, field: "value" | "description") {
+    const lineOffset = row.specs
+      .filter((item) => item.attribute_id)
+      .findIndex((item) => item.id === spec.id);
+    const safeIndex =
+      payloadIndex < 0 ? 0 : payloadIndex + Math.max(lineOffset, 0);
+    return `variants.${variationIndex}.attributes.${safeIndex}.${field}.${locale}`;
+  }
+
+  const attributeIndex = payloadIndex;
+  const attributePath = `variants.${variationIndex}.attributes.${Math.max(attributeIndex, 0)}.attribute_id`;
+  const groupPath = `variants.${variationIndex}.attributes.${Math.max(attributeIndex, 0)}.group_id`;
 
   return (
     <div className="rounded-md border border-border bg-card">
@@ -480,6 +529,8 @@ function AttributeCard({
                 <Button
                   variant="outline"
                   className="w-full justify-between overflow-hidden font-normal"
+                  data-field-path={attributePath}
+                  aria-invalid={Boolean(errors[attributePath])}
                 >
                   <ComboboxValue>
                     {(value: Attribute | null) =>
@@ -510,31 +561,51 @@ function AttributeCard({
               </ComboboxList>
             </ComboboxContent>
           </Combobox>
+          <AdminFieldError message={errors[attributePath]} />
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
           {canChangeGroup && otherGroups.length > 0 && row.attribute_id && (
-            <Select
-              value=""
-              onValueChange={(to) => {
-                if (to) onMove(to);
-              }}
-            >
-              <SelectTrigger
-                size="sm"
-                className="h-7 w-auto gap-1 px-1.5 text-xs text-muted-foreground"
-                aria-label="Mover para outro grupo"
+            <div className="flex min-w-0 flex-col items-end">
+              <Select
+                value=""
+                onValueChange={(to) => {
+                  if (to) {
+                    onClearError?.(groupPath);
+                    onMove(to);
+                  }
+                }}
               >
-                <SelectValue placeholder="Grupo" />
-              </SelectTrigger>
-              <SelectContent>
-                {otherGroups.map((group) => (
-                  <SelectItem key={group.id} value={group.id}>
-                    {group.name.pt}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                <SelectTrigger
+                  size="sm"
+                  className="h-7 w-auto gap-1 px-1.5 text-xs text-muted-foreground"
+                  aria-label="Mover para outro grupo"
+                  data-field-path={groupPath}
+                  aria-invalid={Boolean(errors[groupPath])}
+                >
+                  <SelectValue placeholder="Grupo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {otherGroups.map((group) => (
+                    <SelectItem key={group.id} value={group.id}>
+                      {group.name.pt}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <AdminFieldError
+                id={`${groupPath}-error`}
+                message={errors[groupPath]}
+              />
+            </div>
+          )}
+          {!canChangeGroup && errors[groupPath] && (
+            <div className="max-w-64">
+              <AdminFieldError
+                id={`${groupPath}-error`}
+                message={errors[groupPath]}
+              />
+            </div>
           )}
           <span className="text-2xs text-muted-foreground uppercase">
             Destaque
@@ -587,20 +658,53 @@ function AttributeCard({
             >
               {/* The value may span lines (e.g. "Freq: …" / "Boost: …"); the
                   site keeps the breaks. */}
-              <Textarea
-                rows={1}
-                value={spec.value[locale] ?? ""}
-                onChange={(e) => setLineField(spec.id, "value", e.target.value)}
-                placeholder="Valor — ex: 1 x 3500W"
-                className="min-h-9 resize-y"
-              />
-              <Input
-                value={spec.description?.[locale] ?? ""}
-                onChange={(e) =>
-                  setLineField(spec.id, "description", e.target.value)
-                }
-                placeholder="Rótulo (opcional) — ex: @1 Ohm"
-              />
+              <div className="min-w-0">
+                <Textarea
+                  rows={1}
+                  value={spec.value[locale] ?? ""}
+                  name={fieldPath(spec, "value")}
+                  data-field-path={fieldPath(spec, "value")}
+                  aria-invalid={Boolean(errors[fieldPath(spec, "value")])}
+                  aria-describedby={
+                    errors[fieldPath(spec, "value")]
+                      ? `${fieldPath(spec, "value")}-error`
+                      : undefined
+                  }
+                  required={locale === "pt"}
+                  onChange={(e) => {
+                    onClearError?.(fieldPath(spec, "value"));
+                    setLineField(spec.id, "value", e.target.value);
+                  }}
+                  placeholder="Valor — ex: 1 x 3500W"
+                  className="min-h-9 resize-y"
+                />
+                <AdminFieldError
+                  id={`${fieldPath(spec, "value")}-error`}
+                  message={errors[fieldPath(spec, "value")]}
+                />
+              </div>
+              <div className="min-w-0">
+                <Input
+                  value={spec.description?.[locale] ?? ""}
+                  name={fieldPath(spec, "description")}
+                  data-field-path={fieldPath(spec, "description")}
+                  aria-invalid={Boolean(errors[fieldPath(spec, "description")])}
+                  aria-describedby={
+                    errors[fieldPath(spec, "description")]
+                      ? `${fieldPath(spec, "description")}-error`
+                      : undefined
+                  }
+                  onChange={(e) => {
+                    onClearError?.(fieldPath(spec, "description"));
+                    setLineField(spec.id, "description", e.target.value);
+                  }}
+                  placeholder="Rótulo (opcional) — ex: @1 Ohm"
+                />
+                <AdminFieldError
+                  id={`${fieldPath(spec, "description")}-error`}
+                  message={errors[fieldPath(spec, "description")]}
+                />
+              </div>
             </div>
             <button
               type="button"

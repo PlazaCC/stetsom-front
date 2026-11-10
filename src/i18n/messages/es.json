@@ -207,6 +207,14 @@
       "successTitle": "¡Mensaje enviado!",
       "successDescription": "Nos pondremos en contacto con usted en breve.",
       "sendAnother": "Enviar otro mensaje",
+      "errors": {
+        "network": "No fue posible conectarse al servicio. Inténtalo de nuevo.",
+        "unavailable": "El servicio no está disponible temporalmente. Inténtalo más tarde.",
+        "rateLimit": "Demasiadas solicitudes en poco tiempo. Espera un minuto e inténtalo de nuevo.",
+        "validation": "Revisa los campos destacados e inténtalo de nuevo.",
+        "field": "Revisa este campo.",
+        "generic": "No pudimos enviar tu mensaje. Inténtalo de nuevo."
+      },
       "emptyInfoTitle": "Hable con nuestro equipo",
       "emptyInfoDescription": "Envíe su mensaje mediante el formulario y responderemos lo antes posible."
     },
@@ -291,6 +299,16 @@
     "title": "PÁGINA NO ENCONTRADA",
     "description": "Parece que la página que intentaste acceder no existe",
     "backHome": "Volver al inicio"
+  },
+  "PublicErrors": {
+    "unavailableTitle": "No pudimos cargar este producto",
+    "unavailableDescription": "El servicio no está disponible temporalmente. Inténtalo más tarde."
+  },
+  "GlobalError": {
+    "eyebrow": "Error inesperado",
+    "title": "No pudimos cargar esta página.",
+    "description": "Inténtalo de nuevo en unos instantes.",
+    "retry": "Intentar de nuevo"
   },
   "LanguageSwitcher": {
     "label": "Idioma",
