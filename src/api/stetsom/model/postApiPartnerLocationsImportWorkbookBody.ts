@@ -11,8 +11,8 @@ export type PostApiPartnerLocationsImportWorkbookBody = {
   file: Blob;
   /** Whether to validate only */
   dry_run?: string;
-  /** Default partner type for ready sheets when selections are not provided */
-  default_type?: string;
   /** JSON map of sheet names to partner types */
   selections?: string;
+  /** Default partner type for ready sheets when selections are not provided */
+  default_type?: string;
 };

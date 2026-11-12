@@ -12,7 +12,8 @@ export interface PartnerLocationInput {
   id: string;
   type: PartnerLocationInputType;
   name: string;
-  country_code: string;
+  /** @nullable */
+  country_code: string | null;
   address: string;
   city: string;
   state?: string;

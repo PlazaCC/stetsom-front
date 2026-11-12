@@ -895,16 +895,16 @@ export const postApiPartnerLocationsImportWorkbook = (
       postApiPartnerLocationsImportWorkbookBody.dry_run,
     );
   }
-  if (postApiPartnerLocationsImportWorkbookBody.default_type !== undefined) {
-    formData.append(
-      `default_type`,
-      postApiPartnerLocationsImportWorkbookBody.default_type,
-    );
-  }
   if (postApiPartnerLocationsImportWorkbookBody.selections !== undefined) {
     formData.append(
       `selections`,
       postApiPartnerLocationsImportWorkbookBody.selections,
+    );
+  }
+  if (postApiPartnerLocationsImportWorkbookBody.default_type !== undefined) {
+    formData.append(
+      `default_type`,
+      postApiPartnerLocationsImportWorkbookBody.default_type,
     );
   }
 
