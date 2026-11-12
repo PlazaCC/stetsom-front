@@ -20,8 +20,8 @@ import type {
 
 import type {
   ApiErrorPayload,
+  GetApiPartnerLocations200Item,
   GetApiPartnerLocationsParams,
-  PartnerLocation,
 } from "../../model";
 
 import { orvalClient } from "../../orval-client";
@@ -33,7 +33,7 @@ export const getApiPartnerLocations = (
   params?: GetApiPartnerLocationsParams,
   signal?: AbortSignal,
 ) => {
-  return orvalClient<PartnerLocation[]>({
+  return orvalClient<GetApiPartnerLocations200Item[]>({
     url: `/api/partner-locations`,
     method: "GET",
     params,

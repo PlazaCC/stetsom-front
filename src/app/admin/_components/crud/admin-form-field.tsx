@@ -6,6 +6,7 @@ interface AdminFormFieldProps {
   required?: boolean;
   error?: string;
   errorId?: string;
+  htmlFor?: string;
   description?: string;
   children: React.ReactNode;
   className?: string;
@@ -16,13 +17,17 @@ export function AdminFormField({
   required,
   error,
   errorId,
+  htmlFor,
   description,
   children,
   className,
 }: AdminFormFieldProps) {
   return (
     <div className={cn("space-y-1.5", className)}>
-      <label className="block text-xs font-medium text-muted-foreground">
+      <label
+        htmlFor={htmlFor}
+        className="block text-xs font-medium text-muted-foreground"
+      >
         {label}{" "}
         {required ? (
           <span className="text-destructive" aria-hidden="true">

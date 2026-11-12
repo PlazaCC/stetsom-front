@@ -1,15 +1,11 @@
 "use client";
 
-import type { PartnerLocation } from "@/api/stetsom/model";
+import type { GetApiPartnerLocations200Item } from "@/api/stetsom";
 import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { cn } from "@/lib/utils";
 import {
-  type Bounds,
   type GeocodeSuggestion,
   type LatLng,
-  extractCepDigits,
-  formatCepInput,
-  isLikelyCep,
   toValidLatLng,
 } from "@/lib/geocode";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -19,6 +15,7 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GeocodeDropdown } from "./geocode-dropdown";
 import { getMappableLocations } from "./service-center-map-data";
+import type { MappablePartnerLocation } from "./service-center-map-data";
 
 const ServiceCenterMap = dynamic(
   () => import("./service-center-map").then((m) => m.ServiceCenterMap),
@@ -51,14 +48,13 @@ const GEO_OPTS: PositionOptions = {
 };
 
 interface ServiceCentersExplorerProps {
-  serviceCenters: PartnerLocation[];
+  serviceCenters: GetApiPartnerLocations200Item[];
 }
 
 export function ServiceCentersExplorer({
   serviceCenters,
 }: ServiceCentersExplorerProps) {
   const t = useTranslations("Support.serviceCenters");
-
   const [query, setQuery] = useState("");
   const [selectedLocation, setSelectedLocation] =
     useState<GeocodeSuggestion | null>(null);
@@ -68,8 +64,6 @@ export function ServiceCentersExplorer({
   const [suggestions, setSuggestions] = useState<GeocodeSuggestion[]>([]);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [geocodeLoading, setGeocodeLoading] = useState(false);
-  const [isCepMode, setIsCepMode] = useState(false);
-  const [viewportBounds, setViewportBounds] = useState<Bounds | null>(null);
   const [fitAllCount, setFitAllCount] = useState(0);
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -124,16 +118,11 @@ export function ServiceCentersExplorer({
             ? t("locationUnsupported")
             : null;
 
-  const cepDigits = extractCepDigits(query);
-  const cepComplete = cepDigits.length === 8;
-  const missingCount = 8 - cepDigits.length;
-  const showDropdown =
-    suggestionsOpen || geocodeLoading || (isCepMode && cepDigits.length > 0);
+  const showDropdown = suggestionsOpen || geocodeLoading;
 
   const fetchGeocode = useCallback(async (q: string) => {
-    const raw = extractCepDigits(q);
-    const searchQuery = isLikelyCep(q) && raw.length >= 3 ? raw : q;
-    if (searchQuery.trim().length < (isLikelyCep(q) ? 3 : 2)) {
+    const searchQuery = q;
+    if (searchQuery.trim().length < 2) {
       setSuggestions([]);
       setSuggestionsOpen(false);
       return;
@@ -169,24 +158,12 @@ export function ServiceCentersExplorer({
 
   const handleInputChange = (raw: string) => {
     abortControllerRef.current?.abort();
-    const cepMode = isLikelyCep(raw) && raw !== t("currentLocation");
-    setIsCepMode(cepMode);
-
-    if (cepMode) {
-      const formatted = formatCepInput(raw);
-      setQuery(formatted);
-    } else {
-      setQuery(raw);
-    }
+    setQuery(raw);
 
     setSelectedLocation(null);
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
-    const minLength = cepMode ? 3 : 2;
-    if (
-      raw.replace(/\D/g, "").length >= minLength ||
-      (!cepMode && raw.length >= minLength)
-    ) {
+    if (raw.trim().length >= 2) {
       debounceTimer.current = setTimeout(() => fetchGeocode(raw), 300);
     } else {
       setSuggestions([]);
@@ -196,12 +173,13 @@ export function ServiceCentersExplorer({
 
   const selectSuggestion = (suggestion: GeocodeSuggestion) => {
     setQuery(suggestion.displayName);
-    setIsCepMode(false);
     setSelectedLocation(suggestion);
     setSelectedId(null);
     setSuggestionsOpen(false);
     resetScroll();
   };
+
+  const selectedCountryCode = selectedLocation?.country_code;
 
   const searchLocation: LatLng | null = useMemo(() => {
     if (selectedLocation && !selectedLocation.city && userLocation)
@@ -212,6 +190,24 @@ export function ServiceCentersExplorer({
     return null;
   }, [selectedLocation, userLocation]);
 
+  const handleSearchLocationChange = useCallback(
+    (location: LatLng) => {
+      setUserLocation(location);
+      setQuery(t("customSearchLocation"));
+      setSelectedLocation((current) =>
+        current
+          ? {
+              ...current,
+              lat: location.lat,
+              lng: location.lng,
+              displayName: t("customSearchLocation"),
+            }
+          : current,
+      );
+    },
+    [t],
+  );
+
   // Location search only navigates the map. The map owns the viewport filter;
   // therefore the full active collection must remain available to it regardless
   // of the selected city, CEP, or current user location.
@@ -220,24 +216,39 @@ export function ServiceCentersExplorer({
     [serviceCenters],
   );
 
-  const visibleFiltered: PartnerLocation[] = useMemo(() => {
-    if (!viewportBounds) return mappable;
-    return mappable.filter(
-      (p) =>
-        p.lat >= viewportBounds.south &&
-        p.lat <= viewportBounds.north &&
-        p.lng >= viewportBounds.west &&
-        p.lng <= viewportBounds.east,
-    );
-  }, [mappable, viewportBounds]);
+  const visibleFiltered: MappablePartnerLocation[] = useMemo(
+    () =>
+      mappable.filter(
+        (location) =>
+          !selectedCountryCode || location.country_code === selectedCountryCode,
+      ),
+    [mappable, selectedCountryCode],
+  );
 
-  const reordered: PartnerLocation[] = useMemo(() => {
-    if (selectedId) {
-      const item = visibleFiltered.find((p) => p.id === selectedId);
-      return item ? [item] : visibleFiltered;
+  const reordered: MappablePartnerLocation[] = useMemo(() => {
+    const sorted = [...visibleFiltered];
+    if (searchLocation) {
+      const distance = (location: MappablePartnerLocation) => {
+        const lat = ((location.lat - searchLocation.lat) * Math.PI) / 180;
+        const lng = ((location.lng - searchLocation.lng) * Math.PI) / 180;
+        const a =
+          Math.sin(lat / 2) ** 2 +
+          Math.cos((searchLocation.lat * Math.PI) / 180) *
+            Math.cos((location.lat * Math.PI) / 180) *
+            Math.sin(lng / 2) ** 2;
+        return 2 * 6371 * Math.asin(Math.sqrt(a));
+      };
+      sorted.sort((a, b) => distance(a) - distance(b));
     }
-    return visibleFiltered;
-  }, [visibleFiltered, selectedId]);
+    if (selectedId) {
+      const index = sorted.findIndex((location) => location.id === selectedId);
+      if (index > 0) {
+        const [selected] = sorted.splice(index, 1);
+        sorted.unshift(selected);
+      }
+    }
+    return sorted;
+  }, [visibleFiltered, selectedId, searchLocation]);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const rowVirtualizer = useVirtualizer({
@@ -282,15 +293,14 @@ export function ServiceCentersExplorer({
             <input
               ref={inputRef}
               type="text"
-              inputMode={isCepMode ? "numeric" : "text"}
+              inputMode="search"
               value={query}
               onChange={(e) => {
                 handleInputChange(e.target.value);
                 resetScroll();
               }}
               onFocus={() => {
-                if (suggestions.length > 0 || isCepMode)
-                  setSuggestionsOpen(true);
+                if (suggestions.length > 0) setSuggestionsOpen(true);
               }}
               placeholder={t("searchLocationPlaceholder")}
               className="flex-1 border-none bg-transparent text-sm outline-none placeholder:text-icon-muted"
@@ -303,7 +313,6 @@ export function ServiceCentersExplorer({
                   setSelectedLocation(null);
                   setSuggestions([]);
                   setSuggestionsOpen(false);
-                  setIsCepMode(false);
                   if (debounceTimer.current) {
                     clearTimeout(debounceTimer.current);
                     debounceTimer.current = undefined;
@@ -322,10 +331,7 @@ export function ServiceCentersExplorer({
           {showDropdown && (
             <div className="absolute top-full right-0 left-0 z-10 mt-1 max-h-48 overflow-y-auto border border-border bg-white shadow-lg">
               <GeocodeDropdown
-                isCepMode={isCepMode}
                 geocodeLoading={geocodeLoading}
-                cepComplete={cepComplete}
-                missingCount={missingCount}
                 suggestions={suggestions}
                 query={query}
                 onSelect={(s) => {
@@ -444,7 +450,7 @@ export function ServiceCentersExplorer({
           onSelectLocation={(id) => {
             setSelectedId(id);
           }}
-          onBoundsChange={setViewportBounds}
+          onSearchLocationChange={handleSearchLocationChange}
           fitAllTrigger={fitAllCount}
         />
       </div>

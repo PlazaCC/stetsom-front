@@ -3,7 +3,7 @@
 import type {
   FaqItem,
   PageBlock,
-  PartnerLocation,
+  GetApiPartnerLocations200Item,
   PublicDepartmentItem,
 } from "@/api/stetsom/model";
 import {
@@ -25,7 +25,7 @@ import { SupportServiceCenters } from "./support-service-centers";
 
 export interface SupportPageViewData {
   blocks: PageBlock[];
-  serviceCenters: PartnerLocation[];
+  serviceCenters: GetApiPartnerLocations200Item[];
   departments: PublicDepartmentItem[];
   faqItems: FaqItem[];
   privacyPolicySlug?: string;

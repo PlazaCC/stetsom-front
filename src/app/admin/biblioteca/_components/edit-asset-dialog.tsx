@@ -5,6 +5,7 @@ import { LibraryAssetType, type LibraryAsset } from "@/api/stetsom/model";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -158,7 +159,7 @@ export function EditAssetDialog({
                   </TabsTrigger>
                 </TabsList>
 
-                <div className="min-h-0 flex-1 overflow-y-auto p-4">
+                <DialogBody className="p-4">
                   <TabsContent value="data" className="flex flex-col gap-4">
                     {isPdfShelf(asset.type) && (
                       <Field>
@@ -213,7 +214,7 @@ export function EditAssetDialog({
                       )}
                     />
                   </TabsContent>
-                </div>
+                </DialogBody>
               </Tabs>
 
               <DialogFooter className="mx-0 mb-0 rounded-none">

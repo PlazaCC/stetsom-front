@@ -5,8 +5,8 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { ProductSpecValueInput } from "./productSpecValueInput";
 import type { VariantAttrBodyInputDescription } from "./variantAttrBodyInputDescription";
-import type { VariantAttrBodyInputValue } from "./variantAttrBodyInputValue";
 
 export interface VariantAttrBodyInput {
   /** @pattern ^[a-f\d]{24}$ */
@@ -16,7 +16,7 @@ export interface VariantAttrBodyInput {
    * @pattern ^[a-f\d]{24}$
    */
   group_id: string;
-  value: VariantAttrBodyInputValue;
+  value: ProductSpecValueInput;
   /** @nullable */
   description?: VariantAttrBodyInputDescription;
   /**

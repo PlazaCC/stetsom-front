@@ -37,7 +37,7 @@ import { AdminSortableTableRow } from "./admin-sortable-table-row";
 
 export interface AdminTableColumn<T> {
   key: string;
-  header: string;
+  header: React.ReactNode;
   className?: string;
   headerClassName?: string;
   render?: (row: T, index: number) => React.ReactNode;
@@ -127,7 +127,7 @@ export function AdminDataTable<T>({
       columns.map((col) => ({
         id: col.key,
         accessorFn: (row) => (row as Record<string, unknown>)[col.key],
-        header: col.header,
+        header: () => col.header,
         cell: ({ row }) =>
           col.render
             ? col.render(row.original, row.index)
@@ -184,7 +184,7 @@ export function AdminDataTable<T>({
     <div className={cn("flex h-full min-h-0 flex-col", className)}>
       {/* ── Top bar ──────────────────────────────────────────────────────────── */}
       {(toolbar || action) && (
-        <div className="flex shrink-0 flex-col gap-3 pb-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+        <div className="relative z-20 flex shrink-0 flex-col gap-3 pb-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <div className="min-w-0 flex-1">{toolbar}</div>
           {action && <div className="w-full shrink-0 sm:w-auto">{action}</div>}
         </div>
@@ -198,7 +198,7 @@ export function AdminDataTable<T>({
        * clip cleanly AND the header keeps pinning. Height comes from the flex
        * chain (min-h-0 flex-1); the parent page bounds it via AdminPageLayout.
        */}
-      <div className="min-h-0 flex-1 overflow-y-auto rounded-card border border-border bg-card shadow-cms-card">
+      <div className="relative z-0 min-h-0 flex-1 overflow-y-auto rounded-card border border-border bg-card shadow-cms-card">
         {error ? (
           <div className="flex items-center justify-center px-6 py-16 text-center text-sm text-destructive">
             {error}

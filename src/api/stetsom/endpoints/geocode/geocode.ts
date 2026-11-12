@@ -21,13 +21,160 @@ import type {
 import type {
   ApiErrorPayload,
   GeocodeSearchResponse,
+  GetApiGeocodeCountries200,
   GetApiGeocodeSearchParams,
 } from "../../model";
 
 import { orvalClient } from "../../orval-client";
 
 /**
- * @summary Search for Brazilian cities, states, or CEP addresses
+ * @summary List supported countries
+ */
+export const getApiGeocodeCountries = (signal?: AbortSignal) => {
+  return orvalClient<GetApiGeocodeCountries200>({
+    url: `/api/geocode/countries`,
+    method: "GET",
+    signal,
+  });
+};
+
+export const getGetApiGeocodeCountriesQueryKey = () => {
+  return [`/api/geocode/countries`] as const;
+};
+
+export const getGetApiGeocodeCountriesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiGeocodeCountries>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof getApiGeocodeCountries>>,
+      TError,
+      TData
+    >
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetApiGeocodeCountriesQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiGeocodeCountries>>
+  > = ({ signal }) => getApiGeocodeCountries(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiGeocodeCountries>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiGeocodeCountriesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiGeocodeCountries>>
+>;
+export type GetApiGeocodeCountriesQueryError = unknown;
+
+export function useGetApiGeocodeCountries<
+  TData = Awaited<ReturnType<typeof getApiGeocodeCountries>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiGeocodeCountries>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiGeocodeCountries>>,
+          TError,
+          Awaited<ReturnType<typeof getApiGeocodeCountries>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiGeocodeCountries<
+  TData = Awaited<ReturnType<typeof getApiGeocodeCountries>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiGeocodeCountries>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiGeocodeCountries>>,
+          TError,
+          Awaited<ReturnType<typeof getApiGeocodeCountries>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiGeocodeCountries<
+  TData = Awaited<ReturnType<typeof getApiGeocodeCountries>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiGeocodeCountries>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List supported countries
+ */
+
+export function useGetApiGeocodeCountries<
+  TData = Awaited<ReturnType<typeof getApiGeocodeCountries>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiGeocodeCountries>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiGeocodeCountriesQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Search supported international localities
  */
 export const getApiGeocodeSearch = (
   params: GetApiGeocodeSearchParams,
@@ -154,7 +301,7 @@ export function useGetApiGeocodeSearch<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 /**
- * @summary Search for Brazilian cities, states, or CEP addresses
+ * @summary Search supported international localities
  */
 
 export function useGetApiGeocodeSearch<

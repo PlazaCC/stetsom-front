@@ -6,8 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { I18nStringInput } from "./i18nStringInput";
+import type { ProductSpecValueInput } from "./productSpecValueInput";
 import type { VariantAttrInputDescription } from "./variantAttrInputDescription";
-import type { VariantAttrInputValue } from "./variantAttrInputValue";
 
 export interface VariantAttrInput {
   attribute_id: string;
@@ -18,7 +18,7 @@ export interface VariantAttrInput {
    */
   group_id: string | null;
   group_name?: I18nStringInput;
-  value: VariantAttrInputValue;
+  value: ProductSpecValueInput;
   /** @nullable */
   description?: VariantAttrInputDescription;
   /**

@@ -98,10 +98,10 @@ export function DepartmentRoutingModal({
       onClick={onClose}
     >
       <div
-        className="flex w-full max-w-2xl flex-col rounded-card border border-border bg-card shadow-cms-card-lg"
+        className="flex max-h-[min(90dvh,56rem)] min-h-0 w-full max-w-2xl flex-col overflow-hidden rounded-card border border-border bg-card shadow-cms-card-lg"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
+        <div className="flex shrink-0 items-center justify-between border-b border-border px-6 py-4">
           <h2
             id="routing-modal-title"
             className="text-base font-bold text-foreground"
@@ -117,7 +117,7 @@ export function DepartmentRoutingModal({
           </button>
         </div>
 
-        <div className="flex-1 overflow-auto px-6 py-4">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-4">
           <p className="mb-4 text-sm text-muted-foreground">
             Cada departamento recebe os e-mails do formulário de contato do
             site. O slug é usado internamente; o label aparece no formulário
@@ -187,7 +187,7 @@ export function DepartmentRoutingModal({
           </button>
         </div>
 
-        <div className="flex justify-end gap-3 border-t border-border px-6 py-4">
+        <div className="flex shrink-0 justify-end gap-3 border-t border-border px-6 py-4">
           <button
             type="button"
             onClick={onClose}

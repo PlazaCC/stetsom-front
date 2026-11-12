@@ -5,6 +5,7 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { PatchApiPartnerLocationsIdBodyCountryCode } from "./patchApiPartnerLocationsIdBodyCountryCode";
 import type { PatchApiPartnerLocationsIdBodyType } from "./patchApiPartnerLocationsIdBodyType";
 
 export type PatchApiPartnerLocationsIdBody = {
@@ -14,6 +15,7 @@ export type PatchApiPartnerLocationsIdBody = {
    * @maxLength 200
    */
   name?: string;
+  country_code?: PatchApiPartnerLocationsIdBodyCountryCode;
   /**
    * @minLength 1
    * @maxLength 500
@@ -25,12 +27,15 @@ export type PatchApiPartnerLocationsIdBody = {
    */
   city?: string;
   /**
-   * @minLength 2
-   * @maxLength 2
+   * @maxLength 100
+   * @nullable
    */
-  state?: string;
-  /** @pattern ^\d{5}-?\d{3}$ */
-  zip?: string;
+  state?: string | null;
+  /**
+   * @maxLength 30
+   * @nullable
+   */
+  zip?: string | null;
   /** @nullable */
   lat?: number | null;
   /** @nullable */

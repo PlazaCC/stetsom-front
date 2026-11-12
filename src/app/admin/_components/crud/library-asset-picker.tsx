@@ -198,8 +198,8 @@ export function LibraryPickerModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-cms-overlay p-4">
-      <div className="flex max-h-[80vh] w-full max-w-3xl flex-col overflow-hidden rounded-card border border-border bg-card shadow-cms-card-lg">
-        <div className="flex items-center justify-between border-b border-border px-5 py-3">
+      <div className="flex max-h-[min(90dvh,56rem)] min-h-0 w-full max-w-3xl flex-col overflow-hidden rounded-card border border-border bg-card shadow-cms-card-lg">
+        <div className="flex shrink-0 items-center justify-between border-b border-border px-5 py-3">
           <div className="flex gap-1">
             <button
               type="button"
@@ -236,7 +236,7 @@ export function LibraryPickerModal({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-5">
           {tab === "library" ? (
             <>
               <AdminSearchInput

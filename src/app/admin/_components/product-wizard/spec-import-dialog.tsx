@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -144,7 +145,7 @@ export function SpecImportDialog({
           <DialogTitle>Importar especificações por planilha</DialogTitle>
         </DialogHeader>
 
-        <div className="min-h-0 space-y-4 overflow-y-auto pr-1">
+        <DialogBody className="space-y-4 pr-1">
           <div className="flex flex-wrap items-center gap-2">
             <Button
               type="button"
@@ -252,7 +253,7 @@ export function SpecImportDialog({
               )}
             </div>
           )}
-        </div>
+        </DialogBody>
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>

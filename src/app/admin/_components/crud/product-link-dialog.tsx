@@ -6,6 +6,7 @@ import { AdminPagination } from "./admin-pagination";
 import { AdminSearchInput } from "./admin-search-input";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -107,7 +108,7 @@ export function ProductLinkDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex min-h-0 flex-col gap-3">
+        <DialogBody className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <AdminSearchInput
               value={inputValue}
@@ -237,7 +238,7 @@ export function ProductLinkDialog({
               }}
             />
           )}
-        </div>
+        </DialogBody>
 
         {selected && (
           <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm">

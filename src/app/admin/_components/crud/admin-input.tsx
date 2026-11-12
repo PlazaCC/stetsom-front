@@ -10,6 +10,7 @@ interface AdminSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement>
 
 interface AdminLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   children: React.ReactNode;
+  required?: boolean;
 }
 
 const inputBase =
@@ -39,10 +40,20 @@ export function AdminSelect({
   );
 }
 
-export function AdminLabel({ className, children, ...props }: AdminLabelProps) {
+export function AdminLabel({
+  className,
+  children,
+  required = false,
+  ...props
+}: AdminLabelProps) {
   return (
     <label className={cn(labelBase, className)} {...props}>
       {children}
+      {required && (
+        <span aria-hidden className="ml-0.5 text-destructive">
+          *
+        </span>
+      )}
     </label>
   );
 }

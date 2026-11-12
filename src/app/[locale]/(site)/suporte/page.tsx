@@ -1,7 +1,7 @@
 import type {
   FaqItem,
   GetApiPagesSlug200,
-  PartnerLocation,
+  GetApiPartnerLocations200Item,
   PublicDepartmentItem,
 } from "@/api/stetsom/model";
 import { getApiFaqs } from "@/api/stetsom/server/faq-public/faq-public";
@@ -29,7 +29,9 @@ export default async function SuportePage() {
             updated_at: "",
           }) satisfies GetApiPagesSlug200,
       ),
-      getApiPartnerLocations().catch(() => [] as PartnerLocation[]),
+      getApiPartnerLocations().catch(
+        () => [] as GetApiPartnerLocations200Item[],
+      ),
       getApiContactDepartments().catch(() => [] as PublicDepartmentItem[]),
       getApiFaqs({ locale: apiLocale }).catch(() => [] as FaqItem[]),
       getApiLegalPagesPublic({ locale: apiLocale }).catch(() => []),

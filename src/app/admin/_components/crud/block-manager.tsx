@@ -286,10 +286,10 @@ export function BlockManager({
           onClick={() => setMenu(false)}
         >
           <div
-            className="w-full max-w-2xl overflow-hidden rounded-card border border-border bg-card shadow-cms-card-lg"
+            className="flex max-h-[min(90dvh,56rem)] min-h-0 w-full max-w-2xl flex-col overflow-hidden rounded-card border border-border bg-card shadow-cms-card-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between border-b border-border px-5 py-4">
+            <div className="flex shrink-0 items-center justify-between border-b border-border px-5 py-4">
               <h3 className="text-sm font-semibold text-foreground">
                 Selecionar tipo
               </h3>
@@ -302,7 +302,7 @@ export function BlockManager({
                 <X className="size-4" />
               </button>
             </div>
-            <div className="grid grid-cols-3 gap-4 divide-y divide-border overflow-y-auto p-4">
+            <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 divide-y divide-border overflow-y-auto p-4 sm:grid-cols-3">
               {menuItems.map(([type, def]) => {
                 const Icon = def.icon;
                 return (

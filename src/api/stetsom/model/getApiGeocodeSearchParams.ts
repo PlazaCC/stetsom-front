@@ -5,12 +5,19 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { GetApiGeocodeSearchCountryCode } from "./getApiGeocodeSearchCountryCode";
 
 export type GetApiGeocodeSearchParams = {
   /**
-   * City name, state, or 8-digit CEP
+   * Location search query
    * @minLength 2
-   * @maxLength 100
+   * @maxLength 120
    */
   q: string;
+  country_code?: GetApiGeocodeSearchCountryCode;
+  /**
+   * @minimum 1
+   * @maximum 20
+   */
+  limit?: number;
 };

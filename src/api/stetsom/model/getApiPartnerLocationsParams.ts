@@ -5,10 +5,13 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { GetApiPartnerLocationsCountryCode } from "./getApiPartnerLocationsCountryCode";
+import type { GetApiPartnerLocationsMapStatus } from "./getApiPartnerLocationsMapStatus";
 import type { GetApiPartnerLocationsType } from "./getApiPartnerLocationsType";
 
 export type GetApiPartnerLocationsParams = {
   type?: GetApiPartnerLocationsType;
+  country_code?: GetApiPartnerLocationsCountryCode;
   state?: string;
   city?: string;
   region?: string;
@@ -30,5 +33,6 @@ export type GetApiPartnerLocationsParams = {
    * @minimum 0
    */
   max_distance_km?: number;
+  map_status?: GetApiPartnerLocationsMapStatus;
   is_active?: boolean;
 };

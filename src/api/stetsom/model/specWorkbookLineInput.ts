@@ -5,8 +5,8 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { ProductSpecValueInput } from "./productSpecValueInput";
 import type { SpecWorkbookLineInputDescription } from "./specWorkbookLineInputDescription";
-import type { SpecWorkbookLineInputValue } from "./specWorkbookLineInputValue";
 
 export interface SpecWorkbookLineInput {
   /** @pattern ^[a-f\d]{24}$ */
@@ -16,7 +16,7 @@ export interface SpecWorkbookLineInput {
    * @pattern ^[a-f\d]{24}$
    */
   group_id: string;
-  value: SpecWorkbookLineInputValue;
+  value: ProductSpecValueInput;
   /** @nullable */
   description?: SpecWorkbookLineInputDescription;
   /**

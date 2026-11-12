@@ -5,13 +5,20 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { GeocodeResultCountryCode } from "./geocodeResultCountryCode";
+import type { GeocodeResultKind } from "./geocodeResultKind";
+import type { GeocodeResultMatchPrecision } from "./geocodeResultMatchPrecision";
 
 export interface GeocodeResult {
+  id: string;
+  kind: GeocodeResultKind;
   displayName: string;
-  city: string;
-  state: string;
-  /** Omitted when the city has no match in the static dataset */
-  lat?: number;
-  /** Omitted when the city has no match in the static dataset */
-  lng?: number;
+  city?: string;
+  state?: string;
+  country_code?: GeocodeResultCountryCode;
+  country_name?: string;
+  postal_code?: string;
+  match_precision: GeocodeResultMatchPrecision;
+  lat: number;
+  lng: number;
 }

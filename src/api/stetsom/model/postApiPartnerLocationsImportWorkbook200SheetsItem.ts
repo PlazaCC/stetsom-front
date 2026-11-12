@@ -7,7 +7,6 @@
  */
 import type { PostApiPartnerLocationsImportWorkbook200SheetsItemRowsItem } from "./postApiPartnerLocationsImportWorkbook200SheetsItemRowsItem";
 import type { PostApiPartnerLocationsImportWorkbook200SheetsItemStatus } from "./postApiPartnerLocationsImportWorkbook200SheetsItemStatus";
-import type { PostApiPartnerLocationsImportWorkbook200SheetsItemSuggestedType } from "./postApiPartnerLocationsImportWorkbook200SheetsItemSuggestedType";
 
 export type PostApiPartnerLocationsImportWorkbook200SheetsItem = {
   name: string;
@@ -19,6 +18,5 @@ export type PostApiPartnerLocationsImportWorkbook200SheetsItem = {
    */
   headerRow?: number;
   headers: string[];
-  suggestedType?: PostApiPartnerLocationsImportWorkbook200SheetsItemSuggestedType;
   rows: PostApiPartnerLocationsImportWorkbook200SheetsItemRowsItem[];
 };

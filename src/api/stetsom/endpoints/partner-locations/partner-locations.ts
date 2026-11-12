@@ -20,16 +20,184 @@ import type {
 
 import type {
   ApiErrorPayload,
+  GetApiPartnerLocationsAdminParams,
   PartnerLocation,
+  PartnerLocationCoordinatesInput,
+  PartnerLocationResolution,
+  PartnerLocationResolutionBatch,
   PatchApiPartnerLocationsIdBody,
   PostApiPartnerLocationsBody,
   PostApiPartnerLocationsImport200,
   PostApiPartnerLocationsImportBody,
   PostApiPartnerLocationsImportWorkbook200,
   PostApiPartnerLocationsImportWorkbookBody,
+  PostApiPartnerLocationsLocationPreviewBody,
+  PostApiPartnerLocationsLocationResolutionsBody,
 } from "../../model";
 
 import { orvalClient } from "../../orval-client";
+
+/**
+ * @summary List all partner locations for the CMS
+ */
+export const getApiPartnerLocationsAdmin = (
+  params?: GetApiPartnerLocationsAdminParams,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<PartnerLocation[]>({
+    url: `/api/partner-locations/admin`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getGetApiPartnerLocationsAdminQueryKey = (
+  params?: GetApiPartnerLocationsAdminParams,
+) => {
+  return [`/api/partner-locations/admin`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetApiPartnerLocationsAdminQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  params?: GetApiPartnerLocationsAdminParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetApiPartnerLocationsAdminQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>
+  > = ({ signal }) => getApiPartnerLocationsAdmin(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiPartnerLocationsAdminQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>
+>;
+export type GetApiPartnerLocationsAdminQueryError = ApiErrorPayload;
+
+export function useGetApiPartnerLocationsAdmin<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  params: undefined | GetApiPartnerLocationsAdminParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiPartnerLocationsAdmin<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  params?: GetApiPartnerLocationsAdminParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiPartnerLocationsAdmin<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  params?: GetApiPartnerLocationsAdminParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List all partner locations for the CMS
+ */
+
+export function useGetApiPartnerLocationsAdmin<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+  TError = ApiErrorPayload,
+>(
+  params?: GetApiPartnerLocationsAdminParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsAdmin>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiPartnerLocationsAdminQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
 
 /**
  * @summary Create partner location
@@ -201,6 +369,517 @@ export function usePostApiPartnerLocations<
 }
 
 /**
+ * @summary Preview a GeoNames partner location suggestion
+ */
+export const postApiPartnerLocationsLocationPreview = (
+  postApiPartnerLocationsLocationPreviewBody: PostApiPartnerLocationsLocationPreviewBody,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<PartnerLocationResolution>({
+    url: `/api/partner-locations/location-preview`,
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    data: postApiPartnerLocationsLocationPreviewBody,
+    signal,
+  });
+};
+
+export const getPostApiPartnerLocationsLocationPreviewQueryKey = (
+  postApiPartnerLocationsLocationPreviewBody?: PostApiPartnerLocationsLocationPreviewBody,
+) => {
+  return [
+    "POST",
+    `/api/partner-locations/location-preview`,
+    postApiPartnerLocationsLocationPreviewBody,
+  ] as const;
+};
+
+export const getPostApiPartnerLocationsLocationPreviewQueryOptions = <
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsLocationPreviewBody: PostApiPartnerLocationsLocationPreviewBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getPostApiPartnerLocationsLocationPreviewQueryKey(
+      postApiPartnerLocationsLocationPreviewBody,
+    );
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>
+  > = ({ signal }) =>
+    postApiPartnerLocationsLocationPreview(
+      postApiPartnerLocationsLocationPreviewBody,
+      signal,
+    );
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostApiPartnerLocationsLocationPreviewQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>
+>;
+export type PostApiPartnerLocationsLocationPreviewQueryError = ApiErrorPayload;
+
+export function usePostApiPartnerLocationsLocationPreview<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsLocationPreviewBody: PostApiPartnerLocationsLocationPreviewBody,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>,
+          TError,
+          Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsLocationPreview<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsLocationPreviewBody: PostApiPartnerLocationsLocationPreviewBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>,
+          TError,
+          Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsLocationPreview<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsLocationPreviewBody: PostApiPartnerLocationsLocationPreviewBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Preview a GeoNames partner location suggestion
+ */
+
+export function usePostApiPartnerLocationsLocationPreview<
+  TData = Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsLocationPreviewBody: PostApiPartnerLocationsLocationPreviewBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsLocationPreview>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getPostApiPartnerLocationsLocationPreviewQueryOptions(
+    postApiPartnerLocationsLocationPreviewBody,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Resolve approximate locations for selected partners
+ */
+export const postApiPartnerLocationsLocationResolutions = (
+  postApiPartnerLocationsLocationResolutionsBody: PostApiPartnerLocationsLocationResolutionsBody,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<PartnerLocationResolutionBatch>({
+    url: `/api/partner-locations/location-resolutions`,
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    data: postApiPartnerLocationsLocationResolutionsBody,
+    signal,
+  });
+};
+
+export const getPostApiPartnerLocationsLocationResolutionsQueryKey = (
+  postApiPartnerLocationsLocationResolutionsBody?: PostApiPartnerLocationsLocationResolutionsBody,
+) => {
+  return [
+    "POST",
+    `/api/partner-locations/location-resolutions`,
+    postApiPartnerLocationsLocationResolutionsBody,
+  ] as const;
+};
+
+export const getPostApiPartnerLocationsLocationResolutionsQueryOptions = <
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsLocationResolutions>
+  >,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsLocationResolutionsBody: PostApiPartnerLocationsLocationResolutionsBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsLocationResolutions>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getPostApiPartnerLocationsLocationResolutionsQueryKey(
+      postApiPartnerLocationsLocationResolutionsBody,
+    );
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof postApiPartnerLocationsLocationResolutions>>
+  > = ({ signal }) =>
+    postApiPartnerLocationsLocationResolutions(
+      postApiPartnerLocationsLocationResolutionsBody,
+      signal,
+    );
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof postApiPartnerLocationsLocationResolutions>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostApiPartnerLocationsLocationResolutionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof postApiPartnerLocationsLocationResolutions>>
+>;
+export type PostApiPartnerLocationsLocationResolutionsQueryError =
+  ApiErrorPayload;
+
+export function usePostApiPartnerLocationsLocationResolutions<
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsLocationResolutions>
+  >,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsLocationResolutionsBody: PostApiPartnerLocationsLocationResolutionsBody,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsLocationResolutions>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof postApiPartnerLocationsLocationResolutions>
+          >,
+          TError,
+          Awaited<ReturnType<typeof postApiPartnerLocationsLocationResolutions>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsLocationResolutions<
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsLocationResolutions>
+  >,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsLocationResolutionsBody: PostApiPartnerLocationsLocationResolutionsBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsLocationResolutions>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof postApiPartnerLocationsLocationResolutions>
+          >,
+          TError,
+          Awaited<ReturnType<typeof postApiPartnerLocationsLocationResolutions>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsLocationResolutions<
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsLocationResolutions>
+  >,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsLocationResolutionsBody: PostApiPartnerLocationsLocationResolutionsBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsLocationResolutions>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Resolve approximate locations for selected partners
+ */
+
+export function usePostApiPartnerLocationsLocationResolutions<
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsLocationResolutions>
+  >,
+  TError = ApiErrorPayload,
+>(
+  postApiPartnerLocationsLocationResolutionsBody: PostApiPartnerLocationsLocationResolutionsBody,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsLocationResolutions>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions =
+    getPostApiPartnerLocationsLocationResolutionsQueryOptions(
+      postApiPartnerLocationsLocationResolutionsBody,
+      options,
+    );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Download the partner import workbook template
+ */
+export const getApiPartnerLocationsImportTemplate = (signal?: AbortSignal) => {
+  return orvalClient<unknown>({
+    url: `/api/partner-locations/import/template`,
+    method: "GET",
+    signal,
+  });
+};
+
+export const getGetApiPartnerLocationsImportTemplateQueryKey = () => {
+  return [`/api/partner-locations/import/template`] as const;
+};
+
+export const getGetApiPartnerLocationsImportTemplateQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>,
+  TError = ApiErrorPayload,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>,
+      TError,
+      TData
+    >
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetApiPartnerLocationsImportTemplateQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>
+  > = ({ signal }) => getApiPartnerLocationsImportTemplate(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiPartnerLocationsImportTemplateQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>
+>;
+export type GetApiPartnerLocationsImportTemplateQueryError = ApiErrorPayload;
+
+export function useGetApiPartnerLocationsImportTemplate<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>,
+  TError = ApiErrorPayload,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiPartnerLocationsImportTemplate<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>,
+  TError = ApiErrorPayload,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiPartnerLocationsImportTemplate<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>,
+  TError = ApiErrorPayload,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Download the partner import workbook template
+ */
+
+export function useGetApiPartnerLocationsImportTemplate<
+  TData = Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>,
+  TError = ApiErrorPayload,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPartnerLocationsImportTemplate>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions =
+    getGetApiPartnerLocationsImportTemplateQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
  * Reads every sheet, finds headers in the first 10 rows, ignores Instruções, and returns a sheet-level preview and correction report. Commit only selected sheets by sending selections as a JSON object of sheet name to partner type.
  * @summary Preview or import partner locations from an XLSX workbook
  */
@@ -214,6 +893,12 @@ export const postApiPartnerLocationsImportWorkbook = (
     formData.append(
       `dry_run`,
       postApiPartnerLocationsImportWorkbookBody.dry_run,
+    );
+  }
+  if (postApiPartnerLocationsImportWorkbookBody.default_type !== undefined) {
+    formData.append(
+      `default_type`,
+      postApiPartnerLocationsImportWorkbookBody.default_type,
     );
   }
   if (postApiPartnerLocationsImportWorkbookBody.selections !== undefined) {
@@ -391,7 +1076,7 @@ export function usePostApiPartnerLocationsImportWorkbook<
 }
 
 /**
- * Two-pass import. With dry_run=true (the default) nothing is written and the report shows what would happen. Rows whose name already exists are skipped, never overwritten. Coordinates come from the sheet when present, otherwise from the city dataset.
+ * Two-pass import. With dry_run=true (the default) nothing is written and the report shows what would happen. Rows whose name already exists are skipped, never overwritten. Coordinates come from the sheet when present, otherwise from a GeoNames catalog suggestion and remain pending manual confirmation.
  * @summary Import partner locations from CSV
  */
 export const postApiPartnerLocationsImport = (
@@ -894,6 +1579,545 @@ export function useDeleteApiPartnerLocationsId<
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
   const queryOptions = getDeleteApiPartnerLocationsIdQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Resolve an approximate partner location
+ */
+export const postApiPartnerLocationsIdLocationResolution = (
+  id: string,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<PartnerLocation>({
+    url: `/api/partner-locations/${id}/location-resolution`,
+    method: "POST",
+    signal,
+  });
+};
+
+export const getPostApiPartnerLocationsIdLocationResolutionQueryKey = (
+  id: string,
+) => {
+  return ["POST", `/api/partner-locations/${id}/location-resolution`] as const;
+};
+
+export const getPostApiPartnerLocationsIdLocationResolutionQueryOptions = <
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsIdLocationResolution>
+  >,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsIdLocationResolution>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getPostApiPartnerLocationsIdLocationResolutionQueryKey(id);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof postApiPartnerLocationsIdLocationResolution>>
+  > = ({ signal }) => postApiPartnerLocationsIdLocationResolution(id, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: id !== null && id !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof postApiPartnerLocationsIdLocationResolution>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PostApiPartnerLocationsIdLocationResolutionQueryResult =
+  NonNullable<
+    Awaited<ReturnType<typeof postApiPartnerLocationsIdLocationResolution>>
+  >;
+export type PostApiPartnerLocationsIdLocationResolutionQueryError =
+  ApiErrorPayload;
+
+export function usePostApiPartnerLocationsIdLocationResolution<
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsIdLocationResolution>
+  >,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsIdLocationResolution>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof postApiPartnerLocationsIdLocationResolution>
+          >,
+          TError,
+          Awaited<
+            ReturnType<typeof postApiPartnerLocationsIdLocationResolution>
+          >
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsIdLocationResolution<
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsIdLocationResolution>
+  >,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsIdLocationResolution>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof postApiPartnerLocationsIdLocationResolution>
+          >,
+          TError,
+          Awaited<
+            ReturnType<typeof postApiPartnerLocationsIdLocationResolution>
+          >
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePostApiPartnerLocationsIdLocationResolution<
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsIdLocationResolution>
+  >,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsIdLocationResolution>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Resolve an approximate partner location
+ */
+
+export function usePostApiPartnerLocationsIdLocationResolution<
+  TData = Awaited<
+    ReturnType<typeof postApiPartnerLocationsIdLocationResolution>
+  >,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof postApiPartnerLocationsIdLocationResolution>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions =
+    getPostApiPartnerLocationsIdLocationResolutionQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Confirm a partner location
+ */
+export const putApiPartnerLocationsIdLocation = (
+  id: string,
+  partnerLocationCoordinatesInput: PartnerLocationCoordinatesInput,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<PartnerLocation>({
+    url: `/api/partner-locations/${id}/location`,
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    data: partnerLocationCoordinatesInput,
+    signal,
+  });
+};
+
+export const getPutApiPartnerLocationsIdLocationQueryKey = (
+  id: string,
+  partnerLocationCoordinatesInput?: PartnerLocationCoordinatesInput,
+) => {
+  return [
+    "PUT",
+    `/api/partner-locations/${id}/location`,
+    partnerLocationCoordinatesInput,
+  ] as const;
+};
+
+export const getPutApiPartnerLocationsIdLocationQueryOptions = <
+  TData = Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  partnerLocationCoordinatesInput: PartnerLocationCoordinatesInput,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getPutApiPartnerLocationsIdLocationQueryKey(
+      id,
+      partnerLocationCoordinatesInput,
+    );
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>
+  > = ({ signal }) =>
+    putApiPartnerLocationsIdLocation(
+      id,
+      partnerLocationCoordinatesInput,
+      signal,
+    );
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: id !== null && id !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type PutApiPartnerLocationsIdLocationQueryResult = NonNullable<
+  Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>
+>;
+export type PutApiPartnerLocationsIdLocationQueryError = ApiErrorPayload;
+
+export function usePutApiPartnerLocationsIdLocation<
+  TData = Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  partnerLocationCoordinatesInput: PartnerLocationCoordinatesInput,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>,
+          TError,
+          Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePutApiPartnerLocationsIdLocation<
+  TData = Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  partnerLocationCoordinatesInput: PartnerLocationCoordinatesInput,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>,
+          TError,
+          Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function usePutApiPartnerLocationsIdLocation<
+  TData = Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  partnerLocationCoordinatesInput: PartnerLocationCoordinatesInput,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Confirm a partner location
+ */
+
+export function usePutApiPartnerLocationsIdLocation<
+  TData = Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  partnerLocationCoordinatesInput: PartnerLocationCoordinatesInput,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof putApiPartnerLocationsIdLocation>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getPutApiPartnerLocationsIdLocationQueryOptions(
+    id,
+    partnerLocationCoordinatesInput,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Clear a partner location
+ */
+export const deleteApiPartnerLocationsIdLocation = (
+  id: string,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<PartnerLocation>({
+    url: `/api/partner-locations/${id}/location`,
+    method: "DELETE",
+    signal,
+  });
+};
+
+export const getDeleteApiPartnerLocationsIdLocationQueryKey = (id: string) => {
+  return ["DELETE", `/api/partner-locations/${id}/location`] as const;
+};
+
+export const getDeleteApiPartnerLocationsIdLocationQueryOptions = <
+  TData = Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getDeleteApiPartnerLocationsIdLocationQueryKey(id);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>
+  > = ({ signal }) => deleteApiPartnerLocationsIdLocation(id, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: id !== null && id !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type DeleteApiPartnerLocationsIdLocationQueryResult = NonNullable<
+  Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>
+>;
+export type DeleteApiPartnerLocationsIdLocationQueryError = ApiErrorPayload;
+
+export function useDeleteApiPartnerLocationsIdLocation<
+  TData = Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>,
+          TError,
+          Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useDeleteApiPartnerLocationsIdLocation<
+  TData = Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>,
+          TError,
+          Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useDeleteApiPartnerLocationsIdLocation<
+  TData = Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Clear a partner location
+ */
+
+export function useDeleteApiPartnerLocationsIdLocation<
+  TData = Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof deleteApiPartnerLocationsIdLocation>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getDeleteApiPartnerLocationsIdLocationQueryOptions(
+    id,
+    options,
+  );
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,

@@ -9,7 +9,10 @@ import type { VariantAttrBodyInput } from "./variantAttrBodyInput";
 
 export type PatchApiProductsIdBodyVariantsItem = {
   variant_id?: string;
-  /** @maxLength 200 */
+  /**
+   * @minLength 1
+   * @maxLength 200
+   */
   name: string;
   /**
    * @minimum -9007199254740991

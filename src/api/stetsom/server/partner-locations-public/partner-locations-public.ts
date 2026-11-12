@@ -5,9 +5,9 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
-import type { GetApiPartnerLocationsParams } from "../../model/getApiPartnerLocationsParams";
+import type { GetApiPartnerLocations200Item } from "../../model/getApiPartnerLocations200Item";
 
-import type { PartnerLocation } from "../../model/partnerLocation";
+import type { GetApiPartnerLocationsParams } from "../../model/getApiPartnerLocationsParams";
 
 import { serverOrvalClient } from "../../orval-server";
 
@@ -17,7 +17,7 @@ import { serverOrvalClient } from "../../orval-server";
 export const getApiPartnerLocations = (
   params?: GetApiPartnerLocationsParams,
 ) => {
-  return serverOrvalClient<PartnerLocation[]>({
+  return serverOrvalClient<GetApiPartnerLocations200Item[]>({
     url: `/api/partner-locations`,
     method: "GET",
     params,

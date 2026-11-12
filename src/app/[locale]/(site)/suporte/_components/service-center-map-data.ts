@@ -1,4 +1,4 @@
-import type { PartnerLocation } from "@/api/stetsom/model";
+import type { GetApiPartnerLocations200Item } from "@/api/stetsom/model";
 import { isValidCoordinate } from "@/lib/geocode";
 
 type PointGeometry = { type: "Point"; coordinates: [number, number] };
@@ -6,7 +6,8 @@ type ServiceCenterProperties = {
   id: string;
   name: string;
   city: string;
-  state: string;
+  state?: string;
+  location_precision: "CONFIRMED" | "APPROXIMATE";
 };
 export type ServiceCenterFeature = {
   type: "Feature";
@@ -15,7 +16,7 @@ export type ServiceCenterFeature = {
   geometry: PointGeometry;
 };
 
-export type MappablePartnerLocation = PartnerLocation & {
+export type MappablePartnerLocation = GetApiPartnerLocations200Item & {
   lat: number;
   lng: number;
 };
@@ -26,7 +27,7 @@ export type ServiceCenterFeatureCollection = {
 };
 
 export function getMappableLocations(
-  locations: PartnerLocation[],
+  locations: GetApiPartnerLocations200Item[],
 ): MappablePartnerLocation[] {
   return locations.flatMap((location) => {
     if (!isValidCoordinate(location.lat, location.lng)) return [];
@@ -49,6 +50,7 @@ export function toFeatureCollection(
         name: location.name,
         city: location.city,
         state: location.state,
+        location_precision: location.location_precision,
       },
       geometry: {
         type: "Point",

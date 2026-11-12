@@ -61,7 +61,7 @@ export function TemplateCreateAction({
           id={pickerId}
           role="group"
           aria-label="Escolha a categoria"
-          className="absolute top-11 right-0 z-10 w-56 rounded-md border border-border bg-card p-1 shadow-cms-card-lg"
+          className="absolute top-11 right-0 z-50 w-56 rounded-md border border-border bg-card p-1 shadow-cms-card-lg"
         >
           <p className="px-2 py-1.5 text-xs text-muted-foreground">
             Escolha a categoria

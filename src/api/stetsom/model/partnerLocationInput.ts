@@ -5,16 +5,18 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { PartnerLocationInputLocationPrecision } from "./partnerLocationInputLocationPrecision";
 import type { PartnerLocationInputType } from "./partnerLocationInputType";
 
 export interface PartnerLocationInput {
   id: string;
   type: PartnerLocationInputType;
   name: string;
+  country_code: string;
   address: string;
   city: string;
-  state: string;
-  zip: string;
+  state?: string;
+  zip?: string;
   lat?: number;
   lng?: number;
   phone?: string;
@@ -24,6 +26,9 @@ export interface PartnerLocationInput {
   region?: string;
   specialty?: string;
   is_active: boolean;
+  location_verified_at?: string;
+  location_verified: boolean;
+  location_precision: PartnerLocationInputLocationPrecision;
   created_at: string;
   updated_at: string;
 }

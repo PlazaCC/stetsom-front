@@ -2,7 +2,7 @@
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import { toValidLatLng, type Bounds, type LatLng } from "@/lib/geocode";
+import { toValidLatLng, type LatLng } from "@/lib/geocode";
 import maplibregl, {
   type GeoJSONSource,
   type Map as MlMap,
@@ -16,9 +16,8 @@ import {
   getMappableLocations,
   toFeatureCollection,
 } from "./service-center-map-data";
-import type { PartnerLocation } from "@/api/stetsom/model";
+import type { GetApiPartnerLocations200Item } from "@/api/stetsom/model";
 
-const SP_CENTER: [number, number] = [-46.6333, -23.5505];
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/bright";
 const SOURCE_ID = "service-centers";
 const CLUSTERS_LAYER = "service-center-clusters";
@@ -41,15 +40,18 @@ function isGpuInitializationError(error: unknown): boolean {
 }
 
 interface ServiceCenterMapProps {
-  locations: PartnerLocation[];
+  locations: GetApiPartnerLocations200Item[];
   searchLocation: LatLng | null;
   selectedId: string | null;
   onSelectLocation: (id: string) => void;
-  onBoundsChange?: (bounds: Bounds) => void;
+  onSearchLocationChange?: (location: LatLng) => void;
   fitAllTrigger: number;
 }
 
-function buildPopupContent(loc: PartnerLocation): HTMLElement {
+function buildPopupContent(
+  loc: GetApiPartnerLocations200Item,
+  approximateLabel: string,
+): HTMLElement {
   const container = document.createElement("div");
   const name = document.createElement("strong");
   name.className = "text-sm";
@@ -68,6 +70,17 @@ function buildPopupContent(loc: PartnerLocation): HTMLElement {
     span.className = "text-xs";
     span.textContent = line;
     container.appendChild(span);
+  }
+
+  if (loc.location_precision === "APPROXIMATE") {
+    const approximate = document.createElement("div");
+    approximate.style.marginTop = "8px";
+    approximate.style.color = "#94a3b8";
+    approximate.style.fontSize = "11px";
+    approximate.style.lineHeight = "1.25";
+    approximate.style.textAlign = "right";
+    approximate.textContent = approximateLabel;
+    container.appendChild(approximate);
   }
 
   return container;
@@ -157,7 +170,7 @@ export function ServiceCenterMap({
   searchLocation,
   selectedId,
   onSelectLocation,
-  onBoundsChange,
+  onSearchLocationChange,
   fitAllTrigger,
 }: ServiceCenterMapProps) {
   const t = useTranslations("Support.serviceCenters");
@@ -166,14 +179,14 @@ export function ServiceCenterMap({
   const popupRef = useRef<MlPopup | null>(null);
   const searchMarkerRef = useRef<MlMarker | null>(null);
   const onSelectRef = useRef(onSelectLocation);
-  const onBoundsRef = useRef(onBoundsChange);
-  const locationMapRef = useRef(new Map<string, PartnerLocation>());
+  const locationMapRef = useRef(
+    new Map<string, GetApiPartnerLocations200Item>(),
+  );
   const [status, setStatus] = useState<MapStatus>("loading");
   const mappable = useMemo(() => getMappableLocations(locations), [locations]);
 
   useEffect(() => {
     onSelectRef.current = onSelectLocation;
-    onBoundsRef.current = onBoundsChange;
   });
 
   useEffect(() => {
@@ -190,7 +203,7 @@ export function ServiceCenterMap({
       map = new maplibregl.Map({
         container: containerRef.current,
         style: MAP_STYLE,
-        center: SP_CENTER,
+        center: [-46.6333, -23.5505],
         zoom: 4,
         cooperativeGestures: true,
         locale: {
@@ -223,16 +236,6 @@ export function ServiceCenterMap({
     );
 
     let hasLoaded = false;
-    const emitBounds = () => {
-      const bounds = map.getBounds();
-      onBoundsRef.current?.({
-        north: bounds.getNorth(),
-        south: bounds.getSouth(),
-        east: bounds.getEast(),
-        west: bounds.getWest(),
-      });
-    };
-
     const handleError = (event: { error?: unknown }) => {
       if (isGpuInitializationError(event.error)) {
         setTimeout(() => setStatus("unavailable"), 0);
@@ -245,7 +248,6 @@ export function ServiceCenterMap({
     };
 
     map.on("error", handleError);
-    map.on("moveend", emitBounds);
     map.on("load", () => {
       hasLoaded = true;
       addDataLayers(map, toFeatureCollection(mappable));
@@ -259,8 +261,6 @@ export function ServiceCenterMap({
           ],
           { padding: 40, maxZoom: 8, duration: 0 },
         );
-      } else {
-        emitBounds();
       }
     });
 
@@ -305,7 +305,7 @@ export function ServiceCenterMap({
       onSelectRef.current(location.id);
       popupRef.current = new maplibregl.Popup({ closeButton: true, offset: 18 })
         .setLngLat(coordinates as [number, number])
-        .setDOMContent(buildPopupContent(location))
+        .setDOMContent(buildPopupContent(location, t("approximateLocation")))
         .addTo(map);
     });
 
@@ -356,15 +356,23 @@ export function ServiceCenterMap({
     if (!searchLocation) return;
     const element = document.createElement("div");
     element.className = SEARCH_PIN_CLASS;
-    searchMarkerRef.current = new maplibregl.Marker({ element })
+    searchMarkerRef.current = new maplibregl.Marker({
+      element,
+      draggable: true,
+    })
       .setLngLat([searchLocation.lng, searchLocation.lat])
       .addTo(map);
+    searchMarkerRef.current.on("dragend", () => {
+      const position = searchMarkerRef.current?.getLngLat();
+      if (position)
+        onSearchLocationChange?.({ lat: position.lat, lng: position.lng });
+    });
     map.flyTo({
       center: [searchLocation.lng, searchLocation.lat],
       zoom: 10,
       duration: 800,
     });
-  }, [searchLocation, status]);
+  }, [searchLocation, status, onSearchLocationChange]);
 
   useEffect(() => {
     const map = mapRef.current;

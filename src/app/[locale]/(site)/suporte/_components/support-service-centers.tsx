@@ -1,11 +1,11 @@
-import type { PartnerLocation } from "@/api/stetsom/model";
+import type { GetApiPartnerLocations200Item } from "@/api/stetsom/model";
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
 import { useTranslations } from "next-intl";
 import { ServiceCentersExplorer } from "./service-centers-explorer";
 
 interface SupportServiceCentersProps {
-  serviceCenters: PartnerLocation[];
+  serviceCenters: GetApiPartnerLocations200Item[];
 }
 
 export function SupportServiceCenters({

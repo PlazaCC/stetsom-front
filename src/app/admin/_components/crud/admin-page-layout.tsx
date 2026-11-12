@@ -30,7 +30,7 @@ export function AdminPageLayout({
         className,
       )}
     >
-      {header && <div className="shrink-0">{header}</div>}
+      {header && <div className="relative z-20 shrink-0">{header}</div>}
       <div
         className={cn(
           "min-h-0 flex-1 overflow-y-auto",
@@ -62,7 +62,7 @@ export function AdminPageHeader({
   return (
     <div
       className={cn(
-        "flex items-start justify-between gap-4 px-4 pt-4 pb-3 lg:px-11.75 lg:pt-7.25",
+        "relative z-20 flex items-start justify-between gap-4 px-4 pt-4 pb-3 lg:px-11.75 lg:pt-7.25",
         className,
       )}
     >

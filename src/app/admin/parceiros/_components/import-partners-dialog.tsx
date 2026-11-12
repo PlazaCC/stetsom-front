@@ -10,12 +10,14 @@ import type { PostApiPartnerLocationsImportWorkbook200 } from "@/api/stetsom/mod
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useAdminToast } from "@/hooks/use-admin-toast";
+import { getApiError } from "@/lib/api/error-utils";
 import { cn } from "@/lib/utils";
 import {
   AlertTriangle,
@@ -27,15 +29,16 @@ import {
 import { useRef, useState } from "react";
 
 const EXPECTED_COLUMNS =
-  "Nome Fantasia, Fone, Cidade, UF, CEP, Endereço, Número, E-mail, Site, Região, Especialidade, Latitude, Longitude";
+  "Nome Fantasia*, Fone, Cidade*, Estado/Província, País*, Código postal, Endereço*, Número, E-mail, Site, Região, Especialidade, Latitude, Longitude";
 
 const CORRECTION_COLUMNS = [
-  ["Nome Fantasia", "name"],
+  ["Nome Fantasia *", "name"],
   ["Fone", "phone"],
-  ["Cidade", "city"],
-  ["UF", "state"],
-  ["CEP", "zip"],
-  ["Endereço", "address"],
+  ["Cidade *", "city"],
+  ["Estado/Província", "state"],
+  ["País *", "country_code"],
+  ["Código postal", "zip"],
+  ["Endereço *", "address"],
   ["Número", "number"],
   ["E-mail", "email"],
   ["Site", "website"],
@@ -76,6 +79,16 @@ export function ImportPartnersDialog({
     Record<string, PartnerLocationType>
   >({});
   const [busy, setBusy] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
+
+  function describeImportError(error: unknown) {
+    const apiError = getApiError(error);
+    if (apiError.status === 413)
+      return "O arquivo excede o limite de 10 MB. Reduza o tamanho da planilha e tente novamente.";
+    if (apiError.status === 422 || apiError.status === 400)
+      return "Não foi possível validar o arquivo enviado. Baixe o modelo oficial, confira os campos obrigatórios e tente novamente.";
+    return "Não foi possível processar a importação agora. Mantenha o arquivo selecionado e tente novamente em alguns instantes.";
+  }
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = e.target.files?.[0];
@@ -87,6 +100,7 @@ export function ImportPartnersDialog({
     setCsvReport(null);
     setWorkbookReport(null);
     setSelections({});
+    setImportError(null);
 
     if (selected.name.toLowerCase().endsWith(".xlsx")) {
       await runWorkbook(selected, true);
@@ -100,6 +114,7 @@ export function ImportPartnersDialog({
 
   async function runCsv(text: string, dryRun: boolean) {
     setBusy(true);
+    setImportError(null);
     try {
       const result = await postApiPartnerLocationsImport({
         csv: text,
@@ -109,7 +124,9 @@ export function ImportPartnersDialog({
       setCsvReport(result);
       if (!dryRun) finishImport(result.created);
     } catch (err) {
-      toast.apiError(err, "Não foi possível processar a planilha");
+      const message = describeImportError(err);
+      setImportError(message);
+      toast.error("Não foi possível processar a planilha", message);
     } finally {
       setBusy(false);
     }
@@ -117,10 +134,12 @@ export function ImportPartnersDialog({
 
   async function runWorkbook(selectedFile: File, dryRun: boolean) {
     setBusy(true);
+    setImportError(null);
     try {
       const result = await postApiPartnerLocationsImportWorkbook({
         file: selectedFile,
         dry_run: String(dryRun),
+        default_type: type,
         selections: dryRun ? undefined : JSON.stringify(selections),
       });
       setWorkbookReport(result);
@@ -129,16 +148,16 @@ export function ImportPartnersDialog({
           Object.fromEntries(
             result.sheets
               .filter((sheet) => sheet.status === "ready")
-              .map(
-                (sheet) => [sheet.name, sheet.suggestedType ?? type] as const,
-              ),
+              .map((sheet) => [sheet.name, type] as const),
           ),
         );
       } else {
         finishImport(result.report.created);
       }
     } catch (err) {
-      toast.apiError(err, "Não foi possível processar o arquivo XLSX");
+      const message = describeImportError(err);
+      setImportError(message);
+      toast.error("Não foi possível processar o arquivo XLSX", message);
     } finally {
       setBusy(false);
     }
@@ -245,7 +264,7 @@ export function ImportPartnersDialog({
           <DialogTitle>Importar {noun}s por planilha</DialogTitle>
         </DialogHeader>
 
-        <div className="min-h-0 space-y-4 overflow-y-auto pr-1">
+        <DialogBody className="space-y-4 pr-1">
           <div className="flex flex-wrap items-center gap-2">
             <Button
               type="button"
@@ -257,7 +276,7 @@ export function ImportPartnersDialog({
               {fileName || "Selecionar arquivo XLSX ou CSV"}
             </Button>
             <a
-              href="/templates/rede-autorizada-nacional.xlsx"
+              href="/api/bff/partner-locations/import/template"
               download
               className="inline-flex items-center gap-1.5 rounded-md px-2 py-2 text-sm font-medium text-primary hover:bg-muted"
             >
@@ -272,10 +291,24 @@ export function ImportPartnersDialog({
               onChange={handleFile}
             />
             <p className="basis-full text-xs text-muted-foreground">
-              XLSX aceita múltiplas abas. CSV continua disponível. Colunas do
-              modelo: {EXPECTED_COLUMNS}.
+              Use o modelo único. As abas começam com o tipo desta tela, mas
+              você pode trocar para Assistência técnica ou Representante antes
+              de importar. Campos obrigatórios: Nome Fantasia, Cidade, País e
+              Endereço. O modelo contém: {EXPECTED_COLUMNS}.
             </p>
           </div>
+
+          {importError && (
+            <div
+              role="alert"
+              className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive"
+            >
+              <p className="font-semibold">
+                Não foi possível validar a importação
+              </p>
+              <p className="mt-1 text-xs leading-5">{importError}</p>
+            </div>
+          )}
 
           {busy && !report && (
             <p className="text-sm text-muted-foreground">Validando planilha…</p>
@@ -299,7 +332,7 @@ export function ImportPartnersDialog({
                             setSelections((current) => {
                               const next = { ...current };
                               if (event.target.checked) {
-                                next[sheet.name] = sheet.suggestedType ?? type;
+                                next[sheet.name] = type;
                               } else {
                                 delete next[sheet.name];
                               }
@@ -319,11 +352,7 @@ export function ImportPartnersDialog({
                       </span>
                       {sheet.status === "ready" && (
                         <select
-                          value={
-                            selections[sheet.name] ??
-                            sheet.suggestedType ??
-                            type
-                          }
+                          value={selections[sheet.name] ?? type}
                           disabled={!selections[sheet.name]}
                           onChange={(event) =>
                             setSelections((current) => ({
@@ -365,7 +394,7 @@ export function ImportPartnersDialog({
               Baixar planilha com erros
             </Button>
           )}
-        </div>
+        </DialogBody>
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>
@@ -461,9 +490,11 @@ function formatIssue(issue: {
   line: number;
   field?: string;
   reason: string;
+  orientation?: string;
 }) {
   const location = issue.line > 0 ? `linha ${issue.line}` : "arquivo";
-  return `${issue.sheet ? `${issue.sheet}, ` : ""}${location}${issue.field ? ` (${issue.field})` : ""}: ${issue.reason}`;
+  const issueLabel = `${issue.sheet ? `${issue.sheet}, ` : ""}${location}${issue.field ? ` (${issue.field})` : ""}: ${issue.reason}`;
+  return issue.orientation ? `${issueLabel}. ${issue.orientation}` : issueLabel;
 }
 
 function ReportGroup({
