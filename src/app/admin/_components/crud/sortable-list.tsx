@@ -20,6 +20,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
+import { useId } from "react";
 
 export interface SortableListItemControls {
   index: number;
@@ -125,6 +126,9 @@ export function SortableList<T>({
   disabled = false,
   isItemDraggable,
 }: SortableListProps<T>) {
+  // dnd-kit otherwise derives its accessibility IDs from render order, which
+  // differs between SSR and hydration when multiple sortable lists are shown.
+  const dndContextId = useId();
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
     useSensor(KeyboardSensor, {
@@ -150,6 +154,7 @@ export function SortableList<T>({
 
   return (
     <DndContext
+      id={dndContextId}
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}

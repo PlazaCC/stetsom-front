@@ -21,9 +21,11 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { GripVertical, Info } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { AdminFieldError } from "@/app/admin/_components/crud/admin-field-error";
 import { ImageGallery } from "./image-gallery";
 import type { WizardAction, WizardImage, WizardState } from "./wizard-store";
+import type { EditorTarget } from "./editor-target";
 
 export interface CategoryOption {
   id: string;
@@ -42,6 +44,7 @@ interface GeneralEditorProps {
   categories: CategoryOption[];
   lines: LineOption[];
   compact?: boolean;
+  selection?: EditorTarget;
   errors?: Record<string, string>;
   onClearError?: (path?: string) => void;
 }
@@ -59,6 +62,7 @@ interface EntityComboboxProps<T extends { id: string; name: string }> {
   required?: boolean;
   error?: string;
   onClearError?: () => void;
+  editorField?: string;
 }
 
 function EntityCombobox<T extends { id: string; name: string }>({
@@ -73,9 +77,10 @@ function EntityCombobox<T extends { id: string; name: string }>({
   required,
   error,
   onClearError,
+  editorField,
 }: EntityComboboxProps<T>) {
   return (
-    <Field>
+    <Field data-editor-field={editorField}>
       <FieldLabel>
         {label} {required ? <span className="text-destructive">*</span> : null}
       </FieldLabel>
@@ -114,9 +119,34 @@ export function GeneralEditor({
   categories,
   lines,
   compact = false,
+  selection,
   errors = {},
   onClearError,
 }: GeneralEditorProps) {
+  const titleControlRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+  const descriptionControlRef = useRef<HTMLInputElement | HTMLTextAreaElement>(
+    null,
+  );
+
+  useEffect(() => {
+    if (selection?.kind !== "general" || !selection.field) return;
+    window.setTimeout(() => {
+      const element = document.querySelector<HTMLElement>(
+        `[data-editor-field="${CSS.escape(selection.field!)}"]`,
+      );
+      element?.scrollIntoView({ behavior: "smooth", block: "center" });
+      const focusTarget =
+        selection.field === "title"
+          ? titleControlRef.current
+          : selection.field === "description"
+            ? descriptionControlRef.current
+            : element?.querySelector<HTMLElement>(
+                "[data-editor-focus], input, textarea, button",
+              );
+      focusTarget?.focus({ preventScroll: true });
+    }, 0);
+  }, [selection]);
+
   const categoryLines = lines.filter(
     (l) => l.category_id === state.category_id,
   );
@@ -128,6 +158,10 @@ export function GeneralEditor({
     <div className="flex flex-col gap-4">
       <I18nInput
         label="Nome do produto"
+        editorField="title"
+        editorControlRef={(control) => {
+          titleControlRef.current = control;
+        }}
         fieldPath="name"
         required
         value={state.name}
@@ -193,6 +227,10 @@ export function GeneralEditor({
 
       <I18nInput
         label="Descrição"
+        editorField="description"
+        editorControlRef={(control) => {
+          descriptionControlRef.current = control;
+        }}
         multiline
         value={state.description}
         onChange={(description) =>
@@ -202,6 +240,7 @@ export function GeneralEditor({
       />
 
       <div
+        data-editor-field="appLinks"
         className={cn(
           "grid gap-4",
           compact
@@ -254,6 +293,7 @@ export function GeneralEditor({
       >
         <EntityCombobox
           label="Categoria"
+          editorField="category"
           items={categories}
           value={currentCategory}
           onValueChange={(value) => (
@@ -273,6 +313,7 @@ export function GeneralEditor({
         <EntityCombobox
           resetKey={state.category_id}
           label="Linha"
+          editorField="line"
           items={categoryLines}
           value={currentLine}
           onValueChange={(value) =>
@@ -291,7 +332,7 @@ export function GeneralEditor({
         />
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2" data-editor-field="images">
         <div className="flex items-center gap-2">
           <AdminLabel className="mb-0">Imagens</AdminLabel>
           <Tooltip>

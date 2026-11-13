@@ -28,6 +28,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BrFlag, EsFlag, UsFlag } from "@/components/ui/flag-icons";
 import { cn } from "@/lib/utils";
+import type { EditorTarget } from "./editor-target";
 
 const LOCALES: { id: SpecLocale; Flag: React.ComponentType; label: string }[] =
   [
@@ -43,6 +44,8 @@ interface StepSpecsProps {
   attributeGroups: AttributeGroup[];
   templates: Template[];
   compact?: boolean;
+  selection?: EditorTarget;
+  onRequestTarget?: (target: EditorTarget) => void;
   errors?: Record<string, string>;
   onClearError?: (path?: string) => void;
 }
@@ -77,6 +80,8 @@ export function StepSpecs({
   attributeGroups,
   templates,
   compact = false,
+  selection,
+  onRequestTarget,
   errors = {},
   onClearError,
 }: StepSpecsProps) {
@@ -124,6 +129,28 @@ export function StepSpecs({
       element?.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 0);
   }, [dispatch, errors, locale, state.activeVariationId, state.variations]);
+
+  useEffect(() => {
+    if (selection?.kind !== "specs" || !selection.variationId) return;
+    if (selection.variationId !== state.activeVariationId) {
+      dispatch({ type: "set_active_variation", id: selection.variationId });
+    }
+    const selector = selection.attributeId
+      ? `[data-editor-spec-id="${CSS.escape(selection.attributeId)}"]`
+      : selection.groupId
+        ? `[data-editor-group-id="${CSS.escape(selection.groupId)}"]`
+        : null;
+    if (!selector) return;
+    window.setTimeout(() => {
+      const element = Array.from(
+        document.querySelectorAll<HTMLElement>(selector),
+      ).find((candidate) => candidate.getClientRects().length > 0);
+      element?.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (selection.attributeId) {
+        element?.querySelector<HTMLElement>("[data-editor-focus]")?.focus();
+      }
+    }, 0);
+  }, [dispatch, selection, state.activeVariationId]);
 
   function setVariations(variations: WizardVariation[]) {
     dispatch({ type: "set_variations", variations });
@@ -206,12 +233,46 @@ export function StepSpecs({
           variant="outline"
           size="sm"
           className="ml-auto"
+          disabled={!hasCategory}
           onClick={() => setImportOpen(true)}
         >
           <FileSpreadsheet className="size-4" />
           Importar planilha
         </Button>
       </div>
+
+      {!hasCategory ? (
+        <div className="m-3 rounded-lg border border-dashed border-border bg-muted/30 px-4 py-5 text-center">
+          <h3 className="text-sm font-semibold text-foreground">
+            Comece pelas informações do produto
+          </h3>
+          <p className="mx-auto mt-1 max-w-md text-xs leading-relaxed text-muted-foreground">
+            Escolha uma categoria para carregar os templates e atributos
+            compatíveis com este produto.
+          </p>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            className="mt-4"
+            onClick={() =>
+              onRequestTarget?.({ kind: "general", field: "category" })
+            }
+          >
+            Escolher categoria
+          </Button>
+        </div>
+      ) : active.specs.length === 0 ? (
+        <div className="m-3 rounded-lg border border-border bg-card px-4 py-4">
+          <h3 className="text-sm font-semibold text-foreground">
+            Monte as especificações técnicas
+          </h3>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+            Aplique um template acima ou adicione um grupo manualmente abaixo.
+            Depois, escolha os atributos e preencha seus valores.
+          </p>
+        </div>
+      ) : null}
 
       {importOpen && (
         <SpecImportDialog
@@ -291,6 +352,9 @@ export function StepSpecs({
           onChange={patchActiveSpecs}
           compact={compact}
           variationIndex={activeVariationIndex}
+          focusAttributeId={
+            selection?.kind === "specs" ? selection.attributeId : undefined
+          }
           errors={errors}
           onClearError={onClearError}
         />

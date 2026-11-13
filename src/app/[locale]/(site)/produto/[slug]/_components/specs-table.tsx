@@ -19,6 +19,7 @@ interface SpecsTableProps {
   variants: PublicVariant[];
   /** Groups and their attributes across all variants, in CMS order. */
   sections: SpecSection[];
+  editable?: boolean;
 }
 
 /** Section title row — one per attribute group, spanning the whole table. */
@@ -41,7 +42,11 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
  * values never get squished when a product has several variants (1 OHM,
  * 2 OHMS, 4 OHMS…).
  */
-export function SpecsTable({ variants, sections }: SpecsTableProps) {
+export function SpecsTable({
+  variants,
+  sections,
+  editable = false,
+}: SpecsTableProps) {
   const t = useTranslations("ProductDetail");
   const [activeVariant, setActiveVariant] = useState(0);
 
@@ -105,6 +110,11 @@ export function SpecsTable({ variants, sections }: SpecsTableProps) {
               {section.rows.map(({ attribute_id, attribute_name }, i) => (
                 <div
                   key={attribute_id}
+                  {...(editable
+                    ? {
+                        "data-editor-target": `specs:${variants[0]?.variant_id ?? ""}:${section.group_id ?? ""}:${attribute_id}`,
+                      }
+                    : {})}
                   className={cn(
                     "grid items-center gap-8 px-5 py-4.5 lg:px-42.5",
                     i % 2 === 0 ? "bg-muted" : "bg-white",
@@ -115,11 +125,22 @@ export function SpecsTable({ variants, sections }: SpecsTableProps) {
                     {attribute_name ?? attribute_id}
                   </span>
                   {variants.map((v) => (
-                    <SpecValue
+                    <div
                       key={v.variant_id}
-                      entries={entriesForAttribute(v.attributes, attribute_id)}
-                      className="font-sans text-sm text-text-subtle"
-                    />
+                      {...(editable
+                        ? {
+                            "data-editor-target": `specs:${v.variant_id}:${section.group_id ?? ""}:${attribute_id}`,
+                          }
+                        : {})}
+                    >
+                      <SpecValue
+                        entries={entriesForAttribute(
+                          v.attributes,
+                          attribute_id,
+                        )}
+                        className="font-sans text-sm text-text-subtle"
+                      />
+                    </div>
                   ))}
                 </div>
               ))}
@@ -182,6 +203,11 @@ export function SpecsTable({ variants, sections }: SpecsTableProps) {
                     {section.rows.map(({ attribute_id, attribute_name }, i) => (
                       <div
                         key={attribute_id}
+                        {...(editable
+                          ? {
+                              "data-editor-target": `specs:${currentVariant.variant_id}:${section.group_id ?? ""}:${attribute_id}`,
+                            }
+                          : {})}
                         className={cn(
                           "grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] items-start gap-6 px-5 py-4.5",
                           i % 2 === 0 ? "bg-muted" : "bg-white",
@@ -190,13 +216,21 @@ export function SpecsTable({ variants, sections }: SpecsTableProps) {
                         <span className="font-sans text-sm font-medium text-brand-dark capitalize">
                           {attribute_name ?? attribute_id}
                         </span>
-                        <SpecValue
-                          entries={entriesForAttribute(
-                            currentVariant.attributes,
-                            attribute_id,
-                          )}
-                          className="font-sans text-sm text-text-subtle"
-                        />
+                        <div
+                          {...(editable
+                            ? {
+                                "data-editor-target": `specs:${currentVariant.variant_id}:${section.group_id ?? ""}:${attribute_id}`,
+                              }
+                            : {})}
+                        >
+                          <SpecValue
+                            entries={entriesForAttribute(
+                              currentVariant.attributes,
+                              attribute_id,
+                            )}
+                            className="font-sans text-sm text-text-subtle"
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>

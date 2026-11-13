@@ -2,6 +2,7 @@
 
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
 import { AdminFieldError } from "@/app/admin/_components/crud/admin-field-error";
+import { AdminConfirmDialog } from "@/app/admin/_components/crud/admin-confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,7 @@ import type {
 import { cn } from "@/lib/utils";
 import { reindexByOrder } from "@/lib/utils/reindex";
 import { AlertTriangle, Plus, Trash2, X } from "lucide-react";
+import { useState } from "react";
 import { ToggleSwitch } from "./toggle-switch";
 import { newSpec, type TemplateLayout, type WizardSpec } from "./wizard-store";
 
@@ -56,6 +58,7 @@ interface SpecTableProps {
   /** Tightens spacing when the editor panel is narrow. */
   compact?: boolean;
   variationIndex: number;
+  focusAttributeId?: string;
   errors?: Record<string, string>;
   onClearError?: (path?: string) => void;
 }
@@ -77,6 +80,10 @@ interface GroupSection {
   group_id: string;
   rows: AttributeRows[];
 }
+
+type DeletionTarget =
+  | { kind: "group"; groupId: string }
+  | { kind: "attribute"; groupId: string; rowKey: string };
 
 /**
  * Collapse the flat spec list into sections, in the order each group first
@@ -140,9 +147,13 @@ export function SpecTable({
   onChange,
   compact = false,
   variationIndex,
+  focusAttributeId,
   errors = {},
   onClearError,
 }: SpecTableProps) {
+  const [deletionTarget, setDeletionTarget] = useState<DeletionTarget | null>(
+    null,
+  );
   const sections = toSections(specs);
   const allRows = sections.flatMap((s) => s.rows);
 
@@ -238,6 +249,40 @@ export function SpecTable({
     ]);
   }
 
+  const deletingGroup =
+    deletionTarget?.kind === "group"
+      ? sections.find((section) => section.group_id === deletionTarget.groupId)
+      : undefined;
+  const deletingAttribute =
+    deletionTarget?.kind === "attribute"
+      ? (() => {
+          const section = sections.find(
+            (item) => item.group_id === deletionTarget.groupId,
+          );
+          const row = section?.rows.find(
+            (item) => item.key === deletionTarget.rowKey,
+          );
+          return section && row ? { section, row } : undefined;
+        })()
+      : undefined;
+  const deletingAttributeName = deletingAttribute
+    ? (attributes.find(
+        (attribute) => attribute.id === deletingAttribute.row.attribute_id,
+      )?.name.pt ?? "esta especificação")
+    : "esta especificação";
+
+  function confirmDeletion() {
+    if (deletionTarget?.kind === "group") {
+      replaceSection(deletionTarget.groupId, null);
+    }
+
+    if (deletionTarget?.kind === "attribute" && deletingAttribute) {
+      replaceRows(deletingAttribute.section, deletingAttribute.row.key, null);
+    }
+
+    setDeletionTarget(null);
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <SortableList
@@ -264,6 +309,7 @@ export function SpecTable({
                 "rounded-md border bg-muted/30",
                 isUngrouped ? "border-amber-400" : "border-border",
               )}
+              data-editor-group-id={section.group_id || undefined}
             >
               <div className="flex items-center gap-2 px-3 py-2">
                 <div className="flex shrink-0 items-center">
@@ -282,7 +328,12 @@ export function SpecTable({
                 <button
                   type="button"
                   aria-label="Remover grupo e seus atributos"
-                  onClick={() => replaceSection(section.group_id, null)}
+                  onClick={() =>
+                    setDeletionTarget({
+                      kind: "group",
+                      groupId: section.group_id,
+                    })
+                  }
                   className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                 >
                   <Trash2 className="size-4" />
@@ -313,6 +364,7 @@ export function SpecTable({
                       locale={locale}
                       compact={compact}
                       variationIndex={variationIndex}
+                      focusAttributeId={focusAttributeId}
                       payloadIndex={allRows
                         .flatMap((item) => item.specs)
                         .filter((item) => item.attribute_id)
@@ -321,6 +373,13 @@ export function SpecTable({
                       onClearError={onClearError}
                       onChange={(next) => replaceRows(section, row.key, next)}
                       onMove={(toGroupId) => moveRows(section, row, toGroupId)}
+                      onRequestDelete={() =>
+                        setDeletionTarget({
+                          kind: "attribute",
+                          groupId: section.group_id,
+                          rowKey: row.key,
+                        })
+                      }
                     />
                   )}
                   append={
@@ -355,23 +414,36 @@ export function SpecTable({
       />
 
       {addableGroups.length > 0 ? (
-        <Select
-          value=""
-          onValueChange={(value) => {
-            if (value) addSection(value);
-          }}
-        >
-          <SelectTrigger className="w-full border-dashed">
-            <SelectValue placeholder="Adicionar grupo de atributos..." />
-          </SelectTrigger>
-          <SelectContent>
-            {addableGroups.map((group) => (
-              <SelectItem key={group.id} value={group.id}>
-                {group.name.pt}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="rounded-md border border-dashed border-border bg-muted/20 p-3">
+          <div className="mb-2">
+            <p className="text-sm font-medium text-foreground">
+              Adicionar grupo de especificações
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Organize os atributos em seções que aparecem juntas no produto.
+            </p>
+          </div>
+          <Select
+            value=""
+            onValueChange={(value) => {
+              if (value) addSection(value);
+            }}
+          >
+            <SelectTrigger
+              className="w-full bg-card"
+              aria-label="Adicionar grupo de especificações"
+            >
+              <SelectValue placeholder="Selecione um grupo para adicionar" />
+            </SelectTrigger>
+            <SelectContent>
+              {addableGroups.map((group) => (
+                <SelectItem key={group.id} value={group.id}>
+                  {group.name.pt}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       ) : (
         attributeGroups.length === 0 && (
           <p className="text-xs text-muted-foreground">
@@ -380,6 +452,23 @@ export function SpecTable({
           </p>
         )
       )}
+      <AdminConfirmDialog
+        open={deletionTarget !== null}
+        title={
+          deletionTarget?.kind === "group"
+            ? "Excluir grupo de especificações?"
+            : "Excluir especificação?"
+        }
+        description={
+          deletionTarget?.kind === "group"
+            ? `O grupo “${groupName(deletingGroup?.group_id ?? "")}” e todos os seus atributos e entradas serão removidos.`
+            : `A especificação “${deletingAttributeName}” e todas as suas entradas serão removidas.`
+        }
+        confirmLabel="Excluir"
+        destructive
+        onConfirm={confirmDeletion}
+        onCancel={() => setDeletionTarget(null)}
+      />
     </div>
   );
 }
@@ -400,9 +489,11 @@ interface AttributeCardProps {
   onChange: (next: AttributeRows | null) => void;
   onMove: (toGroupId: string) => void;
   variationIndex: number;
+  focusAttributeId?: string;
   payloadIndex: number;
   errors: Record<string, string>;
   onClearError?: (path?: string) => void;
+  onRequestDelete: () => void;
 }
 
 function AttributeCard({
@@ -419,9 +510,11 @@ function AttributeCard({
   onChange,
   onMove,
   variationIndex,
+  focusAttributeId,
   payloadIndex,
   errors,
   onClearError,
+  onRequestDelete,
 }: AttributeCardProps) {
   const isHighlighted = row.specs.some((s) => s.highlighted);
   const attribute = attributes.find((a) => a.id === row.attribute_id);
@@ -506,7 +599,14 @@ function AttributeCard({
   const groupPath = `variants.${variationIndex}.attributes.${Math.max(attributeIndex, 0)}.group_id`;
 
   return (
-    <div className="rounded-md border border-border bg-card">
+    <div
+      className={cn(
+        "rounded-md border border-border bg-card",
+        focusAttributeId === row.attribute_id &&
+          "ring-2 ring-primary/40 ring-offset-1",
+      )}
+      data-editor-spec-id={row.attribute_id || undefined}
+    >
       <div
         className={cn(
           "flex items-center gap-2 border-b border-border px-3",
@@ -578,12 +678,12 @@ function AttributeCard({
               >
                 <SelectTrigger
                   size="sm"
-                  className="h-7 w-auto gap-1 px-1.5 text-xs text-muted-foreground"
-                  aria-label="Mover para outro grupo"
+                  className="h-8 w-48 justify-between gap-2 px-2 text-xs text-muted-foreground"
+                  aria-label="Mover atributo para outro grupo"
                   data-field-path={groupPath}
                   aria-invalid={Boolean(errors[groupPath])}
                 >
-                  <SelectValue placeholder="Grupo" />
+                  <SelectValue placeholder="Mover para grupo..." />
                 </SelectTrigger>
                 <SelectContent>
                   {otherGroups.map((group) => (
@@ -637,7 +737,7 @@ function AttributeCard({
           <button
             type="button"
             aria-label="Remover especificação"
-            onClick={() => onChange(null)}
+            onClick={onRequestDelete}
             className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
           >
             <Trash2 className="size-4" />
@@ -663,6 +763,7 @@ function AttributeCard({
                   rows={1}
                   value={spec.value[locale] ?? ""}
                   name={fieldPath(spec, "value")}
+                  data-editor-focus="true"
                   data-field-path={fieldPath(spec, "value")}
                   aria-invalid={Boolean(errors[fieldPath(spec, "value")])}
                   aria-describedby={

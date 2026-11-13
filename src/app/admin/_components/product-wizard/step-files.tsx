@@ -4,18 +4,31 @@ import { cn } from "@/lib/utils";
 import { BookOpen, FileArchive, FileText } from "lucide-react";
 import { FileDropzone } from "./file-dropzone";
 import type { WizardAction, WizardState } from "./wizard-store";
+import type { EditorTarget } from "./editor-target";
+import { useEffect } from "react";
 
 interface StepFilesProps {
   state: WizardState;
   dispatch: React.Dispatch<WizardAction>;
   compact?: boolean;
+  selection?: EditorTarget;
 }
 
 export function StepFiles({
   state,
   dispatch,
   compact = false,
+  selection,
 }: StepFilesProps) {
+  useEffect(() => {
+    if (selection?.kind !== "files" || !selection.fileType) return;
+    window.setTimeout(() => {
+      const element = document.querySelector<HTMLElement>(
+        `[data-editor-file-type="${selection.fileType}"]`,
+      );
+      element?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
+  }, [selection]);
   const certificates = state.files.filter((f) => f.type === "CERTIFICATE");
   const manuals = state.files.filter((f) => f.type === "MANUAL");
   const imagePacks = state.files.filter((f) => f.type === "IMAGE_PACK");
@@ -30,7 +43,10 @@ export function StepFiles({
         !compact && "lg:grid lg:grid-cols-2 lg:items-start",
       )}
     >
-      <section className="flex flex-col gap-3">
+      <section
+        className="flex flex-col gap-3"
+        data-editor-file-type="CERTIFICATE"
+      >
         <p className="text-sm font-semibold text-foreground">Certificados</p>
         <FileDropzone
           type="CERTIFICATE"
@@ -41,7 +57,7 @@ export function StepFiles({
         />
       </section>
 
-      <section className="flex flex-col gap-3">
+      <section className="flex flex-col gap-3" data-editor-file-type="MANUAL">
         <p className="text-sm font-semibold text-foreground">Manuais</p>
         <FileDropzone
           type="MANUAL"
@@ -52,7 +68,10 @@ export function StepFiles({
         />
       </section>
 
-      <section className="flex flex-col gap-3">
+      <section
+        className="flex flex-col gap-3"
+        data-editor-file-type="IMAGE_PACK"
+      >
         <p className="text-sm font-semibold text-foreground">
           Imagens para download
         </p>

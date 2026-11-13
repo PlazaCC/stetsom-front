@@ -112,6 +112,7 @@ export function PreviewEditorOverlay({
       const match = Array.from(
         root.querySelectorAll<HTMLElement>("[data-editor-target]"),
       ).find((node) => {
+        if (node.getClientRects().length === 0) return false;
         const target = parseEditorTarget(node.dataset.editorTarget ?? null);
         return target && selectionMatches(selection, target);
       });
@@ -174,7 +175,9 @@ export function PreviewEditorOverlay({
       {selected && (
         <span
           style={{ top: selected.box.top, left: selected.box.left }}
-          className="absolute inline-flex -translate-y-full items-center gap-1 rounded-t-md bg-primary px-2 py-0.5 text-2xs font-semibold text-white"
+          className={`absolute inline-flex items-center gap-1 rounded-md bg-primary px-2 py-0.5 text-2xs font-semibold text-white ${
+            selected.box.top > 28 ? "-translate-y-full" : "translate-y-1"
+          }`}
         >
           <Pencil className="size-3" />
           {targetLabel(selected.target)}
@@ -188,7 +191,7 @@ export function PreviewEditorOverlay({
           onClick={() => emitIntent(hover.target)}
           style={{
             top: hover.box.top,
-            left: hover.box.left + hover.box.width,
+            left: Math.max(116, hover.box.left + hover.box.width),
             transform: "translate(-100%, 0)",
           }}
           className="pointer-events-auto absolute inline-flex items-center gap-1 rounded-b-md bg-primary px-2 py-1 text-2xs font-semibold text-white shadow-sm"

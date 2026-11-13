@@ -118,6 +118,7 @@ export function EditorPanel({
             categories={categories}
             lines={lines}
             compact={compact}
+            selection={selection}
             errors={errors}
             onClearError={onClearError}
           />
@@ -130,12 +131,19 @@ export function EditorPanel({
             attributeGroups={attributeGroups}
             templates={templates}
             compact={compact}
+            selection={selection}
+            onRequestTarget={onSelectionChange}
             errors={errors}
             onClearError={onClearError}
           />
         )}
         {activeSection === "files" && (
-          <StepFiles state={state} dispatch={dispatch} compact={compact} />
+          <StepFiles
+            state={state}
+            dispatch={dispatch}
+            compact={compact}
+            selection={selection}
+          />
         )}
         {activeSection === "blocks" && (
           <BlockManager

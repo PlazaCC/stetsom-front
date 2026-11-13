@@ -14,8 +14,6 @@ import { slugify } from "@/lib/utils/slugify";
 
 export type WizardLocale = "pt" | "en" | "es";
 
-export type WizardStep = 1 | 2 | 3 | 4 | 5;
-
 export type WizardMode = "create" | "edit";
 
 /**
@@ -66,7 +64,6 @@ export interface WizardFile {
 }
 
 export interface WizardState {
-  step: WizardStep;
   mode: WizardMode;
   productId: string | null;
 
@@ -127,7 +124,6 @@ export type WizardInfoPatch = Partial<
 >;
 
 export type WizardAction =
-  | { type: "go_to_step"; step: WizardStep }
   | { type: "patch_info"; patch: WizardInfoPatch }
   | { type: "set_images"; images: WizardImage[] }
   | { type: "set_variations"; variations: WizardVariation[] }
@@ -154,7 +150,7 @@ export type WizardAction =
  */
 export type WizardDraft = Omit<
   WizardState,
-  "step" | "mode" | "productId" | "activeVariationId" | "isDirty"
+  "mode" | "productId" | "activeVariationId" | "isDirty"
 >;
 
 export function draftOf(state: WizardState): WizardDraft {
@@ -365,7 +361,6 @@ export function initWizardState(
   const p = detail?.product;
 
   return {
-    step: 1,
     mode,
     productId: p?.id ?? null,
 
@@ -407,9 +402,6 @@ export function wizardReducer(
   action: WizardAction,
 ): WizardState {
   switch (action.type) {
-    case "go_to_step":
-      return { ...state, step: action.step };
-
     case "patch_info": {
       const next: WizardState = { ...state, ...action.patch, isDirty: true };
       if (

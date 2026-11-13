@@ -17,7 +17,13 @@ export type EditorSection =
   | "blocks";
 
 /** The drill-in fields of the general section. Undefined = the section overview. */
-export type GeneralField = "title" | "description" | "category" | "images";
+export type GeneralField =
+  | "title"
+  | "description"
+  | "category"
+  | "line"
+  | "images"
+  | "appLinks";
 
 /**
  * What the editor panel is currently focused on. Page regions resolve to a
@@ -26,8 +32,16 @@ export type GeneralField = "title" | "description" | "category" | "images";
  */
 export type EditorTarget =
   | { kind: "general"; field?: GeneralField }
-  | { kind: "specs" }
-  | { kind: "files" }
+  | {
+      kind: "specs";
+      variationId?: string;
+      groupId?: string;
+      attributeId?: string;
+    }
+  | {
+      kind: "files";
+      fileType?: "MANUAL" | "CERTIFICATE" | "IMAGE_PACK";
+    }
   | { kind: "publish" }
   | { kind: "blocks" }
   | { kind: "block"; blockId: string }
@@ -70,11 +84,32 @@ export function parseEditorTarget(raw: string | null): EditorTarget | null {
   if (raw.startsWith("block:")) {
     return { kind: "block", blockId: raw.slice("block:".length) };
   }
+  if (raw.startsWith("specs:")) {
+    const [, variationId, groupId, attributeId] = raw.split(":");
+    return {
+      kind: "specs",
+      variationId: variationId || undefined,
+      groupId: groupId || undefined,
+      attributeId: attributeId || undefined,
+    };
+  }
+  if (raw.startsWith("files:")) {
+    const fileType = raw.slice("files:".length);
+    if (
+      fileType === "MANUAL" ||
+      fileType === "CERTIFICATE" ||
+      fileType === "IMAGE_PACK"
+    ) {
+      return { kind: "files", fileType };
+    }
+  }
   switch (raw) {
     case "title":
     case "description":
     case "category":
+    case "line":
     case "images":
+    case "appLinks":
       return { kind: "general", field: raw };
     case "specs":
     case "highlights":
@@ -97,13 +132,17 @@ export function targetLabel(target: EditorTarget): string {
           return "Descrição";
         case "category":
           return "Categoria";
+        case "line":
+          return "Linha";
         case "images":
           return "Imagens";
+        case "appLinks":
+          return "Links de aplicativos";
         default:
           return "Dados gerais";
       }
     case "specs":
-      return "Especificações";
+      return target.attributeId ? "Atributo técnico" : "Especificações";
     case "files":
       return "Arquivos";
     case "publish":
@@ -132,6 +171,19 @@ export function selectionMatches(
       selection.field === target.field
     );
   }
+  if (selection.kind === "specs" && target.kind === "specs") {
+    return (
+      (!selection.variationId ||
+        selection.variationId === target.variationId) &&
+      (!selection.groupId || selection.groupId === target.groupId) &&
+      (!selection.attributeId || selection.attributeId === target.attributeId)
+    );
+  }
+  if (selection.kind === "files" && target.kind === "files") {
+    return (
+      selection.fileType === undefined || selection.fileType === target.fileType
+    );
+  }
   return targetToSection(selection) === targetToSection(target);
 }
 
@@ -142,6 +194,11 @@ export function selectionMatches(
  */
 export function escapeTarget(target: EditorTarget): EditorTarget {
   if (target.kind === "general" && target.field) return { kind: "general" };
+  if (target.kind === "specs" && (target.attributeId || target.groupId)) {
+    return target.attributeId
+      ? { ...target, attributeId: undefined }
+      : { ...target, groupId: undefined };
+  }
   if (target.kind === "block" || target.kind === "addBlock") {
     return { kind: "blocks" };
   }

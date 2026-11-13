@@ -442,6 +442,7 @@ export function ProductDetailView({
                   <a
                     href={manualFile.file_url}
                     target="_blank"
+                    {...ed("files:MANUAL")}
                     className="inline-flex h-10 items-center rounded-sm bg-brand px-5 font-sans text-button-md font-bold tracking-[0.8px] text-white uppercase transition-colors hover:bg-brand/90"
                   >
                     {t("manual")}
@@ -451,6 +452,7 @@ export function ProductDetailView({
                   <a
                     href={imagePackFile.file_url}
                     download
+                    {...ed("files:IMAGE_PACK")}
                     className="inline-flex h-10 items-center rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold tracking-[0.8px] text-brand-dark uppercase transition-colors hover:bg-muted"
                   >
                     {t("downloadPhotos")}
@@ -462,6 +464,7 @@ export function ProductDetailView({
                       render={
                         <button
                           type="button"
+                          {...ed("files:CERTIFICATE")}
                           className="inline-flex h-10 items-center gap-2 rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold tracking-[0.8px] text-brand-dark uppercase"
                         >
                           {t("certificates")}
@@ -502,6 +505,7 @@ export function ProductDetailView({
                       render={
                         <button
                           type="button"
+                          {...ed("appLinks")}
                           className="inline-flex h-10 items-center gap-2 rounded-sm border border-border bg-card px-5 font-sans text-button-md font-semibold tracking-[0.8px] text-brand-dark uppercase"
                         >
                           <Smartphone size={16} />
@@ -572,7 +576,11 @@ export function ProductDetailView({
         className="scroll-mt-section-scroll"
       >
         {specSections.length > 0 ? (
-          <SpecsTable variants={sortedVariants} sections={specSections} />
+          <SpecsTable
+            variants={sortedVariants}
+            sections={specSections}
+            editable={editable}
+          />
         ) : (
           <div className="bg-white px-5 py-9 lg:px-42.5">
             <p className="font-sans text-sm text-text-subtle">{t("noSpecs")}</p>

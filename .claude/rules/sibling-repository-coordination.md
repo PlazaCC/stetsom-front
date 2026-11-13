@@ -1,0 +1,1 @@
+../../.agents/rules/sibling-repository-coordination.md

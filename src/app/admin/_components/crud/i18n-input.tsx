@@ -40,6 +40,11 @@ interface I18nInputProps {
   className?: string;
   errors?: Partial<Record<Locale, string>>;
   onClearError?: (locale: Locale) => void;
+  editorField?: string;
+  /** Receives the input mounted for the currently active locale. */
+  editorControlRef?: (
+    control: HTMLInputElement | HTMLTextAreaElement | null,
+  ) => void;
 }
 
 /**
@@ -61,6 +66,8 @@ export function I18nInput({
   className,
   errors,
   onClearError,
+  editorField,
+  editorControlRef,
 }: I18nInputProps) {
   const [active, setActive] = useState<Locale>("pt");
   const current: I18nString = value ?? { pt: "" };
@@ -73,7 +80,7 @@ export function I18nInput({
   }
 
   return (
-    <Field className={className}>
+    <Field className={className} data-editor-field={editorField}>
       <Tabs
         value={active}
         onValueChange={(v) => setActive(v as Locale)}
@@ -125,6 +132,8 @@ export function I18nInput({
               {multiline ? (
                 <Textarea
                   className="min-h-24"
+                  data-editor-focus={editorField ? "true" : undefined}
+                  ref={editorControlRef}
                   required={loc.required && required}
                   aria-invalid={isInvalid || undefined}
                   aria-describedby={
@@ -143,6 +152,8 @@ export function I18nInput({
               ) : (
                 <Input
                   type={type}
+                  data-editor-focus={editorField ? "true" : undefined}
+                  ref={editorControlRef}
                   required={loc.required && required}
                   aria-invalid={isInvalid || undefined}
                   aria-describedby={

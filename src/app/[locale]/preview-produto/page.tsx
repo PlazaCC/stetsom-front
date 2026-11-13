@@ -77,6 +77,7 @@ export default function PreviewProdutoPage() {
     if (!root || !selection) return;
     const nodes = root.querySelectorAll<HTMLElement>("[data-editor-target]");
     for (const node of nodes) {
+      if (node.getClientRects().length === 0) continue;
       const target = parseEditorTarget(node.dataset.editorTarget ?? null);
       if (target && selectionMatches(selection, target)) {
         node.scrollIntoView({ behavior: "smooth", block: "nearest" });
