@@ -9,7 +9,7 @@ export function isRichTextContent(content: string): boolean {
 
 /** Shared by the editor and the site so the two read the same. */
 export const BLOCK_TEXT_PROSE =
-  "[&_a]:text-brand [&_a]:underline [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-brand-dark [&_h4]:mt-4 [&_h4]:mb-1.5 [&_h4]:text-base [&_h4]:font-semibold [&_h4]:text-brand-dark [&_li]:my-1 [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:my-3 [&_strong]:font-bold [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6 [&>:first-child]:mt-0 [&>:last-child]:mb-0";
+  "[&_a]:text-brand [&_a]:underline [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:font-sans-condensed [&_h2]:text-display-xl [&_h2]:leading-none [&_h2]:font-black [&_h2]:text-brand-dark [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:font-sans-condensed [&_h3]:text-display-lg [&_h3]:leading-none [&_h3]:font-black [&_h3]:text-brand-dark [&_h4]:mt-4 [&_h4]:mb-1.5 [&_h4]:font-sans-condensed [&_h4]:text-display-sm [&_h4]:leading-none [&_h4]:font-black [&_h4]:text-brand-dark [&_h5]:mt-4 [&_h5]:mb-1.5 [&_h5]:font-sans-condensed [&_h5]:text-section-title [&_h5]:leading-none [&_h5]:font-black [&_h5]:text-brand-dark [&_li]:my-1 [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:my-3 [&_strong]:font-bold [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6 [&>:first-child]:mt-0 [&>:last-child]:mb-0";
 
 function escapeHtml(text: string): string {
   return text

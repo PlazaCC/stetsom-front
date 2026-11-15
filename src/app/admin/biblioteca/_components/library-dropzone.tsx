@@ -15,7 +15,7 @@ interface LibraryDropzoneProps {
 }
 
 /** Whether a file matches one token of an `accept` string (MIME, `type/*` or `.ext`). */
-function matchesAccept(file: File, accept: string): boolean {
+export function matchesAccept(file: File, accept: string): boolean {
   const tokens = accept
     .split(",")
     .map((t) => t.trim().toLowerCase())
@@ -26,10 +26,32 @@ function matchesAccept(file: File, accept: string): boolean {
   const type = file.type.toLowerCase();
 
   return tokens.some((token) => {
+    if (token === "*/*" || token === "*") return true;
     if (token.startsWith(".")) return name.endsWith(token);
     if (token.endsWith("/*")) return type.startsWith(token.slice(0, -1));
-    return type === token;
+    if (type === token) return true;
+
+    // Some browsers omit File.type for dragged files. Keep the same extension
+    // fallback as the file input so drag-and-drop does not silently reject
+    // valid PDFs, archives and 3D assets.
+    const extensionByMime: Record<string, string[]> = {
+      "application/pdf": [".pdf"],
+      "application/zip": [".zip"],
+      "application/x-zip-compressed": [".zip"],
+      "model/gltf-binary": [".glb"],
+      "model/gltf+json": [".gltf"],
+    };
+    return (
+      !type &&
+      (extensionByMime[token] ?? []).some((extension) =>
+        name.endsWith(extension),
+      )
+    );
   });
+}
+
+export function filterAcceptedFiles(files: File[], accept: string): File[] {
+  return files.filter((file) => matchesAccept(file, accept));
 }
 
 /**
@@ -79,8 +101,9 @@ export function LibraryDropzone({
         if (disabled) return;
         e.preventDefault();
         reset();
-        const files = Array.from(e.dataTransfer.files).filter((f) =>
-          matchesAccept(f, accept),
+        const files = filterAcceptedFiles(
+          Array.from(e.dataTransfer.files),
+          accept,
         );
         if (files.length > 0) onDrop(files);
       }}

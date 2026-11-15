@@ -5,12 +5,14 @@
  * API documentation for Stetsom
  * OpenAPI spec version: 1.0.0
  */
+import type { PublicWarrantyFloatConfig } from "./publicWarrantyFloatConfig";
 
 export interface PublicConfig {
   company_email: string;
   company_phone: string;
   company_whatsapp: string;
   company_address: string;
+  warranty_float: PublicWarrantyFloatConfig;
   /** Logo URL for light backgrounds, resolved to the requested locale */
   logo_dark?: string;
   /** Logo URL for dark backgrounds, resolved to the requested locale */

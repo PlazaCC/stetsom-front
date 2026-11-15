@@ -35,7 +35,7 @@ import type {
 } from "@/api/stetsom/model";
 import { cn } from "@/lib/utils";
 import { reindexByOrder } from "@/lib/utils/reindex";
-import { AlertTriangle, Plus, Trash2, X } from "lucide-react";
+import { AlertTriangle, ArrowRightLeft, Plus, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { ToggleSwitch } from "./toggle-switch";
 import { newSpec, type TemplateLayout, type WizardSpec } from "./wizard-store";
@@ -298,8 +298,8 @@ export function SpecTable({
               ? templateLayout.get(a.id) === section.group_id
               : true,
           );
-          const otherGroups = attributeGroups.filter(
-            (g) => g.id !== section.group_id && allowedGroupIds.has(g.id),
+          const movableGroups = attributeGroups.filter((g) =>
+            allowedGroupIds.has(g.id),
           );
           const isUngrouped = !section.group_id;
 
@@ -357,7 +357,7 @@ export function SpecTable({
                           a.id === row.attribute_id ||
                           !usedAttributeIds.has(a.id),
                       )}
-                      otherGroups={otherGroups}
+                      movableGroups={movableGroups}
                       canChangeGroup={!templateLayout || isUngrouped}
                       highlightCount={highlightCount}
                       maxHighlights={maxHighlights}
@@ -479,7 +479,8 @@ interface AttributeCardProps {
   attributes: Attribute[];
   /** Attributes this row may switch to. */
   selectable: Attribute[];
-  otherGroups: AttributeGroup[];
+  /** Groups available as destinations, including the attribute's current group. */
+  movableGroups: AttributeGroup[];
   /** False when a template fixes the group of every attribute. */
   canChangeGroup: boolean;
   highlightCount: number;
@@ -501,7 +502,7 @@ function AttributeCard({
   handle,
   attributes,
   selectable,
-  otherGroups,
+  movableGroups,
   canChangeGroup,
   highlightCount,
   maxHighlights,
@@ -665,12 +666,12 @@ function AttributeCard({
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          {canChangeGroup && otherGroups.length > 0 && row.attribute_id && (
+          {canChangeGroup && movableGroups.length > 1 && row.attribute_id && (
             <div className="flex min-w-0 flex-col items-end">
               <Select
-                value=""
+                value={row.specs[0]?.group_id ?? ""}
                 onValueChange={(to) => {
-                  if (to) {
+                  if (to && to !== row.specs[0]?.group_id) {
                     onClearError?.(groupPath);
                     onMove(to);
                   }
@@ -678,15 +679,17 @@ function AttributeCard({
               >
                 <SelectTrigger
                   size="sm"
-                  className="h-8 w-48 justify-between gap-2 px-2 text-xs text-muted-foreground"
+                  className="h-8 w-fit max-w-56 min-w-40 shrink-0 justify-between gap-1.5 px-2 text-xs font-medium"
                   aria-label="Mover atributo para outro grupo"
                   data-field-path={groupPath}
                   aria-invalid={Boolean(errors[groupPath])}
                 >
-                  <SelectValue placeholder="Mover para grupo..." />
+                  <ArrowRightLeft className="size-3.5 shrink-0 text-muted-foreground" />
+                  <span className="shrink-0 text-muted-foreground">Mover:</span>
+                  <SelectValue placeholder="Mover para grupo" />
                 </SelectTrigger>
                 <SelectContent>
-                  {otherGroups.map((group) => (
+                  {movableGroups.map((group) => (
                     <SelectItem key={group.id} value={group.id}>
                       {group.name.pt}
                     </SelectItem>

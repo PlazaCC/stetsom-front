@@ -1,6 +1,7 @@
 "use client";
 
 import type { FaqItem, HeroBannerSlide, PageBlock } from "@/api/stetsom/model";
+import type { PublicWarrantyFloatConfig } from "@/api/stetsom/model/publicWarrantyFloatConfig";
 import {
   getPageBlock,
   type FaqBlockData,
@@ -20,6 +21,7 @@ export interface HomePageViewData {
   banners: HeroBannerSlide[];
   faqItems: FaqItem[];
   novelties?: NoveltyCategory[];
+  warrantyFloat?: PublicWarrantyFloatConfig;
 }
 
 interface HomePageViewProps {

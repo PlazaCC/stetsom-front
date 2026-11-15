@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { BookOpen, FileArchive, FileText } from "lucide-react";
+import { BookOpen, FileArchive, FileText, Images, Palette } from "lucide-react";
 import { FileDropzone } from "./file-dropzone";
 import type { WizardAction, WizardState } from "./wizard-store";
 import type { EditorTarget } from "./editor-target";
@@ -35,6 +35,11 @@ export function StepFiles({
   // Legacy links to `PDF` assets match no section above; list them so they
   // can at least be seen and removed.
   const unsorted = state.files.filter((f) => f.type === "PDF");
+  const cdsAndPhotos = state.files.filter((f) => f.type === "CDS_AND_PHOTOS");
+  const wallpapers = state.files.filter(
+    (f) => f.type === "WALLPAPERS_AND_BANNERS",
+  );
+  const logos = state.files.filter((f) => f.type === "LOGOS");
 
   return (
     <div
@@ -52,6 +57,50 @@ export function StepFiles({
           type="CERTIFICATE"
           icon={FileText}
           files={certificates}
+          onAdd={(file) => dispatch({ type: "add_file", file })}
+          onRemove={(id) => dispatch({ type: "remove_file", id })}
+        />
+      </section>
+
+      <section
+        className="flex flex-col gap-3"
+        data-editor-file-type="CDS_AND_PHOTOS"
+      >
+        <p className="text-sm font-semibold text-foreground">CDs e Fotos</p>
+        <FileDropzone
+          type="CDS_AND_PHOTOS"
+          icon={Images}
+          accept="image/*"
+          files={cdsAndPhotos}
+          onAdd={(file) => dispatch({ type: "add_file", file })}
+          onRemove={(id) => dispatch({ type: "remove_file", id })}
+        />
+      </section>
+
+      <section
+        className="flex flex-col gap-3"
+        data-editor-file-type="WALLPAPERS_AND_BANNERS"
+      >
+        <p className="text-sm font-semibold text-foreground">
+          Wallpapers e Banners
+        </p>
+        <FileDropzone
+          type="WALLPAPERS_AND_BANNERS"
+          icon={Palette}
+          accept="image/*"
+          files={wallpapers}
+          onAdd={(file) => dispatch({ type: "add_file", file })}
+          onRemove={(id) => dispatch({ type: "remove_file", id })}
+        />
+      </section>
+
+      <section className="flex flex-col gap-3" data-editor-file-type="LOGOS">
+        <p className="text-sm font-semibold text-foreground">Logos</p>
+        <FileDropzone
+          type="LOGOS"
+          icon={FileText}
+          accept="image/*"
+          files={logos}
           onAdd={(file) => dispatch({ type: "add_file", file })}
           onRemove={(id) => dispatch({ type: "remove_file", id })}
         />

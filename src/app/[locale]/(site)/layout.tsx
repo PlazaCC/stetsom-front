@@ -47,7 +47,7 @@ export default async function SiteLayout({
         whatsapp={config.company_whatsapp}
       />
       <main className="flex-1">{children}</main>
-      <WarrantyFloat />
+      <WarrantyFloat config={config.warranty_float} />
       <Footer
         logoDark={logoDark}
         socials={{

@@ -8,6 +8,7 @@
 import type { DepartmentConfigItemInput } from "./departmentConfigItemInput";
 import type { PatchApiConfigBodyLogoDark } from "./patchApiConfigBodyLogoDark";
 import type { PatchApiConfigBodyLogoWhite } from "./patchApiConfigBodyLogoWhite";
+import type { WarrantyFloatConfigInput } from "./warrantyFloatConfigInput";
 
 export type PatchApiConfigBody = {
   company_name?: string;
@@ -15,6 +16,7 @@ export type PatchApiConfigBody = {
   company_phone?: string;
   company_whatsapp?: string;
   company_address?: string;
+  warranty_float?: WarrantyFloatConfigInput;
   social_instagram?: string;
   social_facebook?: string;
   social_youtube?: string;

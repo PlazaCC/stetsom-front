@@ -8,6 +8,7 @@ import {
   Building2,
   ChevronDown,
   Clock,
+  ExternalLink,
   FileText,
   Home,
   Image,
@@ -221,6 +222,16 @@ export function AdminSidebar({
 
         <div className="border-t border-border px-2 py-2">
           <NavItems items={BOTTOM_NAV} onClose={onClose} />
+          <Link
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={onClose}
+            className="mt-1 flex items-center gap-2 rounded-md px-2 py-2 text-sm font-medium text-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <ExternalLink className="size-4 shrink-0" />
+            Abrir site
+          </Link>
           <button
             type="button"
             onClick={handleLogout}

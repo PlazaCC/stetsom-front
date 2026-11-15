@@ -56,6 +56,7 @@ export default defineConfig({
           "Config Public",
           "Contact",
           "FAQ Public",
+          "Downloads Public",
         ],
       },
     },

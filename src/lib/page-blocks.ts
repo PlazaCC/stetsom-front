@@ -172,7 +172,17 @@ export type SupportHeroBlockData = {
 
 export type SupportCardsBlockData = {
   hidden?: boolean;
-  items?: Array<{ title: string; description: string }>;
+  items?: Array<{
+    title: string;
+    description: string;
+    action?:
+      | "DOCUMENTATION"
+      | "SERVICE_CENTERS"
+      | "CONTACT"
+      | "WARRANTY"
+      | "CUSTOM_URL";
+    href?: string;
+  }>;
 };
 
 export type SupportContactBlockData = {
@@ -187,6 +197,9 @@ export type SupportContactBlockData = {
 
 export type SupportDocBlockData = {
   hidden?: boolean;
+  label?: string;
+  title?: string;
+  description?: string;
   categories?: Array<{
     id: string;
     title: string;
@@ -206,5 +219,7 @@ export type SupportDocBlockData = {
 
 export type SupportServiceCentersBlockData = {
   hidden?: boolean;
-  mapImage?: string;
+  label?: string;
+  title?: string;
+  description?: string;
 };

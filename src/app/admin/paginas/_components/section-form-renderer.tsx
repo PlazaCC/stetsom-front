@@ -81,6 +81,12 @@ interface FieldProps {
 }
 
 function Field({ field, data, onChange, showErrors }: FieldProps) {
+  if (
+    field.visibleWhen &&
+    data[field.visibleWhen.key] !== field.visibleWhen.value
+  ) {
+    return null;
+  }
   switch (field.kind) {
     case "i18n": {
       const invalid = invalidLocales(field, data[field.key]);

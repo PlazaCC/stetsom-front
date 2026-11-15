@@ -2,19 +2,25 @@
 
 import { usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { WARRANTY_SYSTEM_URL } from "@/lib/warranty";
+import { resolveWarrantyFloatRoute } from "@/lib/warranty-float";
 import { ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
+import type { PublicWarrantyFloatConfig } from "@/api/stetsom/model/publicWarrantyFloatConfig";
 
-export function WarrantyFloat() {
+export function WarrantyFloat({
+  config,
+  routeOverride,
+}: {
+  config?: PublicWarrantyFloatConfig;
+  routeOverride?: keyof PublicWarrantyFloatConfig["visible_on"];
+}) {
   const pathname = usePathname();
   const t = useTranslations("Footer");
 
-  // Product and support pages already expose contextual warranty actions.
-  if (pathname === "/suporte" || pathname === "/produto/[slug]") {
-    return null;
-  }
+  if (!config?.enabled) return null;
+  const route = routeOverride ?? resolveWarrantyFloatRoute(pathname);
+  if (!route || !config.visible_on[route]) return null;
 
   return (
     <motion.div
@@ -24,7 +30,7 @@ export function WarrantyFloat() {
       className="pointer-events-none fixed right-4 bottom-6 z-50 sm:right-5 lg:right-6 lg:bottom-8"
     >
       <a
-        href={WARRANTY_SYSTEM_URL}
+        href={config.href}
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
@@ -35,11 +41,11 @@ export function WarrantyFloat() {
           "active:translate-y-0 active:scale-[0.97]",
           "lg:gap-3.5 lg:px-7 lg:py-4",
         )}
-        aria-label={t("warranty")}
+        aria-label={config.label || t("warranty")}
       >
         <ShieldCheck className="size-6 shrink-0 text-white transition-transform duration-300 group-hover/warranty:scale-110 lg:size-7" />
         <span className="text-base leading-none font-semibold whitespace-nowrap text-white uppercase lg:text-lg">
-          {t("warranty")}
+          {config.label || t("warranty")}
         </span>
       </a>
     </motion.div>

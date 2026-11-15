@@ -22,7 +22,8 @@ export function TextBlock({
       baseClass="blockText"
       className={cn(
         resolveTextAlignClass(data.align),
-        fullWidth && "py-4 md:py-8 lg:px-42.5",
+        "py-4 md:py-8",
+        fullWidth && "lg:px-42.5",
       )}
     >
       {data.title && (

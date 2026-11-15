@@ -15,6 +15,10 @@ export type GetApiLibraryParams = {
   types?: string;
   q?: string;
   /**
+   * Filter assets by whether they have tags.
+   */
+  tagged?: boolean;
+  /**
    * @minimum 1
    * @maximum 200
    */

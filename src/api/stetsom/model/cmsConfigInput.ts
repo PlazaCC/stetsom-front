@@ -8,6 +8,7 @@
 import type { CmsConfigInputLogoDark } from "./cmsConfigInputLogoDark";
 import type { CmsConfigInputLogoWhite } from "./cmsConfigInputLogoWhite";
 import type { DepartmentConfigItemInput } from "./departmentConfigItemInput";
+import type { WarrantyFloatConfigInput } from "./warrantyFloatConfigInput";
 
 export interface CmsConfigInput {
   company_name: string;
@@ -15,6 +16,7 @@ export interface CmsConfigInput {
   company_phone: string;
   company_whatsapp: string;
   company_address: string;
+  warranty_float: WarrantyFloatConfigInput;
   social_instagram?: string;
   social_facebook?: string;
   social_youtube?: string;

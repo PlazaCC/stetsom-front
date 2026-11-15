@@ -8,6 +8,7 @@ import type {
   ProductCardItem,
   PublicCategory,
 } from "@/api/stetsom/model";
+import type { PublicWarrantyFloatConfig } from "@/api/stetsom/model/publicWarrantyFloatConfig";
 import type { HomePageViewData } from "@/app/[locale]/(site)/_components/home-page-view";
 import type { PagePreviewModel } from "./page-editor-target";
 import { findSectionDef, type FieldSpec } from "./section-field-spec";
@@ -125,6 +126,7 @@ export function buildPagePreviewModel(
   faqItems?: FaqItem[],
   categories: PublicCategory[] = [],
   availableProducts: ProductCardItem[] = [],
+  warrantyFloat?: PublicWarrantyFloatConfig,
 ): PagePreviewModel | null {
   const resolvedBlocks = blocks.map((b) => {
     const pb = publicBlocks?.find((p) => p.section_id === b.section_id);
@@ -144,6 +146,7 @@ export function buildPagePreviewModel(
             categories,
             availableProducts,
           ),
+          warrantyFloat,
         },
       };
     case "about":
@@ -156,6 +159,13 @@ export function buildPagePreviewModel(
           serviceCenters,
           departments,
           faqItems: faqItems ?? [],
+          warrantyHref: warrantyFloat?.href,
+          downloadCategories: [],
+          downloads: [],
+          downloadsPage: 1,
+          downloadsTotal: 0,
+          downloadsTotalPages: 0,
+          downloadsQuery: "",
         },
       };
     default:

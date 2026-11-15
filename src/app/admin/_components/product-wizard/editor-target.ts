@@ -40,7 +40,13 @@ export type EditorTarget =
     }
   | {
       kind: "files";
-      fileType?: "MANUAL" | "CERTIFICATE" | "IMAGE_PACK";
+      fileType?:
+        | "MANUAL"
+        | "CERTIFICATE"
+        | "IMAGE_PACK"
+        | "CDS_AND_PHOTOS"
+        | "WALLPAPERS_AND_BANNERS"
+        | "LOGOS";
     }
   | { kind: "publish" }
   | { kind: "blocks" }
@@ -98,7 +104,10 @@ export function parseEditorTarget(raw: string | null): EditorTarget | null {
     if (
       fileType === "MANUAL" ||
       fileType === "CERTIFICATE" ||
-      fileType === "IMAGE_PACK"
+      fileType === "IMAGE_PACK" ||
+      fileType === "CDS_AND_PHOTOS" ||
+      fileType === "WALLPAPERS_AND_BANNERS" ||
+      fileType === "LOGOS"
     ) {
       return { kind: "files", fileType };
     }

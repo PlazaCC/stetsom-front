@@ -4,8 +4,6 @@ import type { Editor } from "prosekit/core";
 import { useEditorDerivedValue } from "prosekit/react";
 import {
   Bold,
-  Heading3,
-  Heading4,
   Italic,
   Link as LinkIcon,
   List,
@@ -17,12 +15,28 @@ import {
   Unlink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { BlockTextExtension } from "./extension";
 
 type Item = { isActive: boolean; canExec: boolean; command: () => void };
 
+const TITLE_OPTIONS = [
+  { value: "h2", label: "Título 2", level: 2 },
+  { value: "h3", label: "Título 3", level: 3 },
+  { value: "h4", label: "Título 4", level: 4 },
+  { value: "h5", label: "Título 5", level: 5 },
+] as const;
+
 function getItems(editor: Editor<BlockTextExtension>) {
-  const isHeading = editor.nodes.heading.isActive();
+  const activeTitle = TITLE_OPTIONS.find(({ level }) =>
+    editor.nodes.heading.isActive({ level }),
+  );
   return {
     undo: {
       isActive: false,
@@ -35,19 +49,16 @@ function getItems(editor: Editor<BlockTextExtension>) {
       command: () => editor.commands.redo(),
     },
     paragraph: {
-      isActive: editor.nodes.paragraph.isActive() && !isHeading,
+      isActive: editor.nodes.paragraph.isActive() && !activeTitle,
       canExec: editor.commands.setParagraph.canExec(),
       command: () => editor.commands.setParagraph(),
     },
-    heading3: {
-      isActive: editor.nodes.heading.isActive({ level: 3 }),
-      canExec: editor.commands.toggleHeading.canExec({ level: 3 }),
-      command: () => editor.commands.toggleHeading({ level: 3 }),
-    },
-    heading4: {
-      isActive: editor.nodes.heading.isActive({ level: 4 }),
-      canExec: editor.commands.toggleHeading.canExec({ level: 4 }),
-      command: () => editor.commands.toggleHeading({ level: 4 }),
+    title: {
+      value: activeTitle?.value ?? "paragraph",
+      command: (value: string) =>
+        value === "paragraph"
+          ? editor.commands.setParagraph()
+          : editor.commands.setHeading({ level: Number(value.slice(1)) }),
     },
     bold: {
       isActive: editor.marks.bold.isActive(),
@@ -141,12 +152,28 @@ export function BlockTextToolbar() {
       <ToolbarButton item={items.paragraph} label="Parágrafo">
         <Pilcrow className="size-4" />
       </ToolbarButton>
-      <ToolbarButton item={items.heading3} label="Subtítulo">
-        <Heading3 className="size-4" />
-      </ToolbarButton>
-      <ToolbarButton item={items.heading4} label="Subtítulo menor">
-        <Heading4 className="size-4" />
-      </ToolbarButton>
+      <Select
+        value={items.title.value}
+        onValueChange={(value) => {
+          if (value) items.title.command(value);
+        }}
+      >
+        <SelectTrigger
+          size="sm"
+          className="h-8 w-32 justify-between gap-1 px-2 text-xs font-medium"
+          aria-label="Escolher nível do título"
+        >
+          <SelectValue placeholder="Título" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="paragraph">Parágrafo</SelectItem>
+          {TITLE_OPTIONS.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <Divider />
       <ToolbarButton item={items.bold} label="Negrito (Ctrl+B)">
         <Bold className="size-4" />

@@ -1,8 +1,10 @@
 "use client";
 
 import { HomePageView } from "@/app/[locale]/(site)/_components/home-page-view";
+import { EditableSection } from "@/app/[locale]/(site)/_components/editable-section";
 import { AboutPageView } from "@/app/[locale]/(site)/sobre/_components/about-page-view";
 import { SupportPageView } from "@/app/[locale]/(site)/suporte/_components/support-page-view";
+import { WarrantyFloat } from "@/components/ui/warranty-float";
 import {
   PAGE_PREVIEW_INTENT,
   PAGE_PREVIEW_MODEL,
@@ -89,7 +91,17 @@ export default function PreviewPaginaPage() {
       onClickCapture={handleClick}
     >
       <style dangerouslySetInnerHTML={{ __html: EDITOR_STYLE }} />
-      {model.pageId === "home" && <HomePageView data={model.data} editable />}
+      {model.pageId === "home" && (
+        <>
+          <HomePageView data={model.data} editable />
+          <EditableSection target="section:__warranty_float__" editable>
+            <WarrantyFloat
+              config={model.data.warrantyFloat}
+              routeOverride="home"
+            />
+          </EditableSection>
+        </>
+      )}
       {model.pageId === "about" && <AboutPageView data={model.data} editable />}
       {model.pageId === "support" && (
         <SupportPageView data={model.data} editable />

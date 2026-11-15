@@ -12,8 +12,10 @@ import {
   useGetApiPagesSlug,
   useGetApiCategoriesAdmin,
   useGetApiProducts,
+  useGetApiConfig,
 } from "@/api/stetsom";
 import { useGetApiFaqs } from "@/api/stetsom/endpoints/faq-public/faq-public";
+import { useGetApiDownloadsCategories } from "@/api/stetsom/endpoints/downloads-public/downloads-public";
 import type { PageBlock } from "@/api/stetsom/model";
 import { SetRouteLabel } from "@/app/admin/_components/admin-route-meta";
 import { AdminPageLayout } from "@/app/admin/_components/crud/admin-page-layout";
@@ -36,11 +38,13 @@ import {
   Package,
   Pointer,
   Plus,
+  ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { BannersSummaryPanel } from "./banners-summary-panel";
+import { WarrantyFloatPanel } from "./warranty-float-panel";
 import { buildPagePreviewModel } from "./build-page-preview-model";
 import { hasInvalidFeaturedTabs } from "./featured-tabs-validation";
 import { PAGE_LABELS, PAGE_PUBLIC_HREFS } from "./page-constants";
@@ -61,6 +65,7 @@ import {
 } from "./use-section-local-draft";
 
 const BANNERS_TARGET = "__banners__";
+const WARRANTY_FLOAT_TARGET = "__warranty_float__";
 type Device = "mobile" | "desktop";
 
 interface PageEditorContentProps {
@@ -94,6 +99,7 @@ export function PageEditorContent({
   const isHome = pageId === "home";
   const isSupport = pageId === "support";
   const isCatalog = pageId === "catalog";
+  const { data: adminConfig } = useGetApiConfig();
 
   const { data: activeBannersRes } = useGetApiBannersActive(
     { locale: "pt" },
@@ -111,6 +117,9 @@ export function PageEditorContent({
     query: { enabled: isSupport },
   });
   const { data: faqItems = [] } = useGetApiFaqs();
+  const { data: downloadCategories } = useGetApiDownloadsCategories(undefined, {
+    query: { enabled: isSupport },
+  });
   const { data: previewCategories = [] } = useGetApiCategoriesAdmin({
     query: { enabled: isHome },
   });
@@ -133,6 +142,27 @@ export function PageEditorContent({
   const [device, setDevice] = useState<Device>("mobile");
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [showSectionErrors, setShowSectionErrors] = useState(false);
+  const [warrantyFloatSave, setWarrantyFloatSave] = useState<
+    (() => void) | null
+  >(null);
+  const [warrantyFloatDirty, setWarrantyFloatDirty] = useState(false);
+  const [warrantyFloatPending, setWarrantyFloatPending] = useState(false);
+  const handleWarrantyFloatStateChange = useCallback(
+    ({
+      save,
+      dirty,
+      isPending,
+    }: {
+      save: () => void;
+      dirty: boolean;
+      isPending: boolean;
+    }) => {
+      setWarrantyFloatSave(() => save);
+      setWarrantyFloatDirty(dirty);
+      setWarrantyFloatPending(isPending);
+    },
+    [],
+  );
 
   const blocks =
     localBlocks ??
@@ -167,6 +197,15 @@ export function PageEditorContent({
     ...(isHome
       ? [{ id: BANNERS_TARGET, label: "Banners", icon: Megaphone }]
       : []),
+    ...(isHome
+      ? [
+          {
+            id: WARRANTY_FLOAT_TARGET,
+            label: "Botão flutuante",
+            icon: ShieldCheck,
+          },
+        ]
+      : []),
     ...navEntries.map((entry) => ({
       id: entry.id,
       label: entry.label,
@@ -198,6 +237,9 @@ export function PageEditorContent({
     setSectionDraft(null);
     setShowAddPanel(false);
     setShowSectionErrors(false);
+    setWarrantyFloatSave(null);
+    setWarrantyFloatDirty(false);
+    setWarrantyFloatPending(false);
   }
 
   const addMutation = useMutation({
@@ -306,6 +348,14 @@ export function PageEditorContent({
       updated_at: category.updated_at,
     })),
     previewProducts?.items ?? [],
+    adminConfig?.warranty_float
+      ? {
+          enabled: adminConfig.warranty_float.enabled,
+          label: adminConfig.warranty_float.label.pt,
+          href: adminConfig.warranty_float.href.pt,
+          visible_on: adminConfig.warranty_float.visible_on,
+        }
+      : undefined,
   );
 
   return (
@@ -328,19 +378,33 @@ export function PageEditorContent({
           onPrimary={
             selection === BANNERS_TARGET
               ? () => selectSection(null)
-              : selectedBlock
-                ? handleSaveSection
-                : () => {}
+              : selection === WARRANTY_FLOAT_TARGET
+                ? (warrantyFloatSave ?? (() => {}))
+                : selectedBlock
+                  ? handleSaveSection
+                  : () => {}
           }
           primaryLabel={
             selection === BANNERS_TARGET
               ? "Concluído"
-              : saveSectionMutation.isPending
-                ? "Salvando..."
-                : "Salvar alterações"
+              : selection === WARRANTY_FLOAT_TARGET
+                ? warrantyFloatPending
+                  ? "Salvando..."
+                  : "Salvar alterações"
+                : saveSectionMutation.isPending
+                  ? "Salvando..."
+                  : "Salvar alterações"
           }
-          isPrimaryLoading={saveSectionMutation.isPending}
-          isPrimaryDisabled={!sectionDraft || draftInvalid}
+          isPrimaryLoading={
+            selection === WARRANTY_FLOAT_TARGET
+              ? warrantyFloatPending
+              : saveSectionMutation.isPending
+          }
+          isPrimaryDisabled={
+            selection === WARRANTY_FLOAT_TARGET
+              ? !warrantyFloatDirty || warrantyFloatPending
+              : !sectionDraft || draftInvalid
+          }
         />
       }
     >
@@ -405,6 +469,10 @@ export function PageEditorContent({
                 <div className="flex items-center justify-center py-16">
                   <div className="size-5 animate-spin rounded-full border-2 border-border border-t-primary" />
                 </div>
+              ) : selection === WARRANTY_FLOAT_TARGET ? (
+                <WarrantyFloatPanel
+                  onStateChange={handleWarrantyFloatStateChange}
+                />
               ) : selection === BANNERS_TARGET ? (
                 <BannersSummaryPanel
                   banners={allBannersRes?.items ?? []}
@@ -436,12 +504,43 @@ export function PageEditorContent({
                     </div>
                   )}
                   {selectedDef ? (
-                    <SectionFormRenderer
-                      fields={selectedFields}
-                      data={sectionDraft ?? selectedBlock?.data ?? {}}
-                      onChange={setSectionDraft}
-                      showErrors={showSectionErrors}
-                    />
+                    <>
+                      {isSupport &&
+                        selectedBlock.section_id === "documentation" && (
+                          <div className="mb-5 rounded-md border border-border bg-muted/30 p-4">
+                            <p className="text-sm font-semibold text-foreground">
+                              Conteúdo publicado
+                            </p>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              Os arquivos são vinculados aos produtos e
+                              gerenciados na Biblioteca.
+                            </p>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {(downloadCategories?.items ?? []).map((item) => (
+                                <Link
+                                  key={item.category}
+                                  href={`/admin/biblioteca?types=${item.category}`}
+                                  className="rounded border border-border bg-background px-2.5 py-1.5 text-xs font-medium hover:bg-muted"
+                                >
+                                  {item.category} ({item.count})
+                                </Link>
+                              ))}
+                              <Link
+                                href="/admin/biblioteca"
+                                className="rounded border border-border bg-background px-2.5 py-1.5 text-xs font-medium hover:bg-muted"
+                              >
+                                Abrir biblioteca
+                              </Link>
+                            </div>
+                          </div>
+                        )}
+                      <SectionFormRenderer
+                        fields={selectedFields}
+                        data={sectionDraft ?? selectedBlock?.data ?? {}}
+                        onChange={setSectionDraft}
+                        showErrors={showSectionErrors}
+                      />
+                    </>
                   ) : (
                     <p className="text-sm text-muted-foreground">
                       Esta seção não possui editor configurado.

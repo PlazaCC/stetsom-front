@@ -48,8 +48,8 @@ function defineSemibold() {
 }
 
 /**
- * Rich text for the product TEXT block: paragraphs, h3/h4 subheadings (the
- * block title is the h2), bold, semi-bold, italic, underline, lists and links.
+ * Rich text for the product TEXT block: paragraphs and h2-h5 headings, bold,
+ * semi-bold, italic, underline, lists and links.
  * Mirrors the API's block-text sanitize profile — anything else is dropped on
  * save.
  */

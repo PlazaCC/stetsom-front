@@ -1,7 +1,6 @@
 import { Container } from "@/components/ui/container";
 import { cn } from "@/lib/utils";
 import { decodeHtmlEntities } from "@/lib/utils/plain-text";
-import { WARRANTY_SYSTEM_URL } from "@/lib/warranty";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -15,56 +14,67 @@ import {
 type SupportCard = {
   title: string;
   description: string;
+  action?:
+    | "DOCUMENTATION"
+    | "SERVICE_CENTERS"
+    | "CONTACT"
+    | "WARRANTY"
+    | "CUSTOM_URL";
+  href?: string;
 };
 
-const ICON_BY_KEYWORD: Record<string, LucideIcon> = {
-  manuais: FileText,
-  download: FileText,
-  posto: MapPin,
-  autorizados: MapPin,
-  garantia: ShieldCheck,
-  fale: MessageCircleMore,
-  contato: MessageCircleMore,
+const ACTIONS: Record<
+  NonNullable<SupportCard["action"]>,
+  { icon: LucideIcon; href?: string }
+> = {
+  DOCUMENTATION: { icon: FileText, href: "#documentation" },
+  SERVICE_CENTERS: { icon: MapPin, href: "#service-centers" },
+  CONTACT: { icon: MessageCircleMore, href: "#contact" },
+  WARRANTY: { icon: ShieldCheck },
+  CUSTOM_URL: { icon: ArrowUpRight },
 };
 
-const HREF_BY_KEYWORD: Record<string, string> = {
-  manuais: "#",
-  download: "#",
-  posto: "#service-centers",
-  autorizados: "#service-centers",
-  garantia: WARRANTY_SYSTEM_URL,
-  fale: "#contact",
-  contato: "#contact",
-};
+function inferAction(card: SupportCard): NonNullable<SupportCard["action"]> {
+  if (card.action) return card.action;
+  const text = `${card.title} ${card.description}`.toLocaleLowerCase();
+  if (
+    text.includes("manual") ||
+    text.includes("document") ||
+    text.includes("download")
+  )
+    return "DOCUMENTATION";
+  if (
+    text.includes("assistência") ||
+    text.includes("assistencia") ||
+    text.includes("autorizado")
+  )
+    return "SERVICE_CENTERS";
+  if (text.includes("contato") || text.includes("fale conosco"))
+    return "CONTACT";
+  if (text.includes("garantia") || text.includes("warranty")) return "WARRANTY";
+  return "CUSTOM_URL";
+}
 
 interface SupportCardsProps {
   cards: SupportCard[];
+  warrantyHref?: string;
 }
 
-function pickIcon(title: string): LucideIcon {
-  const lower = title.toLowerCase();
-  for (const [key, icon] of Object.entries(ICON_BY_KEYWORD)) {
-    if (lower.includes(key)) return icon;
-  }
-  return FileText;
-}
-
-function pickHref(title: string): string {
-  const lower = title.toLowerCase();
-  for (const [key, href] of Object.entries(HREF_BY_KEYWORD)) {
-    if (lower.includes(key)) return href;
-  }
-  return "#";
-}
-
-export function SupportCards({ cards }: Readonly<SupportCardsProps>) {
+export function SupportCards({
+  cards,
+  warrantyHref,
+}: Readonly<SupportCardsProps>) {
   return (
     <section className="w-full bg-off-white py-8 lg:py-12">
       <Container className="flex justify-center">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {cards.map((card) => {
-            const Icon = pickIcon(card.title);
-            const href = pickHref(card.title);
+            const action = inferAction(card);
+            const { icon: Icon, href: internalHref } = ACTIONS[action];
+            const href =
+              internalHref ??
+              (action === "WARRANTY" ? warrantyHref : card.href) ??
+              "#";
             const isExternal = href.startsWith("http");
 
             const cardClass = cn(

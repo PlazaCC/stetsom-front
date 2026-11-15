@@ -24,7 +24,10 @@ export type Tab =
   | "image-packs"
   | "category-icons"
   | "others"
-  | "unsorted-pdfs";
+  | "unsorted-pdfs"
+  | "cds-and-photos"
+  | "wallpapers-and-banners"
+  | "logos";
 export type ViewMode = "grid" | "table";
 
 /** Items per page. Numbered pagination lives at the bottom of the scroll area. */
@@ -155,7 +158,100 @@ export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
     libraryType: LibraryAssetType.PDF,
     canUpload: false,
   },
+  "cds-and-photos": {
+    accept: IMAGE_ACCEPT,
+    uploadLabel: "Enviar CDs e fotos",
+    emptyLabel: "Nenhum CD ou foto encontrado.",
+    emptyDescription: "Envie materiais de CDs e fotos de produtos.",
+    emptyIcon: Images,
+    searchPlaceholder: "Buscar por nome",
+    libraryType: LibraryAssetType.CDS_AND_PHOTOS,
+  },
+  "wallpapers-and-banners": {
+    accept: IMAGE_ACCEPT,
+    uploadLabel: "Enviar wallpapers e banners",
+    emptyLabel: "Nenhum wallpaper ou banner encontrado.",
+    emptyDescription: "Envie materiais visuais para os produtos.",
+    emptyIcon: Images,
+    searchPlaceholder: "Buscar por nome",
+    libraryType: LibraryAssetType.WALLPAPERS_AND_BANNERS,
+  },
+  logos: {
+    accept: IMAGE_ACCEPT,
+    uploadLabel: "Enviar logos",
+    emptyLabel: "Nenhum logo encontrado.",
+    emptyDescription: "Envie logos oficiais para download.",
+    emptyIcon: Shapes,
+    searchPlaceholder: "Buscar por nome",
+    libraryType: LibraryAssetType.LOGOS,
+  },
 };
+
+export const UPLOAD_CATEGORY_OPTIONS: Array<{
+  value: LibraryAssetType;
+  label: string;
+}> = [
+  { value: LibraryAssetType.IMAGE, label: "Fotos" },
+  { value: LibraryAssetType.VIDEO, label: "Vídeos" },
+  { value: LibraryAssetType.MODEL3D, label: "Arquivos 3D" },
+  { value: LibraryAssetType.MANUAL, label: "Manuais" },
+  { value: LibraryAssetType.CATALOG, label: "Catálogos" },
+  { value: LibraryAssetType.CERTIFICATE, label: "Certificados" },
+  { value: LibraryAssetType.IMAGE_PACK, label: "Packs de imagem" },
+  { value: LibraryAssetType.CATEGORY_ICON, label: "Ícones de categoria" },
+  { value: LibraryAssetType.CDS_AND_PHOTOS, label: "CDs e fotos" },
+  {
+    value: LibraryAssetType.WALLPAPERS_AND_BANNERS,
+    label: "Wallpapers e banners",
+  },
+  { value: LibraryAssetType.LOGOS, label: "Logos" },
+  { value: LibraryAssetType.OTHER, label: "Outros" },
+];
+
+export function allowedUploadCategories(file: File): LibraryAssetType[] {
+  const mime = file.type.toLowerCase();
+  const name = file.name.toLowerCase();
+  if (mime.startsWith("image/"))
+    return [
+      LibraryAssetType.IMAGE,
+      LibraryAssetType.CATEGORY_ICON,
+      LibraryAssetType.CDS_AND_PHOTOS,
+      LibraryAssetType.WALLPAPERS_AND_BANNERS,
+      LibraryAssetType.LOGOS,
+    ];
+  if (mime === "video/mp4" || mime === "video/webm")
+    return [LibraryAssetType.VIDEO];
+  if (mime === "application/pdf")
+    return [
+      LibraryAssetType.MANUAL,
+      LibraryAssetType.CATALOG,
+      LibraryAssetType.CERTIFICATE,
+    ];
+  if (
+    mime === "application/zip" ||
+    mime === "application/x-zip-compressed" ||
+    name.endsWith(".zip")
+  )
+    return [LibraryAssetType.IMAGE_PACK];
+  if (
+    mime === "model/gltf-binary" ||
+    mime === "model/gltf+json" ||
+    name.endsWith(".glb") ||
+    name.endsWith(".gltf")
+  )
+    return [LibraryAssetType.MODEL3D];
+  return [LibraryAssetType.OTHER];
+}
+
+export function inferUploadCategory(
+  file: File,
+  preferred?: LibraryAssetType,
+): LibraryAssetType {
+  const allowed = allowedUploadCategories(file);
+  return preferred && allowed.includes(preferred)
+    ? preferred
+    : (allowed[0] ?? LibraryAssetType.OTHER);
+}
 
 /** The PDF shelves an asset can move between (mirrors the API rule). */
 export const PDF_SHELF_OPTIONS: { value: LibraryAssetType; label: string }[] = [

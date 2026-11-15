@@ -66,7 +66,9 @@ function SelectValue({
       className={cn("flex flex-1 text-left", className)}
       {...props}
     >
-      {children ?? ((value: string | null) => labels.get(value ?? "") ?? value)}
+      {children ??
+        ((value: string | null) =>
+          value ? (labels.get(value) ?? value) : props.placeholder)}
     </SelectPrimitive.Value>
   );
 }

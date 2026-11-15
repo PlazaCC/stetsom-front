@@ -28,6 +28,21 @@ export interface SupportPageViewData {
   serviceCenters: GetApiPartnerLocations200Item[];
   departments: PublicDepartmentItem[];
   faqItems: FaqItem[];
+  downloadCategories: Array<{ category: string; count: number }>;
+  downloads: Array<{
+    asset_id: string;
+    filename: string;
+    type: string;
+    file_url: string;
+    size_bytes: number;
+    product: { id: string; name: string; slug: string; sku: string | null };
+  }>;
+  downloadsPage: number;
+  downloadsTotal: number;
+  downloadsTotalPages: number;
+  downloadsCategory?: string;
+  downloadsQuery: string;
+  warrantyHref?: string;
   privacyPolicySlug?: string;
 }
 
@@ -41,8 +56,21 @@ export function SupportPageView({
   data,
   editable = false,
 }: Readonly<SupportPageViewProps>) {
-  const { blocks, serviceCenters, departments, faqItems, privacyPolicySlug } =
-    data;
+  const {
+    blocks,
+    serviceCenters,
+    departments,
+    faqItems,
+    privacyPolicySlug,
+    warrantyHref,
+    downloadCategories,
+    downloads,
+    downloadsPage,
+    downloadsTotal,
+    downloadsTotalPages,
+    downloadsCategory,
+    downloadsQuery,
+  } = data;
 
   const heroData = getPageBlock<SupportHeroBlockData>(blocks, "hero");
   const cardsData = getPageBlock<SupportCardsBlockData>(blocks, "cards");
@@ -65,7 +93,7 @@ export function SupportPageView({
                 "/figma-assets/raw/fill_EPTO4T_3d86cd17.png",
               badge: heroData.badge,
               label: heroData.label,
-              title: heroData.title ?? "Suporte Stetsom",
+              title: heroData.title ?? "",
               subtitle: heroData.subtitle,
               description: heroData.description,
               watermarkText: heroData.watermarkText,
@@ -75,7 +103,7 @@ export function SupportPageView({
       )}
       {!cardsData.hidden && cardsData.items?.length ? (
         <EditableSection target="section:cards" editable={editable}>
-          <SupportCards cards={cardsData.items} />
+          <SupportCards cards={cardsData.items} warrantyHref={warrantyHref} />
         </EditableSection>
       ) : null}
       {!contactData.hidden && (
@@ -98,14 +126,32 @@ export function SupportPageView({
       )}
       {!mapData.hidden && (
         <EditableSection target="section:service_centers" editable={editable}>
-          <SupportServiceCenters serviceCenters={serviceCenters} />
+          <SupportServiceCenters
+            serviceCenters={serviceCenters}
+            header={{
+              label: mapData.label,
+              title: mapData.title,
+              description: mapData.description,
+            }}
+          />
         </EditableSection>
       )}
       {!docData.hidden ? (
         <EditableSection target="section:documentation" editable={editable}>
           <SupportDocumentation
-            categories={docData.categories ?? []}
-            files={docData.files ?? []}
+            key={`${downloadsCategory ?? "all"}:${downloadsQuery}:${downloadsPage}`}
+            header={{
+              label: docData.label,
+              title: docData.title,
+              description: docData.description,
+            }}
+            categories={downloadCategories}
+            files={downloads}
+            currentPage={downloadsPage}
+            total={downloadsTotal}
+            totalPages={downloadsTotalPages}
+            activeCategory={downloadsCategory}
+            searchQuery={downloadsQuery}
           />
         </EditableSection>
       ) : null}

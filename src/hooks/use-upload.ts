@@ -47,6 +47,11 @@ export type UploadEntry = {
   previewUrl?: string;
 };
 
+export type LibraryUploadItem = {
+  file: File;
+  type?: LibraryAssetType;
+};
+
 /** Object URL for image files (for an optimistic preview); `undefined` otherwise. */
 function makePreviewUrl(file: File): string | undefined {
   return file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined;
@@ -294,10 +299,10 @@ export function useLibraryUpload() {
     }
   }
 
-  async function upload(files: File[], type?: LibraryAssetType): Promise<void> {
-    if (files.length === 0) return;
+  function uploadItems(items: LibraryUploadItem[]): UploadEntry[] {
+    if (items.length === 0) return [];
 
-    const newEntries: UploadEntry[] = files.map((file) => ({
+    const newEntries: UploadEntry[] = items.map(({ file }) => ({
       id: generateId(),
       fileName: file.name,
       status: "idle" as UploadStage,
@@ -312,27 +317,33 @@ export function useLibraryUpload() {
     let idx = 0;
 
     let anySuccess = false;
-    const workers = new Array(Math.min(CONCURRENCY, files.length))
+    const workers = new Array(Math.min(CONCURRENCY, items.length))
       .fill(0)
       .map(async () => {
         while (true) {
           const i = idx++;
-          if (i >= files.length) return false;
-          const file = files[i];
+          if (i >= items.length) return false;
+          const item = items[i];
           const entry = newEntries[i];
-          if (!file || !entry) continue;
+          if (!item || !entry) continue;
           // Await each file processing to keep per-file error handling linear
-          const success = await processFile(entry, file, type);
+          const success = await processFile(entry, item.file, item.type);
           if (success) anySuccess = true;
         }
       });
 
-    await Promise.all(workers);
-    if (anySuccess) {
-      void queryClient.invalidateQueries({
-        queryKey: getGetApiLibraryQueryKey(),
-      });
-    }
+    void Promise.all(workers).then(() => {
+      if (anySuccess) {
+        void queryClient.invalidateQueries({
+          queryKey: getGetApiLibraryQueryKey(),
+        });
+      }
+    });
+    return newEntries;
+  }
+
+  function upload(files: File[], type?: LibraryAssetType): void {
+    uploadItems(files.map((file) => ({ file, type })));
   }
 
   /** Upload a new version for an existing asset and refresh the library. */
@@ -385,6 +396,7 @@ export function useLibraryUpload() {
 
   return {
     upload,
+    uploadItems,
     uploadVersion,
     entries,
     isUploading,

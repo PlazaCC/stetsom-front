@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { BibliotecaContent } from "./_components/biblioteca-content";
 
 export default function AdminBibliotecaPage() {
-  redirect("/admin/biblioteca/fotos");
+  return <BibliotecaContent />;
 }

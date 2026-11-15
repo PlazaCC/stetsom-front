@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 // Field spec interpreted by SectionFormRenderer; keys map 1:1 to block.data in page-blocks.ts.
-export type FieldSpec =
+export type FieldSpec = (
   | {
       kind: "i18n";
       key: string;
@@ -73,7 +73,10 @@ export type FieldSpec =
       addLabel: string;
       itemFields: FieldSpec[];
       itemTitleKey?: string;
-    };
+    }
+) & {
+  visibleWhen?: { key: string; value: string };
+};
 
 export interface SectionDef {
   /** Persisted `section_id` — must match what the public page reads. */
@@ -122,13 +125,6 @@ const ICON_OPTIONS = [
 ];
 
 const VIDEO_ACCEPT = "video/mp4,video/webm";
-
-const FILE_TYPE_OPTIONS = [
-  { value: "PDF", label: "PDF" },
-  { value: "MANUAL", label: "Manual" },
-  { value: "CATALOG", label: "Catálogo" },
-  { value: "CERTIFICATE", label: "Certificado" },
-];
 
 const socialFields: FieldSpec[] = [
   {
@@ -546,6 +542,25 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
               label: "Descrição",
               multiline: true,
             },
+            {
+              kind: "select",
+              key: "action",
+              label: "Destino",
+              options: [
+                { value: "DOCUMENTATION", label: "Downloads e documentação" },
+                { value: "SERVICE_CENTERS", label: "Postos autorizados" },
+                { value: "CONTACT", label: "Fale conosco" },
+                { value: "WARRANTY", label: "Garantia" },
+                { value: "CUSTOM_URL", label: "URL personalizada" },
+              ],
+            },
+            {
+              kind: "i18n",
+              key: "href",
+              label: "URL personalizada",
+              inputType: "url",
+              visibleWhen: { key: "action", value: "CUSTOM_URL" },
+            },
           ],
         },
       ],
@@ -630,71 +645,32 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
       icon: FileText,
       kind: "editable",
       fields: [
+        { kind: "i18n", key: "label", label: "Rótulo" },
+        { kind: "i18n", key: "title", label: "Título" },
         {
-          kind: "list",
-          key: "categories",
-          label: "Categorias",
-          addLabel: "Adicionar categoria",
-          itemTitleKey: "slug",
-          itemFields: [
-            { kind: "i18n", key: "title", label: "Título" },
-            { kind: "text", key: "label", label: "Rótulo" },
-            {
-              kind: "text",
-              key: "slug",
-              label: "Slug",
-              placeholder: "manuais",
-            },
-          ],
-        },
-        {
-          kind: "list",
-          key: "files",
-          label: "Arquivos",
-          addLabel: "Adicionar arquivo",
-          itemTitleKey: "name",
-          itemFields: [
-            { kind: "text", key: "name", label: "Nome" },
-            {
-              kind: "asset",
-              key: "file_url",
-              label: "Arquivo",
-              variant: "file",
-              assetType: "PDF",
-              listTypes: ["MANUAL", "CATALOG", "CERTIFICATE", "PDF"],
-              accept: "application/pdf",
-            },
-            {
-              kind: "select",
-              key: "type",
-              label: "Tipo",
-              options: FILE_TYPE_OPTIONS,
-            },
-            { kind: "text", key: "version", label: "Versão", placeholder: "1" },
-            {
-              kind: "text",
-              key: "category_slug",
-              label: "Slug da categoria",
-              placeholder: "manuais",
-            },
-          ],
+          kind: "i18n",
+          key: "description",
+          label: "Descrição",
+          multiline: true,
         },
       ],
     },
     {
       section_id: "service_centers",
-      type: "IMAGE",
+      type: "TEXT",
       label: "Postos autorizados (mapa)",
       icon: MapPin,
       kind: "editable",
       autoNote:
-        "A lista de postos é puxada automaticamente da base de parceiros. Aqui você define apenas a imagem do mapa.",
+        "A lista e o mapa são puxados automaticamente da base de parceiros. Aqui você define apenas o cabeçalho.",
       fields: [
+        { kind: "i18n", key: "label", label: "Rótulo" },
+        { kind: "i18n", key: "title", label: "Título" },
         {
-          kind: "asset",
-          key: "mapImage",
-          label: "Imagem do mapa",
-          variant: "image",
+          kind: "i18n",
+          key: "description",
+          label: "Descrição",
+          multiline: true,
         },
       ],
     },
