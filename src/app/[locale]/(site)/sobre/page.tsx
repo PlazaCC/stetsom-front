@@ -11,6 +11,7 @@ import {
   type AboutValuesBlockData,
 } from "@/lib/page-blocks";
 import { getLocale, getTranslations } from "next-intl/server";
+import { MilestonesMarquee } from "../_components/milestones-marquee";
 import { AboutHeroSection } from "./_components/about-hero-section";
 import { AboutPageSections } from "./_components/about-page-sections";
 
@@ -45,6 +46,8 @@ export default async function SobrePage() {
       {!heroData.hidden && (
         <AboutHeroSection
           section={{
+            url: heroData.url,
+            imageAlt: heroData.imageAlt,
             label: heroData.label,
             title: heroData.title,
             description: t("heroDescription"),
@@ -53,6 +56,10 @@ export default async function SobrePage() {
           }}
         />
       )}
+
+      {!heroData.hidden && heroData.milestones?.length ? (
+        <MilestonesMarquee items={heroData.milestones} />
+      ) : null}
 
       <AboutPageSections
         locale={locale}

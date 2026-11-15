@@ -229,11 +229,17 @@ export function PageEditorContent({
   }
 
   function selectSection(target: PageEditorTarget) {
-    setSelection(
+    const nextSelection =
       target && target !== BANNERS_TARGET
         ? toNavTarget(pageId, target)
-        : target,
-    );
+        : target;
+
+    // Clicking the section already being edited in the live preview must not
+    // discard the unsaved draft. Only a real navigation clears this panel's
+    // transient state.
+    if (nextSelection === selection) return;
+
+    setSelection(nextSelection);
     setSectionDraft(null);
     setShowAddPanel(false);
     setShowSectionErrors(false);

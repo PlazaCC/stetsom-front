@@ -247,7 +247,7 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
     {
       section_id: "hero",
       type: "IMAGE",
-      label: "Destaque (hero)",
+      label: "Apresentação",
       icon: ImageIcon,
       kind: "editable",
       fields: [
@@ -257,9 +257,9 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
           label: "Imagem de fundo",
           variant: "image",
         },
-        { kind: "text", key: "imageAlt", label: "Texto alternativo da imagem" },
+        { kind: "text", key: "imageAlt", label: "Texto alternativo" },
         { kind: "i18n", key: "label", label: "Rótulo" },
-        { kind: "i18n", key: "title", label: "Título" },
+        { kind: "i18n", key: "title", label: "Título", multiline: true },
         {
           kind: "text",
           key: "foundedYear",
@@ -285,7 +285,7 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
         {
           kind: "stringList",
           key: "milestones",
-          label: "Palavras-chave (marquee)",
+          label: "Palavras-chave",
           addLabel: "Adicionar palavra",
           placeholder: "POTÊNCIA",
         },
@@ -295,15 +295,14 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
       section_id: "quality",
       type: "IMAGE",
       label: "Quem somos",
-      description:
-        "Vídeo de fundo com título e botão Play (abre o vídeo num modal — arquivo, ou link YouTube/Vimeo por idioma); abaixo, texto centralizado e os cards de valores (editados na aba “Valores”, logo ao lado).",
+      description: "Vídeo institucional e valores da Stetsom.",
       icon: LayoutTemplate,
       kind: "editable",
       fields: [
         {
           kind: "asset",
           key: "video_url",
-          label: "Vídeo de fundo (loop, sem som)",
+          label: "Vídeo de fundo",
           variant: "file",
           assetType: "VIDEO",
           accept: VIDEO_ACCEPT,
@@ -311,8 +310,7 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
         {
           kind: "asset",
           key: "fullVideo_url",
-          label:
-            "Vídeo do botão Play (opcional — usa o vídeo de fundo se vazio)",
+          label: "Vídeo do botão",
           variant: "file",
           assetType: "VIDEO",
           accept: VIDEO_ACCEPT,
@@ -320,8 +318,7 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
         {
           kind: "i18n",
           key: "fullVideoLink",
-          label:
-            "Link do vídeo do botão Play por idioma — YouTube ou Vimeo (opcional; EN/ES vazios usam o PT; tem prioridade sobre o arquivo)",
+          label: "Link do vídeo",
           inputType: "url",
           placeholder: "https://www.youtube.com/watch?v=...",
           validate: "video-link",
@@ -329,17 +326,16 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
         {
           kind: "asset",
           key: "image_url",
-          label: "Imagem de capa (exibida enquanto o vídeo carrega)",
+          label: "Imagem de capa",
           variant: "image",
         },
-        { kind: "text", key: "imageAlt", label: "Texto alternativo da imagem" },
-        { kind: "i18n", key: "label", label: "Rótulo" },
-        { kind: "i18n", key: "title", label: "Título" },
-        { kind: "i18n", key: "playLabel", label: "Texto do botão Play" },
+        { kind: "text", key: "imageAlt", label: "Texto alternativo" },
+        { kind: "i18n", key: "title", label: "Título", multiline: true },
+        { kind: "i18n", key: "playLabel", label: "Texto do botão" },
         {
           kind: "i18n",
           key: "description",
-          label: "Texto centralizado (abaixo do vídeo)",
+          label: "Texto abaixo do vídeo",
           multiline: true,
         },
       ],

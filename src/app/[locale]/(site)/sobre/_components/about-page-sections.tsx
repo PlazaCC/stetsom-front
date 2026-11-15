@@ -3,6 +3,7 @@ import { OurFoundations } from "./our-foundations";
 import { QualitySection } from "./quality-section";
 import { SocialFeed } from "../../_components/social-feed";
 import { TimelineCarousel } from "./timeline-carousel";
+import { EditableSection } from "../../_components/editable-section";
 import {
   resolveQualityPlayerVideo,
   type AboutFactoryBlockData,
@@ -14,6 +15,7 @@ import {
 
 interface AboutPageSectionsProps {
   /** next-intl locale — picks the localized Play video. */
+  editable?: boolean;
   locale: string;
   quality: AboutQualityBlockData;
   values: AboutValuesBlockData;
@@ -23,6 +25,7 @@ interface AboutPageSectionsProps {
 }
 
 export function AboutPageSections({
+  editable = false,
   locale,
   quality,
   values,
@@ -33,62 +36,72 @@ export function AboutPageSections({
   return (
     <>
       {!quality.hidden && (quality.video_url || quality.image_url) && (
-        <QualitySection
-          section={{
-            label: quality.label,
-            title: quality.title ?? "",
-            description: quality.description,
-            backgroundVideoUrl: quality.video_url,
-            fullVideoUrl: resolveQualityPlayerVideo(quality, locale),
-            posterUrl: quality.image_url,
-            posterAlt: quality.imageAlt ?? "Qualidade Stetsom",
-            playLabel: quality.playLabel,
-          }}
-          values={values.items ?? []}
-        />
+        <EditableSection target="section:quality" editable={editable}>
+          <QualitySection
+            section={{
+              label: quality.label,
+              title: quality.title ?? "",
+              description: quality.description,
+              backgroundVideoUrl: quality.video_url,
+              fullVideoUrl: resolveQualityPlayerVideo(quality, locale),
+              posterUrl: quality.image_url,
+              posterAlt: quality.imageAlt ?? "Qualidade Stetsom",
+              playLabel: quality.playLabel,
+            }}
+            values={values.items ?? []}
+          />
+        </EditableSection>
       )}
 
       {!timeline.hidden && timeline.events?.length ? (
-        <TimelineCarousel
-          events={timeline.events.map((event) => ({
-            year: String(event.year),
-            title: event.title,
-            description: event.description,
-            image: event.image_url,
-            imageAlt: event.imageAlt,
-          }))}
-        />
+        <EditableSection target="section:timeline" editable={editable}>
+          <TimelineCarousel
+            events={timeline.events.map((event) => ({
+              year: String(event.year),
+              title: event.title,
+              description: event.description,
+              image: event.image_url,
+              imageAlt: event.imageAlt,
+            }))}
+          />
+        </EditableSection>
       ) : null}
 
       {!values.hidden && values.bases?.length ? (
-        <OurFoundations bases={values.bases} />
+        <EditableSection target="section:values:bases" editable={editable}>
+          <OurFoundations bases={values.bases} />
+        </EditableSection>
       ) : null}
 
       {!social.hidden && social.handle && (
-        <SocialFeed
-          section={{
-            handle: social.handle,
-            title: social.title ?? "",
-            subtitle: social.subtitle,
-            ctaHref: social.ctaHref ?? "#",
-            ctaLabel: social.ctaLabel ?? "Ver mais",
-            posts: social.posts ?? [],
-          }}
-        />
+        <EditableSection target="section:social" editable={editable}>
+          <SocialFeed
+            section={{
+              handle: social.handle,
+              title: social.title ?? "",
+              subtitle: social.subtitle,
+              ctaHref: social.ctaHref ?? "#",
+              ctaLabel: social.ctaLabel ?? "Ver mais",
+              posts: social.posts ?? [],
+            }}
+          />
+        </EditableSection>
       )}
 
       {!factory.hidden && (
-        <OurFactory
-          jobsCta={{
-            image: factory.image_url,
-            imageAlt: factory.imageAlt,
-            label: factory.label,
-            title: factory.title,
-            description: factory.description,
-            buttonText: factory.buttonLabel ?? "",
-            buttonHref: factory.buttonHref,
-          }}
-        />
+        <EditableSection target="section:jobs-cta" editable={editable}>
+          <OurFactory
+            jobsCta={{
+              image: factory.image_url,
+              imageAlt: factory.imageAlt,
+              label: factory.label,
+              title: factory.title,
+              description: factory.description,
+              buttonText: factory.buttonLabel ?? "",
+              buttonHref: factory.buttonHref,
+            }}
+          />
+        </EditableSection>
       )}
     </>
   );

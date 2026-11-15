@@ -106,11 +106,8 @@ export function QualityVideoHero({
       <div className="absolute inset-0 bg-black/60" />
 
       <div className="relative z-10 flex w-full flex-col items-center px-4 text-center">
-        <h2
-          className="mt-3 font-sans-condensed text-5xl leading-none font-black text-balance text-white uppercase lg:text-display-2xl"
-          dangerouslySetInnerHTML={{ __html: title.split("\n").join("<br />") }}
-        >
-          {/* {title.split("\n").join(" ")} */}
+        <h2 className="mt-3 font-sans-condensed text-5xl leading-none font-black text-balance whitespace-pre-line text-white uppercase lg:text-display-2xl">
+          {title}
         </h2>
 
         {playerSource && (
