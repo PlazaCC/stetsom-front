@@ -10,6 +10,7 @@ import {
   AdminRowAction,
   AdminRowActions,
 } from "@/app/admin/_components/crud/admin-row-actions";
+import { CopyId } from "@/app/admin/_components/crud/copy-id";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { Button } from "@/components/ui/button";
 import {
@@ -168,6 +169,11 @@ export default function AdminGruposAtributosPage() {
       render: (g) => (
         <span className="text-muted-foreground">{g.name.es ?? "—"}</span>
       ),
+    },
+    {
+      key: "id",
+      header: "ID",
+      render: (g) => <CopyId value={g.id} />,
     },
     {
       key: "actions",

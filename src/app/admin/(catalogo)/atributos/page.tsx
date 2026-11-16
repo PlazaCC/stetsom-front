@@ -11,6 +11,7 @@ import {
   AdminRowActions,
 } from "@/app/admin/_components/crud/admin-row-actions";
 import { AdminSearchInput } from "@/app/admin/_components/crud/admin-search-input";
+import { CopyId } from "@/app/admin/_components/crud/copy-id";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { Button } from "@/components/ui/button";
 import {
@@ -203,6 +204,11 @@ export default function AdminAtributosPage() {
       render: (a) => (
         <span className="text-muted-foreground">{a.name.es ?? "—"}</span>
       ),
+    },
+    {
+      key: "id",
+      header: "ID",
+      render: (a) => <CopyId value={a.id} />,
     },
     {
       key: "actions",
