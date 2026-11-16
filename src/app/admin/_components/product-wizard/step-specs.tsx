@@ -1,9 +1,14 @@
 "use client";
 
 import type { Attribute, AttributeGroup, Template } from "@/api/stetsom/model";
+import {
+  downloadProductSpecSheet,
+  specSheetFilename,
+} from "@/app/admin/_components/spec-sheets/download-spec-sheet";
 import { Button } from "@/components/ui/button";
+import { useAdminToast } from "@/hooks/use-admin-toast";
 import { CMS_UI } from "@/lib/cms/constants";
-import { FileSpreadsheet } from "lucide-react";
+import { Download, FileSpreadsheet } from "lucide-react";
 import { SpecImportDialog } from "./spec-import-dialog";
 import { SpecTable, type SpecLocale } from "./spec-table";
 import { VariationTabs } from "./variation-tabs";
@@ -85,8 +90,26 @@ export function StepSpecs({
   errors = {},
   onClearError,
 }: StepSpecsProps) {
+  const toast = useAdminToast();
   const [locale, setLocale] = useState<SpecLocale>("pt");
   const [importOpen, setImportOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  // Export reads the product saved on the server, so it needs a persisted
+  // product; a brand-new wizard has nothing to export yet.
+  async function handleExport() {
+    if (!state.productId) return;
+    setExporting(true);
+    try {
+      await downloadProductSpecSheet(state.productId, {
+        filename: specSheetFilename(state.name.pt || "produto"),
+      });
+    } catch (error) {
+      toast.apiError(error, "Não foi possível exportar a planilha");
+    } finally {
+      setExporting(false);
+    }
+  }
 
   // Templates are scoped to the product's category — the list stays empty until
   // one is picked, so the combobox has nothing to apply before that.
@@ -233,6 +256,21 @@ export function StepSpecs({
           variant="outline"
           size="sm"
           className="ml-auto"
+          disabled={!state.productId || exporting}
+          title={
+            state.productId
+              ? undefined
+              : "Salve o produto para exportar a planilha"
+          }
+          onClick={handleExport}
+        >
+          <Download className="size-4" />
+          Exportar planilha
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
           disabled={!hasCategory}
           onClick={() => setImportOpen(true)}
         >
