@@ -153,7 +153,7 @@ export function ProductCard({
       <button
         type="button"
         onClick={onCompareToggle}
-        disabled={compareDisabled}
+        disabled={compareDisabled || compareBlocked}
         className={cn(
           "flex w-full cursor-pointer flex-col overflow-hidden rounded-lg border bg-white text-left transition-all",
           isCompareSelected
@@ -161,7 +161,8 @@ export function ProductCard({
             : compareBlocked
               ? "border-border opacity-60"
               : "border-border hover:border-brand hover:shadow-md",
-          compareDisabled && "cursor-not-allowed opacity-60",
+          (compareDisabled || compareBlocked) &&
+            "cursor-not-allowed opacity-60",
         )}
       >
         {cardContent}

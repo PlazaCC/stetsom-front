@@ -108,6 +108,15 @@ export function productsHandler(
     filtered = [...filtered].sort((a, b) => b.id.localeCompare(a.id));
   }
 
+  const prioritySlug = params.get("priority_product");
+  const priorityCategory = items.find((p) => p.slug === prioritySlug)?.category;
+  if (priorityCategory) {
+    filtered = [
+      ...filtered.filter((p) => p.category === priorityCategory),
+      ...filtered.filter((p) => p.category !== priorityCategory),
+    ];
+  }
+
   const total = filtered.length;
   const totalPages = Math.ceil(total / pageSize) || 1;
   const start = (page - 1) * pageSize;

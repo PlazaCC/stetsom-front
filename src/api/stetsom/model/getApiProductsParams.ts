@@ -20,6 +20,7 @@ export type GetApiProductsParams = {
    */
   pageSize?: number;
   q?: string;
+  priority_product?: string;
   category?: string;
   line?: string;
   locale?: LocaleInput;

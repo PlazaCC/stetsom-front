@@ -1,6 +1,6 @@
 "use client";
 
-import type { ProductCardItem } from "@/api/stetsom/model";
+import type { ComparePreview } from "./compare-provider";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useCompareContext } from "./compare-provider";
 import { CompareCollapsed } from "./compare-collapsed";
@@ -8,7 +8,7 @@ import { CompareExpanded } from "./compare-expanded";
 
 interface CompareModalProps {
   /** Map of slug → ProductCardItem for lookup */
-  catalogMap: Map<string, ProductCardItem>;
+  catalogMap: Map<string, ComparePreview>;
 }
 
 export function CompareModal({ catalogMap }: CompareModalProps) {

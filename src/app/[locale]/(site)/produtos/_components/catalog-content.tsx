@@ -6,8 +6,12 @@ import type {
 } from "@/api/stetsom/model";
 import { Container } from "@/components/ui/container";
 import { useCatalogFilters } from "@/hooks/use-catalog-filters";
-import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { getApiProducts } from "@/api/stetsom/endpoints/products-public/products-public";
+import { toApiLocale } from "@/i18n/locale";
+import { useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CatalogHero } from "./catalog-hero";
 import {
   CatalogLinesGrid,
@@ -19,10 +23,7 @@ import { CatalogMobileActions } from "./catalog-mobile-actions";
 import { CatalogMobileFilterSheet } from "./catalog-mobile-filter-sheet";
 import { CatalogProductsList } from "./catalog-products-list";
 import { CatalogSidebar } from "./catalog-sidebar";
-import {
-  CompareProvider,
-  useCompareContext,
-} from "./product-compare/compare-provider";
+import { useCompareContext } from "./product-compare/compare-provider";
 import { CompareModal } from "./product-compare/compare-modal";
 
 interface CategoryOption {
@@ -60,6 +61,7 @@ function CatalogContentInner({
   lineCards = null,
 }: CatalogContentProps) {
   const t = useTranslations("Catalog");
+  const locale = toApiLocale(useLocale());
 
   const {
     activeCategory,
@@ -67,18 +69,15 @@ function CatalogContentInner({
     search,
     sort,
     page,
-    sidebarOpen,
     showDiscontinued,
     showExport,
     showAll,
     setActiveCategory,
     setActiveLine,
     setShowAll,
-    setCategoryAll,
     setSearch,
     setSort,
     setPage,
-    setSidebarOpen,
     setShowDiscontinued,
     setShowExport,
     clearFilters,
@@ -154,18 +153,48 @@ function CatalogContentInner({
     );
   }, [categories, activeCategorySlug]);
 
-  const productCards = catalog.items;
+  const { mode, selectedSlugs, selectedItems, sidebarOpen, setSidebarOpen } =
+    useCompareContext();
+  const prioritySlug = selectedSlugs[0];
+  const previousPriority = useRef(prioritySlug);
+  useEffect(() => {
+    if (prioritySlug && prioritySlug !== previousPriority.current && page !== 1)
+      setPage(1);
+    previousPriority.current = prioritySlug;
+  }, [prioritySlug, page, setPage]);
+  const compareParams = {
+    locale,
+    q: search || undefined,
+    category: activeCategorySlug,
+    line: activeLine === "todas" ? undefined : activeLine,
+    sort: sort === "newest" ? ("newest" as const) : ("relevance" as const),
+    page,
+    pageSize: 24,
+    include_discontinued: showDiscontinued,
+    is_export: showExport || undefined,
+    priority_product: prioritySlug,
+  };
+  const comparisonCatalog = useQuery({
+    queryKey: ["compare-catalog", compareParams],
+    queryFn: ({ signal }) => getApiProducts(compareParams, signal),
+    enabled: mode !== "idle",
+    placeholderData: keepPreviousData,
+  });
+  const displayedCatalog =
+    mode === "idle" ? catalog : (comparisonCatalog.data ?? catalog);
+  const productCards = displayedCatalog?.items ?? [];
   const hasActiveFilters =
     activeCategory !== "todos" ||
     activeLine !== "todas" ||
     Boolean(search) ||
     showDiscontinued ||
     showExport;
-  const isCatalogEmpty = catalog.total === 0 && !hasActiveFilters;
+  const isCatalogEmpty = displayedCatalog?.total === 0 && !hasActiveFilters;
   // Etapa intermediária da taxonomia: categoria escolhida sem linha selecionada
   // mostra as linhas da categoria em cards (em vez do grid de produtos). Com
   // busca ou filtros ligados, vai direto aos produtos — mesma regra da página.
   const isLineCardsView =
+    mode === "idle" &&
     lineCards !== null &&
     activeCategory !== "todos" &&
     activeLine === "todas" &&
@@ -174,70 +203,29 @@ function CatalogContentInner({
     !showDiscontinued &&
     !showExport;
 
-  // Build a slug → ProductCardItem lookup map for the compare modal
-  const catalogMap = useMemo(() => {
-    const map = new Map<string, (typeof productCards)[number]>();
-    for (const p of productCards) {
-      map.set(p.slug, p);
+  const catalogMap = useMemo(
+    () => new Map(selectedItems.map((item) => [item.slug, item])),
+    [selectedItems],
+  );
+
+  const changeSidebarOpen = (open: boolean) => {
+    setSidebarOpen(open);
+    if (!open) {
+      requestAnimationFrame(() => {
+        const triggers = document.querySelectorAll<HTMLButtonElement>(
+          "[data-catalog-filter-trigger]",
+        );
+        Array.from(triggers)
+          .find((trigger) => trigger.getClientRects().length > 0)
+          ?.focus();
+      });
     }
-    return map;
-  }, [productCards]);
-
-  // Compare context
-  const { mode, selectedSlugs, selectedCategory, setSelectedCategory } =
-    useCompareContext();
-  const prevSelectedRef = useRef<string[]>([]);
-
-  // Anchor the comparison's category and, when the first product is selected,
-  // jump to its category/line view so the grid stays visible and only shows
-  // comparable (same-category) products.
-  useEffect(() => {
-    const prev = prevSelectedRef.current;
-
-    if (mode === "selecting") {
-      const product =
-        selectedSlugs.length === 1
-          ? catalogMap.get(selectedSlugs[0])
-          : undefined;
-
-      // Anchor the category (covers the deep-link case and products missing
-      // from the current page's map).
-      if (selectedSlugs.length === 1 && !selectedCategory) {
-        if (product) {
-          setSelectedCategory(product.category);
-        } else if (activeCategory !== "todos") {
-          const match = categories.find((c) => c.slug === activeCategory);
-          if (match) setSelectedCategory(match.name);
-        }
-      }
-
-      // First product just added → navigate to its category (all products) so
-      // the grid only shows same-category products.
-      if (selectedSlugs.length === 1 && prev.length === 0 && product) {
-        const cat = categories.find((c) => c.name === product.category);
-        if (cat && (cat.slug !== activeCategory || !showAll)) {
-          setCategoryAll(cat.slug);
-        }
-      }
-    }
-
-    prevSelectedRef.current = selectedSlugs;
-  }, [
-    selectedSlugs,
-    mode,
-    selectedCategory,
-    catalogMap,
-    categories,
-    activeCategory,
-    showAll,
-    setSelectedCategory,
-    setCategoryAll,
-  ]);
+  };
 
   return (
     <div>
       <CatalogHero
-        totalProducts={catalog.total}
+        totalProducts={displayedCatalog.total}
         totalLines={isLineCardsView ? lineCards?.lines.length : undefined}
       />
 
@@ -256,10 +244,10 @@ function CatalogContentInner({
           {/* Filters stay available on the line step too, so the search can be
               refined at every level of the taxonomy. */}
           <div className="flex gap-9">
-            {!isCatalogEmpty && isDesktop && (
+            {isDesktop && (
               <CatalogSidebar
                 open={sidebarOpen}
-                onOpenChange={setSidebarOpen}
+                onOpenChange={changeSidebarOpen}
                 search={searchInput}
                 onSearchChange={setSearchInput}
                 activeCategory={activeCategory}
@@ -279,22 +267,22 @@ function CatalogContentInner({
             )}
 
             <div className="min-w-0 flex-1">
-              {!isCatalogEmpty && (
+              {
                 <CatalogDesktopActions
                   onToggleFilters={() => setSidebarOpen(true)}
                 />
-              )}
+              }
 
-              {!isCatalogEmpty && (
+              {
                 <CatalogMobileActions
                   onToggleFilters={() => setSidebarOpen(true)}
                 />
-              )}
+              }
 
-              {!isCatalogEmpty && !isDesktop && (
+              {!isDesktop && (
                 <CatalogMobileFilterSheet
                   open={sidebarOpen}
-                  onOpenChange={setSidebarOpen}
+                  onOpenChange={changeSidebarOpen}
                   search={searchInput}
                   onSearchChange={setSearchInput}
                   activeCategory={activeCategory}
@@ -313,7 +301,20 @@ function CatalogContentInner({
                 />
               )}
 
-              {isLineCardsView ? (
+              {mode !== "idle" &&
+              comparisonCatalog.isError &&
+              !comparisonCatalog.isFetching ? (
+                <p role="alert" className="py-12 text-center">
+                  {t("compareLoadError")}{" "}
+                  <button
+                    type="button"
+                    className="underline"
+                    onClick={() => comparisonCatalog.refetch()}
+                  >
+                    {t("compareRetry")}
+                  </button>
+                </p>
+              ) : isLineCardsView ? (
                 <CatalogLinesGrid
                   lines={lineCards?.lines ?? []}
                   allProductsCoverUrl={lineCards?.allProductsCoverUrl ?? null}
@@ -322,9 +323,11 @@ function CatalogContentInner({
                 />
               ) : (
                 <CatalogProductsList
+                  isLoading={mode !== "idle" && comparisonCatalog.isFetching}
+                  placeholderCount={productCards.length || 8}
                   products={productCards}
                   currentPage={page}
-                  totalPages={catalog.totalPages}
+                  totalPages={displayedCatalog?.totalPages ?? 0}
                   onPageChange={setPage}
                   isCatalogEmpty={isCatalogEmpty}
                 />
@@ -346,12 +349,10 @@ export function CatalogContent({
   lineCards = null,
 }: CatalogContentProps) {
   return (
-    <CompareProvider>
-      <CatalogContentInner
-        categories={categories}
-        catalog={catalog}
-        lineCards={lineCards}
-      />
-    </CompareProvider>
+    <CatalogContentInner
+      categories={categories}
+      catalog={catalog}
+      lineCards={lineCards}
+    />
   );
 }

@@ -124,6 +124,9 @@
     "compareBadge": "Compare",
     "compareBadgeSelected": "Selected",
     "compareRemove": "Remove",
+    "compareRetry": "Try again",
+    "compareLoading": "Loading product…",
+    "compareRestart": "Restart selection",
     "compareLoadError": "Error loading product data. Please try again."
   },
   "ProductDetail": {

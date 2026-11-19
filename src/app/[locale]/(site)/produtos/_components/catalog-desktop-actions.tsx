@@ -17,6 +17,7 @@ export function CatalogDesktopActions({
   return (
     <div className="mb-4 hidden items-center justify-between gap-3 lg:flex">
       <Button
+        data-catalog-filter-trigger
         variant="outline"
         onClick={onToggleFilters}
         className="h-9 gap-2 rounded-sm px-3 text-sm"

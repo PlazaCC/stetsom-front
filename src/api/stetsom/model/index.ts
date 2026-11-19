@@ -160,6 +160,7 @@ export * from "./getApiProductsPreviewSlugParams";
 export * from "./getApiProductsSlug200";
 export * from "./getApiProductsSlugParams";
 export * from "./getApiProductsSort";
+export * from "./getApiSpecSheetsProductsIdParams";
 export * from "./getApiSpecSheetsTemplatesIdParams";
 export * from "./getApiTemplatesParams";
 export * from "./getApiUsersParams";

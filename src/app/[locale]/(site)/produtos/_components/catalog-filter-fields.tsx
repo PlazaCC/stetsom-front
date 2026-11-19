@@ -118,7 +118,7 @@ export function CatalogFilterFields({
               className="text-muted-foreground transition-transform group-data-open/collapsible:rotate-180"
             />
           </CollapsibleTrigger>
-          <CollapsibleContent className="mt-4 flex flex-col gap-4">
+          <CollapsibleContent className="catalog-filter-panel">
             <label className="flex min-w-0 cursor-pointer items-center gap-3 text-base text-muted-foreground">
               <Switch
                 checked={showDiscontinued}
@@ -166,7 +166,7 @@ export function CatalogFilterFields({
               className="text-muted-foreground transition-transform group-data-open/collapsible:rotate-180"
             />
           </CollapsibleTrigger>
-          <CollapsibleContent className="mt-4 flex flex-col gap-3">
+          <CollapsibleContent className="catalog-filter-panel">
             {typeFilterOptions.map((cat) => (
               <label
                 key={cat.slug}
@@ -208,7 +208,7 @@ export function CatalogFilterFields({
                 className="text-muted-foreground transition-transform group-data-open/collapsible:rotate-180"
               />
             </CollapsibleTrigger>
-            <CollapsibleContent className="mt-4 flex flex-col gap-3 text-base text-muted-foreground">
+            <CollapsibleContent className="catalog-filter-panel text-base text-muted-foreground">
               {productLines.map((line) => (
                 <label
                   key={line.slug}

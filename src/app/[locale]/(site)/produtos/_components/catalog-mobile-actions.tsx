@@ -17,6 +17,7 @@ export function CatalogMobileActions({
   return (
     <div className="mb-4 flex items-center justify-between gap-2 lg:hidden">
       <Button
+        data-catalog-filter-trigger
         variant="outline"
         onClick={onToggleFilters}
         className="h-9 shrink-0 gap-2 rounded-sm px-3 text-sm"

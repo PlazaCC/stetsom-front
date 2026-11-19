@@ -1,6 +1,6 @@
 "use client";
 
-import type { ProductCardItem } from "@/api/stetsom/model";
+import type { ComparePreview } from "./compare-provider";
 import { cn } from "@/lib/utils";
 import { GitCompareArrows, X } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 
 interface CompareCollapsedProps {
   /** Map of slug → ProductCardItem for lookup */
-  catalogMap: Map<string, ProductCardItem>;
+  catalogMap: Map<string, ComparePreview>;
 }
 
 export function CompareCollapsed({ catalogMap }: CompareCollapsedProps) {
@@ -19,6 +19,8 @@ export function CompareCollapsed({ catalogMap }: CompareCollapsedProps) {
   const {
     selectedSlugs,
     selectedCategory,
+    resolvingFirst,
+    firstLoadError,
     blockedReason,
     removeProduct,
     exitCompareMode,
@@ -34,7 +36,7 @@ export function CompareCollapsed({ catalogMap }: CompareCollapsedProps) {
 
   const selectedItems = selectedSlugs
     .map((slug) => catalogMap.get(slug))
-    .filter(Boolean) as ProductCardItem[];
+    .filter(Boolean) as ComparePreview[];
 
   return (
     <div className="pointer-events-none fixed top-0 right-0 left-0 z-[60] flex justify-center">
@@ -82,6 +84,24 @@ export function CompareCollapsed({ catalogMap }: CompareCollapsedProps) {
         {blockedReason === "different-category" && (
           <p className="mt-3 rounded-md border border-brand/30 bg-brand/10 px-3 py-2 font-sans text-2xs font-medium text-brand">
             {t("compareDifferentCategory")}
+          </p>
+        )}
+
+        {resolvingFirst && (
+          <p role="status" className="mt-3 text-sm">
+            {t("compareLoading")}
+          </p>
+        )}
+        {firstLoadError && (
+          <p role="alert" className="mt-3 text-sm">
+            {t("compareLoadError")}{" "}
+            <button
+              type="button"
+              className="underline"
+              onClick={() => removeProduct(selectedSlugs[0])}
+            >
+              {t("compareRestart")}
+            </button>
           </p>
         )}
 

@@ -3,14 +3,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeftRight, X } from "lucide-react";
-import { useCompareContext } from "./compare-provider";
+import { useCompareContext, type ComparePreview } from "./compare-provider";
 import { CompareColumn } from "./compare-column";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { getApiProductsSlug } from "@/api/stetsom/endpoints/products-public/products-public";
 import type {
   LocaleInput,
-  ProductCardItem,
   ProductImage,
   PublicVariant,
 } from "@/api/stetsom/model";
@@ -24,7 +23,7 @@ import { useState } from "react";
 
 interface CompareExpandedProps {
   /** Map of slug → ProductCardItem for lookup */
-  catalogMap: Map<string, ProductCardItem>;
+  catalogMap: Map<string, ComparePreview>;
 }
 
 /** Fetches full product details for a slug using the public API. */

@@ -20,6 +20,7 @@ import type {
 
 import type {
   ApiErrorPayload,
+  GetApiSpecSheetsProductsIdParams,
   GetApiSpecSheetsTemplatesIdParams,
   PostApiSpecSheetsImportBody,
   SpecWorkbookPreview,
@@ -194,6 +195,185 @@ export function useGetApiSpecSheetsTemplatesId<
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
   const queryOptions = getGetApiSpecSheetsTemplatesIdQueryOptions(
+    id,
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * XLSX with one sheet per variant, the attributes filled in with the saved values. Same layout as the template download, so it can be edited and re-imported.
+ * @summary Export a product spec workbook with its current values
+ */
+export const getApiSpecSheetsProductsId = (
+  id: string,
+  params?: GetApiSpecSheetsProductsIdParams,
+  signal?: AbortSignal,
+) => {
+  return orvalClient<unknown>({
+    url: `/api/spec-sheets/products/${id}`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getGetApiSpecSheetsProductsIdQueryKey = (
+  id: string,
+  params?: GetApiSpecSheetsProductsIdParams,
+) => {
+  return [
+    `/api/spec-sheets/products/${id}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetApiSpecSheetsProductsIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  params?: GetApiSpecSheetsProductsIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetApiSpecSheetsProductsIdQueryKey(id, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>
+  > = ({ signal }) => getApiSpecSheetsProductsId(id, params, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: id !== null && id !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiSpecSheetsProductsIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>
+>;
+export type GetApiSpecSheetsProductsIdQueryError = ApiErrorPayload;
+
+export function useGetApiSpecSheetsProductsId<
+  TData = Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  params: undefined | GetApiSpecSheetsProductsIdParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiSpecSheetsProductsId<
+  TData = Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  params?: GetApiSpecSheetsProductsIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiSpecSheetsProductsId<
+  TData = Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  params?: GetApiSpecSheetsProductsIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Export a product spec workbook with its current values
+ */
+
+export function useGetApiSpecSheetsProductsId<
+  TData = Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>,
+  TError = ApiErrorPayload,
+>(
+  id: string,
+  params?: GetApiSpecSheetsProductsIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiSpecSheetsProductsId>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiSpecSheetsProductsIdQueryOptions(
     id,
     params,
     options,
