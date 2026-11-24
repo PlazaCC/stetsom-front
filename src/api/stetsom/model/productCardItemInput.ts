@@ -20,6 +20,8 @@ export interface ProductCardItemInput {
   line: string | null;
   /** @nullable */
   thumbnail_url: string | null;
+  /** @nullable */
+  highlight_url: string | null;
   status: ProductCardItemInputStatus;
   is_discontinued: boolean;
   is_export: boolean;

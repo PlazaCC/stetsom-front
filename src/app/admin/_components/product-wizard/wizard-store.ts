@@ -26,6 +26,8 @@ export interface WizardImage {
   library_id: string;
   preview_url: string;
   order: number;
+  /** Marks this gallery image as the product's home highlight banner. One per product. */
+  is_highlight: boolean;
 }
 
 export interface WizardSpec {
@@ -295,6 +297,7 @@ function hydrateImages(detail?: CmsProductDetailPayload): WizardImage[] {
       library_id: img.library_id,
       preview_url: img.image_url ?? "",
       order: img.order,
+      is_highlight: img.is_highlight,
     }));
 }
 
@@ -609,6 +612,7 @@ export function buildPayload(
     images: state.images.map((image) => ({
       id: image.id,
       library_id: image.library_id,
+      is_highlight: image.is_highlight,
     })),
     files: state.files.map((file) => ({
       id: file.id,

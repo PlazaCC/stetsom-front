@@ -151,6 +151,7 @@ export function useWizardMutations(
               ?.preview_url ??
             "",
           order: image.order,
+          is_highlight: image.is_highlight,
         })),
         files: product.files.map((file) => ({
           id: file.file_id,

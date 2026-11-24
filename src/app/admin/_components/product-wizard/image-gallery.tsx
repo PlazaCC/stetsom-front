@@ -1,6 +1,6 @@
 "use client";
 
-import { ImagePlus, X } from "lucide-react";
+import { ImagePlus, Star, X } from "lucide-react";
 import { rectSortingStrategy } from "@dnd-kit/sortable";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
 import { LibraryPickerModal } from "@/app/admin/_components/crud/library-asset-picker";
@@ -23,12 +23,24 @@ export function ImageGallery({ images, onChange }: ImageGalleryProps) {
       library_id: asset.library_id,
       preview_url: asset.file_url ?? "",
       order: images.length,
+      is_highlight: false,
     };
     onChange(reindexByOrder([...images, added]));
   }
 
   function removeImage(id: string) {
     onChange(reindexByOrder(images.filter((img) => img.id !== id)));
+  }
+
+  // Only one image can be the home highlight banner. Clicking an already
+  // selected image clears it, leaving the product without a highlight.
+  function toggleHighlight(id: string) {
+    onChange(
+      images.map((img) => ({
+        ...img,
+        is_highlight: img.id === id ? !img.is_highlight : false,
+      })),
+    );
   }
 
   const nextSlotIndex = images.length + 1;
@@ -65,19 +77,43 @@ export function ImageGallery({ images, onChange }: ImageGalleryProps) {
               alt={img.id}
               className="h-full w-full object-cover"
             />
-            {img.order === 0 ? (
-              <span className="absolute top-2 left-2 rounded bg-foreground/80 px-2 py-0.5 text-2xs font-semibold text-background uppercase">
-                Capa
+            <div className="absolute top-2 left-2 flex flex-col items-start gap-1">
+              <span className="rounded bg-foreground/80 px-2 py-0.5 text-2xs font-semibold text-background uppercase">
+                {img.order === 0 ? "Capa" : img.order}
               </span>
-            ) : (
-              <span className="absolute top-2 left-2 rounded bg-foreground/80 px-2 py-0.5 text-2xs font-semibold text-background uppercase">
-                {img.order}
-              </span>
-            )}
+              {img.is_highlight && (
+                <span className="flex items-center gap-1 rounded bg-primary px-2 py-0.5 text-2xs font-semibold text-primary-foreground uppercase">
+                  <Star className="size-3 fill-current" />
+                  Destaque
+                </span>
+              )}
+            </div>
             <div className="absolute inset-0 flex items-start justify-end gap-1 bg-black/0 p-1.5 opacity-0 transition-all group-hover:bg-black/20 group-hover:opacity-100">
               <div className="flex size-7 items-center justify-center rounded-full bg-black/60 text-white hover:bg-primary/80 [&_button]:cursor-grab [&_button]:active:cursor-grabbing">
                 {handle}
               </div>
+              <button
+                type="button"
+                aria-label={
+                  img.is_highlight
+                    ? "Remover dos destaques"
+                    : "Usar como banner de destaque"
+                }
+                aria-pressed={img.is_highlight}
+                title={
+                  img.is_highlight
+                    ? "Remover dos destaques"
+                    : "Usar como banner de destaque"
+                }
+                onClick={() => toggleHighlight(img.id)}
+                className={`flex size-7 items-center justify-center rounded-full text-white hover:bg-primary/80 ${
+                  img.is_highlight ? "bg-primary" : "bg-black/60"
+                }`}
+              >
+                <Star
+                  className={`size-4 ${img.is_highlight ? "fill-current" : ""}`}
+                />
+              </button>
               <button
                 type="button"
                 aria-label="Remover"

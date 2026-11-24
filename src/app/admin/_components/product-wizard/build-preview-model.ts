@@ -80,6 +80,7 @@ export function buildPreviewModel(
     library_id: img.library_id,
     image_url: img.preview_url,
     order: img.order ?? i,
+    is_highlight: img.is_highlight,
     created_at: now,
   }));
 

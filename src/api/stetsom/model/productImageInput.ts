@@ -16,5 +16,6 @@ export interface ProductImageInput {
    * @maximum 9007199254740991
    */
   order: number;
+  is_highlight: boolean;
   created_at: string;
 }

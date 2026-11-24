@@ -11,4 +11,5 @@ export type PostApiProductsBodyImagesItem = {
   id: string;
   /** @minLength 1 */
   library_id: string;
+  is_highlight?: boolean;
 };
