@@ -126,6 +126,15 @@ export function LibraryAssetPicker({
         </button>
       )}
 
+      {needsResolve && !isResolving && !previewUrl && (
+        <button
+          type="button"
+          onClick={() => onChange(null)}
+          className="mt-1 text-xs text-destructive hover:underline"
+        >
+          Remover arquivo indisponível
+        </button>
+      )}
       {hint && <p className="mt-1.5 text-xs text-muted-foreground">{hint}</p>}
       <AdminFieldError id={errorId} message={error} />
 
@@ -324,7 +333,10 @@ function AssetThumb({
   onClick: () => void;
 }) {
   const url = currentAssetUrl(asset);
-  const isImage = asset.type === "IMAGE" || asset.type === "CATEGORY_ICON";
+  const isImage =
+    asset.type === "IMAGE" ||
+    asset.type === "CATEGORY_ICON" ||
+    asset.type === "FEATURED_PRODUCT_COVER";
   return (
     <button
       type="button"

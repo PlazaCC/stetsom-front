@@ -48,7 +48,7 @@ export function FeaturedProductCard({
                 ? "(min-width: 1024px) 45vw, 90vw"
                 : "(min-width: 1024px) 20vw, 45vw"
             }
-            className="object-contain transition-transform duration-300 group-hover:scale-105"
+            className="object-cover object-center transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
           <div className="h-full w-full bg-muted" />

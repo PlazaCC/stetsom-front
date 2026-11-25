@@ -10,6 +10,7 @@ import type {
 } from "@/api/stetsom/model";
 import type { PublicWarrantyFloatConfig } from "@/api/stetsom/model/publicWarrantyFloatConfig";
 import type { HomePageViewData } from "@/app/[locale]/(site)/_components/home-page-view";
+import type { FeaturedTabDraft } from "./featured-tabs-validation";
 import type { PagePreviewModel } from "./page-editor-target";
 import { findSectionDef, type FieldSpec } from "./section-field-spec";
 
@@ -76,22 +77,67 @@ function buildPreviewNovelties(
   block: PageBlock | undefined,
   categories: PublicCategory[],
   availableProducts: ProductCardItem[],
+  categoryProducts: Record<string, ProductCardItem[]>,
+  coverUrls: Record<string, string>,
+  selectedProducts: Array<ProductCardItem & { category_id: string }>,
 ): HomePageViewData["novelties"] {
-  const tabs =
-    block?.data && typeof block.data === "object" && "tabs" in block.data
-      ? (block.data.tabs as Array<{
-          category_id?: string;
-          product_ids?: string[];
-        }>)
-      : [];
+  const saved = Array.isArray(block?.data?.tabs)
+    ? (block.data.tabs as FeaturedTabDraft[])
+    : [];
+  const tabs: FeaturedTabDraft[] = [
+    ...(!saved.some((tab) => tab.category_id === "novidades")
+      ? [
+          {
+            category_id: "novidades",
+            mode: "recent" as const,
+            hidden: block?.data?.show_novelties_tab !== true,
+            product_ids: [],
+          },
+        ]
+      : []),
+    ...saved,
+    ...categories
+      .filter(
+        (category) => !saved.some((tab) => tab.category_id === category.id),
+      )
+      .map((category) => ({
+        category_id: category.id,
+        mode: "recent" as const,
+        product_ids: [],
+      })),
+  ];
   const configuredTabs = tabs.flatMap((tab) => {
-    const category = categories.find((item) => item.id === tab.category_id);
-    const products = Array.isArray(tab.product_ids)
-      ? tab.product_ids.flatMap((id) =>
-          availableProducts.filter((product) => product.id === id),
-        )
-      : [];
-    if (!category || products.length === 0) return [];
+    const isNovelties = tab.category_id === "novidades";
+    const category = isNovelties
+      ? { id: "novidades", name: "Novidades", slug: "novidades" }
+      : categories.find((item) => item.id === tab.category_id);
+    if (!category || tab.hidden) return [];
+    const candidates = isNovelties
+      ? availableProducts
+      : (categoryProducts[category.id] ?? []);
+    const products =
+      tab.mode === "recent"
+        ? candidates.slice(0, 5)
+        : tab.product_ids.flatMap((id) => {
+            const product =
+              selectedProducts.find(
+                (item) =>
+                  item.id === id &&
+                  (isNovelties || item.category_id === category.id),
+              ) ?? candidates.find((item) => item.id === id);
+            if (!product) return [];
+            const coverId = tab.covers?.find(
+              (cover) => cover.product_id === id,
+            )?.cover_library_id;
+            return [
+              {
+                ...product,
+                highlight_url:
+                  (coverId && coverUrls[coverId]) || product.highlight_url,
+              },
+            ];
+          });
+    if (!products.length) return [];
     return [
       {
         slug: category.slug,
@@ -101,19 +147,7 @@ function buildPreviewNovelties(
       },
     ];
   });
-  const data = (block?.data as Record<string, unknown>) ?? {};
-  if (data.show_novelties_tab !== true) return configuredTabs;
-  const newest = availableProducts.slice(0, 5);
-  if (newest.length === 0) return configuredTabs;
-  return [
-    {
-      slug: "novidades",
-      name: "Novidades",
-      spotlight: newest[0]!,
-      grid: newest.slice(1),
-    },
-    ...configuredTabs,
-  ];
+  return configuredTabs;
 }
 
 export function buildPagePreviewModel(
@@ -127,6 +161,9 @@ export function buildPagePreviewModel(
   categories: PublicCategory[] = [],
   availableProducts: ProductCardItem[] = [],
   warrantyFloat?: PublicWarrantyFloatConfig,
+  categoryProducts: Record<string, ProductCardItem[]> = {},
+  coverUrls: Record<string, string> = {},
+  selectedProducts: Array<ProductCardItem & { category_id: string }> = [],
 ): PagePreviewModel | null {
   const resolvedBlocks = blocks.map((b) => {
     const pb = publicBlocks?.find((p) => p.section_id === b.section_id);
@@ -145,6 +182,9 @@ export function buildPagePreviewModel(
             resolvedBlocks.find((block) => block.section_id === "featured"),
             categories,
             availableProducts,
+            categoryProducts,
+            coverUrls,
+            selectedProducts,
           ),
           warrantyFloat,
         },

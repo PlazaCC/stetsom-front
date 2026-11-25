@@ -23,6 +23,7 @@ export type Tab =
   | "certificates"
   | "image-packs"
   | "category-icons"
+  | "featured-product-covers"
   | "others"
   | "unsorted-pdfs"
   | "cds-and-photos"
@@ -125,6 +126,15 @@ export const UPLOAD_CONFIG: Record<Tab, TabConfig> = {
     searchPlaceholder: "Buscar por nome",
     libraryType: LibraryAssetType.IMAGE_PACK,
   },
+  "featured-product-covers": {
+    accept: IMAGE_ACCEPT,
+    uploadLabel: "Enviar minicapas",
+    emptyLabel: "Nenhuma minicapa encontrada.",
+    emptyDescription: "Envie imagens para os destaques da Home.",
+    emptyIcon: Images,
+    searchPlaceholder: "Buscar por nome",
+    libraryType: LibraryAssetType.FEATURED_PRODUCT_COVER,
+  },
   "category-icons": {
     accept: "image/svg+xml,image/png,image/webp",
     uploadLabel: "Enviar ícones",
@@ -199,6 +209,10 @@ export const UPLOAD_CATEGORY_OPTIONS: Array<{
   { value: LibraryAssetType.CERTIFICATE, label: "Certificados" },
   { value: LibraryAssetType.IMAGE_PACK, label: "Packs de imagem" },
   { value: LibraryAssetType.CATEGORY_ICON, label: "Ícones de categoria" },
+  {
+    value: LibraryAssetType.FEATURED_PRODUCT_COVER,
+    label: "Minicapas de destaque",
+  },
   { value: LibraryAssetType.CDS_AND_PHOTOS, label: "CDs e fotos" },
   {
     value: LibraryAssetType.WALLPAPERS_AND_BANNERS,
@@ -215,6 +229,7 @@ export function allowedUploadCategories(file: File): LibraryAssetType[] {
     return [
       LibraryAssetType.IMAGE,
       LibraryAssetType.CATEGORY_ICON,
+      LibraryAssetType.FEATURED_PRODUCT_COVER,
       LibraryAssetType.CDS_AND_PHOTOS,
       LibraryAssetType.WALLPAPERS_AND_BANNERS,
       LibraryAssetType.LOGOS,
@@ -309,6 +324,7 @@ export function assetAltText(asset: LibraryAsset): string {
 export function isImageAsset(asset: LibraryAsset): boolean {
   return (
     asset.type === LibraryAssetType.IMAGE ||
-    asset.type === LibraryAssetType.CATEGORY_ICON
+    asset.type === LibraryAssetType.CATEGORY_ICON ||
+    asset.type === LibraryAssetType.FEATURED_PRODUCT_COVER
   );
 }

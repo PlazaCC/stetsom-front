@@ -2,6 +2,9 @@
 
 import {
   getGetApiPagesSlugCmsQueryKey,
+  getApiProducts,
+  getApiLibraryId,
+  getApiProductsAdminId,
   patchApiPagesSlugBlocksBlockId,
   postApiPagesSlugBlocks,
   useGetApiBanners,
@@ -29,7 +32,7 @@ import { ProductEditorLayout } from "@/app/admin/_components/product-wizard/prod
 import { useAdminToast } from "@/hooks/use-admin-toast";
 import { clearLocalDraft } from "@/hooks/use-local-draft";
 import { getApiErrorMessage } from "@/lib/api/error-utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import {
   ExternalLink,
   Info,
@@ -46,6 +49,7 @@ import { useCallback, useState } from "react";
 import { BannersSummaryPanel } from "./banners-summary-panel";
 import { WarrantyFloatPanel } from "./warranty-float-panel";
 import { buildPagePreviewModel } from "./build-page-preview-model";
+import type { FeaturedTabDraft } from "./featured-tabs-validation";
 import { hasInvalidFeaturedTabs } from "./featured-tabs-validation";
 import { PAGE_LABELS, PAGE_PUBLIC_HREFS } from "./page-constants";
 import type { PageEditorTarget } from "./page-editor-target";
@@ -338,6 +342,116 @@ export function PageEditorContent({
         )
       : blocks;
 
+  const featuredDraft = effectiveBlocks.find(
+    (block) => block.section_id === "featured",
+  )?.data;
+  const featuredTabs = Array.isArray(featuredDraft?.tabs)
+    ? (featuredDraft.tabs as FeaturedTabDraft[])
+    : [];
+  const coverIds = [
+    ...new Set(
+      featuredTabs.flatMap((tab) =>
+        (tab.covers ?? []).map((cover) => cover.cover_library_id),
+      ),
+    ),
+  ];
+  const coverResults = useQueries({
+    queries: coverIds.map((id) => ({
+      queryKey: ["/api/library", id],
+      queryFn: ({ signal }: { signal: AbortSignal }) =>
+        getApiLibraryId(id, signal),
+      enabled: isHome,
+    })),
+  });
+  const coverUrls = Object.fromEntries(
+    coverIds.flatMap((id, index) => {
+      const asset = coverResults[index]?.data;
+      return asset && asset.type === "FEATURED_PRODUCT_COVER"
+        ? [
+            [
+              id,
+              asset.versions.find(
+                (version) => version.version_id === asset.current_version_id,
+              )?.file_url ?? "",
+            ],
+          ]
+        : [];
+    }),
+  );
+  const categoryResults = useQueries({
+    queries: previewCategories.map((category) => ({
+      queryKey: ["featured-preview-products", category.id, category.slug.pt],
+      queryFn: ({ signal }: { signal: AbortSignal }) =>
+        getApiProducts(
+          {
+            category: category.slug.pt,
+            locale: "pt",
+            sort: "newest",
+            page: 1,
+            pageSize: 5,
+          },
+          signal,
+        ),
+      enabled: isHome,
+    })),
+  });
+  const categoryProducts = Object.fromEntries(
+    previewCategories.map((category, index) => [
+      category.id,
+      categoryResults[index]?.data?.items ?? [],
+    ]),
+  );
+
+  const selectedIds = [
+    ...new Set(featuredTabs.flatMap((tab) => tab.product_ids ?? [])),
+  ];
+  const selectedResults = useQueries({
+    queries: selectedIds.map((id) => ({
+      queryKey: ["featured-product", id],
+      queryFn: ({ signal }: { signal: AbortSignal }) =>
+        getApiProductsAdminId(id, signal),
+      enabled: isHome,
+    })),
+  });
+  const selectedProducts = selectedResults.flatMap((result) => {
+    const product = result.data?.product;
+    const category = result.data?.category;
+    if (
+      !product ||
+      !category ||
+      product.status !== "PUBLISHED" ||
+      product.is_discontinued ||
+      (product.available_locales.length > 0 &&
+        !product.available_locales.includes("pt"))
+    )
+      return [];
+    const primary = [...product.images].sort((a, b) => a.order - b.order)[0];
+    return [
+      {
+        id: product.id,
+        sku: product.sku ?? null,
+        slug: product.slug,
+        name: product.name.pt,
+        category: category.name.pt,
+        category_id: product.category_id,
+        line: null,
+        available_locales: product.available_locales,
+        thumbnail_url: primary?.image_url ?? null,
+        highlight_url:
+          product.images.find((image) => image.is_highlight)?.image_url ??
+          primary?.image_url ??
+          null,
+        status: product.status,
+        is_discontinued: product.is_discontinued,
+        is_export: product.is_export,
+        highlighted_specs: product.highlight_attributes.map((attribute_id) => ({
+          attribute_id,
+        })),
+        variants: product.variants.map((variant) => variant.name),
+      },
+    ];
+  });
+
   const previewModel = buildPagePreviewModel(
     pageId,
     effectiveBlocks,
@@ -374,6 +488,9 @@ export function PageEditorContent({
           visible_on: adminConfig.warranty_float.visible_on,
         }
       : undefined,
+    categoryProducts,
+    coverUrls,
+    selectedProducts,
   );
 
   return (

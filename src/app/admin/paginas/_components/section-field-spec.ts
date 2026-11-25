@@ -155,11 +155,11 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
       type: "TEXT",
       label: "Destaques",
       description:
-        "Configure as categorias e os produtos publicados exibidos na Home.",
+        "Configure as abas e os produtos publicados exibidos na Home.",
       icon: List,
       kind: "editable",
       fields: [
-        { kind: "featured-tabs", key: "tabs", label: "Abas por categoria" },
+        { kind: "featured-tabs", key: "tabs", label: "Abas de destaque" },
       ],
     },
     {

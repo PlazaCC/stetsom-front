@@ -23,6 +23,7 @@ export function AssetTypeIcon({
     case LibraryAssetType.MODEL3D:
       return <Box className={className} />;
     case LibraryAssetType.IMAGE:
+    case LibraryAssetType.FEATURED_PRODUCT_COVER:
       return <ImageIcon className={className} />;
     case LibraryAssetType.CATEGORY_ICON:
       return <Shapes className={className} />;

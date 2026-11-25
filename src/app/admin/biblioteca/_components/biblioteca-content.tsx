@@ -48,6 +48,7 @@ const TYPE_LABELS: Record<LibraryAssetType, string> = {
   CERTIFICATE: "Certificados",
   IMAGE_PACK: "Packs de imagem",
   CATEGORY_ICON: "Ícones de categoria",
+  FEATURED_PRODUCT_COVER: "Minicapas de destaque",
   CDS_AND_PHOTOS: "CDs e fotos",
   WALLPAPERS_AND_BANNERS: "Wallpapers e banners",
   LOGOS: "Logos",

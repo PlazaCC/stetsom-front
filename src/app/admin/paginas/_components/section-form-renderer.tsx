@@ -33,12 +33,16 @@ import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-p
 import type { LibraryUrlOnlyRef } from "@/app/admin/_components/crud/library-asset-ref";
 import { SortableList } from "@/app/admin/_components/crud/sortable-list";
 import { Plus, Trash2 } from "lucide-react";
-import { useGetApiCategoriesAdmin } from "@/api/stetsom";
+import { getApiProductsAdminId, useGetApiCategoriesAdmin } from "@/api/stetsom";
+import { useQueries } from "@tanstack/react-query";
 import { useGetApiProducts } from "@/api/stetsom";
 import type { FieldSpec } from "./section-field-spec";
 import { PageIconField } from "./page-icon-field";
 import { FaqItemsField } from "./faq-items-field";
-import { featuredTabError } from "./featured-tabs-validation";
+import {
+  featuredTabError,
+  type FeaturedTabDraft,
+} from "./featured-tabs-validation";
 import { AdminFieldError } from "@/app/admin/_components/crud/admin-field-error";
 import { cn } from "@/lib/utils";
 import { decodeHtmlEntities } from "@/lib/utils/plain-text";
@@ -255,39 +259,70 @@ function FeaturedTabsField({
   showErrors?: boolean;
 }) {
   const categoriesQuery = useGetApiCategoriesAdmin();
-  const tabs = Array.isArray(data[field.key])
-    ? (data[field.key] as Array<{ category_id: string; product_ids: string[] }>)
+  const savedTabs = Array.isArray(data[field.key])
+    ? (data[field.key] as FeaturedTabDraft[])
     : [];
   const categories = (categoriesQuery.data ?? []).map((category) => ({
     id: category.id,
     name: category.name.pt,
     slug: category.slug.pt,
   }));
-  const showNoveltiesTab = data.show_novelties_tab === true;
+  const tabs: FeaturedTabDraft[] = [
+    ...(!savedTabs.some((tab) => tab.category_id === "novidades")
+      ? [
+          {
+            category_id: "novidades",
+            mode: "recent" as const,
+            hidden: data.show_novelties_tab !== true,
+            product_ids: [],
+          },
+        ]
+      : []),
+    ...savedTabs.filter(
+      (tab) =>
+        tab.category_id === "novidades" ||
+        categories.some((category) => category.id === tab.category_id),
+    ),
+    ...categories
+      .filter(
+        (category) => !savedTabs.some((tab) => tab.category_id === category.id),
+      )
+      .map((category) => ({
+        category_id: category.id,
+        mode: "recent" as const,
+        product_ids: [],
+      })),
+  ];
 
-  function setTabs(next: typeof tabs) {
+  function setTabs(next: FeaturedTabDraft[]) {
     onChange({ ...data, [field.key]: next });
+  }
+
+  if (categoriesQuery.isPending) {
+    return (
+      <p className="text-sm text-muted-foreground">Carregando categorias...</p>
+    );
+  }
+  if (categoriesQuery.isError) {
+    return (
+      <div className="space-y-2 text-sm">
+        <p className="text-destructive">
+          Não foi possível carregar as categorias.
+        </p>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => void categoriesQuery.refetch()}
+        >
+          Tentar novamente
+        </Button>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
       <AdminLabel>{field.label}</AdminLabel>
-      <label className="flex items-start gap-3 rounded-md border border-border bg-muted/30 p-3">
-        <Checkbox
-          checked={showNoveltiesTab}
-          onCheckedChange={(checked) =>
-            onChange({ ...data, show_novelties_tab: checked === true })
-          }
-        />
-        <span className="space-y-0.5">
-          <span className="block text-sm font-medium">
-            Habilitar aba de Novidades
-          </span>
-          <span className="block text-xs text-muted-foreground">
-            Exibe automaticamente os 5 produtos publicados mais recentes.
-          </span>
-        </span>
-      </label>
       <SortableList
         items={tabs.map((tab, index) => ({
           tab,
@@ -297,17 +332,14 @@ function FeaturedTabsField({
         getId={(item) => item.key}
         onReorder={(items) => setTabs(items.map((item) => item.tab))}
         renderItem={({ tab, index }, handle) => {
-          const category = categories.find(
-            (item) => item.id === tab.category_id,
-          );
+          const category =
+            tab.category_id === "novidades"
+              ? { id: "novidades", name: "Novidades", slug: "" }
+              : categories.find((item) => item.id === tab.category_id);
           return (
             <FeaturedTabEditor
               tab={tab}
               category={category}
-              categories={categories}
-              selectedCategoryIds={
-                new Set(tabs.map((item) => item.category_id))
-              }
               handle={handle}
               error={showErrors ? featuredTabError(tab) : null}
               onChange={(next) =>
@@ -317,20 +349,10 @@ function FeaturedTabsField({
                   ),
                 )
               }
-              onRemove={() =>
-                setTabs(tabs.filter((_, itemIndex) => itemIndex !== index))
-              }
             />
           );
         }}
       />
-      <button
-        type="button"
-        onClick={() => setTabs([...tabs, { category_id: "", product_ids: [] }])}
-        className="flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-      >
-        <Plus className="size-4" /> Adicionar aba
-      </button>
     </div>
   );
 }
@@ -338,21 +360,15 @@ function FeaturedTabsField({
 function FeaturedTabEditor({
   tab,
   category,
-  categories,
-  selectedCategoryIds,
   handle,
   error,
   onChange,
-  onRemove,
 }: {
-  tab: { category_id: string; product_ids: string[] };
+  tab: FeaturedTabDraft;
   category?: { id: string; name: string; slug: string };
-  categories: Array<{ id: string; name: string; slug: string }>;
-  selectedCategoryIds: Set<string>;
   handle: React.ReactNode;
   error?: string | null;
-  onChange: (tab: { category_id: string; product_ids: string[] }) => void;
-  onRemove: () => void;
+  onChange: (tab: FeaturedTabDraft) => void;
 }) {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -360,26 +376,46 @@ function FeaturedTabEditor({
     const timer = setTimeout(() => setDebouncedSearch(search.trim()), 350);
     return () => clearTimeout(timer);
   }, [search]);
-  const productsQuery = useGetApiProducts({
-    category: category?.slug,
-    q: debouncedSearch || undefined,
-    page: 1,
-    pageSize: 100,
-    locale: "pt",
-  });
-  const selectedProductsQuery = useGetApiProducts({
-    category: category?.slug,
-    page: 1,
-    pageSize: 100,
-    locale: "pt",
+  const productsQuery = useGetApiProducts(
+    {
+      category: category?.slug || undefined,
+      q: debouncedSearch || undefined,
+      page: 1,
+      pageSize: 100,
+      locale: "pt",
+    },
+    {
+      query: {
+        enabled:
+          !!category && !tab.hidden && (tab.mode ?? "manual") === "manual",
+      },
+    },
+  );
+  const selectedResults = useQueries({
+    queries: tab.product_ids.map((id) => ({
+      queryKey: ["featured-product", id],
+      queryFn: ({ signal }: { signal: AbortSignal }) =>
+        getApiProductsAdminId(id, signal),
+      enabled: !tab.hidden && (tab.mode ?? "manual") === "manual",
+    })),
   });
   const products = (productsQuery.data?.items ?? []).filter(
     (product) => !tab.product_ids.includes(product.id),
   );
-  const selectedProducts = selectedProductsQuery.data?.items ?? [];
-  const selected = tab.product_ids
-    .map((id) => selectedProducts.find((product) => product.id === id))
-    .filter(Boolean);
+  const selected = tab.product_ids.map((id, index) => {
+    const result = selectedResults[index];
+    const product = result?.data?.product;
+    return {
+      id,
+      name:
+        product?.name.pt ??
+        (result?.isError ? "Produto indisponível" : "Carregando produto..."),
+      thumbnail_url:
+        product?.images.find((image) => image.order === 0)?.image_url ??
+        product?.images[0]?.image_url ??
+        null,
+    };
+  });
   const hasReachedProductLimit = tab.product_ids.length >= 5;
 
   return (
@@ -393,42 +429,37 @@ function FeaturedTabEditor({
         <div className="[&_button]:cursor-grab [&_button]:active:cursor-grabbing">
           {handle}
         </div>
+        <span className="flex-1 font-medium">
+          {category?.name ?? "Categoria indisponível"}
+        </span>
+        <label className="flex items-center gap-2 text-sm">
+          <Checkbox
+            checked={!tab.hidden}
+            onCheckedChange={(checked) =>
+              onChange({ ...tab, hidden: checked !== true })
+            }
+          />{" "}
+          Exibir
+        </label>
+      </div>
+      {!tab.hidden && (
         <Select
-          value={tab.category_id}
-          onValueChange={(categoryId) =>
-            onChange({ category_id: categoryId ?? "", product_ids: [] })
-          }
+          value={tab.mode ?? "manual"}
+          onValueChange={(mode) => {
+            if (mode === "recent" || mode === "manual")
+              onChange({ ...tab, mode });
+          }}
         >
-          <SelectTrigger className="flex-1">
-            <SelectValue placeholder="Selecione a categoria">
-              {category?.name ?? "Selecione a categoria"}
-            </SelectValue>
+          <SelectTrigger className="w-full">
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {categories.map((item) => (
-              <SelectItem
-                key={item.id}
-                value={item.id}
-                disabled={
-                  selectedCategoryIds.has(item.id) &&
-                  item.id !== tab.category_id
-                }
-              >
-                {item.name}
-              </SelectItem>
-            ))}
+            <SelectItem value="recent">Últimos produtos</SelectItem>
+            <SelectItem value="manual">Selecionar produtos</SelectItem>
           </SelectContent>
         </Select>
-        <button
-          type="button"
-          onClick={onRemove}
-          aria-label="Remover aba"
-          className="text-muted-foreground hover:text-destructive"
-        >
-          <Trash2 className="size-4" />
-        </button>
-      </div>
-      {category && (
+      )}
+      {!tab.hidden && (tab.mode ?? "manual") === "manual" && category && (
         <Combobox
           items={products}
           value={null}
@@ -453,7 +484,7 @@ function FeaturedTabEditor({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                Você atingiu o limite de 5 produtos nesta categoria.
+                Você atingiu o limite de 5 produtos nesta aba.
               </TooltipContent>
             </Tooltip>
           ) : (
@@ -501,46 +532,87 @@ function FeaturedTabEditor({
           </ComboboxContent>
         </Combobox>
       )}
-      <SortableList
-        items={selected.map((product) => product!).filter(Boolean)}
-        getId={(product) => product.id}
-        onReorder={(items) =>
-          onChange({ ...tab, product_ids: items.map((product) => product.id) })
-        }
-        renderItem={(product, handle) => (
-          <div className="flex items-center gap-2 rounded border border-border bg-card px-2 py-1.5 text-sm">
-            {handle}
-            <span className="size-11 shrink-0 overflow-hidden rounded bg-muted">
-              {product.thumbnail_url && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={product.thumbnail_url}
-                  alt=""
-                  className="size-full object-cover"
-                />
-              )}
-            </span>
-            <span className="truncate">{product.name}</span>
-            <button
-              type="button"
-              className="ml-auto text-muted-foreground hover:text-destructive"
-              onClick={() =>
-                onChange({
-                  ...tab,
-                  product_ids: tab.product_ids.filter(
-                    (id) => id !== product.id,
-                  ),
-                })
-              }
-            >
-              <Trash2 className="size-4" />
-            </button>
-          </div>
-        )}
-      />
-      <p className="text-xs text-muted-foreground">
-        Selecione de 1 a 5 produtos. A ordem define destaque e grade.
-      </p>
+      {!tab.hidden && (tab.mode ?? "manual") === "manual" && (
+        <SortableList
+          items={selected.map((product) => product!).filter(Boolean)}
+          getId={(product) => product.id}
+          onReorder={(items) =>
+            onChange({
+              ...tab,
+              product_ids: items.map((product) => product.id),
+            })
+          }
+          renderItem={(product, handle) => (
+            <div className="rounded border border-border bg-card p-2 text-sm">
+              <div className="flex items-center gap-2">
+                {handle}
+                <span className="size-11 shrink-0 overflow-hidden rounded bg-muted">
+                  {product.thumbnail_url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={product.thumbnail_url}
+                      alt=""
+                      className="size-full object-cover"
+                    />
+                  )}
+                </span>
+                <span className="truncate">{product.name}</span>
+                <button
+                  type="button"
+                  className="ml-auto text-muted-foreground hover:text-destructive"
+                  onClick={() =>
+                    onChange({
+                      ...tab,
+                      product_ids: tab.product_ids.filter(
+                        (id) => id !== product.id,
+                      ),
+                      covers: tab.covers?.filter(
+                        (cover) => cover.product_id !== product.id,
+                      ),
+                    })
+                  }
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
+              <LibraryAssetPicker
+                className="mt-2"
+                label="Minicapa do destaque (opcional)"
+                type="FEATURED_PRODUCT_COVER"
+                value={{
+                  library_id: tab.covers?.find(
+                    (cover) => cover.product_id === product.id,
+                  )?.cover_library_id,
+                }}
+                hint="Imagem quadrada (1:1), recomendada em 1200 × 1200 px; mantenha o conteúdo centralizado. Máximo: 10 MB."
+                onChange={(asset) =>
+                  onChange({
+                    ...tab,
+                    covers: [
+                      ...(tab.covers ?? []).filter(
+                        (cover) => cover.product_id !== product.id,
+                      ),
+                      ...(asset
+                        ? [
+                            {
+                              product_id: product.id,
+                              cover_library_id: asset.library_id,
+                            },
+                          ]
+                        : []),
+                    ],
+                  })
+                }
+              />
+            </div>
+          )}
+        />
+      )}
+      {!tab.hidden && (tab.mode ?? "manual") === "manual" && (
+        <p className="text-xs text-muted-foreground">
+          Selecione de 1 a 5 produtos. A ordem define destaque e grade.
+        </p>
+      )}
       <AdminFieldError message={error} />
     </div>
   );
