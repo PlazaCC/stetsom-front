@@ -21,12 +21,159 @@ import type {
 import type {
   ApiErrorPayload,
   PageBlock,
+  PageIconOption,
   PagePayload,
   PatchApiPagesSlugBlocksBlockIdBody,
   PostApiPagesSlugBlocksBody,
 } from "../../model";
 
 import { orvalClient } from "../../orval-client";
+
+/**
+ * @summary List available page icons
+ */
+export const getApiPagesIconOptions = (signal?: AbortSignal) => {
+  return orvalClient<PageIconOption[]>({
+    url: `/api/pages/icon-options`,
+    method: "GET",
+    signal,
+  });
+};
+
+export const getGetApiPagesIconOptionsQueryKey = () => {
+  return [`/api/pages/icon-options`] as const;
+};
+
+export const getGetApiPagesIconOptionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiPagesIconOptions>>,
+  TError = ApiErrorPayload,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof getApiPagesIconOptions>>,
+      TError,
+      TData
+    >
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetApiPagesIconOptionsQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiPagesIconOptions>>
+  > = ({ signal }) => getApiPagesIconOptions(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiPagesIconOptions>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiPagesIconOptionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiPagesIconOptions>>
+>;
+export type GetApiPagesIconOptionsQueryError = ApiErrorPayload;
+
+export function useGetApiPagesIconOptions<
+  TData = Awaited<ReturnType<typeof getApiPagesIconOptions>>,
+  TError = ApiErrorPayload,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPagesIconOptions>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPagesIconOptions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPagesIconOptions>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiPagesIconOptions<
+  TData = Awaited<ReturnType<typeof getApiPagesIconOptions>>,
+  TError = ApiErrorPayload,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPagesIconOptions>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPagesIconOptions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPagesIconOptions>>
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiPagesIconOptions<
+  TData = Awaited<ReturnType<typeof getApiPagesIconOptions>>,
+  TError = ApiErrorPayload,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPagesIconOptions>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List available page icons
+ */
+
+export function useGetApiPagesIconOptions<
+  TData = Awaited<ReturnType<typeof getApiPagesIconOptions>>,
+  TError = ApiErrorPayload,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPagesIconOptions>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiPagesIconOptionsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
 
 /**
  * @summary Get page

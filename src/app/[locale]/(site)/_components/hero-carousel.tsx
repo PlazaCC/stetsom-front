@@ -1,5 +1,7 @@
 "use client";
 
+import { RichText } from "@/components/editor/block-text/rich-text";
+
 import type { HeroBannerSlide } from "@/api/stetsom/model";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -122,14 +124,14 @@ export default function HeroCarousel({ slides }: Readonly<HeroCarouselProps>) {
                   )}
 
                   {slide.title && (
-                    <h2
+                    <RichText
+                      headingLevel={2}
+                      content={slide.title}
                       className={cn(
-                        "font-sans-condensed text-3xl leading-none font-black whitespace-pre-line text-white uppercase sm:text-display-sm",
+                        "font-sans-condensed text-3xl leading-none font-black text-white uppercase sm:text-display-sm",
                         slide.label ? "mt-2" : "mt-0",
                       )}
-                    >
-                      {slide.title}
-                    </h2>
+                    />
                   )}
                 </div>
               )}

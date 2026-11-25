@@ -38,9 +38,13 @@ type SocialFeedSection = {
 
 interface SocialFeedProps {
   section: SocialFeedSection;
+  rich?: boolean;
 }
 
-export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
+export function SocialFeed({
+  section,
+  rich = false,
+}: Readonly<SocialFeedProps>) {
   const locale = useLocale();
   const t = useTranslations("SocialFeed");
   const dateFormatter = new Intl.DateTimeFormat(locale, {
@@ -54,6 +58,7 @@ export function SocialFeed({ section }: Readonly<SocialFeedProps>) {
       <Container>
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <SectionLabel
+            rich={rich}
             label={section.handle}
             title={section.title}
             subtitle={section.subtitle}

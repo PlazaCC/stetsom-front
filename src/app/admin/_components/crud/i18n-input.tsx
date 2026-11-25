@@ -5,23 +5,16 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldLabel } from "@/components/ui/field";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { AdminFieldError } from "./admin-field-error";
-import { BrFlag, EsFlag, UsFlag } from "@/components/ui/flag-icons";
+import {
+  I18N_LOCALES,
+  I18nLocaleTabs,
+  type I18nLocale,
+} from "./i18n-locale-tabs";
 
-export type I18nLocale = "pt" | "en" | "es";
+export type { I18nLocale } from "./i18n-locale-tabs";
 type Locale = I18nLocale;
-
-const LOCALES: {
-  id: Locale;
-  Flag: React.ComponentType;
-  required?: boolean;
-  label: string;
-}[] = [
-  { id: "pt", Flag: BrFlag, label: "PT", required: true },
-  { id: "en", Flag: UsFlag, label: "EN" },
-  { id: "es", Flag: EsFlag, label: "ES" },
-];
 
 interface I18nInputProps {
   label?: string;
@@ -93,37 +86,13 @@ export function I18nInput({
               {required && <span className="text-destructive">*</span>}
             </FieldLabel>
           )}
-          <TabsList className="ml-auto gap-0.5">
-            {LOCALES.map((loc) => {
-              const filled = loc.id === "pt" ? !!current.pt : !!current[loc.id];
-              const isInvalid = Boolean(invalid?.[loc.id] || errors?.[loc.id]);
-              return (
-                <TabsTrigger
-                  key={loc.id}
-                  value={loc.id}
-                  className="flex cursor-pointer gap-1.5"
-                >
-                  <loc.Flag />
-                  <span className="text-xs leading-2 font-semibold uppercase">
-                    {loc.label}
-                  </span>
-                  {isInvalid ? (
-                    <span className="size-1.5 rounded-full bg-destructive" />
-                  ) : (
-                    !filled && (
-                      <span className="size-1.5 rounded-full bg-primary" />
-                    )
-                  )}
-                </TabsTrigger>
-              );
-            })}
-          </TabsList>
+          <I18nLocaleTabs value={current} invalid={invalid} errors={errors} />
         </div>
 
         {/* Only the active panel is mounted (keepMounted={false}). Keeping
             inactive fields mounted previously produced a full-width off-screen
             box that expanded the document's horizontal scroll. */}
-        {LOCALES.map((loc) => {
+        {I18N_LOCALES.map((loc) => {
           const fieldValue =
             (loc.id === "pt" ? current.pt : current[loc.id]) ?? "";
           const isInvalid = Boolean(invalid?.[loc.id] || errors?.[loc.id]);

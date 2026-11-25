@@ -4,7 +4,7 @@ import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { SectionLabel } from "@/components/ui/section-label";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { cn } from "@/lib/utils";
-import { decodeHtmlEntities } from "@/lib/utils/plain-text";
+import { RichText } from "@/components/editor/block-text/rich-text";
 import { ArrowUpRight, Mail, MessagesSquare, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import QRCode from "react-qr-code";
@@ -86,12 +86,14 @@ export function SupportContact({
         <div className="flex flex-col lg:flex-row lg:items-start lg:gap-16">
           <div className="flex shrink-0 flex-col gap-6 lg:w-90">
             <SectionLabel
+              rich
               label={contact.label ?? ""}
               title={contact.title ?? ""}
             />
-            <p className="text-base whitespace-pre-line text-text-subtle">
-              {decodeHtmlEntities(contact.description)}
-            </p>
+            <RichText
+              className="text-base text-text-subtle"
+              content={contact.description}
+            />
 
             {infoItems.length > 0 && (
               <div className="flex flex-col gap-3">

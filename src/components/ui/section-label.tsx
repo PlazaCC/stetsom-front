@@ -1,3 +1,4 @@
+import { RichText } from "@/components/editor/block-text/rich-text";
 import { cn } from "@/lib/utils";
 import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 
@@ -7,6 +8,7 @@ interface SectionLabelProps {
   subtitle?: string;
   dark?: boolean;
   className?: string;
+  rich?: boolean;
 }
 
 export function SectionLabel({
@@ -15,6 +17,7 @@ export function SectionLabel({
   subtitle,
   dark = false,
   className,
+  rich = false,
 }: SectionLabelProps) {
   return (
     <div className={cn("flex flex-col gap-1", className)}>
@@ -38,19 +41,28 @@ export function SectionLabel({
             dark ? "text-white" : "text-brand-dark",
           )}
         >
-          {title}
+          {rich ? <RichText content={title} /> : title}
         </div>
       )}
-      {subtitle && (
-        <p
-          className={cn(
-            "mt-1 text-base font-medium whitespace-pre-line",
-            dark ? "text-text-subtle-dark" : "text-text-subtle",
-          )}
-        >
-          {decodeHtmlEntities(subtitle)}
-        </p>
-      )}
+      {subtitle &&
+        (rich ? (
+          <RichText
+            content={subtitle}
+            className={cn(
+              "mt-1 text-base font-medium",
+              dark ? "text-text-subtle-dark" : "text-text-subtle",
+            )}
+          />
+        ) : (
+          <p
+            className={cn(
+              "mt-1 text-base font-medium whitespace-pre-line",
+              dark ? "text-text-subtle-dark" : "text-text-subtle",
+            )}
+          >
+            {decodeHtmlEntities(subtitle)}
+          </p>
+        ))}
     </div>
   );
 }

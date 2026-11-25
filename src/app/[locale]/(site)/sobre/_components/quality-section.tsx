@@ -1,13 +1,7 @@
+import { RichText } from "@/components/editor/block-text/rich-text";
 import { Container } from "@/components/ui/container";
-import { decodeHtmlEntities } from "@/lib/utils/plain-text";
-import { Rocket, ShieldCheck, Zap } from "lucide-react";
+import { PageIcon } from "@/components/page-icons/page-icon";
 import { QualityVideoHero } from "./quality-video-hero";
-
-const ICONS = {
-  zap: Zap,
-  "shield-check": ShieldCheck,
-  rocket: Rocket,
-} as const;
 
 type AboutValue = {
   id?: string;
@@ -52,9 +46,10 @@ export function QualitySection({
         <section className="bg-white py-20">
           <Container>
             {section.description && (
-              <p className="mx-auto max-w-3xl text-center text-lg text-balance whitespace-pre-line text-text-subtle lg:text-xl">
-                {decodeHtmlEntities(section.description)}
-              </p>
+              <RichText
+                className="mx-auto max-w-3xl text-center text-lg text-balance text-text-subtle lg:text-xl"
+                content={section.description}
+              />
             )}
 
             {values.length > 0 && (
@@ -72,19 +67,24 @@ export function QualitySection({
 }
 
 function ValueCard({ value }: Readonly<{ value: AboutValue }>) {
-  const Icon = ICONS[value.icon as keyof typeof ICONS] ?? Zap;
-
   return (
     <div className="flex flex-col items-center border-b-4 border-transparent bg-off-white px-6 py-10 text-center transition-colors duration-150 hover:border-brand">
       <div className="flex size-12 items-center justify-center rounded-md bg-white">
-        <Icon className="size-6 text-brand" aria-hidden="true" />
+        <PageIcon
+          name={value.icon}
+          fallback="zap"
+          className="size-6 text-brand"
+        />
       </div>
-      <h3 className="mt-5 font-sans-condensed text-2xl font-black text-brand-dark uppercase">
-        {value.title}
-      </h3>
-      <p className="mt-2 text-base whitespace-pre-line text-text-subtle">
-        {decodeHtmlEntities(value.description)}
-      </p>
+      <RichText
+        headingLevel={3}
+        className="mt-5 font-sans-condensed text-2xl font-black text-brand-dark uppercase"
+        content={value.title}
+      />
+      <RichText
+        className="mt-2 text-base text-text-subtle"
+        content={value.description}
+      />
     </div>
   );
 }

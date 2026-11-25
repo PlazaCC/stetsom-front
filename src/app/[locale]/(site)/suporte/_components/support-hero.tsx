@@ -1,5 +1,5 @@
 import { Container } from "@/components/ui/container";
-import { decodeHtmlEntities } from "@/lib/utils/plain-text";
+import { RichText } from "@/components/editor/block-text/rich-text";
 
 type SupportHeroData = {
   image?: string;
@@ -30,18 +30,23 @@ export function SupportHero({ hero }: Readonly<SupportHeroProps>) {
               </span>
             </div>
           )}
-          <h1 className="font-sans-condensed text-5xl font-black text-white uppercase md:min-w-127.5 md:text-[90px] md:leading-18.5">
-            {hero.title.split("\n").map((line) => (
-              <span key={line} className="block">
-                {line}
-              </span>
-            ))}
-          </h1>
+          <RichText
+            headingLevel={1}
+            content={hero.title}
+            className="font-sans-condensed text-5xl font-black text-white uppercase md:min-w-127.5 md:text-[90px] md:leading-18.5"
+          />
+          {hero.subtitle && (
+            <RichText
+              content={hero.subtitle}
+              className="mt-2 text-base text-text-subtle-dark"
+            />
+          )}
         </div>
         {hero.description && (
-          <p className="max-w-120 text-base whitespace-pre-line text-text-subtle-dark">
-            {decodeHtmlEntities(hero.description)}
-          </p>
+          <RichText
+            className="max-w-120 text-base text-text-subtle-dark"
+            content={hero.description}
+          />
         )}
       </Container>
       <span className="pointer-events-none absolute -right-18 -bottom-2 font-sans-condensed text-display-2xl leading-none font-black text-watermark-text uppercase opacity-[0.08] select-none md:-right-22 md:-bottom-16 md:text-[263px]">

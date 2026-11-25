@@ -1,5 +1,7 @@
 "use client";
 
+import { RichText } from "@/components/editor/block-text/rich-text";
+
 import { Container } from "@/components/ui/container";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -13,11 +15,17 @@ import {
 
 interface TimelineCarouselProps {
   events: TimelineCarouselEvent[];
+  label?: string;
+  title?: string;
+  description?: string;
   initialActiveIndex?: number;
 }
 
 export function TimelineCarousel({
   events,
+  label,
+  title,
+  description,
   initialActiveIndex = 0,
 }: TimelineCarouselProps) {
   const t = useTranslations("About");
@@ -162,19 +170,22 @@ export function TimelineCarousel({
               <div className="flex items-center gap-2">
                 <span className="inline-block h-px w-6 bg-brand" />
                 <span className="font-sans-condensed text-base font-normal text-brand uppercase">
-                  {t("timelineLabel")}
+                  {label}
                 </span>
               </div>
-              <h2 className="font-sans-condensed text-display-sm leading-none font-black text-white">
-                {t("timelineTitle")}
-              </h2>
+              <RichText
+                headingLevel={2}
+                className="font-sans-condensed text-display-sm leading-none font-black text-white"
+                content={title}
+              />
             </div>
 
             {/* Right: description + nav */}
             <div className="flex flex-col gap-4 md:items-end lg:justify-center">
-              <p className="max-w-83.75 text-sm leading-normal text-text-subtle-dark">
-                {t("timelineDescription")}
-              </p>
+              <RichText
+                className="max-w-83.75 text-sm leading-normal text-text-subtle-dark"
+                content={description}
+              />
 
               <div className="flex items-center gap-3">
                 <button

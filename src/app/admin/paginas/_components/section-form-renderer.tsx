@@ -2,6 +2,7 @@
 
 import type { I18nString, ProductCardItem } from "@/api/stetsom/model";
 import { AdminLabel } from "@/app/admin/_components/crud/admin-input";
+import { RichI18nInput } from "@/components/editor/block-text/rich-i18n-input";
 import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -35,10 +36,12 @@ import { Plus, Trash2 } from "lucide-react";
 import { useGetApiCategoriesAdmin } from "@/api/stetsom";
 import { useGetApiProducts } from "@/api/stetsom";
 import type { FieldSpec } from "./section-field-spec";
+import { PageIconField } from "./page-icon-field";
 import { FaqItemsField } from "./faq-items-field";
 import { featuredTabError } from "./featured-tabs-validation";
 import { AdminFieldError } from "@/app/admin/_components/crud/admin-field-error";
 import { cn } from "@/lib/utils";
+import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 import { invalidLocales, VIDEO_LINK_ERROR } from "./section-field-validation";
 import { FieldError } from "@/components/ui/field";
 import { useEffect, useState } from "react";
@@ -66,7 +69,7 @@ function newId(): string {
   return `id-${Math.random().toString(36).slice(2)}`;
 }
 
-/** Stable drag id for a list item — uses its persisted id or a positional one. */
+/** Initial drag id; ListField keeps it attached to the item during edits. */
 function itemId(item: Item, index: number): string {
   const id = item.id;
   return typeof id === "string" && id ? id : `idx-${index}`;
@@ -93,15 +96,24 @@ function Field({ field, data, onChange, showErrors }: FieldProps) {
       const invalidLabels = Object.keys(invalid).map((l) => l.toUpperCase());
       return (
         <div className="space-y-1.5">
-          <I18nInput
-            label={field.label}
-            multiline={field.multiline}
-            type={field.inputType}
-            placeholder={field.placeholder}
-            invalid={invalid}
-            value={asI18n(data[field.key])}
-            onChange={(v) => onChange({ ...data, [field.key]: v })}
-          />
+          {field.rich ? (
+            <RichI18nInput
+              variant={field.rich}
+              label={field.label}
+              value={asI18n(data[field.key])}
+              onChange={(v) => onChange({ ...data, [field.key]: v })}
+            />
+          ) : (
+            <I18nInput
+              label={field.label}
+              multiline={field.multiline}
+              type={field.inputType}
+              placeholder={field.placeholder}
+              invalid={invalid}
+              value={asI18n(data[field.key])}
+              onChange={(v) => onChange({ ...data, [field.key]: v })}
+            />
+          )}
           {invalidLabels.length > 0 && (
             <FieldError>
               {invalidLabels.join(", ")}: {VIDEO_LINK_ERROR}
@@ -122,6 +134,15 @@ function Field({ field, data, onChange, showErrors }: FieldProps) {
             onChange={(e) => onChange({ ...data, [field.key]: e.target.value })}
           />
         </div>
+      );
+
+    case "icon":
+      return (
+        <PageIconField
+          label={field.label}
+          value={asStr(data[field.key])}
+          onChange={(value) => onChange({ ...data, [field.key]: value })}
+        />
       );
 
     case "select":
@@ -600,6 +621,7 @@ function ListField({
   const items: Item[] = Array.isArray(data[field.key])
     ? (data[field.key] as Item[])
     : [];
+  const [itemKeys, setItemKeys] = useState(() => items.map(itemId));
 
   function set(next: Item[]) {
     onChange({ ...data, [field.key]: next });
@@ -614,12 +636,12 @@ function ListField({
           : raw && typeof raw === "object"
             ? asI18n(raw).pt
             : "";
-      if (text) return text;
+      if (text) return decodeHtmlEntities(text.replace(/<[^>]*>/g, " ")).trim();
     }
     return `Item ${index + 1}`;
   }
 
-  const indexed = items.map((item, i) => ({ item, i, key: itemId(item, i) }));
+  const indexed = items.map((item, i) => ({ item, i, key: itemKeys[i] }));
 
   return (
     <div className="space-y-2">
@@ -627,7 +649,10 @@ function ListField({
       <SortableList
         items={indexed}
         getId={(it) => it.key}
-        onReorder={(next) => set(next.map((it) => it.item))}
+        onReorder={(next) => {
+          setItemKeys(next.map((it) => it.key));
+          set(next.map((it) => it.item));
+        }}
         renderItem={({ item, i }, handle) => (
           <div className="space-y-3 rounded-md border border-border bg-card p-3">
             <div className="flex items-center gap-2">
@@ -638,7 +663,10 @@ function ListField({
               <button
                 type="button"
                 aria-label="Remover"
-                onClick={() => set(items.filter((_, j) => j !== i))}
+                onClick={() => {
+                  setItemKeys((keys) => keys.filter((_, j) => j !== i));
+                  set(items.filter((_, j) => j !== i));
+                }}
                 className="text-muted-foreground hover:text-destructive"
               >
                 <Trash2 className="size-4" />
@@ -660,7 +688,11 @@ function ListField({
       />
       <button
         type="button"
-        onClick={() => set([...items, { id: newId() }])}
+        onClick={() => {
+          const id = newId();
+          setItemKeys((keys) => [...keys, id]);
+          set([...items, { id }]);
+        }}
         className="flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
       >
         <Plus className="size-4" />

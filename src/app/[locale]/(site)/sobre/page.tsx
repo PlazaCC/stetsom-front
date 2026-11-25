@@ -10,7 +10,7 @@ import {
   type AboutTimelineBlockData,
   type AboutValuesBlockData,
 } from "@/lib/page-blocks";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocale } from "next-intl/server";
 import { MilestonesMarquee } from "../_components/milestones-marquee";
 import { AboutHeroSection } from "./_components/about-hero-section";
 import { AboutPageSections } from "./_components/about-page-sections";
@@ -19,19 +19,16 @@ export default async function SobrePage() {
   const locale = await getLocale();
   const apiLocale = toApiLocale(locale);
 
-  const [pageRes, t] = await Promise.all([
-    getApiPagesSlug("about", { locale: apiLocale }).catch(
-      () =>
-        ({
-          id: "",
-          slug: "about",
-          title: "",
-          blocks: [],
-          updated_at: "",
-        }) satisfies GetApiPagesSlug200,
-    ),
-    getTranslations("About"),
-  ]);
+  const pageRes = await getApiPagesSlug("about", { locale: apiLocale }).catch(
+    () =>
+      ({
+        id: "",
+        slug: "about",
+        title: "",
+        blocks: [],
+        updated_at: "",
+      }) satisfies GetApiPagesSlug200,
+  );
 
   const blocks = pageRes.blocks ?? [];
   const heroData = getPageBlock<AboutHeroBlockData>(blocks, "hero");
@@ -50,7 +47,7 @@ export default async function SobrePage() {
             imageAlt: heroData.imageAlt,
             label: heroData.label,
             title: heroData.title,
-            description: t("heroDescription"),
+            description: heroData.description,
             foundedYear: heroData.foundedYear,
             stats: heroData.stats,
           }}

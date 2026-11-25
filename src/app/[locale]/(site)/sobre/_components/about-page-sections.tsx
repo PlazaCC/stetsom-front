@@ -56,6 +56,9 @@ export function AboutPageSections({
       {!timeline.hidden && timeline.events?.length ? (
         <EditableSection target="section:timeline" editable={editable}>
           <TimelineCarousel
+            label={timeline.label}
+            title={timeline.title}
+            description={timeline.description}
             events={timeline.events.map((event) => ({
               year: String(event.year),
               title: event.title,
@@ -69,13 +72,18 @@ export function AboutPageSections({
 
       {!values.hidden && values.bases?.length ? (
         <EditableSection target="section:values:bases" editable={editable}>
-          <OurFoundations bases={values.bases} />
+          <OurFoundations
+            bases={values.bases}
+            label={values.basesLabel}
+            title={values.basesTitle}
+          />
         </EditableSection>
       ) : null}
 
       {!social.hidden && social.handle && (
         <EditableSection target="section:social" editable={editable}>
           <SocialFeed
+            rich
             section={{
               handle: social.handle,
               title: social.title ?? "",

@@ -1,5 +1,7 @@
 "use client";
 
+import { RichText } from "@/components/editor/block-text/rich-text";
+
 import { Play, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -106,9 +108,11 @@ export function QualityVideoHero({
       <div className="absolute inset-0 bg-black/60" />
 
       <div className="relative z-10 flex w-full flex-col items-center px-4 text-center">
-        <h2 className="mt-3 font-sans-condensed text-5xl leading-none font-black text-balance whitespace-pre-line text-white uppercase lg:text-display-2xl">
-          {title}
-        </h2>
+        <RichText
+          headingLevel={2}
+          className="mt-3 font-sans-condensed text-5xl leading-none font-black text-balance text-white uppercase lg:text-display-2xl"
+          content={title}
+        />
 
         {playerSource && (
           <button
@@ -125,7 +129,10 @@ export function QualityVideoHero({
       {playerOpen && playerSource && (
         <VideoModal
           source={playerSource}
-          title={title.split("\n").join(" ")}
+          title={title
+            .replace(/<[^>]*>/g, " ")
+            .split("\n")
+            .join(" ")}
           closeLabel={t("closeVideo")}
           onClose={closePlayer}
         />

@@ -55,6 +55,7 @@ export type FaqBlockData = {
 // ── About page ─────────────────────────────────────────────────────────────
 
 export type AboutHeroBlockData = {
+  description?: string;
   hidden?: boolean;
   url?: string;
   imageAlt?: string;
@@ -110,6 +111,8 @@ export function resolveQualityPlayerVideo(
 }
 
 export type AboutValuesBlockData = {
+  basesLabel?: string;
+  basesTitle?: string;
   hidden?: boolean;
   items?: Array<{
     id?: string;
@@ -126,6 +129,9 @@ export type AboutValuesBlockData = {
 };
 
 export type AboutTimelineBlockData = {
+  label?: string;
+  title?: string;
+  description?: string;
   hidden?: boolean;
   events?: Array<{
     year: number | string;
@@ -173,6 +179,7 @@ export type SupportHeroBlockData = {
 export type SupportCardsBlockData = {
   hidden?: boolean;
   items?: Array<{
+    icon?: string;
     title: string;
     description: string;
     action?:

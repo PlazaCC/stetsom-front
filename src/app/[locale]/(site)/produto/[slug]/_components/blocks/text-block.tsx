@@ -1,5 +1,6 @@
 "use client";
 
+import { RichText } from "@/components/editor/block-text/rich-text";
 import { cn } from "@/lib/utils";
 import { BLOCK_TEXT_PROSE, isRichTextContent } from "@/lib/utils/block-text";
 import { resolveTextAlignClass, toTextBlockData } from "@/lib/utils/product";
@@ -31,20 +32,14 @@ export function TextBlock({
           {data.title}
         </h2>
       )}
-      {data.content && isRichTextContent(data.content) ? (
-        // Rich text from the block editor, sanitized by the API on save and
-        // again in the public payload. Plain text from before stays below.
-        <div
+      {data.content && (
+        <RichText
+          content={data.content}
           className={cn(
             "blockText__paragraph mt-3 text-sm text-text-subtle md:text-base",
-            BLOCK_TEXT_PROSE,
+            isRichTextContent(data.content) && BLOCK_TEXT_PROSE,
           )}
-          dangerouslySetInnerHTML={{ __html: data.content }}
         />
-      ) : (
-        <p className="blockText__paragraph mt-3 text-sm whitespace-pre-line text-text-subtle md:text-base">
-          {data.content}
-        </p>
       )}
     </BlockArticle>
   );

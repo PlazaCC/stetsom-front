@@ -1,4 +1,6 @@
 import {
+  addMark,
+  removeMark,
   defineBaseCommands,
   defineBaseKeymap,
   defineCommands,
@@ -47,6 +49,40 @@ function defineSemibold() {
   );
 }
 
+export const RICH_COLORS = [
+  { value: "brand", label: "Vermelho Stetsom" },
+  { value: "dark", label: "Escuro Stetsom" },
+  { value: "white", label: "Branco" },
+  { value: "subtle", label: "Cinza escuro" },
+  { value: "subtle-dark", label: "Cinza claro" },
+] as const;
+
+function defineBrandColor() {
+  return union(
+    defineMarkSpec({
+      name: "brandColor",
+      attrs: { color: { validate: "string" } },
+      parseDOM: [
+        {
+          tag: "span[class]",
+          getAttrs: (node) => {
+            const color = RICH_COLORS.find(({ value }) =>
+              (node as HTMLElement).classList.contains(`rich-color-${value}`),
+            );
+            return color ? { color: color.value } : false;
+          },
+        },
+      ],
+      toDOM: (mark) => ["span", { class: `rich-color-${mark.attrs.color}` }, 0],
+    }),
+    defineCommands({
+      setBrandColor: (color: string) =>
+        addMark({ type: "brandColor", attrs: { color } }),
+      removeBrandColor: () => removeMark({ type: "brandColor" }),
+    }),
+  );
+}
+
 /**
  * Rich text for the product TEXT block: paragraphs and h2-h5 headings, bold,
  * semi-bold, italic, underline, lists and links.
@@ -63,6 +99,7 @@ export function defineBlockTextExtension(placeholder: string) {
     defineHardBreak(),
     defineBold(),
     defineSemibold(),
+    defineBrandColor(),
     defineItalic(),
     defineUnderline(),
     defineLink(),

@@ -27,6 +27,7 @@ export function FaqSection({ items, section }: Readonly<FaqSectionProps>) {
         <div className="grid grid-cols-1 gap-20 lg:grid-cols-2">
           <div>
             <SectionLabel
+              rich
               label={section.label}
               title={section.title}
               subtitle={section.subtitle}

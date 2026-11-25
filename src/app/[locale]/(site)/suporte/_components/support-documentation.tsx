@@ -1,3 +1,4 @@
+import { RichText } from "@/components/editor/block-text/rich-text";
 import { Container } from "@/components/ui/container";
 import { PublicEmptyState } from "@/components/ui/public-empty-state";
 import { SectionLabel } from "@/components/ui/section-label";
@@ -82,11 +83,15 @@ export function SupportDocumentation({
     >
       <Container>
         <SectionLabel
+          rich
           label={header?.label || t("label")}
           title={header?.title || t("title")}
         />
         {header?.description && (
-          <p className="mt-2 text-sm text-text-subtle">{header.description}</p>
+          <RichText
+            className="mt-2 text-sm text-text-subtle"
+            content={header.description}
+          />
         )}
         <div className="mt-8 flex flex-col gap-6 lg:flex-row lg:gap-8">
           {/* Categorias */}

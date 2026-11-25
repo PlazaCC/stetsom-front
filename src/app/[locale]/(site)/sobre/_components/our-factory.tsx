@@ -1,7 +1,7 @@
+import { RichText } from "@/components/editor/block-text/rich-text";
 import { Container } from "@/components/ui/container";
 import { CTAButton } from "@/components/ui/cta-button";
 import { SectionLabel } from "@/components/ui/section-label";
-import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 import Image from "next/image";
 
 const FACTORY_IMAGE = "/figma-assets/raw/fill_OJJ5Q1_b3596ec5.png";
@@ -39,13 +39,15 @@ export function OurFactory({ jobsCta }: OurFactoryProps) {
             {jobsCta && (
               <>
                 <SectionLabel
+                  rich
                   label={jobsCta.label ?? ""}
                   title={jobsCta.title ?? ""}
                   dark
                 />
-                <p className="mt-6 mb-8 text-base whitespace-pre-line text-text-subtle-dark">
-                  {decodeHtmlEntities(jobsCta.description)}
-                </p>
+                <RichText
+                  className="mt-6 mb-8 text-base text-text-subtle-dark"
+                  content={jobsCta.description}
+                />
                 <CTAButton
                   href={jobsCta.buttonHref ?? "#"}
                   label={jobsCta.buttonText ?? ""}

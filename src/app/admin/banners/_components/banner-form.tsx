@@ -1,5 +1,7 @@
 "use client";
 
+import { RichText } from "@/components/editor/block-text/rich-text";
+
 import {
   AdminFormSection,
   AdminFormSectionContent,
@@ -11,7 +13,7 @@ import { AdminProductPicker } from "@/app/admin/_components/crud/admin-product-p
 import { AdminReorderField } from "@/app/admin/_components/crud/admin-reorder-field";
 import { AdminFieldError } from "@/app/admin/_components/crud/admin-field-error";
 import { EditorFooter } from "@/app/admin/_components/crud/editor-footer";
-import { I18nInput } from "@/app/admin/_components/crud/i18n-input";
+import { RichI18nInput } from "@/components/editor/block-text/rich-i18n-input";
 import { StatusBadge } from "@/app/admin/_components/crud/status-badge";
 import { Input } from "@/components/ui/input";
 import { LibraryAssetPicker } from "@/app/admin/_components/crud/library-asset-picker";
@@ -128,14 +130,13 @@ function BannerTextOverlay({ draft }: { draft: BannerFormState }) {
         </p>
       )}
       {title && (
-        <p
+        <RichText
+          content={title}
           className={cn(
-            "font-sans-condensed text-base leading-none font-black whitespace-pre-line text-white uppercase",
+            "font-sans-condensed text-base leading-none font-black text-white uppercase",
             label && "mt-1",
           )}
-        >
-          {title}
-        </p>
+        />
       )}
     </div>
   );
@@ -330,7 +331,8 @@ export function BannerForm({
                 </div>
               )}
 
-              <I18nInput
+              <RichI18nInput
+                variant="title"
                 label="Título do banner"
                 value={draft.title}
                 onChange={(title) => onDraftChange("title", title)}

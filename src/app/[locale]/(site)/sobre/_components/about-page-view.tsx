@@ -10,7 +10,7 @@ import {
   type AboutTimelineBlockData,
   type AboutValuesBlockData,
 } from "@/lib/page-blocks";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { EditableSection } from "../../_components/editable-section";
 import { MilestonesMarquee } from "../../_components/milestones-marquee";
 import { AboutPageSections } from "./about-page-sections";
@@ -30,7 +30,6 @@ export function AboutPageView({
   data,
   editable = false,
 }: Readonly<AboutPageViewProps>) {
-  const t = useTranslations("About");
   const locale = useLocale();
   const { blocks } = data;
 
@@ -51,7 +50,7 @@ export function AboutPageView({
             imageAlt: heroData.imageAlt,
             label: heroData.label,
             title: heroData.title,
-            description: t("heroDescription"),
+            description: heroData.description,
             foundedYear: heroData.foundedYear,
             stats: heroData.stats,
           }}

@@ -1,4 +1,5 @@
 import type { GetApiPartnerLocations200Item } from "@/api/stetsom/model";
+import { RichText } from "@/components/editor/block-text/rich-text";
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
 import { ServiceCentersExplorer } from "./service-centers-explorer";
@@ -22,12 +23,14 @@ export function SupportServiceCenters({
     >
       <Container>
         <SectionLabel
+          rich
           label={header?.label || t("label")}
           title={header?.title || t("title")}
         />
-        <p className="mt-2 text-sm text-text-subtle">
-          {header?.description || t("description")}
-        </p>
+        <RichText
+          className="mt-2 text-sm text-text-subtle"
+          content={header?.description || t("description")}
+        />
         <ServiceCentersExplorer serviceCenters={serviceCenters ?? []} />
       </Container>
     </section>

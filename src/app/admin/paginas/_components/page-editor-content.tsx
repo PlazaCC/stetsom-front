@@ -139,6 +139,7 @@ export function PageEditorContent({
     string,
     unknown
   > | null>(null);
+  const [sectionFormVersion, setSectionFormVersion] = useState(0);
   const [device, setDevice] = useState<Device>("mobile");
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [showSectionErrors, setShowSectionErrors] = useState(false);
@@ -276,10 +277,21 @@ export function PageEditorContent({
       blockId: string;
       data: Record<string, unknown>;
     }) => patchApiPagesSlugBlocksBlockId(pageId, blockId, { data }),
-    onSuccess: (_, { blockId }) => {
+    onSuccess: (savedBlock, { blockId }) => {
       clearLocalDraft(sectionDraftKey(pageId, blockId));
+      queryClient.setQueryData<typeof page>(
+        getGetApiPagesSlugCmsQueryKey(pageId),
+        (current) =>
+          current && {
+            ...current,
+            blocks: current.blocks.map((block) =>
+              block.block_id === blockId ? savedBlock : block,
+            ),
+          },
+      );
       invalidate();
       setSectionDraft(null);
+      setSectionFormVersion((version) => version + 1);
       setShowSectionErrors(false);
     },
     onError: (error) =>
@@ -492,7 +504,10 @@ export function PageEditorContent({
                       className="mb-4 rounded-md border"
                       savedAt={localDraft.draft.savedAt}
                       changedSince={localDraft.changedSince}
-                      onRestore={localDraft.restore}
+                      onRestore={() => {
+                        localDraft.restore();
+                        setSectionFormVersion((version) => version + 1);
+                      }}
                       onDiscard={localDraft.discard}
                     />
                   )}
@@ -541,6 +556,7 @@ export function PageEditorContent({
                           </div>
                         )}
                       <SectionFormRenderer
+                        key={`${pageId}:${selectedBlock.block_id}:${selection}:${sectionFormVersion}`}
                         fields={selectedFields}
                         data={sectionDraft ?? selectedBlock?.data ?? {}}
                         onChange={setSectionDraft}

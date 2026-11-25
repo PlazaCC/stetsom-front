@@ -1,3 +1,4 @@
+import { RichText } from "@/components/editor/block-text/rich-text";
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
 import Image from "next/image";
@@ -10,7 +11,7 @@ interface AboutHeroSectionProps {
     imageAlt?: string;
     label?: string;
     title?: string;
-    description: string;
+    description?: string;
     foundedYear?: string;
     stats?: Array<{
       value: string;
@@ -42,31 +43,15 @@ export function AboutHeroSection({
           <div className="grid lg:grid-cols-[1fr_428px] lg:items-end lg:gap-10">
             <div>
               <SectionLabel label={section.label ?? ""} />
-              <h1 className="mt-1 font-sans-condensed text-5xl font-black text-white uppercase md:leading-18.5 lg:text-display-2xl">
-                {(section.title ?? "")
-                  .split("\n")
-                  .map((line: string, lineIdx: number, allLines: string[]) => {
-                    if (lineIdx === allLines.length - 1) {
-                      const words = line.split(" ");
-                      const lastWord = words.pop();
-                      return (
-                        <span key={line} className="block">
-                          {words.length > 0 ? `${words.join(" ")} ` : ""}
-                          <span className="text-brand">{lastWord}</span>
-                        </span>
-                      );
-                    }
-
-                    return (
-                      <span key={line} className="block">
-                        {line}
-                      </span>
-                    );
-                  })}
-              </h1>
-              <p className="mt-4 max-w-125 text-base text-text-subtle-dark">
-                {section.description}
-              </p>
+              <RichText
+                headingLevel={1}
+                content={section.title}
+                className="mt-1 font-sans-condensed text-5xl font-black text-white uppercase md:leading-18.5 lg:text-display-2xl"
+              />
+              <RichText
+                className="mt-4 max-w-125 text-base text-text-subtle-dark"
+                content={section.description}
+              />
             </div>
 
             {section.stats?.length ? (

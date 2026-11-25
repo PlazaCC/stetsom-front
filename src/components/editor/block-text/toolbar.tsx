@@ -22,7 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { BlockTextExtension } from "./extension";
+import { RICH_COLORS, type BlockTextExtension } from "./extension";
+import type { BlockTextEditorVariant } from "./block-text-editor";
 
 type Item = { isActive: boolean; canExec: boolean; command: () => void };
 
@@ -137,7 +138,11 @@ function ToolbarButton({
 
 const Divider = () => <span className="mx-0.5 h-5 w-px shrink-0 bg-border" />;
 
-export function BlockTextToolbar() {
+export function BlockTextToolbar({
+  variant,
+}: {
+  variant: BlockTextEditorVariant;
+}) {
   const items = useEditorDerivedValue(getItems);
 
   return (
@@ -149,32 +154,36 @@ export function BlockTextToolbar() {
         <Redo2 className="size-4" />
       </ToolbarButton>
       <Divider />
-      <ToolbarButton item={items.paragraph} label="Parágrafo">
-        <Pilcrow className="size-4" />
-      </ToolbarButton>
-      <Select
-        value={items.title.value}
-        onValueChange={(value) => {
-          if (value) items.title.command(value);
-        }}
-      >
-        <SelectTrigger
-          size="sm"
-          className="h-8 w-32 justify-between gap-1 px-2 text-xs font-medium"
-          aria-label="Escolher nível do título"
-        >
-          <SelectValue placeholder="Título" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="paragraph">Parágrafo</SelectItem>
-          {TITLE_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <Divider />
+      {variant === "full" && (
+        <>
+          <ToolbarButton item={items.paragraph} label="Parágrafo">
+            <Pilcrow className="size-4" />
+          </ToolbarButton>
+          <Select
+            value={items.title.value}
+            onValueChange={(value) => {
+              if (value) items.title.command(value);
+            }}
+          >
+            <SelectTrigger
+              size="sm"
+              className="h-8 w-32 justify-between gap-1 px-2 text-xs font-medium"
+              aria-label="Escolher nível do título"
+            >
+              <SelectValue placeholder="Título" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="paragraph">Parágrafo</SelectItem>
+              {TITLE_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Divider />
+        </>
+      )}
       <ToolbarButton item={items.bold} label="Negrito (Ctrl+B)">
         <Bold className="size-4" />
       </ToolbarButton>
@@ -187,21 +196,67 @@ export function BlockTextToolbar() {
       <ToolbarButton item={items.underline} label="Sublinhado">
         <UnderlineIcon className="size-4" />
       </ToolbarButton>
-      <Divider />
-      <ToolbarButton item={items.bulletList} label="Lista">
-        <List className="size-4" />
-      </ToolbarButton>
-      <ToolbarButton item={items.orderedList} label="Lista numerada">
-        <ListOrdered className="size-4" />
-      </ToolbarButton>
-      <Divider />
-      <ToolbarButton item={items.link} label="Link">
-        {items.link.isActive ? (
-          <Unlink className="size-4" />
-        ) : (
-          <LinkIcon className="size-4" />
-        )}
-      </ToolbarButton>
+      {variant !== "title" && (
+        <>
+          <Divider />
+          <ToolbarButton item={items.bulletList} label="Lista">
+            <List className="size-4" />
+          </ToolbarButton>
+          <ToolbarButton item={items.orderedList} label="Lista numerada">
+            <ListOrdered className="size-4" />
+          </ToolbarButton>
+        </>
+      )}
+      <ColorPicker />
+      {variant !== "title" && (
+        <>
+          <Divider />
+          <ToolbarButton item={items.link} label="Link">
+            {items.link.isActive ? (
+              <Unlink className="size-4" />
+            ) : (
+              <LinkIcon className="size-4" />
+            )}
+          </ToolbarButton>
+        </>
+      )}
     </div>
+  );
+}
+
+function getColor(editor: Editor<BlockTextExtension>) {
+  return {
+    color:
+      RICH_COLORS.find(({ value }) =>
+        editor.marks.brandColor.isActive({ color: value }),
+      )?.value ?? "default",
+    setColor: (value: string) =>
+      value === "default"
+        ? editor.commands.removeBrandColor()
+        : editor.commands.setBrandColor(value),
+  };
+}
+
+function ColorPicker() {
+  const { color, setColor } = useEditorDerivedValue(getColor);
+  return (
+    <Select
+      value={color}
+      onValueChange={(value) => {
+        if (value) setColor(value);
+      }}
+    >
+      <SelectTrigger size="sm" className="w-36" aria-label="Cor do texto">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="default">Cor padrão</SelectItem>
+        {RICH_COLORS.map(({ value, label }) => (
+          <SelectItem key={value} value={value}>
+            <span className={`rich-color-${value}`}>●</span> {label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

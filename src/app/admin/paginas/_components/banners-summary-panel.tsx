@@ -1,5 +1,6 @@
 "use client";
 
+import { decodeHtmlEntities } from "@/lib/utils/plain-text";
 import type { Banner } from "@/api/stetsom/model";
 import { AdminEmptyState } from "@/app/admin/_components/crud/admin-empty-state";
 import { AlertCircle, ArrowRight, ImageIcon, Plus } from "lucide-react";
@@ -140,7 +141,12 @@ export function BannersSummaryPanel({
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium text-foreground">
-                {banner.title?.pt || banner.name || "Sem título"}
+                {decodeHtmlEntities(
+                  (banner.title?.pt || banner.name || "Sem título").replace(
+                    /<[^>]*>/g,
+                    " ",
+                  ),
+                ).trim()}
               </p>
               <div className="flex items-center gap-2 text-2xs text-muted-foreground">
                 <BannerStatusBadge status={banner.status} />

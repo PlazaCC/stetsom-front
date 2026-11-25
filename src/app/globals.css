@@ -437,3 +437,20 @@
     transition: none;
   }
 }
+
+/* The rich-text editor only persists these semantic palette classes. */
+.rich-color-brand {
+  color: var(--color-brand);
+}
+.rich-color-dark {
+  color: var(--color-brand-dark);
+}
+.rich-color-white {
+  color: white;
+}
+.rich-color-subtle {
+  color: var(--color-text-subtle);
+}
+.rich-color-subtle-dark {
+  color: var(--color-text-subtle-dark);
+}

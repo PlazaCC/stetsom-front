@@ -32,6 +32,7 @@ export function OurHistory({ section }: Readonly<OurHistoryProps>) {
         </div>
         <div className="px-5 py-10 sm:px-8 sm:py-12">
           <SectionLabel
+            rich
             label={section.label}
             title={section.title}
             subtitle={section.subtitle}
@@ -62,6 +63,7 @@ export function OurHistory({ section }: Readonly<OurHistoryProps>) {
           <div className="flex flex-1 items-center py-16 pr-42.5 pl-22.75">
             <div className="w-full max-w-122">
               <SectionLabel
+                rich
                 label={section.label}
                 title={section.title}
                 subtitle={section.subtitle}

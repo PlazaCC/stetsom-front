@@ -64,6 +64,7 @@ export function HomePageView({
       {!socialData.hidden && socialData.handle && (
         <EditableSection target="section:social" editable={editable}>
           <SocialFeed
+            rich
             section={{
               handle: socialData.handle,
               title: socialData.title ?? "",

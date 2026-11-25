@@ -1,10 +1,10 @@
 "use client";
 
+import { RichText } from "@/components/editor/block-text/rich-text";
+
 import { Container } from "@/components/ui/container";
 import { SectionLabel } from "@/components/ui/section-label";
 import { cn } from "@/lib/utils";
-import { decodeHtmlEntities } from "@/lib/utils/plain-text";
-import { useTranslations } from "next-intl";
 
 type AboutBase = {
   id?: string;
@@ -15,22 +15,21 @@ type AboutBase = {
 
 interface OurFoundationsProps {
   bases: AboutBase[];
+  label?: string;
+  title?: string;
   className?: string;
 }
 
 export function OurFoundations({
   bases,
+  label,
+  title,
   className,
 }: Readonly<OurFoundationsProps>) {
-  const t = useTranslations("About");
-
   return (
     <section className={cn("bg-off-white py-12", className)}>
       <Container>
-        <SectionLabel
-          label={t("foundationsLabel")}
-          title={t("foundationsTitle")}
-        />
+        <SectionLabel rich label={label ?? ""} title={title} />
 
         <div className="mt-12 grid grid-cols-1 gap-10 md:grid-cols-3">
           {bases.map((base, index) => (
@@ -43,12 +42,15 @@ export function OurFoundations({
                   0{base.id ?? index + 1}
                 </span>
               </div>
-              <h3 className="mb-1 font-sans-condensed text-3xl font-bold text-balance text-brand-dark uppercase">
-                {base.title}
-              </h3>
-              <p className="text-base whitespace-pre-line text-text-subtle">
-                {decodeHtmlEntities(base.description)}
-              </p>
+              <RichText
+                headingLevel={3}
+                className="mb-1 font-sans-condensed text-3xl font-bold text-balance text-brand-dark uppercase"
+                content={base.title}
+              />
+              <RichText
+                className="text-base text-text-subtle"
+                content={base.description}
+              />
             </div>
           ))}
         </div>

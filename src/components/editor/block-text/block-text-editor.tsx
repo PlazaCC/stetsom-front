@@ -8,11 +8,13 @@ import "prosekit/basic/style.css";
 
 import { createEditor } from "prosekit/core";
 import { ProseKit, useDocChange, useEditor } from "prosekit/react";
-import { useMemo } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 import { BLOCK_TEXT_PROSE, toBlockTextHtml } from "@/lib/utils/block-text";
 import { defineBlockTextExtension, type BlockTextExtension } from "./extension";
 import { BlockTextToolbar } from "./toolbar";
+
+export type BlockTextEditorVariant = "full" | "title" | "description";
 
 interface BlockTextEditorProps {
   /** Initial content: HTML, or legacy plain text (converted on load). */
@@ -21,6 +23,8 @@ interface BlockTextEditorProps {
   onChange: (html: string) => void;
   placeholder?: string;
   className?: string;
+  label?: string;
+  variant?: BlockTextEditorVariant;
 }
 
 function ChangeBridge({ onChange }: { onChange: (html: string) => void }) {
@@ -40,11 +44,27 @@ function ChangeBridge({ onChange }: { onChange: (html: string) => void }) {
  * `initialContent`, so remount it (`key`) to load another block. Legacy plain
  * text is shown as paragraphs but only saved as HTML once it is edited.
  */
-export function BlockTextEditor({
+const subscribe = () => () => {};
+const clientSnapshot = () => true;
+const serverSnapshot = () => false;
+
+export function BlockTextEditor(props: BlockTextEditorProps) {
+  const mounted = useSyncExternalStore(
+    subscribe,
+    clientSnapshot,
+    serverSnapshot,
+  );
+  if (!mounted) return null;
+  return <MountedBlockTextEditor {...props} />;
+}
+
+function MountedBlockTextEditor({
   initialContent,
   onChange,
   placeholder = "Conteúdo do bloco…",
   className,
+  label,
+  variant = "full",
 }: BlockTextEditorProps) {
   const editor = useMemo(
     () =>
@@ -65,9 +85,12 @@ export function BlockTextEditor({
           className,
         )}
       >
-        <BlockTextToolbar />
+        <BlockTextToolbar variant={variant} />
         <div
           ref={editor.mount}
+          role="textbox"
+          aria-label={label}
+          aria-multiline="true"
           className={cn(
             "ProseMirror min-h-40 px-4 py-3 text-sm outline-none",
             BLOCK_TEXT_PROSE,

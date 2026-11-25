@@ -19,6 +19,7 @@ export type FieldSpec = (
       key: string;
       label: string;
       multiline?: boolean;
+      rich?: "title" | "description";
       inputType?: "text" | "url";
       placeholder?: string;
       /** Per-locale check run in the form and before saving. */
@@ -31,6 +32,7 @@ export type FieldSpec = (
       inputType?: "text" | "url" | "tel" | "email";
       placeholder?: string;
     }
+  | { kind: "icon"; key: string; label: string }
   | {
       kind: "select";
       key: string;
@@ -118,12 +120,6 @@ export interface SectionNavEntry {
   def: SectionDef;
 }
 
-const ICON_OPTIONS = [
-  { value: "zap", label: "Raio (Potência)" },
-  { value: "shield-check", label: "Escudo (Qualidade)" },
-  { value: "rocket", label: "Foguete (Inovação)" },
-];
-
 const VIDEO_ACCEPT = "video/mp4,video/webm";
 
 const socialFields: FieldSpec[] = [
@@ -133,8 +129,14 @@ const socialFields: FieldSpec[] = [
     label: "Perfil (@handle)",
     placeholder: "@stetsombrasil",
   },
-  { kind: "i18n", key: "title", label: "Título" },
-  { kind: "i18n", key: "subtitle", label: "Subtítulo", multiline: true },
+  { kind: "i18n", key: "title", label: "Título", rich: "title" },
+  {
+    kind: "i18n",
+    key: "subtitle",
+    label: "Subtítulo",
+    multiline: true,
+    rich: "description",
+  },
   { kind: "i18n", key: "ctaLabel", label: "Texto do botão" },
   {
     kind: "text",
@@ -170,8 +172,14 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
         { kind: "asset", key: "image_url", label: "Imagem", variant: "image" },
         { kind: "text", key: "imageAlt", label: "Texto alternativo da imagem" },
         { kind: "i18n", key: "label", label: "Rótulo" },
-        { kind: "i18n", key: "title", label: "Título" },
-        { kind: "i18n", key: "subtitle", label: "Subtítulo", multiline: true },
+        { kind: "i18n", key: "title", label: "Título", rich: "title" },
+        {
+          kind: "i18n",
+          key: "subtitle",
+          label: "Subtítulo",
+          multiline: true,
+          rich: "description",
+        },
         { kind: "i18n", key: "ctaLabel", label: "Texto do botão" },
         {
           kind: "text",
@@ -195,12 +203,13 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
           label: "Cabeçalho da seção",
           fields: [
             { kind: "i18n", key: "label", label: "Rótulo" },
-            { kind: "i18n", key: "title", label: "Título" },
+            { kind: "i18n", key: "title", label: "Título", rich: "title" },
             {
               kind: "i18n",
               key: "subtitle",
               label: "Subtítulo",
               multiline: true,
+              rich: "description",
             },
             { kind: "i18n", key: "ctaLabel", label: "Texto do botão" },
             {
@@ -259,7 +268,19 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
         },
         { kind: "text", key: "imageAlt", label: "Texto alternativo" },
         { kind: "i18n", key: "label", label: "Rótulo" },
-        { kind: "i18n", key: "title", label: "Título", multiline: true },
+        {
+          kind: "i18n",
+          key: "title",
+          label: "Título",
+          multiline: true,
+          rich: "title",
+        },
+        {
+          kind: "i18n",
+          key: "description",
+          label: "Descrição",
+          rich: "description",
+        },
         {
           kind: "text",
           key: "foundedYear",
@@ -330,13 +351,20 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
           variant: "image",
         },
         { kind: "text", key: "imageAlt", label: "Texto alternativo" },
-        { kind: "i18n", key: "title", label: "Título", multiline: true },
+        {
+          kind: "i18n",
+          key: "title",
+          label: "Título",
+          multiline: true,
+          rich: "title",
+        },
         { kind: "i18n", key: "playLabel", label: "Texto do botão" },
         {
           kind: "i18n",
           key: "description",
           label: "Texto abaixo do vídeo",
           multiline: true,
+          rich: "description",
         },
       ],
     },
@@ -361,10 +389,17 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
           label: "Bases",
           description:
             "Fundamentos exibidos depois da linha do tempo (ex.: Excelência, Compromisso, Inovação contínua).",
-          fieldKeys: ["bases"],
+          fieldKeys: ["basesLabel", "basesTitle", "bases"],
         },
       ],
       fields: [
+        { kind: "i18n", key: "basesLabel", label: "Rótulo da seção" },
+        {
+          kind: "i18n",
+          key: "basesTitle",
+          label: "Título da seção",
+          rich: "title",
+        },
         {
           kind: "list",
           key: "items",
@@ -373,17 +408,17 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
           itemTitleKey: "title",
           itemFields: [
             {
-              kind: "select",
+              kind: "icon",
               key: "icon",
               label: "Ícone",
-              options: ICON_OPTIONS,
             },
-            { kind: "i18n", key: "title", label: "Título" },
+            { kind: "i18n", key: "title", label: "Título", rich: "title" },
             {
               kind: "i18n",
               key: "description",
               label: "Descrição",
               multiline: true,
+              rich: "description",
             },
           ],
         },
@@ -394,12 +429,13 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
           addLabel: "Adicionar base",
           itemTitleKey: "title",
           itemFields: [
-            { kind: "i18n", key: "title", label: "Título" },
+            { kind: "i18n", key: "title", label: "Título", rich: "title" },
             {
               kind: "i18n",
               key: "description",
               label: "Descrição",
               multiline: true,
+              rich: "description",
             },
           ],
         },
@@ -412,6 +448,14 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
       icon: LayoutTemplate,
       kind: "editable",
       fields: [
+        { kind: "i18n", key: "label", label: "Rótulo da seção" },
+        { kind: "i18n", key: "title", label: "Título da seção", rich: "title" },
+        {
+          kind: "i18n",
+          key: "description",
+          label: "Descrição da seção",
+          rich: "description",
+        },
         {
           kind: "list",
           key: "events",
@@ -425,13 +469,19 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
               label: "Ano",
               placeholder: "1989",
             },
-            { kind: "i18n", key: "title", label: "Título" },
-            { kind: "i18n", key: "shortTitle", label: "Título curto" },
+            { kind: "i18n", key: "title", label: "Título", rich: "title" },
+            {
+              kind: "i18n",
+              key: "shortTitle",
+              label: "Título curto",
+              rich: "title",
+            },
             {
               kind: "i18n",
               key: "description",
               label: "Descrição",
               multiline: true,
+              rich: "description",
             },
             {
               kind: "asset",
@@ -468,12 +518,13 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
         { kind: "asset", key: "image_url", label: "Imagem", variant: "image" },
         { kind: "text", key: "imageAlt", label: "Texto alternativo da imagem" },
         { kind: "i18n", key: "label", label: "Rótulo" },
-        { kind: "i18n", key: "title", label: "Título" },
+        { kind: "i18n", key: "title", label: "Título", rich: "title" },
         {
           kind: "i18n",
           key: "description",
           label: "Descrição",
           multiline: true,
+          rich: "description",
         },
         { kind: "i18n", key: "buttonLabel", label: "Texto do botão" },
         {
@@ -502,13 +553,19 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
         },
         { kind: "text", key: "badge", label: "Selo (badge)" },
         { kind: "i18n", key: "label", label: "Rótulo" },
-        { kind: "i18n", key: "title", label: "Título" },
-        { kind: "i18n", key: "subtitle", label: "Subtítulo" },
+        { kind: "i18n", key: "title", label: "Título", rich: "title" },
+        {
+          kind: "i18n",
+          key: "subtitle",
+          label: "Subtítulo",
+          rich: "description",
+        },
         {
           kind: "i18n",
           key: "description",
           label: "Descrição",
           multiline: true,
+          rich: "description",
         },
         {
           kind: "text",
@@ -531,12 +588,14 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
           addLabel: "Adicionar card",
           itemTitleKey: "title",
           itemFields: [
-            { kind: "i18n", key: "title", label: "Título" },
+            { kind: "icon", key: "icon", label: "Ícone" },
+            { kind: "i18n", key: "title", label: "Título", rich: "title" },
             {
               kind: "i18n",
               key: "description",
               label: "Descrição",
               multiline: true,
+              rich: "description",
             },
             {
               kind: "select",
@@ -569,12 +628,13 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
       kind: "editable",
       fields: [
         { kind: "i18n", key: "label", label: "Rótulo" },
-        { kind: "i18n", key: "title", label: "Título" },
+        { kind: "i18n", key: "title", label: "Título", rich: "title" },
         {
           kind: "i18n",
           key: "description",
           label: "Descrição",
           multiline: true,
+          rich: "description",
         },
         {
           kind: "text",
@@ -612,12 +672,13 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
           label: "Cabeçalho da seção",
           fields: [
             { kind: "i18n", key: "label", label: "Rótulo" },
-            { kind: "i18n", key: "title", label: "Título" },
+            { kind: "i18n", key: "title", label: "Título", rich: "title" },
             {
               kind: "i18n",
               key: "subtitle",
               label: "Subtítulo",
               multiline: true,
+              rich: "description",
             },
           ],
         },
@@ -642,12 +703,13 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
       kind: "editable",
       fields: [
         { kind: "i18n", key: "label", label: "Rótulo" },
-        { kind: "i18n", key: "title", label: "Título" },
+        { kind: "i18n", key: "title", label: "Título", rich: "title" },
         {
           kind: "i18n",
           key: "description",
           label: "Descrição",
           multiline: true,
+          rich: "description",
         },
       ],
     },
@@ -661,12 +723,13 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
         "A lista e o mapa são puxados automaticamente da base de parceiros. Aqui você define apenas o cabeçalho.",
       fields: [
         { kind: "i18n", key: "label", label: "Rótulo" },
-        { kind: "i18n", key: "title", label: "Título" },
+        { kind: "i18n", key: "title", label: "Título", rich: "title" },
         {
           kind: "i18n",
           key: "description",
           label: "Descrição",
           multiline: true,
+          rich: "description",
         },
       ],
     },
