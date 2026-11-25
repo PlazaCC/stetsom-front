@@ -180,31 +180,12 @@ export function TimelineCarousel({
               />
             </div>
 
-            {/* Right: description + nav */}
+            {/* Right: description */}
             <div className="flex flex-col gap-4 md:items-end lg:justify-center">
               <RichText
                 className="max-w-83.75 text-sm leading-normal text-text-subtle-dark"
                 content={description}
               />
-
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={handlePrevious}
-                  disabled={activeIndex === 0}
-                  className="flex h-9 w-9 items-center justify-center rounded-md border border-[#323232] bg-[#1B1B1B] transition-colors hover:border-brand hover:bg-brand disabled:cursor-not-allowed disabled:opacity-30"
-                  aria-label={t("timelinePrevious")}
-                >
-                  <ChevronLeft size={18} className="text-[#828282]" />
-                </button>
-                <button
-                  onClick={handleNext}
-                  disabled={activeIndex === totalEvents - 1}
-                  className="flex h-9 w-9 items-center justify-center rounded-md border border-[#323232] bg-[#1B1B1B] transition-colors hover:border-brand hover:bg-brand disabled:cursor-not-allowed disabled:opacity-30"
-                  aria-label={t("timelineNext")}
-                >
-                  <ChevronRight size={18} className="text-[#828282]" />
-                </button>
-              </div>
             </div>
           </div>
 
@@ -256,15 +237,35 @@ export function TimelineCarousel({
             </div>
           </div>
 
-          {/* Progress bar */}
-          {totalEvents > 1 && (
-            <Progress
-              value={(activeIndex / (totalEvents - 1)) * 100}
-              className="flex-col items-stretch gap-0 px-3.75"
-              trackClassName="h-0.5 rounded-none bg-[#616161]"
-              indicatorClassName="bg-brand"
-            />
-          )}
+          {/* Progress and navigation */}
+          <div className="flex flex-col items-center gap-6 px-3.75 lg:flex-row lg:gap-16">
+            {totalEvents > 1 && (
+              <Progress
+                value={(activeIndex / (totalEvents - 1)) * 100}
+                className="w-full flex-col items-stretch gap-0 lg:flex-1"
+                trackClassName="h-0.5 rounded-none bg-[#616161]"
+                indicatorClassName="bg-brand"
+              />
+            )}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handlePrevious}
+                disabled={activeIndex === 0}
+                className="flex h-9 w-9 items-center justify-center rounded-md border border-[#323232] bg-[#1B1B1B] transition-colors hover:border-brand hover:bg-brand disabled:cursor-not-allowed disabled:opacity-30"
+                aria-label={t("timelinePrevious")}
+              >
+                <ChevronLeft size={18} className="text-[#828282]" />
+              </button>
+              <button
+                onClick={handleNext}
+                disabled={activeIndex === totalEvents - 1}
+                className="flex h-9 w-9 items-center justify-center rounded-md border border-[#323232] bg-[#1B1B1B] transition-colors hover:border-brand hover:bg-brand disabled:cursor-not-allowed disabled:opacity-30"
+                aria-label={t("timelineNext")}
+              >
+                <ChevronRight size={18} className="text-[#828282]" />
+              </button>
+            </div>
+          </div>
         </div>
       </Container>
     </section>
